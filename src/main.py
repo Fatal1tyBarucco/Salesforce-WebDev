@@ -1,8 +1,8 @@
 """Main orchestrator for Salesforce release notes scraping (async version)."""
 import asyncio
 import logging
-from .typing import Optional
-from .bs4 import BeautifulSoup
+from typing import Optional
+from bs4 import BeautifulSoup
 
 from .scraper import SalesforceReleaseScraper
 from .parser import ReleaseNotesParser
