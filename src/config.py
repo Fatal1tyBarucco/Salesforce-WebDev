@@ -128,4 +128,3 @@ MONITORED_TOPICS: list[TopicConfig] = [
     # ),
     # -----------------------------------------------------------------------
 ]
-content://com.android.externalstorage.documents/tree/primary%3Adocuments::primary:documents/Salesforce-WebDev/src/config.py
