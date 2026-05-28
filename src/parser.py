@@ -25,8 +25,6 @@ logger: logging.Logger = logging.getLogger(__name__)
 # Tipos
 # ---------------------------------------------------------------------------
 
-TopicContentMap = dict[str, list[str]]  # {slug: [linhas de conteúdo]}
-
 HEADING_TAGS: tuple[str, ...] = ("h1", "h2", "h3", "h4")
 CONTENT_TAGS: tuple[str, ...] = ("p", "ul", "ol", "li", "table", "pre", "blockquote")
 
