@@ -1,6 +1,6 @@
 """Main orchestrator for Salesforce release notes extraction (PDF version)."""
 import logging
-from typing import Optional
+#from typing import Optional
 
 from .pdf_parser import PDFReleaseParser
 from .generator import MarkdownGenerator
