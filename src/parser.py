@@ -17,7 +17,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from config import MONITORED_TOPICS, TopicContentMap
+from .config import MONITORED_TOPICS, TopicContentMap
 
 logger: logging.Logger = logging.getLogger(__name__)
 
