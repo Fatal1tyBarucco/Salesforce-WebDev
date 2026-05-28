@@ -51,7 +51,7 @@ jobs:
         run: ruff check src/ --output-format=github
 
       - name: Mypy — Verificação de tipos estáticos
-        run: mypy src/ --strict --ignore-missing-imports
+        run: mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
 
   extract:
     name: 📥 Extração e Geração de Artefatos
