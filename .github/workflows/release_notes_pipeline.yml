@@ -76,6 +76,9 @@ jobs:
       - name: Instalar dependências
         run: pip install -r requirements.txt
 
+      - name: Install Playwright Browsers
+        run: playwright install --with-deps chromium
+
       - name: Configurar identidade do bot para commits
         run: |
           git config user.name  "github-actions[bot]"
