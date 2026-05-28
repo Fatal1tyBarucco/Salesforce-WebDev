@@ -1,99 +1,27 @@
-# 📋 Salesforce Release Notes — Automação Knowledge-as-Code
-
-> Pipeline automatizado para extração, segmentação e versionamento das
-> **Release Notes do Salesforce**, organizado por tópicos arquiteturais.
-
----
-
-## 🚀 Como Funciona
-
-```
-GitHub Actions (Cron Semanal)
-  └── scraper.py    → Busca HTML com retry exponencial
-      └── parser.py → Segmenta por tópico (Apex, LWC, Flow, Security, Integrations)
-          └── generator.py     → Gera /releases/{slug}/{topico}.md
-              └── readme_updater.py → Atualiza este índice automaticamente
-```
-
-## ⚙️ Execução Manual
-
-```bash
-# Instalar dependências
-pip install -r requirements.txt
-
-# Processar todas as releases
-python src/main.py
-
-# Processar apenas uma release específica
-python src/main.py --release summer_26
-
-# Simular sem escrever arquivos
-python src/main.py --dry-run
-```
-
-## 🗂️ Tópicos Monitorados
-
-| Slug | Tópico |
-| --- | --- |
-| `apex` | Apex, Triggers, Batch, Queueable, SOQL |
-| `lwc` | Lightning Web Components, Aura |
-| `flow` | Flow Builder, Automações declarativas |
-| `security` | Segurança, Permissões, Shield |
-| `integrations` | REST/SOAP/Bulk API, Platform Events |
-
-## ➕ Adicionando Novos Tópicos
-
-Edite **apenas** `src/config.py` — adicione um novo `TopicConfig` à lista
-`MONITORED_TOPICS`. Nenhuma outra alteração é necessária.
-
-```python
-TopicConfig(
-    slug="data_cloud",
-    display_name="Data Cloud",
-    keywords=["data cloud", "cdp", "data stream", "calculated insight"],
-),
-```
-
----
-
-## 📦 Índice de Releases
-
-<!-- RELEASE_INDEX_START -->
-> ⚙️ Índice gerado automaticamente em **2026-05-28 05:21 UTC**.
-
-## 📋 Índice de Release Notes
-
-| Release | [Apex] | [Lightning Web Components (LWC)] | [Flow & Automação] | [Segurança & Permissões] | [Integrações & APIs] |
-| --- | --- | --- | --- | --- | --- |
-| **Summer '25** | [✅ Ver](releases/summer_25/apex.md) | [✅ Ver](releases/summer_25/lwc.md) | [✅ Ver](releases/summer_25/flow.md) | [✅ Ver](releases/summer_25/security.md) | [✅ Ver](releases/summer_25/integrations.md) |
-| **Winter '26** | [✅ Ver](releases/winter_26/apex.md) | [✅ Ver](releases/winter_26/lwc.md) | [✅ Ver](releases/winter_26/flow.md) | [✅ Ver](releases/winter_26/security.md) | [✅ Ver](releases/winter_26/integrations.md) |
-| **Spring '26** | [✅ Ver](releases/spring_26/apex.md) | [✅ Ver](releases/spring_26/lwc.md) | [✅ Ver](releases/spring_26/flow.md) | [✅ Ver](releases/spring_26/security.md) | [✅ Ver](releases/spring_26/integrations.md) |
-| **Summer '26** | [✅ Ver](releases/summer_26/apex.md) | [✅ Ver](releases/summer_26/lwc.md) | [✅ Ver](releases/summer_26/flow.md) | [✅ Ver](releases/summer_26/security.md) | [✅ Ver](releases/summer_26/integrations.md) |
-<!-- RELEASE_INDEX_END -->
-
----
-
-## 🛠️ Tecnologias
-
-- **Python 3.12** — requests, BeautifulSoup4, lxml
-- **GitHub Actions** — Cron, Workflow Dispatch, auto-commit
-- **Ruff + Mypy** — Lint e type checking estrito
-
-## 📁 Estrutura do Repositório
-
-```
-├── .github/workflows/release_notes_pipeline.yml
-├── releases/
-│   ├── summer_25/
-│   ├── winter_26/
-│   ├── spring_26/
-│   └── summer_26/
-├── src/
-│   ├── config.py
-│   ├── scraper.py
-│   ├── parser.py
-│   ├── generator.py
-│   ├── readme_updater.py
-│   └── main.py
-└── requirements.txt
-```
+# Salesforce Release Notes Knowledge Base
+Este repositório armazena as notas de versão extraídas automaticamente dos PDFs oficiais.
+## 📋 Releases Disponíveis
+### Winter 26
+- [apex](./releases/winter_26/apex.md)
+- [flow](./releases/winter_26/flow.md)
+- [integrations](./releases/winter_26/integrations.md)
+- [lwc](./releases/winter_26/lwc.md)
+- [security](./releases/winter_26/security.md)
+### Summer 26
+- [apex](./releases/summer_26/apex.md)
+- [flow](./releases/summer_26/flow.md)
+- [integrations](./releases/summer_26/integrations.md)
+- [lwc](./releases/summer_26/lwc.md)
+- [security](./releases/summer_26/security.md)
+### Summer 25
+- [apex](./releases/summer_25/apex.md)
+- [flow](./releases/summer_25/flow.md)
+- [integrations](./releases/summer_25/integrations.md)
+- [lwc](./releases/summer_25/lwc.md)
+- [security](./releases/summer_25/security.md)
+### Spring 26
+- [apex](./releases/spring_26/apex.md)
+- [flow](./releases/spring_26/flow.md)
+- [integrations](./releases/spring_26/integrations.md)
+- [lwc](./releases/spring_26/lwc.md)
+- [security](./releases/spring_26/security.md)
