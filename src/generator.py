@@ -19,7 +19,7 @@ import logging
 from datetime import datetime, timezone
 from pathlib import Path
 
-from config import (
+from .config import (
     MONITORED_TOPICS,
     RELEASES_DIR,
     ReleaseInfo,
