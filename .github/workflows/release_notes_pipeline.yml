@@ -107,7 +107,7 @@ jobs:
           if [ -n "${{ steps.params.outputs.release_slug }}" ]; then
             ARGS="$ARGS --release ${{ steps.params.outputs.release_slug }}"
           fi
-          python src/main.py $ARGS
+          python -m src/main.py $ARGS
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Verificar alterações geradas
