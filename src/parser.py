@@ -14,11 +14,10 @@ Estratégia de extração:
 
 import logging
 import re
-from typing import Generator
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup
 
-from config import MONITORED_TOPICS, TopicConfig
+from config import MONITORED_TOPICS, TopicContentMap
 
 logger: logging.Logger = logging.getLogger(__name__)
 
