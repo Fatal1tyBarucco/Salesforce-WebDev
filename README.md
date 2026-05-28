@@ -59,6 +59,16 @@ TopicConfig(
 ## 📦 Índice de Releases
 
 <!-- RELEASE_INDEX_START -->
+> ⚙️ Índice gerado automaticamente em **2026-05-28 05:21 UTC**.
+
+## 📋 Índice de Release Notes
+
+| Release | [Apex] | [Lightning Web Components (LWC)] | [Flow & Automação] | [Segurança & Permissões] | [Integrações & APIs] |
+| --- | --- | --- | --- | --- | --- |
+| **Summer '25** | [✅ Ver](releases/summer_25/apex.md) | [✅ Ver](releases/summer_25/lwc.md) | [✅ Ver](releases/summer_25/flow.md) | [✅ Ver](releases/summer_25/security.md) | [✅ Ver](releases/summer_25/integrations.md) |
+| **Winter '26** | [✅ Ver](releases/winter_26/apex.md) | [✅ Ver](releases/winter_26/lwc.md) | [✅ Ver](releases/winter_26/flow.md) | [✅ Ver](releases/winter_26/security.md) | [✅ Ver](releases/winter_26/integrations.md) |
+| **Spring '26** | [✅ Ver](releases/spring_26/apex.md) | [✅ Ver](releases/spring_26/lwc.md) | [✅ Ver](releases/spring_26/flow.md) | [✅ Ver](releases/spring_26/security.md) | [✅ Ver](releases/spring_26/integrations.md) |
+| **Summer '26** | [✅ Ver](releases/summer_26/apex.md) | [✅ Ver](releases/summer_26/lwc.md) | [✅ Ver](releases/summer_26/flow.md) | [✅ Ver](releases/summer_26/security.md) | [✅ Ver](releases/summer_26/integrations.md) |
 <!-- RELEASE_INDEX_END -->
 
 ---
