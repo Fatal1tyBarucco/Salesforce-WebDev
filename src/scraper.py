@@ -1,5 +1,4 @@
 # src/scraper.py
-import asyncio
 import logging
 from typing import Optional
 from playwright.async_api import async_playwright, Browser, Page
