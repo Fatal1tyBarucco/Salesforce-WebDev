@@ -1,0 +1,138 @@
+name: 🚀 Salesforce Release Notes Pipeline
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+
+  workflow_dispatch:
+    inputs:
+      release_slug:
+        description: "Slug da release específica (ex: summer_26). Deixe vazio para todas."
+        required: false
+        default: ""
+      dry_run:
+        description: "Simular sem escrever arquivos?"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - ".github/workflows/release_notes_pipeline.yml"
+
+env:
+  PYTHON_VERSION: "3.12"
+  WORKING_DIR: "."
+
+jobs:
+  lint:
+    name: 🔍 Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Instalar dependências de desenvolvimento
+        run: pip install -r requirements.txt ruff mypy types-requests
+
+      - name: Ruff — Linting e formatação
+        run: ruff check src/ --output-format=github
+
+      - name: Mypy — Verificação de tipos estáticos
+        run: mypy src/ --strict --ignore-missing-imports
+
+  extract:
+    name: 📥 Extração e Geração de Artefatos
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configurar Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Configurar identidade do bot para commits
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Resolver parâmetros de execução
+        id: params
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "dry_run=true"    >> $GITHUB_OUTPUT
+            echo "release_slug="   >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "dry_run=${{ github.event.inputs.dry_run }}"           >> $GITHUB_OUTPUT
+            echo "release_slug=${{ github.event.inputs.release_slug }}" >> $GITHUB_OUTPUT
+          else
+            echo "dry_run=false"   >> $GITHUB_OUTPUT
+            echo "release_slug="   >> $GITHUB_OUTPUT
+          fi
+
+      - name: Executar pipeline de extração
+        run: |
+          ARGS=""
+          if [ "${{ steps.params.outputs.dry_run }}" == "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ -n "${{ steps.params.outputs.release_slug }}" ]; then
+            ARGS="$ARGS --release ${{ steps.params.outputs.release_slug }}"
+          fi
+          python src/main.py $ARGS
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Verificar alterações geradas
+        id: git_status
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          github.event_name != 'pull_request'
+        run: |
+          if [ -n "$(git status --porcelain releases/ README.md)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit e push dos artefatos gerados
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          github.event_name != 'pull_request' &&
+          steps.git_status.outputs.has_changes == 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          git add releases/ README.md
+          git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP} [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Gerar sumário do pipeline
+        if: always()
+        run: |
+          echo "## 📊 Sumário do Pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "| Parâmetro | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dry Run | \`${{ steps.params.outputs.dry_run }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release | \`${{ steps.params.outputs.release_slug || 'todas' }}\` |" >> $GITHUB_STEP_SUMMARY
