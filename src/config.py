@@ -7,6 +7,8 @@ Adicionar novos tópicos ou releases aqui NÃO requer alterações no motor prin
 from dataclasses import dataclass, field
 from typing import Final
 
+TopicContentMap = dict[str, list[str]]
+
 # ---------------------------------------------------------------------------
 # Constantes Globais
 # ---------------------------------------------------------------------------
