@@ -16,14 +16,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from config import (
-    KNOWN_RELEASES,
-    MONITORED_TOPICS,
-    README_INDEX_END_MARKER,
-    README_INDEX_START_MARKER,
-    README_PATH,
-    RELEASES_DIR,
-    ReleaseInfo,
-    TopicConfig,
+    KNOWN_RELEASES, MONITORED_TOPICS,
+    README_INDEX_END_MARKER, README_INDEX_START_MARKER,
+    README_PATH, RELEASES_DIR, ReleaseInfo,
 )
 
 logger: logging.Logger = logging.getLogger(__name__)
