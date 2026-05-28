@@ -45,7 +45,7 @@ jobs:
           cache: "pip"
 
       - name: Instalar dependências de desenvolvimento
-        run: pip install -r requirements.txt ruff mypy types-requests playwright
+        run: pip install -r requirements.txt ruff mypy types-requests
 
       - name: Ruff — Linting e formatação
         run: ruff check src/ --output-format=github
@@ -53,9 +53,6 @@ jobs:
       - name: Mypy — Verificação de tipos estáticos
         run: mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
       
-      - name: Install Playwright Browsers
-        run: playwright install --with-deps chromium
-
   extract:
     name: 📥 Extração e Geração de Artefatos
     runs-on: ubuntu-latest
@@ -75,9 +72,6 @@ jobs:
 
       - name: Instalar dependências
         run: pip install -r requirements.txt
-
-      - name: Install Playwright Browsers
-        run: playwright install --with-deps chromium
 
       - name: Configurar identidade do bot para commits
         run: |
