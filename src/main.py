@@ -1,14 +1,14 @@
 """Main orchestrator for Salesforce release notes scraping (async version)."""
 import asyncio
 import logging
-from typing import Optional
-from bs4 import BeautifulSoup
+from .typing import Optional
+from .bs4 import BeautifulSoup
 
-from scraper import SalesforceReleaseScraper
-from parser import ReleaseNotesParser
-from generator import MarkdownGenerator
-from logger import setup_logging
-from config import KNOWN_RELEASES, MONITORED_TOPICS
+from .scraper import SalesforceReleaseScraper
+from .parser import ReleaseNotesParser
+from .generator import MarkdownGenerator
+from .logger import setup_logging
+from .config import KNOWN_RELEASES, MONITORED_TOPICS
 
 logger = logging.getLogger(__name__)
 
