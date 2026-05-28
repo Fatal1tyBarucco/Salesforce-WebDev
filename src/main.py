@@ -1,62 +1,53 @@
-"""Main orchestrator for Salesforce release notes scraping (async version)."""
-import asyncio
+"""Main orchestrator for Salesforce release notes extraction (PDF version)."""
 import logging
 from typing import Optional
-from bs4 import BeautifulSoup
 
-from .scraper import SalesforceReleaseScraper
-from .parser import ReleaseNotesParser
+from .pdf_parser import PDFReleaseParser
 from .generator import MarkdownGenerator
 from .logger import setup_logging
-from .config import KNOWN_RELEASES, MONITORED_TOPICS
+from .config import KNOWN_RELEASES, RELEASES_DIR
 
 logger = logging.getLogger(__name__)
 
-# Mapeamento temporário: slug do tópico → ID do artigo na URL
-TOPIC_ARTICLE_MAP = {
-    "apex": "rn_development",
-    "lwc": "rn_lwc",
-    "flow": "rn_flow",
-    "security": "rn_security",
-    "integrations": "rn_integration",
-}
-
-async def main() -> None:
-    """Async main function to orchestrate scraping, parsing, and generation."""
+def main() -> None:
+    """Orquestra a extração a partir de PDFs locais."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction process (async).")
+    logger.info("Starting Salesforce Release Notes extraction from PDFs.")
 
-    scraper = SalesforceReleaseScraper()
-    parser = ReleaseNotesParser()
-    generator = MarkdownGenerator()
+    pdf_parser = PDFReleaseParser()
+    generator = MarkdownGenerator(base_dir=RELEASES_DIR)
 
     for release in KNOWN_RELEASES:
-        logger.info(f"Processing release: {release.name}")
-        for topic in MONITORED_TOPICS:
-            article_id = TOPIC_ARTICLE_MAP.get(topic.slug)
-            if not article_id:
-                logger.warning(f"No article mapping for topic '{topic.slug}', skipping.")
-                continue
+        logger.info(f"Processando release: {release.name}")
+        try:
+            content_map = pdf_parser.parse(release.slug, release.name)
+            source_url = f"PDF local: {release.slug}.pdf"
+            generator.generate(release, content_map, source_url=source_url)
+        except Exception as e:
+            logger.exception(f"Erro ao processar {release.name}: {e}")
 
-            url = f"https://help.salesforce.com/s/articleView?id=release-notes.{article_id}.htm&release={release.release_id}&type=5"
-            logger.info(f"Fetching {topic.slug} from {url}")
+    # Atualiza o README com as releases geradas
+    releases_list = generator.list_generated_releases()
+    _update_readme(releases_list)
 
-            try:
-                html_content: Optional[str] = await scraper.fetch_page(url)
-                if not html_content:
-                    logger.error(f"Failed to fetch HTML for {topic.slug} in {release.name}. Skipping.")
-                    continue
-
-                soup = BeautifulSoup(html_content, "lxml")
-                parsed_data = parser.parse(soup, release.name)
-
-                # parsed_data é TopicContentMap (dict slug -> list[str])
-                generator.generate(release, parsed_data, source_url=url)
-
-            except Exception as e:
-                logger.exception(f"Error processing {topic.slug} for {release.name}: {e}")
-
-    logger.info("Salesforce Release Notes extraction process finished.")
+def _update_readme(releases: list[tuple[str, list[str]]]) -> None:
+    """Atualiza o README.md com um índice dinâmico."""
+    readme_path = "README.md"
+    index_lines = [
+        "# Salesforce Release Notes Knowledge Base\n",
+        "Este repositório armazena as notas de versão extraídas automaticamente dos PDFs oficiais.\n",
+        "## 📋 Releases Disponíveis\n",
+    ]
+    for release_slug, topics in sorted(releases, reverse=True):
+        release_dir = f"./releases/{release_slug}/"
+        index_lines.append(f"### {release_slug.replace('_', ' ').title()}\n")
+        for topic in topics:
+            index_lines.append(f"- [{topic}]({release_dir}{topic}.md)\n")
+        index_lines.append("")
+    
+    with open(readme_path, "w", encoding="utf-8") as f:
+        f.writelines(index_lines)
+    logger.info("README.md atualizado com índice.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
