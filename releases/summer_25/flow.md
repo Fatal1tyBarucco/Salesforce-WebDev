@@ -1,7 +1,7 @@
 # Flow & Automação — Summer '25
 
 > **Release:** Summer '25
-> **Gerado em:** 2026-05-28 07:28 UTC
+> **Gerado em:** 2026-05-29 06:36 UTC
 > **Fonte:** PDF local: summer_25.pdf
 
 ---
