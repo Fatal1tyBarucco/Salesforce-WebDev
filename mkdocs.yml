@@ -1,0 +1,7 @@
+site_name: Salesforce Release Intelligence
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
