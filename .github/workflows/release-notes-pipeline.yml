@@ -1,0 +1,49 @@
+name: Release Intelligence Pipeline
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 5 * * 1'
+
+concurrency:
+  group: release-intelligence
+  cancel-in-progress: true
+
+jobs:
+
+  scrape-release-notes:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Execute release pipeline
+        run: |
+          python automation/core/orchestrator.py
+
+      - name: Commit generated artifacts
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add .
+
+          git commit -m "docs: automated release update" || exit 0
+
+          git push
