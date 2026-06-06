@@ -90,9 +90,7 @@ class SalesforceReleaseScraper:
                     continue
 
             if not content_found:
-                logger.warning(
-                    "No known content selector found — extracting full page body"
-                )
+                logger.warning("No known content selector found — extracting full page body")
 
             # Step 5: Extract content
             html_content: str = await page.content()

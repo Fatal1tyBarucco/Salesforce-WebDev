@@ -48,9 +48,7 @@ def main() -> None:
             topic_links = parser.extract_article_links(soup, release.name)
 
             # Build content from index links (fast approach — no individual article fetch)
-            content_map = parser.build_topic_content_from_links(
-                topic_links, soup, release.name
-            )
+            content_map = parser.build_topic_content_from_links(topic_links, soup, release.name)
 
             # Generate markdown artifacts
             generator.generate(release, content_map, source_url=url)

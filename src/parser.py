@@ -30,8 +30,14 @@ TOPIC_URL_PATTERNS: dict[str, list[str]] = {
     "flow": ["rn_automate_flow", "rn_automate_process", "rn_flow"],
     "security": ["rn_security", "rn_identity", "rn_shield", "rn_encryption", "rn_permission"],
     "integrations": [
-        "rn_integration", "rn_api", "rn_rest", "rn_soap", "rn_bulk",
-        "rn_platform_event", "rn_connected_app", "rn_mulesoft",
+        "rn_integration",
+        "rn_api",
+        "rn_rest",
+        "rn_soap",
+        "rn_bulk",
+        "rn_platform_event",
+        "rn_connected_app",
+        "rn_mulesoft",
     ],
 }
 
@@ -76,7 +82,9 @@ class ReleaseNotesParser:
             count = len(topic_links[topic.slug])
             logger.info(
                 "[PARSER] Topic '%s': %d article links | release=%s",
-                topic.slug, count, release_name,
+                topic.slug,
+                count,
+                release_name,
             )
 
         return topic_links
@@ -116,7 +124,9 @@ class ReleaseNotesParser:
             count = len(result[topic.slug])
             logger.info(
                 "[PARSER] Topic '%s': %d lines | release=%s",
-                topic.slug, count, release_name,
+                topic.slug,
+                count,
+                release_name,
             )
 
         return result
@@ -132,7 +142,8 @@ class ReleaseNotesParser:
         sections: list[dict] = self._extract_sections(soup)
         logger.info(
             "[PARSER] %d seções identificadas no DOM | release=%s",
-            len(sections), release_name,
+            len(sections),
+            release_name,
         )
 
         result: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
@@ -180,9 +191,7 @@ class ReleaseNotesParser:
     def _match_section_to_topics(self, section: dict) -> list[str]:
         """Verifica quais tópicos correspondem a uma seção."""
         matched: list[str] = []
-        searchable_text: str = " ".join(
-            [section["heading"]] + section["lines"][:10]
-        ).lower()
+        searchable_text: str = " ".join([section["heading"]] + section["lines"][:10]).lower()
 
         for topic in MONITORED_TOPICS:
             if self._matches_any_keyword(searchable_text, topic.keywords):
