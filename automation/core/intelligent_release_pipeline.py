@@ -3,6 +3,7 @@ from __future__ import annotations
 from automation.core.pdf_extraction_engine import PdfExtractionEngine
 from automation.core.semantic_parser import SemanticParser
 from automation.core.weighted_classifier import WeightedTopicClassifier
+from automation.shared.models import ClassificationResult
 
 
 class IntelligentReleasePipeline:
@@ -15,7 +16,7 @@ class IntelligentReleasePipeline:
         self.semantic_parser = SemanticParser()
         self.weighted_classifier = WeightedTopicClassifier()
 
-    def process_pdf_release(self, pdf_file_path: str):
+    def process_pdf_release(self, pdf_file_path: str) -> list[ClassificationResult]:
         extracted_text = self.pdf_extraction_engine.extract_text(
             pdf_file_path,
         )
