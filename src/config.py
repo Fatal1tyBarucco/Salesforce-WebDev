@@ -50,6 +50,7 @@ class ReleaseInfo:
 
 
 KNOWN_RELEASES: list[ReleaseInfo] = [
+    ReleaseInfo(name="Spring '25", release_id=254, slug="spring_25"),
     ReleaseInfo(name="Summer '25", release_id=256, slug="summer_25"),
     ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
     ReleaseInfo(name="Spring '26", release_id=260, slug="spring_26"),

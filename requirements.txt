@@ -4,5 +4,6 @@ lxml==6.1.0
 pdfplumber==0.11.0
 tenacity==8.2.3
 python-slugify==8.0.4
+playwright==1.60.0
 mkdocs==1.6.0
 mkdocs-material==9.5.27
