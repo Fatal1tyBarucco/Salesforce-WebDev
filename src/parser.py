@@ -12,6 +12,7 @@ This parser handles both:
 
 import logging
 import re
+from typing import Dict
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -51,7 +52,7 @@ class ReleaseNotesParser:
         self,
         soup: BeautifulSoup,
         release_name: str,
-    ) -> dict[str, list[dict]]:
+    ) -> dict[str, list[Dict[str, str]]]:
         """
         Extract article links from the index page and group by topic.
 
@@ -60,7 +61,9 @@ class ReleaseNotesParser:
         logger.info("[PARSER] Extracting article links | release=%s", release_name)
 
         links = soup.find_all("a", href=True)
-        topic_links: dict[str, list[dict]] = {topic.slug: [] for topic in MONITORED_TOPICS}
+        topic_links: dict[str, list[dict[str, str]]] = {
+            topic.slug: [] for topic in MONITORED_TOPICS
+        }
 
         for link in links:
             href = link.get("href", "")
@@ -91,7 +94,7 @@ class ReleaseNotesParser:
 
     def build_topic_content_from_links(
         self,
-        topic_links: dict[str, list[dict]],
+        topic_links: dict[str, list[dict[str, str]]],
         soup: BeautifulSoup,
         release_name: str,
     ) -> TopicContentMap:
@@ -155,7 +158,7 @@ class ReleaseNotesParser:
 
         return result
 
-    def _extract_sections(self, soup: BeautifulSoup) -> list[dict]:
+    def _extract_sections(self, soup: BeautifulSoup) -> list[dict[str, any]]:
         """Percorre o DOM e agrupa conteúdo em seções delimitadas por headings."""
         sections: list[dict] = []
         current_section: dict | None = None

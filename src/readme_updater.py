@@ -15,7 +15,7 @@ import logging
 from datetime import datetime, timezone
 from pathlib import Path
 
-from config import (
+from .config import (
     KNOWN_RELEASES,
     MONITORED_TOPICS,
     README_INDEX_END_MARKER,
