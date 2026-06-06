@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import fitz  # type: ignore[import-untyped]
+import fitz  # type: ignore[import-not-found]
 
 
 class PdfExtractionEngine:
