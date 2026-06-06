@@ -109,17 +109,12 @@ class ReadmeUpdater:
             "",
             f"> ⚙️ Índice gerado automaticamente em **{updated_at}**.",
             "",
-            "## 📋 Índice de Release Notes",
-            "",
+            "| Release | Apex | LWC | Flow | Security | Integrations |",
+            "| :--- | :---: | :---: | :---: | :---: | :---: |",
         ]
 
-        # Cabeçalho da tabela
-        topic_headers: str = " | ".join(f"[{t.display_name}]" for t in MONITORED_TOPICS)
-        separator: str = " | ".join("---" for _ in MONITORED_TOPICS)
-        lines.append(f"| Release | {topic_headers} |")
-        lines.append(f"| --- | {separator} |")
-
-        for release in KNOWN_RELEASES:
+        # Reverte para mostrar as mais recentes primeiro
+        for release in reversed(KNOWN_RELEASES):
             row: str = self._build_release_row(release)
             lines.append(row)
 
@@ -127,15 +122,18 @@ class ReadmeUpdater:
         return "\n".join(lines)
 
     def _build_release_row(self, release: ReleaseInfo) -> str:
-        """Constrói uma linha da tabela para uma release específica."""
+        """Constrói uma linha da tabela para uma release específica com emojis de status."""
         release_dir: Path = self._releases_dir / release.slug
-        cells: list[str] = [f"**{release.name}**"]
+        
+        # Define o emoji baseado na estação
+        emoji = "❄️" if "Winter" in release.name else "☀️" if "Summer" in release.name else "🌸"
+        
+        cells: list[str] = [f"{emoji} **{release.name}**"]
 
         for topic in MONITORED_TOPICS:
             file_path: Path = release_dir / f"{topic.slug}.md"
             if file_path.exists():
-                # Link relativo compatível com GitHub
-                link: str = f"{RELEASES_DIR}/{release.slug}/{topic.slug}.md"
+                link: str = f"./{RELEASES_DIR}/{release.slug}/{topic.slug}.md"
                 cells.append(f"[✅ Ver]({link})")
             else:
                 cells.append("—")
