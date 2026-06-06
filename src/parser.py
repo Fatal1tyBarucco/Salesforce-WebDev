@@ -33,6 +33,7 @@ CONTENT_TAGS: tuple[str, ...] = ("p", "ul", "ol", "li", "table", "pre", "blockqu
 # Parser
 # ---------------------------------------------------------------------------
 
+
 class ReleaseNotesParser:
     """
     Segmenta o HTML das Release Notes do Salesforce em tópicos monitorados.
@@ -143,9 +144,7 @@ class ReleaseNotesParser:
         no heading e nas primeiras linhas de conteúdo da seção.
         """
         matched: list[str] = []
-        searchable_text: str = " ".join(
-            [section["heading"]] + section["lines"][:5]
-        ).lower()
+        searchable_text: str = " ".join([section["heading"]] + section["lines"][:5]).lower()
 
         for topic in MONITORED_TOPICS:
             if self._matches_any_keyword(searchable_text, topic.keywords):

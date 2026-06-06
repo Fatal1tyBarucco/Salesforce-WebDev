@@ -7,38 +7,25 @@ class ReadmeUpdater:
 
     def update(self) -> None:
 
-        release_directories = sorted(
-            Path("releases").glob("*")
-        )
+        release_directories = sorted(Path("releases").glob("*"))
 
         lines: list[str] = [
             "# Salesforce Release Notes Knowledge Base",
             "",
             "## 📋 Releases Disponíveis",
-            ""
+            "",
         ]
 
         for release_directory in release_directories:
 
-            release_name = release_directory.name.replace(
-                "_",
-                " "
-            ).title()
+            release_name = release_directory.name.replace("_", " ").title()
 
             lines.append(f"### {release_name}")
 
-            for markdown_file in sorted(
-                release_directory.glob("*.md")
-            ):
+            for markdown_file in sorted(release_directory.glob("*.md")):
 
                 topic_name = markdown_file.stem
 
-                lines.append(
-                    f"- [{topic_name}]"
-                    f"(./{markdown_file.as_posix()})"
-                )
+                lines.append(f"- [{topic_name}]" f"(./{markdown_file.as_posix()})")
 
-        self.README_PATH.write_text(
-            "\n".join(lines),
-            encoding="utf-8"
-        )
+        self.README_PATH.write_text("\n".join(lines), encoding="utf-8")

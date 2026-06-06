@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 PDF_DIR = Path("pdfs")
 
+
 class PDFReleaseParser:
     """Parser para PDFs de Release Notes da Salesforce."""
 
@@ -77,24 +78,24 @@ class PDFReleaseParser:
         Segmenta o texto por tópicos usando palavras-chave e limites de seção.
         """
         result: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
-        
+
         # Divide o texto em seções por linhas que parecem cabeçalhos
-        sections = re.split(r'\n(?=[A-Z][A-Za-z &]+)\n', text)  # headings em maiúsculas
-        
+        sections = re.split(r"\n(?=[A-Z][A-Za-z &]+)\n", text)  # headings em maiúsculas
+
         for section in sections:
             for topic in MONITORED_TOPICS:
                 if self._topic_in_section(section, topic.keywords):
                     # Adiciona a seção inteira como uma lista de linhas
-                    lines = [line.strip() for line in section.split('\n') if line.strip()]
+                    lines = [line.strip() for line in section.split("\n") if line.strip()]
                     if lines:
                         result[topic.slug].extend(lines)
-        
+
         return result
 
     def _topic_in_section(self, section_text: str, keywords: list[str]) -> bool:
         """Verifica se alguma palavra-chave aparece na seção."""
         section_lower = section_text.lower()
         for kw in keywords:
-            if re.search(r'\b' + re.escape(kw) + r'\b', section_lower):
+            if re.search(r"\b" + re.escape(kw) + r"\b", section_lower):
                 return True
         return False

@@ -53,6 +53,7 @@ NO_CONTENT_MESSAGE: str = (
 # Generator
 # ---------------------------------------------------------------------------
 
+
 class MarkdownGenerator:
     """
     Gera os arquivos Markdown de cada tópico por release.
@@ -175,9 +176,7 @@ class MarkdownGenerator:
         for release_dir in sorted(self._base_dir.iterdir()):
             if not release_dir.is_dir():
                 continue
-            topics: list[str] = [
-                f.stem for f in sorted(release_dir.glob("*.md"))
-            ]
+            topics: list[str] = [f.stem for f in sorted(release_dir.glob("*.md"))]
             result.append((release_dir.name, topics))
 
         return result

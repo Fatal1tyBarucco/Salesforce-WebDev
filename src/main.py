@@ -1,6 +1,8 @@
 """Main orchestrator for Salesforce release notes extraction (PDF version)."""
+
 import logging
-#from typing import Optional
+
+# from typing import Optional
 
 from .pdf_parser import PDFReleaseParser
 from .generator import MarkdownGenerator
@@ -8,6 +10,7 @@ from .logger import setup_logging
 from .config import KNOWN_RELEASES, RELEASES_DIR
 
 logger = logging.getLogger(__name__)
+
 
 def main() -> None:
     """Orquestra a extração a partir de PDFs locais."""
@@ -30,6 +33,7 @@ def main() -> None:
     releases_list = generator.list_generated_releases()
     _update_readme(releases_list)
 
+
 def _update_readme(releases: list[tuple[str, list[str]]]) -> None:
     """Atualiza o README.md com um índice dinâmico."""
     readme_path = "README.md"
@@ -44,10 +48,11 @@ def _update_readme(releases: list[tuple[str, list[str]]]) -> None:
         for topic in topics:
             index_lines.append(f"- [{topic}]({release_dir}{topic}.md)\n")
         index_lines.append("")
-    
+
     with open(readme_path, "w", encoding="utf-8") as f:
         f.writelines(index_lines)
     logger.info("README.md atualizado com índice.")
+
 
 if __name__ == "__main__":
     main()

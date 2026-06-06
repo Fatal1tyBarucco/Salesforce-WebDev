@@ -12,11 +12,6 @@ class ReleaseNotesScraper:
 
     def fetch_release_notes(self) -> str:
 
-        release_url = self.discovery_service.build_release_url(
-            release_number=262
-        )
+        release_url = self.discovery_service.build_release_url(release_number=262)
 
-        return self.http_client.get(
-            release_url,
-            self.config.request_timeout_seconds
-        )
+        return self.http_client.get(release_url, self.config.request_timeout_seconds)

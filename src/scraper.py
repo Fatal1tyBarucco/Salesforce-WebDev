@@ -6,6 +6,7 @@ from .config import MAX_RETRY_ATTEMPTS
 
 logger = logging.getLogger(__name__)
 
+
 class SalesforceReleaseScraper:
     """Fetches HTML content from Salesforce release notes URLs using a headless browser."""
 
@@ -20,8 +21,8 @@ class SalesforceReleaseScraper:
                 async with async_playwright() as p:
                     browser: Browser = await p.chromium.launch(headless=True)
                     page: Page = await browser.new_page()
-                    await page.goto(url, wait_until='networkidle')
-                    await page.wait_for_selector('div.content', timeout=10000)
+                    await page.goto(url, wait_until="networkidle")
+                    await page.wait_for_selector("div.content", timeout=10000)
                     html_content: str = await page.content()
                     await browser.close()
                     logger.info(f"Successfully fetched content from {url}")

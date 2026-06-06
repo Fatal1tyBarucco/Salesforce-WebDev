@@ -5,7 +5,6 @@ from automation.core.readme_updater import ReadmeUpdater
 from automation.core.scraper import ReleaseNotesScraper
 from automation.shared.logger import build_logger
 
-
 LOGGER = build_logger(__name__)
 
 
@@ -31,14 +30,9 @@ class ReleasePipelineOrchestrator:
 
         parsed_content = self.parser.parse(raw_content)
 
-        classified_topics = self.classifier.classify(
-            parsed_content
-        )
+        classified_topics = self.classifier.classify(parsed_content)
 
-        self.generator.generate(
-            release_name="Summer_26",
-            topics=classified_topics
-        )
+        self.generator.generate(release_name="Summer_26", topics=classified_topics)
 
         self.readme_updater.update()
 

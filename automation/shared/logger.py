@@ -4,11 +4,7 @@ import logging
 class JsonLikeFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
-        return (
-            f"[LEVEL={record.levelname}] "
-            f"[LOGGER={record.name}] "
-            f"{record.getMessage()}"
-        )
+        return f"[LEVEL={record.levelname}] " f"[LOGGER={record.name}] " f"{record.getMessage()}"
 
 
 def build_logger(name: str) -> logging.Logger:

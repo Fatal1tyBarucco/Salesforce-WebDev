@@ -16,9 +16,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from config import (
-    KNOWN_RELEASES, MONITORED_TOPICS,
-    README_INDEX_END_MARKER, README_INDEX_START_MARKER,
-    README_PATH, RELEASES_DIR, ReleaseInfo,
+    KNOWN_RELEASES,
+    MONITORED_TOPICS,
+    README_INDEX_END_MARKER,
+    README_INDEX_START_MARKER,
+    README_PATH,
+    RELEASES_DIR,
+    ReleaseInfo,
 )
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -27,6 +31,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Updater
 # ---------------------------------------------------------------------------
+
 
 class ReadmeUpdater:
     """
@@ -109,9 +114,7 @@ class ReadmeUpdater:
         ]
 
         # Cabeçalho da tabela
-        topic_headers: str = " | ".join(
-            f"[{t.display_name}]" for t in MONITORED_TOPICS
-        )
+        topic_headers: str = " | ".join(f"[{t.display_name}]" for t in MONITORED_TOPICS)
         separator: str = " | ".join("---" for _ in MONITORED_TOPICS)
         lines.append(f"| Release | {topic_headers} |")
         lines.append(f"| --- | {separator} |")

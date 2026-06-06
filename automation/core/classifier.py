@@ -4,10 +4,7 @@ from automation.shared.models import ReleaseTopicContent
 
 class TopicClassifier:
 
-    def classify(
-        self,
-        parsed_content: str
-    ) -> list[ReleaseTopicContent]:
+    def classify(self, parsed_content: str) -> list[ReleaseTopicContent]:
 
         topic_results: list[ReleaseTopicContent] = []
 
@@ -19,17 +16,11 @@ class TopicClassifier:
 
             for line in normalized_content.splitlines():
 
-                if any(
-                    keyword.lower() in line
-                    for keyword in keywords
-                ):
+                if any(keyword.lower() in line for keyword in keywords):
                     matched_lines.append(line)
 
             topic_results.append(
-                ReleaseTopicContent(
-                    topic_name=topic_name,
-                    content="\n".join(matched_lines)
-                )
+                ReleaseTopicContent(topic_name=topic_name, content="\n".join(matched_lines))
             )
 
         return topic_results

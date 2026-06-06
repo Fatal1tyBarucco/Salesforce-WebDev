@@ -21,14 +21,10 @@ class WeightedTopicClassifier:
             confidence_score: int = 0
 
             for parsed_section in parsed_sections:
-                section_text = (
-                    f"{parsed_section.title}\n{parsed_section.content}"
-                ).lower()
+                section_text = (f"{parsed_section.title}\n{parsed_section.content}").lower()
 
                 matched_keywords = [
-                    keyword
-                    for keyword in keywords
-                    if keyword.lower() in section_text
+                    keyword for keyword in keywords if keyword.lower() in section_text
                 ]
 
                 if matched_keywords:
