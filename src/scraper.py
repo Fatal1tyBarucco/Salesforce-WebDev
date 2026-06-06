@@ -8,7 +8,6 @@ This scraper uses a resilient strategy:
 4. Try multiple selectors before extracting content
 """
 
-import asyncio
 import logging
 from typing import Optional
 
