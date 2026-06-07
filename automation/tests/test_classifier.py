@@ -1,4 +1,9 @@
 from automation.core.classifier import TopicClassifier
+from automation.shared.topic_registry import TOPIC_REGISTRY
+
+
+def test_topic_registry_contains_apex() -> None:
+    assert "apex" in TOPIC_REGISTRY
 
 
 def test_classifier_should_match_apex_topic() -> None:
