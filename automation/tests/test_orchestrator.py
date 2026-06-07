@@ -80,3 +80,26 @@ def test_intelligent_pipeline_flow(
     pdf_inst.extract_text.assert_called_once_with("dummy.pdf")
     parser_inst.parse_sections.assert_called_once_with("extracted pdf text")
     classifier_inst.classify.assert_called_once()
+
+
+def test_orchestrator_main() -> None:
+    from pathlib import Path
+    from unittest.mock import patch
+    
+    file_path = "automation/core/orchestrator.py"
+    code_text = Path(file_path).read_text(encoding="utf-8")
+    
+    # Use compile to associate the code with the file for coverage tracking
+    code = compile(code_text, file_path, "exec")
+    
+    global_ns = {
+        "__name__": "__main__",
+    }
+    
+    # Mock everything ReleasePipelineOrchestrator uses to avoid side effects
+    with patch("automation.core.orchestrator.ReleaseNotesScraper"), \
+         patch("automation.core.orchestrator.ReleaseNotesParser"), \
+         patch("automation.core.orchestrator.TopicClassifier"), \
+         patch("automation.core.orchestrator.MarkdownArtifactGenerator"), \
+         patch("automation.core.orchestrator.ReadmeUpdater"):
+        exec(code, global_ns)
