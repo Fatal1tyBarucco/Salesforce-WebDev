@@ -12,7 +12,7 @@ This parser handles both:
 
 import logging
 import re
-from typing import Dict
+from typing import Any, Dict
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -142,7 +142,7 @@ class ReleaseNotesParser:
         """Legacy heading-based segmentation (fallback)."""
         logger.info("[PARSER] Iniciando segmentação | release=%s", release_name)
 
-        sections: list[dict] = self._extract_sections(soup)
+        sections: list[dict[str, Any]] = self._extract_sections(soup)
         logger.info(
             "[PARSER] %d seções identificadas no DOM | release=%s",
             len(sections),
@@ -158,10 +158,10 @@ class ReleaseNotesParser:
 
         return result
 
-    def _extract_sections(self, soup: BeautifulSoup) -> list[dict[str, any]]:
+    def _extract_sections(self, soup: BeautifulSoup) -> list[dict[str, Any]]:
         """Percorre o DOM e agrupa conteúdo em seções delimitadas por headings."""
-        sections: list[dict] = []
-        current_section: dict | None = None
+        sections: list[dict[str, Any]] = []
+        current_section: dict[str, Any] | None = None
 
         for element in soup.find_all(True):
             tag_name: str = element.name if hasattr(element, "name") else ""
@@ -191,7 +191,7 @@ class ReleaseNotesParser:
 
         return sections
 
-    def _match_section_to_topics(self, section: dict) -> list[str]:
+    def _match_section_to_topics(self, section: dict[str, Any]) -> list[str]:
         """Verifica quais tópicos correspondem a uma seção."""
         matched: list[str] = []
         searchable_text: str = " ".join([section["heading"]] + section["lines"][:10]).lower()

@@ -124,10 +124,10 @@ class ReadmeUpdater:
     def _build_release_row(self, release: ReleaseInfo) -> str:
         """Constrói uma linha da tabela para uma release específica com emojis de status."""
         release_dir: Path = self._releases_dir / release.slug
-        
+
         # Define o emoji baseado na estação
         emoji = "❄️" if "Winter" in release.name else "☀️" if "Summer" in release.name else "🌸"
-        
+
         cells: list[str] = [f"{emoji} **{release.name}**"]
 
         for topic in MONITORED_TOPICS:
