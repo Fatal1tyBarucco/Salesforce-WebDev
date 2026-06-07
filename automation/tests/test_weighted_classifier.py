@@ -6,7 +6,9 @@ def test_weighted_classifier_classifies_and_sorts_correctly() -> None:
     classifier = WeightedTopicClassifier()
 
     sections = [
-        ParsedSection(title="Apex Trigger modifications", content="We have batch and queueable executions."),
+        ParsedSection(
+            title="Apex Trigger modifications", content="We have batch and queueable executions."
+        ),
         ParsedSection(title="LWC Lightning Web Components", content="Wire adapters are great."),
         ParsedSection(title="Flow builder update", content="Use screen flow for automation."),
     ]

@@ -1,7 +1,6 @@
 import logging
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-import pytest
 import requests
 from automation.core.scraper import ReleaseNotesScraper
 from automation.shared.config import ApplicationConfig
@@ -93,3 +92,11 @@ def test_scraper_fetches_release_notes(mock_client_class: MagicMock) -> None:
 
     assert result == "Page Content"
     mock_client_instance.get.assert_called_once()
+
+
+def test_build_logger_already_has_handlers() -> None:
+    # Chama uma vez para configurar
+    build_logger("already_configured_logger")
+    # Chama a segunda vez para acionar o retorno rápido de handlers existentes
+    logger = build_logger("already_configured_logger")
+    assert logger.name == "already_configured_logger"

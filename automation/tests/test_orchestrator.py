@@ -2,11 +2,11 @@ import sys
 from unittest.mock import MagicMock, patch
 
 # Mock sys.modules['fitz'] antes de importar o código do projeto para evitar erro de importação
-sys.modules['fitz'] = MagicMock()
+sys.modules["fitz"] = MagicMock()
 
-from automation.core.orchestrator import ReleasePipelineOrchestrator
-from automation.core.intelligent_release_pipeline import IntelligentReleasePipeline
-from automation.shared.models import ClassificationResult, ParsedSection
+from automation.core.orchestrator import ReleasePipelineOrchestrator  # noqa: E402
+from automation.core.intelligent_release_pipeline import IntelligentReleasePipeline  # noqa: E402
+from automation.shared.models import ClassificationResult, ParsedSection  # noqa: E402
 
 
 @patch("automation.core.orchestrator.ReleaseNotesScraper")
@@ -85,21 +85,23 @@ def test_intelligent_pipeline_flow(
 def test_orchestrator_main() -> None:
     from pathlib import Path
     from unittest.mock import patch
-    
+
     file_path = "automation/core/orchestrator.py"
     code_text = Path(file_path).read_text(encoding="utf-8")
-    
+
     # Use compile to associate the code with the file for coverage tracking
     code = compile(code_text, file_path, "exec")
-    
+
     global_ns = {
         "__name__": "__main__",
     }
-    
+
     # Mock everything ReleasePipelineOrchestrator uses to avoid side effects
-    with patch("automation.core.orchestrator.ReleaseNotesScraper"), \
-         patch("automation.core.orchestrator.ReleaseNotesParser"), \
-         patch("automation.core.orchestrator.TopicClassifier"), \
-         patch("automation.core.orchestrator.MarkdownArtifactGenerator"), \
-         patch("automation.core.orchestrator.ReadmeUpdater"):
+    with patch("automation.core.orchestrator.ReleaseNotesScraper"), patch(
+        "automation.core.orchestrator.ReleaseNotesParser"
+    ), patch("automation.core.orchestrator.TopicClassifier"), patch(
+        "automation.core.orchestrator.MarkdownArtifactGenerator"
+    ), patch(
+        "automation.core.orchestrator.ReadmeUpdater"
+    ):
         exec(code, global_ns)

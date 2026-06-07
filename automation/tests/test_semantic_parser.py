@@ -29,3 +29,15 @@ def test_semantic_parser_extracts_sections_properly() -> None:
 
     assert sections[2].title == "Ending section"
     assert sections[2].content == "Goodbye"
+
+
+def test_semantic_parser_ignores_non_tag_elements() -> None:
+    from unittest.mock import patch
+
+    parser = SemanticParser()
+
+    with patch("automation.core.semantic_parser.BeautifulSoup.find_all") as mock_find:
+        # Retorna uma string comum (não é instância de Tag)
+        mock_find.return_value = ["this is a text node and not a bs4 Tag"]
+        sections = parser.parse_sections("<html></html>")
+        assert len(sections) == 0

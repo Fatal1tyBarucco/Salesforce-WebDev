@@ -2,10 +2,10 @@ import sys
 from unittest.mock import MagicMock, patch
 
 # Mock sys.modules['fitz'] antes de importar o código do projeto para evitar erro de importação
-sys.modules['fitz'] = MagicMock()
+sys.modules["fitz"] = MagicMock()
 
-from automation.core.pdf_extraction_engine import PdfExtractionEngine
-from automation.strategies.pdf_strategy import PdfStrategy
+from automation.core.pdf_extraction_engine import PdfExtractionEngine  # noqa: E402
+from automation.strategies.pdf_strategy import PdfStrategy  # noqa: E402
 
 
 def test_pdf_strategy_returns_raw_content() -> None:
@@ -20,7 +20,7 @@ def test_pdf_extraction_engine_extracts_text_correctly(mock_fitz: MagicMock) -> 
     mock_page_1.get_text.return_value = "Page 1 Content"
     mock_page_2 = MagicMock()
     mock_page_2.get_text.return_value = "Page 2 Content"
-    
+
     mock_doc.__iter__.return_value = [mock_page_1, mock_page_2]
     mock_fitz.open.return_value = mock_doc
 

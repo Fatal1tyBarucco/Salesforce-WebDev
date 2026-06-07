@@ -1,8 +1,5 @@
-import asyncio
-import runpy
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 from src.main import main, _update_readme
-from src.config import ReleaseInfo
 
 
 @patch("src.main.setup_logging")
@@ -63,7 +60,7 @@ def test_main_execution_scraper_returns_none(
 ) -> None:
     # Simula scraper retornando None ou vazio
     mock_asyncio_run.return_value = None
-    
+
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
@@ -91,13 +88,13 @@ def test_main_execution_exception_handled(
 ) -> None:
     # Simula exception sendo disparada e tratada no loop
     mock_asyncio_run.side_effect = Exception("Scraping error")
-    
+
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
 
     main()
-    
+
     # Nao quebra a execucao global, apenas loga e prossegue
     mock_update_readme.assert_called_once()
 
@@ -107,7 +104,7 @@ def test_update_readme_writes_file() -> None:
     with patch("src.main.Path.write_text") as mock_write_text:
         releases = [("summer_26", ["apex", "lwc"])]
         _update_readme(releases)
-        
+
         mock_write_text.assert_called_once()
         written_content = mock_write_text.call_args[0][0]
         assert "Summer 26" in written_content
@@ -116,23 +113,21 @@ def test_update_readme_writes_file() -> None:
 
 def test_main_entrypoint() -> None:
     from pathlib import Path
-    import sys
     from unittest.mock import patch
 
     file_path = "src/main.py"
     code_text = Path(file_path).read_text(encoding="utf-8")
-    
+
     # Use compile to associate the code with the file for coverage tracking
     code = compile(code_text, file_path, "exec")
-    
+
     global_ns = {
         "__name__": "__main__",
         "__package__": "src",
     }
-    
+
     # Mock everything main() uses to avoid side effects and errors
-    with patch("src.main.SalesforceReleaseScraper"), \
-         patch("src.main.ReleaseNotesParser"), \
-         patch("src.main.MarkdownGenerator"), \
-         patch("src.main.asyncio.run"):
+    with patch("src.main.SalesforceReleaseScraper"), patch("src.main.ReleaseNotesParser"), patch(
+        "src.main.MarkdownGenerator"
+    ), patch("src.main.asyncio.run"):
         exec(code, global_ns)

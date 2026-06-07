@@ -1,11 +1,10 @@
 from bs4 import BeautifulSoup
 from src.parser import ReleaseNotesParser
-from src.config import MONITORED_TOPICS
 
 
 def test_src_parser_extract_article_links() -> None:
     parser = ReleaseNotesParser()
-    
+
     html = """
     <html>
         <body>
@@ -36,9 +35,12 @@ def test_src_parser_build_topic_content_from_links() -> None:
     parser = ReleaseNotesParser()
     topic_links = {
         "apex": [
-            {"url": "https://help.salesforce.com/s/articleView?id=rn_apex_class", "title": "New Apex Class"}
+            {
+                "url": "https://help.salesforce.com/s/articleView?id=rn_apex_class",
+                "title": "New Apex Class",
+            }
         ],
-        "lwc": []
+        "lwc": [],
     }
     soup = BeautifulSoup("", "html.parser")
     content_map = parser.build_topic_content_from_links(topic_links, soup, "Summer '26")
@@ -52,7 +54,7 @@ def test_src_parser_build_topic_content_from_links() -> None:
 
 def test_src_parser_legacy_parse_fallback() -> None:
     parser = ReleaseNotesParser()
-    
+
     html = """
     <html>
         <body>
@@ -70,3 +72,37 @@ def test_src_parser_legacy_parse_fallback() -> None:
     apex_lines = "\n".join(content_map["apex"])
     assert "Apex Trigger Updates" in apex_lines
     assert "Triggers now execute asynchronously" in apex_lines
+
+
+def test_src_parser_legacy_parse_empty_heading_and_clean_text() -> None:
+    parser = ReleaseNotesParser()
+
+    # h1 com "a" é menor que 3 chars limpos -> _clean_text retorna vazio -> set current_section = None
+    html = """
+    <html>
+        <body>
+            <h1>a</h1>
+            <p>Some text</p>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    content_map = parser.parse(soup, "Summer '26")
+    # Não deve haver nada mapeado para apex por causa do heading inválido/curto
+    assert all(len(content_map[key]) == 0 for key in content_map)
+
+
+def test_src_parser_match_link_by_title_keywords() -> None:
+    parser = ReleaseNotesParser()
+
+    # href não casa com padrões, mas título contém keyword "trigger" do Apex
+    href = "/s/articleView?id=release-notes.some_random_id.htm"
+    title = "New Trigger functionalities"
+
+    matched = parser._match_link_to_topic(href, title)
+    assert matched == "apex"
+
+    # Caso em que o link não casa com nada
+    title_unmatched = "Unrelated article name"
+    matched_unmatched = parser._match_link_to_topic(href, title_unmatched)
+    assert matched_unmatched is None
