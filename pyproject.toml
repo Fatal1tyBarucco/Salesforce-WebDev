@@ -9,3 +9,6 @@ strict = true
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning:bs4.*",
+]
