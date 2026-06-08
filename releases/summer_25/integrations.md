@@ -1,7 +1,7 @@
 # Integrações & APIs — Summer '25
 
 > **Release:** Summer '25
-> **Gerado em:** 2026-06-06 02:00 UTC
+> **Gerado em:** 2026-06-08 12:41 UTC
 > **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=256&type=5
 
 ---

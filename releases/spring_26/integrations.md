@@ -1,7 +1,7 @@
 # Integrações & APIs — Spring '26
 
 > **Release:** Spring '26
-> **Gerado em:** 2026-06-06 02:02 UTC
+> **Gerado em:** 2026-06-08 12:42 UTC
 > **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=260&type=5
 
 ---
