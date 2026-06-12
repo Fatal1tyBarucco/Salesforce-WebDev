@@ -9,6 +9,7 @@ This scraper uses a resilient strategy:
 """
 
 import logging
+from types import TracebackType
 from typing import Optional
 
 from playwright.async_api import async_playwright, Browser, Page, Playwright
@@ -35,12 +36,17 @@ class SalesforceReleaseScraper:
         self._playwright: Optional[Playwright] = None
         self._browser: Optional[Browser] = None
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "SalesforceReleaseScraper":
         self._playwright = await async_playwright().start()
         self._browser = await self._playwright.chromium.launch(headless=True)
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         if self._browser:
             await self._browser.close()
         if self._playwright:
@@ -75,7 +81,7 @@ class SalesforceReleaseScraper:
     async def _fetch_with_playwright(self, url: str, page: Optional[Page] = None) -> Optional[str]:
         """Core Playwright fetch logic with resilient wait strategy."""
         is_standalone = page is None
-        
+
         if is_standalone:
             if not self._browser:
                 async with async_playwright() as p:
@@ -86,13 +92,12 @@ class SalesforceReleaseScraper:
                     return content
             else:
                 page = await self._browser.new_page()
-        
+
+        assert page is not None
         try:
             return await self._exec_fetch(url, page)
         finally:
-            if is_standalone and not self._browser:
-                pass # Already handled above
-            elif is_standalone and self._browser:
+            if is_standalone and self._browser and page is not None:
                 await page.close()
 
     async def _exec_fetch(self, url: str, page: Page) -> str:

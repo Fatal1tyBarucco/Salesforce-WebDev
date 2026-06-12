@@ -117,7 +117,7 @@ def test_scraper_fetch_page_success() -> None:
             result = await scraper.fetch_page("https://fake.url")
             assert result is not None
             assert "a" * 1005 in result
-            mock_fetch.assert_called_once_with("https://fake.url")
+            mock_fetch.assert_called_once_with("https://fake.url", None)
 
     asyncio.run(run())
 
@@ -187,29 +187,39 @@ def test_fetch_with_playwright_internal_flow() -> None:
     asyncio.run(run())
 
 
-def test_fetch_with_playwright_selector_exception_and_missing() -> None:
+def test_fetch_with_playwright_context_manager_flow() -> None:
     scraper = SalesforceReleaseScraper()
 
     async def run() -> None:
         mock_browser = AsyncMock()
         mock_page = AsyncMock()
 
-        # Primeiro seletor lança Exception (cobrindo a linha 89-90: except Exception: continue)
-        # Os próximos retornam None (cobrindo a linha 93: No known content selector found)
-        mock_page.query_selector.side_effect = [Exception("Selector error")] + [None] * (
-            len(scraper.CONTENT_SELECTORS) - 1
-        )
-        mock_page.content.return_value = "fallback html"
+        mock_page.content.return_value = "mocked HTML context content" * 50
         mock_browser.new_page.return_value = mock_page
 
         mock_playwright_instance = AsyncMock()
         mock_playwright_instance.chromium.launch.return_value = mock_browser
 
-        with patch("src.scraper.async_playwright") as mock_ap:
-            mock_ap.return_value.__aenter__.return_value = mock_playwright_instance
+        # Configura o mock do async_playwright().start()
+        mock_ap_instance = MagicMock()
+        mock_ap_instance.start = AsyncMock(return_value=mock_playwright_instance)
 
-            result = await scraper._fetch_with_playwright("https://fake.url")
-            assert result == "fallback html"
-            assert mock_page.query_selector.call_count == len(scraper.CONTENT_SELECTORS)
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value = mock_ap_instance
+
+            # Entra no context manager para inicializar _playwright e _browser
+            async with scraper:
+                assert scraper._browser is not None
+                # Chama fetch_page (que chamará _fetch_with_playwright com is_standalone = True e self._browser definido)
+                result = await scraper.fetch_page("https://fake.url")
+                assert result == "mocked HTML context content" * 50
+
+                # Deve abrir uma página a partir do browser já existente
+                mock_browser.new_page.assert_called_once()
+                # Não deve fechar o browser no final do fetch_page individual
+                mock_browser.close.assert_not_called()
+
+            # Fora do context manager, o browser deve ser fechado
+            mock_browser.close.assert_called_once()
 
     asyncio.run(run())

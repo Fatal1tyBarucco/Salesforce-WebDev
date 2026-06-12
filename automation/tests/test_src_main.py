@@ -1,5 +1,9 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, AsyncMock
+import asyncio
 from src.main import main, _update_readme
+from src.config import KNOWN_RELEASES
+
+_original_asyncio_run = asyncio.run
 
 
 @patch("src.main.setup_logging")
@@ -18,8 +22,9 @@ def test_main_execution_success(
 ) -> None:
     # Setup mocks
     scraper_inst = MagicMock()
-    # Retorna HTML mock
-    mock_asyncio_run.return_value = "<html>rendered</html>"
+    scraper_inst.fetch_page = AsyncMock(return_value="<html>rendered</html>")
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
     mock_scraper_class.return_value = scraper_inst
 
     parser_inst = MagicMock()
@@ -31,6 +36,9 @@ def test_main_execution_success(
     generator_inst.list_generated_releases.return_value = [("summer_26", ["apex"])]
     mock_generator_class.return_value = generator_inst
 
+    # Fazer asyncio.run executar a corrotina real
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
+
     # Executa main
     main()
 
@@ -38,10 +46,14 @@ def test_main_execution_success(
     mock_setup_logging.assert_called_once()
     mock_asyncio_run.assert_called()
     parser_inst.extract_article_links.assert_called()
-    parser_inst.build_topic_content_from_links.assert_called()
     generator_inst.generate.assert_called()
+    from src.config import MONITORED_TOPICS
+
+    expected_highlights: dict[str, dict[str, list[dict[str, str]]]] = {
+        release.slug: {topic.slug: [] for topic in MONITORED_TOPICS} for release in KNOWN_RELEASES
+    }
     generator_inst.list_generated_releases.assert_called_once()
-    mock_update_readme.assert_called_once_with([("summer_26", ["apex"])])
+    mock_update_readme.assert_called_once_with([("summer_26", ["apex"])], expected_highlights)
 
 
 @patch("src.main.setup_logging")
@@ -59,11 +71,18 @@ def test_main_execution_scraper_returns_none(
     mock_setup_logging: MagicMock,
 ) -> None:
     # Simula scraper retornando None ou vazio
-    mock_asyncio_run.return_value = None
+    scraper_inst = MagicMock()
+    scraper_inst.fetch_page = AsyncMock(return_value=None)
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
+    mock_scraper_class.return_value = scraper_inst
 
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
+
+    # Fazer asyncio.run executar a corrotina real
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
@@ -87,11 +106,18 @@ def test_main_execution_exception_handled(
     mock_setup_logging: MagicMock,
 ) -> None:
     # Simula exception sendo disparada e tratada no loop
-    mock_asyncio_run.side_effect = Exception("Scraping error")
+    scraper_inst = MagicMock()
+    scraper_inst.fetch_page = AsyncMock(side_effect=Exception("Scraping error"))
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
+    mock_scraper_class.return_value = scraper_inst
 
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
+
+    # Fazer asyncio.run executar a corrotina real
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
@@ -103,12 +129,14 @@ def test_update_readme_writes_file() -> None:
     # Mock do Path.write_text
     with patch("src.main.Path.write_text") as mock_write_text:
         releases = [("summer_26", ["apex", "lwc"])]
-        _update_readme(releases)
+        _update_readme(releases, {})
 
         mock_write_text.assert_called_once()
         written_content = mock_write_text.call_args[0][0]
         assert "Summer 26" in written_content
-        assert "[apex]" in written_content
+        assert "Apex" in written_content
+        assert "CI/CD Status & Conformidade" in written_content
+        assert "banner.png" in written_content
 
 
 def test_main_entrypoint() -> None:

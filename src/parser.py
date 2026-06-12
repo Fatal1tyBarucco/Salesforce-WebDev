@@ -214,16 +214,16 @@ class ReleaseNotesParser:
                 # The next sibling or parahraph usually has the reason
                 next_p = header.find_next("p")
                 if next_p:
-                    return self._clean_text(next_p.get_text())
+                    return ReleaseNotesParser._clean_text(next_p.get_text())
 
         # 2. Fallback: Get the first significant paragraph in the content area
         content_div = soup.select_one("article, #articleViewContent, div.content")
         if content_div:
             paragraphs = content_div.find_all("p")
             for p in paragraphs:
-                text = self._clean_text(p.get_text())
-                if len(text) > 50:
-                    return text
+                cleaned_text = ReleaseNotesParser._clean_text(p.get_text())
+                if len(cleaned_text) > 50:
+                    return cleaned_text
 
         return "Resumo não disponível para este artigo."
 
