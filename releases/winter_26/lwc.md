@@ -1,7 +1,7 @@
 # Lightning Web Components (LWC) — Winter '26
 
 > **Release:** Winter '26
-> **Gerado em:** 2026-06-07 07:08 UTC
+> **Gerado em:** 2026-06-08 12:41 UTC
 > **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=258&type=5
 
 ---
