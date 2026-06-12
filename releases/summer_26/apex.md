@@ -1,8 +1,8 @@
 # Apex — Summer '26
 
 > **Release:** Summer '26
-> **Gerado em:** 2026-06-06 02:03 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=262&type=5
+> **Gerado em:** 2026-06-08 02:24 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=262&type=5&language=pt_BR
 
 ---
 
@@ -10,228 +10,29 @@
 
 
 
-### Feature Articles
+### Atualize o Apex code e os fluxos para alterar o comportamento de...
 
+Para otimizar o desempenho após atualizações em grande escala em grupos ou papéis, o Salesforce agora realiza alguns recálculos de compartilhamento de modo assíncrono. Se o Apex code e os fluxos exigirem que os registros de compartilhamento sejam atualizados imediatamente, o código e os fluxos poderão ser interrompidos quando essa atualização de versão for imposta. Atualize classes, testes e fluxos do Apex que atualizam a associação ao grupo ou papéis se eles dependem de recálculo de compartilhamento síncrono. Essa atualização foi disponibilizada inicialmente na versão Spring '26.
 
 
-- **Batch Management**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_apex_recalc_ru.htm&language=pt_BR&release=262&type=5)
 
-  [Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management.htm&language=en_US&release=262&type=5)
 
 
+### Operações de banco de dados são executadas no modo de usuário por...
 
-- **Changed API Tooling Objects for Batch Management**
+Aproveite um modelo de segurança do Apex aprimorado que protege seus dados através da imposição de acesso em nível de objeto e campo padrão. Operações de banco de dados do Apex, como consultas SOSL e SOQL, instruções DML e métodos de banco de dados, agora são executadas no modo de usuário por padrão. No modo de usuário, as operações de banco de dados aplicam as regras de compartilhamento, a segurança em nível de campo e as permissões de objeto do usuário atual. Em versões anteriores da API, as operações de banco de dados usam como padrão o modo do sistema, o que significa que o usuário atual pode acessar todos os dados independentemente de suas permissões.
 
-  [Changed API Tooling Objects for Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_tooling_api_changes.htm&language=en_US&release=262&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_default_user_mode.htm&language=pt_BR&release=262&type=5)
 
 
-- **Generate Apex Classes for Context Definitions**
 
-  [Generate Apex Classes for Context Definitions](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_flow_with_apex_for_context_definitions.htm&language=en_US&release=262&type=5)
+### Classes do Apex aplicam regras de compartilhamento por padrão
 
+Aproveite um modelo de segurança do Apex aprimorado que protege seus dados por meio da imposição de acesso de registro padrão. Classes do Apex sem uma declaração de compartilhamento explícita agora usam como padrão o modo with sharing, que aplica configurações de compartilhamento para toda a organização e regras de compartilhamento personalizadas. Em versões anteriores da API, classes do Apex sem uma declaração de compartilhamento explícita usam como padrão o modo without sharing, com algumas exceções. O modo without sharing ignora as regras de compartilhamento e permite que o usuário atual acesse todos os registros.
 
 
-- **Update Apex Code and Flows for Changed Sharing Recalculation...**
-
-  [Update Apex Code and Flows for Changed Sharing Recalculation...](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_apex_recalc_ru.htm&language=en_US&release=262&type=5)
-
-
-
-- **Connect to Relational Databases with Batch Ingest and Zero Copy...**
-
-  [Connect to Relational Databases with Batch Ingest and Zero Copy...](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_summer_rdb_connectors_ga.htm&language=en_US&release=262&type=5)
-
-
-
-- **Create Batch Data Transforms by Using Custom Code with Code Extension**
-
-  [Create Batch Data Transforms by Using Custom Code with Code Extension](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_summer_batch_transform_code_extension.htm&language=en_US&release=262&type=5)
-
-
-
-- **Activate Batch DMOs to Strategic Partner Platforms**
-
-  [Activate Batch DMOs to Strategic Partner Platforms](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_summer_activate-batch-dmos-sp-targets.htm&language=en_US&release=262&type=5)
-
-
-
-- **Database Operations Run in User Mode by Default, Not System Mode**
-
-  [Database Operations Run in User Mode by Default, Not System Mode](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_default_user_mode.htm&language=en_US&release=262&type=5)
-
-
-
-- **Apex Classes Enforce Sharing Rules by Default**
-
-  [Apex Classes Enforce Sharing Rules by Default](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_default_enforce_sharing.htm&language=en_US&release=262&type=5)
-
-
-
-- **The WITH SECURITY_ENFORCED SOQL Clause is Removed**
-
-  [The WITH SECURITY_ENFORCED SOQL Clause is Removed](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_removed_withSecurityEnforced.htm&language=en_US&release=262&type=5)
-
-
-
-- **Apex Triggers Always Run in a “without sharing” Context**
-
-  [Apex Triggers Always Run in a “without sharing” Context](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_triggers_system_mode.htm&language=en_US&release=262&type=5)
-
-
-
-- **Write Integration Tests for Agentforce and Data 360 in Apex...**
-
-  [Write Integration Tests for Agentforce and Data 360 in Apex...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_integrations_testing.htm&language=en_US&release=262&type=5)
-
-
-
-- **Avoid Workflow Disruptions by Enabling Elastic Limits for...**
-
-  [Avoid Workflow Disruptions by Enabling Elastic Limits for...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_elastic_async_limit.htm&language=en_US&release=262&type=5)
-
-
-
-- **Block Apex Anonymous Code Execution from Managed Packages (Release...**
-
-  [Block Apex Anonymous Code Execution from Managed Packages (Release...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_block_exec_anon_ru.htm&language=en_US&release=262&type=5)
-
-
-
-- **Write Cleaner Code by Using Multiline Strings**
-
-  [Write Cleaner Code by Using Multiline Strings](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&language=en_US&release=262&type=5)
-
-
-
-- **Work with Apex Code in Web Console (Beta)**
-
-  [Work with Apex Code in Web Console (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_webconsole.htm&language=en_US&release=262&type=5)
-
-
-
-- **Get Key Apex Metrics in Setup with Agentforce (Beta)**
-
-  [Get Key Apex Metrics in Setup with Agentforce (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_agentic_setup.htm&language=en_US&release=262&type=5)
-
-
-
-- **Use Visualforce PDF Rendering Service with Apex Blob.toPdf()...**
-
-  [Use Visualforce PDF Rendering Service with Apex Blob.toPdf()...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_system_blob_topdf.htm&language=en_US&release=262&type=5)
-
-
-
-- **Customize Apex Action Configuration in Flow Builder**
-
-  [Customize Apex Action Configuration in Flow Builder](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_invocableactionextension_metadata_enhancements.htm&language=en_US&release=262&type=5)
-
-
-
-- **Provide Visible No-Argument Constructors for Custom Apex Classes...**
-
-  [Provide Visible No-Argument Constructors for Custom Apex Classes...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_constructor_visibility_invocable_custom_classes_v66.htm&language=en_US&release=262&type=5)
-
-
-
-- **Optimize Code with ApexGuru**
-
-  [Optimize Code with ApexGuru](https://help.salesforce.com/s/articleView?id=release-notes.rn_apexguru.htm&language=en_US&release=262&type=5)
-
-
-
-- **Apex: New and Changed Items**
-
-  [Apex: New and Changed Items](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_nc)
-
-
-
-- **ConnectApi Namespace**
-
-  [ConnectApi Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_connectapi_namespace)
-
-
-
-- **Context Namespace**
-
-  [Context Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_Context_namespace)
-
-
-
-- **DocumentAI Namespace**
-
-  [DocumentAI Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_documentai)
-
-
-
-- **hlthcrbilling Namespace**
-
-  [hlthcrbilling Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_hlthcrbilling)
-
-
-
-- **Invocable Namespace**
-
-  [Invocable Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_invocable_namespace)
-
-
-
-- **CommercePayments Namespace**
-
-  [CommercePayments Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_commerce_payments_namespace)
-
-
-
-- **System Namespace**
-
-  [System Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=262&type=5#rn_apex_system_namespace)
-
-
-
-- **ConnectApi (Connect in Apex): New and Changed Classes and Enums**
-
-  [ConnectApi (Connect in Apex): New and Changed Classes and Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex.htm&language=en_US&release=262&type=5)
-
-
-
-- **New Connect in Apex Classes**
-
-  [New Connect in Apex Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_classes.htm&language=en_US&release=262&type=5)
-
-
-
-- **Changed Connect in Apex Output Classes**
-
-  [Changed Connect in Apex Output Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_output_classes.htm&language=en_US&release=262&type=5)
-
-
-
-- **Changed Connect in Apex Enums**
-
-  [Changed Connect in Apex Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_enums.htm&language=en_US&release=262&type=5)
-
-
-
-- **Automate High-Volume Document Extraction Using a Batch Template**
-
-  [Automate High-Volume Document Extraction Using a Batch Template](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_document_ai_batch_processing_template.htm&language=en_US&release=262&type=5)
-
-
-
-- **Customize and Automate Approval Actions with Flow and Apex**
-
-  [Customize and Automate Approval Actions with Flow and Apex](https://help.salesforce.com/s/articleView?id=release-notes.rn_adv_approvals_customise_approval_actions_in_flows_and_apex.htm&language=en_US&release=262&type=5)
-
-
-
-- **Stream Invoices Faster with Upgraded Invoice Batch Runs**
-
-  [Stream Invoices Faster with Upgraded Invoice Batch Runs](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_generate_invoices_faster_with_upgraded_invoice_batch_runs.htm&language=en_US&release=262&type=5)
-
-
-
-- **Send Level 2 and Level 3 Data for Payments Made Through Apex Adapters**
-
-  [Send Level 2 and Level 3 Data for Payments Made Through Apex Adapters](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_send_l2_l3_data.htm&language=en_US&release=262&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_default_enforce_sharing.htm&language=pt_BR&release=262&type=5)
 
 

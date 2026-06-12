@@ -11,7 +11,7 @@ This scraper uses a resilient strategy:
 import logging
 from typing import Optional
 
-from playwright.async_api import async_playwright, Browser, Page
+from playwright.async_api import async_playwright, Browser, Page, Playwright
 
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS
 
@@ -31,13 +31,28 @@ class SalesforceReleaseScraper:
         "main",
     ]
 
-    async def fetch_page(self, url: str) -> Optional[str]:
+    def __init__(self) -> None:
+        self._playwright: Optional[Playwright] = None
+        self._browser: Optional[Browser] = None
+
+    async def __aenter__(self):
+        self._playwright = await async_playwright().start()
+        self._browser = await self._playwright.chromium.launch(headless=True)
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self._browser:
+            await self._browser.close()
+        if self._playwright:
+            await self._playwright.stop()
+
+    async def fetch_page(self, url: str, page: Optional[Page] = None) -> Optional[str]:
         """Fetches the fully rendered HTML content for a given URL."""
-        logger.info("Fetching URL with Playwright: %s", url)
+        logger.info("Fetching URL: %s", url)
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
-                html_content = await self._fetch_with_playwright(url)
+                html_content = await self._fetch_with_playwright(url, page)
                 if html_content and len(html_content) > 1000:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
@@ -57,42 +72,44 @@ class SalesforceReleaseScraper:
         logger.error("All %d attempts failed for %s", MAX_RETRY_ATTEMPTS, url)
         return None
 
-    async def _fetch_with_playwright(self, url: str) -> Optional[str]:
+    async def _fetch_with_playwright(self, url: str, page: Optional[Page] = None) -> Optional[str]:
         """Core Playwright fetch logic with resilient wait strategy."""
-        async with async_playwright() as p:
-            browser: Browser = await p.chromium.launch(headless=True)
-            page: Page = await browser.new_page()
+        is_standalone = page is None
+        
+        if is_standalone:
+            if not self._browser:
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=True)
+                    page = await browser.new_page()
+                    content = await self._exec_fetch(url, page)
+                    await browser.close()
+                    return content
+            else:
+                page = await self._browser.new_page()
+        
+        try:
+            return await self._exec_fetch(url, page)
+        finally:
+            if is_standalone and not self._browser:
+                pass # Already handled above
+            elif is_standalone and self._browser:
+                await page.close()
 
-            # Step 1: Navigate with domcontentloaded (not networkidle)
-            await page.goto(
-                url,
-                wait_until="domcontentloaded",
-                timeout=REQUEST_TIMEOUT_SECONDS * 1000,
-            )
+    async def _exec_fetch(self, url: str, page: Page) -> str:
+        """Internal execution of fetch logic on a provided page object."""
+        # Step 1: Navigate with domcontentloaded
+        await page.goto(
+            url,
+            wait_until="domcontentloaded",
+            timeout=REQUEST_TIMEOUT_SECONDS * 1000,
+        )
 
-            # Step 2: Wait for JS rendering
-            await page.wait_for_timeout(5000)
+        # Step 2: Wait for JS rendering
+        await page.wait_for_timeout(5000)
 
-            # Step 3: Scroll to trigger lazy content
-            await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            await page.wait_for_timeout(2000)
+        # Step 3: Scroll to trigger lazy content
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(2000)
 
-            # Step 4: Try content selectors
-            content_found = False
-            for selector in self.CONTENT_SELECTORS:
-                try:
-                    element = await page.query_selector(selector)
-                    if element:
-                        logger.info("Found content selector: %s", selector)
-                        content_found = True
-                        break
-                except Exception:
-                    continue
-
-            if not content_found:
-                logger.warning("No known content selector found — extracting full page body")
-
-            # Step 5: Extract content
-            html_content: str = await page.content()
-            await browser.close()
-            return html_content
+        # Step 4: Extract content
+        return await page.content()

@@ -13,11 +13,14 @@ TopicContentMap = dict[str, list[str]]
 # Constantes Globais
 # ---------------------------------------------------------------------------
 
+PT_BR_PARAM: Final[str] = "&language=pt_BR"
+
 BASE_URL: Final[str] = (
     "https://help.salesforce.com/s/articleView"
     "?id=release-notes.salesforce_release_notes.htm"
     "&release={release_id}"
     "&type=5"
+    f"{PT_BR_PARAM}"
 )
 
 REQUEST_TIMEOUT_SECONDS: Final[int] = 30

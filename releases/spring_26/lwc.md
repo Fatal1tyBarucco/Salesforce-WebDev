@@ -1,8 +1,8 @@
 # Lightning Web Components (LWC) — Spring '26
 
 > **Release:** Spring '26
-> **Gerado em:** 2026-06-06 02:02 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=260&type=5
+> **Gerado em:** 2026-06-08 02:18 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=260&type=5&language=pt_BR
 
 ---
 
@@ -10,126 +10,29 @@
 
 
 
-### Feature Articles
+### Componentes do Aura em fluxos do Salesforce Scheduler estão...
 
+Os componentes do Aura em fluxos do Salesforce Scheduler estão agendados para descontinuação em 14 de fevereiro de 2027. Você pode continuar usando os componentes do Aura até essa data, mas recomendamos a transição para sites do LWR para fluxos de agendamento modernizados.
 
 
-- **Aura Components in Salesforce Scheduler Flows Are Scheduled for...**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_aura_components_in_scheduler_retirement.htm&language=pt_BR&release=260&type=5)
 
-  [Aura Components in Salesforce Scheduler Flows Are Scheduled for...](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_aura_components_in_scheduler_retirement.htm&language=en_US&release=260&type=5)
 
 
+### Integre componentes da Web Lightning personalizados em painéis para...
 
-- **Embed Custom Lightning Web Components in Dashboards for Interactive...**
+Adicione componentes da Web Lightning (LWC) personalizados diretamente aos painéis do Lightning para criar visualizações de dados interativas em tempo real que vão além das funcionalidades padrão do painel. Filtre, explore e aja com base em dados imediatamente sem sair do painel. Por exemplo, um analista de negócios pode usar um LWC personalizado para exibir um gráfico de cascata ou outras visualizações que não estejam disponíveis em painéis padrão.
 
-  [Embed Custom Lightning Web Components in Dashboards for Interactive...](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_embed_lwc_in_dashboards.htm&language=en_US&release=260&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_embed_lwc_in_dashboards.htm&language=pt_BR&release=260&type=5)
 
 
-- **LWC API Version 66.0**
 
-  [LWC API Version 66.0](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=en_US&release=260&type=5)
+### API versão 66.0 do LWC
 
+Atualize a versão da API de seus componentes para usar novos recursos e melhorias. A versão dos componentes da Web Lightning garante que os componentes existentes não sejam afetados quando o Salesforce envia novos recursos, correções de bugs e melhorias de desempenho que alteram o comportamento existente. O controle de versões também ajuda o Salesforce a descontinuar os recursos legados.
 
 
-- **Use Complex Template Expressions in Your Lightning Web Components...**
-
-  [Use Complex Template Expressions in Your Lightning Web Components...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_cte.htm&language=en_US&release=260&type=5)
-
-
-
-- **Lightning Component Library Is Retiring**
-
-  [Lightning Component Library Is Retiring](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_component_library_retirement.htm&language=en_US&release=260&type=5)
-
-
-
-- **Get Complete Type Definitions for Lightning Base Components**
-
-  [Get Complete Type Definitions for Lightning Base Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_ts_support_bc.htm&language=en_US&release=260&type=5)
-
-
-
-- **Update Your Custom Components for Use in Setup with Agentforce (Beta)**
-
-  [Update Your Custom Components for Use in Setup with Agentforce (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_aura_ai_descriptions.htm&language=en_US&release=260&type=5)
-
-
-
-- **Check For Errors From the Disconnected DOM Node Rehydration Fix**
-
-  [Check For Errors From the Disconnected DOM Node Rehydration Fix](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_rehydration.htm&language=en_US&release=260&type=5)
-
-
-
-- **Local Dev is Now Live Preview**
-
-  [Local Dev is Now Live Preview](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_live_preview.htm&language=en_US&release=260&type=5)
-
-
-
-- **Preview a Single Lightning Web Component in Your Browser (Generally...**
-
-  [Preview a Single Lightning Web Component in Your Browser (Generally...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_single_component.htm&language=en_US&release=260&type=5)
-
-
-
-- **Work with More MCP Tools for LWC Development (Beta)**
-
-  [Work with More MCP Tools for LWC Development (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_mcp_tools.htm&language=en_US&release=260&type=5)
-
-
-
-- **New and Changed Lightning Web Components**
-
-  [New and Changed Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=en_US&release=260&type=5)
-
-
-
-- **New and Changed Modules for Lightning Web Components**
-
-  [New and Changed Modules for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=en_US&release=260&type=5)
-
-
-
-- **New Targets for Lightning Web Components**
-
-  [New Targets for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_targets.htm&language=en_US&release=260&type=5)
-
-
-
-- **New and Changed Directives for Lightning Web Components**
-
-  [New and Changed Directives for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_directives.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Aura Components**
-
-  [Changed Aura Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_components.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Aura Component Events**
-
-  [Changed Aura Component Events](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_events.htm&language=en_US&release=260&type=5)
-
-
-
-- **Aura and LWR Sites**
-
-  [Aura and LWR Sites](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_builder_sites.htm&language=en_US&release=260&type=5)
-
-
-
-- **Use Dynamic Redirect Rules in Aura Sites**
-
-  [Use Dynamic Redirect Rules in Aura Sites](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_aura_redirect.htm&language=en_US&release=260&type=5)
-
-
-
-- **Access Configurator API More Easily by Using a Lightning Web Component**
-
-  [Access Configurator API More Easily by Using a Lightning Web Component](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_configurator_config_api_lwc.htm&language=en_US&release=260&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=pt_BR&release=260&type=5)
 
 

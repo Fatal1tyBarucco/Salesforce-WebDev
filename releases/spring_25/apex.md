@@ -1,7 +1,7 @@
 # Apex — Spring '25
 
 > **Release:** Spring '25
-> **Gerado em:** 2026-06-06 01:59 UTC
+> **Gerado em:** 2026-06-07 07:06 UTC
 > **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=254&type=5
 
 ---

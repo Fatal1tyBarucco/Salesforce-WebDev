@@ -3,17 +3,18 @@
 Strategy:
   1. Fetch the release notes index page for each release via Playwright
   2. Parse the index page to discover article links grouped by topic
-  3. Build markdown artifacts from the index summaries + article links
-  4. Update README with dynamic release index
+  3. Build markdown artifacts with deep-scraped summaries (pt-BR)
+  4. Update README with dynamic release index and top highlights
 """
 
 import asyncio
 import logging
 from pathlib import Path
+from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 
-from .config import BASE_URL, KNOWN_RELEASES, RELEASES_DIR
+from .config import BASE_URL, KNOWN_RELEASES, MONITORED_TOPICS, RELEASES_DIR
 from .generator import MarkdownGenerator
 from .logger import setup_logging
 from .parser import ReleaseNotesParser
@@ -22,63 +23,126 @@ from .scraper import SalesforceReleaseScraper
 logger = logging.getLogger(__name__)
 
 
-def main() -> None:
-    """Orquestra a extração a partir do Salesforce Help (web scraping)."""
+async def run_pipeline():
+    """Versão assíncrona do orquestrador para suportar deep scraping e resumos pt-BR."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction from web.")
+    logger.info("Starting Salesforce Release Notes extraction with Deep Scraping (pt-BR).")
 
     scraper = SalesforceReleaseScraper()
     parser = ReleaseNotesParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
 
-    for release in KNOWN_RELEASES:
-        logger.info("Processando release: %s", release.name)
-        try:
-            url = BASE_URL.format(release_id=release.release_id)
-            logger.info("Index URL: %s", url)
+    all_highlights: Dict[str, List[Dict[str, str]]] = {}
 
-            html_content = asyncio.run(scraper.fetch_page(url))
-            if not html_content:
-                logger.warning("Sem conteúdo para %s — pulando.", release.name)
-                continue
+    async with scraper:
+        # Processar todas as releases conhecidas
+        for release in KNOWN_RELEASES:
+            logger.info("Processando release: %s", release.name)
+            highlights: List[Dict[str, str]] = []
+            try:
+                url = BASE_URL.format(release_id=release.release_id)
+                logger.info("Index URL: %s", url)
 
-            soup = BeautifulSoup(html_content, "lxml")
+                html_index = await scraper.fetch_page(url)
+                if not html_index:
+                    logger.warning("Sem conteúdo para %s", release.name)
+                    continue
 
-            # Extract article links grouped by topic
-            topic_links = parser.extract_article_links(soup, release.name)
+                soup_index = BeautifulSoup(html_index, "lxml")
+                topic_links = parser.extract_article_links(soup_index, release.name)
 
-            # Build content from index links (fast approach — no individual article fetch)
-            content_map = parser.build_topic_content_from_links(topic_links, soup, release.name)
+                content_map = {topic.slug: [] for topic in MONITORED_TOPICS}
 
-            # Generate markdown artifacts
-            generator.generate(release, content_map, source_url=url)
+                for topic in MONITORED_TOPICS:
+                    articles = topic_links.get(topic.slug, [])
+                    if not articles:
+                        continue
 
-        except Exception as e:
-            logger.exception("Erro ao processar %s: %s", release.name, e)
+                    content_map[topic.slug].append(f"## {topic.display_name} — {release.name}")
+                    content_map[topic.slug].append("")
 
-    # Update README with generated releases
+                    # Limite de artigos por tópico para equilíbrio entre profundidade e tempo
+                    limit = 8
+                    for article in articles[:limit]:
+                        logger.info("Deep scraping [%s]: %s", topic.display_name, article['title'])
+                        
+                        # Forçar pt-BR no link
+                        article_url = article['url']
+                        if "language=pt_BR" not in article_url:
+                            sep = "&" if "?" in article_url else "?"
+                            article_url += f"{sep}language=pt_BR"
+                        
+                        html_article = await scraper.fetch_page(article_url)
+                        summary = "Resumo não disponível."
+                        if html_article:
+                            soup_article = BeautifulSoup(html_article, "lxml")
+                            summary = parser.extract_article_summary(soup_article)
+
+                        # Adicionar aos destaques da release (apenas os primeiros 5 globais)
+                        if len(highlights) < 5:
+                            highlights.append({
+                                "title": article['title'],
+                                "summary": summary,
+                                "url": article_url,
+                                "topic": topic.display_name
+                            })
+
+                        content_map[topic.slug].append(f"### {article['title']}")
+                        content_map[topic.slug].append(f"{summary}")
+                        content_map[topic.slug].append(f"\n[🔗 Leia mais no conteúdo original]({article_url})")
+                        content_map[topic.slug].append("")
+
+                all_highlights[release.slug] = highlights
+                generator.generate(release, content_map, source_url=url)
+
+            except Exception as e:
+                logger.exception("Erro ao processar %s: %s", release.name, e)
+
     releases_list = generator.list_generated_releases()
-    _update_readme(releases_list)
+    _update_readme(releases_list, all_highlights)
 
 
-def _update_readme(releases: list[tuple[str, list[str]]]) -> None:
-    """Atualiza o README.md com um índice dinâmico."""
+def main() -> None:
+    """Entrypoint do script."""
+    asyncio.run(run_pipeline())
+
+
+def _update_readme(releases: List[tuple[str, List[str]]], highlights: Dict[str, List[Dict[str, str]]]) -> None:
+    """Atualiza o README.md com um índice dinâmico e destaques em português."""
     readme_path = Path("README.md")
-    index_lines = [
-        "# Salesforce Release Notes Knowledge Base\n",
-        "Este repositório armazena as notas de versão extraídas automaticamente "
-        "do Salesforce Help.\n",
-        "## 📋 Releases Disponíveis\n",
+    
+    # Header e Introdução
+    content = [
+        "# 🚀 Salesforce Release Intelligence\n\n",
+        "Pipeline automatizado para extrair, classificar e resumir as Salesforce Release Notes. "
+        "Focado em entregar conhecimento técnico estruturado em português.\n\n"
     ]
-    for release_slug, topics in sorted(releases, reverse=True):
-        release_dir = f"./releases/{release_slug}/"
-        index_lines.append(f"### {release_slug.replace('_', ' ').title()}\n")
-        for topic in topics:
-            index_lines.append(f"- [{topic}]({release_dir}{topic}.md)\n")
-        index_lines.append("")
 
-    readme_path.write_text("".join(index_lines), encoding="utf-8")
-    logger.info("README.md atualizado com índice.")
+    # Destaques (Highlights) - Seção opcional baseada na execução atual
+    if highlights:
+        content.append("## 🌟 Destaques das Releases Processadas (pt-BR)\n\n")
+        for slug in sorted(highlights.keys(), reverse=True):
+            items = highlights[slug]
+            if not items:
+                continue
+                
+            content.append(f"### 🔥 {slug.replace('_', ' ').title()}\n\n")
+            for item in items:
+                content.append(f"- **{item['title']}** ({item['topic']})\n")
+                content.append(f"  {item['summary'][:300]}...\n")
+                content.append(f"  [Leia mais]({item['url']})\n\n")
+
+    # Índice Geral
+    content.append("## 📋 Arquivo Completo de Notas\n\n")
+    for release_slug, topics in sorted(releases, reverse=True):
+        release_name = release_slug.replace('_', ' ').title()
+        content.append(f"### {release_name}\n")
+        for topic in topics:
+            content.append(f"- [{topic.upper()}](./releases/{release_slug}/{topic}.md)\n")
+        content.append("")
+
+    readme_path.write_text("".join(content), encoding="utf-8")
+    logger.info("README.md atualizado com sucesso.")
 
 
 if __name__ == "__main__":

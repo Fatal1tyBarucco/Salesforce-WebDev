@@ -202,6 +202,31 @@ class ReleaseNotesParser:
 
         return matched
 
+    def extract_article_summary(self, soup: BeautifulSoup) -> str:
+        """
+        Extracts a concise summary from an article page.
+        Looks for 'Why' and 'How' sections or the first significant paragraph.
+        """
+        # 1. Try to find "Why" or "How" sections specifically
+        for header in soup.find_all(["h2", "h3", "p", "strong"]):
+            text = header.get_text().strip().lower()
+            if text in ["por que essa alteração é importante", "why", "por que"]:
+                # The next sibling or parahraph usually has the reason
+                next_p = header.find_next("p")
+                if next_p:
+                    return self._clean_text(next_p.get_text())
+
+        # 2. Fallback: Get the first significant paragraph in the content area
+        content_div = soup.select_one("article, #articleViewContent, div.content")
+        if content_div:
+            paragraphs = content_div.find_all("p")
+            for p in paragraphs:
+                text = self._clean_text(p.get_text())
+                if len(text) > 50:
+                    return text
+
+        return "Resumo não disponível para este artigo."
+
     def _match_link_to_topic(self, href: str, title: str) -> str | None:
         """Match an article link to a topic using URL patterns and title keywords."""
         href_lower = href.lower()
