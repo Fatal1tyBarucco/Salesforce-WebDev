@@ -1,8 +1,8 @@
 # Lightning Web Components (LWC) — Summer '25
 
 > **Release:** Summer '25
-> **Gerado em:** 2026-06-08 12:41 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=256&type=5
+> **Gerado em:** 2026-06-12 21:02 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=256&type=5&language=pt_BR
 
 ---
 
@@ -10,102 +10,74 @@
 
 
 
-### Feature Articles
+### API versão 64.0 do LWC
 
+Atualize a versão da API de seus componentes para usar novos recursos e melhorias. A versão dos componentes da Web Lightning garante que os componentes existentes não sejam afetados quando o Salesforce envia novos recursos, correções de bugs e melhorias de desempenho que alteram o comportamento existente. O controle de versões também ajuda o Salesforce a descontinuar os recursos legados.
 
 
-- **LWC API Version 64.0**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=pt_BR&release=256&type=5#rn_lwc_versioning)
 
-  [LWC API Version 64.0](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=en_US&release=256&type=5#rn_lwc_versioning)
 
 
+### Visualizar um único componente da Web Lightning usando um...
 
-- **Preview a Single Lightning Web Component Using Local Dev (Beta)**
+Agora você pode configurar o Desenvolvedor local para executar uma visualização em tempo real de um único componente da Web Lightning. Antes, era preciso publicar um componente em uma organização para visualizá-lo usando o desenvolvedor local.
 
-  [Preview a Single Lightning Web Component Using Local Dev (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_single_component_preview.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_single_component_preview.htm&language=pt_BR&release=256&type=5)
 
 
-- **The Local Development Server Is Being Retired**
 
-  [The Local Development Server Is Being Retired](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_local_development_server.htm&language=en_US&release=256&type=5)
+### O servidor de desenvolvimento local está sendo descontinuado
 
+A descontinuação do servidor de desenvolvimento local está agendada para 5 de setembro de 2025. Para continuar testando seus componentes da Web Lightning em uma visualização em tempo real do navegador, migre para a nova experiência de desenvolvedor local. Com o Desenvolvedor local, você pode visualizar seus componentes da Web Lightning isoladamente ou em um aplicativo Lightning ou site do Lightning Web Runtime do Experience Cloud.
 
 
-- **Migrate Lightning Web Components Projects to ESLint v9 Before Spring...**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_local_development_server.htm&language=pt_BR&release=256&type=5)
 
-  [Migrate Lightning Web Components Projects to ESLint v9 Before Spring...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_eslint9.htm&language=en_US&release=256&type=5)
 
 
+### Migrar projetos de componentes da Web Lightning para o ESLint v9...
 
-- **Use TypeScript with Lightning Base Components**
+Para ajudá-lo a escrever JavaScript mais consistente e moderno para seus componentes, o Lightning Web Components agora oferece suporte ao ESLint v9. Esta versão introduz desempenho aprimorado, gerenciamento de regras aprimorado e gerenciamento de plug-ins aprimorado. Recomendamos que você atualize para a v9 antes da versão Spring '26 porque planejamos encerrar o suporte para o ESLint v8 na versão Winter '26.
 
-  [Use TypeScript with Lightning Base Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_ts_support_bc.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_eslint9.htm&language=pt_BR&release=256&type=5)
 
 
-- **New and Changed Lightning Web Components**
 
-  [New and Changed Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=en_US&release=256&type=5)
+### Usar TypeScript com componentes de base do Lightning
 
+Melhorar a experiência de desenvolvimento do LWC usando as definições de tipo para componentes de base do Lightning. O TypeScript for LWC está na visualização para desenvolvedores e tem várias limitações.
 
 
-- **Changed Modules for Lightning Web Components**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_ts_support_bc.htm&language=pt_BR&release=256&type=5)
 
-  [Changed Modules for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=en_US&release=256&type=5)
 
 
+### Componentes da Web do Lightning novos e alterados
 
-- **New Targets for Lightning Web Components**
+Crie a interface do usuário facilmente com componentes novos e alterados.
 
-  [New Targets for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_targets.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=pt_BR&release=256&type=5)
 
 
-- **New and Changed Aura Components**
 
-  [New and Changed Aura Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_components.htm&language=en_US&release=256&type=5)
+### Módulos alterados para Componentes da Web Lightning
 
+Resumo não disponível para este artigo.
 
 
-- **Aura and LWR Sites**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=pt_BR&release=256&type=5)
 
-  [Aura and LWR Sites](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_builder_sites.htm&language=en_US&release=256&type=5)
 
 
+### Novas metas para componentes da Web Lightning
 
-- **Aura Record Field Information Icons in Experience Builder Sites Have...**
+Resumo não disponível para este artigo.
 
-  [Aura Record Field Information Icons in Experience Builder Sites Have...](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_builder_aura_info_icons.htm&language=en_US&release=256&type=5)
 
-
-
-- **Use the File Upload Enhanced Lightning Web Component with Aura and...**
-
-  [Use the File Upload Enhanced Lightning Web Component with Aura and...](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_file_upload_enhanced_beta.htm&language=en_US&release=256&type=5)
-
-
-
-- **Enable a Modernized Record Experience in Aura Sites (Release Update)**
-
-  [Enable a Modernized Record Experience in Aura Sites (Release Update)](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_record_components.htm&language=en_US&release=256&type=5)
-
-
-
-- **Verify Sender Email Addresses for New Aura and LWR Sites**
-
-  [Verify Sender Email Addresses for New Aura and LWR Sites](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_verify_sender_email.htm&language=en_US&release=256&type=5)
-
-
-
-- **Customize Consumer Goods Cloud Mobile App Faster with LWC Quick...**
-
-  [Customize Consumer Goods Cloud Mobile App Faster with LWC Quick...](https://help.salesforce.com/s/articleView?id=release-notes.rn_retail_cg_app_hybrid_lwc_qa.htm&language=en_US&release=256&type=5)
-
-
-
-- **Streamline Deployment of Industries CPQ in LWC with Omnistudio for...**
-
-  [Streamline Deployment of Industries CPQ in LWC with Omnistudio for...](https://help.salesforce.com/s/articleView?id=release-notes.rn_streamline_deployment_of_industries_cpq_in_lwc_with_omnistudio_for_managed_packages.htm&language=en_US&release=256&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_targets.htm&language=pt_BR&release=256&type=5)
 
 

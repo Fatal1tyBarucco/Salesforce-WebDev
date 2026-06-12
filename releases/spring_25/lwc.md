@@ -1,8 +1,8 @@
 # Lightning Web Components (LWC) — Spring '25
 
 > **Release:** Spring '25
-> **Gerado em:** 2026-06-08 12:41 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=254&type=5
+> **Gerado em:** 2026-06-12 20:52 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=254&type=5&language=pt_BR
 
 ---
 
@@ -10,84 +10,74 @@
 
 
 
-### Feature Articles
+### Enable LWC Stacked Modals (Release Update)
+
+Como parte da migração interna do Salesforce do Aura para LWC, mais modais no Lightning Experience agora são renderizados usando o LWC. Essa atualização fornece desempenho aprimorado, especialmente ao trabalhar com inúmeros campos em um modal de criação ou edição de registro. Agora você também pode usar Formulários dinâmicos em um modal aberto de um campo Criar da pesquisa na maioria das páginas de registro habilitadas para LWC. Quando você habilita essa atualização, espere pequenas mudanças no comportamento do modal. Essa atualização foi disponibilizada inicialmente na versão Summer '24.
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_lwc_modals.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **Enable LWC Stacked Modals (Release Update)**
+### LWC API Version 63.0
 
-  [Enable LWC Stacked Modals (Release Update)](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_lwc_modals.htm&language=en_US&release=254&type=5)
+Atualize a versão da API de seus componentes para usar novos recursos e melhorias. A versão dos componentes da Web Lightning garante que os componentes existentes não sejam afetados quando o Salesforce envia novos recursos, correções de bugs e melhorias de desempenho que alteram o comportamento existente. O controle de versões também ajuda o Salesforce a descontinuar os recursos legados.
 
 
-
-- **LWC API Version 63.0**
-
-  [LWC API Version 63.0](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=en_US&release=254&type=5#rn_lwc_versioning)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=pt_BR&release=254&type=5#rn_lwc_versioning)
 
 
 
-- **Custom Components Must Specify an API Version**
+### Custom Components Must Specify an API Version
 
-  [Custom Components Must Specify an API Version](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_api_version_required.htm&language=en_US&release=254&type=5)
+A chave apiVersion é um elemento obrigatório para todos os componentes personalizados. Componentes personalizados que foram salvos antes sem uma chave apiVersion no arquivo de ajustes do componente .js-meta.xml têm uma chave apiVersion adicionada ao arquivo de ajustes automaticamente quando o componente é recuperado do Salesforce.
 
 
-
-- **Wire Adapters Have Improved Type Checking**
-
-  [Wire Adapters Have Improved Type Checking](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_wire_type_check.htm&language=en_US&release=254&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_api_version_required.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **Update JavaScript Selectors to Remove Extra Whitespace**
+### Wire Adapters Have Improved Type Checking
 
-  [Update JavaScript Selectors to Remove Extra Whitespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_style_class.htm&language=en_US&release=254&type=5)
+A partir da versão Spring '25, os usuários do TypeScript terão uma melhor verificação de tipo de configuração de @wire e valores de propriedade. A verificação de tipo também resolve propriedades reativas para o tipo usado pelo componente. Por exemplo, uma string que começa com $ como $reactiveProp.
 
 
-
-- **Develop Lightning Web Components Faster in a Real-Time Preview of...**
-
-  [Develop Lightning Web Components Faster in a Real-Time Preview of...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_local_dev.htm&language=en_US&release=254&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_wire_type_check.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **New and Changed Lightning Web Components**
+### Update JavaScript Selectors to Remove Extra Whitespace
 
-  [New and Changed Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=en_US&release=254&type=5)
+Revise seus seletores JavaScript para ignorar espaços em branco (espaços, guias etc.). Essa alteração elimina inconsistências na renderização de espaço em branco extra.
 
 
-
-- **New and Changed Modules for Lightning Web Components**
-
-  [New and Changed Modules for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=en_US&release=254&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_style_class.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **Changed Targets for Lightning Web Components**
+### Develop Lightning Web Components Faster in a Real-Time Preview of...
 
-  [Changed Targets for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_targets.htm&language=en_US&release=254&type=5)
+O Desenvolvedor local agora está disponível ao público em geral para aplicativos Lightning. Fizemos algumas alterações desde a versão beta. Ao usar o Local Dev, você pode desenvolver seus componentes da Web Lightning em uma visualização em tempo real do aplicativo Lightning sem implementar código nem atualizar manualmente o navegador. O desenvolvedor local está em beta para sites do Lightning Web Runtime.
 
 
-
-- **New and Changed Aura Components**
-
-  [New and Changed Aura Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_components.htm&language=en_US&release=254&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_local_dev.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **Aura and LWR Sites**
+### New and Changed Lightning Web Components
 
-  [Aura and LWR Sites](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_builder_sites.htm&language=en_US&release=254&type=5)
+Crie a interface do usuário facilmente com componentes novos e alterados.
 
 
-
-- **Enable a Modernized Record Experience in Aura Sites (Release Update)**
-
-  [Enable a Modernized Record Experience in Aura Sites (Release Update)](https://help.salesforce.com/s/articleView?id=release-notes.rn_experiences_record_components.htm&language=en_US&release=254&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=pt_BR&release=254&type=5)
 
 
 
-- **Schedule Appointments Efficiently with a New Lightning Web Component**
+### New and Changed Modules for Lightning Web Components
 
-  [Schedule Appointments Efficiently with a New Lightning Web Component](https://help.salesforce.com/s/articleView?id=release-notes.rn_edu_new_appointment_scheduling_workflow.htm&language=en_US&release=254&type=5)
+Do more with Lightning web components by using modules.
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=pt_BR&release=254&type=5)
 
 

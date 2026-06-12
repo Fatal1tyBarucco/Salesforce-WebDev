@@ -1,8 +1,8 @@
 # Lightning Web Components (LWC) — Winter '26
 
 > **Release:** Winter '26
-> **Gerado em:** 2026-06-08 12:41 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=258&type=5
+> **Gerado em:** 2026-06-12 21:14 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=258&type=5&language=pt_BR
 
 ---
 
@@ -10,96 +10,74 @@
 
 
 
-### Feature Articles
+### API versão 65.0 do LWC
+
+Atualize a versão da API de seus componentes para usar novos recursos e melhorias. A versão dos componentes da Web Lightning garante que os componentes existentes não sejam afetados quando o Salesforce envia novos recursos, correções de bugs e melhorias de desempenho que alteram o comportamento existente. O controle de versões também ajuda o Salesforce a descontinuar os recursos legados.
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=pt_BR&release=258&type=5#rn_lwc_versioning)
 
 
 
-- **Meet the New Lightning Component Reference**
+### Visualizar um único componente da Web Lightning usando o...
 
-  [Meet the New Lightning Component Reference](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_component_reference.htm&language=en_US&release=258&type=5)
+Agora, ao visualizar um único componente da Web Lightning com o desenvolvedor local, você pode acessar módulos de plataforma, como adaptadores de conexão públicos do Lightning Data Service, módulos com escopo de @salesforce e controladores do Apex. Antes, esses recursos não estavam disponíveis em visualizações de componente único.
 
 
-
-- **LWC API Version 65.0**
-
-  [LWC API Version 65.0](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_versioning.htm&language=en_US&release=258&type=5#rn_lwc_versioning)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_single_component_preview.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **Preview a Single Lightning Web Component in Your Browser Using Local...**
+### Mais definições de tipo disponíveis para componentes de base
 
-  [Preview a Single Lightning Web Component in Your Browser Using Local...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_single_component_preview.htm&language=en_US&release=258&type=5)
+Melhorar sua experiência de desenvolvimento do LWC com mais definições de tipo para componentes de base do Lightning. O TypeScript for LWC está na visualização para desenvolvedores e tem várias limitações.
 
 
-
-- **Preview a Single Lightning Web Component in Visual Studio Code Using...**
-
-  [Preview a Single Lightning Web Component in Visual Studio Code Using...](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_lightning_preview.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_ts_support_bc.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **More Type Definitions Available for Base Components**
+### Usar componentes do LWC para ações locais em fluxos de tela
 
-  [More Type Definitions Available for Base Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_ts_support_bc.htm&language=en_US&release=258&type=5)
+Torne seus fluxos de tela mais eficientes e eficientes com ações locais do Componente da Web Lightning (LWC). Por exemplo, adicione um toast de confirmação ou navegue para uma página de registro. As ações locais são executadas diretamente no navegador, o que significa que elas têm acesso às funcionalidades do navegador.
 
 
-
-- **Use LWC Components for Local Actions in Screen Flows**
-
-  [Use LWC Components for Local Actions in Screen Flows](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_lwc_local_actions.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_lwc_local_actions.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **Simplify Data Interactions with State Management for LWC (Beta)**
+### Simplificar interações de dados com o Gerenciamento de estado para...
 
-  [Simplify Data Interactions with State Management for LWC (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_state_management.htm&language=en_US&release=258&type=5)
+Agrupe e gerencie dados e sua lógica relacionada com mais eficiência em seus aplicativos.
 
 
-
-- **Improved Aura App Performance with Dynamic Boxcar Optimization**
-
-  [Improved Aura App Performance with Dynamic Boxcar Optimization](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_actions_dynamic_boxcar.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_state_management.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **Accelerate Development with LWC MCP Tools (Beta)**
+### Desempenho aprimorado do aplicativo Aura com otimização dinâmica do...
 
-  [Accelerate Development with LWC MCP Tools (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_mcp_tools.htm&language=en_US&release=258&type=5)
+Os componentes do Aura usam um processo chamado boxcar’ing para agrupar várias ações no lado do servidor em uma solicitação de rede (XMLHttpRequest, ou XHR). A partir da versão Winter '26, a estrutura usa uma nova maneira de agrupar ações do Aura em boxcars, chamada de otimização dinâmica de boxcar.
 
 
-
-- **New and Changed Lightning Web Components**
-
-  [New and Changed Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_actions_dynamic_boxcar.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **New and Changed Modules for Lightning Web Components**
+### Acelere o desenvolvimento com ferramentas de MCP do LWC (beta)
 
-  [New and Changed Modules for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_modules.htm&language=en_US&release=258&type=5)
+Crie aplicativos mais rapidamente sem sair do seu Ambiente de desenvolvimento integrado (IDE). Use avisos de linguagem natural para auxiliar no desenvolvimento, no teste, na otimização e na migração do Aura para o LWC do LWC.
 
 
-
-- **New Targets for Lightning Web Components**
-
-  [New Targets for Lightning Web Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_targets.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_mcp_tools.htm&language=pt_BR&release=258&type=5)
 
 
 
-- **New and Changed Aura Components**
+### Componentes da Web do Lightning novos e alterados
 
-  [New and Changed Aura Components](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_components.htm&language=en_US&release=258&type=5)
-
-
-
-- **Changed Aura Component Events**
-
-  [Changed Aura Component Events](https://help.salesforce.com/s/articleView?id=release-notes.rn_aura_events.htm&language=en_US&release=258&type=5)
+Crie a interface do usuário facilmente com componentes novos e alterados.
 
 
-
-- **LWC Support in Consumer Goods Cloud Mobile App is Generally Available**
-
-  [LWC Support in Consumer Goods Cloud Mobile App is Generally Available](https://help.salesforce.com/s/articleView?id=release-notes.rn_retail_cg_app_hybrid_lwc_ga.htm&language=en_US&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lwc_components.htm&language=pt_BR&release=258&type=5)
 
 

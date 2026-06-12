@@ -1,8 +1,8 @@
 # Apex — Spring '26
 
 > **Release:** Spring '26
-> **Gerado em:** 2026-06-08 12:42 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=260&type=5
+> **Gerado em:** 2026-06-12 21:26 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=260&type=5&language=pt_BR
 
 ---
 
@@ -10,306 +10,74 @@
 
 
 
-### Feature Articles
+### Atualize o Apex code e os fluxos para alterar o comportamento de...
 
+Para otimizar o desempenho após atualizações em grande escala em grupos ou papéis, o Salesforce agora realiza alguns recálculos de compartilhamento de modo assíncrono. Se o Apex code e os fluxos exigirem que os registros de compartilhamento sejam atualizados imediatamente, o código e os fluxos poderão ser interrompidos quando essa atualização de versão for imposta. Atualize classes, testes e fluxos do Apex que atualizam a associação ao grupo ou papéis se eles dependem de recálculo de compartilhamento síncrono. Essa atualização estará disponível da versão Spring '26 em diante.
 
 
-- **Improved Prompt Template Batch Processing with Supported Models in...**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_customization_apex_sharing_ru.htm&language=pt_BR&release=260&type=5)
 
-  [Improved Prompt Template Batch Processing with Supported Models in...](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_prompt_builder_prompt_template_batch_improvements.htm&language=en_US&release=260&type=5)
 
 
+### Estenda o Data 360 usando código personalizado com extensão de...
 
-- **Use Anthropic Models to Process More Data with Native Provider Batch...**
+Com a extensão de código, você pode levar seu código do Python personalizado para o Data 360 para estender os recursos nativos do Data 360. Se os recursos nativos do Data 360 não atenderem aos seus requisitos de negócios, implemente sua lógica personalizada em recursos compatíveis do Data 360, como transformações de dados em lote. Por exemplo, se você precisar de transformações de dados avançadas para seu caso de uso de negócios, poderá implementar a lógica de negócios personalizada no Data 360 para implementar seus requisitos. O SDK de Código personalizado de dados é o kit de ferramentas para criar e validar código personalizado para extensão de código.
 
-  [Use Anthropic Models to Process More Data with Native Provider Batch...](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_anthropic_native_batch.htm&language=en_US&release=260&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_code_extension.htm&language=pt_BR&release=260&type=5)
 
 
-- **Update Apex Code and Flows for Changed Sharing Recalculation...**
 
-  [Update Apex Code and Flows for Changed Sharing Recalculation...](https://help.salesforce.com/s/articleView?id=release-notes.rn_customization_apex_sharing_ru.htm&language=en_US&release=260&type=5)
+### Acelere a implantação de dados do Inspetor DX com SOQL
 
+Acelere seu processo de implementação no Inspetor DX usando consultas SELECT para definir os registros que você deseja implementar. Insira as consultas Salesforce Object Query Language (SOQL) para buscar registros e campos específicos da sua organização de origem. Esse recurso é uma alternativa mais rápida aos filtros, permitindo que você busque dados com base em critérios complexos instantaneamente.
 
 
-- **Create Batch Data Transforms by Using Custom Code with Code...**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_deployment_with_soql.htm&language=pt_BR&release=260&type=5)
 
-  [Create Batch Data Transforms by Using Custom Code with Code...](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_transfrom.htm&language=en_US&release=260&type=5)
 
 
+### Faça o escape do atributo de rótulo de elementos <apex:inputField>...
 
-- **Trigger Data 360 Activations Directly from a Flow (Beta)**
+Para evitar a execução de código mal-intencionado em ataques de script entre sites (XSS) em suas páginas do Visualforce, esta atualização de versão escapa ao atributo label das suas tags de <apex:inputField>. Essa atualização foi disponibilizada inicialmente na versão Winter '23.
 
-  [Trigger Data 360 Activations Directly from a Flow (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_spring_API_Activation.htm&language=en_US&release=260&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_vf_escape_apex_inputfield_label_ru.htm&language=pt_BR&release=260&type=5)
 
 
-- **Use Batch DMO Activations in Activation-Triggered Flows**
 
-  [Use Batch DMO Activations in Activation-Triggered Flows](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_spring_batch_dmo_atf.htm&language=en_US&release=260&type=5)
+### Implemente componentes do Apex mais rapidamente executando apenas...
 
+Para reduzir o tempo de implantação do componente Apex, use o novo nível de teste de RunRelevantTests para executar apenas os testes relevantes para suas alterações de código. Esse recurso determina automaticamente quais testes executar com base em uma análise da carga útil da implementação e das dependências da carga útil. Para um controle detalhado, você pode anotar classes de teste para que elas sejam executadas independentemente da carga útil da implementação ou quando os componentes especificados forem novos ou modificados. Essa abordagem direcionada aumenta a velocidade e a confiabilidade da sua implementação enquanto mantém a qualidade do código e os requisitos de cobertura.
 
 
-- **Create Engagement Target Objects Directly in Batch Data Transforms**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_run_relevant_tests.htm&language=pt_BR&release=260&type=5)
 
-  [Create Engagement Target Objects Directly in Batch Data Transforms](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_2026_spring_engagement_target_objects_in_batch_data_transforms.htm&language=en_US&release=260&type=5)
 
 
+### Usar cursores do Apex para suporte expandido aos resultados da...
 
-- **Extend Data 360 by Using Custom Code with Code Extension (Beta)**
+Use cursores do Apex e cursores de paginação para trabalhar com grandes conjuntos de resultados de consulta SOQL em partes gerenciáveis. Esse recurso, agora disponível ao público em geral, inclui aprimoramentos desde a versão beta. Os cursores padrão, quando combinados com o Apex enfileirável, abordam as limitações do Apex em lote. Os cursores de paginação são projetados para elementos da IU, como listas de registros de várias páginas. Ambos os tipos de cursor do Apex podem passar para frente e para trás por conjuntos de resultados e podem lidar com processamento de alto volume e alto recurso.
 
-  [Extend Data 360 by Using Custom Code with Code Extension (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_code_extension.htm&language=en_US&release=260&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_cursors.htm&language=pt_BR&release=260&type=5)
 
 
-- **Publish Batch DMO Activations On-Demand**
 
-  [Publish Batch DMO Activations On-Demand](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2026_spring_connect_api_batch_dmo.htm&language=en_US&release=260&type=5)
+### Extrair valores da lista de opções com base no tipo de registro
 
+Obtenha os valores de todos os campos da lista de opções para um determinado tipo de registro usando o novo método ConnectApi.RecordUi.getPicklistValuesByRecordType(objectApiName, recordTypeId). Entregamos esse recurso devido à sua ideia no IdeaExchange.
 
 
-- **Accelerate DX Inspector Data Deployment with SOQL**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_extract_picklist_values.htm&language=pt_BR&release=260&type=5)
 
-  [Accelerate DX Inspector Data Deployment with SOQL](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_deployment_with_soql.htm&language=en_US&release=260&type=5)
 
 
+### Expor métodos de controlador REST e AuraEnabled do Apex como ações...
 
-- **Escape the Label Attribute of <apex:inputField> Elements to Prevent...**
+Crie ações do agente com base em classes do Apex anotando métodos nessas classes, gerando um documento de especificação OpenAPI e implementando esse documento em sua organização. Gerencie os métodos expostos como APIs no Catálogo de API. Esse recurso agora está disponível ao público em geral.
 
-  [Escape the Label Attribute of <apex:inputField> Elements to Prevent...](https://help.salesforce.com/s/articleView?id=release-notes.rn_vf_escape_apex_inputfield_label_ru.htm&language=en_US&release=260&type=5)
 
-
-
-- **Deploy Apex Components Faster by Running Only Relevant Tests (Beta)**
-
-  [Deploy Apex Components Faster by Running Only Relevant Tests (Beta)](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_run_relevant_tests.htm&language=en_US&release=260&type=5)
-
-
-
-- **Use Apex Cursors for Expanded SOQL Query Result Support (Generally...**
-
-  [Use Apex Cursors for Expanded SOQL Query Result Support (Generally...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_cursors.htm&language=en_US&release=260&type=5)
-
-
-
-- **Extract Picklist Values Based on Record Type**
-
-  [Extract Picklist Values Based on Record Type](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_extract_picklist_values.htm&language=en_US&release=260&type=5)
-
-
-
-- **Expose Apex REST and AuraEnabled Controller Methods as Agent Actions...**
-
-  [Expose Apex REST and AuraEnabled Controller Methods as Agent Actions...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_auraenabled_rest_actions.htm&language=en_US&release=260&type=5)
-
-
-
-- **Use Visualforce PDF Rendering Service with Apex Blob.toPdf()...**
-
-  [Use Visualforce PDF Rendering Service with Apex Blob.toPdf()...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_system_blob_topdf.htm&language=en_US&release=260&type=5)
-
-
-
-- **Review Apex Code for Changed Sharing Recalculation Behavior**
-
-  [Review Apex Code for Changed Sharing Recalculation Behavior](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_sharing_ru.htm&language=en_US&release=260&type=5)
-
-
-
-- **Filter Test Discovery API Results by Test Category**
-
-  [Filter Test Discovery API Results by Test Category](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_unified_testing_category.htm&language=en_US&release=260&type=5)
-
-
-
-- **Specify the Number of Async Jobs to Delete**
-
-  [Specify the Number of Async Jobs to Delete](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_purgeOldAsyncJobs_overload.htm&language=en_US&release=260&type=5)
-
-
-
-- **Use DataWeave in Transformations with Nested SOQL Queries**
-
-  [Use DataWeave in Transformations with Nested SOQL Queries](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_DWSupportQueryResults.htm&language=en_US&release=260&type=5)
-
-
-
-- **Run SOQL Queries in User Mode as the Automated Process User**
-
-  [Run SOQL Queries in User Mode as the Automated Process User](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_WithUserModeQuery.htm&language=en_US&release=260&type=5)
-
-
-
-- **Provide Visible No-Argument Constructors for Custom Apex Classes...**
-
-  [Provide Visible No-Argument Constructors for Custom Apex Classes...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_constructor_visibility_invocable_custom_classes_v66.htm&language=en_US&release=260&type=5)
-
-
-
-- **Optimize Code with ApexGuru**
-
-  [Optimize Code with ApexGuru](https://help.salesforce.com/s/articleView?id=release-notes.rn_apexguru.htm&language=en_US&release=260&type=5)
-
-
-
-- **Apex: New and Changed Items**
-
-  [Apex: New and Changed Items](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_nc)
-
-
-
-- **ConnectApi Namespace**
-
-  [ConnectApi Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_connectapi_namespace)
-
-
-
-- **CommercePayments Namespace**
-
-  [CommercePayments Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_commerce_payments_namespace)
-
-
-
-- **Database Namespace**
-
-  [Database Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_database_namespace)
-
-
-
-- **Invocable Namespace**
-
-  [Invocable Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_invocable_namespace)
-
-
-
-- **IssueCreditMemo Namespace**
-
-  [IssueCreditMemo Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_issuecreditmemo_namespace)
-
-
-
-- **Salesforce Maps Namespace**
-
-  [Salesforce Maps Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_maps_namespace)
-
-
-
-- **renew_assets_summary Namespace**
-
-  [renew_assets_summary Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_renew_assets_summary_namespace)
-
-
-
-- **RulesAppln Namespace**
-
-  [RulesAppln Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_rulesappln_namespace)
-
-
-
-- **runtime_industries_insurance Namespace**
-
-  [runtime_industries_insurance Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_runtime_industries_insurance_namespace)
-
-
-
-- **System Namespace**
-
-  [System Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=260&type=5#rn_apex_system_namespace)
-
-
-
-- **ConnectApi (Connect in Apex): New and Changed Classes and Enums**
-
-  [ConnectApi (Connect in Apex): New and Changed Classes and Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex.htm&language=en_US&release=260&type=5)
-
-
-
-- **New Connect in Apex Classes**
-
-  [New Connect in Apex Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Input Classes**
-
-  [Changed Connect in Apex Input Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_input_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Output Classes**
-
-  [Changed Connect in Apex Output Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_output_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Enums**
-
-  [Changed Connect in Apex Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_enums.htm&language=en_US&release=260&type=5)
-
-
-
-- **Accelerate Sub-Order Creation with Scaled Batch Sizes**
-
-  [Accelerate Sub-Order Creation with Scaled Batch Sizes](https://help.salesforce.com/s/articleView?id=release-notes.rn_comms_accelerate_sub_order_creation_with_scaled_batch_sizes.htm&language=en_US&release=260&type=5)
-
-
-
-- **New Connect in Apex Classes**
-
-  [New Connect in Apex Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_insurance_connect_in_apex_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Input Classes**
-
-  [Changed Connect in Apex Input Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_insurance_changed_connect_in_apex_input_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Output Classes**
-
-  [Changed Connect in Apex Output Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_insurance_changed_connect_in_apex_output_classes.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changes to Trigger Handlers**
-
-  [Changes to Trigger Handlers](https://help.salesforce.com/s/articleView?id=release-notes.rn_lsc_customer_engagement_execution_changes_to_trigger_handlers.htm&language=en_US&release=260&type=5)
-
-
-
-- **New Apex Namespace in Manufacturing**
-
-  [New Apex Namespace in Manufacturing](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_namespace_ind_mfg_sample_mgmt_apex.htm&language=en_US&release=260&type=5)
-
-
-
-- **Batch Management**
-
-  [Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management.htm&language=en_US&release=260&type=5)
-
-
-
-- **Improve Batch Job Reliability by Grouping Related Records**
-
-  [Improve Batch Job Reliability by Grouping Related Records](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_group.htm&language=en_US&release=260&type=5)
-
-
-
-- **Boost Batch Job Performance with the Latest Enhancements**
-
-  [Boost Batch Job Performance with the Latest Enhancements](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_performance.htm&language=en_US&release=260&type=5)
-
-
-
-- **New Tooling API Objects in Batch Management**
-
-  [New Tooling API Objects in Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_tooling_objects.htm&language=en_US&release=260&type=5)
-
-
-
-- **Changed Connect in Apex Class in Billing**
-
-  [Changed Connect in Apex Class in Billing](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_new_and_changed_connect_in_apex_classes.htm&language=en_US&release=260&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_auraenabled_rest_actions.htm&language=pt_BR&release=260&type=5)
 
 

@@ -1,8 +1,8 @@
 # Apex — Summer '25
 
 > **Release:** Summer '25
-> **Gerado em:** 2026-06-08 12:41 UTC
-> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=256&type=5
+> **Gerado em:** 2026-06-12 21:02 UTC
+> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=256&type=5&language=pt_BR
 
 ---
 
@@ -10,246 +10,74 @@
 
 
 
-### Feature Articles
+### Atribuir compradores a grupos de compradores usando a lógica do Apex
 
+Atribua automaticamente convidados e compradores autenticados a grupos de compradores usando uma lógica do Apex personalizada definida nas configurações da sua loja. Controle quais produtos eles veem, os preços exibidos e as promoções oferecidas, o que pode levar a interações mais relevantes na sua loja.
 
 
-- **Call the Agent API from an Apex Class or Flow**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_comm_assign_buyer_group_apex.htm&language=pt_BR&release=256&type=5)
 
-  [Call the Agent API from an Apex Class or Flow](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_agent_api_actions.htm&language=en_US&release=256&type=5)
 
 
+### Avaliar fórmulas dinâmicas no modo de modelo
 
-- **Assign Buyers to Buyer Groups by Using Apex Logic**
+Escreva código mais conciso usando o novo método parseAsTemplate() na classe FormulaBuilder. O método parseAsTemplate() avalia uma fórmula dinâmica no modo de modelo. No modo de modelo, você pode criar expressões de fórmula em que os valores são interpolados em uma string usando a sintaxe de campo de mesclagem {!Object_Name.Field_Name}. Comparado à concatenação de string tradicional, essa sintaxe torna seu código mais limpo e legível.
 
-  [Assign Buyers to Buyer Groups by Using Apex Logic](https://help.salesforce.com/s/articleView?id=release-notes.rn_comm_assign_buyer_group_apex.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_formula_template_mode.htm&language=pt_BR&release=256&type=5)
 
 
-- **Create Real-Time Segments from Batch Segment Output**
 
-  [Create Real-Time Segments from Batch Segment Output](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2025_summer_realtime_batch_segment.htm&language=en_US&release=256&type=5)
+### Especificar uma habilitação para toda a organização de logs de...
 
+Gerar registros de depuração durante uma implantação de metadados pode causar execução de teste mais longa e está desabilitado por padrão. No entanto, os administradores podem optar por habilitar registros de depuração durante a implementação de metadados por meio dessa configuração, junto com um sinalizador de rastreamento de registro de depuração ativo. A ativação do registro de depuração no DebuggingHeader substitui essa configuração.
 
 
-- **Query Related Data Cloud Data for CRM Data by Using SOQL Semi-Joins**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_disable_debuglogs_duringmddeploy.htm&language=pt_BR&release=256&type=5)
 
-  [Query Related Data Cloud Data for CRM Data by Using SOQL Semi-Joins](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2025_summer_semijoin_crm_dmo.htm&language=en_US&release=256&type=5)
 
 
+### Aprimore os designs de configuração do Apex invocável com os novos...
 
-- **Query Related Data Model Objects (DMOs) with SOQL Semi-Joins**
+Use o tipo de metadados InvocableActionExtension (Visualização do desenvolvedor) para especificar como apresentar as entradas da ação. Você pode definir a ordem das entradas e fornecer descrições e rótulos, bem como adicionar atributos estendidos para ações e tipos do Apex, melhorando a experiência do usuário em ferramentas com pouco código, como o Flow Builder. A experiência de desenvolvimento geral foi aprimorada dando a você mais controle sobre a experiência de configuração sem precisar codificar um editor de propriedade personalizado (CPE).
 
-  [Query Related Data Model Objects (DMOs) with SOQL Semi-Joins](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2025_summer_semijoin_dmo_dmo.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_invocable_action_extension.htm&language=pt_BR&release=256&type=5)
 
 
-- **Target Anonymous Visitors**
 
-  [Target Anonymous Visitors](https://help.salesforce.com/s/articleView?id=release-notes.rn_cdp_2025_summer_ad_audience_anonymous_visitors.htm&language=en_US&release=256&type=5)
+### Gere investigações do Apex aprimoradas, forneça feedback no...
 
+Melhore o desempenho do Apex com orientações prescritivas e percepções úteis. Forneça feedback sobre o recurso usando o botão Feedback. Obtenha percepções de pesquisa para recomendações para melhorar o desempenho da pesquisa.
 
 
-- **Evaluate Dynamic Formulas in Template Mode**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_scale_center.htm&language=pt_BR&release=256&type=5)
 
-  [Evaluate Dynamic Formulas in Template Mode](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_formula_template_mode.htm&language=en_US&release=256&type=5)
 
 
+### Otimize o código com o ApexGuru
 
-- **Specify an Org-Wide Enablement of Debug Logs During Metadata...**
+Recursos de detecção antipadrão otimizam o Apex code e melhoram o desempenho. Visualize consultas SOQL em loops, identifique filtros e operações de consulta ineficientes e receba recomendações para reduzir operações de string caras e instruções de depuração.
 
-  [Specify an Org-Wide Enablement of Debug Logs During Metadata...](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_disable_debuglogs_duringmddeploy.htm&language=en_US&release=256&type=5)
 
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apexguru.htm&language=pt_BR&release=256&type=5)
 
 
-- **Generate Improved Apex Investigations, Provide In-App Feedback, and...**
 
-  [Generate Improved Apex Investigations, Provide In-App Feedback, and...](https://help.salesforce.com/s/articleView?id=release-notes.rn_scale_center.htm&language=en_US&release=256&type=5)
+### Descubra o tamanho e o usuário do lote do acionador do Apex
 
+Agora você pode visualizar a configuração do acionador de evento da plataforma Apex em Configuração verificando as novas colunas Tamanho do lote e Usuário. Ter essas informações disponíveis na IU facilita o monitoramento e o ajuste fino da configuração do acionador. Antes, o tamanho do lote e as informações do usuário estavam disponíveis apenas por meio da API do conjunto de ferramentas ou da API de metadados em PlatformEventSubscriberConfig.
 
 
-- **Optimize Code with ApexGuru**
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_messaging_trigger_new_col.htm&language=pt_BR&release=256&type=5)
 
-  [Optimize Code with ApexGuru](https://help.salesforce.com/s/articleView?id=release-notes.rn_apexguru.htm&language=en_US&release=256&type=5)
 
 
+### Apex: Itens novos e alterados
 
-- **Discover Your Apex Trigger Batch Size and User**
+Essas classes, enums e interfaces são novas ou foram alteradas.
 
-  [Discover Your Apex Trigger Batch Size and User](https://help.salesforce.com/s/articleView?id=release-notes.rn_messaging_trigger_new_col.htm&language=en_US&release=256&type=5)
 
-
-
-- **Apex: New and Changed Items**
-
-  [Apex: New and Changed Items](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=en_US&release=256&type=5)
-
-
-
-- **Auth Namespace**
-
-  [Auth Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_auth_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **ConnectApi Namespace**
-
-  [ConnectApi Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_connectapi_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **CommerceBuyGrp Namespace**
-
-  [CommerceBuyGrp Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_commercebuygrp_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **ComplianceMgmt Namespace**
-
-  [ComplianceMgmt Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_compliancemgmt_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **embeddedai Namespace**
-
-  [embeddedai Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_embeddedai_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **Flowtesting Namespace**
-
-  [Flowtesting Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_flowtesting_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **FormulaEval Namespace**
-
-  [FormulaEval Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_formula_eval_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **fschousehold Namespace**
-
-  [fschousehold Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_fschousehold_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **HealthCloudExt Namespace**
-
-  [HealthCloudExt Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_healthcloudext.htm&language=en_US&release=256&type=5)
-
-
-
-- **Process Namespace**
-
-  [Process Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_process_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **RevSignaling Namespace**
-
-  [RevSignaling Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_revsignaling_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **InvoiceWriteOff Namespace**
-
-  [InvoiceWriteOff Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_invoicewriteoff_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **ConnectApi (Connect in Apex): New and Changed Classes and Enums**
-
-  [ConnectApi (Connect in Apex): New and Changed Classes and Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex.htm&language=en_US&release=256&type=5)
-
-
-
-- **New Connect in Apex Classes**
-
-  [New Connect in Apex Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_classes.htm&language=en_US&release=256&type=5)
-
-
-
-- **Changed Connect in Apex Input Classes**
-
-  [Changed Connect in Apex Input Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_input_classes.htm&language=en_US&release=256&type=5)
-
-
-
-- **Changed Connect in Apex Output Classes**
-
-  [Changed Connect in Apex Output Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_output_classes.htm&language=en_US&release=256&type=5)
-
-
-
-- **Changed Connect in Apex Enums**
-
-  [Changed Connect in Apex Enums](https://help.salesforce.com/s/articleView?id=release-notes.rn_connect_in_apex_enums.htm&language=en_US&release=256&type=5)
-
-
-
-- **Batch Management**
-
-  [Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management.htm&language=en_US&release=256&type=5)
-
-
-
-- **Changed Object in Batch Management**
-
-  [Changed Object in Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_changed_object.htm&language=en_US&release=256&type=5)
-
-
-
-- **New and Changed Metadata Types in Batch Management**
-
-  [New and Changed Metadata Types in Batch Management](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_changed_metadata_api.htm&language=en_US&release=256&type=5)
-
-
-
-- **Enhance Decision Table Invocations with Apex**
-
-  [Enhance Decision Table Invocations with Apex](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_decision_table_invocations_with_apex.htm&language=en_US&release=256&type=5)
-
-
-
-- **Add Context Record at User-Defined Level**
-
-  [Add Context Record at User-Defined Level](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_IndustriesContext.htm&language=en_US&release=256&type=5)
-
-
-
-- **Customize Your Pricing Procedures with Apex Hooks**
-
-  [Customize Your Pricing Procedures with Apex Hooks](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_customize_pricing_procedure_plans_with_apex.htm&language=en_US&release=256&type=5)
-
-
-
-- **RevSignaling Namespace**
-
-  [RevSignaling Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_revsignaling_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **New Connect in Apex Classes**
-
-  [New Connect in Apex Classes](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_connect_in_apex_classes.htm&language=en_US&release=256&type=5)
-
-
-
-- **InvoiceWriteOff Namespace**
-
-  [InvoiceWriteOff Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_invoicewriteoff_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **CommerceTax Namespace**
-
-  [CommerceTax Namespace](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_commercetax_namespace.htm&language=en_US&release=256&type=5)
-
-
-
-- **Batch Test SDR Scenarios with Agent Builder Testing Center**
-
-  [Batch Test SDR Scenarios with Agent Builder Testing Center](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_agents_sdr_testing_center.htm&language=en_US&release=256&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_nc.htm&language=pt_BR&release=256&type=5)
 
 
