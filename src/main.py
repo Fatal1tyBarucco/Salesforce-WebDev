@@ -63,9 +63,7 @@ async def run_pipeline() -> None:
                     content_map[topic.slug].append(f"## {topic.display_name} — {release.name}")
                     content_map[topic.slug].append("")
 
-                    # Limite de artigos por tópico para equilíbrio entre profundidade e tempo
-                    limit = 8
-                    for article in articles[:limit]:
+                    for article in articles:
                         logger.info("Deep scraping [%s]: %s", topic.display_name, article["title"])
 
                         # Forçar pt-BR no link
@@ -187,12 +185,16 @@ def _update_readme(
                     break
 
             topic_emoji = topic_emojis.get(topic_slug, "📄")
-            topic_header = f"#### {topic_emoji} {display_name}\n\n"
-
             articles = release_highlights.get(topic_slug, [])
 
             if articles:
-                content.append(topic_header)
+                num_changes = len(articles)
+                plural = "alterações" if num_changes > 1 else "alteração"
+
+                content.append("<details>\n")
+                content.append(
+                    f"<summary><b>{topic_emoji} {display_name} (Clique para expandir {num_changes} {plural})</b></summary>\n\n"
+                )
                 for article in articles:
                     content.append(f"* **{article['title']}**\n")
                     content.append(f"  {article['summary']}\n\n")
@@ -200,8 +202,9 @@ def _update_readme(
                 # Link local no final de cada tópico com resumo
                 content.append(
                     f"> 📄 **Notas Completas:** consulte os detalhes completos na página do tópico "
-                    f"[{display_name}](./releases/{release_slug}/{topic_slug}.md).\n\n"
+                    f"[{display_name}](./releases/{release_slug}/{topic_slug}.md).\n"
                 )
+                content.append("</details>\n\n")
             else:
                 # Caso não tenha resumos disponíveis nesta execução (ex: histórico anterior)
                 content.append(
