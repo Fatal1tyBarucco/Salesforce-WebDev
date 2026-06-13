@@ -1,5 +1,6 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from src.parser import ReleaseNotesParser
+from src.config import TopicNode
 
 
 def test_extract_topic_tree_basic() -> None:
@@ -99,6 +100,152 @@ def test_extract_topic_tree_no_toc_found() -> None:
     assert topics == []
 
 
+def test_extract_topic_tree_fallback_no_aria_level_1() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <div class="toc-container">
+                <ul class="tree">
+                    <li role="treeitem" id="rn_root">
+                        <ul>
+                            <li role="treeitem" aria-level="2" id="rn_top">
+                                <span class="tree-item-label">Top Item</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    topics = parser.extract_topic_tree(soup)
+    assert len(topics) == 1
+    assert topics[0].slug == "top"
+
+
+def test_extract_topic_tree_fallback_via_treeitem_parent() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <nav>
+                <li role="treeitem" aria-level="1" id="rn_root">
+                    <ul>
+                        <li role="treeitem" aria-level="2" id="rn_topic_a">
+                            <span class="tree-item-label">Topic Alpha</span>
+                        </li>
+                    </ul>
+                </li>
+            </nav>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    topics = parser.extract_topic_tree(soup)
+    assert len(topics) == 1
+    assert topics[0].slug == "topic_a"
+
+
+def test_build_node_returns_none_for_empty_li() -> None:
+    parser = ReleaseNotesParser()
+    html = '<li role="treeitem" aria-level="2"></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    result = parser._build_node(li)
+    assert result is None
+
+
+def test_build_node_with_div_role_label() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_div_test">
+        <div role="label">Div Label Text</div>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert node.display_name == "Div Label Text"
+
+
+def test_build_node_fallback_to_get_text() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_fallback_text">
+        Fallback Text Content
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert "Fallback Text Content" in node.display_name
+
+
+def test_build_node_leaf_with_url() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="4" id="rn_leaf_url" data-is-link="true">
+        <a href="/s/articleView?id=rn_test">Test Article</a>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert node.is_leaf()
+    assert "rn_test" in node.url
+
+
+def test_get_node_id_list_type() -> None:
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["id"] = ["rn_list_id", "second"]
+    result = parser._get_node_id(li)
+    assert result == "rn_list_id"
+
+
+def test_get_aria_level_list_type() -> None:
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = ["3", "4"]
+    result = parser._get_aria_level(li)
+    assert result == 3
+
+
+def test_get_aria_level_invalid_value() -> None:
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = "invalid"
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
+def test_get_node_url_href_list() -> None:
+    parser = ReleaseNotesParser()
+    html = '<li><a href="/s/articleView?id=rn_url_test">Link</a></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    a_tag = li.find("a")
+    assert a_tag is not None
+    a_tag["href"] = ["/s/articleView?id=rn_url_test", "other"]
+    result = parser._get_node_url(li)
+    assert "rn_url_test" in result
+
+
+def test_clean_text_short() -> None:
+    result = ReleaseNotesParser._clean_text("ab")
+    assert result == ""
+
+
 def test_extract_article_summary_why_section() -> None:
     parser = ReleaseNotesParser()
 
@@ -115,6 +262,50 @@ def test_extract_article_summary_why_section() -> None:
     soup = BeautifulSoup(html, "html.parser")
     summary = parser.extract_article_summary(soup)
     assert "50%" in summary
+
+
+def test_extract_article_summary_why_keyword() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <p>Why</p>
+            <p>This is the reason for the change that matters.</p>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    summary = parser.extract_article_summary(soup)
+    assert "reason" in summary
+
+
+def test_extract_article_summary_why_por_que() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <h3>Por que</h3>
+            <p>Explanation of why this change is important for users.</p>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    summary = parser.extract_article_summary(soup)
+    assert "Explanation" in summary
+
+
+def test_extract_article_summary_why_no_next_p() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <strong>Por que essa alteração é importante</strong>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    summary = parser.extract_article_summary(soup)
+    assert "Resumo não disponível" in summary
 
 
 def test_extract_article_summary_fallback() -> None:
@@ -143,8 +334,6 @@ def test_extract_article_summary_no_content() -> None:
 
 
 def test_topic_node_all_articles() -> None:
-    from src.config import TopicNode
-
     child1 = TopicNode(
         slug="sub1",
         display_name="Sub 1",
@@ -179,8 +368,6 @@ def test_topic_node_all_articles() -> None:
 
 
 def test_topic_node_is_leaf() -> None:
-    from src.config import TopicNode
-
     leaf = TopicNode(slug="leaf", display_name="Leaf", level=3, url="http://x.com")
     assert leaf.is_leaf()
 
@@ -194,9 +381,195 @@ def test_topic_node_is_leaf() -> None:
     assert not container.is_leaf()
 
 
+def test_topic_node_topic_file_slug() -> None:
+    node = TopicNode(slug="my_topic", display_name="My Topic", level=2, url="")
+    assert node.topic_file_slug() == "my_topic"
+
+
 def test_id_to_slug_various() -> None:
     parser = ReleaseNotesParser()
     assert parser._id_to_slug("rn_development_leaf") == "development"
     assert parser._id_to_slug("rn_apex") == "apex"
     assert parser._id_to_slug("rn_security") == "security"
     assert parser._id_to_slug("plain_id") == "plain_id"
+
+
+def test_find_toc_container_by_role_tree() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <div role="tree">
+                <li role="treeitem" aria-level="1" id="rn_root_node">
+                    <ul>
+                        <li role="treeitem" aria-level="2" id="rn_item">
+                            <span class="tree-item-label">Container Item</span>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    topics = parser.extract_topic_tree(soup)
+    assert len(topics) == 1
+    assert topics[0].slug == "item"
+
+
+def test_find_toc_container_by_nav_toc() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <nav class="toc">
+                <li role="treeitem" aria-level="1" id="rn_root_nav">
+                    <ul>
+                        <li role="treeitem" aria-level="2" id="rn_nav_item">
+                            <span class="tree-item-label">Navigation Content</span>
+                        </li>
+                    </ul>
+                </li>
+            </nav>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    topics = parser.extract_topic_tree(soup)
+    assert len(topics) == 1
+    assert topics[0].slug == "nav_item"
+
+
+def test_build_node_child_not_tag() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_parent">
+        <span class="tree-item-label">Parent</span>
+        <ul>
+            <li role="treeitem" aria-level="3" id="rn_child">
+                <span class="tree-item-label">Child</span>
+            </li>
+            some text node
+        </ul>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li", id="rn_parent")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert len(node.children) == 1
+
+
+def test_find_toc_container_treeitem_parent_skips_intermediate() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <html>
+        <body>
+            <div>
+                <p>Some content</p>
+                <ul>
+                    <li role="treeitem" aria-level="1" id="rn_parent_node">
+                        <ul>
+                            <li role="treeitem" aria-level="2" id="rn_child_node">
+                                <span class="tree-item-label">Child Content</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </body>
+    </html>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    topics = parser.extract_topic_tree(soup)
+    assert len(topics) == 1
+    assert topics[0].slug == "child_node"
+
+
+def test_build_node_child_none_skips() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_parent_skip">
+        <span class="tree-item-label">Parent Skip</span>
+        <ul>
+            <li role="treeitem" aria-level="3">
+                <span class="tree-item-label">No ID Child</span>
+            </li>
+            <li role="treeitem" aria-level="3" id="rn_good_child">
+                <span class="tree-item-label">Good Child</span>
+            </li>
+        </ul>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li", id="rn_parent_skip")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert len(node.children) == 1
+    assert node.children[0].slug == "good_child"
+
+
+def test_build_node_leaf_with_url_returns_early() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_leaf_other_url">
+        <a href="/s/articleView?id=some_other_page">Leaf Link</a>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert node.slug == "leaf_other_url"
+    assert node.url
+
+
+def test_build_node_uses_title_attribute_for_label() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="2" id="rn_title_item" title="Salesforce geral">
+        <div class="slds-tree__item">
+            <a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_general">Overview</a>
+        </div>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    node = parser._build_node(li)
+    assert node is not None
+    assert node.display_name == "Salesforce geral"
+
+
+def test_find_link_inside_slds_tree_item() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="4" id="rn_leaf_slds" data-is-link="true">
+        <div class="slds-tree__item">
+            <a href="/s/articleView?id=release-notes.rn_some_feature">Feature</a>
+        </div>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    link = parser._find_link(li)
+    assert link is not None
+    assert "release-notes" in link.get("href")
+
+
+def test_find_link_returns_none_when_no_link() -> None:
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="3" id="rn_no_link">
+        <span class="tree-item-label">No Link Here</span>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    link = parser._find_link(li)
+    assert link is None

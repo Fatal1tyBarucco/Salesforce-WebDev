@@ -56,11 +56,18 @@ class ReleaseNotesParser:
             logger.warning("[PARSER] ToC container not found in page DOM")
             return []
 
-        root_items = toc_container.find_all(
+        tree_root = toc_container
+        tree_ul = toc_container.find("ul", class_="tree")
+        if isinstance(tree_ul, Tag):
+            tree_root = tree_ul
+
+        root_items = tree_root.find_all(
             "li", attrs={"role": "treeitem", "aria-level": "1"}, recursive=False
         )
         if not root_items:
-            root_items = toc_container.find_all("li", attrs={"role": "treeitem"}, recursive=False)
+            root_items = tree_root.find_all(
+                "li", attrs={"role": "treeitem"}, recursive=False
+            )
 
         topics: list[TopicNode] = []
 
@@ -116,12 +123,8 @@ class ReleaseNotesParser:
                 return container
 
         treeitem = soup.find("li", attrs={"role": "treeitem"})
-        if isinstance(treeitem, Tag):
-            parent = treeitem.parent
-            while parent and hasattr(parent, "name") and parent.name != "body":
-                if isinstance(parent, Tag) and parent.find("li", attrs={"role": "treeitem"}):
-                    return parent
-                parent = parent.parent
+        if isinstance(treeitem, Tag) and isinstance(treeitem.parent, Tag):
+            return treeitem.parent
 
         return None
 
@@ -131,11 +134,11 @@ class ReleaseNotesParser:
 
         - Nodes with data-is-link="true" are article leaves
         - Nodes without are container nodes (categories/subcategories)
+        - Nodes with both link and nested children are treated as containers
         """
         node_id = self._get_node_id(li)
         aria_level = self._get_aria_level(li)
         label_text = self._get_label_text(li)
-        is_link = self._is_link_node(li)
         node_url = self._get_node_url(li)
 
         if not node_id or not label_text:
@@ -143,7 +146,16 @@ class ReleaseNotesParser:
 
         slug = self._id_to_slug(node_id)
 
-        if is_link:
+        data_is_link_raw = li.get("data-is-link")
+        if data_is_link_raw and isinstance(data_is_link_raw, str):
+            is_explicit_link = data_is_link_raw == "true"
+        else:
+            is_explicit_link = False
+
+        nested_ul_result = li.find("ul", recursive=False)
+        has_children = isinstance(nested_ul_result, Tag)
+
+        if is_explicit_link and not has_children:
             return TopicNode(
                 slug=slug,
                 display_name=label_text,
@@ -156,18 +168,15 @@ class ReleaseNotesParser:
         children: list[TopicNode] = []
         articles: list[dict[str, str]] = []
 
-        nested_ul_result = li.find("ul", recursive=False)
-        if isinstance(nested_ul_result, Tag):
+        if has_children and isinstance(nested_ul_result, Tag):
             for child_li in nested_ul_result.find_all(
                 "li", attrs={"role": "treeitem"}, recursive=False
             ):
-                if not isinstance(child_li, Tag):
-                    continue
                 child_node = self._build_node(child_li)
                 if child_node is None:
                     continue
 
-                if child_node.is_leaf() and child_node.url:
+                if child_node.is_leaf() and child_node.url and not child_node.articles:
                     articles.append(
                         {
                             "title": child_node.display_name,
@@ -207,6 +216,12 @@ class ReleaseNotesParser:
             return 1
 
     def _get_label_text(self, li: Tag) -> str:
+        title_attr = li.get("title", "")
+        if title_attr and isinstance(title_attr, str):
+            cleaned = ReleaseNotesParser._clean_text(title_attr)
+            if cleaned:
+                return cleaned
+
         label_span = li.find("span", class_="tree-item-label")
         if isinstance(label_span, Tag):
             return ReleaseNotesParser._clean_text(label_span.get_text())
@@ -218,23 +233,20 @@ class ReleaseNotesParser:
         first_text = li.get_text(strip=True)
         return ReleaseNotesParser._clean_text(first_text)
 
-    def _is_link_node(self, li: Tag) -> bool:
-        data_is_link = li.get("data-is-link")
-        if isinstance(data_is_link, list):
-            data_is_link = data_is_link[0] if data_is_link else ""
-        if data_is_link == "true":
-            return True
+    def _find_link(self, li: Tag) -> Tag | None:
+        """Find the <a> tag in a treeitem, checking direct children and slds-tree__item."""
         link = li.find("a", href=True, recursive=False)
         if isinstance(link, Tag):
-            href = link.get("href", "")
-            if isinstance(href, list):
-                href = href[0] if href else ""
-            if href and "release-notes" in href.lower():
-                return True
-        return False
+            return link
+        tree_item_div = li.find("div", class_="slds-tree__item")
+        if isinstance(tree_item_div, Tag):
+            link = tree_item_div.find("a", href=True, recursive=False)
+            if isinstance(link, Tag):
+                return link
+        return None
 
     def _get_node_url(self, li: Tag) -> str:
-        link = li.find("a", href=True, recursive=False)
+        link = self._find_link(li)
         if isinstance(link, Tag):
             href = link.get("href", "")
             if isinstance(href, list):

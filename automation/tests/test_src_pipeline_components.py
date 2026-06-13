@@ -184,6 +184,19 @@ def test_readme_updater_missing_markers(tmp_path: Path) -> None:
     assert success is False
 
 
+def test_readme_updater_non_existent_releases_dir(tmp_path: Path) -> None:
+    readme_file = tmp_path / "README.md"
+    readme_file.write_text(
+        "<!-- RELEASE_INDEX_START -->\nold\n<!-- RELEASE_INDEX_END -->"
+    )
+    non_existent = tmp_path / "non_existent_releases"
+    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(non_existent))
+
+    with patch("src.readme_updater.KNOWN_RELEASES", []):
+        success = updater.update()
+        assert success is True
+
+
 def test_scraper_fetch_page_success() -> None:
     scraper = SalesforceReleaseScraper()
 
@@ -320,5 +333,135 @@ def test_scraper_expand_toc_nodes() -> None:
                     'li[role="treeitem"][aria-expanded="false"]'
                 )
                 assert mock_collapsed_node.click.call_count >= 1
+
+    asyncio.run(run())
+
+
+def test_expand_toc_nodes_click_exception() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_node = AsyncMock()
+        mock_node.click.side_effect = Exception("Click failed")
+        mock_page.query_selector_all.return_value = [mock_node]
+
+        await scraper._expand_toc_nodes(mock_page)
+        mock_page.query_selector_all.assert_called_once()
+
+    asyncio.run(run())
+
+
+def test_expand_toc_nodes_query_exception() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_page.query_selector_all.side_effect = Exception("Query failed")
+
+        await scraper._expand_toc_nodes(mock_page)
+
+    asyncio.run(run())
+
+
+def test_expand_toc_nodes_empty() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_page.query_selector_all.return_value = []
+
+        await scraper._expand_toc_nodes(mock_page)
+        mock_page.query_selector_all.assert_called_once()
+
+    asyncio.run(run())
+
+
+def test_extract_toc_html_standalone_no_browser() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_element = AsyncMock()
+        mock_element.inner_html.return_value = "<ul>" + "x" * 200 + "</ul>"
+        mock_page.query_selector.return_value = mock_element
+        mock_page.content.return_value = "<html>" + "y" * 200 + "</html>"
+
+        mock_browser = AsyncMock()
+        mock_browser.new_page.return_value = mock_page
+
+        mock_playwright_instance = AsyncMock()
+        mock_playwright_instance.chromium.launch.return_value = mock_browser
+
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value.__aenter__.return_value = mock_playwright_instance
+
+            result = await scraper.extract_toc_html("https://fake.url")
+            assert result is not None
+            assert "x" * 200 in result
+
+    asyncio.run(run())
+
+
+def test_extract_toc_html_with_existing_browser() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_element = AsyncMock()
+        mock_element.inner_html.return_value = "<ul>" + "z" * 200 + "</ul>"
+        mock_page.query_selector.return_value = mock_element
+
+        mock_browser = AsyncMock()
+        mock_browser.new_page.return_value = mock_page
+
+        scraper._browser = mock_browser
+
+        result = await scraper.extract_toc_html("https://fake.url")
+        assert result is not None
+        mock_browser.new_page.assert_called_once()
+
+    asyncio.run(run())
+
+
+def test_extract_toc_html_exception() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value.__aenter__.side_effect = Exception("PW failed")
+
+            result = await scraper.extract_toc_html("https://fake.url")
+            assert result is None
+
+    asyncio.run(run())
+
+
+def test_extract_toc_from_page_fallback_to_full_content() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_page.query_selector.return_value = None
+        mock_page.content.return_value = "<html>full page content here</html>"
+
+        result = await scraper._extract_toc_from_page("https://fake.url", mock_page)
+        assert result == "<html>full page content here</html>"
+
+    asyncio.run(run())
+
+
+def test_extract_toc_from_page_toc_too_short() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_element = AsyncMock()
+        mock_element.inner_html.return_value = "short"
+        mock_page.query_selector.return_value = mock_element
+        mock_page.content.return_value = "<html>" + "x" * 200 + "</html>"
+
+        result = await scraper._extract_toc_from_page("https://fake.url", mock_page)
+        assert "x" * 200 in result
 
     asyncio.run(run())
