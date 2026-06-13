@@ -11,7 +11,6 @@
 | Python 3.11+ | Linguagem principal |
 | Playwright | Navegador headless para scraping SPA (Salesforce Help requer JS) |
 | BeautifulSoup4 + lxml | Parsing HTML e extração de links |
-| PyMuPDF (fitz) | Extração de texto de PDFs (`automation/`) |
 | requests + tenacity | Cliente HTTP com retry |
 | python-slugify | Geração de slugs |
 | MkDocs + Material theme | Site de documentação (GitHub Pages) |
@@ -35,7 +34,6 @@ src/
 ├── parser.py         — Extract article links by topic + build content from link titles
 ├── generator.py      — Escrita de artefatos Markdown (releases/{slug}/{topic}.md)
 ├── readme_updater.py — Atualização automática do índice no README.md
-├── pdf_parser.py     — Extração de texto de PDF via pdfplumber (legado, não usado no main)
 ├── logger.py         — Configuração de logging
 ```
 
@@ -56,7 +54,7 @@ Pipeline com padrão strategy, classificação ponderada e parsing semântico:
 automation/
 ├── core/        — Lógica de negócio (scraper, parser, classifier, etc.)
 ├── shared/      — Constantes, modelos, utilitários (zero dependência de core/)
-├── strategies/  — Strategy pattern (HtmlStrategy, PdfStrategy)
+├── strategies/  — Strategy pattern (HtmlStrategy)
 └── tests/       — Testes unitários
 ```
 
@@ -100,12 +98,6 @@ playwright install chromium            # obrigatório para scraping SPA
 
 ```bash
 python -m src.main
-```
-
-### Executar Pipeline Moderno
-
-```bash
-python -m automation.core.intelligent_release_pipeline
 ```
 
 ### Testes
@@ -188,7 +180,6 @@ mkdocs build
 | `src/parser.py` | Article link extraction + topic grouping |
 | `src/config.py` | Releases, tópicos, URLs |
 | `src/generator.py` | Markdown artifact writer |
-| `automation/core/intelligent_release_pipeline.py` | Pipeline moderno |
 | `automation/shared/constants.py` | TOPIC_KEYWORDS + TOPIC_MAPPING |
 | `automation/shared/models.py` | ParsedSection, ClassificationResult |
 | `pyproject.toml` | black, ruff, mypy, pytest config |

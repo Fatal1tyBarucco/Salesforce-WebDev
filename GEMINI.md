@@ -22,7 +22,7 @@ Orquestra a busca direta no portal Salesforce Help via Playwright.
 Design extensível utilizando o padrão Strategy e classificação ponderada.
 - **core/**: Lógica de negócio e orquestração moderna.
 - **shared/**: Modelos e constantes (não deve depender de `core/`).
-- **strategies/**: Implementações de `HtmlStrategy` e `PdfStrategy`.
+- **strategies/**: Implementação de `HtmlStrategy`.
 
 ---
 

@@ -2,9 +2,10 @@
 
 Strategy:
   1. Fetch the release notes index page for each release via Playwright
-  2. Parse the index page to discover article links grouped by topic
-  3. Build markdown artifacts with deep-scraped summaries (pt-BR)
-  4. Update README with dynamic release index and top highlights
+  2. Parse the navigation tree (ToC) to discover ALL topics dynamically
+  3. Deep-scrape each article with summary extraction (pt-BR)
+  4. Generate Markdown files per topic under releases/{slug}/
+  5. Update README with dynamic release index and highlights per topic
 """
 
 import asyncio
@@ -14,7 +15,7 @@ from typing import Dict, List
 
 from bs4 import BeautifulSoup
 
-from .config import BASE_URL, KNOWN_RELEASES, MONITORED_TOPICS, RELEASES_DIR, TopicContentMap
+from .config import BASE_URL, KNOWN_RELEASES, RELEASES_DIR, TopicNode
 from .generator import MarkdownGenerator
 from .logger import setup_logging
 from .parser import ReleaseNotesParser
@@ -24,85 +25,149 @@ logger = logging.getLogger(__name__)
 
 
 async def run_pipeline() -> None:
-    """Versão assíncrona do orquestrador para suportar deep scraping e resumos pt-BR."""
+    """Orquestrador assíncrono baseado em descoberta dinâmica da árvore de tópicos."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction with Deep Scraping (pt-BR).")
+    logger.info("Iniciando extração das Salesforce Release Notes (árvore dinâmica, pt-BR).")
 
     scraper = SalesforceReleaseScraper()
     parser = ReleaseNotesParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
 
+    # Estrutura: {release_slug: {topic_slug: [article_dicts]}}
     all_highlights: Dict[str, Dict[str, List[Dict[str, str]]]] = {}
 
     async with scraper:
-        # Processar todas as releases conhecidas
         for release in KNOWN_RELEASES:
-            logger.info("Processando release: %s", release.name)
-            release_highlights: Dict[str, List[Dict[str, str]]] = {
-                topic.slug: [] for topic in MONITORED_TOPICS
-            }
+            logger.info("Processando release: %s (id=%d)", release.name, release.release_id)
             try:
                 url = BASE_URL.format(release_id=release.release_id)
-                logger.info("Index URL: %s", url)
+                logger.info("URL do índice: %s", url)
 
+                # 1. Fetch da página de release (SPA renderizada com ToC)
                 html_index = await scraper.fetch_page(url)
                 if not html_index:
-                    logger.warning("Sem conteúdo para %s", release.name)
+                    logger.warning("Sem conteúdo para %s — ignorando.", release.name)
                     continue
 
                 soup_index = BeautifulSoup(html_index, "lxml")
-                topic_links = parser.extract_article_links(soup_index, release.name)
 
-                content_map: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
+                # 2. Extrai a árvore de tópicos do ToC
+                topic_tree = parser.extract_topic_tree(soup_index, release.name, release.release_id)
 
-                for topic in MONITORED_TOPICS:
-                    articles = topic_links.get(topic.slug, [])
-                    if not articles:
-                        continue
+                if not topic_tree:
+                    logger.warning(
+                        "Nenhum tópico encontrado no ToC para %s — ignorando.", release.name
+                    )
+                    continue
 
-                    content_map[topic.slug].append(f"## {topic.display_name} — {release.name}")
-                    content_map[topic.slug].append("")
+                logger.info(
+                    "%d categorias principais encontradas para %s",
+                    len(topic_tree),
+                    release.name,
+                )
 
-                    for article in articles:
-                        logger.info("Deep scraping [%s]: %s", topic.display_name, article["title"])
+                # 3. Deep scraping de cada artigo na árvore
+                await _scrape_articles_in_tree(scraper, parser, topic_tree, release.name)
 
-                        # Forçar pt-BR no link
-                        article_url = article["url"]
-                        if "language=pt_BR" not in article_url:
-                            sep = "&" if "?" in article_url else "?"
-                            article_url += f"{sep}language=pt_BR"
+                # 4. Gera os arquivos Markdown
+                generator.generate(release, topic_tree, source_url=url)
 
-                        html_article = await scraper.fetch_page(article_url)
-                        summary = "Resumo não disponível."
-                        if html_article:
-                            soup_article = BeautifulSoup(html_article, "lxml")
-                            summary = parser.extract_article_summary(soup_article)
-
-                        # Adicionar aos destaques do tópico desta release
-                        release_highlights[topic.slug].append(
-                            {
-                                "title": article["title"],
-                                "summary": summary,
-                                "url": article_url,
-                                "topic": topic.display_name,
-                            }
-                        )
-
-                        content_map[topic.slug].append(f"### {article['title']}")
-                        content_map[topic.slug].append(f"{summary}")
-                        content_map[topic.slug].append(
-                            f"\n[🔗 Leia mais no conteúdo original]({article_url})"
-                        )
-                        content_map[topic.slug].append("")
-
-                all_highlights[release.slug] = release_highlights
-                generator.generate(release, content_map, source_url=url)
+                # 5. Coleta highlights para o README
+                all_highlights[release.slug] = _collect_highlights(topic_tree)
 
             except Exception as e:
                 logger.exception("Erro ao processar %s: %s", release.name, e)
 
     releases_list = generator.list_generated_releases()
     _update_readme(releases_list, all_highlights)
+
+
+async def _scrape_articles_in_tree(
+    scraper: SalesforceReleaseScraper,
+    parser: ReleaseNotesParser,
+    topic_tree: list[TopicNode],
+    release_name: str,
+) -> None:
+    """
+    Percorre recursivamente a árvore e faz deep scraping de cada artigo (folha).
+
+    Artigos são nós com `is_leaf=True` (data-is-link="true" no DOM).
+    O resumo extraído é salvo em `node.articles`.
+    """
+    for topic in topic_tree:
+        await _scrape_node_articles(scraper, parser, topic, release_name)
+
+
+async def _scrape_node_articles(
+    scraper: SalesforceReleaseScraper,
+    parser: ReleaseNotesParser,
+    node: TopicNode,
+    release_name: str,
+) -> None:
+    """Recursivamente scrapa artigos de um nó e seus filhos."""
+    # Se o nó é um artigo folha, faz o scraping
+    if node.is_leaf and node.url:
+        logger.info(
+            "[SCRAPE] Artigo: '%s' | release=%s",
+            node.display_name[:60],
+            release_name,
+        )
+        summary = await _fetch_article_summary(scraper, parser, node.url)
+        node.articles.append(
+            {
+                "title": node.display_name,
+                "summary": summary,
+                "url": node.url,
+            }
+        )
+
+    # Recursão nos filhos
+    for child in node.children:
+        await _scrape_node_articles(scraper, parser, child, release_name)
+
+
+async def _fetch_article_summary(
+    scraper: SalesforceReleaseScraper,
+    parser: ReleaseNotesParser,
+    url: str,
+) -> str:
+    """Faz o scraping de um artigo e retorna o resumo extraído."""
+    try:
+        html = await scraper.fetch_page(url)
+        if html:
+            soup = BeautifulSoup(html, "lxml")
+            return parser.extract_article_summary(soup)
+    except Exception as e:
+        logger.warning("Falha ao fazer scraping de '%s': %s", url, e)
+    return "Resumo não disponível."
+
+
+def _collect_highlights(
+    topic_tree: list[TopicNode],
+) -> Dict[str, List[Dict[str, str]]]:
+    """
+    Coleta os highlights (artigos com resumo) de toda a árvore de tópicos.
+
+    Retorna um dict: {topic_slug → [article_dicts]}.
+    """
+    highlights: Dict[str, List[Dict[str, str]]] = {}
+
+    for topic in topic_tree:
+        topic_articles: List[Dict[str, str]] = []
+
+        # Artigos diretos
+        topic_articles.extend(topic.articles)
+
+        # Artigos em subcategorias
+        for child in topic.children:
+            topic_articles.extend(child.articles)
+            for grandchild in child.children:
+                topic_articles.extend(grandchild.articles)
+
+        if topic_articles:
+            highlights[topic.slug] = topic_articles
+
+    return highlights
 
 
 def main() -> None:
@@ -163,9 +228,6 @@ def _update_readme(
             return "☀️"
         return "🌸"
 
-    # Mapeamento estético para tópicos
-    topic_emojis = {"apex": "💻", "lwc": "⚡", "flow": "⚙️", "security": "🔒", "integrations": "🔌"}
-
     # Iterar pelas releases geradas (as mais recentes primeiro)
     for release_slug, topics in sorted(releases, reverse=True):
         release_name = release_slug.replace("_", " ").title()
@@ -173,18 +235,12 @@ def _update_readme(
 
         content.append(f"### {emoji} {release_name}\n\n")
 
-        # Verificar se há destaques detalhados para esta release
         release_highlights = highlights.get(release_slug, {})
 
         for topic_slug in topics:
-            # Encontrar nome legível do tópico
-            display_name = topic_slug.upper()
-            for t_cfg in MONITORED_TOPICS:
-                if t_cfg.slug == topic_slug:
-                    display_name = t_cfg.display_name
-                    break
-
-            topic_emoji = topic_emojis.get(topic_slug, "📄")
+            # Nome legível do tópico: usa os highlights para encontrar o título real
+            # ou faz fallback para slug formatado
+            display_name = topic_slug.replace("_", " ").title()
             articles = release_highlights.get(topic_slug, [])
 
             if articles:
@@ -193,28 +249,36 @@ def _update_readme(
 
                 content.append("<details>\n")
                 content.append(
-                    f"<summary><b>{topic_emoji} {display_name} (Clique para expandir {num_changes} {plural})</b></summary>\n\n"
+                    f"<summary><b>📄 {display_name} "
+                    f"(Clique para expandir {num_changes} {plural})</b></summary>\n\n"
                 )
                 for article in articles:
                     content.append(f"* **{article['title']}**\n")
-                    content.append(f"  {article['summary']}\n\n")
+                    summary = article.get("summary", "")
+                    if summary and summary not in (
+                        "Resumo não disponível.",
+                        "Resumo não disponível para este artigo.",
+                    ):
+                        content.append(f"  {summary}\n\n")
+                    else:
+                        content.append("\n")
+                    if article.get("url"):
+                        content.append(f"  [🔗 Leia mais]({article['url']})\n\n")
 
-                # Link local no final de cada tópico com resumo
                 content.append(
-                    f"> 📄 **Notas Completas:** consulte os detalhes completos na página do tópico "
+                    f"> 📄 **Notas Completas:** consulte os detalhes em "
                     f"[{display_name}](./releases/{release_slug}/{topic_slug}.md).\n"
                 )
                 content.append("</details>\n\n")
             else:
-                # Caso não tenha resumos disponíveis nesta execução (ex: histórico anterior)
                 content.append(
-                    f"* {topic_emoji} **{display_name}**: "
-                    f"Acesse o arquivo de notas de versão em [./releases/{release_slug}/{topic_slug}.md](./releases/{release_slug}/{topic_slug}.md).\n"
+                    f"* 📄 **{display_name}**: "
+                    f"[Ver notas completas](./releases/{release_slug}/{topic_slug}.md)\n"
                 )
         content.append("\n---\n\n")
 
     readme_path.write_text("".join(content), encoding="utf-8")
-    logger.info("README.md atualizado com painel moderno e resumos.")
+    logger.info("README.md atualizado com painel moderno e resumos dinâmicos.")
 
 
 if __name__ == "__main__":

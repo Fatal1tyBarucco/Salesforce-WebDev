@@ -1,8 +1,11 @@
 """
 config.py — Configuração central do pipeline de Release Notes.
 
-Adicionar novos tópicos ou releases aqui NÃO requer alterações no motor principal.
+A abordagem agora é baseada em descoberta dinâmica via árvore de navegação
+do portal Salesforce Help. Não é necessário definir tópicos manualmente.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Final
@@ -37,6 +40,19 @@ USER_AGENT: Final[str] = (
 )
 
 # ---------------------------------------------------------------------------
+# IDs de itens a excluir da extração (não são conteúdo de release notes)
+# ---------------------------------------------------------------------------
+
+EXCLUDED_TOPIC_IDS: Final[set[str]] = {
+    "rn_features_released_monthly",  # notas mensais (separado)
+    "rn_change_log_rn_change_log",  # log de mudanças
+    "rn_feature_impact",  # "como e quando os recursos ficam disponíveis"
+    "rn_previous_release_notes",  # notas de versão anteriores
+    "rn_compliance_docs",  # documentação legal
+    "salesforce_release_notes",  # root item (nivel 1)
+}
+
+# ---------------------------------------------------------------------------
 # Mapeamento de Releases Conhecidas
 # release_id corresponde ao parâmetro ?release= da URL oficial do Salesforce.
 # Padrão de numeração: incrementos de 2 por release (Summer=x6, Winter=x8, Spring=x0).
@@ -61,21 +77,57 @@ KNOWN_RELEASES: list[ReleaseInfo] = [
 ]
 
 # ---------------------------------------------------------------------------
-# Tópicos Monitorados
-# Para adicionar um novo tópico (ex: "data_cloud"), basta inserir um novo
-# TopicConfig abaixo. Nenhuma outra alteração é necessária.
+# Modelo de Tópico Dinâmico
+# Representa um nó da árvore de navegação do Salesforce Help.
+# Construído pelo parser a partir do DOM da página de release notes.
 # ---------------------------------------------------------------------------
 
 
+@dataclass
+class TopicNode:
+    """
+    Nó dinâmico da árvore de tópicos do Salesforce Help.
+
+    Atributos:
+        node_id     : ID do <li> sem o sufixo '_leaf' (ex: 'rn_development')
+        display_name: Texto do link/título do tópico (ex: 'Desenvolvimento')
+        level       : Profundidade na árvore (2=categoria, 3=subcategoria, 4+=artigo)
+        url         : URL completa do artigo/índice no Salesforce Help
+        children    : Nós filhos (subcategorias e artigos)
+        articles    : Artigos com scraping completo (título, url, resumo)
+        is_leaf     : True se o nó é um artigo (data-is-link="true")
+    """
+
+    node_id: str
+    display_name: str
+    level: int
+    url: str
+    children: list[TopicNode] = field(default_factory=list)
+    articles: list[dict[str, str]] = field(default_factory=list)
+    is_leaf: bool = False
+
+    @property
+    def slug(self) -> str:
+        """Slug normalizado para uso como nome de arquivo."""
+        # Remove prefixo 'rn_' e substitui caracteres inválidos
+        raw = self.node_id.replace("rn_", "", 1).replace("-", "_")
+        return raw[:64]  # limita comprimento
+
+
+# ---------------------------------------------------------------------------
+# Compatibilidade Retroativa — mantida para não quebrar testes existentes
+# ---------------------------------------------------------------------------
+
+
+# MONITORED_TOPICS é mantido vazio para compatibilidade de imports legados.
+# O novo fluxo usa TopicNode (descoberta dinâmica via árvore do portal).
 @dataclass(frozen=True)
 class TopicConfig:
     """
-    Configuração de um tópico de extração.
+    [LEGADO] Configuração estática de um tópico.
 
-    Atributos:
-        slug        : identificador único (nome do arquivo .md)
-        display_name: título legível usado no Markdown gerado
-        keywords    : termos de busca usados pelo parser para filtrar seções
+    Mantida apenas para compatibilidade com testes existentes.
+    O novo pipeline usa TopicNode com descoberta dinâmica.
     """
 
     slug: str
@@ -83,91 +135,4 @@ class TopicConfig:
     keywords: list[str] = field(default_factory=list)
 
 
-MONITORED_TOPICS: list[TopicConfig] = [
-    TopicConfig(
-        slug="apex",
-        display_name="Apex",
-        keywords=[
-            "apex",
-            "trigger",
-            "batch",
-            "queueable",
-            "schedulable",
-            "anonymous",
-            "governor limit",
-            "soql",
-            "sosl",
-        ],
-    ),
-    TopicConfig(
-        slug="lwc",
-        display_name="Lightning Web Components (LWC)",
-        keywords=[
-            "lwc",
-            "lightning web component",
-            "lightning component",
-            "aura",
-            "wire",
-            "lms",
-            "lightning message service",
-        ],
-    ),
-    TopicConfig(
-        slug="flow",
-        display_name="Flow & Automação",
-        keywords=[
-            "flow",
-            "process builder",
-            "workflow",
-            "automation",
-            "screen flow",
-            "record-triggered",
-            "scheduled flow",
-        ],
-    ),
-    TopicConfig(
-        slug="security",
-        display_name="Segurança & Permissões",
-        keywords=[
-            "security",
-            "permission",
-            "shield",
-            "encryption",
-            "profile",
-            "role",
-            "sharing",
-            "csp",
-            "csrf",
-            "oauth",
-        ],
-    ),
-    TopicConfig(
-        slug="integrations",
-        display_name="Integrações & APIs",
-        keywords=[
-            "api",
-            "rest",
-            "soap",
-            "bulk",
-            "streaming",
-            "platform event",
-            "integration",
-            "webhook",
-            "named credential",
-            "connected app",
-        ],
-    ),
-    # -----------------------------------------------------------------------
-    # Exemplo de extensão sem refatoração do motor:
-    # TopicConfig(
-    #     slug="data_cloud",
-    #     display_name="Data Cloud",
-    #     keywords=["data cloud", "cdp", "data stream", "calculated insight"],
-    # ),
-    # TopicConfig(
-    #     slug="einstein_ai",
-    #     display_name="Einstein AI & Agentforce",
-    #     keywords=["einstein", "agentforce", "copilot", "prompt builder", "llm"],
-    # ),
-    # -----------------------------------------------------------------------
-]
+MONITORED_TOPICS: list[TopicConfig] = []

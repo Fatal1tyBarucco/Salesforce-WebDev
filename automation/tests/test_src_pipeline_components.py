@@ -1,19 +1,20 @@
 import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
-from src.config import ReleaseInfo
+from src.config import ReleaseInfo, TopicNode
 from src.generator import MarkdownGenerator
 from src.readme_updater import ReadmeUpdater
 from src.scraper import SalesforceReleaseScraper
 
 
-def test_markdown_generator_generate(tmp_path: Path) -> None:
+def test_markdown_generator_generate_from_map_legacy(tmp_path: Path) -> None:
+    """[LEGADO] Testa generate_from_map com TopicContentMap (dict)."""
     generator = MarkdownGenerator(base_dir=str(tmp_path))
     release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
 
     content_map = {"apex": ["Feature 1", "Feature 2"], "lwc": []}
 
-    generator.generate(release, content_map, "https://fake-source.com")
+    generator.generate_from_map(release, content_map, "https://fake-source.com")
 
     # Verifica se os arquivos foram criados
     apex_file = tmp_path / "summer_26" / "apex.md"
@@ -28,6 +29,55 @@ def test_markdown_generator_generate(tmp_path: Path) -> None:
 
     lwc_content = lwc_file.read_text()
     assert "Nenhum conteúdo relevante" in lwc_content
+
+
+def test_markdown_generator_generate_with_topic_nodes(tmp_path: Path) -> None:
+    """Testa o novo generate() com TopicNode (fluxo dinâmico)."""
+    generator = MarkdownGenerator(base_dir=str(tmp_path))
+    release = ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26")
+
+    # Cria TopicNode com artigos
+    apex_child = TopicNode(
+        node_id="rn_apex",
+        display_name="Apex",
+        level=3,
+        url="https://help.salesforce.com/rn_apex",
+    )
+    apex_child.articles = [
+        {
+            "title": "New Apex Feature",
+            "summary": "Resumo do Apex.",
+            "url": "https://help.salesforce.com/rn_apex_feature",
+        }
+    ]
+
+    dev_node = TopicNode(
+        node_id="rn_development",
+        display_name="Desenvolvimento",
+        level=2,
+        url="https://help.salesforce.com/rn_development",
+        children=[apex_child],
+    )
+
+    # Nó sem artigos (não deve gerar arquivo)
+    empty_node = TopicNode(
+        node_id="rn_empty",
+        display_name="Vazio",
+        level=2,
+        url="https://help.salesforce.com/rn_empty",
+    )
+
+    generated = generator.generate(release, [dev_node, empty_node], "https://fake-source.com")
+
+    # Deve gerar apenas o arquivo do nó com conteúdo
+    assert len(generated) == 1
+    dev_file = tmp_path / "winter_26" / "development.md"
+    assert dev_file.exists()
+
+    content = dev_file.read_text()
+    assert "# Desenvolvimento — Winter '26" in content
+    assert "New Apex Feature" in content
+    assert "Resumo do Apex." in content
 
 
 def test_markdown_generator_list_releases(tmp_path: Path) -> None:
@@ -69,10 +119,13 @@ def test_readme_updater_update_flow(tmp_path: Path) -> None:
     summer_dir.mkdir()
     (summer_dir / "apex.md").write_text("details")
 
-    # Vamos mockar o KNOWN_RELEASES no teste para usar apenas a release existente
+    # Vamos mockar o KNOWN_RELEASES e MONITORED_TOPICS no teste para usar apenas a release existente
     with patch(
         "src.readme_updater.KNOWN_RELEASES",
         [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")],
+    ), patch(
+        "src.readme_updater.MONITORED_TOPICS",
+        [TopicConfig(slug="apex", display_name="Apex")],
     ):
         success = updater.update()
         assert success is True

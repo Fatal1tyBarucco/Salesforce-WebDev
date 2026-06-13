@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+
+# OS
+.DS_Store
+
+# Project specific
+pdfs/
+cache/
+releases/*/
+release_menu.html
+test_html.html

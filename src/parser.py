@@ -1,257 +1,319 @@
-"""Parser for Salesforce Help release notes — index and article pages.
+"""Parser for Salesforce Help release notes — navigation tree and article pages.
 
-The Salesforce Help portal organizes release notes as:
-  1. An index page listing all feature articles as links
-  2. Individual article pages for each feature/change
+The Salesforce Help portal organizes release notes as a hierarchical tree:
+  - A navigation sidebar (ToC) with all topics, subtopics and articles
+  - Individual article pages for each feature/change
 
-This parser handles both:
-  - extract_article_links(): discovers and groups links by topic
-  - build_topic_content_from_links(): creates content summaries from link titles
-  - parse(): legacy heading-based segmentation (fallback)
+This parser handles:
+  - extract_topic_tree(): builds the full topic hierarchy from the ToC DOM
+  - extract_article_summary(): extracts a concise summary from an article page
 """
 
 import logging
 import re
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
-from .config import MONITORED_TOPICS, TopicContentMap
+from .config import EXCLUDED_TOPIC_IDS, TopicContentMap, TopicNode
 
 logger: logging.Logger = logging.getLogger(__name__)
 
 HEADING_TAGS: tuple[str, ...] = ("h1", "h2", "h3", "h4")
 CONTENT_TAGS: tuple[str, ...] = ("p", "ul", "ol", "li", "table", "pre", "blockquote")
 
-# URL path patterns that indicate topic categories
-TOPIC_URL_PATTERNS: dict[str, list[str]] = {
-    "apex": ["rn_apex", "rn_code"],
-    "lwc": ["rn_lwc", "rn_lightning_web", "rn_rd_lwc", "rn_rd_embed_lwc"],
-    "flow": ["rn_automate_flow", "rn_automate_process", "rn_flow"],
-    "security": ["rn_security", "rn_identity", "rn_shield", "rn_encryption", "rn_permission"],
-    "integrations": [
-        "rn_integration",
-        "rn_api",
-        "rn_rest",
-        "rn_soap",
-        "rn_bulk",
-        "rn_platform_event",
-        "rn_connected_app",
-        "rn_mulesoft",
-    ],
-}
-
 SOURCE_BASE = "https://help.salesforce.com"
+
+# Prefixo padrão da URL de release note no portal Salesforce Help
+RELEASE_NOTES_PATH_PREFIX = "release-notes."
 
 
 class ReleaseNotesParser:
-    """Parses Salesforce Help release notes index and article pages."""
+    """Parses Salesforce Help release notes navigation tree and article pages."""
 
-    def extract_article_links(
+    # ------------------------------------------------------------------
+    # Interface Pública
+    # ------------------------------------------------------------------
+
+    def extract_topic_tree(
         self,
         soup: BeautifulSoup,
         release_name: str,
-    ) -> dict[str, list[Dict[str, str]]]:
+        release_id: int,
+    ) -> list[TopicNode]:
         """
-        Extract article links from the index page and group by topic.
+        Extrai a hierarquia completa de tópicos do ToC da página de release notes.
 
-        Returns dict mapping topic slug -> list of {url, title} dicts.
+        Constrói uma árvore de TopicNode onde:
+          - Nível 2: Categorias principais (ex: "Desenvolvimento", "Segurança")
+          - Nível 3: Subcategorias (ex: "Apex", "LWC", "API")
+          - Nível 4+: Artigos individuais (folhas com data-is-link="true")
+
+        Args:
+            soup        : BeautifulSoup da página de release notes (SPA renderizada).
+            release_name: Nome da release (ex: "Winter '26") — usado para logging.
+            release_id  : ID numérico da release (ex: 258) — para normalizar URLs.
+
+        Returns:
+            Lista de TopicNode de nível 2 com seus filhos aninhados.
         """
-        logger.info("[PARSER] Extracting article links | release=%s", release_name)
+        logger.info("[PARSER] Extraindo árvore de tópicos | release=%s", release_name)
 
-        links = soup.find_all("a", href=True)
-        topic_links: dict[str, list[dict[str, str]]] = {
-            topic.slug: [] for topic in MONITORED_TOPICS
-        }
+        # Busca todos os <li role="treeitem"> no DOM
+        treeitem_elements = soup.find_all("li", attrs={"role": "treeitem"})
 
-        for link in links:
-            href = link.get("href", "")
-            title = link.get_text(strip=True)
-
-            if not title or len(title) < 5:
-                continue
-
-            if "release-notes" not in href.lower():
-                continue
-
-            full_url = urljoin(SOURCE_BASE, href)
-
-            matched_slug = self._match_link_to_topic(href, title)
-            if matched_slug:
-                topic_links[matched_slug].append({"url": full_url, "title": title})
-
-        for topic in MONITORED_TOPICS:
-            count = len(topic_links[topic.slug])
-            logger.info(
-                "[PARSER] Topic '%s': %d article links | release=%s",
-                topic.slug,
-                count,
-                release_name,
+        if not treeitem_elements:
+            logger.warning(
+                "[PARSER] Nenhum <li role='treeitem'> encontrado | release=%s", release_name
             )
+            return []
 
-        return topic_links
-
-    def build_topic_content_from_links(
-        self,
-        topic_links: dict[str, list[dict[str, str]]],
-        soup: BeautifulSoup,
-        release_name: str,
-    ) -> TopicContentMap:
-        """
-        Build topic content map from index page link titles.
-
-        Creates a structured summary listing each feature article
-        with its title and link URL.
-        """
-        logger.info("[PARSER] Building content from index links | release=%s", release_name)
-
-        result: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
-
-        for topic in MONITORED_TOPICS:
-            articles = topic_links.get(topic.slug, [])
-            if not articles:
-                continue
-
-            result[topic.slug].append(f"## {topic.display_name} — {release_name}")
-            result[topic.slug].append("")
-            result[topic.slug].append("### Feature Articles")
-            result[topic.slug].append("")
-
-            for article in articles:
-                result[topic.slug].append(f"- **{article['title']}**")
-                result[topic.slug].append(f"  [{article['title']}]({article['url']})")
-                result[topic.slug].append("")
-
-        for topic in MONITORED_TOPICS:
-            count = len(result[topic.slug])
-            logger.info(
-                "[PARSER] Topic '%s': %d lines | release=%s",
-                topic.slug,
-                count,
-                release_name,
-            )
-
-        return result
-
-    def parse(
-        self,
-        soup: BeautifulSoup,
-        release_name: str,
-    ) -> TopicContentMap:
-        """Legacy heading-based segmentation (fallback)."""
-        logger.info("[PARSER] Iniciando segmentação | release=%s", release_name)
-
-        sections: list[dict[str, Any]] = self._extract_sections(soup)
         logger.info(
-            "[PARSER] %d seções identificadas no DOM | release=%s",
-            len(sections),
+            "[PARSER] %d elementos treeitem encontrados | release=%s",
+            len(treeitem_elements),
             release_name,
         )
 
-        result: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
+        # Constrói lista linear de nós
+        raw_nodes: list[TopicNode] = []
+        for element in treeitem_elements:
+            node = self._parse_treeitem(element, release_id)
+            if node is not None:
+                raw_nodes.append(node)
 
-        for section in sections:
-            matched_slugs: list[str] = self._match_section_to_topics(section)
-            for slug in matched_slugs:
-                result[slug].extend(section["lines"])
+        # Constrói a hierarquia aninhada
+        tree = self._build_tree(raw_nodes)
 
+        # Filtra nós excluídos e retorna apenas nível 2
+        result = [node for node in tree if node.node_id not in EXCLUDED_TOPIC_IDS]
+
+        logger.info(
+            "[PARSER] %d tópicos de nível 2 extraídos | release=%s",
+            len(result),
+            release_name,
+        )
         return result
-
-    def _extract_sections(self, soup: BeautifulSoup) -> list[dict[str, Any]]:
-        """Percorre o DOM e agrupa conteúdo em seções delimitadas por headings."""
-        sections: list[dict[str, Any]] = []
-        current_section: dict[str, Any] | None = None
-
-        for element in soup.find_all(True):
-            tag_name: str = element.name if hasattr(element, "name") else ""
-
-            if tag_name in HEADING_TAGS:
-                if current_section is not None and current_section["lines"]:
-                    sections.append(current_section)
-
-                heading_text: str = self._clean_text(element.get_text())
-                if not heading_text:
-                    current_section = None
-                    continue
-
-                current_section = {
-                    "heading": heading_text,
-                    "level": int(tag_name[1]),
-                    "lines": [f"### {heading_text}"],
-                }
-
-            elif tag_name in CONTENT_TAGS and current_section is not None:
-                line: str = self._clean_text(element.get_text())
-                if line:
-                    current_section["lines"].append(line)
-
-        if current_section is not None and current_section["lines"]:
-            sections.append(current_section)
-
-        return sections
-
-    def _match_section_to_topics(self, section: dict[str, Any]) -> list[str]:
-        """Verifica quais tópicos correspondem a uma seção."""
-        matched: list[str] = []
-        searchable_text: str = " ".join([section["heading"]] + section["lines"][:10]).lower()
-
-        for topic in MONITORED_TOPICS:
-            if self._matches_any_keyword(searchable_text, topic.keywords):
-                matched.append(topic.slug)
-
-        return matched
 
     def extract_article_summary(self, soup: BeautifulSoup) -> str:
         """
-        Extracts a concise summary from an article page.
-        Looks for 'Why' and 'How' sections or the first significant paragraph.
+        Extrai um resumo conciso de uma página de artigo de release note.
+
+        Estratégia:
+          1. Tenta encontrar seções "Por que" ou "Why"
+          2. Fallback: primeiro parágrafo significativo da área de conteúdo
         """
-        # 1. Try to find "Why" or "How" sections specifically
+        # 1. Tenta encontrar seção "Por que" ou "Why"
         for header in soup.find_all(["h2", "h3", "p", "strong"]):
-            text = header.get_text().strip().lower()
+            text: str = header.get_text().strip().lower()
             if text in ["por que essa alteração é importante", "why", "por que"]:
-                # The next sibling or parahraph usually has the reason
                 next_p = header.find_next("p")
                 if next_p:
                     return ReleaseNotesParser._clean_text(next_p.get_text())
 
-        # 2. Fallback: Get the first significant paragraph in the content area
+        # 2. Fallback: primeiro parágrafo significativo na área de conteúdo
         content_div = soup.select_one("article, #articleViewContent, div.content")
         if content_div:
             paragraphs = content_div.find_all("p")
             for p in paragraphs:
-                cleaned_text = ReleaseNotesParser._clean_text(p.get_text())
+                cleaned_text: str = ReleaseNotesParser._clean_text(p.get_text())
                 if len(cleaned_text) > 50:
                     return cleaned_text
 
         return "Resumo não disponível para este artigo."
 
-    def _match_link_to_topic(self, href: str, title: str) -> str | None:
-        """Match an article link to a topic using URL patterns and title keywords."""
-        href_lower = href.lower()
+    def build_topic_content_map(
+        self,
+        topic_nodes: list[TopicNode],
+        release_name: str,
+    ) -> TopicContentMap:
+        """
+        Constrói um TopicContentMap a partir da árvore de TopicNode com artigos.
 
-        for slug, patterns in TOPIC_URL_PATTERNS.items():
-            for pattern in patterns:
-                if pattern in href_lower:
-                    return slug
+        Usado pelo MarkdownGenerator para gerar os arquivos .md.
+        Cada chave é o slug do tópico de nível 2; o valor é a lista de linhas Markdown.
 
-        title_lower = title.lower()
-        for topic in MONITORED_TOPICS:
-            for keyword in topic.keywords:
-                pattern = rf"\b{re.escape(keyword)}\b"
-                if re.search(pattern, title_lower, re.IGNORECASE):
-                    return topic.slug
+        Args:
+            topic_nodes : Lista de TopicNode de nível 2 (com artigos já populados).
+            release_name: Nome da release para cabeçalhos.
 
-        return None
+        Returns:
+            Dict[slug → list[linhas Markdown]].
+        """
+        result: TopicContentMap = {}
 
-    def _matches_any_keyword(self, text: str, keywords: list[str]) -> bool:
-        """Keyword matching case-insensitive com word boundary."""
-        for keyword in keywords:
-            pattern: str = rf"\b{re.escape(keyword)}\b"
-            if re.search(pattern, text, re.IGNORECASE):
-                return True
-        return False
+        for topic in topic_nodes:
+            lines: list[str] = []
+            lines.append(f"## {topic.display_name} — {release_name}")
+            lines.append("")
+
+            # Artigos diretos no nível 2
+            if topic.articles:
+                for article in topic.articles:
+                    lines.extend(self._format_article_lines(article))
+
+            # Artigos em subcategorias (nível 3+)
+            for child in topic.children:
+                if child.articles or child.children:
+                    lines.append(f"### {child.display_name}")
+                    lines.append("")
+                    for article in child.articles:
+                        lines.extend(self._format_article_lines(article))
+                    # Nível 4+ (sub-subcategorias)
+                    for grandchild in child.children:
+                        if grandchild.articles:
+                            lines.append(f"#### {grandchild.display_name}")
+                            lines.append("")
+                            for article in grandchild.articles:
+                                lines.extend(self._format_article_lines(article))
+
+            if len(lines) > 2:  # Tem conteúdo além do cabeçalho
+                result[topic.slug] = lines
+
+        return result
+
+    # ------------------------------------------------------------------
+    # Métodos Privados — Extração da Árvore
+    # ------------------------------------------------------------------
+
+    def _parse_treeitem(self, element: Any, release_id: int) -> TopicNode | None:
+        """
+        Parseia um <li role="treeitem"> e retorna um TopicNode.
+
+        Retorna None se o elemento não for válido ou não tiver link.
+        """
+        if not isinstance(element, Tag):
+            return None
+
+        item_id_raw: str = element.get("id", "")  # type: ignore[assignment]
+        if not item_id_raw:
+            return None
+
+        # Remove sufixo _leaf para obter o node_id canônico
+        node_id: str = item_id_raw
+        if node_id.endswith("_leaf"):
+            node_id = node_id[:-5]
+
+        # Verifica o nível
+        level_str: str = element.get("aria-level", "0")  # type: ignore[assignment]
+        try:
+            level: int = int(level_str)
+        except ValueError:
+            return None
+
+        if level < 1:
+            return None
+
+        # Extrai o link <a role="presentation">
+        link_tag = element.find("a", attrs={"role": "presentation"})
+        if not link_tag or not isinstance(link_tag, Tag):
+            return None
+
+        href: str = link_tag.get("href", "")  # type: ignore[assignment]
+        title: str = element.get("title", "") or link_tag.get_text(strip=True)  # type: ignore[assignment]
+
+        if not href or not title:
+            return None
+
+        # Normaliza a URL
+        full_url = self._normalize_url(href, release_id)
+
+        # is_leaf: artigo individual (tem data-is-link="true")
+        data_is_link: str = str(element.get("data-is-link", "") or "")
+        is_leaf: bool = data_is_link.lower() == "true"
+
+        return TopicNode(
+            node_id=node_id,
+            display_name=title.strip(),
+            level=level,
+            url=full_url,
+            is_leaf=is_leaf,
+        )
+
+    def _build_tree(self, nodes: list[TopicNode]) -> list[TopicNode]:
+        """
+        Constrói a hierarquia aninhada a partir da lista linear de nós.
+
+        Usa uma pilha para rastrear o caminho de pais conforme o nível aumenta.
+        Retorna apenas os nós de nível 2 (filhos diretos do root).
+        """
+        result: list[TopicNode] = []
+        # Pilha de (level, node) para rastrear pais
+        stack: list[tuple[int, TopicNode]] = []
+
+        for node in nodes:
+            # Ignora o nível 1 (root da árvore)
+            if node.level <= 1:
+                continue
+
+            # Remove da pilha todos os nós com nível >= ao atual
+            while stack and stack[-1][0] >= node.level:
+                stack.pop()
+
+            if not stack:
+                # Nível 2 — adiciona à raiz
+                if node.level == 2:
+                    result.append(node)
+                    stack.append((node.level, node))
+            else:
+                # Adiciona como filho do último nó da pilha
+                parent = stack[-1][1]
+                parent.children.append(node)
+                stack.append((node.level, node))
+
+        return result
+
+    def _normalize_url(self, href: str, release_id: int) -> str:
+        """
+        Normaliza uma URL do portal Salesforce Help:
+          - Garante o domínio base
+          - Garante o parâmetro release correto
+          - Garante language=pt_BR
+        """
+        if href.startswith("/s/"):
+            href = f"{SOURCE_BASE}{href}"
+        elif href.startswith("/"):
+            href = f"{SOURCE_BASE}{href}"
+        elif not href.startswith("http"):
+            href = urljoin(SOURCE_BASE, href)
+
+        # Garante parâmetro de release
+        if f"release={release_id}" not in href:
+            sep = "&" if "?" in href else "?"
+            href = re.sub(r"[?&]release=\d+", "", href)
+            href += f"{sep}release={release_id}"
+
+        # Garante language=pt_BR
+        if "language=pt_BR" not in href:
+            sep = "&" if "?" in href else "?"
+            href += f"{sep}language=pt_BR"
+
+        return href
+
+    # ------------------------------------------------------------------
+    # Métodos Privados — Formatação
+    # ------------------------------------------------------------------
+
+    def _format_article_lines(self, article: dict[str, str]) -> list[str]:
+        """Formata um artigo como linhas Markdown."""
+        lines: list[str] = []
+        title = article.get("title", "Sem título")
+        summary = article.get("summary", "")
+        url = article.get("url", "")
+
+        lines.append(f"### {title}")
+        lines.append("")
+        if summary:
+            lines.append(summary)
+            lines.append("")
+        if url:
+            lines.append(f"[🔗 Leia mais no conteúdo original]({url})")
+            lines.append("")
+        return lines
+
+    # ------------------------------------------------------------------
+    # Métodos Privados — Utilitários
+    # ------------------------------------------------------------------
 
     @staticmethod
     def _clean_text(raw: str) -> str:
