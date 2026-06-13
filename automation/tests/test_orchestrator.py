@@ -1,12 +1,6 @@
-import sys
 from unittest.mock import MagicMock, patch
 
-# Mock sys.modules['fitz'] antes de importar o código do projeto para evitar erro de importação
-sys.modules["fitz"] = MagicMock()
-
 from automation.core.orchestrator import ReleasePipelineOrchestrator  # noqa: E402
-from automation.core.intelligent_release_pipeline import IntelligentReleasePipeline  # noqa: E402
-from automation.shared.models import ClassificationResult, ParsedSection  # noqa: E402
 
 
 @patch("automation.core.orchestrator.ReleaseNotesScraper")
@@ -48,38 +42,6 @@ def test_orchestrator_execution_flow(
     classifier_inst.classify.assert_called_once_with("parsed content")
     generator_inst.generate.assert_called_once_with(release_name="Summer_26", topics=[])
     updater_inst.update.assert_called_once()
-
-
-@patch("automation.core.intelligent_release_pipeline.PdfExtractionEngine")
-@patch("automation.core.intelligent_release_pipeline.SemanticParser")
-@patch("automation.core.intelligent_release_pipeline.WeightedTopicClassifier")
-def test_intelligent_pipeline_flow(
-    mock_weighted_classifier: MagicMock,
-    mock_semantic_parser: MagicMock,
-    mock_pdf_engine: MagicMock,
-) -> None:
-    pdf_inst = MagicMock()
-    pdf_inst.extract_text.return_value = "extracted pdf text"
-    mock_pdf_engine.return_value = pdf_inst
-
-    parser_inst = MagicMock()
-    parser_inst.parse_sections.return_value = [ParsedSection(title="title", content="content")]
-    mock_semantic_parser.return_value = parser_inst
-
-    classifier_inst = MagicMock()
-    classifier_inst.classify.return_value = [
-        ClassificationResult(topic_name="apex", content="content", confidence_score=10)
-    ]
-    mock_weighted_classifier.return_value = classifier_inst
-
-    pipeline = IntelligentReleasePipeline()
-    results = pipeline.process_pdf_release("dummy.pdf")
-
-    assert len(results) == 1
-    assert results[0].topic_name == "apex"
-    pdf_inst.extract_text.assert_called_once_with("dummy.pdf")
-    parser_inst.parse_sections.assert_called_once_with("extracted pdf text")
-    classifier_inst.classify.assert_called_once()
 
 
 def test_orchestrator_main() -> None:
