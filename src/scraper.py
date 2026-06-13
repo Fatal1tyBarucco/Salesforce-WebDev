@@ -52,13 +52,17 @@ class SalesforceReleaseScraper:
         if self._playwright:
             await self._playwright.stop()
 
-    async def fetch_page(self, url: str, page: Optional[Page] = None) -> Optional[str]:
+    async def fetch_page(
+        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True
+    ) -> Optional[str]:
         """Fetches the fully rendered HTML content for a given URL."""
         logger.info("Fetching URL: %s", url)
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
-                html_content = await self._fetch_with_playwright(url, page)
+                html_content = await self._fetch_with_playwright(
+                    url, page, expand_toc=expand_toc
+                )
                 if html_content and len(html_content) > 1000:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
@@ -78,7 +82,9 @@ class SalesforceReleaseScraper:
         logger.error("All %d attempts failed for %s", MAX_RETRY_ATTEMPTS, url)
         return None
 
-    async def _fetch_with_playwright(self, url: str, page: Optional[Page] = None) -> Optional[str]:
+    async def _fetch_with_playwright(
+        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True
+    ) -> Optional[str]:
         """Core Playwright fetch logic with resilient wait strategy."""
         is_standalone = page is None
 
@@ -87,7 +93,7 @@ class SalesforceReleaseScraper:
                 async with async_playwright() as p:
                     browser = await p.chromium.launch(headless=True)
                     page = await browser.new_page()
-                    content = await self._exec_fetch(url, page)
+                    content = await self._exec_fetch(url, page, expand_toc=expand_toc)
                     await browser.close()
                     return content
             else:
@@ -95,31 +101,29 @@ class SalesforceReleaseScraper:
 
         assert page is not None
         try:
-            return await self._exec_fetch(url, page)
+            return await self._exec_fetch(url, page, expand_toc=expand_toc)
         finally:
             if is_standalone and self._browser and page is not None:
                 await page.close()
 
-    async def _exec_fetch(self, url: str, page: Page) -> str:
+    async def _exec_fetch(
+        self, url: str, page: Page, *, expand_toc: bool = True
+    ) -> str:
         """Internal execution of fetch logic on a provided page object."""
-        # Step 1: Navigate with domcontentloaded
         await page.goto(
             url,
             wait_until="domcontentloaded",
             timeout=REQUEST_TIMEOUT_SECONDS * 1000,
         )
 
-        # Step 2: Wait for JS rendering
-        await page.wait_for_timeout(5000)
-
-        # Step 3: Scroll to trigger lazy content
-        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         await page.wait_for_timeout(2000)
 
-        # Step 4: Expand all ToC tree nodes to ensure full navigation is visible
-        await self._expand_toc_nodes(page)
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(500)
 
-        # Step 5: Extract content
+        if expand_toc:
+            await self._expand_toc_nodes(page)
+
         return await page.content()
 
     async def _expand_toc_nodes(self, page: Page) -> None:

@@ -226,7 +226,10 @@ def test_update_readme_no_articles_fallback() -> None:
 
 def test_process_topic_node_with_articles() -> None:
     async def run() -> None:
+        mock_page = AsyncMock()
         scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
         scraper.fetch_page = AsyncMock(return_value="<html><p>Summary text here</p></html>")
 
         parser = MagicMock()
@@ -243,8 +246,9 @@ def test_process_topic_node_with_articles() -> None:
             ],
         )
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(node, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
 
         assert "apex" in highlights
         assert len(highlights["apex"]) == 1
@@ -262,8 +266,9 @@ def test_process_topic_node_no_articles() -> None:
 
         node = TopicNode(slug="empty", display_name="Empty", level=2, url="")
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(node, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
 
         assert "empty" not in highlights
         scraper.fetch_page.assert_not_called()
@@ -285,8 +290,9 @@ def test_process_topic_node_article_without_url() -> None:
             articles=[{"title": "No URL Article", "url": ""}],
         )
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(node, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
 
         assert highlights.get("no_url", []) == []
         scraper.fetch_page.assert_not_called()
@@ -296,7 +302,10 @@ def test_process_topic_node_article_without_url() -> None:
 
 def test_process_topic_node_scraper_returns_none() -> None:
     async def run() -> None:
+        mock_page = AsyncMock()
         scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
         scraper.fetch_page = AsyncMock(return_value=None)
 
         parser = MagicMock()
@@ -310,8 +319,9 @@ def test_process_topic_node_scraper_returns_none() -> None:
             articles=[{"title": "Feature", "url": "https://help.salesforce.com/article?id=1"}],
         )
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(node, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
 
         assert highlights["apex"][0]["summary"] == "Resumo não disponível."
 
@@ -320,7 +330,10 @@ def test_process_topic_node_scraper_returns_none() -> None:
 
 def test_process_topic_node_recursive_children() -> None:
     async def run() -> None:
+        mock_page = AsyncMock()
         scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
         scraper.fetch_page = AsyncMock(return_value="<html><p>Summary</p></html>")
 
         parser = MagicMock()
@@ -343,8 +356,9 @@ def test_process_topic_node_recursive_children() -> None:
             articles=[],
         )
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(parent, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(parent, scraper, parser, "summer_26", highlights, semaphore)
 
         assert "child" in highlights
         assert len(highlights["child"]) == 1
@@ -354,7 +368,10 @@ def test_process_topic_node_recursive_children() -> None:
 
 def test_process_topic_node_article_already_has_pt_br() -> None:
     async def run() -> None:
+        mock_page = AsyncMock()
         scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
         scraper.fetch_page = AsyncMock(return_value="<html><p>Summary</p></html>")
 
         parser = MagicMock()
@@ -374,8 +391,9 @@ def test_process_topic_node_article_already_has_pt_br() -> None:
             ],
         )
         highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
 
-        await _process_topic_node(node, scraper, parser, "summer_26", highlights)
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
 
         called_url = scraper.fetch_page.call_args[0][0]
         assert called_url.count("language=pt_BR") == 1

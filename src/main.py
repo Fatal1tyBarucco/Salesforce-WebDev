@@ -16,7 +16,13 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from .config import BASE_URL, KNOWN_RELEASES, RELEASES_DIR, TopicNode
+from .config import (
+    BASE_URL,
+    KNOWN_RELEASES,
+    MAX_CONCURRENT_PAGES,
+    RELEASES_DIR,
+    TopicNode,
+)
 from .generator import MarkdownGenerator
 from .logger import setup_logging
 from .parser import ReleaseNotesParser
@@ -57,14 +63,21 @@ async def run_pipeline() -> None:
 
                 release_highlights: dict[str, list[dict[str, str]]] = {}
 
-                for node in topic_nodes:
-                    await _process_topic_node(
+                semaphore = asyncio.Semaphore(MAX_CONCURRENT_PAGES)
+
+                tasks = [
+                    _process_topic_node(
                         node=node,
                         scraper=scraper,
                         parser=parser,
                         release_slug=release.slug,
                         release_highlights=release_highlights,
+                        semaphore=semaphore,
                     )
+                    for node in topic_nodes
+                ]
+
+                await asyncio.gather(*tasks)
 
                 all_highlights[release.slug] = release_highlights
                 generator.generate(release, topic_nodes, source_url=url)
@@ -82,8 +95,9 @@ async def _process_topic_node(
     parser: ReleaseNotesParser,
     release_slug: str,
     release_highlights: dict[str, list[dict[str, str]]],
+    semaphore: asyncio.Semaphore,
 ) -> None:
-    """Deep-scrape artigos de um TopicNode e popula highlights."""
+    """Deep-scrape artigos de um TopicNode e popula highlights (paralelo)."""
     all_articles = node.all_articles()
 
     if not all_articles:
@@ -95,49 +109,58 @@ async def _process_topic_node(
         len(all_articles),
     )
 
-    article_summaries: list[dict[str, str]] = []
+    async def _scrape_one(article: dict[str, str]) -> dict[str, str] | None:
+        async with semaphore:
+            article_url = article.get("url", "")
+            title = article.get("title", "Sem título")
 
-    for article in all_articles:
-        article_url = article.get("url", "")
-        title = article.get("title", "Sem título")
+            if not article_url:
+                return None
 
-        if not article_url:
-            continue
+            if "language=pt_BR" not in article_url:
+                sep = "&" if "?" in article_url else "?"
+                article_url += f"{sep}language=pt_BR"
 
-        logger.info("Deep scraping [%s]: %s", node.display_name, title)
+            logger.info("Deep scraping [%s]: %s", node.display_name, title)
 
-        if "language=pt_BR" not in article_url:
-            sep = "&" if "?" in article_url else "?"
-            article_url += f"{sep}language=pt_BR"
+            page = await scraper._browser.new_page()  # type: ignore[union-attr]
+            try:
+                html_article = await scraper.fetch_page(
+                    article_url, page, expand_toc=False
+                )
+                summary = "Resumo não disponível."
+                if html_article:
+                    soup_article = BeautifulSoup(html_article, "lxml")
+                    summary = parser.extract_article_summary(soup_article)
+            finally:
+                await page.close()
 
-        html_article = await scraper.fetch_page(article_url)
-        summary = "Resumo não disponível."
-        if html_article:
-            soup_article = BeautifulSoup(html_article, "lxml")
-            summary = parser.extract_article_summary(soup_article)
-
-        article["summary"] = summary
-        article["url"] = article_url
-
-        article_summaries.append(
-            {
+            return {
                 "title": title,
                 "summary": summary,
                 "url": article_url,
                 "topic": node.display_name,
             }
-        )
 
+    tasks = [_scrape_one(article) for article in all_articles]
+    results = await asyncio.gather(*tasks)
+
+    article_summaries = [r for r in results if r is not None]
     release_highlights[node.slug] = article_summaries
 
-    for child in node.children:
-        await _process_topic_node(
+    child_tasks = [
+        _process_topic_node(
             node=child,
             scraper=scraper,
             parser=parser,
             release_slug=release_slug,
             release_highlights=release_highlights,
+            semaphore=semaphore,
         )
+        for child in node.children
+    ]
+    if child_tasks:
+        await asyncio.gather(*child_tasks)
 
 
 def main() -> None:

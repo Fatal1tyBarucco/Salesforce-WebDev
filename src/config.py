@@ -27,6 +27,7 @@ BASE_URL: Final[str] = (
 REQUEST_TIMEOUT_SECONDS: Final[int] = 30
 MAX_RETRY_ATTEMPTS: Final[int] = 5
 RETRY_BASE_DELAY_SECONDS: Final[float] = 2.0  # backoff exponencial: 2^n
+MAX_CONCURRENT_PAGES: Final[int] = 8
 RELEASES_DIR: Final[str] = "releases"
 README_PATH: Final[str] = "README.md"
 README_INDEX_START_MARKER: Final[str] = "<!-- RELEASE_INDEX_START -->"

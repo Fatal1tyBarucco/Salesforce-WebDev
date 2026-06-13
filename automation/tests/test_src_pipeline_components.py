@@ -207,7 +207,7 @@ def test_scraper_fetch_page_success() -> None:
             result = await scraper.fetch_page("https://fake.url")
             assert result is not None
             assert "a" * 1005 in result
-            mock_fetch.assert_called_once_with("https://fake.url", None)
+            mock_fetch.assert_called_once_with("https://fake.url", None, expand_toc=True)
 
     asyncio.run(run())
 
