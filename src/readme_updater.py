@@ -11,13 +11,14 @@ Marcadores esperados no README.md:
   <!-- RELEASE_INDEX_END -->
 """
 
+from __future__ import annotations
+
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import (
     KNOWN_RELEASES,
-    MONITORED_TOPICS,
     README_INDEX_END_MARKER,
     README_INDEX_START_MARKER,
     README_PATH,
@@ -101,39 +102,56 @@ class ReadmeUpdater:
         """
         Constrói o bloco Markdown com a tabela de releases e links.
 
-        Itera pelas releases conhecidas e verifica quais tópicos
-        foram efetivamente gerados no diretório de releases.
+        Descobre os tópicos dinamicamente a partir dos arquivos .md
+        presentes em cada diretório de release.
         """
         updated_at: str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+        all_topics: list[str] = self._discover_all_topics()
+
+        header_cells = ["Release"] + [t.replace("_", " ").title() for t in all_topics]
+        separator = ["| :---"] + [":---:" for _ in all_topics]
         lines: list[str] = [
             "",
             f"> ⚙️ Índice gerado automaticamente em **{updated_at}**.",
             "",
-            "| Release | Apex | LWC | Flow | Security | Integrations |",
-            "| :--- | :---: | :---: | :---: | :---: | :---: |",
+            "| " + " | ".join(header_cells) + " |",
+            "| " + " | ".join(separator) + " |",
         ]
 
-        # Reverte para mostrar as mais recentes primeiro
         for release in reversed(KNOWN_RELEASES):
-            row: str = self._build_release_row(release)
+            row: str = self._build_release_row(release, all_topics)
             lines.append(row)
 
         lines.append("")
         return "\n".join(lines)
 
-    def _build_release_row(self, release: ReleaseInfo) -> str:
-        """Constrói uma linha da tabela para uma release específica com emojis de status."""
+    def _discover_all_topics(self) -> list[str]:
+        """Scaneia todos os diretórios de release para descobrir tópicos únicos."""
+        topics: set[str] = set()
+        if not self._releases_dir.exists():
+            return []
+
+        for release_dir in self._releases_dir.iterdir():
+            if not release_dir.is_dir():
+                continue
+            for md_file in release_dir.glob("*.md"):
+                topics.add(md_file.stem)
+
+        return sorted(topics)
+
+    def _build_release_row(self, release: ReleaseInfo, all_topics: list[str]) -> str:
+        """Constrói uma linha da tabela para uma release."""
         release_dir: Path = self._releases_dir / release.slug
 
-        # Define o emoji baseado na estação
         emoji = "❄️" if "Winter" in release.name else "☀️" if "Summer" in release.name else "🌸"
 
         cells: list[str] = [f"{emoji} **{release.name}**"]
 
-        for topic in MONITORED_TOPICS:
-            file_path: Path = release_dir / f"{topic.slug}.md"
+        for topic_slug in all_topics:
+            file_path: Path = release_dir / f"{topic_slug}.md"
             if file_path.exists():
-                link: str = f"./{RELEASES_DIR}/{release.slug}/{topic.slug}.md"
+                link: str = f"./{RELEASES_DIR}/{release.slug}/{topic_slug}.md"
                 cells.append(f"[✅ Ver]({link})")
             else:
                 cells.append("—")

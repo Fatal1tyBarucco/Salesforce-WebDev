@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch, AsyncMock
 import asyncio
 from src.main import main, _update_readme
-from src.config import KNOWN_RELEASES
+from src.config import TopicNode
 
 _original_asyncio_run = asyncio.run
 
@@ -20,7 +20,6 @@ def test_main_execution_success(
     mock_scraper_class: MagicMock,
     mock_setup_logging: MagicMock,
 ) -> None:
-    # Setup mocks
     scraper_inst = MagicMock()
     scraper_inst.fetch_page = AsyncMock(return_value="<html>rendered</html>")
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
@@ -28,32 +27,33 @@ def test_main_execution_success(
     mock_scraper_class.return_value = scraper_inst
 
     parser_inst = MagicMock()
-    parser_inst.extract_article_links.return_value = {}
-    parser_inst.build_topic_content_from_links.return_value = {}
+    parser_inst.extract_topic_tree.return_value = [
+        TopicNode(
+            slug="apex",
+            display_name="Apex",
+            level=2,
+            url="",
+            children=[],
+            articles=[],
+        )
+    ]
+    parser_inst.extract_article_summary.return_value = "Test summary"
     mock_parser_class.return_value = parser_inst
 
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = [("summer_26", ["apex"])]
     mock_generator_class.return_value = generator_inst
 
-    # Fazer asyncio.run executar a corrotina real
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
-    # Executa main
     main()
 
-    # Asserts
     mock_setup_logging.assert_called_once()
     mock_asyncio_run.assert_called()
-    parser_inst.extract_article_links.assert_called()
+    parser_inst.extract_topic_tree.assert_called()
     generator_inst.generate.assert_called()
-    from src.config import MONITORED_TOPICS
-
-    expected_highlights: dict[str, dict[str, list[dict[str, str]]]] = {
-        release.slug: {topic.slug: [] for topic in MONITORED_TOPICS} for release in KNOWN_RELEASES
-    }
     generator_inst.list_generated_releases.assert_called_once()
-    mock_update_readme.assert_called_once_with([("summer_26", ["apex"])], expected_highlights)
+    mock_update_readme.assert_called_once()
 
 
 @patch("src.main.setup_logging")
@@ -70,7 +70,6 @@ def test_main_execution_scraper_returns_none(
     mock_scraper_class: MagicMock,
     mock_setup_logging: MagicMock,
 ) -> None:
-    # Simula scraper retornando None ou vazio
     scraper_inst = MagicMock()
     scraper_inst.fetch_page = AsyncMock(return_value=None)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
@@ -81,13 +80,11 @@ def test_main_execution_scraper_returns_none(
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
 
-    # Fazer asyncio.run executar a corrotina real
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
-    # Nao deve chamar parseamento nem geracao
-    mock_parser_class.return_value.extract_article_links.assert_not_called()
+    mock_parser_class.return_value.extract_topic_tree.assert_not_called()
     generator_inst.generate.assert_not_called()
 
 
@@ -105,7 +102,6 @@ def test_main_execution_exception_handled(
     mock_scraper_class: MagicMock,
     mock_setup_logging: MagicMock,
 ) -> None:
-    # Simula exception sendo disparada e tratada no loop
     scraper_inst = MagicMock()
     scraper_inst.fetch_page = AsyncMock(side_effect=Exception("Scraping error"))
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
@@ -116,17 +112,14 @@ def test_main_execution_exception_handled(
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
 
-    # Fazer asyncio.run executar a corrotina real
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
-    # Nao quebra a execucao global, apenas loga e prossegue
     mock_update_readme.assert_called_once()
 
 
 def test_update_readme_writes_file() -> None:
-    # Mock do Path.write_text
     with patch("src.main.Path.write_text") as mock_write_text:
         releases = [("summer_26", ["apex", "lwc"])]
         _update_readme(releases, {})
@@ -134,9 +127,34 @@ def test_update_readme_writes_file() -> None:
         mock_write_text.assert_called_once()
         written_content = mock_write_text.call_args[0][0]
         assert "Summer 26" in written_content
-        assert "Apex" in written_content
+        assert "APEX" in written_content
         assert "CI/CD Status & Conformidade" in written_content
         assert "banner.png" in written_content
+
+
+def test_update_readme_with_highlights() -> None:
+    with patch("src.main.Path.write_text") as mock_write_text:
+        releases = [("summer_26", ["apex"])]
+        highlights = {
+            "summer_26": {
+                "apex": [
+                    {
+                        "title": "New Apex Feature",
+                        "summary": "This is a test summary",
+                        "url": "https://example.com",
+                        "topic": "Apex",
+                    }
+                ]
+            }
+        }
+        _update_readme(releases, highlights)
+
+        mock_write_text.assert_called_once()
+        written_content = mock_write_text.call_args[0][0]
+        assert "<details>" in written_content
+        assert "<summary>" in written_content
+        assert "New Apex Feature" in written_content
+        assert "This is a test summary" in written_content
 
 
 def test_main_entrypoint() -> None:
@@ -146,7 +164,6 @@ def test_main_entrypoint() -> None:
     file_path = "src/main.py"
     code_text = Path(file_path).read_text(encoding="utf-8")
 
-    # Use compile to associate the code with the file for coverage tracking
     code = compile(code_text, file_path, "exec")
 
     global_ns = {
@@ -154,7 +171,6 @@ def test_main_entrypoint() -> None:
         "__package__": "src",
     }
 
-    # Mock everything main() uses to avoid side effects and errors
     with patch("src.main.SalesforceReleaseScraper"), patch("src.main.ReleaseNotesParser"), patch(
         "src.main.MarkdownGenerator"
     ), patch("src.main.asyncio.run"):

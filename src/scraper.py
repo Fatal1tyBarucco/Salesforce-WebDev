@@ -116,5 +116,88 @@ class SalesforceReleaseScraper:
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         await page.wait_for_timeout(2000)
 
-        # Step 4: Extract content
+        # Step 4: Expand all ToC tree nodes to ensure full navigation is visible
+        await self._expand_toc_nodes(page)
+
+        # Step 5: Extract content
+        return await page.content()
+
+    async def _expand_toc_nodes(self, page: Page) -> None:
+        """Click collapsed tree nodes in the ToC to reveal all topics."""
+        try:
+            collapsed = await page.query_selector_all('li[role="treeitem"][aria-expanded="false"]')
+            for node in collapsed:
+                try:
+                    await node.click()
+                    await page.wait_for_timeout(300)
+                except Exception:
+                    pass
+            if collapsed:
+                logger.info("Expanded %d collapsed ToC nodes", len(collapsed))
+        except Exception as e:
+            logger.debug("ToC expansion skipped: %s", e)
+
+    async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
+        """
+        Extract just the ToC HTML from a release notes page.
+
+        Loads the page and returns the HTML of the navigation tree container.
+        Falls back to returning full page content if ToC selector not found.
+        """
+        logger.info("Extracting ToC HTML from: %s", url)
+
+        is_standalone = page is None
+        browser: Optional[Browser] = None
+
+        try:
+            if is_standalone:
+                if not self._browser:
+                    async with async_playwright() as p:
+                        browser = await p.chromium.launch(headless=True)
+                        page = await browser.new_page()
+                        content = await self._extract_toc_from_page(url, page)
+                        await browser.close()
+                        return content
+                else:
+                    page = await self._browser.new_page()
+
+            assert page is not None
+            return await self._extract_toc_from_page(url, page)
+        except Exception as e:
+            logger.error("ToC extraction failed: %s", e)
+            return None
+        finally:
+            if is_standalone and browser:
+                await browser.close()
+
+    async def _extract_toc_from_page(self, url: str, page: Page) -> Optional[str]:
+        """Navigate to URL and extract the ToC container HTML."""
+        await page.goto(
+            url,
+            wait_until="domcontentloaded",
+            timeout=REQUEST_TIMEOUT_SECONDS * 1000,
+        )
+        await page.wait_for_timeout(5000)
+
+        await self._expand_toc_nodes(page)
+
+        toc_selectors = [
+            ".toc-container",
+            "ul.tree",
+            '[role="tree"]',
+            "nav.toc",
+        ]
+        for selector in toc_selectors:
+            element = await page.query_selector(selector)
+            if element:
+                html = await element.inner_html()
+                if html and len(html) > 100:
+                    logger.info(
+                        "ToC extracted with selector '%s' (%d bytes)",
+                        selector,
+                        len(html),
+                    )
+                    return html
+
+        logger.warning("No ToC container found, returning full page HTML")
         return await page.content()

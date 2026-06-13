@@ -1,5 +1,5 @@
 """
-generator.py — Gerador de artefatos Markdown a partir do conteúdo segmentado.
+generator.py — Gerador de artefatos Markdown a partir da árvore de tópicos dinâmica.
 
 Responsabilidade:
   Cria/atualiza a estrutura de diretórios /releases/{slug}/ e gera
@@ -8,24 +8,18 @@ Responsabilidade:
 Estrutura gerada:
   releases/
   └── summer_26/
-      ├── apex.md
-      ├── lwc.md
-      ├── flow.md
-      ├── security.md
-      └── integrations.md
+      ├── rn_development.md
+      ├── rn_security.md
+      └── rn_integrations.md
 """
+
+from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import (
-    MONITORED_TOPICS,
-    RELEASES_DIR,
-    ReleaseInfo,
-    TopicConfig,
-    TopicContentMap,
-)
+from .config import RELEASES_DIR, ReleaseInfo, TopicNode
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -72,16 +66,16 @@ class MarkdownGenerator:
     def generate(
         self,
         release: ReleaseInfo,
-        content_map: TopicContentMap,
+        topic_nodes: list[TopicNode],
         source_url: str,
     ) -> list[Path]:
         """
-        Gera todos os arquivos Markdown para uma release.
+        Gera todos os arquivos Markdown para uma release a partir da árvore.
 
         Args:
-            release    : Metadados da release.
-            content_map: Dicionário {slug: linhas} retornado pelo parser.
-            source_url : URL de origem (incluída como referência no header).
+            release     : Metadados da release.
+            topic_nodes : Lista de TopicNode raiz (nível 2) da árvore.
+            source_url  : URL de origem (incluída como referência no header).
 
         Returns:
             Lista dos caminhos de arquivos gerados/atualizados.
@@ -90,10 +84,10 @@ class MarkdownGenerator:
         generated_files: list[Path] = []
         generated_at: str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M")
 
-        for topic in MONITORED_TOPICS:
-            lines: list[str] = content_map.get(topic.slug, [])
+        for node in topic_nodes:
+            lines: list[str] = self._build_topic_lines(node, release.name)
             file_path: Path = self._write_topic_file(
-                topic=topic,
+                node=node,
                 release=release,
                 lines=lines,
                 release_dir=release_dir,
@@ -121,9 +115,32 @@ class MarkdownGenerator:
         logger.debug("[GENERATOR] Diretório garantido: %s", release_dir)
         return release_dir
 
+    def _build_topic_lines(self, node: TopicNode, release_name: str) -> list[str]:
+        """Constrói as linhas Markdown para um tópico e seus sub-tópicos."""
+        lines: list[str] = []
+
+        if node.articles:
+            lines.append(f"## {node.display_name}")
+            lines.append("")
+            for article in node.articles:
+                lines.append(f"### {article['title']}")
+                lines.append("")
+                if article.get("summary"):
+                    lines.append(article["summary"])
+                    lines.append("")
+                if article.get("url"):
+                    lines.append(f"[🔗 Leia mais no conteúdo original]({article['url']})")
+                    lines.append("")
+
+        for child in node.children:
+            child_lines = self._build_topic_lines(child, release_name)
+            lines.extend(child_lines)
+
+        return lines
+
     def _write_topic_file(
         self,
-        topic: TopicConfig,
+        node: TopicNode,
         release: ReleaseInfo,
         lines: list[str],
         release_dir: Path,
@@ -136,10 +153,10 @@ class MarkdownGenerator:
         O arquivo é sobrescrito a cada execução para garantir que o
         conteúdo reflita sempre a extração mais recente.
         """
-        file_path: Path = release_dir / f"{topic.slug}.md"
+        file_path: Path = release_dir / f"{node.topic_file_slug()}.md"
 
         header: str = MARKDOWN_HEADER_TEMPLATE.format(
-            topic_name=topic.display_name,
+            topic_name=node.display_name,
             release_name=release.name,
             generated_at=generated_at,
             source_url=source_url,

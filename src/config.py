@@ -1,13 +1,14 @@
 """
 config.py — Configuração central do pipeline de Release Notes.
 
-Adicionar novos tópicos ou releases aqui NÃO requer alterações no motor principal.
+Tópicos são descobertos dinamicamente a partir da árvore de navegação
+do Salesforce Help (não mais hardcoded).
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Final
-
-TopicContentMap = dict[str, list[str]]
 
 # ---------------------------------------------------------------------------
 # Constantes Globais
@@ -36,6 +37,18 @@ USER_AGENT: Final[str] = (
     "+https://github.com/Fatal1tyBarucco/Salesforce-WebDev)"
 )
 
+# Slugs de nós da árvore de navegação que devem ser ignorados
+# (não contêm artigos de release notes relevantes)
+# NOTA: os slugs são derivados dos IDs removendo o prefixo "rn_"
+EXCLUDED_NODE_SLUGS: Final[frozenset[str]] = frozenset(
+    {
+        "features_released_monthly",
+        "change_log",
+        "feature_impact",
+        "previous_release_notes",
+    }
+)
+
 # ---------------------------------------------------------------------------
 # Mapeamento de Releases Conhecidas
 # release_id corresponde ao parâmetro ?release= da URL oficial do Salesforce.
@@ -61,113 +74,34 @@ KNOWN_RELEASES: list[ReleaseInfo] = [
 ]
 
 # ---------------------------------------------------------------------------
-# Tópicos Monitorados
-# Para adicionar um novo tópico (ex: "data_cloud"), basta inserir um novo
-# TopicConfig abaixo. Nenhuma outra alteração é necessária.
+# TopicNode — nó dinâmico da árvore de navegação do Salesforce Help.
+# Extraído diretamente do DOM (li[role="treeitem"]) em vez de keywords
+# estáticas. A árvore completa é construída pelo parser.
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
-class TopicConfig:
-    """
-    Configuração de um tópico de extração.
+@dataclass
+class TopicNode:
+    """Nó da árvore de navegação extraída do portal Salesforce Help."""
 
-    Atributos:
-        slug        : identificador único (nome do arquivo .md)
-        display_name: título legível usado no Markdown gerado
-        keywords    : termos de busca usados pelo parser para filtrar seções
-    """
+    slug: str  # ID do nó sem prefixo, ex: "rn_development"
+    display_name: str  # Texto legível do label, ex: "Desenvolvimento"
+    level: int  # aria-level no DOM (2 = categoria principal, 3+ = subcategorias)
+    url: str  # URL completa (vazia para nós container)
+    children: list[TopicNode] = field(default_factory=list)
+    articles: list[dict[str, str]] = field(default_factory=list)
 
-    slug: str
-    display_name: str
-    keywords: list[str] = field(default_factory=list)
+    def is_leaf(self) -> bool:
+        """True se o nó não tem filhos (é artigo ou subsem filhos)."""
+        return len(self.children) == 0
 
+    def all_articles(self) -> list[dict[str, str]]:
+        """Retorna todos os artigos recursivamente (filhos + netos)."""
+        result: list[dict[str, str]] = list(self.articles)
+        for child in self.children:
+            result.extend(child.all_articles())
+        return result
 
-MONITORED_TOPICS: list[TopicConfig] = [
-    TopicConfig(
-        slug="apex",
-        display_name="Apex",
-        keywords=[
-            "apex",
-            "trigger",
-            "batch",
-            "queueable",
-            "schedulable",
-            "anonymous",
-            "governor limit",
-            "soql",
-            "sosl",
-        ],
-    ),
-    TopicConfig(
-        slug="lwc",
-        display_name="Lightning Web Components (LWC)",
-        keywords=[
-            "lwc",
-            "lightning web component",
-            "lightning component",
-            "aura",
-            "wire",
-            "lms",
-            "lightning message service",
-        ],
-    ),
-    TopicConfig(
-        slug="flow",
-        display_name="Flow & Automação",
-        keywords=[
-            "flow",
-            "process builder",
-            "workflow",
-            "automation",
-            "screen flow",
-            "record-triggered",
-            "scheduled flow",
-        ],
-    ),
-    TopicConfig(
-        slug="security",
-        display_name="Segurança & Permissões",
-        keywords=[
-            "security",
-            "permission",
-            "shield",
-            "encryption",
-            "profile",
-            "role",
-            "sharing",
-            "csp",
-            "csrf",
-            "oauth",
-        ],
-    ),
-    TopicConfig(
-        slug="integrations",
-        display_name="Integrações & APIs",
-        keywords=[
-            "api",
-            "rest",
-            "soap",
-            "bulk",
-            "streaming",
-            "platform event",
-            "integration",
-            "webhook",
-            "named credential",
-            "connected app",
-        ],
-    ),
-    # -----------------------------------------------------------------------
-    # Exemplo de extensão sem refatoração do motor:
-    # TopicConfig(
-    #     slug="data_cloud",
-    #     display_name="Data Cloud",
-    #     keywords=["data cloud", "cdp", "data stream", "calculated insight"],
-    # ),
-    # TopicConfig(
-    #     slug="einstein_ai",
-    #     display_name="Einstein AI & Agentforce",
-    #     keywords=["einstein", "agentforce", "copilot", "prompt builder", "llm"],
-    # ),
-    # -----------------------------------------------------------------------
-]
+    def topic_file_slug(self) -> str:
+        """Slug usado como nome do arquivo .md para este tópico."""
+        return self.slug

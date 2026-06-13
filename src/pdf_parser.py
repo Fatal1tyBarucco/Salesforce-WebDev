@@ -4,8 +4,10 @@ pdf_parser.py — Extrai e segmenta conteúdo das Release Notes a partir de PDFs
 Responsabilidade:
   - Localizar os PDFs no diretório `pdfs/`.
   - Extrair texto bruto com pdfplumber.
-  - Segmentar por tópicos usando palavras-chave e estrutura de headings.
+  - Segmentar por headings e estrutura do documento.
 """
+
+from __future__ import annotations
 
 import logging
 import re
@@ -14,11 +16,11 @@ from typing import Optional
 
 import pdfplumber
 
-from .config import MONITORED_TOPICS, TopicContentMap
-
 logger = logging.getLogger(__name__)
 
 PDF_DIR = Path("pdfs")
+
+TopicContentMap = dict[str, list[str]]
 
 
 class PDFReleaseParser:
@@ -33,27 +35,26 @@ class PDFReleaseParser:
             release_name: nome de exibição (ex: "Summer '26").
 
         Returns:
-            Dicionário {slug_do_tópico: lista_de_linhas_extraídas}.
+            Dicionário {slug_do_seção: lista_de_linhas_extraídas}.
         """
         pdf_path = self._find_pdf(release_slug)
         if not pdf_path:
-            logger.warning(f"PDF não encontrado para {release_slug}. Pulando.")
-            return {topic.slug: [] for topic in MONITORED_TOPICS}
+            logger.warning("PDF não encontrado para %s. Pulando.", release_slug)
+            return {}
 
-        logger.info(f"Processando PDF: {pdf_path}")
+        logger.info("Processando PDF: %s", pdf_path)
         full_text = self._extract_text(pdf_path)
         if not full_text:
-            logger.error(f"Falha ao extrair texto do PDF {pdf_path}")
-            return {topic.slug: [] for topic in MONITORED_TOPICS}
+            logger.error("Falha ao extrair texto do PDF %s", pdf_path)
+            return {}
 
-        return self._segment_by_topics(full_text, release_name)
+        return self._segment_by_headings(full_text)
 
     def _find_pdf(self, release_slug: str) -> Optional[Path]:
         """Localiza o arquivo PDF pelo slug da release."""
         if not PDF_DIR.exists():
             return None
 
-        # Procura por arquivo que contenha o slug no nome
         for pdf_file in PDF_DIR.glob("*.pdf"):
             if release_slug in pdf_file.stem.lower():
                 return pdf_file
@@ -70,32 +71,37 @@ class PDFReleaseParser:
                         text_parts.append(page_text)
                 return "\n".join(text_parts)
         except Exception as e:
-            logger.exception(f"Erro ao processar PDF: {e}")
+            logger.exception("Erro ao processar PDF: %s", e)
             return ""
 
-    def _segment_by_topics(self, text: str, release_name: str) -> TopicContentMap:
+    def _segment_by_headings(self, text: str) -> TopicContentMap:
         """
-        Segmenta o texto por tópicos usando palavras-chave e limites de seção.
+        Segmenta o texto por headings (linhas em maiúsculas ou com #).
+        Cada heading vira uma chave no dicionário de resultado.
         """
-        result: TopicContentMap = {topic.slug: [] for topic in MONITORED_TOPICS}
+        result: TopicContentMap = {}
+        current_key: str = "_general"
+        current_lines: list[str] = []
 
-        # Divide o texto em seções por linhas que parecem cabeçalhos
-        sections = re.split(r"\n(?=[A-Z][A-Za-z &]+)\n", text)  # headings em maiúsculas
+        for line in text.split("\n"):
+            stripped = line.strip()
+            if not stripped:
+                continue
 
-        for section in sections:
-            for topic in MONITORED_TOPICS:
-                if self._topic_in_section(section, topic.keywords):
-                    # Adiciona a seção inteira como uma lista de linhas
-                    lines = [line.strip() for line in section.split("\n") if line.strip()]
-                    if lines:
-                        result[topic.slug].extend(lines)
+            is_heading = bool(re.match(r"^[A-Z][A-Z &/']{2,}$", stripped)) or stripped.startswith(
+                "#"
+            )
+
+            if is_heading:
+                if current_lines:
+                    result.setdefault(current_key, []).extend(current_lines)
+                slug = re.sub(r"[^a-z0-9]+", "_", stripped.lower()).strip("_")
+                current_key = slug
+                current_lines = []
+            else:
+                current_lines.append(stripped)
+
+        if current_lines:
+            result.setdefault(current_key, []).extend(current_lines)
 
         return result
-
-    def _topic_in_section(self, section_text: str, keywords: list[str]) -> bool:
-        """Verifica se alguma palavra-chave aparece na seção."""
-        section_lower = section_text.lower()
-        for kw in keywords:
-            if re.search(r"\b" + re.escape(kw) + r"\b", section_lower):
-                return True
-        return False
