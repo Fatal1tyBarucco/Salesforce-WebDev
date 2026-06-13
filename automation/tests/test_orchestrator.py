@@ -1,8 +1,6 @@
-import sys
 from unittest.mock import MagicMock, patch
 
 from automation.core.orchestrator import ReleasePipelineOrchestrator  # noqa: E402
-from automation.shared.models import ClassificationResult, ParsedSection  # noqa: E402
 
 
 @patch("automation.core.orchestrator.ReleaseNotesScraper")

@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
-from src.config import ReleaseInfo, TopicNode
+from src.config import ReleaseInfo, TopicConfig, TopicNode
 from src.generator import MarkdownGenerator
 from src.readme_updater import ReadmeUpdater
 from src.scraper import SalesforceReleaseScraper
