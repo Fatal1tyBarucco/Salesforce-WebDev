@@ -7,7 +7,7 @@ from src.main import (
     _find_existing_releases,
     _slugify_category,
 )
-from src.config import KNOWN_RELEASES, ReleaseInfo
+from src.config import ReleaseInfo
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 _original_asyncio_run = asyncio.run

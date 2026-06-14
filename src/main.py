@@ -116,7 +116,8 @@ def _build_release_name(release_id: int) -> str:
 def _build_release_slug(release_id: int) -> str:
     name = _build_release_name(release_id)
     season, year = name.split()
-    return f"{season.lower()}_{year.replace("'", "")}"
+    clean_year = year.replace("'", "")
+    return f"{season.lower()}_{clean_year}"
 
 
 async def run_pipeline() -> None:
