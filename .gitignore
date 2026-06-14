@@ -20,6 +20,3 @@ ENV/
 # Project specific
 pdfs/
 cache/
-releases/*/
-release_menu.html
-test_html.html
