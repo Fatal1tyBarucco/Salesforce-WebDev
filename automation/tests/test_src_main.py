@@ -401,6 +401,62 @@ def test_process_topic_node_article_already_has_pt_br() -> None:
     asyncio.run(run())
 
 
+def test_process_topic_node_timeout() -> None:
+    async def run() -> None:
+        mock_page = AsyncMock()
+        scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
+        scraper.fetch_page = AsyncMock(side_effect=asyncio.TimeoutError)
+
+        parser = MagicMock()
+
+        node = TopicNode(
+            slug="apex",
+            display_name="Apex",
+            level=2,
+            url="",
+            children=[],
+            articles=[{"title": "Slow Feature", "url": "https://help.salesforce.com/article?id=1"}],
+        )
+        highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
+
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
+
+        assert highlights["apex"][0]["summary"] == "Resumo não disponível."
+
+    asyncio.run(run())
+
+
+def test_process_topic_node_fetch_error() -> None:
+    async def run() -> None:
+        mock_page = AsyncMock()
+        scraper = MagicMock()
+        scraper._browser = MagicMock()
+        scraper._browser.new_page = AsyncMock(return_value=mock_page)
+        scraper.fetch_page = AsyncMock(side_effect=RuntimeError("Browser crashed"))
+
+        parser = MagicMock()
+
+        node = TopicNode(
+            slug="apex",
+            display_name="Apex",
+            level=2,
+            url="",
+            children=[],
+            articles=[{"title": "Bad Feature", "url": "https://help.salesforce.com/article?id=2"}],
+        )
+        highlights: dict[str, list[dict[str, str]]] = {}
+        semaphore = asyncio.Semaphore(8)
+
+        await _process_topic_node(node, scraper, parser, "summer_26", highlights, semaphore)
+
+        assert highlights["apex"][0]["summary"] == "Resumo não disponível."
+
+    asyncio.run(run())
+
+
 def test_main_entrypoint() -> None:
     from pathlib import Path
 

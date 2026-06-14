@@ -17,6 +17,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from .config import (
+    ARTICLE_FETCH_TIMEOUT_SECONDS,
     BASE_URL,
     KNOWN_RELEASES,
     MAX_CONCURRENT_PAGES,
@@ -125,13 +126,24 @@ async def _process_topic_node(
 
             page = await scraper._browser.new_page()  # type: ignore[union-attr]
             try:
-                html_article = await scraper.fetch_page(
-                    article_url, page, expand_toc=False
+                html_article = await asyncio.wait_for(
+                    scraper.fetch_page(article_url, page, expand_toc=False),
+                    timeout=ARTICLE_FETCH_TIMEOUT_SECONDS,
                 )
                 summary = "Resumo não disponível."
                 if html_article:
                     soup_article = BeautifulSoup(html_article, "lxml")
                     summary = parser.extract_article_summary(soup_article)
+            except asyncio.TimeoutError:
+                logger.warning(
+                    "Timeout fetching [%s]: %s", node.display_name, title
+                )
+                summary = "Resumo não disponível."
+            except Exception as e:
+                logger.error(
+                    "Error fetching [%s] %s: %s", node.display_name, title, e
+                )
+                summary = "Resumo não disponível."
             finally:
                 await page.close()
 
