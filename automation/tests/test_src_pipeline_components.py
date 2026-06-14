@@ -465,3 +465,21 @@ def test_extract_toc_from_page_toc_too_short() -> None:
         assert "x" * 200 in result
 
     asyncio.run(run())
+
+
+def test_exec_fetch_selector_timeout_fallback() -> None:
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_page.goto = AsyncMock()
+        mock_page.wait_for_selector = AsyncMock(side_effect=Exception("Timeout"))
+        mock_page.wait_for_timeout = AsyncMock()
+        mock_page.evaluate = AsyncMock()
+        mock_page.content = AsyncMock(return_value="<html><body>content</body></html>")
+        mock_page.query_selector_all = AsyncMock(return_value=[])
+
+        result = await scraper._exec_fetch("https://fake.url", mock_page, expand_toc=False)
+        assert "content" in result
+
+    asyncio.run(run())

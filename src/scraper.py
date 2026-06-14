@@ -116,10 +116,16 @@ class SalesforceReleaseScraper:
             timeout=REQUEST_TIMEOUT_SECONDS * 1000,
         )
 
-        await page.wait_for_timeout(2000)
+        try:
+            await page.wait_for_selector(
+                "ul.tree, li[role='treeitem'], article",
+                timeout=15000,
+            )
+        except Exception:
+            await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-        await page.wait_for_timeout(500)
+        await page.wait_for_timeout(1000)
 
         if expand_toc:
             await self._expand_toc_nodes(page)
