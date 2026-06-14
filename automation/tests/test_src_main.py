@@ -1,7 +1,14 @@
 from unittest.mock import MagicMock, patch, AsyncMock
 import asyncio
-from src.main import main, _update_readme, _process_topic_node
-from src.config import TopicNode
+from src.main import (
+    main,
+    _update_readme,
+    _process_topic_node,
+    _find_existing_releases,
+    detect_new_releases,
+    _highest_known_id,
+)
+from src.config import TopicNode, KNOWN_RELEASES, build_release_info
 
 _original_asyncio_run = asyncio.run
 
@@ -11,9 +18,11 @@ _original_asyncio_run = asyncio.run
 @patch("src.main.ReleaseNotesParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_success(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_parser_class: MagicMock,
@@ -44,12 +53,15 @@ def test_main_execution_success(
     generator_inst.list_generated_releases.return_value = [("summer_26", ["apex"])]
     mock_generator_class.return_value = generator_inst
 
+    mock_detect.return_value = [KNOWN_RELEASES[-1]]
+
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
     mock_setup_logging.assert_called_once()
     mock_asyncio_run.assert_called()
+    mock_detect.assert_called_once()
     parser_inst.extract_topic_tree.assert_called()
     generator_inst.generate.assert_called()
     generator_inst.list_generated_releases.assert_called_once()
@@ -61,9 +73,11 @@ def test_main_execution_success(
 @patch("src.main.ReleaseNotesParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_scraper_returns_none(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_parser_class: MagicMock,
@@ -80,10 +94,13 @@ def test_main_execution_scraper_returns_none(
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
 
+    mock_detect.return_value = [KNOWN_RELEASES[-1]]
+
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
 
+    mock_detect.assert_called_once()
     mock_parser_class.return_value.extract_topic_tree.assert_not_called()
     generator_inst.generate.assert_not_called()
 
@@ -93,9 +110,11 @@ def test_main_execution_scraper_returns_none(
 @patch("src.main.ReleaseNotesParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_exception_handled(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_parser_class: MagicMock,
@@ -112,6 +131,8 @@ def test_main_execution_exception_handled(
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
 
+    mock_detect.return_value = [KNOWN_RELEASES[-1]]
+
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
     main()
@@ -124,9 +145,11 @@ def test_main_execution_exception_handled(
 @patch("src.main.ReleaseNotesParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_empty_topic_nodes(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_parser_class: MagicMock,
@@ -146,6 +169,8 @@ def test_main_execution_empty_topic_nodes(
     generator_inst = MagicMock()
     generator_inst.list_generated_releases.return_value = []
     mock_generator_class.return_value = generator_inst
+
+    mock_detect.return_value = [KNOWN_RELEASES[-1]]
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
@@ -474,3 +499,225 @@ def test_main_entrypoint() -> None:
         "src.main.MarkdownGenerator"
     ), patch("src.main.asyncio.run"):
         exec(code, global_ns)
+
+
+def test_find_existing_releases_empty(tmp_path: object) -> None:
+    with patch("src.main.RELEASES_DIR", "/nonexistent"):
+        result = _find_existing_releases()
+        assert result == set()
+
+
+def test_find_existing_releases_with_dirs() -> None:
+    import tempfile
+    import os
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        os.makedirs(os.path.join(tmpdir, "release_a"))
+        os.makedirs(os.path.join(tmpdir, "release_b"))
+        open(os.path.join(tmpdir, "release_a", "topic.md"), "w").close()
+        open(os.path.join(tmpdir, "release_b", "topic.md"), "w").close()
+        with patch("src.main.RELEASES_DIR", tmpdir):
+            result = _find_existing_releases()
+            assert "release_a" in result
+            assert "release_b" in result
+
+
+def test_highest_known_id() -> None:
+    result = _highest_known_id()
+    assert result == max(r.release_id for r in KNOWN_RELEASES)
+
+
+def test_build_release_info() -> None:
+    info = build_release_info(262)
+    assert info.name == "Summer '26"
+    assert info.slug == "summer_26"
+    assert info.release_id == 262
+
+    info2 = build_release_info(264)
+    assert info2.name == "Winter '27"
+    assert info2.slug == "winter_27"
+
+
+def test_detect_new_releases_probes_beyond_known() -> None:
+    async def run() -> None:
+        scraper = MagicMock()
+        scraper.fetch_page = AsyncMock(return_value=None)
+
+        parser_inst = MagicMock()
+        result = await detect_new_releases(scraper, parser_inst)
+
+        assert result == []
+        scraper.fetch_page.assert_called()
+
+    asyncio.run(run())
+
+
+def test_detect_new_releases_finds_new_release() -> None:
+    async def run() -> None:
+        scraper = MagicMock()
+        scraper.fetch_page = AsyncMock(return_value="<html>" + "a" * 3000)
+
+        parser_inst = MagicMock()
+        parser_inst.extract_topic_tree.return_value = [
+            TopicNode(slug="new_topic", display_name="New", level=2, url="")
+        ]
+
+        with patch("src.main._find_existing_releases", return_value=set()):
+            result = await detect_new_releases(scraper, parser_inst)
+
+        assert len(result) >= 1
+
+    asyncio.run(run())
+
+
+def test_detect_new_releases_skips_existing_slug() -> None:
+    async def run() -> None:
+        scraper = MagicMock()
+        scraper.fetch_page = AsyncMock(return_value="<html>" + "a" * 3000)
+
+        parser_inst = MagicMock()
+        parser_inst.extract_topic_tree.return_value = [
+            TopicNode(slug="new_topic", display_name="New", level=2, url="")
+        ]
+
+        existing = {build_release_info(264).slug}
+        with patch("src.main._find_existing_releases", return_value=existing):
+            result = await detect_new_releases(scraper, parser_inst)
+
+        for r in result:
+            assert r.slug not in existing
+
+    asyncio.run(run())
+
+
+def test_detect_new_releases_no_topics_stops() -> None:
+    async def run() -> None:
+        scraper = MagicMock()
+        scraper.fetch_page = AsyncMock(return_value="<html>" + "a" * 3000)
+
+        parser_inst = MagicMock()
+        parser_inst.extract_topic_tree.return_value = []
+
+        with patch("src.main._find_existing_releases", return_value=set()):
+            result = await detect_new_releases(scraper, parser_inst)
+
+        assert result == []
+
+    asyncio.run(run())
+
+
+@patch("src.main.setup_logging")
+@patch("src.main.SalesforceReleaseScraper")
+@patch("src.main.ReleaseNotesParser")
+@patch("src.main.MarkdownGenerator")
+@patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
+@patch("src.main.asyncio.run")
+def test_main_execution_no_new_releases(
+    mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
+    mock_update_readme: MagicMock,
+    mock_generator_class: MagicMock,
+    mock_parser_class: MagicMock,
+    mock_scraper_class: MagicMock,
+    mock_setup_logging: MagicMock,
+) -> None:
+    scraper_inst = MagicMock()
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
+    mock_scraper_class.return_value = scraper_inst
+
+    generator_inst = MagicMock()
+    generator_inst.list_generated_releases.return_value = []
+    mock_generator_class.return_value = generator_inst
+
+    mock_detect.return_value = []
+
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
+
+    main()
+
+    generator_inst.generate.assert_not_called()
+    mock_update_readme.assert_called_once()
+
+
+@patch("src.main.setup_logging")
+@patch("src.main.SalesforceReleaseScraper")
+@patch("src.main.ReleaseNotesParser")
+@patch("src.main.MarkdownGenerator")
+@patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
+@patch("src.main.asyncio.run")
+def test_main_execution_unknown_release_filter(
+    mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
+    mock_update_readme: MagicMock,
+    mock_generator_class: MagicMock,
+    mock_parser_class: MagicMock,
+    mock_scraper_class: MagicMock,
+    mock_setup_logging: MagicMock,
+) -> None:
+    scraper_inst = MagicMock()
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
+    mock_scraper_class.return_value = scraper_inst
+
+    generator_inst = MagicMock()
+    generator_inst.list_generated_releases.return_value = []
+    mock_generator_class.return_value = generator_inst
+
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
+
+    import src.main as main_mod
+    original_argv = main_mod.sys.argv
+    try:
+        main_mod.sys.argv = ["main.py", "--release", "nonexistent_slug"]
+        main()
+    finally:
+        main_mod.sys.argv = original_argv
+
+    generator_inst.generate.assert_not_called()
+
+
+@patch("src.main.setup_logging")
+@patch("src.main.SalesforceReleaseScraper")
+@patch("src.main.ReleaseNotesParser")
+@patch("src.main.MarkdownGenerator")
+@patch("src.main._update_readme")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
+@patch("src.main.asyncio.run")
+def test_main_execution_valid_release_filter(
+    mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
+    mock_update_readme: MagicMock,
+    mock_generator_class: MagicMock,
+    mock_parser_class: MagicMock,
+    mock_scraper_class: MagicMock,
+    mock_setup_logging: MagicMock,
+) -> None:
+    scraper_inst = MagicMock()
+    scraper_inst.fetch_page = AsyncMock(return_value="<html>rendered</html>")
+    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
+    scraper_inst.__aexit__ = AsyncMock(return_value=None)
+    mock_scraper_class.return_value = scraper_inst
+
+    parser_inst = MagicMock()
+    parser_inst.extract_topic_tree.return_value = []
+    mock_parser_class.return_value = parser_inst
+
+    generator_inst = MagicMock()
+    generator_inst.list_generated_releases.return_value = []
+    mock_generator_class.return_value = generator_inst
+
+    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
+
+    import src.main as main_mod
+    original_argv = main_mod.sys.argv
+    try:
+        main_mod.sys.argv = ["main.py", "--release", "summer_26"]
+        main()
+    finally:
+        main_mod.sys.argv = original_argv
+
+    mock_detect.assert_not_called()
+    scraper_inst.fetch_page.assert_called()

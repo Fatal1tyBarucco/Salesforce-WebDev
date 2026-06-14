@@ -1,17 +1,18 @@
 """Main orchestrator for Salesforce release notes extraction (web scraping).
 
 Strategy:
-  1. Fetch the release notes page for each release via Playwright
-  2. Parse the navigation tree to discover topics dynamically
+  1. Detect new releases by probing Salesforce for unseen release IDs
+  2. Scrape only new releases (not already in releases/ dir)
   3. Deep-scrape each article for summaries (pt-BR)
   4. Generate Markdown artifacts per topic
-  5. Update README with dynamic release index and collapsible highlights
+  5. Update README organized chronologically (newest on top)
 """
 
 from __future__ import annotations
 
 import asyncio
 import logging
+import sys
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -22,7 +23,9 @@ from .config import (
     KNOWN_RELEASES,
     MAX_CONCURRENT_PAGES,
     RELEASES_DIR,
+    ReleaseInfo,
     TopicNode,
+    build_release_info,
 )
 from .generator import MarkdownGenerator
 from .logger import setup_logging
@@ -32,38 +35,111 @@ from .scraper import SalesforceReleaseScraper
 logger = logging.getLogger(__name__)
 
 
+def _find_existing_releases() -> set[str]:
+    """Return slugs for release dirs that already exist in releases/."""
+    releases_dir = Path(RELEASES_DIR)
+    if not releases_dir.exists():
+        return set()
+    return {
+        d.name for d in releases_dir.iterdir()
+        if d.is_dir() and (d / "*.md" or any(d.glob("*.md")))
+    }
+
+
+def _highest_known_id() -> int:
+    return max(r.release_id for r in KNOWN_RELEASES)
+
+
+async def detect_new_releases(
+    scraper: SalesforceReleaseScraper, parser: ReleaseNotesParser
+) -> list[ReleaseInfo]:
+    """Probe Salesforce for release IDs beyond what we know. Return new ones."""
+    existing_slugs = _find_existing_releases()
+    base_id = _highest_known_id()
+    new_releases: list[ReleaseInfo] = []
+
+    for offset in range(2, 20, 2):
+        candidate_id = base_id + offset
+        info = build_release_info(candidate_id)
+        if info.slug in existing_slugs:
+            logger.info("Release %s already exists locally, skipping probe", info.slug)
+            continue
+
+        url = BASE_URL.format(release_id=candidate_id)
+        logger.info("Probing for new release: %s (id=%d)", info.name, candidate_id)
+
+        html = await scraper.fetch_page(url, expand_toc=False)
+        if not html or len(html) < 2000:
+            logger.info("Release %s not found (id=%d)", info.name, candidate_id)
+            break
+
+        soup = BeautifulSoup(html, "lxml")
+        topics = parser.extract_topic_tree(soup)
+        if topics:
+            logger.info("New release found: %s (%d topics)", info.name, len(topics))
+            new_releases.append(info)
+        else:
+            logger.info("Release %s exists but no topics extracted", info.name)
+            break
+
+    return new_releases
+
+
 async def run_pipeline() -> None:
-    """Orquestrador principal: scraping + geração de artefatos Markdown."""
+    """Orquestrador principal: detecta release(s) novas, extrai, gera artefatos."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction (dynamic topics).")
+    logger.info("Starting Salesforce Release Notes extraction.")
 
     scraper = SalesforceReleaseScraper()
     parser = ReleaseNotesParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
 
+    args = sys.argv[1:]
+    release_filter: str | None = None
+
+    for i, arg in enumerate(args):
+        if arg == "--release" and i + 1 < len(args):
+            release_filter = args[i + 1]
+
     all_highlights: dict[str, dict[str, list[dict[str, str]]]] = {}
 
     async with scraper:
-        for release in KNOWN_RELEASES:
-            logger.info("Processando release: %s", release.name)
+        releases_to_process: list[ReleaseInfo] = []
+
+        if release_filter:
+            for r in KNOWN_RELEASES:
+                if r.slug == release_filter:
+                    releases_to_process.append(r)
+                    break
+            if not releases_to_process:
+                logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+                return
+        else:
+            new_releases = await detect_new_releases(scraper, parser)
+            releases_to_process = new_releases
+
+            if not releases_to_process:
+                logger.info("No new releases detected. Updating README only.")
+
+        for release in releases_to_process:
+            logger.info("Processing release: %s", release.name)
             try:
                 url = BASE_URL.format(release_id=release.release_id)
                 logger.info("Index URL: %s", url)
 
                 html_index = await scraper.fetch_page(url)
                 if not html_index:
-                    logger.warning("Sem conteúdo para %s", release.name)
+                    logger.warning("No content for %s", release.name)
                     continue
 
                 soup_index = BeautifulSoup(html_index, "lxml")
                 topic_nodes = parser.extract_topic_tree(soup_index)
 
                 if not topic_nodes:
-                    logger.warning("Nenhum tópico extraído da árvore para %s", release.name)
+                    logger.warning("No topics extracted for %s", release.name)
                     continue
 
                 release_highlights: dict[str, list[dict[str, str]]] = {}
-
                 semaphore = asyncio.Semaphore(MAX_CONCURRENT_PAGES)
 
                 tasks = [
@@ -84,7 +160,7 @@ async def run_pipeline() -> None:
                 generator.generate(release, topic_nodes, source_url=url)
 
             except Exception as e:
-                logger.exception("Erro ao processar %s: %s", release.name, e)
+                logger.exception("Error processing %s: %s", release.name, e)
 
     releases_list = generator.list_generated_releases()
     _update_readme(releases_list, all_highlights)
@@ -236,7 +312,10 @@ def _update_readme(
             return "☀️"
         return "🌸"
 
-    for release_slug, topics in sorted(releases, reverse=True):
+    slug_to_id = {r.slug: r.release_id for r in KNOWN_RELEASES}
+    for release_slug, topics in sorted(
+        releases, key=lambda x: slug_to_id.get(x[0], 0), reverse=True
+    ):
         release_name = release_slug.replace("_", " ").title()
         emoji = get_release_emoji(release_name)
 

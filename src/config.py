@@ -75,6 +75,23 @@ KNOWN_RELEASES: list[ReleaseInfo] = [
     ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
 ]
 
+
+def build_release_info(release_id: int) -> ReleaseInfo:
+    SEASONS = ("Spring", "Summer", "Winter")
+    BASE_ID = 254
+    BASE_YEAR = 25
+
+    step = (release_id - BASE_ID) // 2
+    season = SEASONS[step % 3]
+    year = BASE_YEAR + step // 3
+    if season == "Winter":
+        year += 1
+
+    year_short = str(year)
+    name = f"{season} '{year_short}"
+    slug = f"{season.lower()}_{year_short}"
+    return ReleaseInfo(name=name, release_id=release_id, slug=slug)
+
 # ---------------------------------------------------------------------------
 # TopicNode — nó dinâmico da árvore de navegação do Salesforce Help.
 # Extraído diretamente do DOM (li[role="treeitem"]) em vez de keywords
