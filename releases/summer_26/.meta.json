@@ -1,0 +1,95 @@
+{
+  "name": "Summer '26",
+  "slug": "summer_26",
+  "release_id": 262,
+  "categories": [
+    {
+      "name": "Documentação legal",
+      "count": 6
+    },
+    {
+      "name": "Salesforce geral",
+      "count": 31
+    },
+    {
+      "name": "Agentforce",
+      "count": 19
+    },
+    {
+      "name": "Análise de dados",
+      "count": 33
+    },
+    {
+      "name": "Automação",
+      "count": 81
+    },
+    {
+      "name": "Commerce",
+      "count": 91
+    },
+    {
+      "name": "Personalização",
+      "count": 27
+    },
+    {
+      "name": "Data 360",
+      "count": 37
+    },
+    {
+      "name": "Desenvolvimento",
+      "count": 102
+    },
+    {
+      "name": "Experience Cloud",
+      "count": 14
+    },
+    {
+      "name": "Field Service",
+      "count": 37
+    },
+    {
+      "name": "Hyperforce",
+      "count": 3
+    },
+    {
+      "name": "Setores",
+      "count": 327
+    },
+    {
+      "name": "Marketing",
+      "count": 53
+    },
+    {
+      "name": "MuleSoft",
+      "count": 6
+    },
+    {
+      "name": "Aplicativo móvel",
+      "count": 14
+    },
+    {
+      "name": "OmniStudio",
+      "count": 10
+    },
+    {
+      "name": "Gerenciamento de receita",
+      "count": 96
+    },
+    {
+      "name": "Vendas",
+      "count": 56
+    },
+    {
+      "name": "Integrações do Salesforce para Slack",
+      "count": 2
+    },
+    {
+      "name": "Segurança, identidade e privacidade",
+      "count": 44
+    },
+    {
+      "name": "Serviço",
+      "count": 188
+    }
+  ]
+}
