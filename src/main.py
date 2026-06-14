@@ -24,7 +24,6 @@ from .config import (
     README_INDEX_START_MARKER,
     RELEASES_DIR,
     ReleaseInfo,
-    build_release_info,
 )
 from .generator import MarkdownGenerator
 from .logger import setup_logging
@@ -46,39 +45,8 @@ def _find_existing_releases() -> set[str]:
     return {d.name for d in releases_dir.iterdir() if d.is_dir() and any(d.glob("*.md"))}
 
 
-def _highest_known_id() -> int:
-    return max(r.release_id for r in KNOWN_RELEASES)
-
-
-async def detect_new_releases(scraper: SalesforceReleaseScraper) -> list[ReleaseInfo]:
-    """Probe Salesforce for the next release ID beyond what we know.
-
-    Only checks the immediate next release (base_id + 2).
-    The feature impact page returns content for any ID, so we limit
-    to a single probe to avoid detecting non-existent future releases.
-    """
-    existing_slugs = _find_existing_releases()
-    base_id = _highest_known_id()
-    candidate_id = base_id + 2
-    info = build_release_info(candidate_id)
-
-    if info.slug in existing_slugs:
-        return []
-
-    url = FEATURE_IMPACT_URL.format(release_id=candidate_id)
-    logger.info("Probing for new release: %s (id=%d)", info.name, candidate_id)
-
-    text = await scraper.fetch_page_raw_text(url)
-    if text and len(text) > 500:
-        logger.info("New release found: %s", info.name)
-        return [info]
-
-    logger.info("Release %s not found (id=%d)", info.name, candidate_id)
-    return []
-
-
 async def run_pipeline() -> None:
-    """Orquestrador: detect releases, fetch feature impact + PDF, generate markdown."""
+    """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
     setup_logging()
     logger.info("Starting Salesforce Release Notes extraction (feature impact).")
 
@@ -95,31 +63,24 @@ async def run_pipeline() -> None:
 
     releases_to_process: list[ReleaseInfo] = []
 
+    if release_filter:
+        for r in KNOWN_RELEASES:
+            if r.slug == release_filter:
+                releases_to_process.append(r)
+                break
+        if not releases_to_process:
+            logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+            return
+    else:
+        existing_slugs = _find_existing_releases()
+        for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
+            if r.slug not in existing_slugs:
+                releases_to_process.append(r)
+                break
+        if not releases_to_process:
+            logger.info("No new releases to process. Updating README only.")
+
     async with scraper:
-        if release_filter:
-            for r in KNOWN_RELEASES:
-                if r.slug == release_filter:
-                    releases_to_process.append(r)
-                    break
-            if not releases_to_process:
-                logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
-                return
-        else:
-            existing_slugs = _find_existing_releases()
-
-            new_releases = await detect_new_releases(scraper)
-            for r in new_releases:
-                if r.slug not in [x.slug for x in KNOWN_RELEASES]:
-                    KNOWN_RELEASES.append(r)
-                    logger.info("Added new release to KNOWN_RELEASES: %s", r.name)
-
-            for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
-                if r.slug not in existing_slugs:
-                    releases_to_process.append(r)
-                    break
-
-            if not releases_to_process:
-                logger.info("No new releases detected. Updating README only.")
         for release in releases_to_process:
             logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
 
