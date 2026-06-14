@@ -391,3 +391,7 @@ Aprenda sobre os recursos e atualizações mais recentes para dar suporte à pro
 * **Salesforce Brasil, Av. Jornalista Roberto Marinho, 85 - 14º andar - Cidade Monções, São Paulo - SP, 04575-000 Brasil**
 
 * **Salesforce Help | Article**
+
+* **Utilizamos cookies para tornar suas interações com nosso website mais relevantes. Eles nos ajudam a entender melhor como nossos websites são utilizados, para podermos adaptar o conteúdo para você. Para obter mais informações sobre os diferentes cookies que estamos utilizando, leia a Declaração de privacidade. Para alterar suas preferências e configurações de cookies, consulte o Gerenciador de consentimento de cookies.**
+
+* **ACEITAR TODOS OS COOKIES**

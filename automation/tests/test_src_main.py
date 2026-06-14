@@ -79,9 +79,11 @@ def test_generate_release_files() -> None:
 @patch("src.main._update_readme_all")
 @patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_success(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_single: MagicMock,
     mock_update_readme: MagicMock,
@@ -105,6 +107,7 @@ def test_main_execution_success(
     mock_generator_class.return_value = generator_inst
 
     mock_find_existing.return_value = set()
+    mock_detect.return_value = []
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
@@ -156,9 +159,11 @@ def test_main_execution_no_content(
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
+@patch("src.main.detect_new_releases", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_all_releases_exist(
     mock_asyncio_run: MagicMock,
+    mock_detect: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
@@ -176,6 +181,7 @@ def test_main_execution_all_releases_exist(
 
     existing = {r.slug for r in KNOWN_RELEASES}
     mock_find_existing.return_value = existing
+    mock_detect.return_value = []
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 

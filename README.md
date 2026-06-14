@@ -2,6 +2,8 @@
 
 ## 📋 Releases Disponíveis
 
+### Spring 25
+- [test_cat](./releases/spring_25/test_cat.md)
 ### Spring 26
 - [agentforce](./releases/spring_26/agentforce.md)
 - [analise_de_dados](./releases/spring_26/analise_de_dados.md)
@@ -23,6 +25,7 @@
 - [seguranca_identidade_e_privacidade](./releases/spring_26/seguranca_identidade_e_privacidade.md)
 - [servico](./releases/spring_26/servico.md)
 - [setores](./releases/spring_26/setores.md)
+- [test_cat](./releases/spring_26/test_cat.md)
 - [vendas](./releases/spring_26/vendas.md)
 ### Summer-26
 - [apex](./releases/summer-26/apex.md)
@@ -30,6 +33,24 @@
 - [integrations](./releases/summer-26/integrations.md)
 - [lwc](./releases/summer-26/lwc.md)
 - [security](./releases/summer-26/security.md)
+### Summer 25
+- [agentforce](./releases/summer_25/agentforce.md)
+- [analise_de_dados](./releases/summer_25/analise_de_dados.md)
+- [aplicativo_movel](./releases/summer_25/aplicativo_movel.md)
+- [desenvolvimento](./releases/summer_25/desenvolvimento.md)
+- [documentacao_legal](./releases/summer_25/documentacao_legal.md)
+- [experience_cloud](./releases/summer_25/experience_cloud.md)
+- [field_service](./releases/summer_25/field_service.md)
+- [hyperforce](./releases/summer_25/hyperforce.md)
+- [marketing](./releases/summer_25/marketing.md)
+- [omnistudio](./releases/summer_25/omnistudio.md)
+- [personalizacao](./releases/summer_25/personalizacao.md)
+- [salesforce_geral](./releases/summer_25/salesforce_geral.md)
+- [seguranca_identidade_e_privacidade](./releases/summer_25/seguranca_identidade_e_privacidade.md)
+- [servico](./releases/summer_25/servico.md)
+- [setores](./releases/summer_25/setores.md)
+- [test_cat](./releases/summer_25/test_cat.md)
+- [vendas](./releases/summer_25/vendas.md)
 ### Summer 26
 - [agentforce](./releases/summer_26/agentforce.md)
 - [analise_de_dados](./releases/summer_26/analise_de_dados.md)
@@ -73,4 +94,5 @@
 - [seguranca_identidade_e_privacidade](./releases/winter_26/seguranca_identidade_e_privacidade.md)
 - [servico](./releases/winter_26/servico.md)
 - [setores](./releases/winter_26/setores.md)
+- [test_cat](./releases/winter_26/test_cat.md)
 - [vendas](./releases/winter_26/vendas.md)

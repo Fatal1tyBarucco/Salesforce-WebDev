@@ -17,12 +17,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from bs4 import BeautifulSoup
-
 from .config import (
-    BASE_URL,
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
+    README_INDEX_END_MARKER,
+    README_INDEX_START_MARKER,
     RELEASES_DIR,
     ReleaseInfo,
     build_release_info,
@@ -33,7 +32,6 @@ from .parser import (
     FeatureImpactCategory,
     FeatureImpactEntry,
     FeatureImpactParser,
-    ReleaseNotesParser,
 )
 from .scraper import SalesforceReleaseScraper
 
@@ -52,10 +50,11 @@ def _highest_known_id() -> int:
     return max(r.release_id for r in KNOWN_RELEASES)
 
 
-async def detect_new_releases(
-    scraper: SalesforceReleaseScraper, parser: ReleaseNotesParser
-) -> list[ReleaseInfo]:
-    """Probe Salesforce for release IDs beyond what we know. Return new ones."""
+async def detect_new_releases(scraper: SalesforceReleaseScraper) -> list[ReleaseInfo]:
+    """Probe Salesforce for release IDs beyond what we know. Return new ones.
+
+    Uses the feature impact page (lightweight) instead of full page scrape.
+    """
     existing_slugs = _find_existing_releases()
     base_id = _highest_known_id()
     new_releases: list[ReleaseInfo] = []
@@ -64,31 +63,24 @@ async def detect_new_releases(
         candidate_id = base_id + offset
         info = build_release_info(candidate_id)
         if info.slug in existing_slugs:
-            logger.info("Release %s already exists locally, skipping probe", info.slug)
             continue
 
-        url = BASE_URL.format(release_id=candidate_id)
+        url = FEATURE_IMPACT_URL.format(release_id=candidate_id)
         logger.info("Probing for new release: %s (id=%d)", info.name, candidate_id)
 
-        html = await scraper.fetch_page(url, expand_toc=False)
-        if not html or len(html) < 2000:
-            logger.info("Release %s not found (id=%d)", info.name, candidate_id)
-            break
-
-        soup = BeautifulSoup(html, "lxml")
-        topics = parser.extract_topic_tree(soup)
-        if topics:
-            logger.info("New release found: %s (%d topics)", info.name, len(topics))
+        text = await scraper.fetch_page_raw_text(url)
+        if text and len(text) > 500:
+            logger.info("New release found: %s", info.name)
             new_releases.append(info)
         else:
-            logger.info("Release %s exists but no topics extracted", info.name)
+            logger.info("Release %s not found (id=%d)", info.name, candidate_id)
             break
 
     return new_releases
 
 
 async def run_pipeline() -> None:
-    """Orquestrador: feature impact page + PDF download (1 fetch vs 1226)."""
+    """Orquestrador: detect releases, fetch feature impact + PDF, generate markdown."""
     setup_logging()
     logger.info("Starting Salesforce Release Notes extraction (feature impact).")
 
@@ -105,24 +97,31 @@ async def run_pipeline() -> None:
 
     releases_to_process: list[ReleaseInfo] = []
 
-    if release_filter:
-        for r in KNOWN_RELEASES:
-            if r.slug == release_filter:
-                releases_to_process.append(r)
-                break
-        if not releases_to_process:
-            logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
-            return
-    else:
-        existing_slugs = _find_existing_releases()
-        for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
-            if r.slug not in existing_slugs:
-                releases_to_process.append(r)
-                break
-        if not releases_to_process:
-            logger.info("No new releases detected. Updating README only.")
-
     async with scraper:
+        if release_filter:
+            for r in KNOWN_RELEASES:
+                if r.slug == release_filter:
+                    releases_to_process.append(r)
+                    break
+            if not releases_to_process:
+                logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+                return
+        else:
+            existing_slugs = _find_existing_releases()
+
+            new_releases = await detect_new_releases(scraper)
+            for r in new_releases:
+                if r.slug not in [x.slug for x in KNOWN_RELEASES]:
+                    KNOWN_RELEASES.append(r)
+                    logger.info("Added new release to KNOWN_RELEASES: %s", r.name)
+
+            for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
+                if r.slug not in existing_slugs:
+                    releases_to_process.append(r)
+                    break
+
+            if not releases_to_process:
+                logger.info("No new releases detected. Updating README only.")
         for release in releases_to_process:
             logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
 
@@ -253,13 +252,22 @@ def _update_readme_single(
 
 
 def _update_readme_all() -> None:
-    """Regenerate README.md from all release metadata in releases/."""
+    """Replace the index block in README.md with per-release tables."""
     readme_path = Path("README.md")
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
         return
 
     import json
+
+    if not readme_path.exists():
+        return
+
+    original = readme_path.read_text(encoding="utf-8")
+
+    if README_INDEX_START_MARKER not in original:
+        logger.warning("README markers not found, skipping update")
+        return
 
     metas: list[dict[str, Any]] = []
     for d in releases_dir.iterdir():
@@ -269,36 +277,6 @@ def _update_readme_all() -> None:
 
     metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
 
-    content: list[str] = [
-        "![Salesforce Release Intelligence](./assets/banner.png)\n\n",
-        "# 🚀 Salesforce Release Notes Intelligence\n\n",
-        "Pipeline automatizado para extração, classificação e versionamento das "
-        "**Salesforce Release Notes** como artefatos Markdown estruturados "
-        "(*Knowledge-as-Code*).\n\n",
-        "### ⚙️ CI/CD Status & Conformidade\n\n",
-        "[![Python Quality & Validation]"
-        "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
-        "python-quality.yml/badge.svg)]"
-        "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
-        "python-quality.yml)\n",
-        "![Python](https://img.shields.io/badge/Python-3.14-blue.svg?"
-        "logo=python&logoColor=white) \n",
-        "![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?"
-        "logo=playwright&logoColor=white) \n",
-        "![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg) \n",
-        "![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg) \n",
-        "![Black](https://img.shields.io/badge/Formatter-Black-000000.svg)\n\n",
-        "| Tecnologia / Ferramenta | Descrição | Status no Pipeline |\n",
-        "| :--- | :--- | :---: |\n",
-        "| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |\n",
-        "| 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |\n",
-        "| 🧪 **Pytest** | Suíte de testes unitários automatizados | `100% Cobertura` |\n",
-        "| 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |\n",
-        "| ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |\n\n",
-        "---\n\n",
-        "## 📋 Notas de Release e Resumos por Tópico\n\n",
-    ]
-
     def get_release_emoji(name: str) -> str:
         name_lower = name.lower()
         if "winter" in name_lower:
@@ -307,38 +285,38 @@ def _update_readme_all() -> None:
             return "☀️"
         return "🌸"
 
+    lines: list[str] = ["\n"]
+
     for meta in metas:
         slug = meta["slug"]
         name = meta["name"]
         emoji = get_release_emoji(name)
 
-        content.append(f"### {emoji} {name}\n\n")
-
         categories = meta.get("categories", [])
-        for cat in categories:
+        active = [c for c in categories if c.get("count", 0) > 0]
+
+        lines.append(f"### {emoji} {name}\n\n")
+        lines.append("| Módulo / Cloud | Recursos | Link para Documentação |")
+        lines.append("| --- | ---: | --- |")
+
+        for cat in active:
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
+            link = f"./releases/{slug}/{cat_slug}.md"
+            lines.append(f"| **{cat_name}** | {count} " f"| [📄 Visualizar]({link}) |")
 
-            if count > 0:
-                plural = "recursos" if count > 1 else "recurso"
-                content.append("<details>\n")
-                content.append(
-                    f"<summary><b>📄 {cat_name} " f"({count} {plural})</b></summary>\n\n"
-                )
-                content.append(
-                    f"> 📄 Detalhes completos: "
-                    f"[./releases/{slug}/{cat_slug}.md]"
-                    f"(./releases/{slug}/{cat_slug}.md)\n\n"
-                )
-                content.append("</details>\n\n")
-            else:
-                content.append(f"* 📄 **{cat_name}** — Sem recursos nesta release.\n")
+        lines.append("")
 
-        content.append("\n---\n\n")
+    new_block = "\n".join(lines)
 
-    readme_path.write_text("".join(content), encoding="utf-8")
-    logger.info("README.md atualizado com painel moderno (%d releases).", len(metas))
+    start_idx = original.index(README_INDEX_START_MARKER) + len(README_INDEX_START_MARKER)
+    end_idx = original.index(README_INDEX_END_MARKER)
+
+    updated = original[:start_idx] + new_block + original[end_idx:]
+
+    readme_path.write_text(updated, encoding="utf-8")
+    logger.info("README.md atualizado com tabelas (%d releases).", len(metas))
 
 
 def main() -> None:
