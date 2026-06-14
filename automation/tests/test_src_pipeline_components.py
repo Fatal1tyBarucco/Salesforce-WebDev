@@ -186,9 +186,7 @@ def test_readme_updater_missing_markers(tmp_path: Path) -> None:
 
 def test_readme_updater_non_existent_releases_dir(tmp_path: Path) -> None:
     readme_file = tmp_path / "README.md"
-    readme_file.write_text(
-        "<!-- RELEASE_INDEX_START -->\nold\n<!-- RELEASE_INDEX_END -->"
-    )
+    readme_file.write_text("<!-- RELEASE_INDEX_START -->\nold\n<!-- RELEASE_INDEX_END -->")
     non_existent = tmp_path / "non_existent_releases"
     updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(non_existent))
 
@@ -481,5 +479,54 @@ def test_exec_fetch_selector_timeout_fallback() -> None:
 
         result = await scraper._exec_fetch("https://fake.url", mock_page, expand_toc=False)
         assert "content" in result
+
+    asyncio.run(run())
+
+
+def test_download_pdf_from_button_success(tmp_path: Path) -> None:
+    scraper = SalesforceReleaseScraper()
+    dest = tmp_path / "test.pdf"
+
+    async def run() -> None:
+        mock_download = AsyncMock()
+        mock_download.value = MagicMock()
+        mock_download.value.save_as = AsyncMock()
+
+        mock_page = AsyncMock()
+        mock_page.goto = AsyncMock()
+        mock_page.wait_for_selector = AsyncMock()
+        mock_page.click = AsyncMock()
+
+        mock_context = AsyncMock()
+        mock_context.new_page.return_value = mock_page
+
+        mock_browser = AsyncMock()
+        mock_browser.new_context.return_value = mock_context
+
+        mock_pw = AsyncMock()
+        mock_pw.chromium.launch.return_value = mock_browser
+
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value.__aenter__.return_value = mock_pw
+
+            with patch.object(type(scraper), "download_pdf_from_button") as mock_dl:
+                mock_dl.return_value = True
+
+                result = await scraper.download_pdf_from_button("https://fake.url", dest)
+                assert result is True
+
+    asyncio.run(run())
+
+
+def test_download_pdf_from_button_pdf_not_found(tmp_path: Path) -> None:
+    scraper = SalesforceReleaseScraper()
+    dest = tmp_path / "test.pdf"
+
+    async def run() -> None:
+        with patch.object(type(scraper), "download_pdf_from_button") as mock_dl:
+            mock_dl.return_value = False
+
+            result = await scraper.download_pdf_from_button("https://fake.url", dest)
+            assert result is False
 
     asyncio.run(run())

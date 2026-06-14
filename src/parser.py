@@ -68,9 +68,7 @@ class ReleaseNotesParser:
             "li", attrs={"role": "treeitem", "aria-level": "1"}, recursive=False
         )
         if not root_items:
-            root_items = tree_root.find_all(
-                "li", attrs={"role": "treeitem"}, recursive=False
-            )
+            root_items = tree_root.find_all("li", attrs={"role": "treeitem"}, recursive=False)
 
         topics: list[TopicNode] = []
 
@@ -276,32 +274,34 @@ class ReleaseNotesParser:
 # FeatureImpactParser — parses the single-page feature impact table
 # ---------------------------------------------------------------------------
 
-SECTION_HEADERS: frozenset[str] = frozenset({
-    "Salesforce geral",
-    "Agentforce",
-    "Análise de dados",
-    "Automação",
-    "Commerce",
-    "Personalização",
-    "Data 360",
-    "Desenvolvimento",
-    "Experience Cloud",
-    "Field Service",
-    "Hyperforce",
-    "Setores",
-    "Marketing",
-    "MuleSoft",
-    "Aplicativo móvel",
-    "OmniStudio",
-    "Partner Cloud",
-    "Gerenciamento de receita",
-    "Vendas",
-    "Integrações do Salesforce para Slack",
-    "Segurança, identidade e privacidade",
-    "Serviço",
-    "Outros produtos e serviços do Salesforce",
-    "Documentação legal",
-})
+SECTION_HEADERS: frozenset[str] = frozenset(
+    {
+        "Salesforce geral",
+        "Agentforce",
+        "Análise de dados",
+        "Automação",
+        "Commerce",
+        "Personalização",
+        "Data 360",
+        "Desenvolvimento",
+        "Experience Cloud",
+        "Field Service",
+        "Hyperforce",
+        "Setores",
+        "Marketing",
+        "MuleSoft",
+        "Aplicativo móvel",
+        "OmniStudio",
+        "Partner Cloud",
+        "Gerenciamento de receita",
+        "Vendas",
+        "Integrações do Salesforce para Slack",
+        "Segurança, identidade e privacidade",
+        "Serviço",
+        "Outros produtos e serviços do Salesforce",
+        "Documentação legal",
+    }
+)
 
 AVAILABILITY_KEYWORDS: frozenset[str] = frozenset({"Yes"})
 
@@ -348,9 +348,7 @@ class FeatureImpactParser:
             line = lines[i]
 
             if self._is_section_header(line):
-                existing = next(
-                    (c for c in categories if c.name == line), None
-                )
+                existing = next((c for c in categories if c.name == line), None)
                 if existing:
                     total_existing = len(existing.entries) + sum(
                         len(e) for e in existing.subcategories.values()
@@ -397,9 +395,7 @@ class FeatureImpactParser:
     def _is_section_header(self, line: str) -> bool:
         return line in SECTION_HEADERS
 
-    def _is_category_description(
-        self, line: str, cat: FeatureImpactCategory | None
-    ) -> bool:
+    def _is_category_description(self, line: str, cat: FeatureImpactCategory | None) -> bool:
         if not cat:
             return False
         if cat.description:
@@ -413,9 +409,7 @@ class FeatureImpactParser:
     def _is_table_header(self, line: str) -> bool:
         return "RECURSO" in line and "ATIVADO" in line
 
-    def _is_subcategory_header(
-        self, line: str, cat: FeatureImpactCategory | None
-    ) -> bool:
+    def _is_subcategory_header(self, line: str, cat: FeatureImpactCategory | None) -> bool:
         if not cat:
             return False
         if self._is_table_header(line):

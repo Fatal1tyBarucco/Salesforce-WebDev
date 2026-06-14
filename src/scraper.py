@@ -61,9 +61,7 @@ class SalesforceReleaseScraper:
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
-                html_content = await self._fetch_with_playwright(
-                    url, page, expand_toc=expand_toc
-                )
+                html_content = await self._fetch_with_playwright(url, page, expand_toc=expand_toc)
                 if html_content and len(html_content) > 1000:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
@@ -107,9 +105,7 @@ class SalesforceReleaseScraper:
             if is_standalone and self._browser and page is not None:
                 await page.close()
 
-    async def _exec_fetch(
-        self, url: str, page: Page, *, expand_toc: bool = True
-    ) -> str:
+    async def _exec_fetch(self, url: str, page: Page, *, expand_toc: bool = True) -> str:
         """Internal execution of fetch logic on a provided page object."""
         await page.goto(
             url,
@@ -238,8 +234,51 @@ class SalesforceReleaseScraper:
             logger.error("Failed to fetch raw text: %s", e)
             return None
 
+    async def download_pdf_from_button(self, page_url: str, dest: Path) -> bool:
+        """Navigate to a page, click the PDF download button, and save the file.
+
+        The Salesforce Help pages have a <button title="Open PDF"> that triggers
+        a download or opens a new tab with the PDF. This method handles both cases.
+        """
+        logger.info("Downloading PDF via button click: %s -> %s", page_url, dest)
+
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                context = await browser.new_context(accept_downloads=True)
+                page = await context.new_page()
+
+                await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
+
+                try:
+                    await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
+                except Exception:
+                    logger.warning("PDF button not found on %s", page_url)
+                    await browser.close()
+                    return False
+
+                async with page.expect_download(timeout=30000) as download_info:
+                    await page.click("button[title='Open PDF']")
+
+                download = await download_info.value
+                await download.save_as(str(dest))
+
+                await browser.close()
+
+                if dest.exists() and dest.stat().st_size > 1000:
+                    logger.info(
+                        "PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size
+                    )
+                    return True
+                logger.warning("PDF too small: %d bytes", dest.stat().st_size)
+                return False
+
+        except Exception as e:
+            logger.warning("PDF button download failed: %s", e)
+            return False
+
     async def download_pdf(self, url: str, dest: Path) -> bool:
-        """Download a PDF file to dest using urllib (no Playwright needed)."""
+        """Download a PDF file to dest using urllib (fallback)."""
         import urllib.request
 
         logger.info("Downloading PDF: %s -> %s", url, dest)

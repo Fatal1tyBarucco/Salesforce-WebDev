@@ -18,5 +18,4 @@ ENV/
 .DS_Store
 
 # Project specific
-pdfs/
 cache/

@@ -4,21 +4,13 @@ from src.main import (
     main,
     _generate_release_files,
     _format_entry,
-    _build_pdf_url,
     _find_existing_releases,
+    _slugify_category,
 )
 from src.config import KNOWN_RELEASES, ReleaseInfo
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 _original_asyncio_run = asyncio.run
-
-
-def test_build_pdf_url() -> None:
-    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
-    url = _build_pdf_url(release)
-    assert url is not None
-    assert "summer" in url
-    assert "26" in url
 
 
 def test_find_existing_releases_empty() -> None:
@@ -85,11 +77,13 @@ def test_generate_release_files() -> None:
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme_all")
+@patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
 @patch("src.main.asyncio.run")
 def test_main_execution_success(
     mock_asyncio_run: MagicMock,
     mock_find_existing: MagicMock,
+    mock_update_single: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
@@ -98,15 +92,13 @@ def test_main_execution_success(
 ) -> None:
     scraper_inst = MagicMock()
     scraper_inst.fetch_page_raw_text = AsyncMock(return_value="fake feature text")
-    scraper_inst.download_pdf = AsyncMock(return_value=False)
+    scraper_inst.download_pdf_from_button = AsyncMock(return_value=True)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
     mock_scraper_class.return_value = scraper_inst
 
     parser_inst = MagicMock()
-    parser_inst.parse_text.return_value = [
-        FeatureImpactCategory(name="Test Cat")
-    ]
+    parser_inst.parse_text.return_value = [FeatureImpactCategory(name="Test Cat")]
     mock_impact_parser_class.return_value = parser_inst
 
     generator_inst = MagicMock()
@@ -120,6 +112,7 @@ def test_main_execution_success(
 
     mock_setup_logging.assert_called_once()
     scraper_inst.fetch_page_raw_text.assert_called_once()
+    mock_update_single.assert_called_once()
 
 
 @patch("src.main.setup_logging")
@@ -140,7 +133,7 @@ def test_main_execution_no_content(
 ) -> None:
     scraper_inst = MagicMock()
     scraper_inst.fetch_page_raw_text = AsyncMock(return_value=None)
-    scraper_inst.download_pdf = AsyncMock(return_value=False)
+    scraper_inst.download_pdf_from_button = AsyncMock(return_value=False)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
     mock_scraper_class.return_value = scraper_inst
@@ -209,7 +202,7 @@ def test_main_execution_valid_release_filter(
 ) -> None:
     scraper_inst = MagicMock()
     scraper_inst.fetch_page_raw_text = AsyncMock(return_value="text")
-    scraper_inst.download_pdf = AsyncMock(return_value=False)
+    scraper_inst.download_pdf_from_button = AsyncMock(return_value=False)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
     mock_scraper_class.return_value = scraper_inst
@@ -271,3 +264,24 @@ def test_main_execution_unknown_release(
         main_mod.sys.argv = original_argv
 
     generator_inst.generate.assert_not_called()
+
+
+def test_slugify_category_portuguese() -> None:
+    assert _slugify_category("Documentação legal") == "documentacao_legal"
+    assert _slugify_category("Análise de dados") == "analise_de_dados"
+    assert (
+        _slugify_category("Segurança, identidade e privacidade")
+        == "seguranca_identidade_e_privacidade"
+    )
+    assert _slugify_category("Automação") == "automacao"
+    assert _slugify_category("Personalização") == "personalizacao"
+    assert _slugify_category("Gerenciamento de receita") == "gerenciamento_de_receita"
+    assert _slugify_category("Aplicativo móvel") == "aplicativo_movel"
+    assert (
+        _slugify_category("Outros produtos e serviços do Salesforce")
+        == "outros_produtos_e_servicos_do_salesforce"
+    )
+    assert (
+        _slugify_category("Integrações do Salesforce para Slack")
+        == "integracoes_do_salesforce_para_slack"
+    )

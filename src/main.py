@@ -23,7 +23,6 @@ from .config import (
     BASE_URL,
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
-    PDF_URL_TEMPLATE,
     RELEASES_DIR,
     ReleaseInfo,
     build_release_info,
@@ -46,10 +45,7 @@ def _find_existing_releases() -> set[str]:
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
         return set()
-    return {
-        d.name for d in releases_dir.iterdir()
-        if d.is_dir() and (d / "*.md" or any(d.glob("*.md")))
-    }
+    return {d.name for d in releases_dir.iterdir() if d.is_dir() and any(d.glob("*.md"))}
 
 
 def _highest_known_id() -> int:
@@ -89,19 +85,6 @@ async def detect_new_releases(
             break
 
     return new_releases
-
-
-def _build_pdf_url(release: ReleaseInfo) -> str | None:
-    """Build the Release in a Box PDF URL for a release."""
-    info = build_release_info(release.release_id)
-    season = info.name.split()[0].lower()
-    year_short = info.name.split("'")[1]
-    for version in range(5, 0, -1):
-        url = PDF_URL_TEMPLATE.format(
-            season=season, year_short=year_short, version=version
-        )
-        return url
-    return None
 
 
 async def run_pipeline() -> None:
@@ -146,13 +129,11 @@ async def run_pipeline() -> None:
             release_dir = Path(RELEASES_DIR) / release.slug
             release_dir.mkdir(parents=True, exist_ok=True)
 
-            pdf_url = _build_pdf_url(release)
-            if pdf_url:
-                pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
-                await scraper.download_pdf(pdf_url, pdf_dest)
-
             impact_url = FEATURE_IMPACT_URL.format(release_id=release.release_id)
             logger.info("Fetching feature impact: %s", impact_url)
+
+            pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
+            await scraper.download_pdf_from_button(impact_url, pdf_dest)
 
             raw_text = await scraper.fetch_page_raw_text(impact_url)
             if not raw_text:
@@ -168,6 +149,27 @@ async def run_pipeline() -> None:
     _update_readme_all()
 
 
+def _slugify_category(name: str) -> str:
+    """Transliterate Portuguese characters and slugify a category name."""
+    transliterate_map: dict[str, str] = {
+        "ç": "c",
+        "ã": "a",
+        "õ": "o",
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "ê": "e",
+        "ô": "o",
+        "à": "a",
+    }
+    lowered = name.lower()
+    for char, replacement in transliterate_map.items():
+        lowered = lowered.replace(char, replacement)
+    return re.sub(r"[^a-z0-9]+", "_", lowered).strip("_")
+
+
 def _generate_release_files(
     release: ReleaseInfo,
     categories: list[FeatureImpactCategory],
@@ -180,7 +182,7 @@ def _generate_release_files(
     generated: list[Path] = []
 
     for cat in categories:
-        slug = re.sub(r"[^a-z0-9]+", "_", cat.name.lower()).strip("_")
+        slug = _slugify_category(cat.name)
         file_path = release_dir / f"{slug}.md"
 
         lines: list[str] = []
@@ -227,6 +229,15 @@ def _update_readme_single(
     """Write per-category .md and cache metadata for later README generation."""
 
     meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+
+    import json
+
+    if meta_path.exists():
+        existing = json.loads(meta_path.read_text(encoding="utf-8"))
+        if existing.get("categories"):
+            logger.debug("Skipping .meta.json write for %s (already has data)", release.slug)
+            return
+
     cat_list: list[dict[str, object]] = []
     meta: dict[str, object] = {
         "name": release.name,
@@ -238,7 +249,6 @@ def _update_readme_single(
         total = len(cat.entries) + sum(len(e) for e in cat.subcategories.values())
         cat_list.append({"name": cat.name, "count": total})
 
-    import json
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
@@ -308,14 +318,13 @@ def _update_readme_all() -> None:
         for cat in categories:
             cat_name = cat["name"]
             count = cat["count"]
-            cat_slug = re.sub(r"[^a-z0-9]+", "_", cat_name.lower()).strip("_")
+            cat_slug = _slugify_category(cat_name)
 
             if count > 0:
                 plural = "recursos" if count > 1 else "recurso"
                 content.append("<details>\n")
                 content.append(
-                    f"<summary><b>📄 {cat_name} "
-                    f"({count} {plural})</b></summary>\n\n"
+                    f"<summary><b>📄 {cat_name} " f"({count} {plural})</b></summary>\n\n"
                 )
                 content.append(
                     f"> 📄 Detalhes completos: "
