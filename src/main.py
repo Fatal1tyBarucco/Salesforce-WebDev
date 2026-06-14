@@ -12,24 +12,30 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import sys
 from pathlib import Path
+from typing import Any
 
 from bs4 import BeautifulSoup
 
 from .config import (
-    ARTICLE_FETCH_TIMEOUT_SECONDS,
     BASE_URL,
+    FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
-    MAX_CONCURRENT_PAGES,
+    PDF_URL_TEMPLATE,
     RELEASES_DIR,
     ReleaseInfo,
-    TopicNode,
     build_release_info,
 )
 from .generator import MarkdownGenerator
 from .logger import setup_logging
-from .parser import ReleaseNotesParser
+from .parser import (
+    FeatureImpactCategory,
+    FeatureImpactEntry,
+    FeatureImpactParser,
+    ReleaseNotesParser,
+)
 from .scraper import SalesforceReleaseScraper
 
 logger = logging.getLogger(__name__)
@@ -85,13 +91,26 @@ async def detect_new_releases(
     return new_releases
 
 
+def _build_pdf_url(release: ReleaseInfo) -> str | None:
+    """Build the Release in a Box PDF URL for a release."""
+    info = build_release_info(release.release_id)
+    season = info.name.split()[0].lower()
+    year_short = info.name.split("'")[1]
+    for version in range(5, 0, -1):
+        url = PDF_URL_TEMPLATE.format(
+            season=season, year_short=year_short, version=version
+        )
+        return url
+    return None
+
+
 async def run_pipeline() -> None:
-    """Orquestrador principal: detecta release(s) novas, extrai, gera artefatos."""
+    """Orquestrador: feature impact page + PDF download (1 fetch vs 1226)."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction.")
+    logger.info("Starting Salesforce Release Notes extraction (feature impact).")
 
     scraper = SalesforceReleaseScraper()
-    parser = ReleaseNotesParser()
+    impact_parser = FeatureImpactParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
 
     args = sys.argv[1:]
@@ -101,167 +120,144 @@ async def run_pipeline() -> None:
         if arg == "--release" and i + 1 < len(args):
             release_filter = args[i + 1]
 
-    all_highlights: dict[str, dict[str, list[dict[str, str]]]] = {}
+    releases_to_process: list[ReleaseInfo] = []
+
+    if release_filter:
+        for r in KNOWN_RELEASES:
+            if r.slug == release_filter:
+                releases_to_process.append(r)
+                break
+        if not releases_to_process:
+            logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+            return
+    else:
+        existing_slugs = _find_existing_releases()
+        for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
+            if r.slug not in existing_slugs:
+                releases_to_process.append(r)
+                break
+        if not releases_to_process:
+            logger.info("No new releases detected. Updating README only.")
 
     async with scraper:
-        releases_to_process: list[ReleaseInfo] = []
-
-        if release_filter:
-            for r in KNOWN_RELEASES:
-                if r.slug == release_filter:
-                    releases_to_process.append(r)
-                    break
-            if not releases_to_process:
-                logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
-                return
-        else:
-            new_releases = await detect_new_releases(scraper, parser)
-            releases_to_process = new_releases
-
-            if not releases_to_process:
-                logger.info("No new releases detected. Updating README only.")
-
         for release in releases_to_process:
-            logger.info("Processing release: %s", release.name)
-            try:
-                url = BASE_URL.format(release_id=release.release_id)
-                logger.info("Index URL: %s", url)
+            logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
 
-                html_index = await scraper.fetch_page(url)
-                if not html_index:
-                    logger.warning("No content for %s", release.name)
-                    continue
+            release_dir = Path(RELEASES_DIR) / release.slug
+            release_dir.mkdir(parents=True, exist_ok=True)
 
-                soup_index = BeautifulSoup(html_index, "lxml")
-                topic_nodes = parser.extract_topic_tree(soup_index)
+            pdf_url = _build_pdf_url(release)
+            if pdf_url:
+                pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
+                await scraper.download_pdf(pdf_url, pdf_dest)
 
-                if not topic_nodes:
-                    logger.warning("No topics extracted for %s", release.name)
-                    continue
+            impact_url = FEATURE_IMPACT_URL.format(release_id=release.release_id)
+            logger.info("Fetching feature impact: %s", impact_url)
 
-                release_highlights: dict[str, list[dict[str, str]]] = {}
-                semaphore = asyncio.Semaphore(MAX_CONCURRENT_PAGES)
+            raw_text = await scraper.fetch_page_raw_text(impact_url)
+            if not raw_text:
+                logger.warning("No content for %s feature impact", release.name)
+                continue
 
-                tasks = [
-                    _process_topic_node(
-                        node=node,
-                        scraper=scraper,
-                        parser=parser,
-                        release_slug=release.slug,
-                        release_highlights=release_highlights,
-                        semaphore=semaphore,
-                    )
-                    for node in topic_nodes
-                ]
+            categories = impact_parser.parse_text(raw_text)
+            logger.info("Parsed %d categories from feature impact", len(categories))
 
-                await asyncio.gather(*tasks)
+            _generate_release_files(release, categories, generator)
+            _update_readme_single(release, categories)
 
-                all_highlights[release.slug] = release_highlights
-                generator.generate(release, topic_nodes, source_url=url)
-
-            except Exception as e:
-                logger.exception("Error processing %s: %s", release.name, e)
-
-    releases_list = generator.list_generated_releases()
-    _update_readme(releases_list, all_highlights)
+    _update_readme_all()
 
 
-async def _process_topic_node(
-    node: TopicNode,
-    scraper: SalesforceReleaseScraper,
-    parser: ReleaseNotesParser,
-    release_slug: str,
-    release_highlights: dict[str, list[dict[str, str]]],
-    semaphore: asyncio.Semaphore,
+def _generate_release_files(
+    release: ReleaseInfo,
+    categories: list[FeatureImpactCategory],
+    generator: MarkdownGenerator,
+) -> list[Path]:
+    """Generate per-category .md files for a release."""
+
+    release_dir = Path(RELEASES_DIR) / release.slug
+    release_dir.mkdir(parents=True, exist_ok=True)
+    generated: list[Path] = []
+
+    for cat in categories:
+        slug = re.sub(r"[^a-z0-9]+", "_", cat.name.lower()).strip("_")
+        file_path = release_dir / f"{slug}.md"
+
+        lines: list[str] = []
+        lines.append(f"## {cat.name}\n")
+        if cat.description:
+            lines.append(f"{cat.description}\n")
+
+        for entry in cat.entries:
+            lines.append(_format_entry(entry))
+
+        for sub_name, sub_entries in cat.subcategories.items():
+            if sub_entries:
+                lines.append(f"### {sub_name}\n")
+                for entry in sub_entries:
+                    lines.append(_format_entry(entry))
+
+        body = "\n".join(lines) if lines else "_Sem recursos nesta categoria._\n"
+        file_path.write_text(body, encoding="utf-8")
+        generated.append(file_path)
+        logger.info("Generated: %s (%d features)", file_path, len(cat.entries))
+
+    return generated
+
+
+def _format_entry(entry: FeatureImpactEntry) -> str:
+    flags: list[str] = []
+    if entry.available_users:
+        flags.append("Disponível para usuários")
+    if entry.available_admins:
+        flags.append("Disponível para admins/devs")
+    if entry.requires_config:
+        flags.append("Requer configuração")
+    if entry.contact_sf:
+        flags.append("Contatar Salesforce")
+
+    flag_text = f" — _{' · '.join(flags)}_" if flags else ""
+    return f"* **{entry.name}**{flag_text}\n"
+
+
+def _update_readme_single(
+    release: ReleaseInfo,
+    categories: list[FeatureImpactCategory],
 ) -> None:
-    """Deep-scrape artigos de um TopicNode e popula highlights (paralelo)."""
-    all_articles = node.all_articles()
+    """Write per-category .md and cache metadata for later README generation."""
 
-    if not all_articles:
+    meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+    cat_list: list[dict[str, object]] = []
+    meta: dict[str, object] = {
+        "name": release.name,
+        "slug": release.slug,
+        "release_id": release.release_id,
+        "categories": cat_list,
+    }
+    for cat in categories:
+        total = len(cat.entries) + sum(len(e) for e in cat.subcategories.values())
+        cat_list.append({"name": cat.name, "count": total})
+
+    import json
+    meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _update_readme_all() -> None:
+    """Regenerate README.md from all release metadata in releases/."""
+    readme_path = Path("README.md")
+    releases_dir = Path(RELEASES_DIR)
+    if not releases_dir.exists():
         return
 
-    logger.info(
-        "Topic '%s': %d articles to deep-scrape",
-        node.display_name,
-        len(all_articles),
-    )
+    import json
 
-    async def _scrape_one(article: dict[str, str]) -> dict[str, str] | None:
-        async with semaphore:
-            article_url = article.get("url", "")
-            title = article.get("title", "Sem título")
+    metas: list[dict[str, Any]] = []
+    for d in releases_dir.iterdir():
+        meta_path = d / ".meta.json"
+        if meta_path.exists():
+            metas.append(json.loads(meta_path.read_text(encoding="utf-8")))
 
-            if not article_url:
-                return None
-
-            if "language=pt_BR" not in article_url:
-                sep = "&" if "?" in article_url else "?"
-                article_url += f"{sep}language=pt_BR"
-
-            logger.info("Deep scraping [%s]: %s", node.display_name, title)
-
-            page = await scraper._browser.new_page()  # type: ignore[union-attr]
-            try:
-                html_article = await asyncio.wait_for(
-                    scraper.fetch_page(article_url, page, expand_toc=False),
-                    timeout=ARTICLE_FETCH_TIMEOUT_SECONDS,
-                )
-                summary = "Resumo não disponível."
-                if html_article:
-                    soup_article = BeautifulSoup(html_article, "lxml")
-                    summary = parser.extract_article_summary(soup_article)
-            except asyncio.TimeoutError:
-                logger.warning(
-                    "Timeout fetching [%s]: %s", node.display_name, title
-                )
-                summary = "Resumo não disponível."
-            except Exception as e:
-                logger.error(
-                    "Error fetching [%s] %s: %s", node.display_name, title, e
-                )
-                summary = "Resumo não disponível."
-            finally:
-                await page.close()
-
-            return {
-                "title": title,
-                "summary": summary,
-                "url": article_url,
-                "topic": node.display_name,
-            }
-
-    tasks = [_scrape_one(article) for article in all_articles]
-    results = await asyncio.gather(*tasks)
-
-    article_summaries = [r for r in results if r is not None]
-    release_highlights[node.slug] = article_summaries
-
-    child_tasks = [
-        _process_topic_node(
-            node=child,
-            scraper=scraper,
-            parser=parser,
-            release_slug=release_slug,
-            release_highlights=release_highlights,
-            semaphore=semaphore,
-        )
-        for child in node.children
-    ]
-    if child_tasks:
-        await asyncio.gather(*child_tasks)
-
-
-def main() -> None:
-    """Entrypoint do script."""
-    asyncio.run(run_pipeline())
-
-
-def _update_readme(
-    releases: list[tuple[str, list[str]]],
-    highlights: dict[str, dict[str, list[dict[str, str]]]],
-) -> None:
-    """Atualiza o README.md com painel de status e resumos colapsáveis."""
-    readme_path = Path("README.md")
+    metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
 
     content: list[str] = [
         "![Salesforce Release Intelligence](./assets/banner.png)\n\n",
@@ -269,40 +265,29 @@ def _update_readme(
         "Pipeline automatizado para extração, classificação e versionamento das "
         "**Salesforce Release Notes** como artefatos Markdown estruturados "
         "(*Knowledge-as-Code*).\n\n",
+        "### ⚙️ CI/CD Status & Conformidade\n\n",
+        "[![Python Quality & Validation]"
+        "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
+        "python-quality.yml/badge.svg)]"
+        "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
+        "python-quality.yml)\n",
+        "![Python](https://img.shields.io/badge/Python-3.14-blue.svg?"
+        "logo=python&logoColor=white) \n",
+        "![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?"
+        "logo=playwright&logoColor=white) \n",
+        "![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg) \n",
+        "![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg) \n",
+        "![Black](https://img.shields.io/badge/Formatter-Black-000000.svg)\n\n",
+        "| Tecnologia / Ferramenta | Descrição | Status no Pipeline |\n",
+        "| :--- | :--- | :---: |\n",
+        "| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |\n",
+        "| 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |\n",
+        "| 🧪 **Pytest** | Suíte de testes unitários automatizados | `100% Cobertura` |\n",
+        "| 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |\n",
+        "| ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |\n\n",
+        "---\n\n",
+        "## 📋 Notas de Release e Resumos por Tópico\n\n",
     ]
-
-    content.extend(
-        [
-            "### ⚙️ CI/CD Status & Conformidade\n\n",
-            "[![Python Quality & Validation]"
-            "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
-            "python-quality.yml/badge.svg)]"
-            "(https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/"
-            "python-quality.yml)\n",
-            "![Python](https://img.shields.io/badge/Python-3.14-blue.svg?"
-            "logo=python&logoColor=white) \n",
-            "![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?"
-            "logo=playwright&logoColor=white) \n",
-            "![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg) \n",
-            "![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg) \n",
-            "![Black](https://img.shields.io/badge/Formatter-Black-000000.svg)\n\n",
-        ]
-    )
-
-    content.extend(
-        [
-            "| Tecnologia / Ferramenta | Descrição | Status no Pipeline |\n",
-            "| :--- | :--- | :---: |\n",
-            "| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |\n",
-            "| 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |\n",
-            "| 🧪 **Pytest** | Suíte de testes unitários automatizados | `100% Cobertura` |\n",
-            "| 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |\n",
-            "| ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |\n\n",
-            "---\n\n",
-        ]
-    )
-
-    content.append("## 📋 Notas de Release e Resumos por Tópico\n\n")
 
     def get_release_emoji(name: str) -> str:
         name_lower = name.lower()
@@ -312,53 +297,44 @@ def _update_readme(
             return "☀️"
         return "🌸"
 
-    slug_to_id = {r.slug: r.release_id for r in KNOWN_RELEASES}
-    for release_slug, topics in sorted(
-        releases, key=lambda x: slug_to_id.get(x[0], 0), reverse=True
-    ):
-        release_name = release_slug.replace("_", " ").title()
-        emoji = get_release_emoji(release_name)
+    for meta in metas:
+        slug = meta["slug"]
+        name = meta["name"]
+        emoji = get_release_emoji(name)
 
-        content.append(f"### {emoji} {release_name}\n\n")
+        content.append(f"### {emoji} {name}\n\n")
 
-        release_highlights = highlights.get(release_slug, {})
+        categories = meta.get("categories", [])
+        for cat in categories:
+            cat_name = cat["name"]
+            count = cat["count"]
+            cat_slug = re.sub(r"[^a-z0-9]+", "_", cat_name.lower()).strip("_")
 
-        for topic_slug in topics:
-            topic_emoji = "📄"
-            display_name = topic_slug.upper().replace("_", " ")
-
-            articles = release_highlights.get(topic_slug, [])
-
-            if articles:
-                num_changes = len(articles)
-                plural = "alterações" if num_changes > 1 else "alteração"
-
+            if count > 0:
+                plural = "recursos" if count > 1 else "recurso"
                 content.append("<details>\n")
                 content.append(
-                    f"<summary><b>{topic_emoji} {display_name} "
-                    f"(Clique para expandir {num_changes} {plural})</b></summary>\n\n"
+                    f"<summary><b>📄 {cat_name} "
+                    f"({count} {plural})</b></summary>\n\n"
                 )
-                for article in articles:
-                    content.append(f"* **{article['title']}**\n")
-                    content.append(f"  {article['summary']}\n\n")
-
                 content.append(
-                    f"> 📄 **Notas Completas:** consulte os detalhes completos na página "
-                    f"do tópico [{display_name}]"
-                    f"(./releases/{release_slug}/{topic_slug}.md).\n"
+                    f"> 📄 Detalhes completos: "
+                    f"[./releases/{slug}/{cat_slug}.md]"
+                    f"(./releases/{slug}/{cat_slug}.md)\n\n"
                 )
                 content.append("</details>\n\n")
             else:
-                content.append(
-                    f"* {topic_emoji} **{display_name}**: "
-                    f"Acesse o arquivo de notas de versão em "
-                    f"[./releases/{release_slug}/{topic_slug}.md]"
-                    f"(./releases/{release_slug}/{topic_slug}.md).\n"
-                )
+                content.append(f"* 📄 **{cat_name}** — Sem recursos nesta release.\n")
+
         content.append("\n---\n\n")
 
     readme_path.write_text("".join(content), encoding="utf-8")
-    logger.info("README.md atualizado com painel moderno e resumos.")
+    logger.info("README.md atualizado com painel moderno (%d releases).", len(metas))
+
+
+def main() -> None:
+    """Entrypoint do script."""
+    asyncio.run(run_pipeline())
 
 
 if __name__ == "__main__":

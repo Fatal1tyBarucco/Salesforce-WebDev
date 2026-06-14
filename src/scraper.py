@@ -9,6 +9,7 @@ This scraper uses a resilient strategy:
 """
 
 import logging
+from pathlib import Path
 from types import TracebackType
 from typing import Optional
 
@@ -211,3 +212,47 @@ class SalesforceReleaseScraper:
 
         logger.warning("No ToC container found, returning full page HTML")
         return await page.content()
+
+    async def fetch_page_raw_text(self, url: str) -> Optional[str]:
+        """Fetch page and return inner_text of body (for feature impact page)."""
+        logger.info("Fetching raw text: %s", url)
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                try:
+                    await page.wait_for_selector("table, article, main", timeout=15000)
+                except Exception:
+                    await page.wait_for_timeout(5000)
+                await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                await page.wait_for_timeout(1000)
+                text = await page.inner_text("body")
+                await browser.close()
+                if text and len(text) > 500:
+                    logger.info("Fetched raw text (%d chars)", len(text))
+                    return text
+                logger.warning("Insufficient text content (%d chars)", len(text or ""))
+                return None
+        except Exception as e:
+            logger.error("Failed to fetch raw text: %s", e)
+            return None
+
+    async def download_pdf(self, url: str, dest: Path) -> bool:
+        """Download a PDF file to dest using urllib (no Playwright needed)."""
+        import urllib.request
+
+        logger.info("Downloading PDF: %s -> %s", url, dest)
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            response = urllib.request.urlopen(req, timeout=30)
+            data = response.read()
+            dest.write_bytes(data)
+            if dest.exists() and dest.stat().st_size > 1000:
+                logger.info("PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size)
+                return True
+            logger.warning("PDF too small: %d bytes", dest.stat().st_size)
+            return False
+        except Exception as e:
+            logger.warning("PDF download failed: %s", e)
+            return False

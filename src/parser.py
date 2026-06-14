@@ -1,8 +1,11 @@
-"""Parser for Salesforce Help release notes — navigation tree extraction.
+"""Parser for Salesforce Help release notes — navigation tree + feature impact.
 
 Extracts the topic hierarchy directly from the DOM navigation tree
 (li[role="treeitem"]) instead of keyword-based matching. The Salesforce
 Help portal already organizes articles by topic in its sidebar ToC.
+
+Also parses the Feature Impact page which contains ALL features with
+availability information in a single page load.
 """
 
 import logging
@@ -267,3 +270,193 @@ class ReleaseNotesParser:
         if len(cleaned) < 3:
             return ""
         return cleaned
+
+
+# ---------------------------------------------------------------------------
+# FeatureImpactParser — parses the single-page feature impact table
+# ---------------------------------------------------------------------------
+
+SECTION_HEADERS: frozenset[str] = frozenset({
+    "Salesforce geral",
+    "Agentforce",
+    "Análise de dados",
+    "Automação",
+    "Commerce",
+    "Personalização",
+    "Data 360",
+    "Desenvolvimento",
+    "Experience Cloud",
+    "Field Service",
+    "Hyperforce",
+    "Setores",
+    "Marketing",
+    "MuleSoft",
+    "Aplicativo móvel",
+    "OmniStudio",
+    "Partner Cloud",
+    "Gerenciamento de receita",
+    "Vendas",
+    "Integrações do Salesforce para Slack",
+    "Segurança, identidade e privacidade",
+    "Serviço",
+    "Outros produtos e serviços do Salesforce",
+    "Documentação legal",
+})
+
+AVAILABILITY_KEYWORDS: frozenset[str] = frozenset({"Yes"})
+
+
+class FeatureImpactEntry:
+    __slots__ = ("name", "available_users", "available_admins", "requires_config", "contact_sf")
+
+    def __init__(
+        self,
+        name: str,
+        available_users: bool = False,
+        available_admins: bool = False,
+        requires_config: bool = False,
+        contact_sf: bool = False,
+    ) -> None:
+        self.name = name
+        self.available_users = available_users
+        self.available_admins = available_admins
+        self.requires_config = requires_config
+        self.contact_sf = contact_sf
+
+
+class FeatureImpactCategory:
+    __slots__ = ("name", "description", "entries", "subcategories")
+
+    def __init__(self, name: str, description: str = "") -> None:
+        self.name = name
+        self.description = description
+        self.entries: list[FeatureImpactEntry] = []
+        self.subcategories: dict[str, list[FeatureImpactEntry]] = {}
+
+
+class FeatureImpactParser:
+    """Parses the Feature Impact page text into structured categories."""
+
+    def parse_text(self, text: str) -> list[FeatureImpactCategory]:
+        lines = [ln.strip() for ln in text.split("\n") if ln.strip()]
+        categories: list[FeatureImpactCategory] = []
+        current_cat: FeatureImpactCategory | None = None
+        current_sub: str = ""
+        i = 0
+
+        while i < len(lines):
+            line = lines[i]
+
+            if self._is_section_header(line):
+                existing = next(
+                    (c for c in categories if c.name == line), None
+                )
+                if existing:
+                    total_existing = len(existing.entries) + sum(
+                        len(e) for e in existing.subcategories.values()
+                    )
+                    if total_existing > 5:
+                        current_cat = None
+                        i += 1
+                        continue
+                    categories.remove(existing)
+                current_cat = FeatureImpactCategory(name=line)
+                categories.append(current_cat)
+                current_sub = ""
+                i += 1
+                continue
+
+            if self._is_category_description(line, current_cat):
+                if current_cat:
+                    current_cat.description = line
+                i += 1
+                continue
+
+            if self._is_table_header(line):
+                i += 1
+                continue
+
+            if self._is_subcategory_header(line, current_cat):
+                current_sub = line
+                if current_cat and current_sub not in current_cat.subcategories:
+                    current_cat.subcategories[current_sub] = []
+                i += 1
+                continue
+
+            entry = self._parse_feature_line(line)
+            if entry and current_cat:
+                if current_sub and current_sub in current_cat.subcategories:
+                    current_cat.subcategories[current_sub].append(entry)
+                else:
+                    current_cat.entries.append(entry)
+
+            i += 1
+
+        return [c for c in categories if c.entries or c.subcategories]
+
+    def _is_section_header(self, line: str) -> bool:
+        return line in SECTION_HEADERS
+
+    def _is_category_description(
+        self, line: str, cat: FeatureImpactCategory | None
+    ) -> bool:
+        if not cat:
+            return False
+        if cat.description:
+            return False
+        if self._is_table_header(line):
+            return False
+        if line in SECTION_HEADERS:
+            return False
+        return len(line) > 20
+
+    def _is_table_header(self, line: str) -> bool:
+        return "RECURSO" in line and "ATIVADO" in line
+
+    def _is_subcategory_header(
+        self, line: str, cat: FeatureImpactCategory | None
+    ) -> bool:
+        if not cat:
+            return False
+        if self._is_table_header(line):
+            return False
+        if line in SECTION_HEADERS:
+            return False
+        if self._parse_feature_line(line) is not None:
+            return False
+        if len(line) > 5 and len(line) < 80:
+            if cat.entries or cat.subcategories:
+                return True
+        return False
+
+    def _parse_feature_line(self, line: str) -> FeatureImpactEntry | None:
+        if not line or len(line) < 5:
+            return None
+        if self._is_table_header(line):
+            return None
+        if line in SECTION_HEADERS:
+            return None
+
+        parts = [p.strip() for p in line.split("\t")]
+        if len(parts) < 2:
+            if "Yes" not in line and len(line) > 10:
+                return FeatureImpactEntry(name=line)
+            return None
+
+        name = parts[0]
+        if not name or len(name) < 3:
+            return None
+
+        flags = parts[1:] if len(parts) > 1 else []
+        avail_users = any("Yes" in f for f in flags[:1]) if len(flags) >= 1 else False
+        avail_admins = any("Yes" in f for f in flags[1:2]) if len(flags) >= 2 else False
+        requires_config = any("Yes" in f for f in flags[2:3]) if len(flags) >= 3 else False
+        contact_sf = any("Yes" in f for f in flags[3:4]) if len(flags) >= 4 else False
+
+        return FeatureImpactEntry(
+            name=name,
+            available_users=avail_users,
+            available_admins=avail_admins,
+            requires_config=requires_config,
+            contact_sf=contact_sf,
+        )

@@ -24,6 +24,19 @@ BASE_URL: Final[str] = (
     f"{PT_BR_PARAM}"
 )
 
+FEATURE_IMPACT_URL: Final[str] = (
+    "https://help.salesforce.com/s/articleView"
+    "?id=release-notes.rn_feature_impact.htm"
+    "&release={release_id}"
+    "&type=5"
+    f"{PT_BR_PARAM}"
+)
+
+PDF_URL_TEMPLATE: Final[str] = (
+    "https://www.salesforce.com/en-us/wp-content/uploads/sites/4/"
+    "documents/PDF/release-in-a-box-{season}-{year_short}-v{version}.pdf"
+)
+
 REQUEST_TIMEOUT_SECONDS: Final[int] = 30
 MAX_RETRY_ATTEMPTS: Final[int] = 5
 RETRY_BASE_DELAY_SECONDS: Final[float] = 2.0  # backoff exponencial: 2^n
@@ -91,6 +104,14 @@ def build_release_info(release_id: int) -> ReleaseInfo:
     name = f"{season} '{year_short}"
     slug = f"{season.lower()}_{year_short}"
     return ReleaseInfo(name=name, release_id=release_id, slug=slug)
+
+
+def _id_to_season(release_id: int) -> str:
+    SEASONS = ("Spring", "Summer", "Winter")
+    BASE_ID = 254
+    step = (release_id - BASE_ID) // 2
+    return SEASONS[step % 3]
+
 
 # ---------------------------------------------------------------------------
 # TopicNode — nó dinâmico da árvore de navegação do Salesforce Help.
