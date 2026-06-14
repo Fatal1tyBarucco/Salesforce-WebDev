@@ -1,83 +1,395 @@
-# Segurança & Permissões — Winter '26
+# Segurança, identidade e privacidade — Winter '26
 
 > **Release:** Winter '26
-> **Gerado em:** 2026-06-12 21:14 UTC
+> **Gerado em:** 2026-06-14 06:23 UTC
 > **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&release=258&type=5&language=pt_BR
 
 ---
 
-## Segurança & Permissões — Winter '26
+## Domínios
 
 
 
-### Usar a segurança do OAuth com sua conexão do Databricks
-
-Aproveite o OAuth de máquina para máquina (M2M) para conectores do Databricks para fornecer segurança adicional. Agora você pode especificar quais objetos podem ser acessados e os privilégios de acesso concedidos a esses objetos. Com o M2M OAuth, você não precisa configurar um provedor de autenticação externo. Basta fornecer seus valores de ID do cliente e segredo do cliente do Databricks.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_sdp_integrate_databricks_m2m_oauth.htm&language=pt_BR&release=258&type=5)
+### Atualize as referências a nomes de host legados (atualização de versão)
 
 
 
-### Usar a segurança do OAuth com sua conexão do Databricks
-
-Aproveite o OAuth de máquina para máquina (M2M) para conectores do Databricks para fornecer segurança adicional. Agora você pode especificar quais objetos podem ser acessados e os privilégios de acesso concedidos a esses objetos. Com o M2M OAuth, você não precisa configurar um provedor de autenticação externo. Basta fornecer seus valores de ID do cliente e segredo do cliente do Databricks.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_databricks_m2m_oauth.htm&language=pt_BR&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains_update_legacy_ru.htm&language=pt_BR&release=258&type=5)
 
 
 
-### Permissões e compartilhamento
-
-Depois de remover um conjunto de permissões ou grupo de conjuntos de permissões de um usuário, as licenças de conjunto de permissões relacionadas serão canceladas automaticamente. O comportamento de papéis seguros é imposto em organizações de produção. Para melhorar o desempenho, o Salesforce está mudando o modo como o recálculo de compartilhamento funciona.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions.htm&language=pt_BR&release=258&type=5)
+### Substituir URLs instanciados no tráfego de API
 
 
 
-### Licenças de conjunto de permissões são removidas após cancelar a...
-
-As atribuições de licença de conjunto de permissões relacionadas agora são removidas automaticamente depois que você cancela a atribuição de um conjunto de permissões ou grupo de conjuntos de permissões de um usuário. Essa alteração torna o gerenciamento de licenças mais eficiente, pois a remoção manual era obrigatória anteriormente. O cancelamento automático da atribuição não ocorre quando as atualizações são feitas por meio de políticas de acesso do usuário, quando o usuário exige a licença por meio de outro conjunto de permissões, ao remover um conjunto de permissões licenciado de um grupo de conjuntos de permissões ou ao cancelar a atribuição de 50 ou mais conjuntos de permissões ou grupos de conjuntos de permissões de uma só vez.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_psl_unassign.htm&language=pt_BR&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains_instanced_api.htm&language=pt_BR&release=258&type=5)
 
 
 
-### Alterações de distorção da API no Lightning Web Security
-
-O Lightning Web Security inclui novas proteções de segurança com distorções adicionais para APIs da Web. Regras do ESLint que correspondem às distorções também estão disponíveis.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_lws_distortion_changes.htm&language=pt_BR&release=258&type=5)
+### Rotear tráfego por locais da Salesforce Edge Network apenas no Japão
 
 
 
-### O suporte para autenticação de fluxo de dispositivo do OAuth 2.0...
-
-A Salesforce está removendo o suporte para autenticação de fluxo de dispositivo do OAuth 2.0 nos aplicativos conectados do Data Loader instalados automaticamente em 2 de setembro de 2025. Não há exceções ou extensões disponíveis para essa remoção.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_loader_oauth_change.htm&language=pt_BR&release=258&type=5)
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains_regional_edge.htm&language=pt_BR&release=258&type=5)
 
 
 
-### Segurança, identidade e privacidade
-
-A Detecção de dados oferece recursos de digitalização expandidos e tipos de dados. Monitore as atividades de acesso a dados do agente com Eventos em tempo real. Use dados de evento em objetos padrão com objetos de log de eventos adicionais e maior disponibilidade regional. Defina políticas de retenção com a Trilha de auditoria de campo. A Criptografia de plataforma para Data Cloud agora oferece suporte ao Tableau Next. A Criptografia de banco de dados agora é GA. Prepare e faça a rotação das credenciais do aplicativo cliente externo. Configure recursos móveis e notificações para aplicativos cliente externos. Redefina sua senha esquecida usando seu endereço de email. Use tempos limite mais longos para tokens de acesso baseados em JWT. Escolha quais métodos de verificação de identidade registrar em novas organizações. Obtenha visibilidade das atividades do agente com Rastreamento de plataforma e dados no Data Cloud.
-
-
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security.htm&language=pt_BR&release=258&type=5)
+### Um aviso foi adicionado para possíveis interrupções de domínio personalizado
 
 
 
-### Domínios
-
-Para evitar interrupções, atualize as referências a nomes de host legados, incluindo nomes de host instanciados em chamadas à API. E a vantagem regional está disponível no Japão.
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains_custom_warning.htm&language=pt_BR&release=258&type=5)
 
 
-[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains.htm&language=pt_BR&release=258&type=5)
+
+### Outras alterações do domínio
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_domains_other_changes.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Gerenciamento de identidade e acesso
+
+
+
+### Mantenha suas contas favoritas juntas no Alternador de ambiente
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_environment_switcher_favorites.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Configurar ou migrar recursos e notificações móveis usando a estrutura de aplicativo cliente externo
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_external_client_apps_mobile_notifications_push_plugins.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Preparação e rotação de credenciais de aplicativo cliente externo
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_stage_rotate_eca_credentials.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Melhorar o gerenciamento de tempo limite de token de acesso baseado em JWT
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_jwt_tokens.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Gaste menos tempo ajudando usuários com a configuração da conta
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_password_reset_issue.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Identifique problemas com escopos inválidos no fluxo de credenciais do cliente
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_invalid_scopes_client_credentials.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Solucionar erros de SAML causados pelo atributo InResponseTo
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_troubleshoot_saml_errors.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Migrar para uma estrutura SAML de ajustes múltiplos (atualização da versão)
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_multiconfig_saml.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Os nomes de usuário não podem conter caracteres de espaço de largura zero
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_username_validation.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Todos os métodos de verificação disponíveis são exibidos em novas organizações
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_verification_methods.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Alterações de validação e usabilidade para questões de segurança
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_question_changes.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Redefinir sua senha com seu endereço de email
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_reset_password_with_email.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Revisar alterações à ativação do dispositivo
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_device_activation_changes.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Alterações ao suporte de DES triplo foram adiadas
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_triple_des_enforcement.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Credenciais nomeadas
+
+
+
+### Simplifique as integrações com o suporte do provedor de identidade de autenticação externo para credenciais do cliente
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_named_credentials_xidp_client_creds.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Salesforce Shield
+
+
+
+### Conheça o aplicativo Shield
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_shield_app.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Detecção de dados (disponível ao público em geral)
+
+
+
+### Expanda a leitura de dados com 100 objetos e 200 campos
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect_ga_expand_scan.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Personalizar tipos de dados confidenciais para os dados da sua organização
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect_ga_custom_data_types.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Usar a Detecção de dados com o aplicativo Shield
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect_ga_shield_app.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Fim do suporte do pacote gerenciado da Detecção de dados na versão Spring '26
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect_mp_eos.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Monitoramento de evento
+
+
+
+### Armazene e consulte ainda mais dados de evento em objetos padrão
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_em_elo_expanded_availability.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Acompanhe a atividade do agente com novos campos em objetos de log de eventos e tipos de arquivo de log de eventos
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_secuity_em_elo_agent_context.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Rastrear a atividade do agente com eventos em tempo real
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_em_rte_agent_activity.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Trilha de auditoria de campo
+
+
+
+### Definir políticas de retenção de modo declarativo com a trilha de auditoria de campo
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_fat_retention_policies.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Explorar alterações de histórico para campos rastreados
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_fat_field_history_explorer.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Acessar os principais recursos de rastreamento de histórico de campo no aplicativo Shield
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_fat_shield_app.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Shield Platform Encryption
+
+
+
+### Criptografe seu banco de dados inteiro (versão GA)
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_258_security_pe_de_ga.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Criptografe organizações pessoais do Tableau com a Criptografia de plataforma para Data Cloud
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_258_tua_personal_support.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Criptografe campos em novos objetos de perfil de crédito no Automotive Cloud
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_258_credit_bureau_entity_encryption.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Acompanhe as métricas do Agentforce para melhorar sua postura de segurança
+
+
+
+### Visualizar detalhes do evento de uso do gateway de IA
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_sc_ai_gateway_usage.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Monitorar o número de ataques de injeção de prompt detectados
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_sc_prompt_injection.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Rastrear versões do agente em todos os locatários
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_sc_configured_agents.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Agentforce para Segurança
+
+
+
+### Crie um agente de segurança perfeitamente com Agentforce
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_agent_template.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Obtenha um instantâneo da atividade do usuário com Agentforce
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_user_activity_action.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Acessar Agentforce no aplicativo Central de segurança
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_agentforce_in_app.htm&language=pt_BR&release=258&type=5)
+
+
+
+## Outras alterações
+
+
+
+### Obter visibilidade detalhada de cada ação da plataforma
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_other_platform_tracing.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Revisar e atualizar sua política de referenciador
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_other_update_referrer_policy.htm&language=pt_BR&release=258&type=5)
+
+
+
+### Solucionar problemas apenas de violações de política de navegador e URL confiável relevantes
+
+
+
+[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_other_troubleshoot_violations.htm&language=pt_BR&release=258&type=5)
 
 
