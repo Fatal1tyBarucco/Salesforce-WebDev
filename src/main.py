@@ -51,32 +51,30 @@ def _highest_known_id() -> int:
 
 
 async def detect_new_releases(scraper: SalesforceReleaseScraper) -> list[ReleaseInfo]:
-    """Probe Salesforce for release IDs beyond what we know. Return new ones.
+    """Probe Salesforce for the next release ID beyond what we know.
 
-    Uses the feature impact page (lightweight) instead of full page scrape.
+    Only checks the immediate next release (base_id + 2).
+    The feature impact page returns content for any ID, so we limit
+    to a single probe to avoid detecting non-existent future releases.
     """
     existing_slugs = _find_existing_releases()
     base_id = _highest_known_id()
-    new_releases: list[ReleaseInfo] = []
+    candidate_id = base_id + 2
+    info = build_release_info(candidate_id)
 
-    for offset in range(2, 20, 2):
-        candidate_id = base_id + offset
-        info = build_release_info(candidate_id)
-        if info.slug in existing_slugs:
-            continue
+    if info.slug in existing_slugs:
+        return []
 
-        url = FEATURE_IMPACT_URL.format(release_id=candidate_id)
-        logger.info("Probing for new release: %s (id=%d)", info.name, candidate_id)
+    url = FEATURE_IMPACT_URL.format(release_id=candidate_id)
+    logger.info("Probing for new release: %s (id=%d)", info.name, candidate_id)
 
-        text = await scraper.fetch_page_raw_text(url)
-        if text and len(text) > 500:
-            logger.info("New release found: %s", info.name)
-            new_releases.append(info)
-        else:
-            logger.info("Release %s not found (id=%d)", info.name, candidate_id)
-            break
+    text = await scraper.fetch_page_raw_text(url)
+    if text and len(text) > 500:
+        logger.info("New release found: %s", info.name)
+        return [info]
 
-    return new_releases
+    logger.info("Release %s not found (id=%d)", info.name, candidate_id)
+    return []
 
 
 async def run_pipeline() -> None:
