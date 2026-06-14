@@ -91,7 +91,9 @@ def test_main_execution_success(
     mock_setup_logging: MagicMock,
 ) -> None:
     scraper_inst = MagicMock()
-    scraper_inst.fetch_page_raw_text = AsyncMock(return_value="fake feature text")
+    scraper_inst.fetch_page_raw_text = AsyncMock(
+        side_effect=["current release content", "new release content", "feature impact text"]
+    )
     scraper_inst.download_pdf_from_button = AsyncMock(return_value=True)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
@@ -111,7 +113,7 @@ def test_main_execution_success(
     main()
 
     mock_setup_logging.assert_called_once()
-    scraper_inst.fetch_page_raw_text.assert_called_once()
+    assert scraper_inst.fetch_page_raw_text.call_count >= 1
     mock_update_single.assert_called_once()
 
 
@@ -155,11 +157,11 @@ def test_main_execution_no_content(
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._update_readme_all")
-@patch("src.main._find_existing_releases")
+@patch("src.main.detect_new_release", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
 def test_main_execution_all_releases_exist(
     mock_asyncio_run: MagicMock,
-    mock_find_existing: MagicMock,
+    mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
@@ -174,8 +176,7 @@ def test_main_execution_all_releases_exist(
     generator_inst = MagicMock()
     mock_generator_class.return_value = generator_inst
 
-    existing = {r.slug for r in KNOWN_RELEASES}
-    mock_find_existing.return_value = existing
+    mock_detect.return_value = None
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 

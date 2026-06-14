@@ -8,3 +8,5 @@
 - [integrations](./releases/summer-26/integrations.md)
 - [lwc](./releases/summer-26/lwc.md)
 - [security](./releases/summer-26/security.md)
+### Summer 26
+### Winter 27

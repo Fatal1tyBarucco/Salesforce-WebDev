@@ -45,6 +45,80 @@ def _find_existing_releases() -> set[str]:
     return {d.name for d in releases_dir.iterdir() if d.is_dir() and any(d.glob("*.md"))}
 
 
+async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo | None:
+    """Detect if a new release is available by comparing page content.
+
+    Strategy: fetch the feature impact page for the current and next release IDs.
+    If the content differs, the new release exists. If identical, it doesn't exist yet.
+    """
+    existing_slugs = _find_existing_releases()
+    known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
+
+    current = None
+    for r in known_sorted:
+        if r.slug in existing_slugs:
+            current = r
+            break
+
+    if current is None:
+        current = known_sorted[0]
+
+    next_id = current.release_id + 2
+    next_info = ReleaseInfo(
+        name=_build_release_name(next_id),
+        release_id=next_id,
+        slug=_build_release_slug(next_id),
+    )
+
+    if next_info.slug in existing_slugs:
+        return None
+
+    current_url = FEATURE_IMPACT_URL.format(release_id=current.release_id)
+    next_url = FEATURE_IMPACT_URL.format(release_id=next_id)
+
+    logger.info(
+        "Comparing content: %s (id=%d) vs %s (id=%d)",
+        current.name,
+        current.release_id,
+        next_info.name,
+        next_id,
+    )
+
+    current_text = await scraper.fetch_page_raw_text(current_url)
+    next_text = await scraper.fetch_page_raw_text(next_url)
+
+    if not current_text or not next_text:
+        logger.info("Could not fetch pages for comparison")
+        return None
+
+    if len(current_text) == len(next_text) and current_text[:500] == next_text[:500]:
+        logger.info(
+            "Release %s not yet available (content identical to %s)", next_info.name, current.name
+        )
+        return None
+
+    logger.info("New release detected: %s (content differs from %s)", next_info.name, current.name)
+    return next_info
+
+
+def _build_release_name(release_id: int) -> str:
+    SEASONS = ("Spring", "Summer", "Winter")
+    BASE_ID = 254
+    BASE_YEAR = 25
+    step = (release_id - BASE_ID) // 2
+    season = SEASONS[step % 3]
+    year = BASE_YEAR + step // 3
+    if season == "Winter":
+        year += 1
+    return f"{season} '{year}"
+
+
+def _build_release_slug(release_id: int) -> str:
+    name = _build_release_name(release_id)
+    season, year = name.split()
+    return f"{season.lower()}_{year.replace("'", "")}"
+
+
 async def run_pipeline() -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
     setup_logging()
@@ -63,22 +137,21 @@ async def run_pipeline() -> None:
 
     releases_to_process: list[ReleaseInfo] = []
 
-    if release_filter:
-        for r in KNOWN_RELEASES:
-            if r.slug == release_filter:
-                releases_to_process.append(r)
-                break
-        if not releases_to_process:
-            logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
-            return
-    else:
-        existing_slugs = _find_existing_releases()
-        for r in sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True):
-            if r.slug not in existing_slugs:
-                releases_to_process.append(r)
-                break
-        if not releases_to_process:
-            logger.info("No new releases to process. Updating README only.")
+    async with scraper:
+        if release_filter:
+            for r in KNOWN_RELEASES:
+                if r.slug == release_filter:
+                    releases_to_process.append(r)
+                    break
+            if not releases_to_process:
+                logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+                return
+        else:
+            new_release = await detect_new_release(scraper)
+            if new_release:
+                releases_to_process.append(new_release)
+            else:
+                logger.info("No new release detected. Updating README only.")
 
     async with scraper:
         for release in releases_to_process:
