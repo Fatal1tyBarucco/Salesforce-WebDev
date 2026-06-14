@@ -48,8 +48,8 @@ def _find_existing_releases() -> set[str]:
 async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo | None:
     """Detect if a new release is available by comparing page content.
 
-    Strategy: fetch the feature impact page for the current and next release IDs.
-    If the content differs, the new release exists. If identical, it doesn't exist yet.
+    If no releases exist in the repo, returns the latest known release.
+    If releases exist, compares current vs next to detect new ones.
     """
     existing_slugs = _find_existing_releases()
     known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
@@ -61,7 +61,11 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
             break
 
     if current is None:
-        current = known_sorted[0]
+        latest = known_sorted[0]
+        if latest.slug not in existing_slugs:
+            logger.info("No releases in repo, processing latest known: %s", latest.name)
+            return latest
+        return None
 
     next_id = current.release_id + 2
     next_info = ReleaseInfo(
