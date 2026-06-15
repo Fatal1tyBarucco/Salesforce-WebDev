@@ -53,34 +53,6 @@ graph TD
 ## 📋 Releases Disponíveis
 
 <!-- RELEASE_INDEX_START -->
-
-### ☀️ Summer '26
-
-
-| Módulo / Cloud | Recursos | Link para Documentação |
-| --- | ---: | --- |
-| **Documentação legal** | 6 | [📄 Visualizar](./releases/summer_26/documentacao_legal.md) |
-| **Salesforce geral** | 31 | [📄 Visualizar](./releases/summer_26/salesforce_geral.md) |
-| **Agentforce** | 19 | [📄 Visualizar](./releases/summer_26/agentforce.md) |
-| **Análise de dados** | 33 | [📄 Visualizar](./releases/summer_26/analise_de_dados.md) |
-| **Automação** | 81 | [📄 Visualizar](./releases/summer_26/automacao.md) |
-| **Commerce** | 91 | [📄 Visualizar](./releases/summer_26/commerce.md) |
-| **Personalização** | 27 | [📄 Visualizar](./releases/summer_26/personalizacao.md) |
-| **Data 360** | 37 | [📄 Visualizar](./releases/summer_26/data_360.md) |
-| **Desenvolvimento** | 102 | [📄 Visualizar](./releases/summer_26/desenvolvimento.md) |
-| **Experience Cloud** | 14 | [📄 Visualizar](./releases/summer_26/experience_cloud.md) |
-| **Field Service** | 37 | [📄 Visualizar](./releases/summer_26/field_service.md) |
-| **Hyperforce** | 3 | [📄 Visualizar](./releases/summer_26/hyperforce.md) |
-| **Setores** | 327 | [📄 Visualizar](./releases/summer_26/setores.md) |
-| **Marketing** | 53 | [📄 Visualizar](./releases/summer_26/marketing.md) |
-| **MuleSoft** | 6 | [📄 Visualizar](./releases/summer_26/mulesoft.md) |
-| **Aplicativo móvel** | 14 | [📄 Visualizar](./releases/summer_26/aplicativo_movel.md) |
-| **OmniStudio** | 10 | [📄 Visualizar](./releases/summer_26/omnistudio.md) |
-| **Gerenciamento de receita** | 96 | [📄 Visualizar](./releases/summer_26/gerenciamento_de_receita.md) |
-| **Vendas** | 56 | [📄 Visualizar](./releases/summer_26/vendas.md) |
-| **Integrações do Salesforce para Slack** | 2 | [📄 Visualizar](./releases/summer_26/integracoes_do_salesforce_para_slack.md) |
-| **Segurança, identidade e privacidade** | 44 | [📄 Visualizar](./releases/summer_26/seguranca_identidade_e_privacidade.md) |
-| **Serviço** | 188 | [📄 Visualizar](./releases/summer_26/servico.md) |
 <!-- RELEASE_INDEX_END -->
 
 ---
