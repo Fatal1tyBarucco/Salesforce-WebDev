@@ -32,8 +32,7 @@ from .parser import (
 )
 from .scraper import SalesforceReleaseScraper
 
-README_INDEX_START_MARKER = "{% comment %} RELEASE_INDEX_START {% endcomment %}"
-README_INDEX_END_MARKER = "{% comment %} RELEASE_INDEX_END {% endcomment %}"
+RELEASE_SECTION_HEADING = "## 📋 Releases Disponíveis"
 
 logger = logging.getLogger(__name__)
 
@@ -290,9 +289,8 @@ def _update_readme_single(
 
 
 def _create_readme_with_markers(readme_path: Path) -> None:
-    """Create README.md with proper formatting and release index markers."""
-    content = (
-        """![Salesforce Release Intelligence](./assets/banner.png)
+    """Create README.md with proper formatting."""
+    content = """![Salesforce Release Intelligence](./assets/banner.png)
 
 # 🚀 Salesforce Release Notes Intelligence
 
@@ -346,10 +344,6 @@ graph TD
 
 ## 📋 Releases Disponíveis
 
-"""
-        + f"{README_INDEX_START_MARKER}\n{README_INDEX_END_MARKER}"
-        + """
-
 ---
 
 ## 🛠️ Stack Tecnológico & Automação
@@ -370,13 +364,12 @@ O controle de versão e extração de dados utiliza as seguintes ferramentas:
 
 ---
 """
-    )
     readme_path.write_text(content, encoding="utf-8")
     logger.info("README.md criado com marcadores.")
 
 
 def _update_readme_all() -> None:
-    """Replace the index block in README.md with per-release details/summary blocks."""
+    """Replace the release section in README.md with details/summary blocks."""
     readme_path = Path("README.md")
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
@@ -389,7 +382,7 @@ def _update_readme_all() -> None:
 
     original = readme_path.read_text(encoding="utf-8")
 
-    if README_INDEX_START_MARKER not in original:
+    if RELEASE_SECTION_HEADING not in original:
         _create_readme_with_markers(readme_path)
         original = readme_path.read_text(encoding="utf-8")
 
@@ -409,7 +402,7 @@ def _update_readme_all() -> None:
             return "☀️"
         return "🌸"
 
-    lines: list[str] = ["\n"]
+    lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
     for meta in metas:
         slug = meta["slug"]
@@ -419,7 +412,7 @@ def _update_readme_all() -> None:
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
 
-        lines.append(f"### {emoji} {name}\n")
+        lines.append(f"\n### {emoji} {name}\n")
 
         for cat in active:
             cat_name = cat["name"]
@@ -436,10 +429,12 @@ def _update_readme_all() -> None:
 
     new_block = "\n".join(lines)
 
-    start_idx = original.index(README_INDEX_START_MARKER) + len(README_INDEX_START_MARKER)
-    end_idx = original.index(README_INDEX_END_MARKER)
+    heading_idx = original.index(RELEASE_SECTION_HEADING)
+    next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
+    if next_heading == -1:
+        next_heading = len(original)
 
-    updated = original[:start_idx] + new_block + original[end_idx:]
+    updated = original[:heading_idx] + new_block + original[next_heading:]
 
     readme_path.write_text(updated, encoding="utf-8")
     logger.info("README.md atualizado com details/summary (%d releases).", len(metas))
