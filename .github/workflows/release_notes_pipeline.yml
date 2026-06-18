@@ -1,3 +1,15 @@
+# 🚀 Salesforce Release Notes Pipeline
+#
+# Flowchart:
+#   Salesforce Help → Playwright → FeatureImpactParser → Markdown → README → GitHub Pages
+#
+# Jobs:
+#   1. Lint & Type Check (ruff, mypy)
+#   2. Extract & Generate (scrape, parse, generate, commit)
+#
+# Schedule: Weekly on Monday at 08:00 UTC
+# Manual: workflow_dispatch with optional release_slug and dry_run
+
 name: 🚀 Salesforce Release Notes Pipeline
 
 on:
@@ -135,6 +147,17 @@ jobs:
         if: always()
         run: |
           echo "## 📊 Sumário do Pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```mermaid" >> $GITHUB_STEP_SUMMARY
+          echo "flowchart LR" >> $GITHUB_STEP_SUMMARY
+          echo "    A[Salesforce Help] -->|Playwright| B[Parser]" >> $GITHUB_STEP_SUMMARY
+          echo "    B -->|FeatureImpact| C[Markdown]" >> $GITHUB_STEP_SUMMARY
+          echo "    C -->|Generator| D[Releases]" >> $GITHUB_STEP_SUMMARY
+          echo "    C -->|Updater| E[README]" >> $GITHUB_STEP_SUMMARY
+          echo "    D -->|Jekyll| F[GitHub Pages]" >> $GITHUB_STEP_SUMMARY
+          echo "    E -->|Jekyll| F" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Parâmetro | Valor |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
           echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY

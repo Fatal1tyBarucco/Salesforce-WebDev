@@ -37,20 +37,32 @@ A estrutura é desenhada para suportar revisões rápidas por **Arquitetos** e *
 A governança do repositório é mantida por meio de processos automatizados que garantem que as últimas releases sejam extraídas, transformadas e carregadas (ETL) no repositório **sem intervenção manual**.
 
 ```mermaid
-graph TD
-    A[Salesforce Help<br/>Feature Impact Page] -->|Playwright Scraper| B(GitHub Actions Workflow)
-    B -->|FeatureImpactParser| C{Processamento de Dados}
-    C -->|Markdown Generator| D[Diretórios /releases/]
-    C -->|Readme Updater| E[README.md Index]
-    D --> F((Commit Automático))
-    E --> F
-    F --> G[Repositório Atualizado]
-    G -->|Jekyll Deploy| H[GitHub Pages]
+flowchart LR
+    subgraph Fonte
+        A[Salesforce Help]
+    end
 
-    classDef salesforce fill:#00A1E0,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef github fill:#24292e,stroke:#fff,stroke-width:2px,color:#fff;
-    class A salesforce;
-    class B,F,G,H github;
+    subgraph Pipeline
+        B[Playwright Scraper]
+        C[FeatureImpactParser]
+        D[Markdown Generator]
+        E[Readme Updater]
+    end
+
+    subgraph Entrega
+        F[Releases Directory]
+        G[README.md]
+        H[GitHub Pages]
+    end
+
+    A -->|Extracao| B
+    B -->|Parse| C
+    C -->|Gera .md| D
+    C -->|Atualiza| E
+    D --> F
+    E --> G
+    F -->|Jekyll Deploy| H
+    G -->|Jekyll Deploy| H
 ```
 
 ### Fluxo de Execução
