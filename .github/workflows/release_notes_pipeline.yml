@@ -27,8 +27,9 @@ on:
       - ".github/workflows/release_notes_pipeline.yml"
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.14"
   WORKING_DIR: "."
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   lint:
