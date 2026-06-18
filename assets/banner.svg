@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B1D3A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0D2B5E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A3A6E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00A1E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0070D2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bg)" rx="12"/>
+  
+  <!-- Decorative grid pattern -->
+  <g opacity="0.05" stroke="#00A1E0" stroke-width="0.5">
+    <line x1="0" y1="50" x2="1200" y2="50"/>
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="150" x2="1200" y2="150"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="250" x2="1200" y2="250"/>
+    <line x1="100" y1="0" x2="100" y2="300"/>
+    <line x1="200" y1="0" x2="200" y2="300"/>
+    <line x1="300" y1="0" x2="300" y2="300"/>
+    <line x1="400" y1="0" x2="400" y2="300"/>
+    <line x1="500" y1="0" x2="500" y2="300"/>
+    <line x1="600" y1="0" x2="600" y2="300"/>
+    <line x1="700" y1="0" x2="700" y2="300"/>
+    <line x1="800" y1="0" x2="800" y2="300"/>
+    <line x1="900" y1="0" x2="900" y2="300"/>
+    <line x1="1000" y1="0" x2="1000" y2="300"/>
+    <line x1="1100" y1="0" x2="1100" y2="300"/>
+  </g>
+  
+  <!-- Cloud icon (Salesforce-style) -->
+  <g transform="translate(80, 100)" filter="url(#glow)">
+    <path d="M60 120 Q20 120 10 90 Q0 60 30 50 Q40 20 80 20 Q120 20 130 50 Q160 50 160 80 Q170 110 140 120 Z" 
+          fill="none" stroke="#00A1E0" stroke-width="3" opacity="0.8"/>
+    <path d="M50 110 Q25 110 18 88 Q10 65 35 55 Q45 30 78 28 Q115 28 125 52 Q148 52 148 75 Q155 100 130 110 Z" 
+          fill="#00A1E0" opacity="0.15"/>
+  </g>
+  
+  <!-- Data flow dots -->
+  <g opacity="0.6">
+    <circle cx="200" cy="150" r="4" fill="#00A1E0"/>
+    <circle cx="250" cy="130" r="3" fill="#00A1E0" opacity="0.7"/>
+    <circle cx="300" cy="145" r="5" fill="#00A1E0" opacity="0.5"/>
+    <circle cx="350" cy="125" r="3" fill="#00A1E0" opacity="0.6"/>
+    <circle cx="400" cy="140" r="4" fill="#00A1E0" opacity="0.4"/>
+  </g>
+  
+  <!-- Connection lines -->
+  <g stroke="#00A1E0" stroke-width="1" opacity="0.3" fill="none">
+    <path d="M200 150 Q225 140 250 130 Q275 140 300 145 Q325 135 350 125 Q375 132 400 140"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="480" y="105" font-family="'Segoe UI', Arial, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">
+    Salesforce Release
+  </text>
+  <text x="480" y="155" font-family="'Segoe UI', Arial, sans-serif" font-size="42" font-weight="700" fill="#00A1E0" letter-spacing="-0.5">
+    Notes Intelligence
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="480" y="195" font-family="'Segoe UI', Arial, sans-serif" font-size="16" fill="#8899AA" letter-spacing="2">
+    AUTOMATED EXTRACTION • CLASSIFICATION • VERSIONING
+  </text>
+  
+  <!-- Tech badges -->
+  <g transform="translate(480, 220)">
+    <rect x="0" y="0" width="80" height="28" rx="14" fill="#00A1E0" opacity="0.15"/>
+    <text x="40" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#00A1E0" text-anchor="middle" font-weight="600">Python</text>
+    
+    <rect x="90" y="0" width="100" height="28" rx="14" fill="#00A1E0" opacity="0.15"/>
+    <text x="140" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#00A1E0" text-anchor="middle" font-weight="600">Playwright</text>
+    
+    <rect x="200" y="0" width="70" height="28" rx="14" fill="#00A1E0" opacity="0.15"/>
+    <text x="235" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#00A1E0" text-anchor="middle" font-weight="600">CI/CD</text>
+    
+    <rect x="280" y="0" width="90" height="28" rx="14" fill="#00A1E0" opacity="0.15"/>
+    <text x="325" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#00A1E0" text-anchor="middle" font-weight="600">Markdown</text>
+  </g>
+  
+  <!-- Version badge -->
+  <g transform="translate(1050, 245)">
+    <rect x="0" y="0" width="120" height="32" rx="16" fill="url(#accent)"/>
+    <text x="60" y="21" font-family="'Segoe UI', Arial, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">Knowledge-as-Code</text>
+  </g>
+  
+  <!-- Bottom accent line -->
+  <rect x="0" y="296" width="1200" height="4" fill="url(#accent)" rx="2"/>
+</svg>
