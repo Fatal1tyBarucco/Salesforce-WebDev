@@ -1,8 +1,8 @@
-requests==2.33.0
-beautifulsoup4==4.12.3
-lxml==6.1.0
-tenacity==8.2.3
+requests==2.34.2
+beautifulsoup4==4.15.0
+lxml==6.1.1
+tenacity==9.1.4
 python-slugify==8.0.4
 playwright==1.60.0
-mkdocs==1.6.0
-mkdocs-material==9.5.27
+mkdocs==1.6.1
+mkdocs-material==9.7.6
