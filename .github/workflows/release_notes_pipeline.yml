@@ -127,7 +127,7 @@ jobs:
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md
-          git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP} [skip ci]"
+          git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Gerar sumário do pipeline
