@@ -36,34 +36,7 @@ A estrutura é desenhada para suportar revisões rápidas por **Arquitetos** e *
 
 A governança do repositório é mantida por meio de processos automatizados que garantem que as últimas releases sejam extraídas, transformadas e carregadas (ETL) no repositório **sem intervenção manual**.
 
-```mermaid
-flowchart LR
-    subgraph Fonte
-        A[Salesforce Help]
-    end
-
-    subgraph Pipeline
-        B[Playwright Scraper]
-        C[FeatureImpactParser]
-        D[Markdown Generator]
-        E[Readme Updater]
-    end
-
-    subgraph Entrega
-        F[Releases Directory]
-        G[README.md]
-        H[GitHub Pages]
-    end
-
-    A -->|Extracao| B
-    B -->|Parse| C
-    C -->|Gera .md| D
-    C -->|Atualiza| E
-    D --> F
-    E --> G
-    F -->|Jekyll Deploy| H
-    G -->|Jekyll Deploy| H
-```
+![Pipeline Flow](./assets/pipeline-flow.png)
 
 ### Fluxo de Execução
 
