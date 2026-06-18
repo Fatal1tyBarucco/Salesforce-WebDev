@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch, AsyncMock
 import asyncio
+import sys
 from src.main import (
     main,
     _generate_release_files,
@@ -217,14 +218,12 @@ def test_main_execution_valid_release_filter(
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
-    import src.main as main_mod
-
-    original_argv = main_mod.sys.argv
+    original_argv = sys.argv
     try:
-        main_mod.sys.argv = ["main.py", "--release", "summer_26"]
+        sys.argv = ["main.py", "--release", "summer_26"]
         main()
     finally:
-        main_mod.sys.argv = original_argv
+        sys.argv = original_argv
 
     mock_find_existing.assert_not_called()
 
@@ -255,14 +254,12 @@ def test_main_execution_unknown_release(
 
     mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
 
-    import src.main as main_mod
-
-    original_argv = main_mod.sys.argv
+    original_argv = sys.argv
     try:
-        main_mod.sys.argv = ["main.py", "--release", "nonexistent_slug"]
+        sys.argv = ["main.py", "--release", "nonexistent_slug"]
         main()
     finally:
-        main_mod.sys.argv = original_argv
+        sys.argv = original_argv
 
     generator_inst.generate.assert_not_called()
 

@@ -154,6 +154,7 @@ def test_build_node_returns_none_for_empty_li() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     result = parser._build_node(li)
     assert result is None
 
@@ -168,6 +169,7 @@ def test_build_node_with_div_role_label() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert node.display_name == "Div Label Text"
@@ -183,6 +185,7 @@ def test_build_node_fallback_to_get_text() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert "Fallback Text Content" in node.display_name
@@ -198,6 +201,7 @@ def test_build_node_leaf_with_url() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert node.is_leaf()
@@ -234,8 +238,10 @@ def test_get_node_url_href_list() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     a_tag = li.find("a")
     assert a_tag is not None
+    assert isinstance(a_tag, Tag)
     a_tag["href"] = ["/s/articleView?id=rn_url_test", "other"]
     result = parser._get_node_url(li)
     assert "rn_url_test" in result
@@ -456,6 +462,7 @@ def test_build_node_child_not_tag() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li", id="rn_parent")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert len(node.children) == 1
@@ -505,6 +512,7 @@ def test_build_node_child_none_skips() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li", id="rn_parent_skip")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert len(node.children) == 1
@@ -521,6 +529,7 @@ def test_build_node_leaf_with_url_returns_early() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert node.slug == "leaf_other_url"
@@ -539,6 +548,7 @@ def test_build_node_uses_title_attribute_for_label() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     node = parser._build_node(li)
     assert node is not None
     assert node.display_name == "Salesforce geral"
@@ -556,9 +566,12 @@ def test_find_link_inside_slds_tree_item() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     link = parser._find_link(li)
     assert link is not None
-    assert "release-notes" in link.get("href")
+    href = link.get("href")
+    assert isinstance(href, str)
+    assert "release-notes" in href
 
 
 def test_find_link_returns_none_when_no_link() -> None:
@@ -571,5 +584,6 @@ def test_find_link_returns_none_when_no_link() -> None:
     soup = BeautifulSoup(html, "html.parser")
     li = soup.find("li")
     assert li is not None
+    assert isinstance(li, Tag)
     link = parser._find_link(li)
     assert link is None

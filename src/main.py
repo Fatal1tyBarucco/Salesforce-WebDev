@@ -376,7 +376,7 @@ O controle de versão e extração de dados utiliza as seguintes ferramentas:
 
 
 def _update_readme_all() -> None:
-    """Replace the index block in README.md with per-release tables."""
+    """Replace the index block in README.md with per-release details/summary blocks."""
     readme_path = Path("README.md")
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
@@ -419,16 +419,18 @@ def _update_readme_all() -> None:
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
 
-        lines.append(f"### {emoji} {name}\n\n")
-        lines.append("| Módulo / Cloud | Recursos | Link para Documentação |")
-        lines.append("| --- | ---: | --- |")
+        lines.append(f"### {emoji} {name}\n")
 
         for cat in active:
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
             link = f"./releases/{slug}/{cat_slug}.md"
-            lines.append(f"| **{cat_name}** | {count} " f"| [📄 Visualizar]({link}) |")
+
+            lines.append("\n<details>")
+            lines.append(f"<summary><b>📄 {cat_name} ({count} recursos)</b></summary>\n")
+            lines.append(f"> 📄 Detalhes completos: [{link}]({link})\n")
+            lines.append("</details>\n")
 
         lines.append("")
 
@@ -440,7 +442,7 @@ def _update_readme_all() -> None:
     updated = original[:start_idx] + new_block + original[end_idx:]
 
     readme_path.write_text(updated, encoding="utf-8")
-    logger.info("README.md atualizado com tabelas (%d releases).", len(metas))
+    logger.info("README.md atualizado com details/summary (%d releases).", len(metas))
 
 
 def main() -> None:

@@ -460,6 +460,7 @@ def test_extract_toc_from_page_toc_too_short() -> None:
         mock_page.content.return_value = "<html>" + "x" * 200 + "</html>"
 
         result = await scraper._extract_toc_from_page("https://fake.url", mock_page)
+        assert result is not None
         assert "x" * 200 in result
 
     asyncio.run(run())
