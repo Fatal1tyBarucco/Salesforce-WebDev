@@ -378,13 +378,16 @@ def _update_readme_all() -> None:
     import json
 
     if not readme_path.exists():
-        _create_readme_with_markers(readme_path)
+        logger.warning("README.md not found, skipping update")
+        return
 
     original = readme_path.read_text(encoding="utf-8")
 
     if RELEASE_SECTION_HEADING not in original:
-        _create_readme_with_markers(readme_path)
-        original = readme_path.read_text(encoding="utf-8")
+        logger.warning(
+            "Release heading '%s' not found in README.md, skipping update", RELEASE_SECTION_HEADING
+        )
+        return
 
     metas: list[dict[str, Any]] = []
     for d in releases_dir.iterdir():
