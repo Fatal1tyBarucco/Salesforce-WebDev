@@ -20,8 +20,6 @@ from typing import Any
 from .config import (
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
-    README_INDEX_END_MARKER,
-    README_INDEX_START_MARKER,
     RELEASES_DIR,
     ReleaseInfo,
 )
@@ -33,6 +31,9 @@ from .parser import (
     FeatureImpactParser,
 )
 from .scraper import SalesforceReleaseScraper
+
+README_INDEX_START_MARKER = "{% comment %} RELEASE_INDEX_START {% endcomment %}"
+README_INDEX_END_MARKER = "{% comment %} RELEASE_INDEX_END {% endcomment %}"
 
 logger = logging.getLogger(__name__)
 
