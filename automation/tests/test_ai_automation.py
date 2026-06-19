@@ -27,6 +27,11 @@ from src.ai_automation import (
     is_content_unchanged,
     generate_deduplication_report,
     DeduplicationResult,
+    filter_features_for_profile,
+    generate_filtered_notification,
+    generate_filtered_notification_report,
+    UserProfile,
+    FilteredNotification,
 )
 
 
@@ -468,3 +473,73 @@ def test_generate_deduplication_report_missing() -> None:
         report = generate_deduplication_report("missing")
         assert "Deduplicação de Conteúdo" in report
         assert "0%" in report
+
+
+def test_filter_features_for_profile_admin() -> None:
+    categories = [
+        {"name": "Security", "count": 10},
+        {"name": "Development", "count": 20},
+        {"name": "Sales", "count": 5},
+    ]
+
+    profile = filter_features_for_profile("admin", categories)
+    assert isinstance(profile, UserProfile)
+    assert profile.profile_type == "admin"
+    assert "Security" in profile.relevant_categories
+    assert len(profile.priority_features) > 0
+
+
+def test_filter_features_for_profile_developer() -> None:
+    categories = [
+        {"name": "Security", "count": 10},
+        {"name": "Development", "count": 20},
+        {"name": "Sales", "count": 5},
+    ]
+
+    profile = filter_features_for_profile("developer", categories)
+    assert "Development" in profile.relevant_categories
+
+
+def test_filter_features_for_profile_unknown() -> None:
+    categories = [{"name": "Security", "count": 10}]
+
+    profile = filter_features_for_profile("unknown", categories)
+    assert profile.profile_type == "unknown"
+    assert profile.name == "Usuário de Negócios"  # Default fallback
+
+
+def test_generate_filtered_notification() -> None:
+    meta = {
+        "name": "Test",
+        "categories": [{"name": "Security", "count": 10}, {"name": "Sales", "count": 5}],
+    }
+
+    with patch("src.ai_automation.load_release_meta", return_value=meta):
+        result = generate_filtered_notification("test", "admin")
+        assert isinstance(result, FilteredNotification)
+        assert result.total_features == 15
+        assert result.relevant_count > 0
+
+
+def test_generate_filtered_notification_missing() -> None:
+    with patch("src.ai_automation.load_release_meta", return_value=None):
+        result = generate_filtered_notification("missing", "admin")
+        assert result.total_features == 0
+        assert "não encontrada" in result.summary
+
+
+def test_generate_filtered_notification_report() -> None:
+    meta = {"name": "Test", "categories": [{"name": "Security", "count": 10}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=meta):
+        report = generate_filtered_notification_report("test", "admin")
+        assert "Notificação Filtrada" in report
+        assert "Perfil" in report
+        assert "Relevância" in report
+
+
+def test_generate_filtered_notification_report_missing() -> None:
+    with patch("src.ai_automation.load_release_meta", return_value=None):
+        report = generate_filtered_notification_report("missing", "admin")
+        assert "Notificação Filtrada" in report
+        assert "não encontrada" in report
