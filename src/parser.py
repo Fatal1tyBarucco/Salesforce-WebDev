@@ -263,7 +263,7 @@ class ReleaseNotesParser:
 
     @staticmethod
     def _clean_text(raw: str) -> str:
-        """Remove extras de espaço e textos muito curtos."""
+        """Remove extra whitespace and very short text."""
         cleaned: str = re.sub(r"\s+", " ", raw).strip()
         if len(cleaned) < 3:
             return ""

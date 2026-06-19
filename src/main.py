@@ -107,8 +107,10 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
 
 def _build_release_name(release_id: int) -> str:
     SEASONS = ("Spring", "Summer", "Winter")
-    BASE_ID = 254
-    BASE_YEAR = 25
+    # Salesforce release IDs start at 254 (Spring '25) and increment by 2 per release.
+    # There are 3 releases per year (Spring, Summer, Winter).
+    BASE_ID = 254  # release_id for Spring '25 — the first release in this numbering scheme
+    BASE_YEAR = 25  # two-digit year for Spring '25
     step = (release_id - BASE_ID) // 2
     season = SEASONS[step % 3]
     year = BASE_YEAR + step // 3
@@ -157,8 +159,9 @@ async def run_pipeline() -> None:
                 releases_to_process.append(new_release)
             else:
                 logger.info("No new release detected. Updating README only.")
+                _update_readme_all()
+                return
 
-    async with scraper:
         for release in releases_to_process:
             logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
 

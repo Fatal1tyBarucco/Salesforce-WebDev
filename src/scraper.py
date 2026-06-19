@@ -11,6 +11,7 @@ This scraper uses a resilient strategy:
 
 import hashlib
 import logging
+import urllib.request
 from pathlib import Path
 from types import TracebackType
 from typing import Optional
@@ -87,7 +88,8 @@ class SalesforceReleaseScraper:
         return None
 
     async def _fetch_with_playwright(
-        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True
+        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True,
+        return_text: bool = False,
     ) -> Optional[str]:
         """Core Playwright fetch logic with resilient wait strategy."""
         is_standalone = page is None
@@ -97,21 +99,31 @@ class SalesforceReleaseScraper:
                 async with async_playwright() as p:
                     browser = await p.chromium.launch(headless=True)
                     page = await browser.new_page()
-                    content = await self._exec_fetch(url, page, expand_toc=expand_toc)
-                    await browser.close()
-                    return content
+                    try:
+                        return await self._exec_fetch(
+                            url, page, expand_toc=expand_toc, return_text=return_text
+                        )
+                    finally:
+                        await browser.close()
             else:
                 page = await self._browser.new_page()
 
         assert page is not None
         try:
-            return await self._exec_fetch(url, page, expand_toc=expand_toc)
+            return await self._exec_fetch(
+                url, page, expand_toc=expand_toc, return_text=return_text
+            )
         finally:
             if is_standalone and self._browser and page is not None:
                 await page.close()
 
-    async def _exec_fetch(self, url: str, page: Page, *, expand_toc: bool = True) -> str:
-        """Internal execution of fetch logic on a provided page object."""
+    async def _exec_fetch(
+        self, url: str, page: Page, *, expand_toc: bool = True, return_text: bool = False
+    ) -> str:
+        """Internal execution of fetch logic on a provided page object.
+
+        If return_text is True, returns page.inner_text('body') instead of page.content().
+        """
         await page.goto(
             url,
             wait_until="domcontentloaded",
@@ -120,7 +132,7 @@ class SalesforceReleaseScraper:
 
         try:
             await page.wait_for_selector(
-                "ul.tree, li[role='treeitem'], article",
+                "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
         except Exception:
@@ -132,6 +144,8 @@ class SalesforceReleaseScraper:
         if expand_toc:
             await self._expand_toc_nodes(page)
 
+        if return_text:
+            return await page.inner_text("body")
         return await page.content()
 
     async def _expand_toc_nodes(self, page: Page) -> None:
@@ -159,7 +173,6 @@ class SalesforceReleaseScraper:
         logger.info("Extracting ToC HTML from: %s", url)
 
         is_standalone = page is None
-        browser: Optional[Browser] = None
 
         try:
             if is_standalone:
@@ -167,9 +180,10 @@ class SalesforceReleaseScraper:
                     async with async_playwright() as p:
                         browser = await p.chromium.launch(headless=True)
                         page = await browser.new_page()
-                        content = await self._extract_toc_from_page(url, page)
-                        await browser.close()
-                        return content
+                        try:
+                            return await self._extract_toc_from_page(url, page)
+                        finally:
+                            await browser.close()
                 else:
                     page = await self._browser.new_page()
 
@@ -179,8 +193,8 @@ class SalesforceReleaseScraper:
             logger.error("ToC extraction failed: %s", e)
             return None
         finally:
-            if is_standalone and browser:
-                await browser.close()
+            if is_standalone and page is not None and self._browser:
+                await page.close()
 
     async def _extract_toc_from_page(self, url: str, page: Page) -> Optional[str]:
         """Navigate to URL and extract the ToC container HTML."""
@@ -232,25 +246,13 @@ class SalesforceReleaseScraper:
                 return cached
 
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                page = await browser.new_page()
-                await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                try:
-                    await page.wait_for_selector("table, article, main", timeout=15000)
-                except Exception:
-                    await page.wait_for_timeout(5000)
-                await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                await page.wait_for_timeout(1000)
-                text = await page.inner_text("body")
-                await browser.close()
-                if text and len(text) > 500:
-                    logger.info("Fetched raw text (%d chars)", len(text))
-                    # Cache the content
-                    cache_file.write_text(text, encoding="utf-8")
-                    return text
-                logger.warning("Insufficient text content (%d chars)", len(text or ""))
-                return None
+            text = await self._fetch_with_playwright(url, return_text=True)
+            if text and len(text) > 500:
+                logger.info("Fetched raw text (%d chars)", len(text))
+                cache_file.write_text(text, encoding="utf-8")
+                return text
+            logger.warning("Insufficient text content (%d chars)", len(text or ""))
+            return None
         except Exception as e:
             logger.error("Failed to fetch raw text: %s", e)
             return None
@@ -300,8 +302,6 @@ class SalesforceReleaseScraper:
 
     async def download_pdf(self, url: str, dest: Path) -> bool:
         """Download a PDF file to dest using urllib (fallback)."""
-        import urllib.request
-
         logger.info("Downloading PDF: %s -> %s", url, dest)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
