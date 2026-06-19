@@ -5,11 +5,14 @@ Provides:
 - Regression detection
 - Quality metrics generation
 - Changelog generation
+- GitHub Issue notifications
+- Dynamic badge generation
 """
 
 from __future__ import annotations
 
 import json
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -25,7 +28,7 @@ class ReleaseComparison:
     previous_name: str
     new_categories: list[str]
     removed_categories: list[str]
-    changed_categories: list[tuple[str, int, int]]  # (name, prev_count, curr_count)
+    changed_categories: list[tuple[str, int, int]]
 
 
 @dataclass
@@ -151,6 +154,54 @@ def calculate_quality_metrics(slug: str) -> QualityMetrics | None:
     )
 
 
+def create_github_issue(release_name: str, total_features: int, categories: int) -> str | None:
+    """Create a GitHub Issue for a new release detection."""
+    body = f"""## Nova Release Detectada: {release_name}
+
+### Resumo
+- **Total de recursos:** {total_features}
+- **Categorias:** {categories}
+
+### Detalhes
+A automação detectou uma nova release do Salesforce e processou os dados automaticamente.
+
+### Arquivos Gerados
+- `releases/{release_name.lower().replace(' ', '_').replace("'", "")}/` — Diretório da release
+- `CHANGELOG.md` — Changelog atualizado
+- `QUALITY_REPORT.md` — Relatório de qualidade
+
+---
+*Gerado automaticamente pelo pipeline de Release Notes Intelligence*
+"""
+    try:
+        result = subprocess.run(
+            [
+                "gh",
+                "issue",
+                "create",
+                "--title",
+                f"Release: {release_name}",
+                "--body",
+                body,
+                "--label",
+                "release",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return None
+
+
+def generate_dynamic_badge(release_name: str, total_features: int) -> str:
+    """Generate a dynamic badge markdown for the latest release."""
+    return f"![Latest Release](https://img.shields.io/badge/Última%20Release-{release_name.replace(' ', '%20')}-blue)"
+
+
 def generate_changelog() -> str:
     """Generate a CHANGELOG.md from release metadata."""
     releases_dir = Path(RELEASES_DIR)
@@ -263,3 +314,56 @@ def generate_quality_report() -> str:
         lines.append("")
 
     return "\n".join(lines)
+
+
+def create_release_issue(slug: str) -> str:
+    """Create a GitHub Issue body for a new release."""
+    meta = load_release_meta(slug)
+    if not meta:
+        return ""
+
+    name = meta.get("name", slug)
+    categories = meta.get("categories", [])
+    total = sum(c.get("count", 0) for c in categories)
+
+    lines = [
+        f"## 🚀 Nova Release: {name}",
+        "",
+        f"**{total} recursos** em **{len(categories)} categorias** detectados automaticamente.",
+        "",
+        "### Categorias",
+        "",
+    ]
+
+    for cat in sorted(categories, key=lambda c: c.get("count", 0), reverse=True):
+        count = cat.get("count", 0)
+        if count > 0:
+            lines.append(f"- **{cat['name']}**: {count} recursos")
+
+    lines.extend(
+        [
+            "",
+            "---",
+            "*Issue criada automaticamente pelo pipeline de release notes.*",
+        ]
+    )
+
+    return "\n".join(lines)
+
+
+def get_latest_release_badge() -> str:
+    """Get the latest release name for badge display."""
+    releases_dir = Path(RELEASES_DIR)
+    if not releases_dir.exists():
+        return "N/A"
+
+    latest = None
+    latest_id = -1
+
+    for d in releases_dir.iterdir():
+        meta = load_release_meta(d.name)
+        if meta and meta.get("release_id", 0) > latest_id:
+            latest_id = meta.get("release_id", 0)
+            latest = meta.get("name", d.name)
+
+    return latest or "N/A"

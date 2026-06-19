@@ -6,8 +6,10 @@ This scraper uses a resilient strategy:
 2. Wait for JS rendering with a manual delay
 3. Scroll to trigger lazy-loaded content
 4. Try multiple selectors before extracting content
+5. Cache content hashes to avoid re-fetching unchanged pages
 """
 
+import hashlib
 import logging
 from pathlib import Path
 from types import TracebackType
@@ -18,6 +20,9 @@ from playwright.async_api import async_playwright, Browser, Page, Playwright
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS
 
 logger = logging.getLogger(__name__)
+
+CACHE_DIR = Path("cache")
+CACHE_DIR.mkdir(exist_ok=True)
 
 
 class SalesforceReleaseScraper:
@@ -210,8 +215,22 @@ class SalesforceReleaseScraper:
         return await page.content()
 
     async def fetch_page_raw_text(self, url: str) -> Optional[str]:
-        """Fetch page and return inner_text of body (for feature impact page)."""
+        """Fetch page and return inner_text of body (for feature impact page).
+
+        Uses content hash caching to avoid re-fetching unchanged pages.
+        """
         logger.info("Fetching raw text: %s", url)
+
+        # Check cache
+        url_hash = hashlib.md5(url.encode()).hexdigest()
+        cache_file = CACHE_DIR / f"{url_hash}.txt"
+
+        if cache_file.exists():
+            cached = cache_file.read_text(encoding="utf-8")
+            if len(cached) > 500:
+                logger.info("Using cached content (%d chars)", len(cached))
+                return cached
+
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
@@ -227,6 +246,8 @@ class SalesforceReleaseScraper:
                 await browser.close()
                 if text and len(text) > 500:
                     logger.info("Fetched raw text (%d chars)", len(text))
+                    # Cache the content
+                    cache_file.write_text(text, encoding="utf-8")
                     return text
                 logger.warning("Insufficient text content (%d chars)", len(text or ""))
                 return None
