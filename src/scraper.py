@@ -88,7 +88,11 @@ class SalesforceReleaseScraper:
         return None
 
     async def _fetch_with_playwright(
-        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True,
+        self,
+        url: str,
+        page: Optional[Page] = None,
+        *,
+        expand_toc: bool = True,
         return_text: bool = False,
     ) -> Optional[str]:
         """Core Playwright fetch logic with resilient wait strategy."""
@@ -110,9 +114,7 @@ class SalesforceReleaseScraper:
 
         assert page is not None
         try:
-            return await self._exec_fetch(
-                url, page, expand_toc=expand_toc, return_text=return_text
-            )
+            return await self._exec_fetch(url, page, expand_toc=expand_toc, return_text=return_text)
         finally:
             if is_standalone and self._browser and page is not None:
                 await page.close()
