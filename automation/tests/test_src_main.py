@@ -89,7 +89,13 @@ def test_main_execution_success(
     mock_setup_logging: MagicMock,
 ) -> None:
     scraper_inst = MagicMock()
-    scraper_inst.fetch_page_raw_text = AsyncMock(return_value="feature impact text")
+    sample_text = (
+        "Salesforce geral\n"
+        "Description of category.\n"
+        "RECURSO\tATIVADO PARA USUÁRIOS\n"
+        "Feature One\tYes\n"
+    )
+    scraper_inst.fetch_page_raw_text = AsyncMock(return_value=sample_text)
     scraper_inst.download_pdf_from_button = AsyncMock(return_value=True)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
@@ -205,7 +211,9 @@ def test_main_execution_valid_release_filter(
     mock_setup_logging: MagicMock,
 ) -> None:
     scraper_inst = MagicMock()
-    scraper_inst.fetch_page_raw_text = AsyncMock(return_value="text")
+    scraper_inst.fetch_page_raw_text = AsyncMock(
+        return_value="Salesforce geral\nFeature\tYes\nAnother Feature\t\tYes"
+    )
     scraper_inst.download_pdf_from_button = AsyncMock(return_value=False)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
