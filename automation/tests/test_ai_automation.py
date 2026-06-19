@@ -22,6 +22,11 @@ from src.ai_automation import (
     triage_release,
     generate_triage_report,
     TriageResult,
+    analyze_content_changes,
+    get_content_hash,
+    is_content_unchanged,
+    generate_deduplication_report,
+    DeduplicationResult,
 )
 
 
@@ -369,3 +374,97 @@ def test_generate_triage_report_missing() -> None:
         report = generate_triage_report("missing")
         assert "Triage Automatizado" in report
         assert "DESCONHECIDO" in report
+
+
+def test_analyze_content_changes(tmp_path: Path) -> None:
+    release_dir = tmp_path / "test_release"
+    release_dir.mkdir()
+    (release_dir / "file1.md").write_text("content1")
+    (release_dir / "file2.md").write_text("content2")
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        result = analyze_content_changes("test_release")
+        assert isinstance(result, DeduplicationResult)
+        assert len(result.new_files) == 2
+        assert len(result.unchanged_files) == 0
+
+
+def test_analyze_content_changes_no_changes(tmp_path: Path) -> None:
+    release_dir = tmp_path / "test_release"
+    release_dir.mkdir()
+    (release_dir / "file1.md").write_text("content1")
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        result1 = analyze_content_changes("test_release")
+        assert len(result1.new_files) == 1
+
+        result2 = analyze_content_changes("test_release")
+        assert len(result2.unchanged_files) == 1
+        assert len(result2.new_files) == 0
+
+
+def test_analyze_content_changes_modified(tmp_path: Path) -> None:
+    release_dir = tmp_path / "test_release"
+    release_dir.mkdir()
+    (release_dir / "file1.md").write_text("original")
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        result1 = analyze_content_changes("test_release")
+        assert len(result1.new_files) == 1
+
+        (release_dir / "file1.md").write_text("modified")
+        result2 = analyze_content_changes("test_release")
+        assert len(result2.changed_files) == 1
+        assert len(result2.unchanged_files) == 0
+
+
+def test_analyze_content_changes_missing_dir() -> None:
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        result = analyze_content_changes("missing")
+        assert result.unchanged_files == []
+        assert result.changed_files == []
+        assert result.new_files == []
+        assert result.cache_hit_rate == 0.0
+
+
+def test_get_content_hash(tmp_path: Path) -> None:
+    test_file = tmp_path / "test.md"
+    test_file.write_text("hello world")
+
+    result = get_content_hash(str(test_file))
+    assert result is not None
+    assert len(result) == 32  # MD5 hash length
+
+
+def test_get_content_hash_missing() -> None:
+    result = get_content_hash("/nonexistent/file.md")
+    assert result is None
+
+
+def test_is_content_unchanged(tmp_path: Path) -> None:
+    test_file = tmp_path / "test.md"
+    test_file.write_text("hello world")
+    correct_hash = get_content_hash(str(test_file))
+    assert correct_hash is not None
+
+    assert is_content_unchanged(str(test_file), correct_hash)
+    assert not is_content_unchanged(str(test_file), "wrong_hash")
+    assert not is_content_unchanged("/nonexistent/file.md", "any_hash")
+
+
+def test_generate_deduplication_report(tmp_path: Path) -> None:
+    release_dir = tmp_path / "test_release"
+    release_dir.mkdir()
+    (release_dir / "file1.md").write_text("content1")
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        report = generate_deduplication_report("test_release")
+        assert "Deduplicação de Conteúdo" in report
+        assert "Taxa de acerto" in report
+
+
+def test_generate_deduplication_report_missing() -> None:
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        report = generate_deduplication_report("missing")
+        assert "Deduplicação de Conteúdo" in report
+        assert "0%" in report
