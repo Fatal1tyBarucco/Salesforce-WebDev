@@ -578,7 +578,7 @@ def calculate_category_impact_scores() -> list[CategoryImpactScore]:
 
         mean_change = sum(changes) / len(changes)
         variance = sum((c - mean_change) ** 2 for c in changes) / len(changes)
-        volatility = variance ** 0.5
+        volatility = variance**0.5
 
         # Determine trend
         if mean_change > 5:
@@ -708,6 +708,161 @@ def generate_impact_prediction_report() -> str:
         [
             "---",
             "*Previsão gerada automaticamente pelo módulo de AI Automation*",
+        ]
+    )
+
+    return "\n".join(lines)
+
+
+@dataclass
+class TriageResult:
+    """Automated triage result for a release alert."""
+
+    risk_level: str
+    risk_score: int
+    categories_at_risk: list[str]
+    suggested_actions: list[str]
+    priority: str
+    summary: str
+
+
+def triage_release(slug: str) -> TriageResult:
+    """Analyze a release and generate automated triage with risk assessment.
+
+    Evaluates:
+    - Category volatility from historical data
+    - Regression patterns
+    - Feature count anomalies
+    - Suggests specific actions based on findings
+    """
+    meta = load_release_meta(slug)
+    if not meta:
+        return TriageResult(
+            risk_level="desconhecido",
+            risk_score=0,
+            categories_at_risk=[],
+            suggested_actions=["Verificar se a release existe no repositório"],
+            priority="baixa",
+            summary="Release não encontrada para análise.",
+        )
+
+    metrics = calculate_quality_metrics(slug)
+    predictions = predict_next_release_impact()
+
+    risk_score = 0
+    categories_at_risk: list[str] = []
+    suggested_actions: list[str] = []
+
+    # Check for high-risk categories in this release
+    if predictions.high_risk_categories:
+        risk_score += len(predictions.high_risk_categories) * 10
+        categories_at_risk.extend([c.category for c in predictions.high_risk_categories])
+        suggested_actions.append(
+            f"Monitorar de perto as {len(predictions.high_risk_categories)} categorias de alto risco"
+        )
+
+    # Check for regressions
+    all_slugs = sorted(
+        [d.name for d in Path(RELEASES_DIR).iterdir() if d.is_dir()],
+    )
+    if len(all_slugs) >= 2:
+        prev_slug = [s for s in all_slugs if s != slug]
+        if prev_slug:
+            regressions = detect_regressions(slug, prev_slug[0])
+            if regressions:
+                risk_score += len(regressions) * 15
+                categories_at_risk.extend([r.category for r in regressions])
+                suggested_actions.append(f"Investigar {len(regressions)} categorias com regressão")
+
+    # Check for large feature count anomalies
+    if metrics:
+        if metrics.total_features > 2000:
+            risk_score += 5
+            suggested_actions.append("Release com alto volume de recursos — revisar changelog")
+        if metrics.avg_features_per_category > 100:
+            risk_score += 5
+            suggested_actions.append("Categorias com média alta — verificar consistência")
+
+    # Check for new categories
+    if len(all_slugs) >= 2:
+        prev_slug = [s for s in all_slugs if s != slug]
+        if prev_slug:
+            comparison = compare_releases(slug, prev_slug[0])
+            if comparison.new_categories:
+                risk_score += len(comparison.new_categories) * 3
+                suggested_actions.append(
+                    f"Documentar {len(comparison.new_categories)} novas categorias"
+                )
+
+    # Cap risk score at 100
+    risk_score = min(risk_score, 100)
+
+    # Determine risk level and priority
+    if risk_score >= 50:
+        risk_level = "alto"
+        priority = "urgente"
+    elif risk_score >= 25:
+        risk_level = "moderado"
+        priority = "alta"
+    elif risk_score >= 10:
+        risk_level = "baixo"
+        priority = "normal"
+    else:
+        risk_level = "mínimo"
+        priority = "baixa"
+
+    # Add default actions if none generated
+    if not suggested_actions:
+        suggested_actions.append("Nenhuma ação específica necessária")
+
+    # Build summary
+    name = meta.get("name", slug)
+    total = metrics.total_features if metrics else 0
+    summary = (
+        f"Release {name} com {total} recursos analisada. "
+        f"Nível de risco: {risk_level} (pontuação: {risk_score}/100). "
+        f"Prioridade: {priority}."
+    )
+
+    # Deduplicate categories
+    categories_at_risk = list(dict.fromkeys(categories_at_risk))
+
+    return TriageResult(
+        risk_level=risk_level,
+        risk_score=risk_score,
+        categories_at_risk=categories_at_risk,
+        suggested_actions=suggested_actions,
+        priority=priority,
+        summary=summary,
+    )
+
+
+def generate_triage_report(slug: str) -> str:
+    """Generate a formatted triage report in Markdown."""
+    triage = triage_release(slug)
+
+    lines = [
+        "# Relatório de Triage Automatizado\n",
+        f"## Nível de Risco: **{triage.risk_level.upper()}** (Pontuação: {triage.risk_score}/100)\n",
+        f"**Prioridade:** {triage.priority}\n",
+        f"*{triage.summary}*\n",
+    ]
+
+    if triage.categories_at_risk:
+        lines.append("## 🎯 Categorias em Risco\n")
+        for cat in triage.categories_at_risk:
+            lines.append(f"- {cat}")
+        lines.append("")
+
+    lines.append("## 📋 Ações Sugeridas\n")
+    for action in triage.suggested_actions:
+        lines.append(f"1. {action}")
+    lines.append("")
+
+    lines.extend(
+        [
+            "---",
+            "*Triage gerado automaticamente pelo módulo de AI Automation*",
         ]
     )
 

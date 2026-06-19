@@ -19,6 +19,9 @@ from src.ai_automation import (
     predict_next_release_impact,
     generate_impact_prediction_report,
     ImpactPrediction,
+    triage_release,
+    generate_triage_report,
+    TriageResult,
 )
 
 
@@ -289,3 +292,80 @@ def test_generate_impact_prediction_report_no_data() -> None:
         report = generate_impact_prediction_report()
         assert "Previsão de Impacto" in report
         assert "insuficientes" in report
+
+
+def test_triage_release_missing() -> None:
+    with patch("src.ai_automation.load_release_meta", return_value=None):
+        result = triage_release("missing")
+        assert isinstance(result, TriageResult)
+        assert result.risk_level == "desconhecido"
+        assert result.risk_score == 0
+        assert result.priority == "baixa"
+
+
+def test_triage_release_low_risk() -> None:
+    meta = {"name": "Test", "categories": [{"name": "A", "count": 10}]}
+
+    def mock_load(slug: str) -> Any:
+        return meta
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        with patch("src.ai_automation.calculate_quality_metrics", return_value=None):
+            with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+                result = triage_release("test")
+                assert isinstance(result, TriageResult)
+                assert result.risk_level in ["mínimo", "baixo", "moderado", "alto"]
+                assert result.priority in ["baixa", "normal", "alta", "urgente"]
+                assert len(result.suggested_actions) > 0
+
+
+def test_triage_release_high_risk() -> None:
+    meta = {"name": "Test", "categories": [{"name": "A", "count": 10}]}
+
+    def mock_load(slug: str) -> Any:
+        return meta
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        with patch("src.ai_automation.calculate_quality_metrics", return_value=None):
+            with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+                with patch("src.ai_automation.predict_next_release_impact") as mock_pred:
+                    mock_pred.return_value = ImpactPrediction(
+                        high_risk_categories=[],
+                        stable_categories=[],
+                        growing_categories=[],
+                        overall_risk_level="baixo",
+                        summary="test",
+                    )
+                    result = triage_release("test")
+                    assert isinstance(result, TriageResult)
+                    assert result.risk_score >= 0
+
+
+def test_generate_triage_report() -> None:
+    meta = {"name": "Test", "categories": [{"name": "A", "count": 10}]}
+
+    def mock_load(slug: str) -> Any:
+        return meta
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        with patch("src.ai_automation.calculate_quality_metrics", return_value=None):
+            with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+                with patch("src.ai_automation.predict_next_release_impact") as mock_pred:
+                    mock_pred.return_value = ImpactPrediction(
+                        high_risk_categories=[],
+                        stable_categories=[],
+                        growing_categories=[],
+                        overall_risk_level="baixo",
+                        summary="test",
+                    )
+                    report = generate_triage_report("test")
+                    assert "Triage Automatizado" in report
+                    assert "Nível de Risco" in report
+                    assert "Ações Sugeridas" in report
+
+
+def test_generate_triage_report_missing() -> None:
+    with patch("src.ai_automation.load_release_meta", return_value=None):
+        report = generate_triage_report("missing")
+        assert "Triage Automatizado" in report
+        assert "DESCONHECIDO" in report
