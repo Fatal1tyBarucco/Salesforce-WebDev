@@ -66,7 +66,20 @@ class SalesforceReleaseScraper:
     async def fetch_page(
         self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True
     ) -> Optional[str]:
-        """Fetches the fully rendered HTML content for a given URL."""
+        """Fetch fully rendered HTML content for a Salesforce Help URL.
+
+        Args:
+            url: The page URL to fetch.
+            page: Optional existing Playwright ``Page`` to reuse.
+            expand_toc: Whether to expand table-of-contents/navigation sections
+                before extraction. Set to ``False`` to skip TOC expansion
+                (typically faster, but may return less complete content).
+
+        Returns:
+            The rendered HTML as a string when a valid response is obtained.
+            Returns ``None`` if all retry attempts fail or only insufficient
+            content is retrieved.
+        """
         logger.info("Fetching URL: %s", url)
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
@@ -99,7 +112,21 @@ class SalesforceReleaseScraper:
         expand_toc: bool = True,
         return_text: bool = False,
     ) -> Optional[str]:
-        """Core Playwright fetch logic with resilient wait strategy."""
+        """Core Playwright fetch logic with resilient wait strategy.
+
+        Args:
+            url: The Salesforce Help URL to fetch.
+            page: Optional existing Playwright page to reuse. If omitted, a standalone
+                page (and browser when needed) is created for this request.
+            expand_toc: Whether to expand table-of-contents/accordion content before
+                extraction.
+            return_text: When ``False`` (default), return rendered HTML content.
+                When ``True``, return extracted visible text content instead.
+
+        Returns:
+            The fetched content as a string (HTML or text based on ``return_text``),
+            or ``None`` if fetching fails.
+        """
         is_standalone = page is None
 
         if is_standalone:
@@ -170,11 +197,16 @@ class SalesforceReleaseScraper:
             logger.debug("ToC expansion skipped: %s", e)
 
     async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
-        """
-        Extract just the ToC HTML from a release notes page.
+        """Extract just the ToC HTML from a release notes page.
 
         Loads the page and returns the HTML of the navigation tree container.
-        Falls back to returning full page content if ToC selector not found.
+        Falls back to returning full page content if the ToC selector is not found
+        after a successful page load.
+
+        Returns:
+            Optional[str]: ToC HTML when found; otherwise full page HTML when extraction
+            succeeds but no ToC container is matched; ``None`` when page creation, navigation,
+            or extraction raises an exception.
         """
         logger.info("Extracting ToC HTML from: %s", url)
 

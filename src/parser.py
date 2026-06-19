@@ -90,9 +90,20 @@ class ReleaseNotesParser:
         return topics
 
     def extract_article_summary(self, soup: BeautifulSoup) -> str:
-        """
-        Extracts a concise summary from an article page.
-        Looks for 'Why' and 'How' sections or the first significant paragraph.
+        """Extract a concise summary from a release-note article page.
+
+        Looks for a "Why" section first, then falls back to the first
+        sufficiently informative paragraph in the main content region.
+
+        Args:
+            soup: BeautifulSoup DOM for a single article page, expected to
+                contain headings/paragraphs from the article body.
+
+        Returns:
+            A summary string for the article. This method always returns a
+            string (never ``None``); if no suitable content is found, it
+            returns the fallback message:
+            "Resumo não disponível para este artigo."
         """
         for header in soup.find_all(["h2", "h3", "p", "strong"]):
             text = header.get_text().strip().lower()
@@ -130,12 +141,16 @@ class ReleaseNotesParser:
         return None
 
     def _build_node(self, li: Tag) -> TopicNode | None:
-        """
-        Recursively build a TopicNode from an <li role="treeitem"> element.
+        """Recursively build a TopicNode from an ``<li role="treeitem">`` element.
 
         - Nodes with data-is-link="true" are article leaves
         - Nodes without are container nodes (categories/subcategories)
         - Nodes with both link and nested children are treated as containers
+
+        Returns:
+            TopicNode | None: Returns a TopicNode for valid tree items. Returns
+            None when required metadata cannot be extracted (for example, when
+            node_id or label_text is missing/empty).
         """
         node_id = self._get_node_id(li)
         aria_level = self._get_aria_level(li)
