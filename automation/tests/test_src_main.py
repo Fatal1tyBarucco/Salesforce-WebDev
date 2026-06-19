@@ -78,9 +78,7 @@ def test_generate_release_files() -> None:
 @patch("src.main._update_readme_all")
 @patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
-@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_success(
-    mock_run_pipeline: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_single: MagicMock,
     mock_update_readme: MagicMock,
@@ -91,9 +89,7 @@ def test_main_execution_success(
     mock_setup_logging: MagicMock,
 ) -> None:
     scraper_inst = MagicMock()
-    scraper_inst.fetch_page_raw_text = AsyncMock(
-        side_effect=["current release content", "new release content", "feature impact text"]
-    )
+    scraper_inst.fetch_page_raw_text = AsyncMock(return_value="feature impact text")
     scraper_inst.download_pdf_from_button = AsyncMock(return_value=True)
     scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
     scraper_inst.__aexit__ = AsyncMock(return_value=None)
@@ -108,9 +104,18 @@ def test_main_execution_success(
 
     mock_find_existing.return_value = set()
 
-    main()
+    original_argv = sys.argv
+    try:
+        sys.argv = ["main.py", "--release", "summer_26"]
+        main()
+    finally:
+        sys.argv = original_argv
 
-    mock_run_pipeline.assert_called_once()
+    mock_setup_logging.assert_called_once()
+    scraper_inst.fetch_page_raw_text.assert_awaited()
+    parser_inst.parse_text.assert_called()
+    mock_generate_files.assert_called()
+    mock_update_single.assert_called()
 
 
 @patch("src.main.setup_logging")
