@@ -12,6 +12,9 @@ from src.ai_automation import (
     calculate_quality_metrics,
     generate_changelog,
     generate_regression_report,
+    generate_ai_summary,
+    generate_ai_summary_report,
+    AISummary,
 )
 
 
@@ -115,3 +118,96 @@ def test_generate_regression_report() -> None:
         assert "Curr" in result
         assert "Regressões Detectadas" in result
         assert "A" in result
+
+
+def test_generate_ai_summary_growth() -> None:
+    prev = {
+        "name": "Prev",
+        "categories": [{"name": "A", "count": 10}, {"name": "B", "count": 5}],
+    }
+    curr = {
+        "name": "Curr",
+        "categories": [
+            {"name": "A", "count": 20},
+            {"name": "B", "count": 5},
+            {"name": "C", "count": 3},
+        ],
+    }
+
+    def mock_load(slug: str) -> Any:
+        if slug == "prev":
+            return prev
+        return curr
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        result = generate_ai_summary("curr", "prev")
+        assert isinstance(result, AISummary)
+        assert "Curr" in result.headline
+        assert len(result.highlights) > 0
+        assert result.overall_trend == "crescimento"
+
+
+def test_generate_ai_summary_decline() -> None:
+    prev = {
+        "name": "Prev",
+        "categories": [{"name": "A", "count": 50}, {"name": "B", "count": 30}],
+    }
+    curr = {
+        "name": "Curr",
+        "categories": [{"name": "A", "count": 20}],
+    }
+
+    def mock_load(slug: str) -> Any:
+        if slug == "prev":
+            return prev
+        return curr
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        result = generate_ai_summary("curr", "prev")
+        assert result.overall_trend == "declínio"
+        assert len(result.risk_areas) > 0
+
+
+def test_generate_ai_summary_no_changes() -> None:
+    data = {"name": "Same", "categories": [{"name": "A", "count": 10}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=data):
+        result = generate_ai_summary("same", "same")
+        assert "sem alterações" in result.headline
+        assert result.overall_trend == "estável"
+
+
+def test_generate_ai_summary_report() -> None:
+    prev = {
+        "name": "Prev",
+        "categories": [{"name": "A", "count": 10}, {"name": "B", "count": 5}],
+    }
+    curr = {
+        "name": "Curr",
+        "categories": [
+            {"name": "A", "count": 15},
+            {"name": "B", "count": 5},
+            {"name": "C", "count": 3},
+        ],
+    }
+
+    def mock_load(slug: str) -> Any:
+        if slug == "prev":
+            return prev
+        return curr
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        result = generate_ai_summary_report("curr", "prev")
+        assert "Resumo Inteligente" in result
+        assert "Destaques" in result
+        assert "Áreas de Risco" in result
+        assert "Tendência Geral" in result
+
+
+def test_generate_ai_summary_report_no_changes() -> None:
+    data = {"name": "Same", "categories": [{"name": "A", "count": 10}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=data):
+        result = generate_ai_summary_report("same", "same")
+        assert "sem alterações" in result
+        assert "Nenhuma área de risco" in result

@@ -367,3 +367,140 @@ def get_latest_release_badge() -> str:
             latest = meta.get("name", d.name)
 
     return latest or "N/A"
+
+
+@dataclass
+class AISummary:
+    """AI-generated summary of release comparison."""
+
+    headline: str
+    highlights: list[str]
+    risk_areas: list[str]
+    overall_trend: str
+
+
+def generate_ai_summary(current_slug: str, previous_slug: str) -> AISummary:
+    """Generate an intelligent natural language summary of release differences.
+
+    Analyzes comparison data and produces a structured summary with:
+    - Headline: one-line summary of the release
+    - Highlights: key positive changes
+    - Risk areas: potential concerns (regressions, removed categories)
+    - Overall trend: growth, stable, or declining
+    """
+    comparison = compare_releases(current_slug, previous_slug)
+    regressions = detect_regressions(current_slug, previous_slug)
+    current_metrics = calculate_quality_metrics(current_slug)
+    previous_metrics = calculate_quality_metrics(previous_slug)
+
+    # Build headline
+    total_changes = (
+        len(comparison.new_categories)
+        + len(comparison.removed_categories)
+        + len(comparison.changed_categories)
+    )
+    if total_changes == 0:
+        headline = f"{comparison.current_name} — sem alterações significativas em relação a {comparison.previous_name}"
+    else:
+        headline = (
+            f"{comparison.current_name} traz {total_changes} alterações "
+            f"em relação a {comparison.previous_name}"
+        )
+
+    # Build highlights
+    highlights: list[str] = []
+    if comparison.new_categories:
+        highlights.append(
+            f"{len(comparison.new_categories)} novas categorias adicionadas: "
+            + ", ".join(comparison.new_categories[:3])
+            + ("..." if len(comparison.new_categories) > 3 else "")
+        )
+    if comparison.changed_categories:
+        growth = [c for c in comparison.changed_categories if c[2] > c[1]]
+        if growth:
+            top_grower = max(growth, key=lambda c: c[2] - c[1])
+            highlights.append(
+                f"Maior crescimento em '{top_grower[0]}': "
+                f"{top_grower[1]} → {top_grower[2]} (+{top_grower[2] - top_grower[1]})"
+            )
+    if current_metrics and previous_metrics:
+        diff = current_metrics.total_features - previous_metrics.total_features
+        if diff > 0:
+            highlights.append(
+                f"Crescimento total de {diff} recursos "
+                f"({previous_metrics.total_features} → {current_metrics.total_features})"
+            )
+
+    # Build risk areas
+    risk_areas: list[str] = []
+    if comparison.removed_categories:
+        risk_areas.append(
+            f"{len(comparison.removed_categories)} categorias removidas: "
+            + ", ".join(comparison.removed_categories)
+        )
+    if regressions:
+        total_loss = sum(r.change for r in regressions)
+        risk_areas.append(
+            f"{len(regressions)} categorias com regressão (perda total: {abs(total_loss)} recursos)"
+        )
+
+    # Determine overall trend
+    if current_metrics and previous_metrics:
+        growth_pct = (
+            (current_metrics.total_features - previous_metrics.total_features)
+            / max(previous_metrics.total_features, 1)
+            * 100
+        )
+        if growth_pct > 5:
+            overall_trend = "crescimento"
+        elif growth_pct < -5:
+            overall_trend = "declínio"
+        else:
+            overall_trend = "estável"
+    else:
+        overall_trend = "indeterminado"
+
+    return AISummary(
+        headline=headline,
+        highlights=highlights,
+        risk_areas=risk_areas,
+        overall_trend=overall_trend,
+    )
+
+
+def generate_ai_summary_report(current_slug: str, previous_slug: str) -> str:
+    """Generate a formatted AI summary report in Markdown."""
+    summary = generate_ai_summary(current_slug, previous_slug)
+
+    lines = [
+        "# Resumo Inteligente da Release\n",
+        f"## {summary.headline}\n",
+        "## 📈 Destaques\n",
+    ]
+
+    for highlight in summary.highlights:
+        lines.append(f"- {highlight}")
+
+    if not summary.highlights:
+        lines.append("- Nenhum destaque significativo")
+
+    lines.append("")
+    lines.append("## ⚠️ Áreas de Risco\n")
+
+    for risk in summary.risk_areas:
+        lines.append(f"- {risk}")
+
+    if not summary.risk_areas:
+        lines.append("- Nenhuma área de risco identificada")
+
+    lines.extend(
+        [
+            "",
+            f"## 📊 Tendência Geral: **{summary.overall_trend.upper()}**",
+            "",
+            "---",
+            "*Relatório gerado automaticamente pelo módulo de AI Automation*",
+        ]
+    )
+
+    return "\n".join(lines)
