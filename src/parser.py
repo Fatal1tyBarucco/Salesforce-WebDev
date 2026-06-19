@@ -274,34 +274,39 @@ class ReleaseNotesParser:
 # FeatureImpactParser — parses the single-page feature impact table
 # ---------------------------------------------------------------------------
 
-SECTION_HEADERS: frozenset[str] = frozenset(
-    {
-        "Salesforce geral",
-        "Agentforce",
-        "Análise de dados",
-        "Automação",
-        "Commerce",
-        "Personalização",
-        "Data 360",
-        "Desenvolvimento",
-        "Experience Cloud",
-        "Field Service",
-        "Hyperforce",
-        "Setores",
-        "Marketing",
-        "MuleSoft",
-        "Aplicativo móvel",
-        "OmniStudio",
-        "Partner Cloud",
-        "Gerenciamento de receita",
-        "Vendas",
-        "Integrações do Salesforce para Slack",
-        "Segurança, identidade e privacidade",
-        "Serviço",
-        "Outros produtos e serviços do Salesforce",
-        "Documentação legal",
-    }
-)
+SECTION_HEADERS_BY_LOCALE: dict[str, frozenset[str]] = {
+    "pt-BR": frozenset(
+        {
+            "Salesforce geral",
+            "Agentforce",
+            "Análise de dados",
+            "Automação",
+            "Commerce",
+            "Personalização",
+            "Data 360",
+            "Desenvolvimento",
+            "Experience Cloud",
+            "Field Service",
+            "Hyperforce",
+            "Setores",
+            "Marketing",
+            "MuleSoft",
+            "Aplicativo móvel",
+            "OmniStudio",
+            "Partner Cloud",
+            "Gerenciamento de receita",
+            "Vendas",
+            "Integrações do Salesforce para Slack",
+            "Segurança, identidade e privacidade",
+            "Serviço",
+            "Outros produtos e serviços do Salesforce",
+            "Documentação legal",
+        }
+    ),
+}
+
+DEFAULT_LOCALE = "pt-BR"
+SECTION_HEADERS: frozenset[str] = SECTION_HEADERS_BY_LOCALE[DEFAULT_LOCALE]
 
 AVAILABILITY_KEYWORDS: frozenset[str] = frozenset({"Yes"})
 

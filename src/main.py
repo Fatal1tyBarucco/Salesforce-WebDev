@@ -34,6 +34,27 @@ from .scraper import SalesforceReleaseScraper
 
 RELEASE_SECTION_HEADING = "## 📋 Releases Disponíveis"
 
+# Salesforce release naming/numbering scheme assumptions.
+# Update these constants if Salesforce changes release cadence or ID progression.
+RELEASE_SEASONS = ("Spring", "Summer", "Winter")
+RELEASE_BASE_ID = 254  # release_id for Spring '25 — first release in this numbering scheme
+RELEASE_BASE_YEAR = 25  # two-digit year for Spring '25
+RELEASE_ID_STEP = 2  # release_id increments by 2 per release
+
+TRANSLITERATE_MAP: dict[str, str] = {
+    "ç": "c",
+    "ã": "a",
+    "õ": "o",
+    "á": "a",
+    "é": "e",
+    "í": "i",
+    "ó": "o",
+    "ú": "u",
+    "ê": "e",
+    "ô": "o",
+    "à": "a",
+}
+
 logger = logging.getLogger(__name__)
 
 
@@ -106,14 +127,11 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
 
 
 def _build_release_name(release_id: int) -> str:
-    SEASONS = ("Spring", "Summer", "Winter")
-    # Salesforce release IDs start at 254 (Spring '25) and increment by 2 per release.
-    # There are 3 releases per year (Spring, Summer, Winter).
-    BASE_ID = 254  # release_id for Spring '25 — the first release in this numbering scheme
-    BASE_YEAR = 25  # two-digit year for Spring '25
-    step = (release_id - BASE_ID) // 2
-    season = SEASONS[step % 3]
-    year = BASE_YEAR + step // 3
+    # Salesforce release IDs start at RELEASE_BASE_ID and increment by RELEASE_ID_STEP.
+    # There are currently len(RELEASE_SEASONS) releases per year.
+    step = (release_id - RELEASE_BASE_ID) // RELEASE_ID_STEP
+    season = RELEASE_SEASONS[step % len(RELEASE_SEASONS)]
+    year = RELEASE_BASE_YEAR + step // len(RELEASE_SEASONS)
     if season == "Winter":
         year += 1
     return f"{season} '{year}"
@@ -204,21 +222,8 @@ async def run_pipeline() -> None:
 
 def _slugify_category(name: str) -> str:
     """Transliterate Portuguese characters and slugify a category name."""
-    transliterate_map: dict[str, str] = {
-        "ç": "c",
-        "ã": "a",
-        "õ": "o",
-        "á": "a",
-        "é": "e",
-        "í": "i",
-        "ó": "o",
-        "ú": "u",
-        "ê": "e",
-        "ô": "o",
-        "à": "a",
-    }
     lowered = name.lower()
-    for char, replacement in transliterate_map.items():
+    for char, replacement in TRANSLITERATE_MAP.items():
         lowered = lowered.replace(char, replacement)
     return re.sub(r"[^a-z0-9]+", "_", lowered).strip("_")
 

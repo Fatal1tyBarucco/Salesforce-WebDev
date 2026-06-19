@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 CACHE_DIR = Path("cache")
 CACHE_DIR.mkdir(exist_ok=True)
 
+MIN_VALID_CONTENT_SIZE = 1000
+MIN_TOC_HTML_SIZE = 100
+MIN_RAW_TEXT_LENGTH = 500
+
 
 class SalesforceReleaseScraper:
     """Fetches fully rendered HTML from Salesforce Help release notes URLs."""
@@ -68,7 +72,7 @@ class SalesforceReleaseScraper:
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
                 html_content = await self._fetch_with_playwright(url, page, expand_toc=expand_toc)
-                if html_content and len(html_content) > 1000:
+                if html_content and len(html_content) > MIN_VALID_CONTENT_SIZE:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
                         url,
@@ -219,7 +223,7 @@ class SalesforceReleaseScraper:
             element = await page.query_selector(selector)
             if element:
                 html = await element.inner_html()
-                if html and len(html) > 100:
+                if html and len(html) > MIN_TOC_HTML_SIZE:
                     logger.info(
                         "ToC extracted with selector '%s' (%d bytes)",
                         selector,
@@ -238,18 +242,18 @@ class SalesforceReleaseScraper:
         logger.info("Fetching raw text: %s", url)
 
         # Check cache
-        url_hash = hashlib.md5(url.encode()).hexdigest()
+        url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
         cache_file = CACHE_DIR / f"{url_hash}.txt"
 
         if cache_file.exists():
             cached = cache_file.read_text(encoding="utf-8")
-            if len(cached) > 500:
+            if len(cached) > MIN_RAW_TEXT_LENGTH:
                 logger.info("Using cached content (%d chars)", len(cached))
                 return cached
 
         try:
             text = await self._fetch_with_playwright(url, return_text=True)
-            if text and len(text) > 500:
+            if text and len(text) > MIN_RAW_TEXT_LENGTH:
                 logger.info("Fetched raw text (%d chars)", len(text))
                 cache_file.write_text(text, encoding="utf-8")
                 return text
@@ -290,7 +294,7 @@ class SalesforceReleaseScraper:
 
                 await browser.close()
 
-                if dest.exists() and dest.stat().st_size > 1000:
+                if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
                     logger.info(
                         "PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size
                     )
@@ -310,7 +314,7 @@ class SalesforceReleaseScraper:
             response = urllib.request.urlopen(req, timeout=30)
             data = response.read()
             dest.write_bytes(data)
-            if dest.exists() and dest.stat().st_size > 1000:
+            if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
                 logger.info("PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size)
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)

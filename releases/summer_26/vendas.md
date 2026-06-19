@@ -1,8 +1,7 @@
 ## Vendas
 
 O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cloud em aplicativos e documentação do Salesforce. Aprenda sobre os recursos e atualizações mais recentes para aprimorar a produtividade e as operações da equipe de vendas. A versão Summer '26 inclui atualizações e anúncios que ocorrem de maio a agosto de 2026.
-
-* **<..td class="slds-cell-wrap" style="text-align:center;vertical-align:top;" headers="rn_feature_impact__autoUser ">**
+O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cloud em aplicativos e documentação do Salesforce. Aprenda sobre os recursos e atualizações mais recentes para aprimorar a produtividade e as operações da equipe de vendas. A versão Summer '26 inclui atualizações e anúncios que ocorrem de maio a agosto de 2026.
 
 * **Dados do Connect**
 

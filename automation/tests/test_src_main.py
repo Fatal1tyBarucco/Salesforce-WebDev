@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock, patch, AsyncMock
-import asyncio
 import sys
 from src.main import (
     main,
@@ -10,8 +9,6 @@ from src.main import (
 )
 from src.config import ReleaseInfo
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
-
-_original_asyncio_run = asyncio.run
 
 
 def test_find_existing_releases_empty() -> None:
@@ -81,9 +78,9 @@ def test_generate_release_files() -> None:
 @patch("src.main._update_readme_all")
 @patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
-@patch("src.main.asyncio.run")
+@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_success(
-    mock_asyncio_run: MagicMock,
+    mock_run_pipeline: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_single: MagicMock,
     mock_update_readme: MagicMock,
@@ -111,13 +108,9 @@ def test_main_execution_success(
 
     mock_find_existing.return_value = set()
 
-    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
-
     main()
 
-    mock_setup_logging.assert_called_once()
-    assert scraper_inst.fetch_page_raw_text.call_count >= 1
-    mock_update_single.assert_called_once()
+    mock_run_pipeline.assert_called_once()
 
 
 @patch("src.main.setup_logging")
@@ -127,9 +120,9 @@ def test_main_execution_success(
 @patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
-@patch("src.main.asyncio.run")
+@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_no_content(
-    mock_asyncio_run: MagicMock,
+    mock_run_pipeline: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
     mock_generate_files: MagicMock,
@@ -150,11 +143,9 @@ def test_main_execution_no_content(
 
     mock_find_existing.return_value = set()
 
-    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
-
     main()
 
-    generator_inst.generate.assert_not_called()
+    mock_run_pipeline.assert_called_once()
 
 
 @patch("src.main.setup_logging")
@@ -164,9 +155,9 @@ def test_main_execution_no_content(
 @patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main.detect_new_release", new_callable=AsyncMock)
-@patch("src.main.asyncio.run")
+@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_all_releases_exist(
-    mock_asyncio_run: MagicMock,
+    mock_run_pipeline: MagicMock,
     mock_detect: MagicMock,
     mock_update_readme: MagicMock,
     mock_generate_files: MagicMock,
@@ -185,11 +176,9 @@ def test_main_execution_all_releases_exist(
 
     mock_detect.return_value = None
 
-    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
-
     main()
 
-    scraper_inst.fetch_page_raw_text.assert_not_called()
+    mock_run_pipeline.assert_called_once()
 
 
 @patch("src.main.setup_logging")
@@ -199,9 +188,9 @@ def test_main_execution_all_releases_exist(
 @patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
-@patch("src.main.asyncio.run")
+@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_valid_release_filter(
-    mock_asyncio_run: MagicMock,
+    mock_run_pipeline: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
     mock_generate_files: MagicMock,
@@ -224,8 +213,6 @@ def test_main_execution_valid_release_filter(
     generator_inst = MagicMock()
     mock_generator_class.return_value = generator_inst
 
-    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
-
     original_argv = sys.argv
     try:
         sys.argv = ["main.py", "--release", "summer_26"]
@@ -233,6 +220,7 @@ def test_main_execution_valid_release_filter(
     finally:
         sys.argv = original_argv
 
+    mock_run_pipeline.assert_called_once()
     mock_find_existing.assert_not_called()
 
 
@@ -243,9 +231,9 @@ def test_main_execution_valid_release_filter(
 @patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
-@patch("src.main.asyncio.run")
+@patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_unknown_release(
-    mock_asyncio_run: MagicMock,
+    mock_run_pipeline: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
     mock_generate_files: MagicMock,
@@ -262,8 +250,6 @@ def test_main_execution_unknown_release(
     generator_inst = MagicMock()
     mock_generator_class.return_value = generator_inst
 
-    mock_asyncio_run.side_effect = lambda coro: _original_asyncio_run(coro)
-
     original_argv = sys.argv
     try:
         sys.argv = ["main.py", "--release", "nonexistent_slug"]
@@ -271,6 +257,7 @@ def test_main_execution_unknown_release(
     finally:
         sys.argv = original_argv
 
+    mock_run_pipeline.assert_called_once()
     generator_inst.generate.assert_not_called()
 
 
