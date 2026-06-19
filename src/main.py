@@ -184,6 +184,20 @@ async def run_pipeline() -> None:
 
     _update_readme_all()
 
+    # Generate AI reports
+    try:
+        from .ai_automation import generate_changelog, generate_quality_report
+
+        changelog = generate_changelog()
+        Path("CHANGELOG.md").write_text(changelog, encoding="utf-8")
+
+        quality = generate_quality_report()
+        Path("QUALITY_REPORT.md").write_text(quality, encoding="utf-8")
+
+        logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
+    except Exception as e:
+        logger.warning("Failed to generate AI reports: %s", e)
+
 
 def _slugify_category(name: str) -> str:
     """Transliterate Portuguese characters and slugify a category name."""
