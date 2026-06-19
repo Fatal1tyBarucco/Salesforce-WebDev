@@ -30,5 +30,4 @@
 - [seguranca_identidade_e_privacidade](./releases/summer_26/seguranca_identidade_e_privacidade.md)
 - [servico](./releases/summer_26/servico.md)
 - [setores](./releases/summer_26/setores.md)
-- [test_cat](./releases/summer_26/test_cat.md)
 - [vendas](./releases/summer_26/vendas.md)
