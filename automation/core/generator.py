@@ -10,7 +10,7 @@ class MarkdownArtifactGenerator:
 
     def generate(self, release_name: str, topics: list[ReleaseTopicContent]) -> None:
 
-        base_directory = f"releases/{slugify(release_name)}"
+        base_directory = f"releases/{slugify(release_name, separator='_')}"
 
         ensure_directory_exists(base_directory)
 

@@ -77,6 +77,7 @@ def test_generate_release_files() -> None:
 @patch("src.main.SalesforceReleaseScraper")
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
+@patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
@@ -86,6 +87,7 @@ def test_main_execution_success(
     mock_find_existing: MagicMock,
     mock_update_single: MagicMock,
     mock_update_readme: MagicMock,
+    mock_generate_files: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
     mock_scraper_class: MagicMock,
@@ -122,6 +124,7 @@ def test_main_execution_success(
 @patch("src.main.SalesforceReleaseScraper")
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
+@patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.asyncio.run")
@@ -129,6 +132,7 @@ def test_main_execution_no_content(
     mock_asyncio_run: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
+    mock_generate_files: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
     mock_scraper_class: MagicMock,
@@ -157,6 +161,7 @@ def test_main_execution_no_content(
 @patch("src.main.SalesforceReleaseScraper")
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
+@patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main.detect_new_release", new_callable=AsyncMock)
 @patch("src.main.asyncio.run")
@@ -164,6 +169,7 @@ def test_main_execution_all_releases_exist(
     mock_asyncio_run: MagicMock,
     mock_detect: MagicMock,
     mock_update_readme: MagicMock,
+    mock_generate_files: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
     mock_scraper_class: MagicMock,
@@ -190,6 +196,7 @@ def test_main_execution_all_releases_exist(
 @patch("src.main.SalesforceReleaseScraper")
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
+@patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.asyncio.run")
@@ -197,6 +204,7 @@ def test_main_execution_valid_release_filter(
     mock_asyncio_run: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
+    mock_generate_files: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
     mock_scraper_class: MagicMock,
@@ -232,6 +240,7 @@ def test_main_execution_valid_release_filter(
 @patch("src.main.SalesforceReleaseScraper")
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
+@patch("src.main._generate_release_files")
 @patch("src.main._update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.asyncio.run")
@@ -239,6 +248,7 @@ def test_main_execution_unknown_release(
     mock_asyncio_run: MagicMock,
     mock_find_existing: MagicMock,
     mock_update_readme: MagicMock,
+    mock_generate_files: MagicMock,
     mock_generator_class: MagicMock,
     mock_impact_parser_class: MagicMock,
     mock_scraper_class: MagicMock,
