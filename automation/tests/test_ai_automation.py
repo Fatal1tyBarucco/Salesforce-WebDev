@@ -15,6 +15,10 @@ from src.ai_automation import (
     generate_ai_summary,
     generate_ai_summary_report,
     AISummary,
+    calculate_category_impact_scores,
+    predict_next_release_impact,
+    generate_impact_prediction_report,
+    ImpactPrediction,
 )
 
 
@@ -211,3 +215,77 @@ def test_generate_ai_summary_report_no_changes() -> None:
         result = generate_ai_summary_report("same", "same")
         assert "sem alterações" in result
         assert "Nenhuma área de risco" in result
+
+
+def test_calculate_category_impact_scores() -> None:
+    meta1 = {
+        "name": "R1",
+        "release_id": 1,
+        "categories": [{"name": "A", "count": 10}, {"name": "B", "count": 20}],
+    }
+    meta2 = {
+        "name": "R2",
+        "release_id": 2,
+        "categories": [{"name": "A", "count": 15}, {"name": "B", "count": 18}],
+    }
+    meta3 = {
+        "name": "R3",
+        "release_id": 3,
+        "categories": [{"name": "A", "count": 25}, {"name": "B", "count": 15}],
+    }
+
+    def mock_load_all() -> list[dict[str, Any]]:
+        return [meta1, meta2, meta3]
+
+    with patch("src.ai_automation._load_all_release_metas", side_effect=mock_load_all):
+        scores = calculate_category_impact_scores()
+        assert len(scores) == 2
+        assert scores[0].category in ["A", "B"]
+        assert scores[0].risk_score >= 0
+
+
+def test_calculate_category_impact_scores_insufficient_data() -> None:
+    with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+        scores = calculate_category_impact_scores()
+        assert scores == []
+
+
+def test_predict_next_release_impact() -> None:
+    meta1 = {"name": "R1", "release_id": 1, "categories": [{"name": "A", "count": 10}]}
+    meta2 = {"name": "R2", "release_id": 2, "categories": [{"name": "A", "count": 30}]}
+
+    def mock_load_all() -> list[dict[str, Any]]:
+        return [meta1, meta2]
+
+    with patch("src.ai_automation._load_all_release_metas", side_effect=mock_load_all):
+        prediction = predict_next_release_impact()
+        assert isinstance(prediction, ImpactPrediction)
+        assert prediction.overall_risk_level in ["alto", "moderado", "baixo", "indeterminado"]
+        assert isinstance(prediction.summary, str)
+
+
+def test_predict_next_release_impact_no_data() -> None:
+    with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+        prediction = predict_next_release_impact()
+        assert prediction.overall_risk_level == "indeterminado"
+        assert "insuficientes" in prediction.summary
+
+
+def test_generate_impact_prediction_report() -> None:
+    meta1 = {"name": "R1", "release_id": 1, "categories": [{"name": "A", "count": 10}]}
+    meta2 = {"name": "R2", "release_id": 2, "categories": [{"name": "A", "count": 25}]}
+
+    def mock_load_all() -> list[dict[str, Any]]:
+        return [meta1, meta2]
+
+    with patch("src.ai_automation._load_all_release_metas", side_effect=mock_load_all):
+        report = generate_impact_prediction_report()
+        assert "Previsão de Impacto" in report
+        assert "Nível de Risco Geral" in report
+
+
+def test_generate_impact_prediction_report_no_data() -> None:
+    with patch("src.ai_automation._load_all_release_metas", return_value=[]):
+        report = generate_impact_prediction_report()
+        assert "Previsão de Impacto" in report
+        assert "insuficientes" in report

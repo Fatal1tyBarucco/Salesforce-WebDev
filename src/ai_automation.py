@@ -504,3 +504,211 @@ def generate_ai_summary_report(current_slug: str, previous_slug: str) -> str:
     )
 
     return "\n".join(lines)
+
+
+@dataclass
+class CategoryImpactScore:
+    """Impact score for a single category based on historical data."""
+
+    category: str
+    volatility: float
+    trend: str
+    risk_score: float
+    prediction: str
+
+
+@dataclass
+class ImpactPrediction:
+    """Predictive impact analysis for next release."""
+
+    high_risk_categories: list[CategoryImpactScore]
+    stable_categories: list[CategoryImpactScore]
+    growing_categories: list[CategoryImpactScore]
+    overall_risk_level: str
+    summary: str
+
+
+def _load_all_release_metas() -> list[dict[str, Any]]:
+    """Load all release metadata sorted by release_id."""
+    releases_dir = Path(RELEASES_DIR)
+    if not releases_dir.exists():
+        return []
+
+    metas = []
+    for d in releases_dir.iterdir():
+        meta_path = d / ".meta.json"
+        if meta_path.exists():
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            metas.append(meta)
+
+    metas.sort(key=lambda m: m.get("release_id", 0))
+    return metas
+
+
+def calculate_category_impact_scores() -> list[CategoryImpactScore]:
+    """Calculate impact scores for all categories based on historical data.
+
+    Analyzes changes across all available releases to determine:
+    - Volatility: how much a category changes between releases
+    - Trend: whether the category is growing, stable, or declining
+    - Risk score: likelihood of significant change in next release
+    """
+    metas = _load_all_release_metas()
+    if len(metas) < 2:
+        return []
+
+    # Build category history: {category: [count_per_release]}
+    category_history: dict[str, list[int]] = {}
+    for meta in metas:
+        current_cats = {c["name"]: c["count"] for c in meta.get("categories", [])}
+        for name, count in current_cats.items():
+            if name not in category_history:
+                category_history[name] = []
+            category_history[name].append(count)
+
+    scores: list[CategoryImpactScore] = []
+    for name, history in category_history.items():
+        if len(history) < 2:
+            continue
+
+        # Calculate volatility (standard deviation of changes)
+        changes = [history[i] - history[i - 1] for i in range(1, len(history))]
+        if not changes:
+            continue
+
+        mean_change = sum(changes) / len(changes)
+        variance = sum((c - mean_change) ** 2 for c in changes) / len(changes)
+        volatility = variance ** 0.5
+
+        # Determine trend
+        if mean_change > 5:
+            trend = "crescimento"
+        elif mean_change < -5:
+            trend = "declínio"
+        else:
+            trend = "estável"
+
+        # Risk score: higher volatility + extreme trend = higher risk
+        risk_score = volatility + abs(mean_change) * 0.5
+
+        # Generate prediction
+        if risk_score > 20:
+            prediction = "Alta probabilidade de mudança significativa"
+        elif risk_score > 10:
+            prediction = "Mudança moderada esperada"
+        elif risk_score > 5:
+            prediction = "Mudança leve possível"
+        else:
+            prediction = "Provavelmente estável"
+
+        scores.append(
+            CategoryImpactScore(
+                category=name,
+                volatility=round(volatility, 2),
+                trend=trend,
+                risk_score=round(risk_score, 2),
+                prediction=prediction,
+            )
+        )
+
+    return sorted(scores, key=lambda s: s.risk_score, reverse=True)
+
+
+def predict_next_release_impact() -> ImpactPrediction:
+    """Predict which categories will have the most impact in the next release.
+
+    Uses historical volatility and trend data to forecast:
+    - High-risk categories likely to change significantly
+    - Stable categories expected to remain consistent
+    - Growing categories with upward momentum
+    """
+    scores = calculate_category_impact_scores()
+    if not scores:
+        return ImpactPrediction(
+            high_risk_categories=[],
+            stable_categories=[],
+            growing_categories=[],
+            overall_risk_level="indeterminado",
+            summary="Dados insuficientes para previsão. Necessário pelo menos 2 releases.",
+        )
+
+    high_risk = [s for s in scores if s.risk_score > 15]
+    growing = [s for s in scores if s.trend == "crescimento" and s.risk_score > 5]
+    stable = [s for s in scores if s.trend == "estável" and s.risk_score <= 10]
+
+    # Overall risk level
+    avg_risk = sum(s.risk_score for s in scores) / len(scores)
+    if avg_risk > 20:
+        overall_risk = "alto"
+    elif avg_risk > 10:
+        overall_risk = "moderado"
+    else:
+        overall_risk = "baixo"
+
+    # Build summary
+    parts = []
+    if high_risk:
+        parts.append(
+            f"{len(high_risk)} categorias de alto risco ({', '.join(s.category for s in high_risk[:3])})"
+        )
+    if growing:
+        parts.append(f"{len(growing)} categorias em crescimento")
+    if stable:
+        parts.append(f"{len(stable)} categorias estáveis")
+
+    summary = "Análise: " + "; ".join(parts) if parts else "Sem dados suficientes para análise."
+
+    return ImpactPrediction(
+        high_risk_categories=high_risk,
+        stable_categories=stable,
+        growing_categories=growing,
+        overall_risk_level=overall_risk,
+        summary=summary,
+    )
+
+
+def generate_impact_prediction_report() -> str:
+    """Generate a formatted impact prediction report in Markdown."""
+    prediction = predict_next_release_impact()
+
+    lines = [
+        "# Previsão de Impacto da Próxima Release\n",
+        f"## Nível de Risco Geral: **{prediction.overall_risk_level.upper()}**\n",
+        f"*{prediction.summary}*\n",
+    ]
+
+    if prediction.high_risk_categories:
+        lines.append("## 🔴 Alto Risco\n")
+        for cat in prediction.high_risk_categories:
+            lines.append(
+                f"- **{cat.category}** — Volatilidade: {cat.volatility:.1f}, "
+                f"Tendência: {cat.trend}, Previsão: {cat.prediction}"
+            )
+        lines.append("")
+
+    if prediction.growing_categories:
+        lines.append("## 📈 Em Crescimento\n")
+        for cat in prediction.growing_categories:
+            lines.append(
+                f"- **{cat.category}** — Volatilidade: {cat.volatility:.1f}, "
+                f"Score: {cat.risk_score:.1f}"
+            )
+        lines.append("")
+
+    if prediction.stable_categories:
+        lines.append("## ✅ Estáveis\n")
+        for cat in prediction.stable_categories:
+            lines.append(f"- **{cat.category}** — Volatilidade: {cat.volatility:.1f}")
+        lines.append("")
+
+    if not prediction.high_risk_categories and not prediction.growing_categories:
+        lines.append("## ℹ️ Sem categorias de alto risco ou em crescimento\n")
+
+    lines.extend(
+        [
+            "---",
+            "*Previsão gerada automaticamente pelo módulo de AI Automation*",
+        ]
+    )
+
+    return "\n".join(lines)
