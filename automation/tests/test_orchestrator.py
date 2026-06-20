@@ -54,16 +54,9 @@ def test_orchestrator_main() -> None:
     # Use compile to associate the code with the file for coverage tracking
     code = compile(code_text, file_path, "exec")
 
-    global_ns = {
-        "__name__": "__main__",
-    }
-
-    # Mock everything ReleasePipelineOrchestrator uses to avoid side effects
-    with patch("automation.core.orchestrator.ReleaseNotesScraper"), patch(
-        "automation.core.orchestrator.ReleaseNotesParser"
-    ), patch("automation.core.orchestrator.TopicClassifier"), patch(
-        "automation.core.orchestrator.MarkdownArtifactGenerator"
-    ), patch(
-        "automation.core.orchestrator.ReadmeUpdater"
-    ):
+    # Prevent generate() from writing files by patching the generator method
+    with patch("automation.core.generator.MarkdownArtifactGenerator.generate"):
+        global_ns = {
+            "__name__": "__main__",
+        }
         exec(code, global_ns)
