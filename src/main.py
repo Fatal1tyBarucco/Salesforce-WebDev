@@ -14,6 +14,7 @@ import asyncio
 import logging
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -415,18 +416,57 @@ def _update_readme_single(
             logger.debug("Skipping .meta.json write for %s (already has data)", release.slug)
             return
 
+    total_features = 0
+    total_confidence = 0.0
     cat_list: list[dict[str, object]] = []
+    for cat in categories:
+        count = cat.total_features
+        total_features += count
+        total_confidence += cat.avg_confidence * count
+        cat_list.append({"name": cat.name, "count": count})
+
+    avg_confidence = total_confidence / total_features if total_features else 0.0
+
     meta: dict[str, object] = {
         "name": release.name,
         "slug": release.slug,
         "release_id": release.release_id,
+        "total_features": total_features,
+        "avg_confidence": round(avg_confidence, 3),
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "categories": cat_list,
     }
-    for cat in categories:
-        total = len(cat.entries) + sum(len(e) for e in cat.subcategories.values())
-        cat_list.append({"name": cat.name, "count": total})
 
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    _update_release_history(release, total_features, len(cat_list))
+
+
+def _update_release_history(release: ReleaseInfo, total_features: int, category_count: int) -> None:
+    """Append to release history tracker at releases/history.json."""
+    import json as _json
+
+    history_path = Path(RELEASES_DIR) / "history.json"
+    history: list[dict[str, object]] = []
+    if history_path.exists():
+        history = _json.loads(history_path.read_text(encoding="utf-8"))
+
+    entry = {
+        "slug": release.slug,
+        "name": release.name,
+        "release_id": release.release_id,
+        "total_features": total_features,
+        "category_count": category_count,
+        "processed_at": datetime.now(tz=timezone.utc).isoformat(),
+    }
+
+    existing_idx = next((i for i, h in enumerate(history) if h.get("slug") == release.slug), -1)
+    if existing_idx >= 0:
+        history[existing_idx] = entry
+    else:
+        history.append(entry)
+
+    history.sort(key=lambda h: int(str(h.get("release_id", 0))), reverse=True)
+    history_path.write_text(_json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def _update_readme_all() -> None:
