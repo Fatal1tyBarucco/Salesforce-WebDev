@@ -362,6 +362,21 @@ class FeatureImpactCategory:
         self.entries: list[FeatureImpactEntry] = []
         self.subcategories: dict[str, list[FeatureImpactEntry]] = {}
 
+    @property
+    def avg_confidence(self) -> float:
+        """Average confidence across all entries in this category."""
+        all_entries = list(self.entries)
+        for sub_entries in self.subcategories.values():
+            all_entries.extend(sub_entries)
+        if not all_entries:
+            return 0.0
+        return sum(e.confidence for e in all_entries) / len(all_entries)
+
+    @property
+    def total_features(self) -> int:
+        """Total feature count including subcategories."""
+        return len(self.entries) + sum(len(e) for e in self.subcategories.values())
+
 
 class FeatureImpactParser:
     """Parses the Feature Impact page text into structured categories."""
@@ -428,6 +443,33 @@ class FeatureImpactParser:
     def parse_stats(self) -> dict[str, int]:
         """Return stats from the last parse_text() call."""
         return getattr(self, "_last_stats", {})
+
+    def classification_quality(self, categories: list[FeatureImpactCategory]) -> dict[str, object]:
+        """Return aggregate quality metrics for parsed categories."""
+        total_features = 0
+        total_confidence = 0.0
+        low_confidence_count = 0
+
+        for cat in categories:
+            for entry in cat.entries:
+                total_features += 1
+                total_confidence += entry.confidence
+                if entry.confidence < 0.7:
+                    low_confidence_count += 1
+            for sub_entries in cat.subcategories.values():
+                for entry in sub_entries:
+                    total_features += 1
+                    total_confidence += entry.confidence
+                    if entry.confidence < 0.7:
+                        low_confidence_count += 1
+
+        avg = total_confidence / total_features if total_features else 0.0
+        return {
+            "categories": len(categories),
+            "total_features": total_features,
+            "avg_confidence": round(avg, 3),
+            "low_confidence_count": low_confidence_count,
+        }
 
     def _is_section_header(self, line: str) -> bool:
         return line in SECTION_HEADERS
