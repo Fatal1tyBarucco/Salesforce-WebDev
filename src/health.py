@@ -17,6 +17,19 @@ logger = logging.getLogger(__name__)
 _pipeline_start_time: float = time.monotonic()
 _last_run_status: str = "idle"
 _last_run_time: str = ""
+_metrics: dict[str, float] = {
+    "pipeline_runs_total": 0,
+    "pipeline_failures_total": 0,
+    "features_processed_total": 0,
+    "scraper_requests_total": 0,
+    "scraper_failures_total": 0,
+    "circuit_breaker_trips_total": 0,
+}
+
+
+def inc_metric(name: str, value: float = 1.0) -> None:
+    """Increment a counter metric."""
+    _metrics[name] = _metrics.get(name, 0) + value
 
 
 def set_pipeline_status(status: str) -> None:
@@ -24,6 +37,10 @@ def set_pipeline_status(status: str) -> None:
     global _last_run_status, _last_run_time  # noqa: PLW0603
     _last_run_status = status
     _last_run_time = datetime.now(tz=timezone.utc).isoformat()
+    if status == "completed":
+        inc_metric("pipeline_runs_total")
+    elif status == "completed_with_errors":
+        inc_metric("pipeline_failures_total")
 
 
 def _get_health_data() -> dict[str, object]:
@@ -66,8 +83,45 @@ class HealthHandler(BaseHTTPRequestHandler):
         elif self.path == "/ready":
             data = {"status": "ready"}
             self._respond(200, data)
+        elif self.path == "/metrics":
+            self._respond_metrics()
         else:
             self._respond(404, {"error": "not found"})
+
+    def _respond_metrics(self) -> None:
+        """Return Prometheus-compatible plain text metrics."""
+        lines = [
+            "# HELP pipeline_runs_total Total pipeline runs",
+            "# TYPE pipeline_runs_total counter",
+            f"pipeline_runs_total {_metrics.get('pipeline_runs_total', 0)}",
+            "",
+            "# HELP pipeline_failures_total Total pipeline failures",
+            "# TYPE pipeline_failures_total counter",
+            f"pipeline_failures_total {_metrics.get('pipeline_failures_total', 0)}",
+            "",
+            "# HELP features_processed_total Total features processed",
+            "# TYPE features_processed_total counter",
+            f"features_processed_total {_metrics.get('features_processed_total', 0)}",
+            "",
+            "# HELP scraper_requests_total Total scraper requests",
+            "# TYPE scraper_requests_total counter",
+            f"scraper_requests_total {_metrics.get('scraper_requests_total', 0)}",
+            "",
+            "# HELP scraper_failures_total Total scraper failures",
+            "# TYPE scraper_failures_total counter",
+            f"scraper_failures_total {_metrics.get('scraper_failures_total', 0)}",
+            "",
+            "# HELP pipeline_uptime_seconds Pipeline uptime in seconds",
+            "# TYPE pipeline_uptime_seconds gauge",
+            f"pipeline_uptime_seconds {round(time.monotonic() - _pipeline_start_time, 1)}",
+            "",
+        ]
+        body = "\n".join(lines).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; version=0.0.4")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def _respond(self, code: int, data: dict[str, object]) -> None:
         body = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
