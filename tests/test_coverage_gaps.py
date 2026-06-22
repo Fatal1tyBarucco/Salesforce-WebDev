@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch, AsyncMock
+from urllib.error import URLError
 
 from src.config import build_release_info, _id_to_season, ReleaseInfo
 from src.main import (
@@ -4884,11 +4885,566 @@ def test_api_start_server(tmp_path: Path) -> None:
     """api: start_api_server starts a server."""
     from src.api import start_api_server
 
-    server = start_api_server(port=18081)
+    server = start_api_server(port=18082)
     try:
         assert server is not None
     finally:
         server.shutdown()
+
+
+# ============================================================
+# src/notifications.py tests
+# ============================================================
+
+
+def test_notifications_load_meta_not_found(tmp_path: Path) -> None:
+    """notifications: _load_release_meta returns None for missing slug."""
+    from src.notifications import _load_release_meta
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        assert _load_release_meta("nope") is None
+
+
+def test_notifications_load_meta_invalid_json(tmp_path: Path) -> None:
+    """notifications: _load_release_meta returns None for invalid JSON."""
+    from src.notifications import _load_release_meta
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json")
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        assert _load_release_meta("bad") is None
+
+
+def test_notifications_build_digest(tmp_path: Path) -> None:
+    """notifications: build_digest creates ReleaseDigest."""
+    from src.notifications import build_digest
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "total_features": 100,
+                "categories": [{"name": "A", "count": 50}],
+                "generated_at": "2026-06-22T12:00:00",
+            }
+        )
+    )
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        digest = build_digest("summer_26")
+        assert digest is not None
+        assert digest.release_name == "Summer '26"
+        assert digest.total_features == 100
+
+
+def test_notifications_build_digest_not_found(tmp_path: Path) -> None:
+    """notifications: build_digest returns None for missing release."""
+    from src.notifications import build_digest
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        assert build_digest("nope") is None
+
+
+def test_notifications_format_email_html() -> None:
+    """notifications: _format_email_html generates HTML."""
+    from src.notifications import _format_email_html, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [{"name": "A", "count": 50}], "")
+    profile = NotificationProfile(name="test", email="test@example.com", categories=["A"])
+    html = _format_email_html(digest, profile)
+    assert "Summer '26" in html
+    assert "100" in html
+
+
+def test_notifications_format_slack_blocks() -> None:
+    """notifications: _format_slack_blocks generates Block Kit."""
+    from src.notifications import _format_slack_blocks, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [{"name": "A", "count": 50}], "")
+    profile = NotificationProfile(name="test")
+    payload = _format_slack_blocks(digest, profile)
+    assert "blocks" in payload
+    assert len(payload["blocks"]) == 3
+
+
+def test_notifications_format_discord_embed() -> None:
+    """notifications: _format_discord_embed generates embed."""
+    from src.notifications import _format_discord_embed, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [{"name": "A", "count": 50}], "")
+    profile = NotificationProfile(name="test")
+    payload = _format_discord_embed(digest, profile)
+    assert "embeds" in payload
+    assert payload["embeds"][0]["title"].startswith("🚀")
+
+
+def test_notifications_send_email_no_address() -> None:
+    """notifications: send_email returns error when no email."""
+    from src.notifications import send_email, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test")
+    result = send_email(digest, profile)
+    assert not result.success
+    assert "no email" in result.error
+
+
+def test_notifications_send_email_smtp_failure() -> None:
+    """notifications: send_email handles SMTP failure."""
+    from src.notifications import send_email, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", email="test@example.com")
+
+    with patch("src.notifications.smtplib.SMTP", side_effect=OSError("connection refused")):
+        result = send_email(digest, profile)
+        assert not result.success
+
+
+def test_notifications_send_slack_no_webhook() -> None:
+    """notifications: send_slack returns error when no webhook."""
+    from src.notifications import send_slack, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test")
+    result = send_slack(digest, profile)
+    assert not result.success
+    assert "no webhook" in result.error
+
+
+def test_notifications_send_slack_failure() -> None:
+    """notifications: send_slack handles URLError."""
+    from src.notifications import send_slack, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", slack_webhook="https://hooks.slack.com/test")
+
+    with patch("src.notifications.urlopen", side_effect=URLError("timeout")):
+        result = send_slack(digest, profile)
+        assert not result.success
+
+
+def test_notifications_send_slack_http_error() -> None:
+    """notifications: send_slack handles HTTP 400+."""
+    from src.notifications import send_slack, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", slack_webhook="https://hooks.slack.com/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 400
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.urlopen", return_value=mock_resp):
+        result = send_slack(digest, profile)
+        assert not result.success
+        assert "400" in result.error
+
+
+def test_notifications_send_discord_no_webhook() -> None:
+    """notifications: send_discord returns error when no webhook."""
+    from src.notifications import send_discord, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test")
+    result = send_discord(digest, profile)
+    assert not result.success
+    assert "no webhook" in result.error
+
+
+def test_notifications_send_discord_failure() -> None:
+    """notifications: send_discord handles URLError."""
+    from src.notifications import send_discord, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", discord_webhook="https://discord.com/api/test")
+
+    with patch("src.notifications.urlopen", side_effect=URLError("timeout")):
+        result = send_discord(digest, profile)
+        assert not result.success
+
+
+def test_notifications_send_discord_http_error() -> None:
+    """notifications: send_discord handles HTTP 400+."""
+    from src.notifications import send_discord, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", discord_webhook="https://discord.com/api/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 403
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.urlopen", return_value=mock_resp):
+        result = send_discord(digest, profile)
+        assert not result.success
+        assert "403" in result.error
+
+
+def test_notifications_load_profiles(tmp_path: Path) -> None:
+    """notifications: _load_profiles loads from file."""
+    from src.notifications import _load_profiles, NOTIFICATIONS_DIR
+
+    profiles_dir = tmp_path / NOTIFICATIONS_DIR
+    profiles_dir.mkdir()
+    (profiles_dir / "profiles.json").write_text(
+        json.dumps(
+            [
+                {"name": "Dev Team", "email": "dev@test.com", "categories": ["A"], "enabled": True},
+            ]
+        )
+    )
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(profiles_dir)):
+        profiles = _load_profiles()
+        assert len(profiles) == 1
+        assert profiles[0].name == "Dev Team"
+
+
+def test_notifications_load_profiles_missing(tmp_path: Path) -> None:
+    """notifications: _load_profiles returns [] when file missing."""
+    from src.notifications import _load_profiles
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(tmp_path / "nope")):
+        assert _load_profiles() == []
+
+
+def test_notifications_load_profiles_invalid(tmp_path: Path) -> None:
+    """notifications: _load_profiles returns [] for invalid JSON."""
+    from src.notifications import _load_profiles, NOTIFICATIONS_DIR
+
+    profiles_dir = tmp_path / NOTIFICATIONS_DIR
+    profiles_dir.mkdir()
+    (profiles_dir / "profiles.json").write_text("not json")
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(profiles_dir)):
+        assert _load_profiles() == []
+
+
+def test_notifications_unsubscribe_and_check(tmp_path: Path) -> None:
+    """notifications: unsubscribe adds email, is_subscribed checks."""
+    from src.notifications import unsubscribe, is_subscribed, NOTIFICATIONS_DIR
+
+    notif_dir = tmp_path / NOTIFICATIONS_DIR
+    notif_dir.mkdir()
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(notif_dir)):
+        assert is_subscribed("test@example.com")
+        assert unsubscribe("test@example.com")
+        assert not is_subscribed("test@example.com")
+        assert is_subscribed("other@example.com")
+
+
+def test_notifications_load_unsubscribed_invalid(tmp_path: Path) -> None:
+    """notifications: _load_unsubscribed returns empty set for invalid JSON."""
+    from src.notifications import _load_unsubscribed, NOTIFICATIONS_DIR
+
+    notif_dir = tmp_path / NOTIFICATIONS_DIR
+    notif_dir.mkdir()
+    (notif_dir / "unsubscribe.json").write_text("not json")
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(notif_dir)):
+        assert _load_unsubscribed() == set()
+
+
+def test_notifications_send_notifications_no_digest(tmp_path: Path) -> None:
+    """notifications: send_notifications returns [] when no release found."""
+    from src.notifications import send_notifications
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        results = send_notifications("nope")
+        assert results == []
+
+
+def test_notifications_send_notifications_disabled_profile(tmp_path: Path) -> None:
+    """notifications: send_notifications skips disabled profiles."""
+    from src.notifications import send_notifications, NotificationProfile
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    profile = NotificationProfile(name="disabled", enabled=False)
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        results = send_notifications("summer_26", profiles=[profile])
+        assert results == []
+
+
+def test_notifications_send_notifications_category_filter(tmp_path: Path) -> None:
+    """notifications: send_notifications filters by category."""
+    from src.notifications import send_notifications, NotificationProfile
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [{"name": "A", "count": 50}],
+                "generated_at": "",
+            }
+        )
+    )
+
+    profile = NotificationProfile(name="test", categories=["B"])  # B doesn't exist
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        results = send_notifications("summer_26", profiles=[profile])
+        assert results == []
+
+
+def test_notifications_send_notifications_unsubscribed(tmp_path: Path) -> None:
+    """notifications: send_notifications skips unsubscribed emails."""
+    from src.notifications import (
+        send_notifications,
+        NotificationProfile,
+        unsubscribe,
+        NOTIFICATIONS_DIR,
+    )
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    notif_dir = tmp_path / NOTIFICATIONS_DIR
+    notif_dir.mkdir()
+
+    profile = NotificationProfile(name="test", email="unsub@test.com")
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        with patch("src.notifications.NOTIFICATIONS_DIR", str(notif_dir)):
+            unsubscribe("unsub@test.com")
+            results = send_notifications("summer_26", profiles=[profile])
+            assert results == []
+
+
+def test_notifications_format_email_html_no_categories() -> None:
+    """notifications: _format_email_html with empty categories."""
+    from src.notifications import _format_email_html, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 0, [], "")
+    profile = NotificationProfile(name="test")
+    html = _format_email_html(digest, profile)
+    assert "Todas" in html
+
+
+def test_notifications_format_slack_many_categories() -> None:
+    """notifications: _format_slack_blocks truncates at 15 categories."""
+    from src.notifications import _format_slack_blocks, ReleaseDigest, NotificationProfile
+
+    cats = [{"name": f"Cat{i}", "count": i} for i in range(20)]
+    digest = ReleaseDigest("Summer '26", "summer_26", 200, cats, "")
+    profile = NotificationProfile(name="test")
+    payload = _format_slack_blocks(digest, profile)
+    text = payload["blocks"][2]["text"]["text"]
+    assert "mais 5 categorias" in text
+
+
+def test_notifications_send_email_success() -> None:
+    """notifications: send_email succeeds with mocked SMTP."""
+    from src.notifications import send_email, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", email="test@example.com")
+
+    mock_server = MagicMock()
+    mock_server.__enter__ = MagicMock(return_value=mock_server)
+    mock_server.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.smtplib.SMTP", return_value=mock_server):
+        result = send_email(digest, profile, smtp_user="user@gmail.com", smtp_pass="pass")
+        assert result.success
+
+
+def test_notifications_send_slack_success() -> None:
+    """notifications: send_slack succeeds with mocked urlopen."""
+    from src.notifications import send_slack, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", slack_webhook="https://hooks.slack.com/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 200
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.urlopen", return_value=mock_resp):
+        result = send_slack(digest, profile)
+        assert result.success
+
+
+def test_notifications_send_discord_success() -> None:
+    """notifications: send_discord succeeds with mocked urlopen."""
+    from src.notifications import send_discord, ReleaseDigest, NotificationProfile
+
+    digest = ReleaseDigest("Summer '26", "summer_26", 100, [], "")
+    profile = NotificationProfile(name="test", discord_webhook="https://discord.com/api/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 204
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.urlopen", return_value=mock_resp):
+        result = send_discord(digest, profile)
+        assert result.success
+
+
+def test_notifications_unsubscribe_oserror(tmp_path: Path) -> None:
+    """notifications: unsubscribe returns False on OSError."""
+    from src.notifications import unsubscribe, NOTIFICATIONS_DIR
+
+    notif_dir = tmp_path / NOTIFICATIONS_DIR
+    notif_dir.mkdir()
+
+    with patch("src.notifications.NOTIFICATIONS_DIR", str(notif_dir)):
+        with patch.object(Path, "write_text", side_effect=OSError("denied")):
+            assert not unsubscribe("test@example.com")
+
+
+def test_notifications_send_notifications_loads_profiles(tmp_path: Path) -> None:
+    """notifications: send_notifications loads profiles from file when None."""
+    from src.notifications import send_notifications, NOTIFICATIONS_DIR
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    notif_dir = tmp_path / NOTIFICATIONS_DIR
+    notif_dir.mkdir()
+    (notif_dir / "profiles.json").write_text(json.dumps([]))
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        with patch("src.notifications.NOTIFICATIONS_DIR", str(notif_dir)):
+            results = send_notifications("summer_26")
+            assert results == []
+
+
+def test_notifications_send_notifications_sends_email(tmp_path: Path) -> None:
+    """notifications: send_notifications sends email via profile."""
+    from src.notifications import send_notifications, NotificationProfile
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    profile = NotificationProfile(name="test", email="test@example.com")
+
+    mock_server = MagicMock()
+    mock_server.__enter__ = MagicMock(return_value=mock_server)
+    mock_server.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        with patch("src.notifications.smtplib.SMTP", return_value=mock_server):
+            results = send_notifications(
+                "summer_26", profiles=[profile], smtp_user="u", smtp_pass="p"
+            )
+            assert len(results) == 1
+            assert results[0].success
+
+
+def test_notifications_send_notifications_sends_slack(tmp_path: Path) -> None:
+    """notifications: send_notifications sends Slack via profile."""
+    from src.notifications import send_notifications, NotificationProfile
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    profile = NotificationProfile(name="test", slack_webhook="https://hooks.slack.com/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 200
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        with patch("src.notifications.urlopen", return_value=mock_resp):
+            results = send_notifications("summer_26", profiles=[profile])
+            assert len(results) == 1
+            assert results[0].success
+
+
+def test_notifications_send_notifications_sends_discord(tmp_path: Path) -> None:
+    """notifications: send_notifications sends Discord via profile."""
+    from src.notifications import send_notifications, NotificationProfile
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 100,
+                "categories": [],
+                "generated_at": "",
+            }
+        )
+    )
+
+    profile = NotificationProfile(name="test", discord_webhook="https://discord.com/api/test")
+
+    mock_resp = MagicMock()
+    mock_resp.status = 204
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.notifications.RELEASES_DIR", str(tmp_path)):
+        with patch("src.notifications.urlopen", return_value=mock_resp):
+            results = send_notifications("summer_26", profiles=[profile])
+            assert len(results) == 1
+            assert results[0].success
 
 
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:
