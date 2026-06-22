@@ -12,6 +12,7 @@ This scraper uses a resilient strategy:
 import asyncio
 import hashlib
 import logging
+import time
 import urllib.request
 from pathlib import Path
 from types import TracebackType
@@ -25,6 +26,8 @@ logger = logging.getLogger(__name__)
 
 CACHE_DIR = Path("cache")
 CACHE_DIR.mkdir(exist_ok=True)
+
+CACHE_TTL_SECONDS = 86400  # 24 hours
 
 MIN_VALID_CONTENT_SIZE = 1000
 MIN_TOC_HTML_SIZE = 100
@@ -279,10 +282,16 @@ class SalesforceReleaseScraper:
         cache_file = CACHE_DIR / f"{url_hash}.txt"
 
         if cache_file.exists():
-            cached = cache_file.read_text(encoding="utf-8")
-            if len(cached) > MIN_RAW_TEXT_LENGTH:
-                logger.info("Using cached content (%d chars)", len(cached))
-                return cached
+            cache_age = time.time() - cache_file.stat().st_mtime
+            if cache_age < CACHE_TTL_SECONDS:
+                cached = cache_file.read_text(encoding="utf-8")
+                if len(cached) > MIN_RAW_TEXT_LENGTH:
+                    logger.info(
+                        "Using cached content (%d chars, %.0fs old)", len(cached), cache_age
+                    )
+                    return cached
+            else:
+                logger.info("Cache expired (%.0fs old), re-fetching", cache_age)
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
