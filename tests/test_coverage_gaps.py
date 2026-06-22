@@ -897,11 +897,8 @@ def test_parser_return_text_true() -> None:
     mock_page.inner_text = AsyncMock(return_value="x" * 1000)
     mock_page.content = AsyncMock(return_value="<html>content</html>")
 
-    mock_context = MagicMock()
-    mock_context.new_page = AsyncMock(return_value=mock_page)
-
     mock_browser = MagicMock()
-    mock_browser.new_context = AsyncMock(return_value=mock_context)
+    mock_browser.new_page = AsyncMock(return_value=mock_page)
     mock_browser.close = AsyncMock()
 
     mock_pw = MagicMock()
