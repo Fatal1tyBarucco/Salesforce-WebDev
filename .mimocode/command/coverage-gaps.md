@@ -10,7 +10,7 @@ pytest --cov=src --cov-report=term-missing -q 2>&1 | grep -E "src/.*[0-9]+%"
 
 # 2. For each file below 100%, identify uncovered lines from the report
 # 3. Read the uncovered source lines to understand what needs testing
-# 4. Add targeted tests in automation/tests/test_coverage_gaps.py
+# 4. Add targeted tests in tests/test_coverage_gaps.py
 # 5. Run full suite to verify
 pytest -n auto -q && pytest --cov=src --cov-report=term-missing -q 2>&1 | grep -E "^TOTAL|src/.*\.py"
 ```

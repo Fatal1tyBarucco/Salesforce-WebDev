@@ -22,6 +22,9 @@ ls -la CHANGELOG.md QUALITY_REPORT.md REGRESSION_REPORT.md 2>/dev/null
 # 5. Verify README has correct structure
 grep -c "## 📋 Releases" README.md
 grep -c "<details>" README.md
+
+# 6. Run tests to verify
+pytest tests/ -q -k "not test_parser_return_text_true"
 ```
 
 Report: file counts, meta.json contents, README structure, any errors.

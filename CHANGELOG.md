@@ -1,5 +1,10 @@
 # Changelog
 
+## Test
+
+**0 recursos** em 0 categorias
+
+
 ## Summer '26
 
 **1277 recursos** em 22 categorias
