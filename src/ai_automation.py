@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -1319,3 +1320,87 @@ def generate_filtered_notification_report(slug: str, profile_type: str) -> str:
     )
 
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Data Export — CSV/JSON for analytics
+# ---------------------------------------------------------------------------
+
+
+def export_release_json(slug: str) -> str:
+    """Export release data as formatted JSON."""
+    meta = load_release_meta(slug)
+    if not meta:
+        return "{}"
+    return json.dumps(meta, ensure_ascii=False, indent=2)
+
+
+def export_release_csv(slug: str) -> str:
+    """Export release feature data as CSV."""
+    meta = load_release_meta(slug)
+    if not meta:
+        return ""
+
+    lines = ["category,feature,available_users,available_admins,requires_config,contact_sf"]
+    release_dir = Path(RELEASES_DIR) / slug
+
+    for cat_info in meta.get("categories", []):
+        cat_name = cat_info["name"]
+        slug_name = re.sub(r"[^a-z0-9]+", "_", cat_name.lower()).strip("_")
+        md_file = release_dir / f"{slug_name}.md"
+
+        if not md_file.exists():
+            continue
+
+        content = md_file.read_text(encoding="utf-8")
+        for line in content.split("\n"):
+            line = line.strip()
+            if not line.startswith("|") or line.startswith("| :") or "Recurso" in line:
+                continue
+            cells = [c.strip() for c in line.split("|") if c.strip()]
+            if len(cells) >= 5:
+                name = cells[0].replace("**", "").replace(" ⚠️", "")
+                users = "Yes" if "✅" in cells[1] else "No"
+                admins = "Yes" if "✅" in cells[2] else "No"
+                config = "Yes" if "✅" in cells[3] else "No"
+                contact = "Yes" if "✅" in cells[4] else "No"
+                escaped_name = name.replace(",", ";")
+                escaped_cat = cat_name.replace(",", ";")
+                lines.append(f"{escaped_cat},{escaped_name},{users},{admins},{config},{contact}")
+
+    return "\n".join(lines)
+
+
+def export_all_releases(output_dir: str = "exports") -> dict[str, list[str]]:
+    """Export all releases as both JSON and CSV files.
+
+    Returns dict of {release_slug: [json_path, csv_path]}.
+    """
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    results: dict[str, list[str]] = {}
+    releases_dir = Path(RELEASES_DIR)
+
+    if not releases_dir.exists():
+        return results
+
+    for d in sorted(releases_dir.iterdir()):
+        if not d.is_dir() or d.name == "exports":
+            continue
+
+        meta_path = d / ".meta.json"
+        if not meta_path.exists():
+            continue
+
+        json_content = export_release_json(d.name)
+        json_path = out / f"{d.name}.json"
+        json_path.write_text(json_content, encoding="utf-8")
+
+        csv_content = export_release_csv(d.name)
+        csv_path = out / f"{d.name}.csv"
+        csv_path.write_text(csv_content, encoding="utf-8")
+
+        results[d.name] = [str(json_path), str(csv_path)]
+
+    return results
