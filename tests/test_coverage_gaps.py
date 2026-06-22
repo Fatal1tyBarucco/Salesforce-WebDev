@@ -5652,55 +5652,333 @@ def test_workflow_get_current_branch() -> None:
     """workflow: get_current_branch returns branch name."""
     from src.workflow import get_current_branch
 
-    branch = get_current_branch()
-    assert isinstance(branch, str)
-    # In test env, might be detached HEAD or main
-    assert len(branch) > 0 or branch == ""
+    mock_result = subprocess.CompletedProcess(args=[], returncode=0, stdout="main\n", stderr="")
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        branch = get_current_branch()
+        assert branch == "main"
 
 
-def test_workflow_create_branch(tmp_path: Path) -> None:
-    """workflow: create_branch creates and checks out a new branch."""
+def test_workflow_create_branch_success() -> None:
+    """workflow: create_branch returns True on success."""
     from src.workflow import create_branch
 
-    # Test the function exists and can be called
-    # Don't actually create branch in CI to avoid side effects
-    assert callable(create_branch)
+    mock_result = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        assert create_branch("test-branch") is True
 
 
-def test_workflow_analyze_changes() -> None:
-    """workflow: analyze_changes returns ChangeAnalysis."""
-    from src.workflow import analyze_changes
+def test_workflow_create_branch_failure() -> None:
+    """workflow: create_branch returns False on failure."""
+    from src.workflow import create_branch
 
-    analysis = analyze_changes()
-    assert hasattr(analysis, "labels")
-    assert hasattr(analysis, "total_additions")
-
-
-def test_workflow_generate_diff_preview() -> None:
-    """workflow: generate_diff_preview returns markdown string."""
-    from src.workflow import generate_diff_preview
-
-    preview = generate_diff_preview()
-    assert isinstance(preview, str)
-    assert "Resumo" in preview
+    with patch("src.workflow.subprocess.run", side_effect=subprocess.CalledProcessError(1, "git")):
+        assert create_branch("test-branch") is False
 
 
-def test_workflow_create_pr_failure() -> None:
-    """workflow: create_pr returns error on failure."""
-    from src.workflow import create_pr
+def test_workflow_commit_and_push_success() -> None:
+    """workflow: commit_and_push returns True on success."""
+    from src.workflow import commit_and_push
 
-    result = create_pr("Test", "body", "nonexistent-branch-xyz")
-    assert not result.success
-    assert result.error
+    mock_result = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        assert commit_and_push("test", "branch") is True
 
 
 def test_workflow_commit_and_push_failure() -> None:
     """workflow: commit_and_push returns False on failure."""
     from src.workflow import commit_and_push
 
-    # No changes to commit
-    result = commit_and_push("test commit", "nonexistent-branch")
-    assert result is False
+    with patch(
+        "src.workflow.subprocess.run",
+        side_effect=subprocess.CalledProcessError(1, "git", stderr="error"),
+    ):
+        assert commit_and_push("test", "branch") is False
+
+
+def test_workflow_analyze_changes() -> None:
+    """workflow: analyze_changes returns ChangeAnalysis."""
+    from src.workflow import analyze_changes
+
+    mock_diff = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" src/main.py | 5 ++---\n 1 file changed, 2 insertions(+), 3 deletions(-)\n",
+        stderr="",
+    )
+    mock_status = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", side_effect=[mock_diff, mock_status]):
+        analysis = analyze_changes()
+        assert analysis.total_additions == 5
+
+
+def test_workflow_analyze_new_release() -> None:
+    """workflow: analyze_changes detects new releases."""
+    from src.workflow import analyze_changes
+
+    mock_diff = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    mock_status = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="A  releases/summer_26/.meta.json\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", side_effect=[mock_diff, mock_status]):
+        analysis = analyze_changes()
+        assert "summer_26" in analysis.new_features
+        assert "new-release" in analysis.labels
+
+
+def test_workflow_analyze_removed_features() -> None:
+    """workflow: analyze_changes detects removed files."""
+    from src.workflow import analyze_changes
+
+    mock_diff = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    mock_status = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="D  releases/summer_26/old.md\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", side_effect=[mock_diff, mock_status]):
+        analysis = analyze_changes()
+        assert len(analysis.removed_features) > 0
+        assert "regression-alert" in analysis.labels
+
+
+def test_workflow_analyze_large_change() -> None:
+    """workflow: analyze_changes labels large changes."""
+    from src.workflow import analyze_changes
+
+    mock_diff = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" file.py | 200 +++---\n",
+        stderr="",
+    )
+    mock_status = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    with patch("src.workflow.subprocess.run", side_effect=[mock_diff, mock_status]):
+        analysis = analyze_changes()
+        assert "large-change" in analysis.labels
+
+
+def test_workflow_generate_diff_preview() -> None:
+    """workflow: generate_diff_preview returns markdown string."""
+    from src.workflow import generate_diff_preview
+
+    mock_stat = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" 1 file changed, 5 insertions(+), 2 deletions(-)\n",
+        stderr="",
+    )
+    mock_status = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="M  src/main.py\n",
+        stderr="",
+    )
+    mock_diff2 = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    mock_status2 = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    with patch(
+        "src.workflow.subprocess.run",
+        side_effect=[mock_stat, mock_status, mock_diff2, mock_status2],
+    ):
+        preview = generate_diff_preview()
+        assert "Resumo" in preview
+        assert "main.py" in preview
+
+
+def test_workflow_create_pr_failure() -> None:
+    """workflow: create_pr returns error on failure."""
+    from src.workflow import create_pr
+
+    mock_result = subprocess.CompletedProcess(
+        args=[],
+        returncode=1,
+        stdout="",
+        stderr="not found",
+    )
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        result = create_pr("Test", "body", "branch")
+        assert not result.success
+        assert "not found" in result.error
+
+
+def test_workflow_create_pr_success() -> None:
+    """workflow: create_pr parses URL and PR number."""
+    from src.workflow import create_pr
+
+    mock_result = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="https://github.com/owner/repo/pull/42\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        result = create_pr("Test", "body", "branch")
+        assert result.success
+        assert result.pr_number == 42
+        assert "pull/42" in result.pr_url
+
+
+def test_workflow_create_pr_with_auto_merge() -> None:
+    """workflow: create_pr triggers auto-merge."""
+    from src.workflow import create_pr
+
+    mock_result = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="https://github.com/owner/repo/pull/42\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        result = create_pr("Test", "body", "branch", auto_merge=True)
+        assert result.success
+
+
+def test_workflow_submit_changes() -> None:
+    """workflow: submit_changes orchestrates full flow."""
+    from src.workflow import submit_changes
+
+    mock_ok = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    mock_pr = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="https://github.com/o/r/pull/1\n",
+        stderr="",
+    )
+    call_count = [0]
+
+    def side_effect(*args, **kwargs):
+        call_count[0] += 1
+        if call_count[0] <= 5:
+            return mock_ok
+        return mock_pr
+
+    with patch("src.workflow.subprocess.run", side_effect=side_effect):
+        with patch("src.workflow._run_gh", return_value=mock_pr):
+            result = submit_changes("summer_26", target_branch="main")
+            assert result.success
+
+
+def test_workflow_submit_changes_branch_failure() -> None:
+    """workflow: submit_changes returns error when branch creation fails."""
+    from src.workflow import submit_changes
+
+    with patch("src.workflow.create_branch", return_value=False):
+        result = submit_changes("summer_26")
+        assert not result.success
+        assert "branch" in result.error.lower()
+
+
+def test_workflow_submit_changes_push_failure() -> None:
+    """workflow: submit_changes returns error when push fails."""
+    from src.workflow import submit_changes
+
+    mock_ok = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+
+    def side_effect(cmd, **kwargs):
+        if "push" in cmd:
+            raise subprocess.CalledProcessError(1, "git", stderr="push failed")
+        return mock_ok
+
+    with patch("src.workflow.subprocess.run", side_effect=side_effect):
+        result = submit_changes("summer_26")
+        assert not result.success
+        assert "push" in result.error.lower()
+
+
+def test_workflow_analyze_rename() -> None:
+    """workflow: analyze_changes detects file renames."""
+    from src.workflow import analyze_changes
+
+    mock_diff = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" {old.md => new.md}\n",
+        stderr="",
+    )
+    mock_status = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+    with patch("src.workflow.subprocess.run", side_effect=[mock_diff, mock_status]):
+        analysis = analyze_changes()
+        assert "new" in analysis.changed_categories
+
+
+def test_workflow_create_pr_with_labels() -> None:
+    """workflow: create_pr passes labels to gh."""
+    from src.workflow import create_pr
+
+    mock_result = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="https://github.com/o/r/pull/5\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        result = create_pr("Title", "body", "branch", labels=["new-release", "large-change"])
+        assert result.success
+        assert result.pr_number == 5
+
+
+def test_workflow_create_pr_bad_url() -> None:
+    """workflow: create_pr handles unparseable URL."""
+    from src.workflow import create_pr
+
+    # URL with /pull/ but non-numeric number
+    mock_result = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="https://github.com/o/r/pull/not-a-number\n",
+        stderr="",
+    )
+    with patch("src.workflow.subprocess.run", return_value=mock_result):
+        result = create_pr("Title", "body", "branch")
+        assert result.success
+        assert result.pr_number == 0
+
+
+def test_workflow_diff_preview_with_analysis() -> None:
+    """workflow: generate_diff_preview includes analysis when data present."""
+    from src.workflow import generate_diff_preview
+
+    mock_diff = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" file.py | 200 +++---\n",
+        stderr="",
+    )
+    mock_status_with_meta = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="A  releases/summer_26/.meta.json\n",
+        stderr="",
+    )
+    mock_diff2 = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=" file.py | 200 +++---\n",
+        stderr="",
+    )
+    mock_status2 = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout="A  releases/summer_26/.meta.json\n",
+        stderr="",
+    )
+    with patch(
+        "src.workflow.subprocess.run",
+        side_effect=[mock_diff, mock_status_with_meta, mock_diff2, mock_status2],
+    ):
+        preview = generate_diff_preview()
+        assert "Resumo" in preview
+        assert "Labels" in preview
+        assert "Novas releases" in preview
+        assert "linhas" in preview
 
 
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:

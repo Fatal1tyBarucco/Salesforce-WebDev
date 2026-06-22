@@ -39,6 +39,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | API | `src/api.py` | REST API server for programmatic access to release data (/releases, /diff) |
 | Notifications | `src/notifications.py` | Email digest, Slack/Discord webhooks, configurable profiles |
 | Dashboard | `src/dashboard.py` | Interactive HTML dashboard with search, filter, comparison, heatmap |
+| Workflow | `src/workflow.py` | PR-based workflow with branch creation, diff preview, label triage |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 
