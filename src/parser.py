@@ -318,6 +318,34 @@ SECTION_HEADERS_BY_LOCALE: dict[str, frozenset[str]] = {
             "Documentação legal",
         }
     ),
+    "en": frozenset(
+        {
+            "Salesforce General",
+            "Agentforce",
+            "Data Analysis",
+            "Automation",
+            "Commerce",
+            "Customization",
+            "Data 360",
+            "Development",
+            "Experience Cloud",
+            "Field Service",
+            "Hyperforce",
+            "Industries",
+            "Marketing",
+            "MuleSoft",
+            "Mobile App",
+            "OmniStudio",
+            "Partner Cloud",
+            "Revenue Management",
+            "Sales",
+            "Salesforce Integrations for Slack",
+            "Security, Identity, and Privacy",
+            "Service",
+            "Other Salesforce Products and Services",
+            "Legal Documentation",
+        }
+    ),
 }
 
 DEFAULT_LOCALE = "pt-BR"
@@ -380,6 +408,11 @@ class FeatureImpactCategory:
 
 class FeatureImpactParser:
     """Parses the Feature Impact page text into structured categories."""
+
+    def __init__(self, locale: str = DEFAULT_LOCALE) -> None:
+        self._locale = locale
+        self._section_headers = SECTION_HEADERS_BY_LOCALE.get(locale, SECTION_HEADERS)
+        self._all_headers: frozenset[str] = frozenset().union(*SECTION_HEADERS_BY_LOCALE.values())
 
     def parse_text(self, text: str) -> list[FeatureImpactCategory]:
         lines = [ln.strip() for ln in text.split("\n") if ln.strip()]
@@ -472,7 +505,7 @@ class FeatureImpactParser:
         }
 
     def _is_section_header(self, line: str) -> bool:
-        return line in SECTION_HEADERS
+        return line in self._section_headers or line in self._all_headers
 
     def _is_category_description(self, line: str, cat: FeatureImpactCategory | None) -> bool:
         if not cat:
@@ -481,7 +514,7 @@ class FeatureImpactParser:
             return False
         if self._is_table_header(line):
             return False
-        if line in SECTION_HEADERS:
+        if line in self._all_headers:
             return False
         return len(line) > 20
 
@@ -493,7 +526,7 @@ class FeatureImpactParser:
             return False
         if self._is_table_header(line):
             return False
-        if line in SECTION_HEADERS:
+        if line in self._all_headers:
             return False
         if self._parse_feature_line(line) is not None:
             return False

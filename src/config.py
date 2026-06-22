@@ -15,6 +15,12 @@ from typing import Final
 # ---------------------------------------------------------------------------
 
 PT_BR_PARAM: Final[str] = "&language=pt_BR"
+EN_PARAM: Final[str] = "&language=en"
+
+LANGUAGE_PARAMS: Final[dict[str, str]] = {
+    "pt-BR": PT_BR_PARAM,
+    "en": EN_PARAM,
+}
 
 BASE_URL: Final[str] = (
     "https://help.salesforce.com/s/articleView"
