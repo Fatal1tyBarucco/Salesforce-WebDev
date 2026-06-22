@@ -612,24 +612,27 @@ def test_fetch_page_raw_text_success_writes_cache(tmp_path: Path) -> None:
     if cache_file.exists():
         cache_file.unlink()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        mock.return_value = content
-        result = asyncio.run(scraper.fetch_page_raw_text(url))
+        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
+            mock.return_value = content
+            result = asyncio.run(scraper.fetch_page_raw_text(url))
     assert result == content
 
 
 def test_fetch_page_raw_text_insufficient_content() -> None:
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        mock.return_value = "short"
-        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
+        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
+            mock.return_value = "short"
+            result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
     assert result is None
 
 
 def test_fetch_page_raw_text_exception() -> None:
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        mock.side_effect = Exception("network error")
-        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
+        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
+            mock.side_effect = Exception("network error")
+            result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
     assert result is None
 
 
@@ -1287,10 +1290,11 @@ def test_scraper_fetch_raw_text_cache_write_v3() -> None:
 
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
-        result = asyncio.run(scraper.fetch_page_raw_text(url))
-        assert result is not None
-        assert cache_file.exists()
+        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
+            mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+            result = asyncio.run(scraper.fetch_page_raw_text(url))
+            assert result is not None
+            assert cache_file.exists()
 
 
 def test_scraper_download_pdf_button_success_v3() -> None:
@@ -1485,8 +1489,9 @@ def test_scraper_fetch_raw_text_success() -> None:
 
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
-        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/success"))
+        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
+            mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+            result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/success"))
     assert result is not None
     assert len(result) > MIN_RAW_TEXT_LENGTH
 

@@ -9,6 +9,7 @@ This scraper uses a resilient strategy:
 5. Cache content hashes to avoid re-fetching unchanged pages
 """
 
+import asyncio
 import hashlib
 import logging
 import urllib.request
@@ -18,7 +19,7 @@ from typing import Optional
 
 from playwright.async_api import async_playwright, Browser, Page, Playwright
 
-from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS
+from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 
 logger = logging.getLogger(__name__)
 
@@ -270,10 +271,10 @@ class SalesforceReleaseScraper:
         """Fetch page and return inner_text of body (for feature impact page).
 
         Uses content hash caching to avoid re-fetching unchanged pages.
+        Retries with exponential backoff on failure.
         """
         logger.info("Fetching raw text: %s", url)
 
-        # Check cache
         url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
         cache_file = CACHE_DIR / f"{url_hash}.txt"
 
@@ -283,17 +284,46 @@ class SalesforceReleaseScraper:
                 logger.info("Using cached content (%d chars)", len(cached))
                 return cached
 
+        for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
+            try:
+                if not await self._ensure_browser():
+                    logger.error("Cannot recover browser for attempt %d", attempt)
+                    break
+
+                text = await self._fetch_with_playwright(url, return_text=True)
+                if text and len(text) > MIN_RAW_TEXT_LENGTH:
+                    logger.info("Fetched raw text (%d chars, attempt %d)", len(text), attempt)
+                    cache_file.write_text(text, encoding="utf-8")
+                    return text
+                logger.warning(
+                    "Attempt %d: insufficient text content (%d chars)",
+                    attempt,
+                    len(text or ""),
+                )
+            except Exception as e:
+                logger.error("Attempt %d failed: %s", attempt, e)
+                self._browser = None
+
+            if attempt < MAX_RETRY_ATTEMPTS:
+                delay = RETRY_BASE_DELAY_SECONDS**attempt
+                logger.info("Retrying in %.1fs...", delay)
+                await asyncio.sleep(delay)
+
+        logger.error("All %d attempts failed for raw text: %s", MAX_RETRY_ATTEMPTS, url)
+        return None
+
+    async def _ensure_browser(self) -> bool:
+        """Ensure the browser is running. Relaunch if crashed."""
+        if self._browser and self._browser.is_connected():
+            return True
         try:
-            text = await self._fetch_with_playwright(url, return_text=True)
-            if text and len(text) > MIN_RAW_TEXT_LENGTH:
-                logger.info("Fetched raw text (%d chars)", len(text))
-                cache_file.write_text(text, encoding="utf-8")
-                return text
-            logger.warning("Insufficient text content (%d chars)", len(text or ""))
-            return None
+            if self._playwright:
+                self._browser = await self._playwright.chromium.launch(headless=True)
+                logger.info("Browser relaunched successfully")
+                return True
         except Exception as e:
-            logger.error("Failed to fetch raw text: %s", e)
-            return None
+            logger.error("Failed to relaunch browser: %s", e)
+        return False
 
     async def download_pdf_from_button(self, page_url: str, dest: Path) -> bool:
         """Navigate to a page, click the PDF download button, and save the file.
