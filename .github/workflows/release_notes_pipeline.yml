@@ -35,13 +35,6 @@ on:
           - "false"
           - "true"
 
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "src/**"
-      - ".github/workflows/release_notes_pipeline.yml"
-
 env:
   PYTHON_VERSION: "3.14"
   WORKING_DIR: "."
@@ -101,10 +94,7 @@ jobs:
       - name: Resolver parâmetros de execução
         id: params
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "dry_run=true"    >> $GITHUB_OUTPUT
-            echo "release_slug="   >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "dry_run=${{ github.event.inputs.dry_run }}"           >> $GITHUB_OUTPUT
             echo "release_slug=${{ github.event.inputs.release_slug }}" >> $GITHUB_OUTPUT
           else
@@ -126,9 +116,7 @@ jobs:
 
       - name: Verificar alterações geradas
         id: git_status
-        if: |
-          steps.params.outputs.dry_run == 'false' &&
-          github.event_name != 'pull_request'
+        if: steps.params.outputs.dry_run == 'false'
         run: |
           if [ -n "$(git status --porcelain releases/ README.md)" ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
@@ -139,7 +127,6 @@ jobs:
       - name: Commit e push dos artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
-          github.event_name != 'pull_request' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")

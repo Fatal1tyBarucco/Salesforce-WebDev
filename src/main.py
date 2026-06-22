@@ -345,7 +345,13 @@ def _update_readme_all() -> None:
     for d in releases_dir.iterdir():
         meta_path = d / ".meta.json"
         if meta_path.exists():
-            metas.append(json.loads(meta_path.read_text(encoding="utf-8")))
+            data = json.loads(meta_path.read_text(encoding="utf-8"))
+            if data.get("categories"):
+                metas.append(data)
+
+    if not metas:
+        logger.warning("No releases with categories found, skipping README update")
+        return
 
     metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
 
