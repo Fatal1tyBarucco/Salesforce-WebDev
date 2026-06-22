@@ -9,6 +9,8 @@ strict = true
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+testpaths = ["automation/tests"]
+addopts = "-q --tb=short"
 filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]
