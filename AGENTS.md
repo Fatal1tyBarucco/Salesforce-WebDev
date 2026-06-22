@@ -36,6 +36,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | Generate | `src/generator.py` | Writes per-topic `.md` files to `releases/<slug>/` |
 | Update | `src/readme_updater.py` | Replaces `<!-- RELEASE_INDEX_START/END -->` block in README |
 | Analytics | `src/analytics.py` | Static HTML dashboard with charts (category breakdown, trends, confidence) |
+| API | `src/api.py` | REST API server for programmatic access to release data (/releases, /diff) |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 

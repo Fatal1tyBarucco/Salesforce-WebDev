@@ -4475,3 +4475,463 @@ def test_svg_line_chart_empty_series_values() -> None:
 
     result = _svg_line_chart(["A"], {"X": []})
     assert "Sem dados" in result
+
+
+# ============================================================
+# src/api.py tests
+# ============================================================
+
+
+def test_api_load_all_metas_empty(tmp_path: Path) -> None:
+    """api: load_all_metas returns [] when dir missing."""
+    from src.api import _load_all_metas
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path / "nope")):
+        assert _load_all_metas() == []
+
+
+def test_api_load_all_metas_with_data(tmp_path: Path) -> None:
+    """api: load_all_metas loads and sorts."""
+    from src.api import _load_all_metas
+
+    r1 = tmp_path / "a"
+    r1.mkdir()
+    (r1 / ".meta.json").write_text(json.dumps({"release_id": 260, "slug": "a", "categories": []}))
+    r2 = tmp_path / "b"
+    r2.mkdir()
+    (r2 / ".meta.json").write_text(json.dumps({"release_id": 262, "slug": "b", "categories": []}))
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _load_all_metas()
+        assert len(result) == 2
+        assert result[0]["release_id"] == 260
+
+
+def test_api_find_meta_not_found(tmp_path: Path) -> None:
+    """api: _find_meta returns None for missing slug."""
+    from src.api import _find_meta
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _find_meta("nonexistent") is None
+
+
+def test_api_find_meta_invalid_json(tmp_path: Path) -> None:
+    """api: _find_meta returns None for invalid JSON."""
+    from src.api import _find_meta
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json")
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _find_meta("bad") is None
+
+
+def test_api_parse_category_features_empty(tmp_path: Path) -> None:
+    """api: _parse_category_features returns [] for missing release."""
+    from src.api import _parse_category_features
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _parse_category_features("nope", "nope") == []
+
+
+def test_api_parse_category_features_with_md(tmp_path: Path) -> None:
+    """api: _parse_category_features parses bullet points."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "agentforce.md").write_text(
+        "## Agentforce\n\n"
+        "* **Feature A** — _Disponível para admins/devs_\n"
+        "* **Feature B**\n"
+        "Plain text feature line that is long enough\n"
+    )
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        features = _parse_category_features("summer_26", "Agentforce")
+        assert len(features) == 3
+        assert features[0]["name"] == "Feature A"
+
+
+def test_api_parse_category_features_tab_separated(tmp_path: Path) -> None:
+    """api: _parse_category_features parses tab-separated lines."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "test.md").write_text("## Test\n\nFeature A\tYes\tNo\n")
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        features = _parse_category_features("summer_26", "Test")
+        assert len(features) == 1
+        assert features[0]["name"] == "Feature A"
+
+
+def test_api_parse_category_features_no_match(tmp_path: Path) -> None:
+    """api: _parse_category_features returns [] when no file matches."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "other.md").write_text("## Other\n\nstuff\n")
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _parse_category_features("summer_26", "Agentforce") == []
+
+
+def test_api_build_diff() -> None:
+    """api: _build_diff computes category deltas."""
+    from src.api import _build_diff
+
+    curr = {
+        "name": "Summer",
+        "total_features": 100,
+        "categories": [{"name": "A", "count": 60}, {"name": "B", "count": 40}],
+    }
+    prev = {
+        "name": "Spring",
+        "total_features": 80,
+        "categories": [{"name": "A", "count": 50}, {"name": "C", "count": 30}],
+    }
+    diff = _build_diff(curr, prev)
+    assert diff["total_delta"] == 20
+    assert len(diff["changes"]) == 3
+    a_change = next(c for c in diff["changes"] if c["category"] == "A")
+    assert a_change["delta"] == 10
+
+
+def test_api_handler_releases_list(tmp_path: Path) -> None:
+    """api: GET /releases returns list."""
+    from src.api import APIHandler
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps({"release_id": 262, "slug": "summer_26", "categories": []})
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/releases"
+        responses: list[tuple[int, bytes]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            body = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+            responses.append((code, body))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 200
+        body = json.loads(responses[0][1])
+        assert "releases" in body
+
+
+def test_api_handler_single_release(tmp_path: Path) -> None:
+    """api: GET /releases/{slug} returns meta."""
+    from src.api import APIHandler
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps({"release_id": 262, "slug": "summer_26", "categories": []})
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/releases/summer_26"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 200
+
+
+def test_api_handler_single_release_not_found(tmp_path: Path) -> None:
+    """api: GET /releases/{slug} returns 404."""
+    from src.api import APIHandler
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/releases/nope"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 404
+
+
+def test_api_handler_category_features(tmp_path: Path) -> None:
+    """api: GET /releases/{slug}/categories/{name} returns features."""
+    from src.api import APIHandler
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 262,
+                "slug": "summer_26",
+                "categories": [{"name": "Agentforce", "count": 5}],
+            }
+        )
+    )
+    (d / "agentforce.md").write_text("## Agentforce\n\n* **Feature A** — _Available_\n")
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/releases/summer_26/categories/Agentforce"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 200
+        assert responses[0][1]["count"] == 1
+
+
+def test_api_handler_diff(tmp_path: Path) -> None:
+    """api: GET /diff/{current}/{previous} returns diff."""
+    from src.api import APIHandler
+
+    for slug in ("spring_26", "summer_26"):
+        d = tmp_path / slug
+        d.mkdir()
+        (d / ".meta.json").write_text(
+            json.dumps(
+                {
+                    "release_id": 260 if "spring" in slug else 262,
+                    "slug": slug,
+                    "name": slug.replace("_", " ").title(),
+                    "total_features": 100 if "spring" in slug else 150,
+                    "categories": [{"name": "A", "count": 100 if "spring" in slug else 150}],
+                }
+            )
+        )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/diff/summer_26/spring_26"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 200
+        assert responses[0][1]["total_delta"] == 50
+
+
+def test_api_handler_diff_release_not_found(tmp_path: Path) -> None:
+    """api: GET /diff/{missing}/{slug} returns 404."""
+    from src.api import APIHandler
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/diff/nope/spring_26"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 404
+
+
+def test_api_handler_404(tmp_path: Path) -> None:
+    """api: unknown path returns 404."""
+    from src.api import APIHandler
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/unknown"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 404
+
+
+def test_api_load_all_metas_invalid_json(tmp_path: Path) -> None:
+    """api: load_all_metas skips invalid JSON."""
+    from src.api import _load_all_metas
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json {{{")
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _load_all_metas()
+        assert result == []
+
+
+def test_api_load_all_metas_oserror(tmp_path: Path) -> None:
+    """api: load_all_metas handles OSError reading files."""
+    from src.api import _load_all_metas
+
+    d = tmp_path / "fail"
+    d.mkdir()
+    (d / ".meta.json").write_text("{}")
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with patch("pathlib.Path.read_text", side_effect=OSError("denied")):
+            result = _load_all_metas()
+            assert result == []
+
+
+def test_api_parse_category_features_dot_file(tmp_path: Path) -> None:
+    """api: _parse_category_features skips dotfiles."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".hidden.md").write_text("## Hidden\n\nstuff\n")
+    (d / "agentforce.md").write_text("## Agentforce\n\nstuff\n")
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        features = _parse_category_features("summer_26", "Hidden")
+        assert features == []
+
+
+def test_api_handler_category_not_found(tmp_path: Path) -> None:
+    """api: GET /releases/{slug}/categories/{name} with missing release returns 404."""
+    from src.api import APIHandler
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/releases/nope/categories/Test"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 404
+
+
+def test_api_handler_diff_previous_not_found(tmp_path: Path) -> None:
+    """api: GET /diff/{current}/{missing} returns 404."""
+    from src.api import APIHandler
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {"release_id": 262, "slug": "summer_26", "total_features": 100, "categories": []}
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/diff/summer_26/nope"
+        responses: list[tuple[int, dict[str, Any]]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_GET()
+        assert responses[0][0] == 404
+
+
+def test_api_handler_respond_real() -> None:
+    """api: _respond writes JSON to wfile."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+
+    class FakeWFile:
+        def __init__(self) -> None:
+            self.data = b""
+
+        def write(self, b: bytes) -> None:
+            self.data = b
+
+    handler.wfile = FakeWFile()  # type: ignore[assignment]
+    sent: list[int] = []
+    handler.send_response = lambda code: sent.append(code)  # type: ignore[assignment]
+    handler.send_header = lambda *_: None  # type: ignore[assignment]
+    handler.end_headers = lambda: None  # type: ignore[assignment]
+
+    handler._respond(200, {"ok": True})
+    assert sent[0] == 200
+    body = json.loads(handler.wfile.data)
+    assert body["ok"] is True
+
+
+def test_api_handler_log_message() -> None:
+    """api: log_message calls logger.debug."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    with patch("src.api.logger") as mock_logger:
+        handler.log_message("test %s", "arg")
+        mock_logger.debug.assert_called_once()
+
+
+def test_api_start_server(tmp_path: Path) -> None:
+    """api: start_api_server starts a server."""
+    from src.api import start_api_server
+
+    server = start_api_server(port=18081)
+    try:
+        assert server is not None
+    finally:
+        server.shutdown()
+
+
+def test_api_parse_category_features_oserror(tmp_path: Path) -> None:
+    """api: _parse_category_features handles OSError reading files."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "agentforce.md").write_text("## Agentforce\n\nstuff\n")
+
+    call_count = [0]
+
+    def selective_read(self: Path, *args: Any, **kwargs: Any) -> str:
+        call_count[0] += 1
+        # First call: glob loop reads file to find category (must fail)
+        if call_count[0] == 1:
+            raise OSError("denied")
+        return "## Agentforce\n\nstuff\n"
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with patch.object(Path, "read_text", selective_read):
+            features = _parse_category_features("summer_26", "Agentforce")
+            assert features == []
+
+
+def test_api_parse_category_features_oserror_target(tmp_path: Path) -> None:
+    """api: _parse_category_features handles OSError reading target file."""
+    from src.api import _parse_category_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "agentforce.md").write_text("## Agentforce\n\nstuff\n")
+
+    call_count = [0]
+
+    def selective_read(self: Path, *args: Any, **kwargs: Any) -> str:
+        call_count[0] += 1
+        # First call: glob loop (success), second call: target file (fail)
+        if call_count[0] == 2:
+            raise OSError("denied")
+        return "## Agentforce\n\nstuff\n"
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with patch.object(Path, "read_text", selective_read):
+            features = _parse_category_features("summer_26", "Agentforce")
+            assert features == []
