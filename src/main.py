@@ -217,13 +217,29 @@ async def run_pipeline() -> None:
 
     # Generate AI reports
     try:
-        from .ai_automation import generate_changelog, generate_quality_report
+        from .ai_automation import (
+            generate_changelog,
+            generate_quality_report,
+            generate_regression_report,
+        )
 
         changelog = generate_changelog()
         Path("CHANGELOG.md").write_text(changelog, encoding="utf-8")
 
         quality = generate_quality_report()
         Path("QUALITY_REPORT.md").write_text(quality, encoding="utf-8")
+
+        if len(releases_to_process) > 0:
+            current_slug = releases_to_process[-1].slug
+            known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
+            current_idx = next(
+                (i for i, r in enumerate(known_sorted) if r.slug == current_slug), -1
+            )
+            if current_idx >= 0 and current_idx + 1 < len(known_sorted):
+                previous_slug = known_sorted[current_idx + 1].slug
+                regression = generate_regression_report(current_slug, previous_slug)
+                Path("REGRESSION_REPORT.md").write_text(regression, encoding="utf-8")
+                logger.info("Regression report generated: REGRESSION_REPORT.md")
 
         logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
     except Exception as e:
