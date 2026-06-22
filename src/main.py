@@ -334,19 +334,30 @@ def _generate_release_files(
         slug = _slugify_category(cat.name)
         file_path = release_dir / f"{slug}.md"
 
+        total = cat.total_features
+
         lines: list[str] = []
         lines.append(f"## {cat.name}\n")
+        lines.append(f"> **{total} recursos** nesta categoria\n")
+
         if cat.description:
             lines.append(f"{cat.description}\n")
 
-        for entry in cat.entries:
-            lines.append(_format_entry(entry))
+        if cat.entries:
+            lines.append("| Recurso | Usuários | Admins | Config | Contato |")
+            lines.append("| :--- | :---: | :---: | :---: | :---: |")
+            for entry in cat.entries:
+                lines.append(_format_entry_table(entry))
+            lines.append("")
 
         for sub_name, sub_entries in cat.subcategories.items():
             if sub_entries:
                 lines.append(f"### {sub_name}\n")
+                lines.append("| Recurso | Usuários | Admins | Config | Contato |")
+                lines.append("| :--- | :---: | :---: | :---: | :---: |")
                 for entry in sub_entries:
-                    lines.append(_format_entry(entry))
+                    lines.append(_format_entry_table(entry))
+                lines.append("")
 
         body = "\n".join(lines) if lines else "_Sem recursos nesta categoria._\n"
         file_path.write_text(body, encoding="utf-8")
@@ -354,6 +365,23 @@ def _generate_release_files(
         logger.info("Generated: %s (%d features)", file_path, len(cat.entries))
 
     return generated
+
+
+def _check(conf: bool) -> str:
+    return "✅" if conf else "❌"
+
+
+def _format_entry_table(entry: FeatureImpactEntry) -> str:
+    flag = ""
+    if entry.confidence < 0.7:
+        flag = " ⚠️"
+    return (
+        f"| **{entry.name}**{flag} "
+        f"| {_check(entry.available_users)} "
+        f"| {_check(entry.available_admins)} "
+        f"| {_check(entry.requires_config)} "
+        f"| {_check(entry.contact_sf)} |"
+    )
 
 
 def _format_entry(entry: FeatureImpactEntry) -> str:
