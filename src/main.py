@@ -115,8 +115,10 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
         next_id,
     )
 
-    current_text = await scraper.fetch_page_raw_text(current_url)
-    next_text = await scraper.fetch_page_raw_text(next_url)
+    current_text, next_text = await asyncio.gather(
+        scraper.fetch_page_raw_text(current_url),
+        scraper.fetch_page_raw_text(next_url),
+    )
 
     if not current_text or not next_text:
         logger.info("Could not fetch pages for comparison")
@@ -196,9 +198,11 @@ async def run_pipeline() -> None:
             logger.info("Fetching feature impact: %s", impact_url)
 
             pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
-            await scraper.download_pdf_from_button(impact_url, pdf_dest)
+            pdf_task = asyncio.create_task(scraper.download_pdf_from_button(impact_url, pdf_dest))
 
             raw_text = await scraper.fetch_page_raw_text(impact_url)
+
+            await pdf_task
             if not raw_text:
                 logger.warning("No content for %s feature impact", release.name)
                 continue

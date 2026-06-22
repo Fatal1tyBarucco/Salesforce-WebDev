@@ -300,39 +300,55 @@ class SalesforceReleaseScraper:
 
         The Salesforce Help pages have a <button title="Open PDF"> that triggers
         a download or opens a new tab with the PDF. This method handles both cases.
+        Reuses the existing browser when available; falls back to a standalone launch.
         """
+        if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
+            logger.info("PDF already exists, skipping: %s (%d bytes)", dest, dest.stat().st_size)
+            return True
+
         logger.info("Downloading PDF via button click: %s -> %s", page_url, dest)
 
+        browser_to_close = None
         try:
-            async with async_playwright() as p:
+            if self._browser:
+                browser = self._browser
+                context = await browser.new_context(accept_downloads=True)
+                page = await context.new_page()
+            else:
+                p = await async_playwright().start()
+                browser_to_close = p
                 browser = await p.chromium.launch(headless=True)
                 context = await browser.new_context(accept_downloads=True)
                 page = await context.new_page()
 
-                await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
+            await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
 
-                try:
-                    await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-                except Exception:
-                    logger.warning("PDF button not found on %s", page_url)
+            try:
+                await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
+            except Exception:
+                logger.warning("PDF button not found on %s", page_url)
+                await context.close()
+                if browser_to_close:
                     await browser.close()
-                    return False
-
-                async with page.expect_download(timeout=30000) as download_info:
-                    await page.click("button[title='Open PDF']")
-
-                download = await download_info.value
-                await download.save_as(str(dest))
-
-                await browser.close()
-
-                if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                    logger.info(
-                        "PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size
-                    )
-                    return True
-                logger.warning("PDF too small: %d bytes", dest.stat().st_size)
+                    await browser_to_close.stop()
                 return False
+
+            async with page.expect_download(timeout=30000) as download_info:
+                await page.click("button[title='Open PDF']")
+
+            download = await download_info.value
+            await download.save_as(str(dest))
+
+            await context.close()
+            if browser_to_close:
+                await browser.close()
+                await browser_to_close.stop()
+
+            if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
+                logger.info("PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size)
+                return True
+            logger.warning("PDF too small: %d bytes", dest.stat().st_size)
+            return False
 
         except Exception as e:
             logger.warning("PDF button download failed: %s", e)

@@ -17,10 +17,12 @@ Salesforce Release Intelligence Platform built around Knowledge-as-Code principl
 | Component | Responsibility |
 |---|---|
 | GitHub Actions | Pipeline orchestration |
-| Release Scraper | Retrieve Salesforce Release Notes |
-| Semantic Parser | Extract technical sections |
-| Topic Classifier | Categorize architectural topics |
-| Markdown Generator | Generate documentation artifacts |
+| Playwright Scraper | Retrieve Salesforce Release Notes (SPA rendering) |
+| Feature Impact Parser | Parse feature impact tables (availability flags) |
+| DOM Topic Parser | Extract topic hierarchy from navigation tree |
+| Markdown Generator | Generate per-category documentation artifacts |
+| Readme Updater | Auto-update README with release details |
+| AI Automation | Changelog, quality metrics, regression detection |
 | MkDocs | Publish technical portal |
 
 ## Architectural Principles

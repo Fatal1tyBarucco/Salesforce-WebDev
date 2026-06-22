@@ -41,4 +41,4 @@ jobs:
 
       - name: Mypy
         run: |
-          mypy automation/
+          mypy automation/ src/

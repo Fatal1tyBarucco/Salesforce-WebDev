@@ -3,7 +3,7 @@
 ## Execute Pipeline Locally
 
 ```bash
-python automation/core/orchestrator.py
+python -m src.main
 ```
 
 ## Execute Tests
@@ -27,7 +27,7 @@ black --check .
 ## Execute Type Validation
 
 ```bash
-mypy automation/
+mypy src/
 ```
 
 ## Build Documentation

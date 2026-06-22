@@ -12,7 +12,7 @@ pip install -r requirements-dev.txt
 ## Execute Pipeline
 
 ```bash
-python automation/core/orchestrator.py
+python -m src.main
 ```
 
 ## Execute Tests
@@ -26,5 +26,5 @@ pytest
 ```bash
 ruff check .
 black --check .
-mypy automation/
+mypy src/
 ```
