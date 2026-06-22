@@ -1818,7 +1818,9 @@ def test_update_readme_all_with_categories(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1892,7 +1894,9 @@ def test_update_readme_all_with_spring_release(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1915,7 +1919,9 @@ def test_update_readme_all_with_winter_release(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1937,6 +1943,36 @@ def test_update_readme_all_with_categories(tmp_path: Path) -> None:
             {"name": "Agentforce", "count": 19},
             {"name": "Automação", "count": 81},
         ],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+# ============================================================
+# Additional main.py edge case tests
+# ============================================================
+
+
+def test_update_readme_all_with_winter_release(tmp_path: Path) -> None:
+    """Test _update_readme_all with winter release for emoji."""
+    release_dir = tmp_path / "winter_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Winter '26",
+        "slug": "winter_26",
+        "release_id": 258,
+        "categories": [{"name": "Test", "count": 5}],
     }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
