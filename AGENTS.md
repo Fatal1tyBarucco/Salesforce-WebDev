@@ -6,7 +6,7 @@
 # Quality checks (must pass before PR merge)
 ruff check .                    # Linter
 black --check .                 # Formatter check
-mypy automation/ src/           # Type check (strict mode)
+mypy src/                       # Type check (strict mode)
 
 # Tests
 pytest tests/                    # Run all tests
@@ -42,7 +42,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 
 - **Python 3.14** (CI matrix)
 - `line-length = 100` for both Ruff and Black
-- `mypy --strict` on `automation/` and `src/`
+- `mypy --strict` on `src/`
 - `pythonpath = ["."]` in pytest config (run from repo root)
 - Dependencies: `requirements.txt` (runtime), `requirements-dev.txt` (dev/test)
 - **Playwright required**: `playwright install chromium` before first run
@@ -65,4 +65,4 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 - `_build_pdf_url` in `src/main.py` probes versions 5→1 with HEAD requests
 - `src/` discovers 23+ topics from the DOM dynamically
 - `src/readme_updater.py` requires markers in README.md — won't work without them
-- The `automation/core/orchestrator.py` still hardcodes `release=262` — do not use for new releases
+- `releases/history.json` is gitignored (runtime artifact updated by pipeline)

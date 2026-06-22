@@ -226,6 +226,8 @@ class ReleaseNotesParser:
         raw = li.get("aria-level", "1")
         if isinstance(raw, list):
             raw = raw[0] if raw else "1"
+        if not isinstance(raw, str):
+            raw = "1"
         try:
             return int(raw)
         except (ValueError, TypeError):
