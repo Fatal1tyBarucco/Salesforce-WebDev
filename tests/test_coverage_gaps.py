@@ -1,8 +1,11 @@
 """Coverage tests for src modules to reach 100% coverage."""
 
 import asyncio
+import hashlib
 import json
+import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch, AsyncMock
@@ -3119,7 +3122,7 @@ def test_run_pipeline_github_issue_success(tmp_path: Path) -> None:
 
     import os
 
-    old_cwd = os.getcwd()
+    os.getcwd()
     os.chdir(tmp_path)
     original_argv = sys.argv[:]
     try:
@@ -3152,10 +3155,638 @@ def test_run_pipeline_github_issue_success(tmp_path: Path) -> None:
                                                 mock_scraper.return_value.download_pdf_from_button = AsyncMock(
                                                     return_value=False
                                                 )
-                                                main()
+                                            main()
     finally:
         sys.argv = original_argv
-        os.chdir(old_cwd)
+
+
+# ============================================================
+# Health check tests
+# ============================================================
+
+
+def test_health_handler_do_get_health() -> None:
+    """Test /health endpoint returns 200 with status data."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.path = "/health"
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+    handler.wfile = MagicMock()
+
+    handler.do_GET()
+    handler.send_response.assert_called_with(200)
+
+
+def test_health_handler_do_get_ready() -> None:
+    """Test /ready endpoint."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.path = "/ready"
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+    handler.wfile = MagicMock()
+
+    handler.do_GET()
+    handler.send_response.assert_called_with(200)
+
+
+def test_health_handler_do_get_metrics() -> None:
+    """Test /metrics endpoint."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.path = "/metrics"
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+    handler.wfile = MagicMock()
+
+    handler.do_GET()
+    handler.send_response.assert_called_with(200)
+
+
+def test_health_handler_do_get_404() -> None:
+    """Test unknown path returns 404."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.path = "/unknown"
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+    handler.wfile = MagicMock()
+
+    handler.do_GET()
+    handler.send_response.assert_called_with(404)
+
+
+def test_health_respond_metrics() -> None:
+    """Test _respond_metrics writes Prometheus text."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.wfile = MagicMock()
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+
+    handler._respond_metrics()
+    handler.send_response.assert_called_with(200)
+    assert handler.wfile.write.called
+
+
+def test_health_respond() -> None:
+    """Test _respond writes JSON."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.wfile = MagicMock()
+    handler.send_response = MagicMock()
+    handler.send_header = MagicMock()
+    handler.end_headers = MagicMock()
+
+    handler._respond(200, {"status": "ok"})
+    handler.send_response.assert_called_with(200)
+
+
+def test_health_log_message() -> None:
+    """Test log_message debug output."""
+    from src.health import HealthHandler
+
+    handler = HealthHandler.__new__(HealthHandler)
+    handler.log_message("test %s", "msg")
+
+
+def test_start_health_server() -> None:
+    """Test start_health_server creates and returns server."""
+    from src.health import start_health_server
+
+    server = start_health_server(port=18080)
+    assert server is not None
+    server.shutdown()
+
+
+def test_inc_metric() -> None:
+    """Test inc_metric increments counter."""
+    from src.health import inc_metric, _metrics
+
+    before = _metrics.get("scraper_requests_total", 0)
+    inc_metric("scraper_requests_total")
+    assert _metrics["scraper_requests_total"] == before + 1
+
+
+def test_set_pipeline_status_completed() -> None:
+    """Test set_pipeline_status increments runs on completed."""
+    from src.health import set_pipeline_status, _metrics
+
+    before = _metrics.get("pipeline_runs_total", 0)
+    set_pipeline_status("completed")
+    assert _metrics["pipeline_runs_total"] == before + 1
+
+
+def test_set_pipeline_status_error() -> None:
+    """Test set_pipeline_status increments failures on error."""
+    from src.health import set_pipeline_status, _metrics
+
+    before = _metrics.get("pipeline_failures_total", 0)
+    set_pipeline_status("completed_with_errors")
+    assert _metrics["pipeline_failures_total"] == before + 1
+
+
+def test_get_health_data() -> None:
+    """Test _get_health_data returns valid dict."""
+    from src.health import _get_health_data
+
+    data = _get_health_data()
+    assert "status" in data
+    assert data["status"] == "healthy"
+    assert "uptime_seconds" in data
+
+
+# ============================================================
+# Logger tests
+# ============================================================
+
+
+def test_correlation_filter_property() -> None:
+    """Test CorrelationFilter correlation_id property."""
+    from src.logger import CorrelationFilter
+
+    f = CorrelationFilter()
+    assert f.correlation_id == ""
+    f.correlation_id = "abc123"
+    assert f.correlation_id == "abc123"
+
+
+def test_correlation_filter_filter() -> None:
+    """Test CorrelationFilter.filter injects correlation_id."""
+    from src.logger import CorrelationFilter
+
+    f = CorrelationFilter()
+    f.correlation_id = "test-id"
+    record = MagicMock()
+    assert f.filter(record) is True
+    assert record.correlation_id == "test-id"
+
+
+def test_json_formatter_format() -> None:
+    """Test JSONFormatter produces valid JSON."""
+    from src.logger import JSONFormatter
+    import logging
+
+    formatter = JSONFormatter()
+    record = logging.LogRecord(
+        name="test",
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg="hello",
+        args=(),
+        exc_info=None,
+    )
+
+    result = formatter.format(record)
+    data = json.loads(result)
+    assert data["level"] == "INFO"
+    assert data["message"] == "hello"
+
+
+def test_json_formatter_with_cid() -> None:
+    """Test JSONFormatter includes correlation_id."""
+    from src.logger import JSONFormatter
+    import logging
+
+    formatter = JSONFormatter()
+    record = logging.LogRecord(
+        name="test",
+        level=logging.ERROR,
+        pathname="",
+        lineno=0,
+        msg="fail",
+        args=(),
+        exc_info=None,
+    )
+    record.correlation_id = "abc123"
+
+    result = formatter.format(record)
+    data = json.loads(result)
+    assert data["correlation_id"] == "abc123"
+
+
+def test_json_formatter_with_exception() -> None:
+    """Test JSONFormatter includes exception."""
+    from src.logger import JSONFormatter
+    import logging
+
+    formatter = JSONFormatter()
+    try:
+        raise ValueError("test")
+    except ValueError:
+        exc_info = sys.exc_info()
+
+    record = logging.LogRecord(
+        name="test",
+        level=logging.ERROR,
+        pathname="",
+        lineno=0,
+        msg="fail",
+        args=(),
+        exc_info=exc_info,
+    )
+
+    result = formatter.format(record)
+    data = json.loads(result)
+    assert "exception" in data
+
+
+def test_text_formatter_format() -> None:
+    """Test TextFormatter produces human-readable output."""
+    from src.logger import TextFormatter
+    import logging
+
+    formatter = TextFormatter()
+    record = logging.LogRecord(
+        name="test",
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg="hello",
+        args=(),
+        exc_info=None,
+    )
+    record.correlation_id = ""
+
+    result = formatter.format(record)
+    assert "test" in result
+    assert "hello" in result
+
+
+def test_text_formatter_with_cid() -> None:
+    """Test TextFormatter includes [cid] prefix."""
+    from src.logger import TextFormatter
+    import logging
+
+    formatter = TextFormatter()
+    record = logging.LogRecord(
+        name="test",
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg="hello",
+        args=(),
+        exc_info=None,
+    )
+    record.correlation_id = "abc123def"
+
+    result = formatter.format(record)
+    assert "[abc123de]" in result
+
+
+def test_setup_logging_json_format() -> None:
+    """Test setup_logging with JSON format."""
+    from src.logger import setup_logging
+
+    setup_logging(json_format=True)
+    import logging
+
+    root = logging.getLogger()
+    assert len(root.handlers) > 0
+
+
+def test_new_and_get_correlation_id() -> None:
+    """Test new_correlation_id and get_correlation_id."""
+    from src.logger import new_correlation_id, get_correlation_id
+
+    cid = new_correlation_id()
+    assert len(cid) == 12
+    assert get_correlation_id() == cid
+
+
+# ============================================================
+# AI automation export tests
+# ============================================================
+
+
+def test_export_release_json(tmp_path: Path) -> None:
+    """Test export_release_json with valid data."""
+    from src.ai_automation import export_release_json
+
+    release_dir = tmp_path / "releases" / "summer_26"
+    release_dir.mkdir(parents=True)
+    meta = {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = export_release_json("summer_26")
+    assert "Summer '26" in result
+
+
+def test_export_release_json_missing() -> None:
+    """Test export_release_json with missing release."""
+    from src.ai_automation import export_release_json
+
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        result = export_release_json("missing")
+    assert result == "{}"
+
+
+def test_export_release_csv(tmp_path: Path) -> None:
+    """Test export_release_csv with table data."""
+    from src.ai_automation import export_release_csv
+
+    release_dir = tmp_path / "releases" / "summer_26"
+    release_dir.mkdir(parents=True)
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Test Category", "count": 1}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+    (release_dir / "test_category.md").write_text(
+        "## Test Category\n\n| Recurso | Usuários | Admins | Config | Contato |\n"
+        "| :--- | :---: | :---: | :---: | :---: |\n"
+        "| **Feature A** | ✅ | ❌ | ❌ | ❌ |\n"
+    )
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = export_release_csv("summer_26")
+    assert "category,feature" in result
+    assert "Feature A" in result
+
+
+def test_export_release_csv_missing() -> None:
+    """Test export_release_csv with missing release."""
+    from src.ai_automation import export_release_csv
+
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        result = export_release_csv("missing")
+    assert result == ""
+
+
+def test_export_all_releases(tmp_path: Path) -> None:
+    """Test export_all_releases batch export."""
+    from src.ai_automation import export_all_releases
+
+    releases_dir = tmp_path / "releases"
+    release_dir = releases_dir / "summer_26"
+    release_dir.mkdir(parents=True)
+    meta = {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(releases_dir)):
+        result = export_all_releases(str(tmp_path / "exports"))
+    assert "summer_26" in result
+    assert len(result["summer_26"]) == 2
+
+
+def test_export_all_releases_no_dir() -> None:
+    """Test export_all_releases when releases dir doesn't exist."""
+    from src.ai_automation import export_all_releases
+
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        result = export_all_releases()
+    assert result == {}
+
+
+# ============================================================
+# Parser coverage tests
+# ============================================================
+
+
+def test_feature_impact_category_avg_confidence_empty() -> None:
+    """Test avg_confidence returns 0.0 for empty category."""
+    from src.parser import FeatureImpactCategory
+
+    cat = FeatureImpactCategory(name="Empty")
+    assert cat.avg_confidence == 0.0
+
+
+def test_feature_impact_category_total_features() -> None:
+    """Test total_features counts entries + subcategories."""
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+    cat = FeatureImpactCategory(name="Test")
+    cat.entries.append(FeatureImpactEntry(name="A"))
+    cat.subcategories["Sub"] = [FeatureImpactEntry(name="B")]
+    assert cat.total_features == 2
+
+
+def test_classification_quality() -> None:
+    """Test classification_quality aggregate metrics."""
+    from src.parser import FeatureImpactParser, FeatureImpactCategory, FeatureImpactEntry
+
+    parser = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="Test")
+    cat.entries.append(FeatureImpactEntry(name="A", confidence=1.0))
+    cat.entries.append(FeatureImpactEntry(name="B", confidence=0.5))
+    cat.subcategories["Sub"] = [FeatureImpactEntry(name="C", confidence=0.3)]
+
+    result = parser.classification_quality([cat])
+    assert result["categories"] == 1
+    assert result["total_features"] == 3
+    assert result["low_confidence_count"] == 2
+
+
+def test_classification_quality_empty() -> None:
+    """Test classification_quality with no categories."""
+    from src.parser import FeatureImpactParser
+
+    parser = FeatureImpactParser()
+    result = parser.classification_quality([])
+    assert result["total_features"] == 0
+    assert result["avg_confidence"] == 0.0
+
+
+# ============================================================
+# Scraper circuit breaker / rate limiter tests
+# ============================================================
+
+
+def test_circuit_breaker_cooldown_expires() -> None:
+    """Test circuit breaker opens then closes after cooldown."""
+    from src.scraper import CircuitBreaker
+
+    cb = CircuitBreaker(threshold=1, cooldown=0.01)
+    cb.record_failure()
+    assert cb.is_open is True
+    import time
+
+    time.sleep(0.02)
+    assert cb.is_open is False
+
+
+def test_circuit_breaker_failure_count() -> None:
+    """Test failure_count property."""
+    from src.scraper import CircuitBreaker
+
+    cb = CircuitBreaker()
+    assert cb.failure_count == 0
+    cb.record_failure()
+    cb.record_failure()
+    assert cb.failure_count == 2
+
+
+def test_circuit_breaker_success_resets() -> None:
+    """Test record_success resets failure count."""
+    from src.scraper import CircuitBreaker
+
+    cb = CircuitBreaker(threshold=2)
+    cb.record_failure()
+    cb.record_failure()
+    assert cb.failure_count == 2
+    cb.record_success()
+    assert cb.failure_count == 0
+    assert cb.is_open is False
+
+
+def test_rate_limiter_acquire() -> None:
+    """Test RateLimiter acquire waits."""
+    from src.scraper import RateLimiter
+
+    rl = RateLimiter(min_interval=0.01)
+    asyncio.run(rl.acquire())
+    asyncio.run(rl.acquire())
+
+
+def test_scraper_fetch_raw_text_circuit_breaker_open() -> None:
+    """Test fetch_page_raw_text returns stale cache when circuit is open."""
+    from src.scraper import SalesforceReleaseScraper, CACHE_DIR, MIN_RAW_TEXT_LENGTH, CircuitBreaker
+
+    CACHE_DIR.mkdir(exist_ok=True)
+    scraper = SalesforceReleaseScraper()
+    scraper._circuit_breaker = CircuitBreaker(threshold=1, cooldown=9999)
+    scraper._circuit_breaker.record_failure()
+
+    url = "https://example.com/cb_test_stale_v3"
+    url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"{url_hash}.txt"
+    cache_file.write_text("x" * (MIN_RAW_TEXT_LENGTH + 1))
+
+    old_time = time.time() - 90000
+    os.utime(str(cache_file), (old_time, old_time))
+
+    try:
+        result = asyncio.run(scraper.fetch_page_raw_text(url))
+        assert result is not None
+        assert len(result) > MIN_RAW_TEXT_LENGTH
+    finally:
+        cache_file.unlink(missing_ok=True)
+
+
+def test_scraper_fetch_raw_text_circuit_breaker_no_cache() -> None:
+    """Test fetch_page_raw_text returns None when circuit open and no cache."""
+    from src.scraper import SalesforceReleaseScraper, CircuitBreaker
+
+    scraper = SalesforceReleaseScraper()
+    scraper._circuit_breaker = CircuitBreaker(threshold=1, cooldown=9999)
+    scraper._circuit_breaker.record_failure()
+
+    url = "https://example.com/cb_no_cache_v2"
+    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    assert result is None
+
+
+def test_rate_limiter_waits() -> None:
+    """Test rate limiter actually sleeps when called too fast."""
+    from src.scraper import RateLimiter
+
+    rl = RateLimiter(min_interval=0.05)
+    asyncio.run(rl.acquire())
+    asyncio.run(rl.acquire())
+
+
+def test_generate_diff_report_equal(tmp_path: Path) -> None:
+    """Test diff report with equal category counts (delta = 0)."""
+    from src.ai_automation import generate_diff_report
+
+    for slug in ["rel_a", "rel_b"]:
+        d = tmp_path / "releases" / slug
+        d.mkdir(parents=True)
+        meta = {
+            "name": slug,
+            "slug": slug,
+            "release_id": 260,
+            "categories": [{"name": "Test", "count": 10}],
+        }
+        (d / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = generate_diff_report("rel_a", "rel_b")
+    assert "—" in result
+
+
+def test_generate_diff_report_decrease(tmp_path: Path) -> None:
+    """Test diff report with decreased count."""
+    from src.ai_automation import generate_diff_report
+
+    (tmp_path / "releases" / "rel_a").mkdir(parents=True)
+    meta_a = {
+        "name": "A",
+        "slug": "rel_a",
+        "release_id": 262,
+        "categories": [{"name": "Test", "count": 5}],
+    }
+    (tmp_path / "releases" / "rel_a" / ".meta.json").write_text(json.dumps(meta_a))
+
+    (tmp_path / "releases" / "rel_b").mkdir(parents=True)
+    meta_b = {
+        "name": "B",
+        "slug": "rel_b",
+        "release_id": 260,
+        "categories": [{"name": "Test", "count": 10}],
+    }
+    (tmp_path / "releases" / "rel_b" / ".meta.json").write_text(json.dumps(meta_b))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = generate_diff_report("rel_a", "rel_b")
+    assert "📉" in result
+
+
+def test_get_health_data_with_releases(tmp_path: Path) -> None:
+    """Test _get_health_data iterates release dirs."""
+    from src.health import _get_health_data
+
+    releases_dir = tmp_path / "releases" / "summer_26"
+    releases_dir.mkdir(parents=True)
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "total_features": 50,
+        "categories": [],
+    }
+    (releases_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.health.Path") as mock_path:
+        mock_path.return_value.exists.return_value = True
+        mock_path.return_value.iterdir.return_value = [releases_dir]
+        data = _get_health_data()
+    assert data["releases_processed"] >= 0
+
+
+def test_export_release_csv_no_md(tmp_path: Path) -> None:
+    """Test export_release_csv when .md file doesn't exist."""
+    from src.ai_automation import export_release_csv
+
+    release_dir = tmp_path / "releases" / "summer_26"
+    release_dir.mkdir(parents=True)
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Nonexistent", "count": 0}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = export_release_csv("summer_26")
+    assert "category,feature" in result
 
 
 # ============================================================
@@ -3405,3 +4036,107 @@ def test_pipeline_creates_github_issue(tmp_path: Path) -> None:
                                             main()
     finally:
         sys.argv = original_argv
+
+
+# ============================================================
+# Final coverage push — remaining lines
+# ============================================================
+
+
+def test_format_entry_table_low_confidence() -> None:
+    """Cover main.py:396 — low confidence flag ⚠️."""
+    from src.main import _format_entry_table
+    from src.parser import FeatureImpactEntry
+
+    entry = FeatureImpactEntry(name="LowConf", confidence=0.3)
+    result = _format_entry_table(entry)
+    assert "⚠️" in result
+
+
+def test_generate_diff_report_increase(tmp_path: Path) -> None:
+    """Cover ai_automation.py:309 — diff positive (📈)."""
+    from src.ai_automation import generate_diff_report
+
+    (tmp_path / "releases" / "rel_a").mkdir(parents=True)
+    meta_a = {
+        "name": "A",
+        "slug": "rel_a",
+        "release_id": 262,
+        "categories": [{"name": "Test", "count": 20}],
+    }
+    (tmp_path / "releases" / "rel_a" / ".meta.json").write_text(json.dumps(meta_a))
+
+    (tmp_path / "releases" / "rel_b").mkdir(parents=True)
+    meta_b = {
+        "name": "B",
+        "slug": "rel_b",
+        "release_id": 260,
+        "categories": [{"name": "Test", "count": 10}],
+    }
+    (tmp_path / "releases" / "rel_b" / ".meta.json").write_text(json.dumps(meta_b))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
+        result = generate_diff_report("rel_a", "rel_b")
+    assert "📈" in result
+
+
+def test_export_all_releases_skips_non_dirs(tmp_path: Path) -> None:
+    """Cover ai_automation.py:1390,1394 — export_all skips non-dirs and missing meta."""
+    from src.ai_automation import export_all_releases
+
+    releases_dir = tmp_path / "releases"
+    releases_dir.mkdir()
+    (releases_dir / "just_a_file.txt").write_text("not a release")
+
+    sub = releases_dir / "has_meta"
+    sub.mkdir()
+    (sub / ".meta.json").write_text(
+        json.dumps({"name": "Test", "slug": "has_meta", "release_id": 1, "categories": []})
+    )
+
+    empty_dir = releases_dir / "no_meta"
+    empty_dir.mkdir()
+
+    with patch("src.ai_automation.RELEASES_DIR", str(releases_dir)):
+        result = export_all_releases(str(tmp_path / "exports"))
+    assert "has_meta" in result
+    assert "just_a_file" not in result
+    assert "no_meta" not in result
+
+
+def test_get_health_data_json_error(tmp_path: Path) -> None:
+    """Cover health.py:62-63 — JSON decode error in meta."""
+    from src.health import _get_health_data
+
+    release_dir = tmp_path / "releases" / "bad"
+    release_dir.mkdir(parents=True)
+    (release_dir / ".meta.json").write_text("NOT JSON")
+
+    with patch("src.health.Path") as mock_path:
+        mock_path.return_value.exists.return_value = True
+        mock_path.return_value.iterdir.return_value = [release_dir]
+        data = _get_health_data()
+    assert data["status"] == "healthy"
+
+
+def test_parser_parse_stats() -> None:
+    """Cover parser.py:478 — parse_stats returns last stats."""
+    from src.parser import FeatureImpactParser
+
+    parser = FeatureImpactParser()
+    parser.parse_text("Salesforce geral\nFeature A\tYes\tNo\tNo\tNo")
+    stats = parser.parse_stats()
+    assert "total_lines" in stats
+    assert "parsed" in stats
+
+
+def test_scraper_fetch_page_circuit_breaker_open() -> None:
+    """Cover scraper.py:157-158 — fetch_page skips when circuit open."""
+    from src.scraper import SalesforceReleaseScraper, CircuitBreaker
+
+    scraper = SalesforceReleaseScraper()
+    scraper._circuit_breaker = CircuitBreaker(threshold=1, cooldown=9999)
+    scraper._circuit_breaker.record_failure()
+
+    result = asyncio.run(scraper.fetch_page("https://example.com/cb_fetch"))
+    assert result is None
