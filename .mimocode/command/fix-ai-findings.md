@@ -15,7 +15,7 @@ gh api repos/Fatal1tyBarucco/Salesforce-WebDev/dependabot/alerts --jq '.[] | sel
 For each finding:
 1. Read the file and understand the issue
 2. Apply the minimal fix
-3. Run quality gate: `black --check . && ruff check . && mypy automation/ src/ && pytest automation/tests/ -q`
+3. Run quality gate: `ruff check . && black --check . && mypy src/ && pytest tests/ -q`
 4. Commit with descriptive message
 5. Push to origin
 

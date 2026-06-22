@@ -6,7 +6,6 @@ Run the pipeline and verify all outputs:
 
 ```bash
 # 1. Clean any leftover files first
-rm -f releases/summer_26/{apex,flow,integrations,lwc,security}.md
 git checkout HEAD -- README.md
 
 # 2. Run pipeline (will timeout on Salesforce fetch - that's expected)
@@ -24,7 +23,7 @@ grep -c "## 📋 Releases" README.md
 grep -c "<details>" README.md
 
 # 6. Run tests to verify
-pytest tests/ -q -k "not test_parser_return_text_true"
+pytest tests/ -q 2>&1 | tail -10
 ```
 
 Report: file counts, meta.json contents, README structure, any errors.

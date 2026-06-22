@@ -5,7 +5,7 @@ description: "Run full quality gate: format check, lint, typecheck, and parallel
 Run the following checks in order. Report pass/fail for each step.
 
 ```bash
-black --check . && ruff check . && mypy automation/ src/ && pytest -n auto --cov=src --cov=automation --cov-report=term-missing -q 2>&1
+black --check . && ruff check . && mypy src/ && pytest -n auto --cov=src --cov-report=term-missing -q 2>&1
 ```
 
 If any step fails, stop and report the error. If all pass, report "All checks passed".
