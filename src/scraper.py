@@ -33,6 +33,26 @@ MIN_VALID_CONTENT_SIZE = 1000
 MIN_TOC_HTML_SIZE = 100
 MIN_RAW_TEXT_LENGTH = 500
 
+# Rate limiting: max requests per second to Salesforce
+RATE_LIMIT_RPS = 2
+RATE_LIMIT_MIN_INTERVAL = 1.0 / RATE_LIMIT_RPS
+
+
+class RateLimiter:
+    """Simple token-bucket rate limiter for async operations."""
+
+    def __init__(self, min_interval: float = RATE_LIMIT_MIN_INTERVAL) -> None:
+        self._min_interval = min_interval
+        self._last_request: float = 0.0
+
+    async def acquire(self) -> None:
+        """Wait until enough time has passed since the last request."""
+        now = time.monotonic()
+        elapsed = now - self._last_request
+        if elapsed < self._min_interval:
+            await asyncio.sleep(self._min_interval - elapsed)
+        self._last_request = time.monotonic()
+
 
 class SalesforceReleaseScraper:
     """Fetches fully rendered HTML from Salesforce Help release notes URLs."""
@@ -50,6 +70,7 @@ class SalesforceReleaseScraper:
     def __init__(self) -> None:
         self._playwright: Optional[Playwright] = None
         self._browser: Optional[Browser] = None
+        self._rate_limiter = RateLimiter()
 
     async def __aenter__(self) -> "SalesforceReleaseScraper":
         self._playwright = await async_playwright().start()
@@ -157,10 +178,8 @@ class SalesforceReleaseScraper:
     async def _exec_fetch(
         self, url: str, page: Page, *, expand_toc: bool = True, return_text: bool = False
     ) -> str:
-        """Internal execution of fetch logic on a provided page object.
-
-        If return_text is True, returns page.inner_text('body') instead of page.content().
-        """
+        """Internal execution of fetch logic on a provided page object."""
+        await self._rate_limiter.acquire()
         await page.goto(
             url,
             wait_until="domcontentloaded",
