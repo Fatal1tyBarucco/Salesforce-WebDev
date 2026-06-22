@@ -20,4 +20,5 @@ ENV/
 # Project specific
 cache/
 site/
+exports/
 releases/test/
