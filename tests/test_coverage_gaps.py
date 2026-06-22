@@ -643,8 +643,9 @@ def test_fetch_page_raw_text_insufficient_content() -> None:
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
         with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
-            mock.return_value = "short"
-            result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
+            with patch("src.scraper.asyncio.sleep", new_callable=AsyncMock):
+                mock.return_value = "short"
+                result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
     assert result is None
 
 
@@ -652,8 +653,9 @@ def test_fetch_page_raw_text_exception() -> None:
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
         with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
-            mock.side_effect = Exception("network error")
-            result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
+            with patch("src.scraper.asyncio.sleep", new_callable=AsyncMock):
+                mock.side_effect = Exception("network error")
+                result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
     assert result is None
 
 
