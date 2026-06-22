@@ -20,7 +20,6 @@ from src.main import (
 from src.parser import FeatureImpactCategory, FeatureImpactEntry, FeatureImpactParser
 from src.scraper import SalesforceReleaseScraper
 
-
 # ============================================================
 # src/config.py tests
 # ============================================================
@@ -172,7 +171,9 @@ def test_update_readme_all(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -240,7 +241,9 @@ def test_run_pipeline_no_new_release() -> None:
         with patch("src.main.SalesforceReleaseScraper") as mock_scraper:
             with patch("src.main.FeatureImpactParser"):
                 with patch("src.main.MarkdownGenerator"):
-                    with patch("src.main.detect_new_release", new_callable=AsyncMock) as mock_detect:
+                    with patch(
+                        "src.main.detect_new_release", new_callable=AsyncMock
+                    ) as mock_detect:
                         with patch("src.main._update_readme_all") as mock_update:
                             with patch("src.main._generate_release_files"):
                                 mock_scraper.return_value.__aenter__ = AsyncMock()
@@ -264,13 +267,24 @@ def test_run_pipeline_valid_release_filter() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value="text"
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     main()
     finally:
         sys.argv = original_argv
@@ -288,13 +302,24 @@ def test_run_pipeline_no_content() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     main()
     finally:
         sys.argv = original_argv
@@ -315,10 +340,13 @@ def test_detect_new_release_all_exist(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                    ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -339,9 +367,12 @@ def test_detect_new_release_next_slug_exists(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -360,13 +391,24 @@ def test_run_pipeline_ai_reports() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value="text"
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     main()
     finally:
         sys.argv = original_argv
@@ -386,7 +428,9 @@ def test_update_readme_all_with_category_count(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -409,7 +453,9 @@ def test_detect_new_release_no_existing(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [ReleaseInfo(name="Test", release_id=262, slug="test")]):
+            with patch(
+                "src.main.KNOWN_RELEASES", [ReleaseInfo(name="Test", release_id=262, slug="test")]
+            ):
                 result = await detect_new_release(scraper)
                 assert result is not None
                 assert result.slug == "test"
@@ -427,10 +473,13 @@ def test_detect_new_release_next_exists(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                    ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -447,9 +496,12 @@ def test_detect_new_release_content_identical(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ],
+            ):
                 with patch("src.main.FEATURE_IMPACT_URL", "https://example.com/{release_id}"):
                     result = await detect_new_release(scraper)
                     assert result is None
@@ -467,9 +519,12 @@ def test_detect_new_release_fetch_fails(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ],
+            ):
                 with patch("src.main.FEATURE_IMPACT_URL", "https://example.com/{release_id}"):
                     result = await detect_new_release(scraper)
                     assert result is None
@@ -494,9 +549,12 @@ def test_detect_new_release_new_content(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ],
+            ):
                 with patch("src.main.FEATURE_IMPACT_URL", "https://example.com/{release_id}"):
                     result = await detect_new_release(scraper)
                     assert result is not None
@@ -536,22 +594,25 @@ def test_fetch_page_raw_text_cache_too_small(tmp_path: Path) -> None:
     cache_file.write_text("small")
 
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value=None)
-    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = None
+        result = asyncio.run(scraper.fetch_page_raw_text(url))
     assert result is None
 
 
 def test_fetch_page_raw_text_insufficient_content() -> None:
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value="short")
-    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = "short"
+        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
     assert result is None
 
 
 def test_fetch_page_raw_text_exception() -> None:
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(side_effect=Exception("network error"))
-    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.side_effect = Exception("network error")
+        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
     assert result is None
 
 
@@ -581,7 +642,9 @@ def test_download_pdf_from_button_success(tmp_path: Path) -> None:
         mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
         mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
         with patch.object(mock_page, "expect_download") as mock_expect:
-            mock_expect.return_value.__aenter__ = AsyncMock(return_value=MagicMock(value=mock_download))
+            mock_expect.return_value.__aenter__ = AsyncMock(
+                return_value=MagicMock(value=mock_download)
+            )
             mock_expect.return_value.__aexit__ = AsyncMock(return_value=None)
             result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
             assert result is False  # PDF too small
@@ -665,7 +728,9 @@ def test_parser_duplicate_header() -> None:
 
 def test_parser_category_description() -> None:
     parser = FeatureImpactParser()
-    text = "Salesforce geral\nDescription of category\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature1\tYes"
+    text = (
+        "Salesforce geral\nDescription of category\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature1\tYes"
+    )
     result = parser.parse_text(text)
     assert len(result) == 1
     assert result[0].description == "Description of category"
@@ -738,7 +803,9 @@ def test_parser_return_text_true() -> None:
     with patch("src.scraper.async_playwright") as mock_async_pw:
         mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
         mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
-        result = asyncio.run(scraper._fetch_with_playwright("https://example.com", return_text=True))
+        result = asyncio.run(
+            scraper._fetch_with_playwright("https://example.com", return_text=True)
+        )
         assert result == "x" * 1000
 
 
@@ -751,9 +818,9 @@ def test_fetch_raw_text_cache_write(tmp_path: Path) -> None:
     cache_file = CACHE_DIR / f"{url_hash}.txt"
 
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value="x" * (MIN_RAW_TEXT_LENGTH + 1))
-
-    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+        result = asyncio.run(scraper.fetch_page_raw_text(url))
     assert result is not None
     assert cache_file.exists()
 
@@ -790,7 +857,9 @@ def test_update_readme_all_with_emoji(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -860,13 +929,24 @@ def test_run_pipeline_with_release_filter_found() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value="text"
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     main()
     finally:
         sys.argv = original_argv
@@ -882,13 +962,21 @@ def test_run_pipeline_no_release_filter() -> None:
         with patch("src.main.SalesforceReleaseScraper") as mock_scraper:
             with patch("src.main.FeatureImpactParser"):
                 with patch("src.main.MarkdownGenerator"):
-                    with patch("src.main.detect_new_release", new_callable=AsyncMock) as mock_detect:
+                    with patch(
+                        "src.main.detect_new_release", new_callable=AsyncMock
+                    ) as mock_detect:
                         with patch("src.main._update_readme_all"):
                             mock_scraper.return_value.__aenter__ = AsyncMock()
                             mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                            mock_detect.return_value = ReleaseInfo(name="Test", release_id=262, slug="test")
-                            mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                            mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                            mock_detect.return_value = ReleaseInfo(
+                                name="Test", release_id=262, slug="test"
+                            )
+                            mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                return_value="text"
+                            )
+                            mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                return_value=False
+                            )
                             main()
     finally:
         sys.argv = original_argv
@@ -907,13 +995,24 @@ def test_run_pipeline_ai_reports_exception() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value="text"
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     # AI reports are imported inside the function, so we can't patch them
                                     # Just verify the function runs without error
                                     main()
@@ -946,7 +1045,9 @@ def test_update_readme_all_with_multiple_releases(tmp_path: Path) -> None:
         (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -967,10 +1068,13 @@ def test_detect_new_release_all_known_exist(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                    ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -1020,7 +1124,9 @@ def test_update_readme_all_with_spring_release(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1043,7 +1149,9 @@ def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1085,19 +1193,16 @@ def test_parser_subcategory_header_existing() -> None:
     assert "### Sub" in result[0].subcategories
 
 
-def test_parser_entry_in_subcategory() -> None:
-    """Test entry appended to subcategory."""
-    parser = FeatureImpactParser()
-    text = "Salesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\n### SubCategory\nFeature1\tYes"
-    result = parser.parse_text(text)
-    assert len(result) == 1
-
-
 def test_parser_is_category_description_true() -> None:
     """Test _is_category_description returns True."""
     parser = FeatureImpactParser()
     cat = FeatureImpactCategory(name="Test")
-    assert parser._is_category_description("This is a long description that is more than 20 chars", cat) is True
+    assert (
+        parser._is_category_description(
+            "This is a long description that is more than 20 chars", cat
+        )
+        is True
+    )
 
 
 def test_parser_is_category_description_no_cat() -> None:
@@ -1183,7 +1288,9 @@ def test_scraper_fetch_with_playwright_return_text() -> None:
     with patch("src.scraper.async_playwright") as mock_async_pw:
         mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
         mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
-        result = asyncio.run(scraper._fetch_with_playwright("https://example.com", return_text=True))
+        result = asyncio.run(
+            scraper._fetch_with_playwright("https://example.com", return_text=True)
+        )
         assert result == "x" * 1000
 
 
@@ -1196,9 +1303,9 @@ def test_scraper_fetch_raw_text_cache_write() -> None:
     cache_file = CACHE_DIR / f"{url_hash}.txt"
 
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value="x" * (MIN_RAW_TEXT_LENGTH + 1))
-
-    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+        result = asyncio.run(scraper.fetch_page_raw_text(url))
     assert result is not None
     assert cache_file.exists()
 
@@ -1230,7 +1337,9 @@ def test_scraper_download_pdf_button_success() -> None:
         mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
         mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
         with patch.object(mock_page, "expect_download") as mock_expect:
-            mock_expect.return_value.__aenter__ = AsyncMock(return_value=MagicMock(value=mock_download))
+            mock_expect.return_value.__aenter__ = AsyncMock(
+                return_value=MagicMock(value=mock_download)
+            )
             mock_expect.return_value.__aexit__ = AsyncMock(return_value=None)
             # This will return False because PDF is too small
             result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
@@ -1280,9 +1389,9 @@ def test_scraper_fetch_raw_text_success() -> None:
     from src.scraper import MIN_RAW_TEXT_LENGTH
 
     scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value="x" * (MIN_RAW_TEXT_LENGTH + 1))
-
-    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/success"))
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+        result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/success"))
     assert result is not None
     assert len(result) > MIN_RAW_TEXT_LENGTH
 
@@ -1304,68 +1413,6 @@ def test_scraper_download_pdf_button_exception() -> None:
 # ============================================================
 
 
-def test_parser_is_category_description_line_too_short() -> None:
-    """Test _is_category_description with line too short."""
-    parser = FeatureImpactParser()
-    cat = FeatureImpactCategory(name="Test")
-    assert parser._is_category_description("Short", cat) is False
-
-
-def test_parser_is_subcategory_header_no_entries() -> None:
-    """Test _is_subcategory_header when cat has no entries."""
-    parser = FeatureImpactParser()
-    cat = FeatureImpactCategory(name="Test")
-    assert parser._is_subcategory_header("### Sub", cat) is False
-
-
-def test_parser_parse_feature_line_empty_name() -> None:
-    """Test _parse_feature_line with empty name."""
-    parser = FeatureImpactParser()
-    result = parser._parse_feature_line("\tYes")
-    assert result is None
-
-
-def test_parser_parse_feature_line_short_name() -> None:
-    """Test _parse_feature_line with short name."""
-    parser = FeatureImpactParser()
-    result = parser._parse_feature_line("Ab\tYes")
-    assert result is None
-
-
-# ============================================================
-# Additional scraper edge case tests
-# ============================================================
-
-
-def test_scraper_fetch_raw_text_success() -> None:
-    """Test fetch_page_raw_text success path."""
-    from src.scraper import MIN_RAW_TEXT_LENGTH
-
-    scraper = SalesforceReleaseScraper()
-    scraper._fetch_with_playwright = AsyncMock(return_value="x" * (MIN_RAW_TEXT_LENGTH + 1))
-
-    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/success"))
-    assert result is not None
-    assert len(result) > MIN_RAW_TEXT_LENGTH
-
-
-def test_scraper_download_pdf_button_exception() -> None:
-    """Test download_pdf_from_button exception path."""
-    scraper = SalesforceReleaseScraper()
-    dest = Path("/tmp/test.pdf")
-
-    with patch("src.scraper.async_playwright") as mock_async_pw:
-        mock_async_pw.return_value.__aenter__ = AsyncMock(side_effect=Exception("browser error"))
-        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
-        result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
-        assert result is False
-
-
-# ============================================================
-# Additional main.py edge case tests
-# ============================================================
-
-
 def test_detect_new_release_all_known_exist_v3(tmp_path: Path) -> None:
     """Test detect_new_release when all known releases already exist."""
     release_dir = tmp_path / "summer_26"
@@ -1377,10 +1424,13 @@ def test_detect_new_release_all_known_exist_v3(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                    ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -1418,13 +1468,24 @@ def test_run_pipeline_with_release_filter_found_v3() -> None:
                     with patch("src.main._update_readme_all"):
                         with patch("src.main._update_readme_single"):
                             with patch("src.main._generate_release_files"):
-                                with patch("src.main.KNOWN_RELEASES", [
-                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                                ]):
+                                with patch(
+                                    "src.main.KNOWN_RELEASES",
+                                    [
+                                        ReleaseInfo(
+                                            name="Summer '26", release_id=262, slug="summer_26"
+                                        ),
+                                    ],
+                                ):
                                     mock_scraper.return_value.__aenter__ = AsyncMock()
-                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(
+                                        return_value=None
+                                    )
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                        return_value="text"
+                                    )
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                        return_value=False
+                                    )
                                     main()
     finally:
         sys.argv = original_argv
@@ -1440,13 +1501,21 @@ def test_run_pipeline_no_release_filter_v3() -> None:
         with patch("src.main.SalesforceReleaseScraper") as mock_scraper:
             with patch("src.main.FeatureImpactParser"):
                 with patch("src.main.MarkdownGenerator"):
-                    with patch("src.main.detect_new_release", new_callable=AsyncMock) as mock_detect:
+                    with patch(
+                        "src.main.detect_new_release", new_callable=AsyncMock
+                    ) as mock_detect:
                         with patch("src.main._update_readme_all"):
                             mock_scraper.return_value.__aenter__ = AsyncMock()
                             mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                            mock_detect.return_value = ReleaseInfo(name="Test", release_id=262, slug="test")
-                            mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
-                            mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                            mock_detect.return_value = ReleaseInfo(
+                                name="Test", release_id=262, slug="test"
+                            )
+                            mock_scraper.return_value.fetch_page_raw_text = AsyncMock(
+                                return_value="text"
+                            )
+                            mock_scraper.return_value.download_pdf_from_button = AsyncMock(
+                                return_value=False
+                            )
                             main()
     finally:
         sys.argv = original_argv
@@ -1455,52 +1524,6 @@ def test_run_pipeline_no_release_filter_v3() -> None:
 # ============================================================
 # Additional main.py edge case tests for _update_readme_all
 # ============================================================
-
-
-def test_update_readme_all_with_spring_release(tmp_path: Path) -> None:
-    """Test _update_readme_all with spring release for emoji."""
-    release_dir = tmp_path / "spring_26"
-    release_dir.mkdir()
-    meta = {
-        "name": "Spring '26",
-        "slug": "spring_26",
-        "release_id": 260,
-        "categories": [{"name": "Test", "count": 5}],
-    }
-    (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
-
-    with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        with patch("src.main.Path") as mock_path:
-            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
-            mock_path.return_value.exists.return_value = True
-            mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
-
-
-def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
-    """Test _update_readme_all with zero count categories."""
-    release_dir = tmp_path / "summer_26"
-    release_dir.mkdir()
-    meta = {
-        "name": "Summer '26",
-        "slug": "summer_26",
-        "release_id": 262,
-        "categories": [{"name": "Empty", "count": 0}],
-    }
-    (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
-
-    with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        with patch("src.main.Path") as mock_path:
-            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
-            mock_path.return_value.exists.return_value = True
-            mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
 
 
 def test_update_readme_all_no_next_heading_v2(tmp_path: Path) -> None:
@@ -1537,10 +1560,13 @@ def test_detect_new_release_all_known_exist_v4(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                    ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -1562,9 +1588,12 @@ def test_detect_new_release_next_slug_exists_v2(tmp_path: Path) -> None:
 
     async def run() -> None:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            with patch("src.main.KNOWN_RELEASES", [
-                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-            ]):
+            with patch(
+                "src.main.KNOWN_RELEASES",
+                [
+                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ],
+            ):
                 result = await detect_new_release(scraper)
                 assert result is None
 
@@ -1585,7 +1614,9 @@ def test_update_readme_all_with_multiple_releases_v2(tmp_path: Path) -> None:
         (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1608,7 +1639,9 @@ def test_update_readme_all_with_category_count_v2(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1626,7 +1659,9 @@ def test_update_readme_all_with_winter_release_v2(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
