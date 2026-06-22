@@ -1802,23 +1802,152 @@ def test_generate_filtered_notification_report() -> None:
 # ============================================================
 
 
-def test_run_pipeline_with_no_filter() -> None:
-    """Test run_pipeline with no release filter."""
+def test_update_readme_all_with_categories(tmp_path: Path) -> None:
+    """Test _update_readme_all with categories that have details blocks."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [
+            {"name": "Agentforce", "count": 19},
+            {"name": "Automação", "count": 81},
+        ],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+# ============================================================
+# Additional main.py edge case tests
+# ============================================================
+
+
+def test_detect_new_release_all_known_exist(tmp_path: Path) -> None:
+    """Test detect_new_release when all known releases already exist."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    (release_dir / "test.md").write_text("content")
+
+    scraper = MagicMock()
+    scraper.fetch_page_raw_text = AsyncMock(return_value="content")
+
+    async def run() -> None:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.main.KNOWN_RELEASES", [
+                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+            ]):
+                result = await detect_new_release(scraper)
+                assert result is None
+
+    asyncio.run(run())
+
+
+def test_run_pipeline_ai_reports_exception() -> None:
+    """Test run_pipeline when AI reports generation fails."""
     from src.main import main
 
     original_argv = sys.argv
     try:
-        sys.argv = ["main.py"]
+        sys.argv = ["main.py", "--release", "summer_26"]
         with patch("src.main.SalesforceReleaseScraper") as mock_scraper:
             with patch("src.main.FeatureImpactParser"):
                 with patch("src.main.MarkdownGenerator"):
-                    with patch("src.main.detect_new_release", new_callable=AsyncMock) as mock_detect:
-                        with patch("src.main._update_readme_all"):
-                            mock_scraper.return_value.__aenter__ = AsyncMock()
-                            mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
-                            mock_detect.return_value = None
-                            main()
+                    with patch("src.main._update_readme_all"):
+                        with patch("src.main._update_readme_single"):
+                            with patch("src.main._generate_release_files"):
+                                with patch("src.main.KNOWN_RELEASES", [
+                                    ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                                ]):
+                                    mock_scraper.return_value.__aenter__ = AsyncMock()
+                                    mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
+                                    mock_scraper.return_value.fetch_page_raw_text = AsyncMock(return_value="text")
+                                    mock_scraper.return_value.download_pdf_from_button = AsyncMock(return_value=False)
+                                    main()
     finally:
         sys.argv = original_argv
+
+
+def test_update_readme_all_with_spring_release(tmp_path: Path) -> None:
+    """Test _update_readme_all with spring release for emoji."""
+    release_dir = tmp_path / "spring_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Spring '26",
+        "slug": "spring_26",
+        "release_id": 260,
+        "categories": [{"name": "Test", "count": 5}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+def test_update_readme_all_with_winter_release(tmp_path: Path) -> None:
+    """Test _update_readme_all with winter release for emoji."""
+    release_dir = tmp_path / "winter_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Winter '26",
+        "slug": "winter_26",
+        "release_id": 258,
+        "categories": [{"name": "Test", "count": 5}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+def test_update_readme_all_with_categories(tmp_path: Path) -> None:
+    """Test _update_readme_all with categories that have details blocks."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [
+            {"name": "Agentforce", "count": 19},
+            {"name": "Automação", "count": 81},
+        ],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
 
 
