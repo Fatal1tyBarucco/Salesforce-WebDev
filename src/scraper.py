@@ -37,6 +37,51 @@ MIN_RAW_TEXT_LENGTH = 500
 RATE_LIMIT_RPS = 2
 RATE_LIMIT_MIN_INTERVAL = 1.0 / RATE_LIMIT_RPS
 
+# Circuit breaker: after N consecutive failures, stop trying for cooldown
+CIRCUIT_BREAKER_THRESHOLD = 3
+CIRCUIT_BREAKER_COOLDOWN = 60  # seconds
+
+
+class CircuitBreaker:
+    """Circuit breaker — stops making requests after consecutive failures."""
+
+    def __init__(
+        self,
+        threshold: int = CIRCUIT_BREAKER_THRESHOLD,
+        cooldown: float = CIRCUIT_BREAKER_COOLDOWN,
+    ) -> None:
+        self._threshold = threshold
+        self._cooldown = cooldown
+        self._failures = 0
+        self._opened_at: float = 0.0
+
+    @property
+    def is_open(self) -> bool:
+        """True when circuit is tripped (too many failures, in cooldown)."""
+        if self._failures < self._threshold:
+            return False
+        elapsed = time.monotonic() - self._opened_at
+        if elapsed > self._cooldown:
+            return False
+        return True
+
+    def record_success(self) -> None:
+        self._failures = 0
+
+    def record_failure(self) -> None:
+        self._failures += 1
+        if self._failures >= self._threshold and self._opened_at == 0.0:
+            self._opened_at = time.monotonic()
+            logger.warning(
+                "Circuit breaker tripped after %d failures, cooling down for %ds",
+                self._failures,
+                self._cooldown,
+            )
+
+    @property
+    def failure_count(self) -> int:
+        return self._failures
+
 
 class RateLimiter:
     """Simple token-bucket rate limiter for async operations."""
@@ -71,6 +116,7 @@ class SalesforceReleaseScraper:
         self._playwright: Optional[Playwright] = None
         self._browser: Optional[Browser] = None
         self._rate_limiter = RateLimiter()
+        self._circuit_breaker = CircuitBreaker()
 
     async def __aenter__(self) -> "SalesforceReleaseScraper":
         self._playwright = await async_playwright().start()
@@ -107,6 +153,10 @@ class SalesforceReleaseScraper:
         """
         logger.info("Fetching URL: %s", url)
 
+        if self._circuit_breaker.is_open:
+            logger.warning("Circuit breaker open — skipping fetch for %s", url)
+            return None
+
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
                 html_content = await self._fetch_with_playwright(url, page, expand_toc=expand_toc)
@@ -117,6 +167,7 @@ class SalesforceReleaseScraper:
                         len(html_content),
                         attempt,
                     )
+                    self._circuit_breaker.record_success()
                     return html_content
                 logger.warning(
                     "Attempt %d returned insufficient content (%d bytes)",
@@ -125,6 +176,7 @@ class SalesforceReleaseScraper:
                 )
             except Exception as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
+                self._circuit_breaker.record_failure()
 
         logger.error("All %d attempts failed for %s", MAX_RETRY_ATTEMPTS, url)
         return None
@@ -312,6 +364,14 @@ class SalesforceReleaseScraper:
             else:
                 logger.info("Cache expired (%.0fs old), re-fetching", cache_age)
 
+        if self._circuit_breaker.is_open:
+            logger.warning("Circuit breaker open — returning stale cache for %s", url)
+            if cache_file.exists():
+                cached = cache_file.read_text(encoding="utf-8")
+                if len(cached) > MIN_RAW_TEXT_LENGTH:
+                    return cached
+            return None
+
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
                 if not await self._ensure_browser():
@@ -322,6 +382,7 @@ class SalesforceReleaseScraper:
                 if text and len(text) > MIN_RAW_TEXT_LENGTH:
                     logger.info("Fetched raw text (%d chars, attempt %d)", len(text), attempt)
                     cache_file.write_text(text, encoding="utf-8")
+                    self._circuit_breaker.record_success()
                     return text
                 logger.warning(
                     "Attempt %d: insufficient text content (%d chars)",
@@ -330,6 +391,7 @@ class SalesforceReleaseScraper:
                 )
             except Exception as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
+                self._circuit_breaker.record_failure()
                 self._browser = None
 
             if attempt < MAX_RETRY_ATTEMPTS:
