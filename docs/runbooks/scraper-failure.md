@@ -17,7 +17,7 @@ curl -I https://help.salesforce.com
 ### Execute scraper locally
 
 ```bash
-python automation/core/orchestrator.py
+python -m src.main
 ```
 
 ## Recovery

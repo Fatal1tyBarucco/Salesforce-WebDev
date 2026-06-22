@@ -5,3 +5,26 @@ theme:
 
 nav:
   - Home: index.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - C4 Container: architecture/c4_container.md
+    - Decisions:
+      - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
+      - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
+      - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
+  - Contribution:
+    - Testing Strategy: contribution/testing-strategy.md
+  - Maintenance:
+    - Local Development: maintenance/local-development.md
+    - Workflow Operations: maintenance/workflow-operations.md
+    - Cache Management: maintenance/cache-management.md
+    - Troubleshooting: maintenance/troubleshooting.md
+  - Observability:
+    - Logging: observability/logging.md
+    - Pipeline Health: observability/pipeline-health.md
+  - Runbooks:
+    - Scraper Failure: runbooks/scraper-failure.md
+    - GitHub Actions Failure: runbooks/github-actions-failure.md
+  - Roadmap:
+    - V1: roadmap/v1.md
+    - V2: roadmap/v2.md
