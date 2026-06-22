@@ -6,6 +6,8 @@ Pipeline automatizado para extração, classificação e versionamento das **Sal
 
 ### ⚙️ CI/CD Status & Conformidade
 
+<!-- RELEASE_BADGE -->
+![Latest Release](https://img.shields.io/badge/Última%20Release-Summer%20'26-blue)
 [![Python Quality & Validation](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml)
 [![Release Notes Pipeline](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml)
 ![Python](https://img.shields.io/badge/Python-3.14-blue.svg?logo=python&logoColor=white)

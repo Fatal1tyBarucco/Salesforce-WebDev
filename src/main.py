@@ -241,6 +241,7 @@ async def run_pipeline() -> None:
                 Path("REGRESSION_REPORT.md").write_text(regression, encoding="utf-8")
                 logger.info("Regression report generated: REGRESSION_REPORT.md")
 
+        _update_badge(releases_to_process)
         logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
@@ -252,6 +253,56 @@ def _slugify_category(name: str) -> str:
     for char, replacement in TRANSLITERATE_MAP.items():
         lowered = lowered.replace(char, replacement)
     return re.sub(r"[^a-z0-9]+", "_", lowered).strip("_")
+
+
+RELEASE_BADGE_MARKER = "<!-- RELEASE_BADGE -->"
+
+
+def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
+    """Update the dynamic release badge in README.md."""
+    readme_path = Path("README.md")
+    if not readme_path.exists():
+        return
+
+    import json as _json
+
+    readme = readme_path.read_text(encoding="utf-8")
+    if RELEASE_BADGE_MARKER not in readme:
+        return
+
+    releases_dir = Path(RELEASES_DIR)
+    latest_meta = None
+    for d in releases_dir.iterdir():
+        meta_path = d / ".meta.json"
+        if meta_path.exists():
+            data = _json.loads(meta_path.read_text(encoding="utf-8"))
+            if data.get("categories"):
+                if latest_meta is None or data.get("release_id", 0) > latest_meta.get(
+                    "release_id", 0
+                ):
+                    latest_meta = data
+
+    if not latest_meta:
+        return
+
+    from .ai_automation import generate_dynamic_badge
+
+    name = latest_meta["name"]
+    total = sum(c.get("count", 0) for c in latest_meta.get("categories", []))
+    badge = generate_dynamic_badge(name, total)
+
+    new_line = f"{RELEASE_BADGE_MARKER}\n{badge}"
+    lines = readme.split("\n")
+    for i, line in enumerate(lines):
+        if RELEASE_BADGE_MARKER in line:
+            if i + 1 < len(lines) and lines[i + 1].startswith("!["):
+                lines[i + 1] = badge
+            else:
+                lines[i] = new_line
+            break
+
+    readme_path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info("Badge updated: %s (%d features)", name, total)
 
 
 def _generate_release_files(
