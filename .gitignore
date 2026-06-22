@@ -22,3 +22,4 @@ cache/
 site/
 exports/
 releases/test/
+releases/history.json
