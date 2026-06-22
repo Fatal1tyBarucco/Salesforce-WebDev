@@ -218,6 +218,7 @@ async def run_pipeline() -> None:
     # Generate AI reports
     try:
         from .ai_automation import (
+            create_github_issue,
             generate_changelog,
             generate_quality_report,
             generate_regression_report,
@@ -242,6 +243,19 @@ async def run_pipeline() -> None:
                 logger.info("Regression report generated: REGRESSION_REPORT.md")
 
         _update_badge(releases_to_process)
+
+        for release in releases_to_process:
+            meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+            if meta_path.exists():
+                import json as _json
+
+                meta = _json.loads(meta_path.read_text(encoding="utf-8"))
+                cats = meta.get("categories", [])
+                total = sum(c.get("count", 0) for c in cats)
+                issue_url = create_github_issue(release.name, total, len(cats))
+                if issue_url:
+                    logger.info("GitHub Issue created: %s", issue_url)
+
         logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
