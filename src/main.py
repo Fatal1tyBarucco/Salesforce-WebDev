@@ -161,6 +161,10 @@ async def run_pipeline() -> None:
     cid = new_correlation_id()
     logger.info("Starting pipeline (correlation_id=%s)", cid)
 
+    from .health import set_pipeline_status
+
+    set_pipeline_status("running")
+
     scraper = SalesforceReleaseScraper()
     impact_parser = FeatureImpactParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
@@ -271,6 +275,9 @@ async def run_pipeline() -> None:
         logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
+        set_pipeline_status("completed_with_errors")
+    else:
+        set_pipeline_status("completed")
 
 
 def _slugify_category(name: str) -> str:
