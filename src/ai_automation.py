@@ -280,6 +280,50 @@ def generate_regression_report(current_slug: str, previous_slug: str) -> str:
     return "\n".join(lines)
 
 
+def generate_diff_report(current_slug: str, previous_slug: str) -> str:
+    """Generate a visual side-by-side diff report between two releases."""
+    comparison = compare_releases(current_slug, previous_slug)
+
+    current = load_release_meta(current_slug)
+    previous = load_release_meta(previous_slug)
+
+    current_cats = {c["name"]: c["count"] for c in current.get("categories", [])} if current else {}
+    previous_cats = (
+        {c["name"]: c["count"] for c in previous.get("categories", [])} if previous else {}
+    )
+
+    all_names = sorted(set(current_cats) | set(previous_cats))
+
+    lines = [
+        f"# Diff: {comparison.previous_name} → {comparison.current_name}\n",
+        "| Categoria | Anterior | Atual | Delta |",
+        "| :--- | :---: | :---: | :---: |",
+    ]
+
+    for name in all_names:
+        prev = previous_cats.get(name, 0)
+        curr = current_cats.get(name, 0)
+        diff = curr - prev
+        if diff > 0:
+            delta = f"📈 +{diff}"
+        elif diff < 0:
+            delta = f"📉 {diff}"
+        else:
+            delta = "—"
+
+        prev_str = str(prev) if prev else "—"
+        curr_str = str(curr) if curr else "—"
+        lines.append(f"| {name} | {prev_str} | {curr_str} | {delta} |")
+
+    prev_total = sum(previous_cats.values())
+    curr_total = sum(current_cats.values())
+    total_diff = curr_total - prev_total
+    sign = "+" if total_diff > 0 else ""
+    lines.append(f"| **TOTAL** | **{prev_total}** | **{curr_total}** | **{sign}{total_diff}** |")
+
+    return "\n".join(lines)
+
+
 def generate_quality_report() -> str:
     """Generate a quality report for all releases."""
     releases_dir = Path(RELEASES_DIR)

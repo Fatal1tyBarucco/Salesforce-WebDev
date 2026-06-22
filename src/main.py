@@ -221,6 +221,7 @@ async def run_pipeline() -> None:
         from .ai_automation import (
             create_github_issue,
             generate_changelog,
+            generate_diff_report,
             generate_quality_report,
             generate_regression_report,
         )
@@ -242,6 +243,10 @@ async def run_pipeline() -> None:
                 regression = generate_regression_report(current_slug, previous_slug)
                 Path("REGRESSION_REPORT.md").write_text(regression, encoding="utf-8")
                 logger.info("Regression report generated: REGRESSION_REPORT.md")
+
+                diff = generate_diff_report(current_slug, previous_slug)
+                Path("DIFF_REPORT.md").write_text(diff, encoding="utf-8")
+                logger.info("Diff report generated: DIFF_REPORT.md")
 
         _update_badge(releases_to_process)
 
