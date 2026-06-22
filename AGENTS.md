@@ -38,6 +38,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | Analytics | `src/analytics.py` | Static HTML dashboard with charts (category breakdown, trends, confidence) |
 | API | `src/api.py` | REST API server for programmatic access to release data (/releases, /diff) |
 | Notifications | `src/notifications.py` | Email digest, Slack/Discord webhooks, configurable profiles |
+| Dashboard | `src/dashboard.py` | Interactive HTML dashboard with search, filter, comparison, heatmap |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 

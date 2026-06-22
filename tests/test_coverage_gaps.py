@@ -5447,6 +5447,201 @@ def test_notifications_send_notifications_sends_discord(tmp_path: Path) -> None:
             assert results[0].success
 
 
+# ============================================================
+# src/dashboard.py tests
+# ============================================================
+
+
+def test_dashboard_load_all_metas_empty(tmp_path: Path) -> None:
+    """dashboard: _load_all_metas returns [] when dir missing."""
+    from src.dashboard import _load_all_metas
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path / "nope")):
+        assert _load_all_metas() == []
+
+
+def test_dashboard_load_all_metas_with_data(tmp_path: Path) -> None:
+    """dashboard: _load_all_metas loads and sorts."""
+    from src.dashboard import _load_all_metas
+
+    for slug, rid in [("a", 260), ("b", 262)]:
+        d = tmp_path / slug
+        d.mkdir()
+        (d / ".meta.json").write_text(
+            json.dumps({"release_id": rid, "slug": slug, "categories": []})
+        )
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        result = _load_all_metas()
+        assert len(result) == 2
+        assert result[0]["release_id"] == 260
+
+
+def test_dashboard_load_all_metas_invalid(tmp_path: Path) -> None:
+    """dashboard: _load_all_metas skips invalid JSON."""
+    from src.dashboard import _load_all_metas
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        assert _load_all_metas() == []
+
+
+def test_dashboard_load_features_empty(tmp_path: Path) -> None:
+    """dashboard: _load_features returns [] for missing release."""
+    from src.dashboard import _load_features
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        assert _load_features("nope") == []
+
+
+def test_dashboard_load_features_with_bullets(tmp_path: Path) -> None:
+    """dashboard: _load_features parses bullet points."""
+    from src.dashboard import _load_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "test.md").write_text(
+        "## Test\n\n* **Feature A** — _Disponível para admins_\n* **Feature B**\n"
+    )
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        features = _load_features("summer_26")
+        assert len(features) == 2
+        assert features[0]["name"] == "Feature A"
+        assert features[0]["category"] == "Test"
+
+
+def test_dashboard_load_features_tab_separated(tmp_path: Path) -> None:
+    """dashboard: _load_features parses tab-separated lines."""
+    from src.dashboard import _load_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "test.md").write_text("## Test\n\nFeature A\tYes\tNo\nshort\n")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        features = _load_features("summer_26")
+        assert len(features) == 1
+        assert features[0]["name"] == "Feature A"
+
+
+def test_dashboard_load_features_plain_text(tmp_path: Path) -> None:
+    """dashboard: _load_features parses plain text lines."""
+    from src.dashboard import _load_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "test.md").write_text("## Test\n\nThis is a long enough feature description\n")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        features = _load_features("summer_26")
+        assert len(features) == 1
+
+
+def test_dashboard_load_features_oserror(tmp_path: Path) -> None:
+    """dashboard: _load_features handles OSError."""
+    from src.dashboard import _load_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / "test.md").write_text("## Test\n\nstuff\n")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        with patch.object(Path, "read_text", side_effect=OSError("denied")):
+            features = _load_features("summer_26")
+            assert features == []
+
+
+def test_dashboard_load_features_dotfile(tmp_path: Path) -> None:
+    """dashboard: _load_features skips dotfiles."""
+    from src.dashboard import _load_features
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".hidden.md").write_text("## Hidden\n\nstuff\n")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        assert _load_features("summer_26") == []
+
+
+def test_dashboard_build_data(tmp_path: Path) -> None:
+    """dashboard: _build_dashboard_data aggregates correctly."""
+    from src.dashboard import _build_dashboard_data
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 262,
+                "slug": "summer_26",
+                "name": "Summer '26",
+                "total_features": 10,
+                "avg_confidence": 0.9,
+                "categories": [{"name": "A", "count": 5}],
+            }
+        )
+    )
+    (d / "test.md").write_text("## A\n\n* **Feature X**\n")
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        data = _build_dashboard_data()
+        assert data["total_releases"] == 1
+        assert data["total_features"] == 1
+
+
+def test_dashboard_generate_html() -> None:
+    """dashboard: generate_dashboard_html produces valid HTML."""
+    from src.dashboard import generate_dashboard_html
+
+    data = {
+        "releases": [{"name": "S26", "slug": "s26", "categories": [{"name": "A", "count": 5}]}],
+        "features": [{"name": "F", "category": "A", "release": "s26", "availability": ""}],
+        "total_releases": 1,
+        "total_features": 1,
+    }
+    html = generate_dashboard_html(data)
+    assert "<!DOCTYPE html>" in html
+    assert "Dashboard" in html
+
+
+def test_dashboard_generate_no_data(tmp_path: Path) -> None:
+    """dashboard: generate_dashboard returns None when no data."""
+    from src.dashboard import generate_dashboard
+
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path / "empty")):
+        assert generate_dashboard(str(tmp_path / "out")) is None
+
+
+def test_dashboard_generate_with_data(tmp_path: Path) -> None:
+    """dashboard: generate_dashboard writes HTML file."""
+    from src.dashboard import generate_dashboard
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 262,
+                "slug": "summer_26",
+                "name": "Summer '26",
+                "total_features": 10,
+                "categories": [{"name": "A", "count": 10}],
+            }
+        )
+    )
+
+    out = tmp_path / "dash_out"
+    with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
+        result = generate_dashboard(str(out))
+        assert result is not None
+        assert Path(result).exists()
+        assert "Dashboard" in Path(result).read_text()
+
+
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:
     """api: _parse_category_features handles OSError reading files."""
     from src.api import _parse_category_features
