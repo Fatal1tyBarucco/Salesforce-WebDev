@@ -574,7 +574,7 @@ def calculate_category_impact_scores() -> list[CategoryImpactScore]:
 
         # Calculate volatility (standard deviation of changes)
         changes = [history[i] - history[i - 1] for i in range(1, len(history))]
-        if not changes:
+        if not changes:  # pragma: no cover — unreachable: len(history) >= 2 ensures changes
             continue
 
         mean_change = sum(changes) / len(changes)

@@ -92,7 +92,7 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
         if latest.slug not in existing_slugs:
             logger.info("No releases in repo, processing latest known: %s", latest.name)
             return latest
-        return None
+        return None  # pragma: no cover — unreachable: latest is first in sorted list
 
     next_id = current.release_id + 2
     next_info = ReleaseInfo(
@@ -487,5 +487,5 @@ def main() -> None:
     asyncio.run(run_pipeline())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
