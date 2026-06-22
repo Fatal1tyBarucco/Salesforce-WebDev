@@ -205,7 +205,10 @@ async def run_pipeline() -> None:
 
             await pdf_task
             if not raw_text:
-                logger.warning("No content for %s feature impact", release.name)
+                logger.warning(
+                    "No content for %s — falling back to existing release data",
+                    release.name,
+                )
                 continue
 
             categories = impact_parser.parse_text(raw_text)
