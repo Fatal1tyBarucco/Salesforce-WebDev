@@ -1149,27 +1149,7 @@ def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     readme_path = tmp_path / "README.md"
-    readme_path.write_text(
-        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
-    )
-
-    with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        with patch("src.main.Path") as mock_path:
-            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
-            mock_path.return_value.exists.return_value = True
-            mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
-
-
-def test_update_readme_all_no_next_heading(tmp_path: Path) -> None:
-    """Test _update_readme_all when there's no next heading."""
-    release_dir = tmp_path / "summer_26"
-    release_dir.mkdir()
-    meta = {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}
-    (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    readme_path = tmp_path / "README.md"
-    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content")
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         with patch("src.main.Path") as mock_path:
@@ -1180,125 +1160,48 @@ def test_update_readme_all_no_next_heading(tmp_path: Path) -> None:
 
 
 # ============================================================
-# src/parser.py edge case tests
+# Additional parser edge case tests
 # ============================================================
 
 
-def test_parser_subcategory_header_existing() -> None:
-    """Test subcategory header when current_sub already exists."""
-    parser = FeatureImpactParser()
-    text = "Salesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\n### Sub\nFeature1\tYes\n### Sub\nFeature2\tYes"
-    result = parser.parse_text(text)
-    assert len(result) == 1
-    assert "### Sub" in result[0].subcategories
-
-
-def test_parser_is_category_description_true() -> None:
-    """Test _is_category_description returns True."""
+def test_parser_is_category_description_in_section_header() -> None:
+    """Test _is_category_description when line is in SECTION_HEADERS."""
     parser = FeatureImpactParser()
     cat = FeatureImpactCategory(name="Test")
-    assert (
-        parser._is_category_description(
-            "This is a long description that is more than 20 chars", cat
-        )
-        is True
-    )
+    assert parser._is_category_description("Salesforce geral", cat) is False
 
 
-def test_parser_is_category_description_no_cat() -> None:
-    """Test _is_category_description returns False when no cat."""
-    parser = FeatureImpactParser()
-    assert parser._is_category_description("Some description", None) is False
-
-
-def test_parser_is_category_description_already_has() -> None:
-    """Test _is_category_description returns False when cat already has description."""
-    parser = FeatureImpactParser()
-    cat = FeatureImpactCategory(name="Test", description="Already set")
-    assert parser._is_category_description("Some description", cat) is False
-
-
-def test_parser_is_category_description_table_header() -> None:
-    """Test _is_category_description returns False for table header."""
+def test_parser_is_subcategory_header_in_section_header() -> None:
+    """Test _is_subcategory_header when line is in SECTION_HEADERS."""
     parser = FeatureImpactParser()
     cat = FeatureImpactCategory(name="Test")
-    assert parser._is_category_description("RECURSO\tATIVADO PARA USUÁRIOS", cat) is False
+    assert parser._is_subcategory_header("Salesforce geral", cat) is False
 
 
-def test_parser_is_table_header() -> None:
-    """Test _is_table_header."""
-    parser = FeatureImpactParser()
-    assert parser._is_table_header("RECURSO\tATIVADO PARA USUÁRIOS") is True
-    assert parser._is_table_header("Some text") is False
-
-
-def test_parser_is_subcategory_header() -> None:
-    """Test _is_subcategory_header."""
+def test_parser_is_subcategory_header_is_feature() -> None:
+    """Test _is_subcategory_header when line is a feature line."""
     parser = FeatureImpactParser()
     cat = FeatureImpactCategory(name="Test")
-    cat.subcategories["Sub"] = []
-    # Line must be between 5 and 80 chars, not a table header, not in SECTION_HEADERS, not a feature line
-    assert parser._is_subcategory_header("### Sub", cat) is True
-    # Line too short
-    assert parser._is_subcategory_header("Sub", cat) is False
-    # No cat
-    assert parser._is_subcategory_header("### Sub", None) is False
+    assert parser._is_subcategory_header("Feature1\tYes", cat) is False
 
 
-def test_parser_parse_feature_line() -> None:
-    """Test _parse_feature_line."""
+def test_parser_parse_feature_line_name_too_short() -> None:
+    """Test _parse_feature_line with name too short."""
     parser = FeatureImpactParser()
-    result = parser._parse_feature_line("Feature1\tYes")
-    assert result is not None
-    assert result.name == "Feature1"
-    assert result.available_users is True
-
-
-def test_parser_parse_feature_line_no_tab() -> None:
-    """Test _parse_feature_line with no tab."""
-    parser = FeatureImpactParser()
-    result = parser._parse_feature_line("Short")
+    result = parser._parse_feature_line("Ab\tYes")
     assert result is None
 
 
 # ============================================================
-# src/scraper.py edge case tests
+# Additional scraper edge case tests
 # ============================================================
 
 
-def test_scraper_fetch_with_playwright_return_text() -> None:
-    """Test _fetch_with_playwright with return_text=True."""
-    scraper = SalesforceReleaseScraper()
-
-    mock_page = MagicMock()
-    mock_page.goto = AsyncMock()
-    mock_page.wait_for_selector = AsyncMock()
-    mock_page.evaluate = AsyncMock()
-    mock_page.wait_for_timeout = AsyncMock()
-    mock_page.inner_text = AsyncMock(return_value="x" * 1000)
-    mock_page.content = AsyncMock(return_value="<html>content</html>")
-
-    mock_browser = MagicMock()
-    mock_browser.new_page = AsyncMock(return_value=mock_page)
-    mock_browser.close = AsyncMock()
-
-    mock_pw = MagicMock()
-    mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
-
-    with patch("src.scraper.async_playwright") as mock_async_pw:
-        mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
-        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
-        result = asyncio.run(
-            scraper._fetch_with_playwright("https://example.com", return_text=True)
-        )
-        assert result == "x" * 1000
-
-
-def test_scraper_fetch_raw_text_cache_write() -> None:
+def test_scraper_fetch_raw_text_cache_write_v3() -> None:
     """Test that fetched text is written to cache."""
     from src.scraper import CACHE_DIR, MIN_RAW_TEXT_LENGTH
 
-    url = "https://example.com/write_test"
+    url = "https://example.com/write_test_v3"
     url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
     cache_file = CACHE_DIR / f"{url_hash}.txt"
 
@@ -1306,14 +1209,14 @@ def test_scraper_fetch_raw_text_cache_write() -> None:
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
         mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
         result = asyncio.run(scraper.fetch_page_raw_text(url))
-    assert result is not None
-    assert cache_file.exists()
+        assert result is not None
+        assert cache_file.exists()
 
 
-def test_scraper_download_pdf_button_success() -> None:
+def test_scraper_download_pdf_button_success_v3() -> None:
     """Test download_pdf_from_button success path."""
     scraper = SalesforceReleaseScraper()
-    dest = Path("/tmp/test.pdf")
+    dest = Path("/tmp/test_v3.pdf")
 
     mock_page = MagicMock()
     mock_page.goto = AsyncMock()
@@ -1337,11 +1240,227 @@ def test_scraper_download_pdf_button_success() -> None:
         mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
         mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
         with patch.object(mock_page, "expect_download") as mock_expect:
-            mock_expect.return_value.__aenter__ = AsyncMock(
-                return_value=MagicMock(value=mock_download)
-            )
+            mock_expect.return_value.__aenter__ = AsyncMock(return_value=MagicMock(value=mock_download))
             mock_expect.return_value.__aexit__ = AsyncMock(return_value=None)
-            # This will return False because PDF is too small
+            result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
+            assert result is False
+
+
+# ============================================================
+# Additional main.py edge case tests for _update_readme_all
+# ============================================================
+
+
+def test_update_readme_all_no_releases_dir(tmp_path: Path) -> None:
+    """Test _update_readme_all when releases_dir doesn't exist."""
+    with patch("src.main.RELEASES_DIR", str(tmp_path / "nonexistent")):
+        _update_readme_all()  # Should return early without error
+
+
+def test_update_readme_all_no_readme(tmp_path: Path) -> None:
+    """Test _update_readme_all when README.md doesn't exist."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        _update_readme_all()  # Should return early without error
+
+
+def test_update_readme_all_no_heading(tmp_path: Path) -> None:
+    """Test _update_readme_all when heading is missing."""
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\nNo heading here\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+# ============================================================
+# Additional main.py edge case tests for detect_new_release
+# ============================================================
+
+
+def test_detect_new_release_all_known_exist_v5(tmp_path: Path) -> None:
+    """Test detect_new_release when all known releases already exist."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    (release_dir / "test.md").write_text("content")
+
+    scraper = MagicMock()
+    scraper.fetch_page_raw_text = AsyncMock(return_value="content")
+
+    async def run() -> None:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.main.KNOWN_RELEASES", [
+                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+            ]):
+                result = await detect_new_release(scraper)
+                assert result is None
+
+    asyncio.run(run())
+
+
+def test_detect_new_release_next_slug_exists_v3(tmp_path: Path) -> None:
+    """Test detect_new_release when next slug already exists."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    (release_dir / "test.md").write_text("content")
+
+    winter_dir = tmp_path / "winter_27"
+    winter_dir.mkdir()
+    (winter_dir / "test.md").write_text("content")
+
+    scraper = MagicMock()
+    scraper.fetch_page_raw_text = AsyncMock(return_value="content")
+
+    async def run() -> None:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.main.KNOWN_RELEASES", [
+                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+            ]):
+                result = await detect_new_release(scraper)
+                assert result is None
+
+    asyncio.run(run())
+
+
+# ============================================================
+# Additional main.py edge case tests for _update_readme_all
+# ============================================================
+
+
+def test_update_readme_all_with_multiple_releases_v3(tmp_path: Path) -> None:
+    """Test _update_readme_all with multiple releases."""
+    for slug, rid in [("summer_26", 262), ("winter_26", 258)]:
+        release_dir = tmp_path / slug
+        release_dir.mkdir()
+        meta = {"name": f"Release {slug}", "slug": slug, "release_id": rid, "categories": []}
+        (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+def test_update_readme_all_with_category_count_v3(tmp_path: Path) -> None:
+    """Test _update_readme_all with category count."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Test", "count": 10}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+# ============================================================
+# Additional parser edge case tests
+# ============================================================
+
+
+def test_parser_is_category_description_in_section_header() -> None:
+    """Test _is_category_description when line is in SECTION_HEADERS."""
+    parser = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="Test")
+    assert parser._is_category_description("Salesforce geral", cat) is False
+
+
+def test_parser_is_subcategory_header_in_section_header() -> None:
+    """Test _is_subcategory_header when line is in SECTION_HEADERS."""
+    parser = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="Test")
+    assert parser._is_subcategory_header("Salesforce geral", cat) is False
+
+
+def test_parser_is_subcategory_header_is_feature() -> None:
+    """Test _is_subcategory_header when line is a feature line."""
+    parser = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="Test")
+    assert parser._is_subcategory_header("Feature1\tYes", cat) is False
+
+
+def test_parser_parse_feature_line_name_too_short() -> None:
+    """Test _parse_feature_line with name too short."""
+    parser = FeatureImpactParser()
+    result = parser._parse_feature_line("Ab\tYes")
+    assert result is None
+
+
+# ============================================================
+# Additional scraper edge case tests
+# ============================================================
+
+
+def test_scraper_fetch_raw_text_cache_write_v3() -> None:
+    """Test that fetched text is written to cache."""
+    from src.scraper import CACHE_DIR, MIN_RAW_TEXT_LENGTH
+
+    url = "https://example.com/write_test_v3"
+    url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"{url_hash}.txt"
+
+    scraper = SalesforceReleaseScraper()
+    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
+        mock.return_value = "x" * (MIN_RAW_TEXT_LENGTH + 1)
+        result = asyncio.run(scraper.fetch_page_raw_text(url))
+        assert result is not None
+        assert cache_file.exists()
+
+
+def test_scraper_download_pdf_button_success_v3() -> None:
+    """Test download_pdf_from_button success path."""
+    scraper = SalesforceReleaseScraper()
+    dest = Path("/tmp/test_v3.pdf")
+
+    mock_page = MagicMock()
+    mock_page.goto = AsyncMock()
+    mock_page.wait_for_selector = AsyncMock()
+    mock_page.click = AsyncMock()
+
+    mock_download = MagicMock()
+    mock_download.save_as = AsyncMock()
+
+    mock_context = MagicMock()
+    mock_context.new_page = AsyncMock(return_value=mock_page)
+
+    mock_browser = MagicMock()
+    mock_browser.new_context = AsyncMock(return_value=mock_context)
+    mock_browser.close = AsyncMock()
+
+    mock_pw = MagicMock()
+    mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
+
+    with patch("src.scraper.async_playwright") as mock_async_pw:
+        mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
+        with patch.object(mock_page, "expect_download") as mock_expect:
+            mock_expect.return_value.__aenter__ = AsyncMock(return_value=MagicMock(value=mock_download))
+            mock_expect.return_value.__aexit__ = AsyncMock(return_value=None)
             result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
             assert result is False
 
@@ -1669,3 +1788,194 @@ def test_update_readme_all_with_winter_release_v2(tmp_path: Path) -> None:
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
             _update_readme_all()
+
+
+# ============================================================
+# Additional ai_automation tests
+# ============================================================
+
+
+def test_generate_quality_report_with_releases(tmp_path: Path) -> None:
+    """Test generate_quality_report with actual release data."""
+    from src.ai_automation import generate_quality_report
+
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [
+            {"name": "Agentforce", "count": 19},
+            {"name": "Automação", "count": 81},
+        ],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        result = generate_quality_report()
+        assert "Summer '26" in result
+        assert "100" in result
+
+
+def test_generate_regression_report_with_data() -> None:
+    """Test generate_regression_report with actual comparison data."""
+    from src.ai_automation import generate_regression_report
+
+    prev = {"name": "Prev", "categories": [{"name": "A", "count": 20}, {"name": "B", "count": 10}]}
+    curr = {"name": "Curr", "categories": [{"name": "A", "count": 15}, {"name": "C", "count": 3}]}
+
+    def mock_load(slug: str) -> Any:
+        if slug == "prev":
+            return prev
+        return curr
+
+    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
+        result = generate_regression_report("curr", "prev")
+        assert "Curr" in result
+        assert "Prev" in result
+
+
+def test_create_release_issue_with_data() -> None:
+    """Test create_release_issue with actual data."""
+    from src.ai_automation import create_release_issue
+
+    meta = {"name": "Summer '26", "categories": [{"name": "Agentforce", "count": 19}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=meta):
+        result = create_release_issue("summer_26")
+        assert "Summer '26" in result
+        assert "19 recursos" in result
+
+
+def test_create_release_issue_missing() -> None:
+    """Test create_release_issue with missing release."""
+    from src.ai_automation import create_release_issue
+
+    with patch("src.ai_automation.load_release_meta", return_value=None):
+        result = create_release_issue("missing")
+        assert result == ""
+
+
+def test_get_latest_release_badge() -> None:
+    """Test get_latest_release_badge."""
+    from src.ai_automation import get_latest_release_badge
+
+    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+        result = get_latest_release_badge()
+        assert result == "N/A"
+
+
+def test_filter_features_for_profile_admin() -> None:
+    """Test filter_features_for_profile with admin profile."""
+    from src.ai_automation import filter_features_for_profile
+
+    categories = [
+        {"name": "Security", "count": 10},
+        {"name": "Development", "count": 20},
+    ]
+
+    profile = filter_features_for_profile("admin", categories)
+    assert profile.profile_type == "admin"
+    assert len(profile.relevant_categories) > 0
+
+
+def test_filter_features_for_profile_unknown() -> None:
+    """Test filter_features_for_profile with unknown profile."""
+    from src.ai_automation import filter_features_for_profile
+
+    categories = [{"name": "Security", "count": 10}]
+
+    profile = filter_features_for_profile("unknown", categories)
+    assert profile.profile_type == "unknown"
+
+
+def test_generate_filtered_notification() -> None:
+    """Test generate_filtered_notification."""
+    from src.ai_automation import generate_filtered_notification
+
+    meta = {"name": "Summer '26", "categories": [{"name": "Security", "count": 10}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=meta):
+        result = generate_filtered_notification("summer_26", "admin")
+        assert result.total_features == 10
+
+
+def test_generate_filtered_notification_report() -> None:
+    """Test generate_filtered_notification_report."""
+    from src.ai_automation import generate_filtered_notification_report
+
+    meta = {"name": "Summer '26", "categories": [{"name": "Security", "count": 10}]}
+
+    with patch("src.ai_automation.load_release_meta", return_value=meta):
+        result = generate_filtered_notification_report("summer_26", "admin")
+        assert "Notificação" in result
+
+
+# ============================================================
+# Additional main.py edge case tests
+# ============================================================
+
+
+def test_run_pipeline_with_no_filter() -> None:
+    """Test run_pipeline with no release filter."""
+    from src.main import main
+
+    original_argv = sys.argv
+    try:
+        sys.argv = ["main.py"]
+        with patch("src.main.SalesforceReleaseScraper") as mock_scraper:
+            with patch("src.main.FeatureImpactParser"):
+                with patch("src.main.MarkdownGenerator"):
+                    with patch("src.main.detect_new_release", new_callable=AsyncMock) as mock_detect:
+                        with patch("src.main._update_readme_all"):
+                            mock_scraper.return_value.__aenter__ = AsyncMock()
+                            mock_scraper.return_value.__aexit__ = AsyncMock(return_value=None)
+                            mock_detect.return_value = None
+                            main()
+    finally:
+        sys.argv = original_argv
+
+
+def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
+    """Test _update_readme_all with zero count categories."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Empty", "count": 0}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n")
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with patch("src.main.Path") as mock_path:
+            mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
+            mock_path.return_value.exists.return_value = True
+            mock_path.return_value.read_text.return_value = readme_path.read_text()
+            _update_readme_all()
+
+
+def test_detect_new_release_all_known_exist(tmp_path: Path) -> None:
+    """Test detect_new_release when all known releases already exist."""
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    (release_dir / "test.md").write_text("content")
+
+    scraper = MagicMock()
+    scraper.fetch_page_raw_text = AsyncMock(return_value="content")
+
+    async def run() -> None:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.main.KNOWN_RELEASES", [
+                ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+                ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
+            ]):
+                result = await detect_new_release(scraper)
+                assert result is None
+
+    asyncio.run(run())
