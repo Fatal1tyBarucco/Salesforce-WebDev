@@ -327,7 +327,14 @@ AVAILABILITY_KEYWORDS: frozenset[str] = frozenset({"Yes"})
 
 
 class FeatureImpactEntry:
-    __slots__ = ("name", "available_users", "available_admins", "requires_config", "contact_sf")
+    __slots__ = (
+        "name",
+        "available_users",
+        "available_admins",
+        "requires_config",
+        "contact_sf",
+        "confidence",
+    )
 
     def __init__(
         self,
@@ -336,12 +343,14 @@ class FeatureImpactEntry:
         available_admins: bool = False,
         requires_config: bool = False,
         contact_sf: bool = False,
+        confidence: float = 1.0,
     ) -> None:
         self.name = name
         self.available_users = available_users
         self.available_admins = available_admins
         self.requires_config = requires_config
         self.contact_sf = contact_sf
+        self.confidence = confidence
 
 
 class FeatureImpactCategory:
@@ -362,6 +371,7 @@ class FeatureImpactParser:
         categories: list[FeatureImpactCategory] = []
         current_cat: FeatureImpactCategory | None = None
         current_sub: str = ""
+        self._last_stats: dict[str, int] = {"total_lines": len(lines), "parsed": 0, "skipped": 0}
         i = 0
 
         while i < len(lines):
@@ -403,14 +413,21 @@ class FeatureImpactParser:
 
             entry = self._parse_feature_line(line)
             if entry and current_cat:
+                self._last_stats["parsed"] += 1
                 if current_sub and current_sub in current_cat.subcategories:
                     current_cat.subcategories[current_sub].append(entry)
                 else:
                     current_cat.entries.append(entry)
+            elif entry:
+                self._last_stats["skipped"] += 1
 
             i += 1
 
         return [c for c in categories if c.entries or c.subcategories]
+
+    def parse_stats(self) -> dict[str, int]:
+        """Return stats from the last parse_text() call."""
+        return getattr(self, "_last_stats", {})
 
     def _is_section_header(self, line: str) -> bool:
         return line in SECTION_HEADERS
@@ -452,14 +469,20 @@ class FeatureImpactParser:
             return None
 
         parts = [p.strip() for p in line.split("\t")]
+        confidence = 1.0
+
         if len(parts) < 2:
             if "Yes" not in line and len(line) > 10:
-                return FeatureImpactEntry(name=line)
+                confidence = 0.5
+                return FeatureImpactEntry(name=line, confidence=confidence)
             return None
 
         name = parts[0]
         if not name or len(name) < 3:
             return None
+
+        if len(parts) < 5:
+            confidence = 0.7
 
         flags = parts[1:] if len(parts) > 1 else []
         avail_users = any("Yes" in f for f in flags[:1]) if len(flags) >= 1 else False
@@ -470,7 +493,8 @@ class FeatureImpactParser:
         return FeatureImpactEntry(
             name=name,
             available_users=avail_users,
-            available_admins=avail_admins,
+            available_admins=avail_admins,  # noqa: F821
             requires_config=requires_config,
             contact_sf=contact_sf,
+            confidence=confidence,
         )
