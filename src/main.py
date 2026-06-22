@@ -156,7 +156,10 @@ def _build_release_slug(release_id: int) -> str:
 async def run_pipeline() -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
     setup_logging()
-    logger.info("Starting Salesforce Release Notes extraction (feature impact).")
+    from .logger import new_correlation_id
+
+    cid = new_correlation_id()
+    logger.info("Starting pipeline (correlation_id=%s)", cid)
 
     scraper = SalesforceReleaseScraper()
     impact_parser = FeatureImpactParser()
