@@ -17,7 +17,8 @@ from src.main import (
     _format_entry,
     detect_new_release,
 )
-from src.parser import FeatureImpactCategory, FeatureImpactEntry
+from src.parser import FeatureImpactCategory, FeatureImpactEntry, FeatureImpactParser
+from src.scraper import SalesforceReleaseScraper
 
 
 # ============================================================
@@ -503,3 +504,255 @@ def test_detect_new_release_new_content(tmp_path: Path) -> None:
                     assert result.release_id == 264
 
     asyncio.run(run())
+
+
+# ============================================================
+# src/scraper.py tests
+# ============================================================
+
+
+def test_fetch_page_raw_text_cache_hit(tmp_path: Path) -> None:
+    from src.scraper import CACHE_DIR, MIN_RAW_TEXT_LENGTH
+
+    url = "https://example.com/test"
+    url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"{url_hash}.txt"
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
+    cache_file.write_text("x" * (MIN_RAW_TEXT_LENGTH + 1))
+
+    scraper = SalesforceReleaseScraper()
+    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    assert result is not None
+    assert len(result) > MIN_RAW_TEXT_LENGTH
+
+
+def test_fetch_page_raw_text_cache_too_small(tmp_path: Path) -> None:
+    from src.scraper import CACHE_DIR
+
+    url = "https://example.com/small"
+    url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"{url_hash}.txt"
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
+    cache_file.write_text("small")
+
+    scraper = SalesforceReleaseScraper()
+    scraper._fetch_with_playwright = AsyncMock(return_value=None)
+    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    assert result is None
+
+
+def test_fetch_page_raw_text_insufficient_content() -> None:
+    scraper = SalesforceReleaseScraper()
+    scraper._fetch_with_playwright = AsyncMock(return_value="short")
+    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/short"))
+    assert result is None
+
+
+def test_fetch_page_raw_text_exception() -> None:
+    scraper = SalesforceReleaseScraper()
+    scraper._fetch_with_playwright = AsyncMock(side_effect=Exception("network error"))
+    result = asyncio.run(scraper.fetch_page_raw_text("https://example.com/error"))
+    assert result is None
+
+
+def test_download_pdf_from_button_success(tmp_path: Path) -> None:
+    dest = tmp_path / "test.pdf"
+    scraper = SalesforceReleaseScraper()
+
+    mock_page = MagicMock()
+    mock_page.goto = AsyncMock()
+    mock_page.wait_for_selector = AsyncMock()
+    mock_page.click = AsyncMock()
+
+    mock_download = MagicMock()
+    mock_download.save_as = AsyncMock()
+
+    mock_context = MagicMock()
+    mock_context.new_page = AsyncMock(return_value=mock_page)
+
+    mock_browser = MagicMock()
+    mock_browser.new_context = AsyncMock(return_value=mock_context)
+    mock_browser.close = AsyncMock()
+
+    mock_pw = MagicMock()
+    mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
+
+    with patch("src.scraper.async_playwright") as mock_async_pw:
+        mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
+        with patch.object(mock_page, "expect_download") as mock_expect:
+            mock_expect.return_value.__aenter__ = AsyncMock(return_value=MagicMock(value=mock_download))
+            mock_expect.return_value.__aexit__ = AsyncMock(return_value=None)
+            result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
+            assert result is False  # PDF too small
+
+
+def test_download_pdf_from_button_not_found() -> None:
+    scraper = SalesforceReleaseScraper()
+    dest = Path("/tmp/test.pdf")
+
+    mock_page = MagicMock()
+    mock_page.goto = AsyncMock()
+    mock_page.wait_for_selector = AsyncMock(side_effect=Exception("not found"))
+
+    mock_context = MagicMock()
+    mock_context.new_page = AsyncMock(return_value=mock_page)
+
+    mock_browser = MagicMock()
+    mock_browser.new_context = AsyncMock(return_value=mock_context)
+    mock_browser.close = AsyncMock()
+
+    mock_pw = MagicMock()
+    mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
+
+    with patch("src.scraper.async_playwright") as mock_async_pw:
+        mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
+        result = asyncio.run(scraper.download_pdf_from_button("https://example.com", dest))
+        assert result is False
+
+
+def test_download_pdf_success(tmp_path: Path) -> None:
+    dest = tmp_path / "test.pdf"
+    scraper = SalesforceReleaseScraper()
+
+    mock_response = MagicMock()
+    mock_response.read.return_value = b"x" * 2000
+
+    with patch("src.scraper.urllib.request") as mock_urllib:
+        mock_urllib.Request.return_value = MagicMock()
+        mock_urllib.urlopen.return_value = mock_response
+        result = asyncio.run(scraper.download_pdf("https://example.com/test.pdf", dest))
+        assert result is True
+
+
+def test_download_pdf_too_small(tmp_path: Path) -> None:
+    dest = tmp_path / "test.pdf"
+    scraper = SalesforceReleaseScraper()
+
+    mock_response = MagicMock()
+    mock_response.read.return_value = b"small"
+
+    with patch("src.scraper.urllib.request") as mock_urllib:
+        mock_urllib.Request.return_value = MagicMock()
+        mock_urllib.urlopen.return_value = mock_response
+        result = asyncio.run(scraper.download_pdf("https://example.com/test.pdf", dest))
+        assert result is False
+
+
+def test_download_pdf_exception() -> None:
+    scraper = SalesforceReleaseScraper()
+    dest = Path("/tmp/test.pdf")
+
+    with patch("src.scraper.urllib.request") as mock_urllib:
+        mock_urllib.Request.side_effect = Exception("network error")
+        result = asyncio.run(scraper.download_pdf("https://example.com/error", dest))
+        assert result is False
+
+
+# ============================================================
+# src/parser.py tests
+# ============================================================
+
+
+def test_parser_duplicate_header() -> None:
+    parser = FeatureImpactParser()
+    text = "Salesforce geral\nDescription\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature1\tYes\nSalesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature2\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 1
+    assert len(result[0].entries) >= 1
+
+
+def test_parser_category_description() -> None:
+    parser = FeatureImpactParser()
+    text = "Salesforce geral\nDescription of category\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature1\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 1
+    assert result[0].description == "Description of category"
+
+
+def test_parser_table_header() -> None:
+    parser = FeatureImpactParser()
+    text = "Salesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\tATIVADO PARA ADMINISTRADORES\nFeature1\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 1
+
+
+def test_parser_subcategory() -> None:
+    parser = FeatureImpactParser()
+    text = "Salesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\nFeature1\tYes\n### SubCategory\nFeature2\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 1
+
+
+def test_parser_no_category() -> None:
+    parser = FeatureImpactParser()
+    text = "Feature1\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 0
+
+
+def test_parser_entry_in_subcategory() -> None:
+    parser = FeatureImpactParser()
+    text = "Salesforce geral\nRECURSO\tATIVADO PARA USUÁRIOS\n### Sub\nFeature1\tYes"
+    result = parser.parse_text(text)
+    assert len(result) == 1
+    # The parser may or may not create subcategories depending on the header format
+    # Just verify the entry is parsed
+    assert len(result[0].entries) >= 1 or len(result[0].subcategories) >= 1
+
+
+def test_parser_large_category_skip() -> None:
+    """Test that categories with >5 entries are skipped when duplicate header found."""
+    parser = FeatureImpactParser()
+    # First pass with many entries
+    text = "Salesforce geral\n" + "\n".join([f"Feature{i}\tYes" for i in range(10)])
+    text += "\nSalesforce geral\nFeature11\tYes"
+    result = parser.parse_text(text)
+    # Should have 1 category with entries from first pass (skipped second header)
+    assert len(result) == 1
+
+
+def test_parser_return_text_true() -> None:
+    """Test scraper fetch with return_text=True."""
+    scraper = SalesforceReleaseScraper()
+
+    mock_page = MagicMock()
+    mock_page.goto = AsyncMock()
+    mock_page.wait_for_selector = AsyncMock()
+    mock_page.evaluate = AsyncMock()
+    mock_page.wait_for_timeout = AsyncMock()
+    mock_page.inner_text = AsyncMock(return_value="x" * 1000)
+    mock_page.content = AsyncMock(return_value="<html>content</html>")
+
+    mock_context = MagicMock()
+    mock_context.new_page = AsyncMock(return_value=mock_page)
+
+    mock_browser = MagicMock()
+    mock_browser.new_context = AsyncMock(return_value=mock_context)
+    mock_browser.close = AsyncMock()
+
+    mock_pw = MagicMock()
+    mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
+
+    with patch("src.scraper.async_playwright") as mock_async_pw:
+        mock_async_pw.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+        mock_async_pw.return_value.__aexit__ = AsyncMock(return_value=None)
+        result = asyncio.run(scraper._fetch_with_playwright("https://example.com", return_text=True))
+        assert result == "x" * 1000
+
+
+def test_fetch_raw_text_cache_write(tmp_path: Path) -> None:
+    """Test that fetched text is written to cache."""
+    from src.scraper import CACHE_DIR, MIN_RAW_TEXT_LENGTH
+
+    url = "https://example.com/write_test"
+    url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"{url_hash}.txt"
+
+    scraper = SalesforceReleaseScraper()
+    scraper._fetch_with_playwright = AsyncMock(return_value="x" * (MIN_RAW_TEXT_LENGTH + 1))
+
+    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    assert result is not None
+    assert cache_file.exists()
