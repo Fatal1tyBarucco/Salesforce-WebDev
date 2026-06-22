@@ -4137,3 +4137,341 @@ def test_scraper_fetch_page_circuit_breaker_open() -> None:
 
     result = asyncio.run(scraper.fetch_page("https://example.com/cb_fetch"))
     assert result is None
+
+
+# ============================================================
+# src/analytics.py tests
+# ============================================================
+
+
+def test_load_all_metas_empty(tmp_path: Path) -> None:
+    """analytics: load_all_metas returns [] when releases dir missing."""
+    from src.analytics import load_all_metas
+
+    with patch("src.analytics.RELEASES_DIR", str(tmp_path / "nonexistent")):
+        result = load_all_metas()
+        assert result == []
+
+
+def test_load_all_metas_with_data(tmp_path: Path) -> None:
+    """analytics: load_all_metas loads and sorts .meta.json files."""
+    from src.analytics import load_all_metas
+
+    r1 = tmp_path / "spring_26"
+    r1.mkdir()
+    (r1 / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 260,
+                "name": "Spring '26",
+                "total_features": 500,
+                "categories": [{"name": "A", "count": 100}],
+                "avg_confidence": 0.9,
+            }
+        ),
+    )
+    r2 = tmp_path / "summer_26"
+    r2.mkdir()
+    (r2 / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 262,
+                "name": "Summer '26",
+                "total_features": 600,
+                "categories": [{"name": "A", "count": 150}],
+                "avg_confidence": 0.95,
+            }
+        ),
+    )
+
+    with patch("src.analytics.RELEASES_DIR", str(tmp_path)):
+        result = load_all_metas()
+        assert len(result) == 2
+        assert result[0]["release_id"] == 260
+        assert result[1]["release_id"] == 262
+
+
+def test_load_all_metas_invalid_json(tmp_path: Path) -> None:
+    """analytics: load_all_metas skips invalid JSON files."""
+    from src.analytics import load_all_metas
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json {{{")
+
+    with patch("src.analytics.RELEASES_DIR", str(tmp_path)):
+        result = load_all_metas()
+        assert result == []
+
+
+def test_compute_stats_empty() -> None:
+    """analytics: compute_stats handles empty input."""
+    from src.analytics import compute_stats
+
+    stats = compute_stats([])
+    assert stats.total_releases == 0
+    assert stats.total_features == 0
+    assert stats.categories == []
+
+
+def test_compute_stats_single_release() -> None:
+    """analytics: compute_stats with one release."""
+    from src.analytics import compute_stats
+
+    metas = [
+        {
+            "release_id": 262,
+            "name": "Summer '26",
+            "total_features": 100,
+            "avg_confidence": 0.9,
+            "categories": [{"name": "A", "count": 50}, {"name": "B", "count": 50}],
+            "generated_at": "2026-06-22T12:00:00+00:00",
+        }
+    ]
+    stats = compute_stats(metas)
+    assert stats.total_releases == 1
+    assert stats.total_features == 100
+    assert len(stats.categories) == 2
+    assert stats.days_between == []
+
+
+def test_compute_stats_multiple_releases() -> None:
+    """analytics: compute_stats with two releases computes trends and cadence."""
+    from src.analytics import compute_stats
+
+    metas = [
+        {
+            "release_id": 260,
+            "name": "Spring '26",
+            "total_features": 800,
+            "avg_confidence": 0.85,
+            "categories": [{"name": "A", "count": 100}],
+            "generated_at": "2026-03-15T12:00:00+00:00",
+        },
+        {
+            "release_id": 262,
+            "name": "Summer '26",
+            "total_features": 1000,
+            "avg_confidence": 0.95,
+            "categories": [{"name": "A", "count": 200}],
+            "generated_at": "2026-06-22T12:00:00+00:00",
+        },
+    ]
+    stats = compute_stats(metas)
+    assert stats.total_releases == 2
+    assert stats.total_features == 1800
+    assert stats.confidence_values == [0.85, 0.95]
+    assert len(stats.categories) == 1
+    assert stats.categories[0].trend == "up"
+    assert stats.categories[0].trend_delta == 100
+    assert len(stats.days_between) == 1
+    assert stats.days_between[0] > 0
+
+
+def test_compute_stats_invalid_generated_at() -> None:
+    """analytics: compute_stats handles missing/invalid timestamps."""
+    from src.analytics import compute_stats
+
+    metas = [{"release_id": 262, "name": "Test", "total_features": 10, "categories": []}]
+    stats = compute_stats(metas)
+    assert stats.days_between == []
+
+
+def test_svg_bar_chart_empty() -> None:
+    """analytics: bar chart with no data."""
+    from src.analytics import _svg_bar_chart
+
+    result = _svg_bar_chart([], [])
+    assert "Sem dados" in result
+
+
+def test_svg_bar_chart_with_data() -> None:
+    """analytics: bar chart generates SVG."""
+    from src.analytics import _svg_bar_chart
+
+    result = _svg_bar_chart(["A", "B", "C"], [100, 200, 50])
+    assert "<svg" in result
+    assert "A" in result
+    assert "200" in result
+
+
+def test_svg_line_chart_empty() -> None:
+    """analytics: line chart with no data."""
+    from src.analytics import _svg_line_chart
+
+    result = _svg_line_chart([], {})
+    assert "Sem dados" in result
+
+
+def test_svg_line_chart_with_data() -> None:
+    """analytics: line chart generates SVG with series."""
+    from src.analytics import _svg_line_chart
+
+    result = _svg_line_chart(["Spring", "Summer"], {"Features": [500, 600]})
+    assert "<svg" in result
+    assert "<polyline" in result
+
+
+def test_svg_line_chart_identical_values() -> None:
+    """analytics: line chart handles min == max."""
+    from src.analytics import _svg_line_chart
+
+    result = _svg_line_chart(["A", "B"], {"X": [100, 100]})
+    assert "<svg" in result
+
+
+def test_svg_gauge() -> None:
+    """analytics: gauge renders correctly."""
+    from src.analytics import _svg_gauge
+
+    result = _svg_gauge(85.0, 100.0, "Test")
+    assert "85.0" in result
+    assert "Test" in result
+
+
+def test_svg_gauge_zero_max() -> None:
+    """analytics: gauge handles zero max."""
+    from src.analytics import _svg_gauge
+
+    result = _svg_gauge(0, 0, "Zero")
+    assert "Zero" in result
+
+
+def test_generate_dashboard_html() -> None:
+    """analytics: dashboard HTML generation."""
+    from src.analytics import generate_dashboard_html, ReleaseStats, CategoryStats
+
+    stats = ReleaseStats(
+        total_releases=2,
+        total_features=1000,
+        avg_confidence=0.9,
+        release_names=["Spring", "Summer"],
+        feature_counts=[400, 600],
+        confidence_values=[0.85, 0.95],
+        categories=[CategoryStats("A", [400, 600], 500, 400, 600, "up", 200)],
+        days_between=[90.0],
+    )
+    html_content = generate_dashboard_html(stats)
+    assert "<!DOCTYPE html>" in html_content
+    assert "1,000" in html_content
+    assert "Dashboard" in html_content
+
+
+def test_generate_dashboard_html_no_releases() -> None:
+    """analytics: dashboard handles zero releases."""
+    from src.analytics import generate_dashboard_html, ReleaseStats
+
+    stats = ReleaseStats(0, 0, 0.0, [], [], [], [], [])
+    html_content = generate_dashboard_html(stats)
+    assert "<!DOCTYPE html>" in html_content
+    assert "0</div>" in html_content
+
+
+def test_generate_analytics_no_data(tmp_path: Path) -> None:
+    """analytics: generate_analytics returns None when no data."""
+    from src.analytics import generate_analytics
+
+    with patch("src.analytics.RELEASES_DIR", str(tmp_path / "empty")):
+        result = generate_analytics(str(tmp_path / "output"))
+        assert result is None
+
+
+def test_generate_analytics_with_data(tmp_path: Path) -> None:
+    """analytics: generate_analytics writes HTML file."""
+    from src.analytics import generate_analytics
+
+    r1 = tmp_path / "summer_26"
+    r1.mkdir()
+    (r1 / ".meta.json").write_text(
+        json.dumps(
+            {
+                "release_id": 262,
+                "name": "Summer '26",
+                "total_features": 100,
+                "avg_confidence": 0.9,
+                "categories": [{"name": "A", "count": 100}],
+                "generated_at": "2026-06-22T12:00:00+00:00",
+            }
+        ),
+    )
+    out = tmp_path / "analytics_out"
+    with patch("src.analytics.RELEASES_DIR", str(tmp_path)):
+        result = generate_analytics(str(out))
+        assert result is not None
+        assert Path(result).exists()
+        content = Path(result).read_text()
+        assert "Dashboard" in content
+
+
+def test_category_stats_trend_down() -> None:
+    """analytics: category trend is 'down' when delta < -5."""
+    from src.analytics import compute_stats
+
+    metas = [
+        {
+            "release_id": 260,
+            "name": "S26",
+            "total_features": 100,
+            "categories": [{"name": "X", "count": 200}],
+            "generated_at": "",
+        },
+        {
+            "release_id": 262,
+            "name": "U26",
+            "total_features": 100,
+            "categories": [{"name": "X", "count": 100}],
+            "generated_at": "",
+        },
+    ]
+    stats = compute_stats(metas)
+    assert stats.categories[0].trend == "down"
+    assert stats.categories[0].trend_delta == -100
+
+
+def test_category_stats_trend_stable() -> None:
+    """analytics: category trend is 'stable' when delta is between -5 and 5."""
+    from src.analytics import compute_stats
+
+    metas = [
+        {
+            "release_id": 260,
+            "name": "S26",
+            "total_features": 100,
+            "categories": [{"name": "X", "count": 100}],
+            "generated_at": "",
+        },
+        {
+            "release_id": 262,
+            "name": "U26",
+            "total_features": 100,
+            "categories": [{"name": "X", "count": 102}],
+            "generated_at": "",
+        },
+    ]
+    stats = compute_stats(metas)
+    assert stats.categories[0].trend == "stable"
+    assert stats.categories[0].trend_delta == 2
+
+
+def test_parse_generated_at_no_tz() -> None:
+    """analytics: _parse_generated_at adds UTC when no tzinfo."""
+    from src.analytics import _parse_generated_at
+
+    result = _parse_generated_at({"generated_at": "2026-06-22T12:00:00"})
+    assert result > 0
+
+
+def test_parse_generated_at_invalid() -> None:
+    """analytics: _parse_generated_at returns 0 for invalid timestamps."""
+    from src.analytics import _parse_generated_at
+
+    assert _parse_generated_at({"generated_at": "not-a-date"}) == 0.0
+    assert _parse_generated_at({"generated_at": 123}) == 0.0
+
+
+def test_svg_line_chart_empty_series_values() -> None:
+    """analytics: line chart with empty series values."""
+    from src.analytics import _svg_line_chart
+
+    result = _svg_line_chart(["A"], {"X": []})
+    assert "Sem dados" in result

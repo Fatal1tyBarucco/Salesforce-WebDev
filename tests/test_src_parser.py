@@ -232,6 +232,15 @@ def test_get_aria_level_invalid_value() -> None:
     assert result == 1
 
 
+def test_get_aria_level_non_string_non_list() -> None:
+    """Cover parser.py:230 — raw is neither str nor list (e.g. int)."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = 42  # type: ignore[assignment]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
 def test_get_node_url_href_list() -> None:
     parser = ReleaseNotesParser()
     html = '<li><a href="/s/articleView?id=rn_url_test">Link</a></li>'

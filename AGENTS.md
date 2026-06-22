@@ -35,6 +35,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | Parse (impact) | `src/parser.py` → `FeatureImpactParser` | Parses feature impact table (availability flags) |
 | Generate | `src/generator.py` | Writes per-topic `.md` files to `releases/<slug>/` |
 | Update | `src/readme_updater.py` | Replaces `<!-- RELEASE_INDEX_START/END -->` block in README |
+| Analytics | `src/analytics.py` | Static HTML dashboard with charts (category breakdown, trends, confidence) |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 
