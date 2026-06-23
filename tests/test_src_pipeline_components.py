@@ -375,6 +375,41 @@ def test_expand_toc_nodes_empty() -> None:
     asyncio.run(run())
 
 
+def test_expand_toc_nodes_not_visible() -> None:
+    """Cover scraper.py:306 — node is_visible() returns False."""
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_node = AsyncMock()
+        mock_node.is_visible.return_value = False
+        mock_page.query_selector_all.return_value = [mock_node]
+
+        await scraper._expand_toc_nodes(mock_page)
+        mock_node.is_visible.assert_called_once()
+        mock_node.click.assert_not_called()
+
+    asyncio.run(run())
+
+
+def test_expand_toc_nodes_no_bounding_box() -> None:
+    """Cover scraper.py:309 — node bounding_box() returns None."""
+    scraper = SalesforceReleaseScraper()
+
+    async def run() -> None:
+        mock_page = AsyncMock()
+        mock_node = AsyncMock()
+        mock_node.is_visible.return_value = True
+        mock_node.bounding_box.return_value = None
+        mock_page.query_selector_all.return_value = [mock_node]
+
+        await scraper._expand_toc_nodes(mock_page)
+        mock_node.bounding_box.assert_called_once()
+        mock_node.click.assert_not_called()
+
+    asyncio.run(run())
+
+
 def test_extract_toc_html_standalone_no_browser() -> None:
     scraper = SalesforceReleaseScraper()
 

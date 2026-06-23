@@ -110,6 +110,16 @@ def test_invalid_structure_raises(tmp_path: Path) -> None:
         _ = svc.categories
 
 
+def test_category_not_list_raises(tmp_path: Path) -> None:
+    """Cover salesforce.py:66 — category maps to non-list value."""
+    data = {"Cat": "not a list"}
+    p = tmp_path / "bad.json"
+    p.write_text(json.dumps(data), encoding="utf-8")
+    svc = TrailheadMappingService(config_path=p)
+    with pytest.raises(ValueError, match="must map to a list"):
+        _ = svc.categories
+
+
 def test_invalid_module_entry_raises(tmp_path: Path) -> None:
     data = {"Cat": ["not a dict"]}
     p = tmp_path / "bad.json"
