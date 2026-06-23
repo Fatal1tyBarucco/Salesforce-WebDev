@@ -3,11 +3,9 @@
 from pathlib import Path
 
 from src.smart_notifications import (
-    DeliveryChannel,
-    Notification,
-    NotificationDigest,
     SmartNotificationEngine,
     UserPreferences,
+    Notification,
     NotificationPriority,
 )
 
