@@ -1,0 +1,86 @@
+{
+  "Agentforce": [
+    {"title": "Agentforce Basics", "url": "/content/learn/modules/agentforce-basics"},
+    {"title": "Build an Agent with Agentforce", "url": "/content/learn/projects/build-an-agent-with-agentforce"},
+    {"title": "Agentforce for Developers", "url": "/content/learn/modules/agentforce-for-developers"}
+  ],
+  "Análise de dados": [
+    {"title": "Data Analysis with SOQL", "url": "/content/learn/modules/soql-for-admins"},
+    {"title": "Reports & Dashboards for Lightning Experience", "url": "/content/learn/modules/reports_dashboards_lightning_experience"}
+  ],
+  "Automação": [
+    {"title": "Flow Builder Basics", "url": "/content/learn/modules/flow-basics"},
+    {"title": "Flow Builder Strategies", "url": "/content/learn/modules/flow-builder-strategies"},
+    {"title": "Flow Builder Logic", "url": "/content/learn/modules/flow-builder-logic"}
+  ],
+  "Commerce": [
+    {"title": "Commerce Cloud B2C Basics", "url": "/content/learn/modules/commerce-cloud-b2c-basics"},
+    {"title": "B2B Commerce on Lightning Experience", "url": "/content/learn/modules/b2b-commerce-lightning"}
+  ],
+  "Personalização": [
+    {"title": "Lightning App Builder", "url": "/content/learn/modules/lightning_app_builder"},
+    {"title": "Customization Basics & Navigation", "url": "/content/learn/modules/customization_basics"}
+  ],
+  "Data 360": [
+    {"title": "Data Cloud Basics", "url": "/content/learn/modules/data-cloud-basics"},
+    {"title": "Data Cloud Ingestion and Transformation", "url": "/content/learn/modules/data-cloud-ingestion"}
+  ],
+  "Desenvolvimento": [
+    {"title": "Apex Basics & Database", "url": "/content/learn/modules/apex_basics_database"},
+    {"title": "Lightning Web Components Basics", "url": "/content/learn/modules/lex_aura_lwc_lgpd"},
+    {"title": "Apex Triggers", "url": "/content/learn/modules/apex_triggers"},
+    {"title": "Test Automation Strategies", "url": "/content/learn/modules/test_automation_strategies"}
+  ],
+  "Experience Cloud": [
+    {"title": "Digital Experiences Basics", "url": "/content/learn/modules/digital_experiences"}
+  ],
+  "Field Service": [
+    {"title": "Field Service Lightning Basics", "url": "/content/learn/modules/field-service-lightning-basics"},
+    {"title": "Field Service Lightning Dispatch", "url": "/content/learn/modules/field-service-dispatch"}
+  ],
+  "Hyperforce": [
+    {"title": "Hyperforce Basics", "url": "/content/learn/modules/hyperforce-basics"}
+  ],
+  "Setores": [
+    {"title": "Industry Cloud Basics", "url": "/content/learn/modules/industry-cloud-basics"}
+  ],
+  "Marketing": [
+    {"title": "Marketing Cloud Engagement Basics", "url": "/content/learn/modules/marketing-cloud-engagement-basics"},
+    {"title": "Marketing Cloud Account Engagement Basics", "url": "/content/learn/modules/marketing-cloud-account-engagement-basics"}
+  ],
+  "MuleSoft": [
+    {"title": "MuleSoft Composer Basics", "url": "/content/learn/modules/mulesoft-composer-basics"},
+    {"title": "MuleSoft for Salesforce Integration", "url": "/content/learn/modules/mulesoft-for-salesforce-integration"}
+  ],
+  "Aplicativo móvel": [
+    {"title": "Salesforce Mobile App Customization", "url": "/content/learn/modules/salesforce-mobile-app-customization"}
+  ],
+  "OmniStudio": [
+    {"title": "OmniStudio Basics", "url": "/content/learn/modules/omnistudio-basics"}
+  ],
+  "Partner Cloud": [
+    {"title": "Partner Cloud Basics", "url": "/content/learn/modules/partner-cloud-basics"}
+  ],
+  "Gerenciamento de receita": [
+    {"title": "Revenue Cloud Basics", "url": "/content/learn/modules/revenue-cloud-basics"},
+    {"title": "CPQ Basics", "url": "/content/learn/modules/cpq-basics"}
+  ],
+  "Vendas": [
+    {"title": "Sales Cloud for Sales Reps", "url": "/content/learn/modules/sales_cloud_for_sales_reps"},
+    {"title": "Opportunity Management Basics", "url": "/content/learn/modules/opportunity_management_basics"}
+  ],
+  "Integrações do Salesforce para Slack": [
+    {"title": "Slack Basics for Salesforce", "url": "/content/learn/modules/slack-basics-for-salesforce"}
+  ],
+  "Segurança, identidade e privacidade": [
+    {"title": "Security Basics", "url": "/content/learn/modules/security_basics"},
+    {"title": "Identity Basics", "url": "/content/learn/modules/identity_basics"}
+  ],
+  "Serviço": [
+    {"title": "Service Cloud for Lightning Experience", "url": "/content/learn/modules/service-cloud-lightning-experience"},
+    {"title": "Case Management Basics", "url": "/content/learn/modules/case-management-basics"}
+  ],
+  "Outros produtos e serviços do Salesforce": [
+    {"title": "Salesforce Platform App Builder", "url": "/content/learn/modules/platform-app-builder"}
+  ]
+}

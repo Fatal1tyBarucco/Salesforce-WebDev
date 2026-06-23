@@ -12,11 +12,15 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 logger = logging.getLogger(__name__)
 
 TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
+_DEFAULT_TRAILHEAD_JSON = (
+    Path(__file__).resolve().parent.parent / "data" / "trailhead_categories.json"
+)
 
 # Curated mapping of Salesforce feature categories to Trailhead modules
 # Source: https://trailhead.salesforce.com/
@@ -186,6 +190,81 @@ class TrailheadModule:
     module_type: str = ""
     estimated_time: str = ""
     points: int = 0
+
+
+class TrailheadMappingService:
+    """Dynamic loader for Trailhead category-to-module mappings from JSON."""
+
+    def __init__(self, config_path: Path | None = None) -> None:
+        self._config_path = config_path or _DEFAULT_TRAILHEAD_JSON
+        self._categories: dict[str, list[dict[str, str]]] | None = None
+
+    @property
+    def categories(self) -> dict[str, list[dict[str, str]]]:
+        if self._categories is None:
+            self._categories = self._load_categories()
+        return self._categories
+
+    def _load_categories(self) -> dict[str, list[dict[str, str]]]:
+        if not self._config_path.exists():
+            logger.warning(
+                "Trailhead config not found at %s, falling back to defaults", self._config_path
+            )
+            return dict(TRAILHEAD_BY_CATEGORY)
+
+        raw = self._config_path.read_text(encoding="utf-8")
+        try:
+            data: Any = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Invalid JSON in {self._config_path}: {exc}") from exc
+
+        if not isinstance(data, dict):
+            raise ValueError(f"Trailhead config must be a JSON object, got {type(data).__name__}")
+
+        validated: dict[str, list[dict[str, str]]] = {}
+        for category, modules in data.items():
+            if not isinstance(modules, list):
+                raise ValueError(
+                    f"Category '{category}' must map to a list, got {type(modules).__name__}"
+                )
+            entries: list[dict[str, str]] = []
+            for entry in modules:
+                if not isinstance(entry, dict):
+                    raise ValueError(
+                        f"Module entry in '{category}' must be an object, got {type(entry).__name__}"
+                    )
+                if "title" not in entry:
+                    raise ValueError(f"Module entry in '{category}' missing required 'title' field")
+                if "url" not in entry:
+                    raise ValueError(f"Module entry in '{category}' missing required 'url' field")
+                entries.append({"title": str(entry["title"]), "url": str(entry["url"])})
+            validated[category] = entries
+
+        return validated
+
+    def search(self, query: str, max_results: int = 5) -> list[TrailheadModule]:
+        """Search Trailhead modules matching *query* (exact first, then partial)."""
+        cats = self.categories
+
+        # Exact match
+        modules_data = cats.get(query, [])
+
+        # Partial match (substring in either direction, case-insensitive)
+        if not modules_data:
+            query_lower = query.lower()
+            for key, value in cats.items():
+                if query_lower in key.lower() or key.lower() in query_lower:
+                    modules_data = value
+                    break
+
+        result: list[TrailheadModule] = []
+        for item in modules_data[:max_results]:
+            url = item["url"]
+            if not url.startswith("http"):
+                url = TRAILHEAD_BASE_URL + url
+            result.append(TrailheadModule(title=item["title"], url=url))
+
+        return result
 
 
 @dataclass
