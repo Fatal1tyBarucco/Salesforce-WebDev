@@ -1,3 +1,0 @@
-name: "CodeQL Config"
-
-disable_default_query_suite_for_language: true
