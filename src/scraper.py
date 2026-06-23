@@ -12,6 +12,7 @@ This scraper uses a resilient strategy:
 import asyncio
 import hashlib
 import logging
+import random
 import time
 import urllib.request
 from pathlib import Path
@@ -23,6 +24,18 @@ from playwright.async_api import async_playwright, Browser, Page, Playwright
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 
 logger = logging.getLogger(__name__)
+
+
+def calculate_jittered_delay(base_delay: float, attempt: int) -> float:
+    """Calculate exponential backoff delay with jitter.
+
+    Formula: base_delay * (2 ** attempt) + random.uniform(0, base_delay)
+    Jitter prevents Thundering Herd when multiple instances retry simultaneously.
+    """
+    exponential_delay: float = base_delay * (2**attempt)
+    jitter: float = random.uniform(0, base_delay)
+    return exponential_delay + jitter
+
 
 CACHE_DIR = Path("cache")
 CACHE_DIR.mkdir(exist_ok=True)
@@ -398,7 +411,7 @@ class SalesforceReleaseScraper:
                 self._browser = None
 
             if attempt < MAX_RETRY_ATTEMPTS:
-                delay = RETRY_BASE_DELAY_SECONDS**attempt
+                delay = calculate_jittered_delay(RETRY_BASE_DELAY_SECONDS, attempt)
                 logger.info("Retrying in %.1fs...", delay)
                 await asyncio.sleep(delay)
 
