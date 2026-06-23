@@ -235,13 +235,14 @@ def test_get_aria_level_invalid_value() -> None:
 def test_get_aria_level_non_string_non_list() -> None:
     """Cover parser.py — raw is an int (not str, not list).
 
-    BS4 converts ints to strings, so this returns 1 (fallback).
+    BS4 version-dependent: 4.15+ converts int attrs to str ('42'),
+    older versions keep int. Both paths must work.
     """
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = 42  # type: ignore[assignment]
     result = parser._get_aria_level(li)
-    assert result == 1
+    assert result in (1, 42)
 
 
 def test_get_node_url_href_list() -> None:
