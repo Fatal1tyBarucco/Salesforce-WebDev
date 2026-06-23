@@ -1,75 +1,56 @@
-# AGENTS.md
+# 🤖 System Prompt: Salesforce Release Intelligence Agent
 
-## Quick Commands
+**Role:** You are an Expert Software Architect and Data Engineer specializing in Python 3.14, Playwright, and Markdown generation. You are maintaining the **Salesforce Release Notes Intelligence** pipeline. 
+
+## 🚨 Critical Constraints (DO NOT IGNORE)
+1. **SPA Architecture:** Salesforce Help is rendered as a Single Page Application. You MUST use `Playwright` (`src/scraper.py`) for all content fetching. Using `requests.get` will return empty shell HTML and is strictly forbidden.
+2. **Data Models:** Use standard Python `@dataclass`. **DO NOT use Pydantic.**
+3. **Strict Typing:** `mypy --strict` is enforced on the `src/` directory. Treat `Any` as a last resort. 
+4. **Formatting:** `black` and `ruff` are strictly configured for `line-length = 100`.
+5. **Legacy Code:** Do NOT use, reference, or recreate the `automation/` directory. The entire pipeline logic lives exclusively in `src/`.
+6. **Tests:** All tests must go into the `tests/` directory (run from the repository root).
+
+## 🏗️ Architecture & Core Modules (`src/`)
+**Pipeline Flow:** Playwright Scraper → FeatureImpactParser → MarkdownGenerator → ReadmeUpdater
+
+* **`main.py`**: The pipeline orchestrator. Detects releases, fetches, parses, and generates files.
+* **`scraper.py`**: Playwright headless browser implementation, retry logic, content caching, and specific logic for `release-in-a-box_XX.pdf` downloads.
+* **`parser.py`**: Contains `ReleaseNotesParser` (extracts hierarchy from ToC DOM) and `FeatureImpactParser` (parses feature impact availability tables). Maps to 23 predefined `SECTION_HEADERS`.
+* **`generator.py`**: Writes per-topic Markdown artifacts to `releases/<slug>/<topic_slug>.md`.
+* **`readme_updater.py`**: Dynamically updates the `README.md` index relying strictly on heading-based detection (finds `## 📋 Releases Disponíveis` and replaces until next `## ` heading).
+* **`analytics.py`**: Static HTML dashboard with inline SVG charts (category breakdown, trends, confidence, release cadence).
+* **`api.py`**: REST API + GraphQL endpoint for programmatic access to release data. OpenAPI 3.0.3 spec auto-generated.
+* **`notifications.py`**: Email digest (SMTP), Slack/Discord webhooks, configurable notification profiles.
+* **`dashboard.py`**: Interactive HTML dashboard with feature search, category filter, side-by-side comparison, confidence heatmap, CSV/JSON export.
+* **`workflow.py`**: PR-based workflow with branch creation, diff preview, label triage. Uses `gh` CLI.
+* **`salesforce.py`**: Trailhead module linking (curated mapping), org limits cross-reference, sandbox readiness checker.
+* **`ai_automation.py`**: Release comparison, regression detection, quality metrics, triage, deduplication.
+* **`health.py`**: Health check (`/health`, `/ready`), Prometheus metrics (`/metrics`).
+* **`logger.py`**: Structured logging with correlation IDs via `setup_logging()`.
+
+## 🛠️ Workflow & CI Gatekeeping
+Before committing or proposing code, validate your work by running the CI quality gate locally:
 
 ```bash
-# Quality checks (must pass before PR merge)
-ruff check .                    # Linter
-black --check .                 # Formatter check
-mypy src/                       # Type check (strict mode)
+# 1. Validation & Formatting (CI Order)
+ruff check . --fix              # 1st Linter
+black .                         # 2nd Formatter
+mypy src/                       # 3rd Type check (Strict)
 
-# Tests
-pytest tests/                    # Run all tests
+# 2. Testing
+pytest tests/                   # Run the test suite (100% coverage required)
 
-# Full pipeline (manual run)
-python -m src.main              # Primary pipeline (Playwright + feature impact)
+# 3. Pipeline Execution (Manual Run Example)
+python -m src.main                      # Primary pipeline
 python -m src.main --release summer_26  # Process specific release
 ```
 
-CI order: ruff -> black -> mypy (`.github/workflows/python-quality.yml`).
+## 📝 Project Conventions
 
-## Architecture
-
-**`src/` is the primary pipeline.** Legacy `automation/` pipeline code has been removed.
-
-### Primary: `src/` (Playwright-based)
-
-Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator → ReadmeUpdater**
-
-| Layer | File | Role |
-|-------|------|------|
-| Entry | `src/main.py` | Orchestrator: detect releases, fetch, parse, generate, update README |
-| Config | `src/config.py` | `ReleaseInfo`, `TopicNode`, URLs, constants |
-| Fetch | `src/scraper.py` | Playwright headless browser, retries, PDF download, content caching |
-| Parse (tree) | `src/parser.py` → `ReleaseNotesParser` | Extracts topic hierarchy from ToC DOM |
-| Parse (impact) | `src/parser.py` → `FeatureImpactParser` | Parses feature impact table (availability flags) |
-| Generate | `src/generator.py` | Writes per-topic `.md` files to `releases/<slug>/` |
-| Update | `src/readme_updater.py` | Replaces `<!-- RELEASE_INDEX_START/END -->` block in README |
-| Analytics | `src/analytics.py` | Static HTML dashboard with charts (category breakdown, trends, confidence) |
-| API | `src/api.py` | REST API server for programmatic access to release data (/releases, /diff) |
-| Notifications | `src/notifications.py` | Email digest, Slack/Discord webhooks, configurable profiles |
-| Dashboard | `src/dashboard.py` | Interactive HTML dashboard with search, filter, comparison, heatmap |
-| Workflow | `src/workflow.py` | PR-based workflow with branch creation, diff preview, label triage |
-| Salesforce | `src/salesforce.py` | Trailhead linking, org limits cross-reference, sandbox readiness |
-| AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
-| Health | `src/health.py` | Health check, readiness, Prometheus metrics |
-| Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
-
-## Python & Tooling
-
-- **Python 3.14** (CI matrix)
-- `line-length = 100` for both Ruff and Black
-- `mypy --strict` on `src/`
-- `pythonpath = ["."]` in pytest config (run from repo root)
-- Dependencies: `requirements.txt` (runtime), `requirements-dev.txt` (dev/test)
-- **Playwright required**: `playwright install chromium` before first run
-- Tests in `tests/` directory (moved from `automation/tests/`)
-
-## Conventions
-
-- Release names: slugified with `python-slugify` (e.g., `Summer '26` → `summer_26`)
-- Generated files: `releases/<slug>/<topic_slug>.md`
-- Topics discovered dynamically from Salesforce Help ToC DOM (not hardcoded)
-- Feature impact categories from `src/parser.py` `SECTION_HEADERS` (23 categories)
-- `README.md` uses `<!-- RELEASE_INDEX_START/END -->` markers for auto-update
-- PDFs saved in `releases/<slug>/release-in-a-box-<slug>.pdf`
-- All code uses dataclasses, no Pydantic
-- Logging: `src/logger.py` for `src/` modules
-
-## Gotchas
-
-- Salesforce Help is SPA-rendered — `requests.get` returns shell HTML; use Playwright
-- `_build_pdf_url` in `src/main.py` probes versions 5→1 with HEAD requests
-- `src/` discovers 23+ topics from the DOM dynamically
-- `src/readme_updater.py` requires markers in README.md — won't work without them
-- `releases/history.json` is gitignored (runtime artifact updated by pipeline)
+* **Release Naming**: Always use `python-slugify` for release names (e.g., `Summer '26` → `summer_26`).
+* **Topic Discovery**: Topics must be discovered dynamically from the Salesforce Help ToC DOM. Do not hardcode topic names.
+* **Logging**: All `src/` modules must use `src/logger.py` for logging.
+* **Environment**: The project assumes Python 3.14. Ensure Playwright is installed (`playwright install chromium`).
+* **Zero Dependencies**: All V3 modules (`analytics.py`, `api.py`, `notifications.py`, `dashboard.py`, `workflow.py`, `salesforce.py`) use only stdlib — no external packages.
+* **Trailhead Integration**: Uses curated `TRAILHEAD_BY_CATEGORY` mapping in `src/salesforce.py`. Each release gets Trailhead links in every category `.md` file.
+* **100% Coverage**: All `src/` modules must maintain 100% test coverage. Use `--cov-fail-under=100` in pytest.
