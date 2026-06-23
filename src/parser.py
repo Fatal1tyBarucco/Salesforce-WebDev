@@ -243,12 +243,12 @@ class ReleaseNotesParser:
                 except (ValueError, TypeError):
                     return 1
             return 1
-        if isinstance(raw, str):
-            try:
-                return int(raw)
-            except (ValueError, TypeError):
-                return 1
-        return 1
+        if isinstance(raw, int):
+            return raw
+        try:
+            return int(raw)
+        except (ValueError, TypeError):
+            return 1
 
     def _get_label_text(self, li: Tag) -> str:
         """Extract label text from a treeitem element with null-safe access.
