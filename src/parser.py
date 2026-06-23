@@ -243,8 +243,6 @@ class ReleaseNotesParser:
                 except (ValueError, TypeError):
                     return 1
             return 1
-        if isinstance(raw, int):
-            return raw
         try:
             return int(raw)
         except (ValueError, TypeError):
