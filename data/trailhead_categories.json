@@ -1,86 +1,86 @@
 {
   "Agentforce": [
-    {"title": "Agentforce Basics", "url": "/content/learn/modules/agentforce-basics"},
-    {"title": "Build an Agent with Agentforce", "url": "/content/learn/projects/build-an-agent-with-agentforce"},
-    {"title": "Agentforce for Developers", "url": "/content/learn/modules/agentforce-for-developers"}
+    {"title": "Agentforce Basics", "url": "/content/learn/modules/agentforce-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Build an Agent with Agentforce", "url": "/content/learn/projects/build-an-agent-with-agentforce", "type": "project", "estimated_time": "1 hr 30 mins", "points": 500},
+    {"title": "Agentforce for Developers", "url": "/content/learn/modules/agentforce-for-developers", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Análise de dados": [
-    {"title": "Data Analysis with SOQL", "url": "/content/learn/modules/soql-for-admins"},
-    {"title": "Reports & Dashboards for Lightning Experience", "url": "/content/learn/modules/reports_dashboards_lightning_experience"}
+    {"title": "Data Analysis with SOQL", "url": "/content/learn/modules/soql-for-admins", "type": "module", "estimated_time": "2 hrs", "points": 400},
+    {"title": "Reports & Dashboards for Lightning Experience", "url": "/content/learn/modules/reports_dashboards_lightning_experience", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Automação": [
-    {"title": "Flow Builder Basics", "url": "/content/learn/modules/flow-basics"},
-    {"title": "Flow Builder Strategies", "url": "/content/learn/modules/flow-builder-strategies"},
-    {"title": "Flow Builder Logic", "url": "/content/learn/modules/flow-builder-logic"}
+    {"title": "Flow Builder Basics", "url": "/content/learn/modules/flow-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Flow Builder Strategies", "url": "/content/learn/modules/flow-builder-strategies", "type": "module", "estimated_time": "2 hrs", "points": 400},
+    {"title": "Flow Builder Logic", "url": "/content/learn/modules/flow-builder-logic", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Commerce": [
-    {"title": "Commerce Cloud B2C Basics", "url": "/content/learn/modules/commerce-cloud-b2c-basics"},
-    {"title": "B2B Commerce on Lightning Experience", "url": "/content/learn/modules/b2b-commerce-lightning"}
+    {"title": "Commerce Cloud B2C Basics", "url": "/content/learn/modules/commerce-cloud-b2c-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "B2B Commerce on Lightning Experience", "url": "/content/learn/modules/b2b-commerce-lightning", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Personalização": [
-    {"title": "Lightning App Builder", "url": "/content/learn/modules/lightning_app_builder"},
-    {"title": "Customization Basics & Navigation", "url": "/content/learn/modules/customization_basics"}
+    {"title": "Lightning App Builder", "url": "/content/learn/modules/lightning_app_builder", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Customization Basics & Navigation", "url": "/content/learn/modules/customization_basics", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Data 360": [
-    {"title": "Data Cloud Basics", "url": "/content/learn/modules/data-cloud-basics"},
-    {"title": "Data Cloud Ingestion and Transformation", "url": "/content/learn/modules/data-cloud-ingestion"}
+    {"title": "Data Cloud Basics", "url": "/content/learn/modules/data-cloud-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Data Cloud Ingestion and Transformation", "url": "/content/learn/modules/data-cloud-ingestion", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Desenvolvimento": [
-    {"title": "Apex Basics & Database", "url": "/content/learn/modules/apex_basics_database"},
-    {"title": "Lightning Web Components Basics", "url": "/content/learn/modules/lex_aura_lwc_lgpd"},
-    {"title": "Apex Triggers", "url": "/content/learn/modules/apex_triggers"},
-    {"title": "Test Automation Strategies", "url": "/content/learn/modules/test_automation_strategies"}
+    {"title": "Apex Basics & Database", "url": "/content/learn/modules/apex_basics_database", "type": "module", "estimated_time": "5 hrs", "points": 1000},
+    {"title": "Lightning Web Components Basics", "url": "/content/learn/modules/lex_aura_lwc_lgpd", "type": "module", "estimated_time": "3 hrs", "points": 600},
+    {"title": "Apex Triggers", "url": "/content/learn/modules/apex_triggers", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Test Automation Strategies", "url": "/content/learn/modules/test_automation_strategies", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Experience Cloud": [
-    {"title": "Digital Experiences Basics", "url": "/content/learn/modules/digital_experiences"}
+    {"title": "Digital Experiences Basics", "url": "/content/learn/modules/digital_experiences", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Field Service": [
-    {"title": "Field Service Lightning Basics", "url": "/content/learn/modules/field-service-lightning-basics"},
-    {"title": "Field Service Lightning Dispatch", "url": "/content/learn/modules/field-service-dispatch"}
+    {"title": "Field Service Lightning Basics", "url": "/content/learn/modules/field-service-lightning-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Field Service Lightning Dispatch", "url": "/content/learn/modules/field-service-dispatch", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Hyperforce": [
-    {"title": "Hyperforce Basics", "url": "/content/learn/modules/hyperforce-basics"}
+    {"title": "Hyperforce Basics", "url": "/content/learn/modules/hyperforce-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Setores": [
-    {"title": "Industry Cloud Basics", "url": "/content/learn/modules/industry-cloud-basics"}
+    {"title": "Industry Cloud Basics", "url": "/content/learn/modules/industry-cloud-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Marketing": [
-    {"title": "Marketing Cloud Engagement Basics", "url": "/content/learn/modules/marketing-cloud-engagement-basics"},
-    {"title": "Marketing Cloud Account Engagement Basics", "url": "/content/learn/modules/marketing-cloud-account-engagement-basics"}
+    {"title": "Marketing Cloud Engagement Basics", "url": "/content/learn/modules/marketing-cloud-engagement-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Marketing Cloud Account Engagement Basics", "url": "/content/learn/modules/marketing-cloud-account-engagement-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "MuleSoft": [
-    {"title": "MuleSoft Composer Basics", "url": "/content/learn/modules/mulesoft-composer-basics"},
-    {"title": "MuleSoft for Salesforce Integration", "url": "/content/learn/modules/mulesoft-for-salesforce-integration"}
+    {"title": "MuleSoft Composer Basics", "url": "/content/learn/modules/mulesoft-composer-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "MuleSoft for Salesforce Integration", "url": "/content/learn/modules/mulesoft-for-salesforce-integration", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Aplicativo móvel": [
-    {"title": "Salesforce Mobile App Customization", "url": "/content/learn/modules/salesforce-mobile-app-customization"}
+    {"title": "Salesforce Mobile App Customization", "url": "/content/learn/modules/salesforce-mobile-app-customization", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "OmniStudio": [
-    {"title": "OmniStudio Basics", "url": "/content/learn/modules/omnistudio-basics"}
+    {"title": "OmniStudio Basics", "url": "/content/learn/modules/omnistudio-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Partner Cloud": [
-    {"title": "Partner Cloud Basics", "url": "/content/learn/modules/partner-cloud-basics"}
+    {"title": "Partner Cloud Basics", "url": "/content/learn/modules/partner-cloud-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Gerenciamento de receita": [
-    {"title": "Revenue Cloud Basics", "url": "/content/learn/modules/revenue-cloud-basics"},
-    {"title": "CPQ Basics", "url": "/content/learn/modules/cpq-basics"}
+    {"title": "Revenue Cloud Basics", "url": "/content/learn/modules/revenue-cloud-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "CPQ Basics", "url": "/content/learn/modules/cpq-basics", "type": "module", "estimated_time": "2 hrs", "points": 400}
   ],
   "Vendas": [
-    {"title": "Sales Cloud for Sales Reps", "url": "/content/learn/modules/sales_cloud_for_sales_reps"},
-    {"title": "Opportunity Management Basics", "url": "/content/learn/modules/opportunity_management_basics"}
+    {"title": "Sales Cloud for Sales Reps", "url": "/content/learn/modules/sales_cloud_for_sales_reps", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300},
+    {"title": "Opportunity Management Basics", "url": "/content/learn/modules/opportunity_management_basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Integrações do Salesforce para Slack": [
-    {"title": "Slack Basics for Salesforce", "url": "/content/learn/modules/slack-basics-for-salesforce"}
+    {"title": "Slack Basics for Salesforce", "url": "/content/learn/modules/slack-basics-for-salesforce", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Segurança, identidade e privacidade": [
-    {"title": "Security Basics", "url": "/content/learn/modules/security_basics"},
-    {"title": "Identity Basics", "url": "/content/learn/modules/identity_basics"}
+    {"title": "Security Basics", "url": "/content/learn/modules/security_basics", "type": "module", "estimated_time": "2 hrs", "points": 400},
+    {"title": "Identity Basics", "url": "/content/learn/modules/identity_basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Serviço": [
-    {"title": "Service Cloud for Lightning Experience", "url": "/content/learn/modules/service-cloud-lightning-experience"},
-    {"title": "Case Management Basics", "url": "/content/learn/modules/case-management-basics"}
+    {"title": "Service Cloud for Lightning Experience", "url": "/content/learn/modules/service-cloud-lightning-experience", "type": "module", "estimated_time": "2 hrs", "points": 400},
+    {"title": "Case Management Basics", "url": "/content/learn/modules/case-management-basics", "type": "module", "estimated_time": "1 hr 30 mins", "points": 300}
   ],
   "Outros produtos e serviços do Salesforce": [
-    {"title": "Salesforce Platform App Builder", "url": "/content/learn/modules/platform-app-builder"}
+    {"title": "Salesforce Platform App Builder", "url": "/content/learn/modules/platform-app-builder", "type": "module", "estimated_time": "3 hrs", "points": 600}
   ]
 }

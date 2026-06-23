@@ -95,10 +95,10 @@ def test_invalid_json_raises(tmp_path: Path) -> None:
         _ = svc.categories
 
 
-def test_missing_file_uses_default(tmp_path: Path) -> None:
+def test_missing_file_raises(tmp_path: Path) -> None:
     svc = TrailheadMappingService(config_path=tmp_path / "nonexistent.json")
-    cats = svc.categories
-    assert "Automação" in cats
+    with pytest.raises(ValueError, match="Trailhead config not found"):
+        _ = svc.categories
 
 
 def test_invalid_structure_raises(tmp_path: Path) -> None:
@@ -169,3 +169,47 @@ def test_search_case_insensitive(tmp_path: Path) -> None:
     svc = TrailheadMappingService(config_path=p)
     modules = svc.search("agentforce")
     assert len(modules) == 1
+
+
+def test_search_populates_optional_fields(tmp_path: Path) -> None:
+    data = {
+        "TestCat": [
+            {
+                "title": "My Module",
+                "url": "/m",
+                "type": "project",
+                "estimated_time": "2 hrs",
+                "points": 500,
+            }
+        ]
+    }
+    p = tmp_path / "t.json"
+    p.write_text(json.dumps(data), encoding="utf-8")
+    svc = TrailheadMappingService(config_path=p)
+    modules = svc.search("TestCat")
+    assert len(modules) == 1
+    m = modules[0]
+    assert m.module_type == "project"
+    assert m.estimated_time == "2 hrs"
+    assert m.points == 500
+
+
+def test_search_defaults_optional_fields(tmp_path: Path) -> None:
+    data = {"Cat": [{"title": "T", "url": "/u"}]}
+    p = tmp_path / "t.json"
+    p.write_text(json.dumps(data), encoding="utf-8")
+    svc = TrailheadMappingService(config_path=p)
+    modules = svc.search("Cat")
+    m = modules[0]
+    assert m.module_type == "module"
+    assert m.estimated_time == ""
+    assert m.points == 0
+
+
+def test_real_json_includes_optional_fields() -> None:
+    svc = TrailheadMappingService()
+    modules = svc.search("Desenvolvimento")
+    assert len(modules) > 0
+    for m in modules:
+        assert m.module_type != ""
+        assert m.points > 0
