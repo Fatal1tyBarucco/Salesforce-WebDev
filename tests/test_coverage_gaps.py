@@ -5987,104 +5987,58 @@ def test_workflow_diff_preview_with_analysis() -> None:
 
 
 def test_salesforce_search_trailhead_success() -> None:
-    """salesforce: search_trailhead parses API response."""
+    """salesforce: search_trailhead returns modules from curated mapping."""
     from src.salesforce import search_trailhead
 
-    mock_data = {
-        "results": [
-            {
-                "title": "Module A",
-                "url": "/module/a",
-                "type": "module",
-                "estimatedTime": "20 mins",
-                "points": 100,
-            },
-            {
-                "title": "Module B",
-                "url": "/module/b",
-                "type": "project",
-                "estimatedTime": "30 mins",
-                "points": 200,
-            },
-        ]
-    }
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
-    with patch("src.salesforce.urlopen", return_value=mock_resp):
-        modules = search_trailhead("Apex")
-        assert len(modules) == 2
-        assert modules[0].title == "Module A"
-        assert modules[0].points == 100
+    modules = search_trailhead("Automação")
+    assert len(modules) > 0
+    assert modules[0].title == "Flow Builder Basics"
+    assert "trailhead.salesforce.com" in modules[0].url
 
 
-def test_salesforce_search_trailhead_failure() -> None:
-    """salesforce: search_trailhead returns [] on error."""
+def test_salesforce_search_trailhead_partial_match() -> None:
+    """salesforce: search_trailhead finds partial matches."""
     from src.salesforce import search_trailhead
 
-    with patch("src.salesforce.urlopen", side_effect=URLError("timeout")):
-        assert search_trailhead("Apex") == []
+    modules = search_trailhead("commerce")
+    assert len(modules) > 0
 
 
-def test_salesforce_search_trailhead_invalid_json() -> None:
-    """salesforce: search_trailhead returns [] on invalid JSON."""
+def test_salesforce_search_trailhead_not_found() -> None:
+    """salesforce: search_trailhead returns [] for unknown category."""
     from src.salesforce import search_trailhead
 
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = b"not json"
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
-    with patch("src.salesforce.urlopen", return_value=mock_resp):
-        assert search_trailhead("Apex") == []
+    modules = search_trailhead("NonExistentCategory123")
+    assert modules == []
 
 
 def test_salesforce_find_related_modules() -> None:
     """salesforce: find_related_modules aggregates results."""
     from src.salesforce import find_related_modules
 
-    mock_data = {"results": [{"title": "M1", "url": "/m1", "type": "module", "points": 50}]}
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
-    with patch("src.salesforce.urlopen", return_value=mock_resp):
-        results = find_related_modules(["Apex", "Flow"])
-        assert "Apex" in results
-        assert "Flow" in results
-        assert len(results["Apex"]) == 1
+    results = find_related_modules(["Automação", "Commerce"])
+    assert "Automação" in results
+    assert "Commerce" in results
+    assert len(results["Automação"]) > 0
 
 
 def test_salesforce_assess_feature_readiness() -> None:
     """salesforce: assess_feature_readiness checks config and license."""
     from src.salesforce import assess_feature_readiness
 
-    mock_data = {"results": [{"title": "M", "url": "/m", "type": "module", "points": 10}]}
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
-    with patch("src.salesforce.urlopen", return_value=mock_resp):
-        readiness = assess_feature_readiness(
-            "Automação", {"requires_config": True, "contact_sf": True}
-        )
-        assert readiness.requires_config
-        assert readiness.requires_license
-        assert len(readiness.notes) == 2
+    readiness = assess_feature_readiness("Automação", {"requires_config": True, "contact_sf": True})
+    assert readiness.requires_config
+    assert readiness.requires_license
+    assert len(readiness.notes) == 2
 
 
 def test_salesforce_assess_no_trailhead() -> None:
     """salesforce: assess_feature_readiness notes missing Trailhead."""
     from src.salesforce import assess_feature_readiness
 
-    with patch("src.salesforce.search_trailhead", return_value=[]):
-        readiness = assess_feature_readiness("UnknownCategory")
-        assert len(readiness.trailhead_modules) == 0
-        assert any("Trailhead" in n for n in readiness.notes)
+    readiness = assess_feature_readiness("UnknownCategory")
+    assert len(readiness.trailhead_modules) == 0
+    assert any("Trailhead" in n for n in readiness.notes)
 
 
 def test_salesforce_check_sandbox_ready() -> None:
@@ -6197,18 +6151,11 @@ def test_salesforce_generate_readiness_report() -> None:
     categories = [{"name": "Automação", "count": 81}, {"name": "Commerce", "count": 91}]
     limits = OrgLimits(api_requests_used=100, api_requests_limit=10000)
 
-    mock_data = {"results": [{"title": "M", "url": "/m", "type": "module", "points": 10}]}
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
-    with patch("src.salesforce.urlopen", return_value=mock_resp):
-        report = generate_readiness_report(categories, limits)
-        assert "Prontidão" in report
-        assert "172" in report  # 81 + 91
-        assert "Automação" in report
-        assert "Commerce" in report
+    report = generate_readiness_report(categories, limits)
+    assert "Prontidão" in report
+    assert "172" in report  # 81 + 91
+    assert "Automação" in report
+    assert "Commerce" in report
 
 
 def test_salesforce_generate_readiness_report_not_ready() -> None:
@@ -6292,60 +6239,29 @@ def test_salesforce_detect_new_content(tmp_path: Path) -> None:
     """salesforce: detect_new_trailhead_content returns new modules."""
     from src.salesforce import detect_new_trailhead_content
 
-    mock_data = {
-        "results": [
-            {
-                "title": "Module A",
-                "url": "/module/a",
-                "type": "module",
-                "estimatedTime": "20 mins",
-                "points": 100,
-            },
-            {
-                "title": "Module B",
-                "url": "/module/b",
-                "type": "module",
-                "estimatedTime": "30 mins",
-                "points": 200,
-            },
-        ]
-    }
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
-
     cache_file = tmp_path / "cache.json"
-    cache_file.write_text(json.dumps({"Apex": ["https://trailhead.salesforce.com/old"]}))
+    cache_file.write_text(json.dumps({"Automação": []}))
 
     with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
-        with patch("src.salesforce.urlopen", return_value=mock_resp):
-            new = detect_new_trailhead_content(["Apex"])
-            assert "Apex" in new
-            assert len(new["Apex"]) == 2  # Both are new (old URL doesn't match)
+        new = detect_new_trailhead_content(["Automação"])
+        assert "Automação" in new
+        assert len(new["Automação"]) > 0
 
 
 def test_salesforce_detect_new_content_nothing_new(tmp_path: Path) -> None:
     """salesforce: detect_new_trailhead_content returns {} when no new modules."""
     from src.salesforce import detect_new_trailhead_content
 
-    mock_data = {
-        "results": [
-            {"title": "Module A", "url": "/module/a", "type": "module", "points": 100},
-        ]
-    }
-    mock_resp = MagicMock()
-    mock_resp.read.return_value = json.dumps(mock_data).encode()
-    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
-    mock_resp.__exit__ = MagicMock(return_value=False)
+    # Pre-populate cache with all known URLs
+    from src.salesforce import search_trailhead
 
+    known = search_trailhead("Automação")
     cache_file = tmp_path / "cache.json"
-    cache_file.write_text(json.dumps({"Apex": ["https://trailhead.salesforce.com/module/a"]}))
+    cache_file.write_text(json.dumps({"Automação": [m.url for m in known]}))
 
     with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
-        with patch("src.salesforce.urlopen", return_value=mock_resp):
-            new = detect_new_trailhead_content(["Apex"])
-            assert new == {}
+        new = detect_new_trailhead_content(["Automação"])
+        assert new == {}
 
 
 def test_salesforce_generate_trailhead_update_report_new() -> None:
@@ -6379,6 +6295,43 @@ def test_salesforce_generate_trailhead_update_report_multiple_categories() -> No
     assert "2 novos módulos" in report
     assert "Apex" in report
     assert "Flow" in report
+
+
+def test_salesforce_get_release_trailhead_url() -> None:
+    """salesforce: get_release_trailhead_url generates correct URL."""
+    from src.salesforce import get_release_trailhead_url
+
+    url = get_release_trailhead_url("summer_26")
+    assert "summer-26-release-highlights" in url
+    assert "trailhead.salesforce.com" in url
+
+
+def test_salesforce_get_release_blog_url() -> None:
+    """salesforce: get_release_blog_url generates correct URL."""
+    from src.salesforce import get_release_blog_url
+
+    url = get_release_blog_url("summer_26")
+    assert "summer-26-release" in url
+    assert "salesforce.com/blog" in url
+
+
+def test_salesforce_get_release_community_url() -> None:
+    """salesforce: get_release_community_url returns valid URL."""
+    from src.salesforce import get_release_community_url
+
+    url = get_release_community_url("summer_26")
+    assert "trailblazer-community" in url
+
+
+def test_salesforce_generate_release_resources_section() -> None:
+    """salesforce: generate_release_resources_section generates Trailhead-only markdown."""
+    from src.salesforce import generate_release_resources_section
+
+    section = generate_release_resources_section("summer_26", "Summer '26")
+    assert "Trailhead" in section
+    assert "summer-26-release-highlights" in section
+    assert "Blog" not in section
+    assert "Community" not in section
 
 
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:

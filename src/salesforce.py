@@ -3,8 +3,8 @@
 Provides Trailhead module linking, org limits cross-reference,
 and sandbox deployment readiness checking.
 
-Uses Salesforce Trailhead public API for module search (no auth required).
-Org limits and sandbox checks use Salesforce REST API (requires OAuth).
+Uses a curated mapping of feature categories to Trailhead modules,
+since the Trailhead public API is no longer available.
 """
 
 from __future__ import annotations
@@ -13,14 +13,168 @@ import json
 import logging
 from dataclasses import dataclass, field
 from typing import Any
-from urllib.error import URLError
-from urllib.parse import quote
-from urllib.request import Request, urlopen
 
 logger = logging.getLogger(__name__)
 
-TRAILHEAD_SEARCH_URL = "https://trailhead.salesforce.com/api/v2/trailhead/search?q={query}"
 TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
+
+# Curated mapping of Salesforce feature categories to Trailhead modules
+# Source: https://trailhead.salesforce.com/
+TRAILHEAD_BY_CATEGORY: dict[str, list[dict[str, str]]] = {
+    "Agentforce": [
+        {"title": "Agentforce Basics", "url": "/content/learn/modules/agentforce-basics"},
+        {
+            "title": "Build an Agent with Agentforce",
+            "url": "/content/learn/projects/build-an-agent-with-agentforce",
+        },
+        {
+            "title": "Agentforce for Developers",
+            "url": "/content/learn/modules/agentforce-for-developers",
+        },
+    ],
+    "Análise de dados": [
+        {"title": "Data Analysis with SOQL", "url": "/content/learn/modules/soql-for-admins"},
+        {
+            "title": "Reports & Dashboards for Lightning Experience",
+            "url": "/content/learn/modules/reports_dashboards_lightning_experience",
+        },
+    ],
+    "Automação": [
+        {"title": "Flow Builder Basics", "url": "/content/learn/modules/flow-basics"},
+        {
+            "title": "Flow Builder Strategies",
+            "url": "/content/learn/modules/flow-builder-strategies",
+        },
+        {"title": "Flow Builder Logic", "url": "/content/learn/modules/flow-builder-logic"},
+    ],
+    "Commerce": [
+        {
+            "title": "Commerce Cloud B2C Basics",
+            "url": "/content/learn/modules/commerce-cloud-b2c-basics",
+        },
+        {
+            "title": "B2B Commerce on Lightning Experience",
+            "url": "/content/learn/modules/b2b-commerce-lightning",
+        },
+    ],
+    "Personalização": [
+        {"title": "Lightning App Builder", "url": "/content/learn/modules/lightning_app_builder"},
+        {
+            "title": "Customization Basics & Navigation",
+            "url": "/content/learn/modules/customization_basics",
+        },
+    ],
+    "Data 360": [
+        {"title": "Data Cloud Basics", "url": "/content/learn/modules/data-cloud-basics"},
+        {
+            "title": "Data Cloud Ingestion and Transformation",
+            "url": "/content/learn/modules/data-cloud-ingestion",
+        },
+    ],
+    "Desenvolvimento": [
+        {"title": "Apex Basics & Database", "url": "/content/learn/modules/apex_basics_database"},
+        {
+            "title": "Lightning Web Components Basics",
+            "url": "/content/learn/modules/lex_aura_lwc_lgpd",
+        },
+        {"title": "Apex Triggers", "url": "/content/learn/modules/apex_triggers"},
+        {
+            "title": "Test Automation Strategies",
+            "url": "/content/learn/modules/test_automation_strategies",
+        },
+    ],
+    "Experience Cloud": [
+        {
+            "title": "Digital Experiences Basics",
+            "url": "/content/learn/modules/digital_experiences",
+        },
+    ],
+    "Field Service": [
+        {
+            "title": "Field Service Lightning Basics",
+            "url": "/content/learn/modules/field-service-lightning-basics",
+        },
+        {
+            "title": "Field Service Lightning Dispatch",
+            "url": "/content/learn/modules/field-service-dispatch",
+        },
+    ],
+    "Hyperforce": [
+        {"title": "Hyperforce Basics", "url": "/content/learn/modules/hyperforce-basics"},
+    ],
+    "Setores": [
+        {"title": "Industry Cloud Basics", "url": "/content/learn/modules/industry-cloud-basics"},
+    ],
+    "Marketing": [
+        {
+            "title": "Marketing Cloud Engagement Basics",
+            "url": "/content/learn/modules/marketing-cloud-engagement-basics",
+        },
+        {
+            "title": "Marketing Cloud Account Engagement Basics",
+            "url": "/content/learn/modules/marketing-cloud-account-engagement-basics",
+        },
+    ],
+    "MuleSoft": [
+        {
+            "title": "MuleSoft Composer Basics",
+            "url": "/content/learn/modules/mulesoft-composer-basics",
+        },
+        {
+            "title": "MuleSoft for Salesforce Integration",
+            "url": "/content/learn/modules/mulesoft-for-salesforce-integration",
+        },
+    ],
+    "Aplicativo móvel": [
+        {
+            "title": "Salesforce Mobile App Customization",
+            "url": "/content/learn/modules/salesforce-mobile-app-customization",
+        },
+    ],
+    "OmniStudio": [
+        {"title": "OmniStudio Basics", "url": "/content/learn/modules/omnistudio-basics"},
+    ],
+    "Partner Cloud": [
+        {"title": "Partner Cloud Basics", "url": "/content/learn/modules/partner-cloud-basics"},
+    ],
+    "Gerenciamento de receita": [
+        {"title": "Revenue Cloud Basics", "url": "/content/learn/modules/revenue-cloud-basics"},
+        {"title": "CPQ Basics", "url": "/content/learn/modules/cpq-basics"},
+    ],
+    "Vendas": [
+        {
+            "title": "Sales Cloud for Sales Reps",
+            "url": "/content/learn/modules/sales_cloud_for_sales_reps",
+        },
+        {
+            "title": "Opportunity Management Basics",
+            "url": "/content/learn/modules/opportunity_management_basics",
+        },
+    ],
+    "Integrações do Salesforce para Slack": [
+        {
+            "title": "Slack Basics for Salesforce",
+            "url": "/content/learn/modules/slack-basics-for-salesforce",
+        },
+    ],
+    "Segurança, identidade e privacidade": [
+        {"title": "Security Basics", "url": "/content/learn/modules/security_basics"},
+        {"title": "Identity Basics", "url": "/content/learn/modules/identity_basics"},
+    ],
+    "Serviço": [
+        {
+            "title": "Service Cloud for Lightning Experience",
+            "url": "/content/learn/modules/service-cloud-lightning-experience",
+        },
+        {"title": "Case Management Basics", "url": "/content/learn/modules/case-management-basics"},
+    ],
+    "Outros produtos e serviços do Salesforce": [
+        {
+            "title": "Salesforce Platform App Builder",
+            "url": "/content/learn/modules/platform-app-builder",
+        },
+    ],
+}
 
 
 @dataclass
@@ -74,34 +228,77 @@ class FeatureReadiness:
 def search_trailhead(query: str, max_results: int = 5) -> list[TrailheadModule]:
     """Search Trailhead for modules matching a query.
 
-    Uses the public Trailhead search API (no authentication required).
+    Uses curated mapping of Salesforce feature categories to Trailhead modules.
+    Falls back to URL-based search if category not found in mapping.
     """
-    encoded_query = quote(query)
-    url = TRAILHEAD_SEARCH_URL.format(query=encoded_query)
+    # Direct lookup in curated mapping
+    modules_data = TRAILHEAD_BY_CATEGORY.get(query, [])
 
-    try:
-        req = Request(
-            url, headers={"Accept": "application/json", "User-Agent": "SalesforceReleaseBot/1.0"}
-        )
-        with urlopen(req, timeout=15) as resp:
-            data: dict[str, Any] = json.loads(resp.read().decode("utf-8"))
-    except (URLError, OSError, json.JSONDecodeError) as e:
-        logger.warning("Trailhead search failed for '%s': %s", query, e)
-        return []
+    # If not found, try partial match
+    if not modules_data:
+        for key, value in TRAILHEAD_BY_CATEGORY.items():
+            if query.lower() in key.lower() or key.lower() in query.lower():
+                modules_data = value
+                break
 
     modules: list[TrailheadModule] = []
-    for item in data.get("results", [])[:max_results]:
+    for item in modules_data[:max_results]:
+        url = item.get("url", "")
+        if not url.startswith("http"):
+            url = TRAILHEAD_BASE_URL + url
         modules.append(
             TrailheadModule(
                 title=item.get("title", ""),
-                url=TRAILHEAD_BASE_URL + item.get("url", ""),
-                module_type=item.get("type", ""),
-                estimated_time=item.get("estimatedTime", ""),
-                points=item.get("points", 0),
+                url=url,
+                module_type=item.get("type", "module"),
+                estimated_time=item.get("estimated_time", ""),
+                points=int(item.get("points", 0) or 0),
             )
         )
 
     return modules
+
+
+def get_release_trailhead_url(release_slug: str) -> str:
+    """Get the Trailhead release highlights URL for a release.
+
+    Pattern: https://trailhead.salesforce.com/content/learn/modules/{slug}-release-highlights
+    Example: summer_26 -> summer-26-release-highlights
+    """
+    slug_dash = release_slug.replace("_", "-")
+    return f"{TRAILHEAD_BASE_URL}/content/learn/modules/{slug_dash}-release-highlights"
+
+
+def get_release_blog_url(release_slug: str) -> str:
+    """Get the Salesforce blog post URL for a release.
+
+    Pattern: https://www.salesforce.com/blog/platform-{slug}-release/
+    Example: summer_26 -> summer-26-release
+    """
+    slug_dash = release_slug.replace("_", "-")
+    return f"https://www.salesforce.com/blog/platform-{slug_dash}-release/"
+
+
+def get_release_community_url(release_slug: str) -> str:
+    """Get the Trailblazer Community feed URL for a release.
+
+    This is a general link since community posts don't follow a fixed URL pattern.
+    """
+    return "https://trailhead.salesforce.com/trailblazer-community/feed"
+
+
+def generate_release_resources_section(release_slug: str, release_name: str) -> str:
+    """Generate a markdown section with Trailhead links for a release.
+
+    This section is included at the top of each release's .md files.
+    """
+    trailhead_url = get_release_trailhead_url(release_slug)
+
+    return f"""## 🔗 Trailhead
+
+- [{release_name} Release Highlights]({trailhead_url})
+
+"""
 
 
 def find_related_modules(

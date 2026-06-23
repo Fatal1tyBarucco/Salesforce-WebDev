@@ -345,9 +345,14 @@ def _generate_release_files(
 ) -> list[Path]:
     """Generate per-category .md files for a release."""
 
+    from .salesforce import generate_release_resources_section
+
     release_dir = Path(RELEASES_DIR) / release.slug
     release_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
+
+    # Add Trailhead/resources section to first file only
+    resources_added = False
 
     for cat in categories:
         slug = _slugify_category(cat.name)
@@ -356,6 +361,12 @@ def _generate_release_files(
         total = cat.total_features
 
         lines: list[str] = []
+
+        # Add resources section to first category file
+        if not resources_added:
+            lines.append(generate_release_resources_section(release.slug, release.name))
+            resources_added = True
+
         lines.append(f"## {cat.name}\n")
         lines.append(f"> **{total} recursos** nesta categoria\n")
 
