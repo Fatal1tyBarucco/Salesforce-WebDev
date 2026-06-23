@@ -26,6 +26,24 @@ from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELA
 logger = logging.getLogger(__name__)
 
 
+def is_rate_limited_response(status_code: int | str | None) -> bool:
+    """Check if an HTTP response status code indicates rate limiting (429).
+
+    Args:
+        status_code: HTTP status code as int, str, or None.
+
+    Returns:
+        ``True`` when *status_code* equals 429; ``False`` otherwise
+        (including ``None`` or non-numeric values).
+    """
+    if status_code is None:
+        return False
+    try:
+        return int(status_code) == 429
+    except (TypeError, ValueError):
+        return False
+
+
 def calculate_jittered_delay(base_delay: float, attempt: int) -> float:
     """Calculate exponential backoff delay with jitter.
 

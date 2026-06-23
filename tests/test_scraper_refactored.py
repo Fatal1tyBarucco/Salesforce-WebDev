@@ -4,7 +4,11 @@ import asyncio
 from unittest.mock import AsyncMock, patch
 
 from src.config import RETRY_BASE_DELAY_SECONDS
-from src.scraper import SalesforceReleaseScraper, calculate_jittered_delay
+from src.scraper import (
+    SalesforceReleaseScraper,
+    calculate_jittered_delay,
+    is_rate_limited_response,
+)
 
 # ============================================================
 # calculate_jittered_delay tests
@@ -196,3 +200,41 @@ def test_extract_toc_from_page_success() -> None:
     with patch.object(scraper, "_expand_toc_nodes", new_callable=AsyncMock):
         result = asyncio.run(scraper._extract_toc_from_page("https://example.com", mock_page))
     assert result == toc_html
+
+
+# ============================================================
+# is_rate_limited_response tests
+# ============================================================
+
+
+def test_is_rate_limited_response_returns_bool() -> None:
+    result = is_rate_limited_response(200)
+    assert isinstance(result, bool)
+
+
+def test_is_rate_limited_response_429() -> None:
+    assert is_rate_limited_response(429) is True
+
+
+def test_is_rate_limited_response_200() -> None:
+    assert is_rate_limited_response(200) is False
+
+
+def test_is_rate_limited_response_404() -> None:
+    assert is_rate_limited_response(404) is False
+
+
+def test_is_rate_limited_response_500() -> None:
+    assert is_rate_limited_response(500) is False
+
+
+def test_is_rate_limited_response_429_with_string() -> None:
+    assert is_rate_limited_response("429") is True
+
+
+def test_is_rate_limited_response_non_numeric() -> None:
+    assert is_rate_limited_response("ok") is False
+
+
+def test_is_rate_limited_response_none() -> None:
+    assert is_rate_limited_response(None) is False
