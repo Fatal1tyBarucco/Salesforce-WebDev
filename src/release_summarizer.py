@@ -323,9 +323,6 @@ class ReleaseSummarizer:
 
     def _score_sentences(self, sentences: list[str]) -> list[_SentenceScore]:
         """Score sentences using TF-IDF-inspired scoring."""
-        if not sentences:
-            return []
-
         # Build document frequency
         doc_freq: Counter[str] = Counter()
         doc_sentences: list[set[str]] = []
@@ -341,9 +338,6 @@ class ReleaseSummarizer:
         # Score each sentence
         scored: list[_SentenceScore] = []
         for i, (sent, words) in enumerate(zip(sentences, doc_sentences)):
-            if not words:
-                continue
-
             # TF-IDF score
             tf = Counter(words)
             score = 0.0
