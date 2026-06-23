@@ -3,8 +3,6 @@
 from pathlib import Path
 
 from src.feature_classifier import (
-    ClassificationResult,
-    ClassifiedFeature,
     FeatureClassifier,
     FeatureType,
     ImpactLevel,
