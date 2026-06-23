@@ -75,8 +75,7 @@ def test_analyze_executive_summary(tmp_path: Path) -> None:
     release_dir = tmp_path / "summary"
     release_dir.mkdir()
     (release_dir / "features.md").write_text(
-        "# Features\n\n"
-        "- Important feature with long description\n"
+        "# Features\n\n" "- Important feature with long description\n"
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
@@ -99,9 +98,7 @@ def test_compare_releases(tmp_path: Path) -> None:
     # Create previous release
     prev_dir = tmp_path / "winter_26"
     prev_dir.mkdir()
-    (prev_dir / "features.md").write_text(
-        "# Features\n\n- Bug fix for login\n"
-    )
+    (prev_dir / "features.md").write_text("# Features\n\n- Bug fix for login\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
     comparison = analyzer.compare_releases("summer_26", "winter_26")
@@ -174,9 +171,7 @@ def test_analyze_migration_actions_empty(tmp_path: Path) -> None:
     release_dir = tmp_path / "no_migration"
     release_dir.mkdir()
     (release_dir / "features.md").write_text(
-        "# Features\n\n"
-        "- Bug fix for login\n"
-        "- Improvement for dashboard\n"
+        "# Features\n\n" "- Bug fix for login\n" "- Improvement for dashboard\n"
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
@@ -191,12 +186,8 @@ def test_analyze_skips_dotfiles(tmp_path: Path) -> None:
     """impact_analyzer: skips dotfiles in release directory."""
     release_dir = tmp_path / "dotfiles"
     release_dir.mkdir()
-    (release_dir / ".hidden.md").write_text(
-        "# Hidden\n\n- Hidden feature\n"
-    )
-    (release_dir / "visible.md").write_text(
-        "# Visible\n\n- Important security feature for auth\n"
-    )
+    (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
+    (release_dir / "visible.md").write_text("# Visible\n\n- Important security feature for auth\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
     report = analyzer.analyze("dotfiles")
@@ -228,9 +219,7 @@ def test_analyze_zero_features(tmp_path: Path) -> None:
     """impact_analyzer: handles release with zero extractable features."""
     release_dir = tmp_path / "zero"
     release_dir.mkdir()
-    (release_dir / "empty.md").write_text(
-        "# Empty Release\n\nThis release has no features.\n"
-    )
+    (release_dir / "empty.md").write_text("# Empty Release\n\nThis release has no features.\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
     report = analyzer.analyze("zero")
@@ -242,9 +231,7 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     """impact_analyzer: critical risk level for high-risk release."""
     release_dir = tmp_path / "critical"
     release_dir.mkdir()
-    features = "\n".join(
-        [f"- Breaking change: Remove feature {i}" for i in range(25)]
-    )
+    features = "\n".join([f"- Breaking change: Remove feature {i}" for i in range(25)])
     (release_dir / "features.md").write_text(f"# Features\n\n{features}")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
