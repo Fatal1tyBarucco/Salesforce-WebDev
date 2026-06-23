@@ -1,7 +1,19 @@
-## 🔗 Trailhead
+## 🔗 Trailhead & Recursos
+
+### Módulos Trailhead
 
 - [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+- [Summer '26 Release Highlights (Português)](https://trailhead.salesforce.com/pt-BR/content/learn/modules/summer-26-release-highlights)
 
+### Comunidade Trailblazer
+
+- [Trailblazer Community: Summer '26 Release](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000jAFbF0AW)
+- [Release Notes Discussion](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmKV30AM)
+- [Release Feedback Thread](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmbwr0AA)
+
+### Tópicos
+
+- [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 ## Commerce
 
 Os aprimoramentos do Commerce podem incluir recursos para B2C Commerce, B2B Commerce, Omnichannel Inventory, Order Management, Salesforce Payments e Point of Sale.

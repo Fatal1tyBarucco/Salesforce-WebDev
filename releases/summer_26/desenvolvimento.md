@@ -1,7 +1,19 @@
-## 🔗 Trailhead
+## 🔗 Trailhead & Recursos
+
+### Módulos Trailhead
 
 - [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+- [Summer '26 Release Highlights (Português)](https://trailhead.salesforce.com/pt-BR/content/learn/modules/summer-26-release-highlights)
 
+### Comunidade Trailblazer
+
+- [Trailblazer Community: Summer '26 Release](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000jAFbF0AW)
+- [Release Notes Discussion](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmKV30AM)
+- [Release Feedback Thread](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmbwr0AA)
+
+### Tópicos
+
+- [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 ## Desenvolvimento
 
 Quer você esteja usando componentes do Lightning, o Visualforce, o Apex ou as APIs do Salesforce com sua linguagem de programação favorita, essas melhorias o ajudarão a desenvolver excelentes aplicativos, integrações e pacotes para revender a outras organizações.

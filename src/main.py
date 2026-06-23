@@ -351,9 +351,6 @@ def _generate_release_files(
     release_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
 
-    # Add Trailhead/resources section to first file only
-    resources_added = False
-
     for cat in categories:
         slug = _slugify_category(cat.name)
         file_path = release_dir / f"{slug}.md"
@@ -362,10 +359,8 @@ def _generate_release_files(
 
         lines: list[str] = []
 
-        # Add resources section to first category file
-        if not resources_added:
-            lines.append(generate_release_resources_section(release.slug, release.name))
-            resources_added = True
+        # Add Trailhead section to every category file
+        lines.append(generate_release_resources_section(release.slug, release.name))
 
         lines.append(f"## {cat.name}\n")
         lines.append(f"> **{total} recursos** nesta categoria\n")

@@ -1,7 +1,19 @@
-## 🔗 Trailhead
+## 🔗 Trailhead & Recursos
+
+### Módulos Trailhead
 
 - [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+- [Summer '26 Release Highlights (Português)](https://trailhead.salesforce.com/pt-BR/content/learn/modules/summer-26-release-highlights)
 
+### Comunidade Trailblazer
+
+- [Trailblazer Community: Summer '26 Release](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000jAFbF0AW)
+- [Release Notes Discussion](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmKV30AM)
+- [Release Feedback Thread](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmbwr0AA)
+
+### Tópicos
+
+- [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 ## Vendas
 
 O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cloud em aplicativos e documentação do Salesforce. Aprenda sobre os recursos e atualizações mais recentes para aprimorar a produtividade e as operações da equipe de vendas. A versão Summer '26 inclui atualizações e anúncios que ocorrem de maio a agosto de 2026.

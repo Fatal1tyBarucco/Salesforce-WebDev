@@ -6306,32 +6306,30 @@ def test_salesforce_get_release_trailhead_url() -> None:
     assert "trailhead.salesforce.com" in url
 
 
-def test_salesforce_get_release_blog_url() -> None:
-    """salesforce: get_release_blog_url generates correct URL."""
-    from src.salesforce import get_release_blog_url
+def test_salesforce_get_release_resources() -> None:
+    """salesforce: get_release_resources returns all resource types."""
+    from src.salesforce import get_release_resources
 
-    url = get_release_blog_url("summer_26")
-    assert "summer-26-release" in url
-    assert "salesforce.com/blog" in url
-
-
-def test_salesforce_get_release_community_url() -> None:
-    """salesforce: get_release_community_url returns valid URL."""
-    from src.salesforce import get_release_community_url
-
-    url = get_release_community_url("summer_26")
-    assert "trailblazer-community" in url
+    resources = get_release_resources("summer_26")
+    assert "modules" in resources
+    assert "community" in resources
+    assert "topics" in resources
+    assert len(resources["modules"]) >= 2
+    assert len(resources["community"]) >= 3
+    assert len(resources["topics"]) >= 1
 
 
 def test_salesforce_generate_release_resources_section() -> None:
-    """salesforce: generate_release_resources_section generates Trailhead-only markdown."""
+    """salesforce: generate_release_resources_section generates full markdown."""
     from src.salesforce import generate_release_resources_section
 
     section = generate_release_resources_section("summer_26", "Summer '26")
-    assert "Trailhead" in section
+    assert "Trailhead & Recursos" in section
+    assert "Módulos Trailhead" in section
+    assert "Comunidade Trailblazer" in section
+    assert "Tópicos" in section
     assert "summer-26-release-highlights" in section
-    assert "Blog" not in section
-    assert "Community" not in section
+    assert "trailblazer-community" in section
 
 
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:

@@ -269,36 +269,84 @@ def get_release_trailhead_url(release_slug: str) -> str:
     return f"{TRAILHEAD_BASE_URL}/content/learn/modules/{slug_dash}-release-highlights"
 
 
-def get_release_blog_url(release_slug: str) -> str:
-    """Get the Salesforce blog post URL for a release.
+def get_release_resources(release_slug: str) -> dict[str, list[dict[str, str]]]:
+    """Get all Trailhead resources for a release.
 
-    Pattern: https://www.salesforce.com/blog/platform-{slug}-release/
-    Example: summer_26 -> summer-26-release
+    Returns a dict with categories of resources:
+    - modules: Trailhead learning modules
+    - community: Trailblazer Community posts
+    - topics: Community topics
     """
     slug_dash = release_slug.replace("_", "-")
-    return f"https://www.salesforce.com/blog/platform-{slug_dash}-release/"
+    year = slug_dash.split("-")[1] if "-" in slug_dash else ""  # e.g., "26"
 
+    resources: dict[str, list[dict[str, str]]] = {
+        "modules": [
+            {
+                "title": f"Summer '{year} Release Highlights",
+                "url": f"{TRAILHEAD_BASE_URL}/content/learn/modules/{slug_dash}-release-highlights",
+            },
+            {
+                "title": f"Summer '{year} Release Highlights (Português)",
+                "url": f"{TRAILHEAD_BASE_URL}/pt-BR/content/learn/modules/{slug_dash}-release-highlights",
+            },
+        ],
+        "community": [
+            {
+                "title": f"Trailblazer Community: Summer '{year} Release",
+                "url": f"{TRAILHEAD_BASE_URL}/trailblazer-community/feed/0D5KX00000jAFbF0AW",
+            },
+            {
+                "title": "Release Notes Discussion",
+                "url": f"{TRAILHEAD_BASE_URL}/trailblazer-community/feed/0D5KX00000mmKV30AM",
+            },
+            {
+                "title": "Release Feedback Thread",
+                "url": f"{TRAILHEAD_BASE_URL}/trailblazer-community/feed/0D5KX00000mmbwr0AA",
+            },
+        ],
+        "topics": [
+            {
+                "title": "Release Matrix",
+                "url": f"{TRAILHEAD_BASE_URL}/trailblazer-community/topics/releasematrixpost",
+            },
+        ],
+    }
 
-def get_release_community_url(release_slug: str) -> str:
-    """Get the Trailblazer Community feed URL for a release.
-
-    This is a general link since community posts don't follow a fixed URL pattern.
-    """
-    return "https://trailhead.salesforce.com/trailblazer-community/feed"
+    return resources
 
 
 def generate_release_resources_section(release_slug: str, release_name: str) -> str:
-    """Generate a markdown section with Trailhead links for a release.
+    """Generate a markdown section with all Trailhead resources for a release.
 
-    This section is included at the top of each release's .md files.
+    This section is included in each release's .md files.
     """
-    trailhead_url = get_release_trailhead_url(release_slug)
+    resources = get_release_resources(release_slug)
 
-    return f"""## 🔗 Trailhead
+    lines = ["## 🔗 Trailhead & Recursos\n"]
 
-- [{release_name} Release Highlights]({trailhead_url})
+    # Modules section
+    if resources.get("modules"):
+        lines.append("### Módulos Trailhead\n")
+        for mod in resources["modules"]:
+            lines.append(f"- [{mod['title']}]({mod['url']})")
+        lines.append("")
 
-"""
+    # Community section
+    if resources.get("community"):
+        lines.append("### Comunidade Trailblazer\n")
+        for post in resources["community"]:
+            lines.append(f"- [{post['title']}]({post['url']})")
+        lines.append("")
+
+    # Topics section
+    if resources.get("topics"):
+        lines.append("### Tópicos\n")
+        for topic in resources["topics"]:
+            lines.append(f"- [{topic['title']}]({topic['url']})")
+        lines.append("")
+
+    return "\n".join(lines)
 
 
 def find_related_modules(

@@ -1,7 +1,19 @@
-## 🔗 Trailhead
+## 🔗 Trailhead & Recursos
+
+### Módulos Trailhead
 
 - [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+- [Summer '26 Release Highlights (Português)](https://trailhead.salesforce.com/pt-BR/content/learn/modules/summer-26-release-highlights)
 
+### Comunidade Trailblazer
+
+- [Trailblazer Community: Summer '26 Release](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000jAFbF0AW)
+- [Release Notes Discussion](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmKV30AM)
+- [Release Feedback Thread](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmbwr0AA)
+
+### Tópicos
+
+- [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 ## Personalização
 
 Permissões de modo de exibição de lista mais granulares permitem que os usuários compartilhem seus modos de exibição de lista sem permitir que editem todos os modos de exibição de lista da sua organização. Ajude seus usuários a se manterem sincronizados graças ao suporte para mais 27 fusos horários canônicos de acordo com os padrões IANA. Obtenha autenticação mais robusta e segura com o suporte do adaptador organizacional cruzado do Salesforce Connect para credenciais nomeadas.

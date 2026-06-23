@@ -1,7 +1,19 @@
-## 🔗 Trailhead
+## 🔗 Trailhead & Recursos
+
+### Módulos Trailhead
 
 - [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+- [Summer '26 Release Highlights (Português)](https://trailhead.salesforce.com/pt-BR/content/learn/modules/summer-26-release-highlights)
 
+### Comunidade Trailblazer
+
+- [Trailblazer Community: Summer '26 Release](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000jAFbF0AW)
+- [Release Notes Discussion](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmKV30AM)
+- [Release Feedback Thread](https://trailhead.salesforce.com/trailblazer-community/feed/0D5KX00000mmbwr0AA)
+
+### Tópicos
+
+- [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 ## Aplicativo móvel
 
 O Agentforce Voice agora está disponível ao público em geral para integração em seus aplicativos móveis com o SDK do Agentforce móvel. O aplicativo Salesforce móvel agora oferece suporte a transcrições de reunião habilitadas por IA. Aproveite o gerenciamento de projetos aprimorado no Mobile Publisher.
