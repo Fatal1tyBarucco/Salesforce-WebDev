@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Automação
 
 Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. Faça integrações entre qualquer sistema com a Integração de fluxo. Obtenha ajuda da IA para otimizar e automatizar seus processos de negócios da cadeia de abastecimento com a Agentforce Supply Chain.

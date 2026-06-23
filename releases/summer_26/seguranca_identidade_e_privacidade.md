@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Segurança, identidade e privacidade
 
 Prepare-se para aprimoramentos de segurança novos e futuros. Restaure dados com mais eficiência e obtenha controle sobre operações de backup. Garanta que suas integrações permaneçam conectadas alternando para endereços da Web exclusivos com marca. Cumpra normas padrão com percepções conduzidas por IA.

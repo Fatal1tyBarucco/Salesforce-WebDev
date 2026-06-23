@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Desenvolvimento
 
 Quer você esteja usando componentes do Lightning, o Visualforce, o Apex ou as APIs do Salesforce com sua linguagem de programação favorita, essas melhorias o ajudarão a desenvolver excelentes aplicativos, integrações e pacotes para revender a outras organizações.

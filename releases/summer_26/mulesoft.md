@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## MuleSoft
 
 Use o pacote de produtos MuleSoft Anypoint Platform para conectar e integrar aplicativos, sistemas e dados em sua empresa. Simplifique operações criando e automatizando processos com cliques, em vez de código.

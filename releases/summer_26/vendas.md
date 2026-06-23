@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Vendas
 
 O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cloud em aplicativos e documentação do Salesforce. Aprenda sobre os recursos e atualizações mais recentes para aprimorar a produtividade e as operações da equipe de vendas. A versão Summer '26 inclui atualizações e anúncios que ocorrem de maio a agosto de 2026.

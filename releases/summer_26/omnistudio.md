@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## OmniStudio
 
 O OmniStudio fornece um pacote abrangente de serviços e componentes com pouco código, projetados para criar experiências digitais interessantes específicas do setor. Ele acelera o caminho do desenvolvimento à produção, permitindo que você crie interações guiadas com o cliente usando dados do Salesforce e de fontes externas.

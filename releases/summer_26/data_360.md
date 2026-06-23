@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Data 360
 
 Recursos e alterações do Data 360 são lançados com frequência mensal, portanto, volte em breve para as soluções mais recentes. As alterações incluídas na versão Summer '26 são listadas ao público em geral em junho de 2026.

@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Personalização
 
 Permissões de modo de exibição de lista mais granulares permitem que os usuários compartilhem seus modos de exibição de lista sem permitir que editem todos os modos de exibição de lista da sua organização. Ajude seus usuários a se manterem sincronizados graças ao suporte para mais 27 fusos horários canônicos de acordo com os padrões IANA. Obtenha autenticação mais robusta e segura com o suporte do adaptador organizacional cruzado do Salesforce Connect para credenciais nomeadas.

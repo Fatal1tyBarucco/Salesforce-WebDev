@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Aplicativo móvel
 
 O Agentforce Voice agora está disponível ao público em geral para integração em seus aplicativos móveis com o SDK do Agentforce móvel. O aplicativo Salesforce móvel agora oferece suporte a transcrições de reunião habilitadas por IA. Aproveite o gerenciamento de projetos aprimorado no Mobile Publisher.

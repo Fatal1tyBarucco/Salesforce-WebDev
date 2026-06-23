@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Commerce
 
 Os aprimoramentos do Commerce podem incluir recursos para B2C Commerce, B2B Commerce, Omnichannel Inventory, Order Management, Salesforce Payments e Point of Sale.

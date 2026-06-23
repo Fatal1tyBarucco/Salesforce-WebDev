@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Marketing
 
 Personalize cada momento do engajamento em todo o ciclo de vida do cliente e promova crescimento para seus negócios com os recursos e aprimoramentos de marketing mais recentes do Salesforce.

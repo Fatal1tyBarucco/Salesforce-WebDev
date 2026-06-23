@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Análise de dados
 
 Os aprimoramentos do Analytics incluem recursos novos e atualizados para o Tableau Next, relatórios e painéis do Lightning, relatórios e painéis do Data 360, CRM Analytics, aplicativos inteligentes e Tableau.

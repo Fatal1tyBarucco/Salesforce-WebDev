@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Serviço
 
 Aprenda sobre os recursos e atualizações mais recentes para dar suporte à produtividade e às operações da equipe.

@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Field Service
 
 Aprenda sobre os recursos e atualizações mais recentes para aprimorar a produtividade e as operações da equipe dentro e fora do campo.

@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Setores
 
 Aprenda sobre novos recursos e aprimoramentos nas nuvens de Indústrias.

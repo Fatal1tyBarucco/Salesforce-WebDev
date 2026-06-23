@@ -1,3 +1,7 @@
+## 🔗 Trailhead
+
+- [Summer '26 Release Highlights](https://trailhead.salesforce.com/content/learn/modules/summer-26-release-highlights)
+
 ## Experience Cloud
 
 As verificações de malware para o Salesforce Files agora estão disponíveis ao público em geral. Carregue arquivos de até 10 GB para um site do Aura ou do LWR. Use um pacote de componentes de Autoatendimento com suporte de IA em seu site do Aura ou Lightning Web Runtime para proporcionar experiências de autoatendimento personalizadas. Permita que pessoas que usam serviços de email públicos enviem emails do seu site. Ative o Chatter em novas organizações para adicionar ou acessar recursos dependentes do Chatter em sites do Aura e do LWR.
