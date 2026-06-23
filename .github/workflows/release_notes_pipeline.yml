@@ -35,6 +35,10 @@ on:
           - "false"
           - "true"
 
+concurrency:
+  group: pipeline-${{ github.event_name }}
+  cancel-in-progress: false
+
 env:
   PYTHON_VERSION: "3.14"
   WORKING_DIR: "."

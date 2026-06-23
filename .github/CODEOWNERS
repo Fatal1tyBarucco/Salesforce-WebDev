@@ -1,0 +1,13 @@
+# Code Owners - Salesforce Release Notes Intelligence
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+*       @Fatal1tyBarucco
+
+# Pipeline core
+/src/scraper.py    @Fatal1tyBarucco
+/src/parser.py     @Fatal1tyBarucco
+/src/main.py       @Fatal1tyBarucco
+
+# CI/CD
+/.github/          @Fatal1tyBarucco
