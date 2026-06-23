@@ -220,3 +220,34 @@ def test_tokenize_query_filters_stopwords() -> None:
     assert "quick" in terms
     assert "brown" in terms
     assert "fox" in terms
+
+
+def test_score_document_empty_term_count(tmp_path: Path) -> None:
+    """nl_search: score_document handles empty term count."""
+    from src.nl_search import _IndexedDocument
+
+    engine = NLSearchEngine(base_dir=str(tmp_path))
+    doc = _IndexedDocument(
+        release_slug="test",
+        file_name="test.md",
+        category="Test",
+        content="test content",
+        terms={},
+        term_count=0,
+    )
+
+    score, matched = engine._score_document(doc, {"test"})
+    assert score == 0.0
+    assert matched == []
+
+
+def test_extract_snippet_no_match(tmp_path: Path) -> None:
+    """nl_search: extract_snippet returns first N chars when no match."""
+    engine = NLSearchEngine(base_dir=str(tmp_path))
+    content = "A" * 300
+
+    snippet = engine._extract_snippet(content, {"xyz"})
+
+    assert snippet.startswith("A")
+    assert snippet.endswith("...")
+    assert len(snippet) < len(content)
