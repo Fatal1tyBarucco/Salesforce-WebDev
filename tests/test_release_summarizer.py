@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from src.release_summarizer import ReleaseSummarizer, ReleaseSummary
+from src.release_summarizer import ReleaseSummarizer
 
 
 def test_summarizer_returns_summary(tmp_path: Path) -> None:
