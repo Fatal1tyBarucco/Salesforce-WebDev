@@ -643,6 +643,24 @@ def test_get_aria_level_list_invalid_string_first() -> None:
     assert result == 1
 
 
+def test_get_aria_level_list_non_str_int_first() -> None:
+    """Cover parser.py:245 — first element in list is neither str nor int."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = [{"bad": "value"}]  # type: ignore[list-item]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
+def test_get_aria_level_raw_dict() -> None:
+    """Cover parser.py:253 — raw is a dict (not str, int, or list)."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = {"level": 3}  # type: ignore[assignment]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
 def test_get_label_text_title_list_type() -> None:
     """Cover parser.py:265-269 — title attribute is a list."""
     parser = ReleaseNotesParser()
