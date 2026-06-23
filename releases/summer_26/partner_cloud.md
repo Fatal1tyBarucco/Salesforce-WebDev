@@ -15,17 +15,12 @@
 
 - [Release Matrix](https://trailhead.salesforce.com/trailblazer-community/topics/releasematrixpost)
 
-## Documentação legal
+## Partner Cloud
 
-> **6 recursos** nesta categoria
+> **1 recursos** nesta categoria
 
-Notas de versão anteriores
+Acelere o crescimento dos negócios expandindo a conectividade do parceiro e avançando a transparência de dados por meio do compartilhamento e sincronização de registros seguros. Proporcione experiências de cliente consistentes usando conteúdo de marketing em conformidade com a marca diretamente em sites do Experience Cloud.
 
 | Recurso | Usuários | Admins | Config | Contato |
 | :--- | :---: | :---: | :---: | :---: |
-| **Você está aqui:** ⚠️ | ❌ | ❌ | ❌ | ❌ |
-| **AJUDA DO SALESFORCE** ⚠️ | ❌ | ❌ | ❌ | ❌ |
-| **DOCUMENTAÇÃO** ⚠️ | ❌ | ❌ | ❌ | ❌ |
-| **NOTAS DA VERSÃO DO SALESFORCE** ⚠️ | ❌ | ❌ | ❌ | ❌ |
-| **Como e quando os recursos ficam disponíveis?** ⚠️ | ❌ | ❌ | ❌ | ❌ |
-| **Alguns recursos afetam todos os usuários imediatamente após a ativação da versão. Considere a possibilidade de comunicar essas alterações com antecedência aos usuários para que eles estejam preparados. Outros recursos requerem ação direta de um administrador para que os usuários possam se beneficiar da nova funcionalidade.** ⚠️ | ❌ | ❌ | ❌ | ❌ |
+| **Configurar emails com marca combinada para parceiros no Salesforce Go** | ❌ | ❌ | ✅ | ❌ |
