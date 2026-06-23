@@ -233,12 +233,12 @@ def test_get_aria_level_invalid_value() -> None:
 
 
 def test_get_aria_level_non_string_non_list() -> None:
-    """Cover parser.py:230 — raw is neither str nor list (e.g. int)."""
+    """Cover parser.py — raw is an int (not str, not list)."""
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = 42  # type: ignore[assignment]
     result = parser._get_aria_level(li)
-    assert result == 1
+    assert result == 42
 
 
 def test_get_node_url_href_list() -> None:
@@ -626,12 +626,12 @@ def test_get_aria_level_empty_list() -> None:
 
 
 def test_get_aria_level_list_non_string_first() -> None:
-    """Cover parser.py:243-245 — first element in aria-level list is not a string."""
+    """Cover parser.py — first element in aria-level list is an int."""
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = [42, "4"]  # type: ignore[list-item]
     result = parser._get_aria_level(li)
-    assert result == 1
+    assert result == 42
 
 
 def test_get_aria_level_list_invalid_string_first() -> None:
