@@ -20,7 +20,7 @@ Pipeline automatizado para extração, classificação e versionamento das **Sal
 | :--- | :--- | :---: |
 | 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |
 | 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |
-| 🧪 **Pytest** | Suíte de testes unitários automatizados | `94 testes` |
+| 🧪 **Pytest** | Suíte de testes unitários automatizados | `450+ testes` |
 | 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
 | ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |
 
@@ -48,6 +48,47 @@ A governança do repositório é mantida por meio de processos automatizados que
 4. **PDF**: Download automático do "Release in a Box" via botão da página
 5. **Index**: README.md atualizado com `<details>/<summary>` por categoria
 6. **Deploy**: Jekyll publica no GitHub Pages automaticamente
+
+---
+
+## 🚀 V3 — Production Hardening & Analytics
+
+O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e integração:
+
+### Production Hardening ✅
+
+| Feature | Módulo | Descrição |
+| :--- | :--- | :--- |
+| **Rate Limiter** | `src/scraper.py` | Token-bucket a 2 req/s para evitar throttling do Salesforce |
+| **Circuit Breaker** | `src/scraper.py` | Falha após 3 erros consecutivos, cooldown de 60s |
+| **Graceful Degradation** | `src/scraper.py` | Continua com dados em cache quando fetch falha |
+| **Structured Logging** | `src/logger.py` | JSON + text formatters com correlation IDs |
+| **Health Check** | `src/health.py` | `/health`, `/ready`, `/metrics` (Prometheus) |
+
+### Analytics & Dashboard ✅
+
+| Feature | Módulo | Descrição |
+| :--- | :--- | :--- |
+| **Analytics Dashboard** | `src/analytics.py` | Dashboard HTML estático com SVG (categorias, tendências, confiança) |
+| **Interactive Dashboard** | `src/dashboard.py` | Busca, filtros, comparação lado a lado, heatmap, export CSV/JSON |
+| **REST API** | `src/api.py` | `/releases`, `/releases/{slug}`, `/diff/{a}/{b}` — stdlib HTTP |
+
+### Notifications ✅
+
+| Feature | Módulo | Descrição |
+| :--- | :--- | :--- |
+| **Email Digest** | `src/notifications.py` | Digest HTML via SMTP após cada release |
+| **Slack Webhook** | `src/notifications.py` | Block Kit formatado |
+| **Discord Webhook** | `src/notifications.py` | Embeds formatados |
+| **Profiles** | `src/notifications.py` | Configurável por categoria, unsubscribe management |
+
+### Workflow & Integration ✅
+
+| Feature | Módulo | Descrição |
+| :--- | :--- | :--- |
+| **PR Workflow** | `src/workflow.py` | Cria branch, PR com diff preview, label triage automática |
+| **Trailhead Linking** | `src/salesforce.py` | Busca módulos Trailhead por categoria |
+| **Sandbox Readiness** | `src/salesforce.py` | Verificação de limites org e prontidão de deploy |
 
 ---
 
@@ -244,6 +285,28 @@ A governança do repositório é mantida por meio de processos automatizados que
 | **BeautifulSoup** | Parser HTML para extração de dados estruturados |
 | **Markdown** | Formato de saída para documentação técnica |
 | **MkDocs** | Portal técnico publicado no GitHub Pages |
+| **stdlib HTTP** | REST API e health check server (zero dependências externas) |
+| **smtplib** | Email digest para stakeholders |
+| **gh CLI** | PR workflow e GitHub integration |
+
+### Módulos do Pipeline
+
+| Módulo | Responsabilidade |
+| :--- | :--- |
+| `src/main.py` | Orquestrador: detectar releases, extrair, parse, gerar, atualizar README |
+| `src/scraper.py` | Playwright headless, retries, download PDF, cache de conteúdo |
+| `src/parser.py` | Extração de hierarquia ToC + tabela Feature Impact |
+| `src/generator.py` | Gera arquivos `.md` por categoria |
+| `src/readme_updater.py` | Atualiza seção de releases no README |
+| `src/analytics.py` | Dashboard HTML com gráficos SVG |
+| `src/api.py` | REST API para acesso programático |
+| `src/notifications.py` | Email, Slack, Discord webhooks |
+| `src/dashboard.py` | Dashboard interativo com JS |
+| `src/workflow.py` | PR-based workflow com triage |
+| `src/salesforce.py` | Trailhead linking, org limits, sandbox readiness |
+| `src/ai_automation.py` | Comparação, regressões, quality metrics, triage |
+| `src/health.py` | Health check, readiness, Prometheus metrics |
+| `src/logger.py` | Logging estruturado com correlation IDs |
 
 ---
 
