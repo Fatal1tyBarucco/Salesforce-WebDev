@@ -18,6 +18,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
+from string import Template
 
 from .config import RELEASES_DIR, ReleaseInfo, TopicNode
 
@@ -27,16 +28,16 @@ logger: logging.Logger = logging.getLogger(__name__)
 # Constante de template
 # ---------------------------------------------------------------------------
 
-MARKDOWN_HEADER_TEMPLATE: str = """\
-# {topic_name} — {release_name}
+MARKDOWN_HEADER_TEMPLATE: Template = Template("""\
+# ${topic_name} — ${release_name}
 
-> **Release:** {release_name}
-> **Gerado em:** {generated_at} UTC
-> **Fonte:** {source_url}
+> **Release:** ${release_name}
+> **Gerado em:** ${generated_at} UTC
+> **Fonte:** ${source_url}
 
 ---
 
-"""
+""")
 
 NO_CONTENT_MESSAGE: str = (
     "_Nenhum conteúdo relevante identificado para este tópico nesta release._\n"
@@ -155,12 +156,14 @@ class MarkdownGenerator:
         """
         file_path: Path = release_dir / f"{node.topic_file_slug()}.md"
 
-        header: str = MARKDOWN_HEADER_TEMPLATE.format(
-            topic_name=node.display_name,
-            release_name=release.name,
-            generated_at=generated_at,
-            source_url=source_url,
-        )
+        template_vars: dict[str, str] = {
+            "topic_name": node.display_name or "Untitled",
+            "release_name": release.name or "Unknown Release",
+            "generated_at": generated_at or "N/A",
+            "source_url": source_url or "",
+        }
+
+        header: str = MARKDOWN_HEADER_TEMPLATE.safe_substitute(template_vars)
 
         body: str
         if lines:
