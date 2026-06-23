@@ -231,7 +231,9 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     """impact_analyzer: critical risk level for high-risk release."""
     release_dir = tmp_path / "critical"
     release_dir.mkdir()
-    features = "\n".join([f"- Breaking change: Remove feature {i}" for i in range(25)])
+    features = "\n".join(
+        [f"- Breaking change: Remove feature {i}" for i in range(25)]
+    )
     (release_dir / "features.md").write_text(f"# Features\n\n{features}")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
@@ -240,3 +242,10 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     assert report is not None
     assert report.risk_score >= 0.7
     assert "CRITICAL" in report.executive_summary
+
+
+def test_calculate_risk_score_zero_features() -> None:
+    """impact_analyzer: risk score is 0 for zero features."""
+    analyzer = ImpactAnalyzer()
+    score = analyzer._calculate_risk_score(0, 0, 0, [])
+    assert score == 0.0
