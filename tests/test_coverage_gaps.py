@@ -6699,6 +6699,75 @@ def test_api_generate_openapi_spec() -> None:
     assert "schemas" in spec["components"]
 
 
+def test_api_validate_slug_rejects_traversal() -> None:
+    """api: _validate_slug rejects path traversal attempts."""
+    from src.api import _validate_slug
+
+    assert not _validate_slug("../etc/passwd")
+    assert not _validate_slug("slug/../../etc")
+    assert not _validate_slug("")
+
+
+def test_api_validate_slug_accepts_valid() -> None:
+    """api: _validate_slug accepts valid slugs."""
+    from src.api import _validate_slug
+
+    assert _validate_slug("summer_26")
+    assert _validate_slug("spring_25")
+    assert _validate_slug("test123")
+
+
+def test_api_find_meta_invalid_slug(tmp_path: Path) -> None:
+    """api: _find_meta returns None for invalid slug."""
+    from src.api import _find_meta
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _find_meta("../etc/passwd") is None
+
+
+def test_api_handler_post_invalid_content_length() -> None:
+    """api: POST /graphql with invalid Content-Length returns 400."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/graphql"
+    handler.headers = {"Content-Length": "not-a-number"}
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_POST()
+    assert responses[0][0] == 400
+
+
+def test_readme_updater_missing_end_marker(tmp_path: Path) -> None:
+    """readme_updater: _replace_index_block handles missing end marker."""
+    from src.readme_updater import ReadmeUpdater, README_INDEX_START_MARKER
+
+    updater = ReadmeUpdater(readme_path=str(tmp_path / "README.md"))
+    content = f"# Title\n{README_INDEX_START_MARKER}\nOld content\n# Footer"
+    new_block = f"{README_INDEX_START_MARKER}\nNew content\n<!-- RELEASE_INDEX_END -->\n"
+
+    # Should not raise ValueError
+    result = updater._replace_index_block(content, new_block)
+    assert "New content" in result
+
+
+def test_ai_automation_load_metas_invalid_json(tmp_path: Path) -> None:
+    """ai_automation: _load_all_release_metas handles invalid JSON."""
+    from src.ai_automation import _load_all_release_metas
+
+    d = tmp_path / "bad"
+    d.mkdir()
+    (d / ".meta.json").write_text("not json")
+
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+        result = _load_all_release_metas()
+        assert result == []
+
+
 def test_api_graphql_releases_no_fields(tmp_path: Path) -> None:
     """api: GraphQL releases query with no fields returns all data."""
     from src.api import _execute_graphql

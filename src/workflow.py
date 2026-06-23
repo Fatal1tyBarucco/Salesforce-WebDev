@@ -73,7 +73,12 @@ def create_branch(name: str) -> bool:
 def commit_and_push(message: str, branch: str) -> bool:
     """Stage all changes, commit, and push to the branch."""
     try:
-        subprocess.run(["git", "add", "-A"], capture_output=True, text=True, check=True)
+        subprocess.run(
+            ["git", "add", "releases/", "README.md", "analytics/"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
         subprocess.run(
             ["git", "commit", "-m", message],
             capture_output=True,
@@ -108,7 +113,7 @@ def analyze_changes() -> ChangeAnalysis:
     deletions = 0
 
     for line in result.stdout.split("\n"):
-        if "=>" in line or "=>" in line:
+        if "=>" in line:
             parts = line.split("=>")
             if len(parts) == 2:
                 old = parts[0].strip().strip("{}")

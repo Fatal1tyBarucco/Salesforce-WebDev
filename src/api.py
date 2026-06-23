@@ -51,8 +51,15 @@ def _load_all_metas() -> list[dict[str, Any]]:
     return metas
 
 
+def _validate_slug(slug: str) -> bool:
+    """Validate a slug to prevent path traversal."""
+    return bool(re.match(r"^[a-z0-9_]+$", slug))
+
+
 def _find_meta(slug: str) -> dict[str, Any] | None:
     """Find a release meta by slug."""
+    if not _validate_slug(slug):
+        return None
     meta_path = Path(RELEASES_DIR) / slug / ".meta.json"
     if not meta_path.exists():
         return None
@@ -161,7 +168,6 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
 
     # Simple parser: extract operation and fields
     # { releases { ... } } or { release(slug: "...") { ... } }
-    import re
 
     # Detect query type
     releases_match = re.search(r"releases\s*\{", query)
@@ -171,10 +177,22 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
         query,
     )
 
-    # Extract requested fields from innermost { field1 field2 }
-    fields_match = re.search(r"\{\s*(\w+(?:\s+\w+)*)\s*\}\s*\}", query)
-    fields_str = fields_match.group(1).strip() if fields_match else ""
-    requested_fields = [f.strip() for f in fields_str.split() if f.strip()]
+    # Extract all field names from the query (flat extraction, ignores nesting)
+    requested_fields = list(
+        dict.fromkeys(re.findall(r"\b(\w+)\b", query.split("{", 2)[-1] if "{" in query else query))
+    )
+    # Remove GraphQL keywords
+    graphql_keywords = {
+        "query",
+        "mutation",
+        "subscription",
+        "fragment",
+        "on",
+        "true",
+        "false",
+        "null",
+    }
+    requested_fields = [f for f in requested_fields if f not in graphql_keywords]
 
     def _select_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
         if not fields:
@@ -524,7 +542,11 @@ class APIHandler(BaseHTTPRequestHandler):
             self._respond(404, {"error": "not found"})
             return
 
-        content_length = int(self.headers.get("Content-Length", 0))
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+        except (ValueError, TypeError):
+            self._respond(400, {"error": "invalid Content-Length header"})
+            return
         if content_length == 0:
             self._respond(400, {"error": "empty request body"})
             return

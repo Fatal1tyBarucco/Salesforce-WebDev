@@ -9,6 +9,7 @@ No external dependencies — uses stdlib smtplib, urllib, json, html.
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import smtplib
@@ -97,7 +98,7 @@ def _format_email_html(digest: ReleaseDigest, profile: NotificationProfile) -> s
         highlighted = ""
         if not profile.categories or name in profile.categories:
             highlighted = ' style="background:#eff6ff"'
-        cat_rows += f"<tr{highlighted}><td>{name}</td><td>{count}</td></tr>\n"
+        cat_rows += f"<tr{highlighted}><td>{html.escape(name)}</td><td>{count}</td></tr>\n"
 
     category_list = ", ".join(profile.categories) if profile.categories else "Todas"
 

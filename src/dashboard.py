@@ -132,7 +132,7 @@ def _build_dashboard_data() -> dict[str, Any]:
 
 def generate_dashboard_html(data: dict[str, Any]) -> str:
     """Generate interactive HTML dashboard."""
-    data_json = json.dumps(data, ensure_ascii=False)
+    data_json = json.dumps(data, ensure_ascii=True)
 
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">

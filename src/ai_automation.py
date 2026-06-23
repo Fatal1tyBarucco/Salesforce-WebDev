@@ -312,8 +312,8 @@ def generate_diff_report(current_slug: str, previous_slug: str) -> str:
         else:
             delta = "—"
 
-        prev_str = str(prev) if prev else "—"
-        curr_str = str(curr) if curr else "—"
+        prev_str = str(prev) if prev is not None else "—"
+        curr_str = str(curr) if curr is not None else "—"
         lines.append(f"| {name} | {prev_str} | {curr_str} | {delta} |")
 
     prev_total = sum(previous_cats.values())
@@ -584,8 +584,11 @@ def _load_all_release_metas() -> list[dict[str, Any]]:
     for d in releases_dir.iterdir():
         meta_path = d / ".meta.json"
         if meta_path.exists():
-            meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            metas.append(meta)
+            try:
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                metas.append(meta)
+            except (json.JSONDecodeError, OSError):
+                continue
 
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
@@ -807,14 +810,13 @@ def triage_release(slug: str) -> TriageResult:
             f"Monitorar de perto as {len(predictions.high_risk_categories)} categorias de alto risco"
         )
 
-    # Check for regressions
-    all_slugs = sorted(
-        [d.name for d in Path(RELEASES_DIR).iterdir() if d.is_dir()],
-    )
-    if len(all_slugs) >= 2:
-        prev_slug = [s for s in all_slugs if s != slug]
+    # Check for regressions — sort by release_id, not alphabetically
+    all_metas = _load_all_release_metas()
+    all_slugs_by_id = [m.get("slug", "") for m in all_metas]
+    if len(all_slugs_by_id) >= 2:
+        prev_slug = [s for s in all_slugs_by_id if s != slug]
         if prev_slug:
-            regressions = detect_regressions(slug, prev_slug[0])
+            regressions = detect_regressions(slug, prev_slug[-1])
             if regressions:
                 risk_score += len(regressions) * 15
                 categories_at_risk.extend([r.category for r in regressions])
@@ -830,10 +832,10 @@ def triage_release(slug: str) -> TriageResult:
             suggested_actions.append("Categorias com média alta — verificar consistência")
 
     # Check for new categories
-    if len(all_slugs) >= 2:
-        prev_slug = [s for s in all_slugs if s != slug]
+    if len(all_slugs_by_id) >= 2:
+        prev_slug = [s for s in all_slugs_by_id if s != slug]
         if prev_slug:
-            comparison = compare_releases(slug, prev_slug[0])
+            comparison = compare_releases(slug, prev_slug[-1])
             if comparison.new_categories:
                 risk_score += len(comparison.new_categories) * 3
                 suggested_actions.append(

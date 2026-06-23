@@ -12,6 +12,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
 
+from .config import RELEASES_DIR
+
 logger = logging.getLogger(__name__)
 
 _pipeline_start_time: float = time.monotonic()
@@ -47,7 +49,7 @@ def _get_health_data() -> dict[str, object]:
     """Build health check response data."""
     uptime = time.monotonic() - _pipeline_start_time
 
-    releases_dir = Path("releases")
+    releases_dir = Path(RELEASES_DIR)
     release_count = 0
     total_features = 0
     if releases_dir.exists():

@@ -169,7 +169,13 @@ class ReadmeUpdater:
         Preserva os próprios marcadores no arquivo final.
         """
         start_idx: int = original.index(README_INDEX_START_MARKER)
-        end_idx: int = original.index(README_INDEX_END_MARKER)
+        end_idx: int = original.find(README_INDEX_END_MARKER)
+        if end_idx == -1:
+            logger.error(
+                "[README_UPDATER] End marker '%s' not found. Appending after start marker.",
+                README_INDEX_END_MARKER,
+            )
+            end_idx = len(original)
 
         before: str = original[: start_idx + len(README_INDEX_START_MARKER)]
         after: str = original[end_idx:]

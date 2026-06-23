@@ -70,13 +70,16 @@ class CircuitBreaker:
 
     def record_failure(self) -> None:
         self._failures += 1
-        if self._failures >= self._threshold and self._opened_at == 0.0:
-            self._opened_at = time.monotonic()
-            logger.warning(
-                "Circuit breaker tripped after %d failures, cooling down for %ds",
-                self._failures,
-                self._cooldown,
-            )
+        if self._failures >= self._threshold:
+            now = time.monotonic()
+            # Reset cooldown timer if previous cooldown expired
+            if self._opened_at == 0.0 or (now - self._opened_at) > self._cooldown:
+                self._opened_at = now
+                logger.warning(
+                    "Circuit breaker tripped after %d failures, cooling down for %ds",
+                    self._failures,
+                    self._cooldown,
+                )
 
     @property
     def failure_count(self) -> int:
