@@ -596,3 +596,156 @@ def test_find_link_returns_none_when_no_link() -> None:
     assert isinstance(li, Tag)
     link = parser._find_link(li)
     assert link is None
+
+
+def test_get_node_id_empty_list() -> None:
+    """Cover parser.py:224 — empty list from li.get('id')."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["id"] = []
+    result = parser._get_node_id(li)
+    assert result == ""
+
+
+def test_get_node_id_list_non_string_first() -> None:
+    """Cover parser.py:228 — first element in id list is not a string."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["id"] = [42, "second"]  # type: ignore[list-item]
+    result = parser._get_node_id(li)
+    assert result == ""
+
+
+def test_get_aria_level_empty_list() -> None:
+    """Cover parser.py:238 — empty list from li.get('aria-level')."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = []
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
+def test_get_aria_level_list_non_string_first() -> None:
+    """Cover parser.py:243-245 — first element in aria-level list is not a string."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = [42, "4"]  # type: ignore[list-item]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
+def test_get_aria_level_list_invalid_string_first() -> None:
+    """Cover parser.py:243-244 — first element in aria-level list is non-numeric string."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = ["invalid", "4"]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
+def test_get_label_text_title_list_type() -> None:
+    """Cover parser.py:265-269 — title attribute is a list."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["title"] = ["First Title", "Second Title"]
+    result = parser._get_label_text(li)
+    assert result == "First Title"
+
+
+def test_get_label_text_title_list_empty() -> None:
+    """Cover parser.py:265-269 — title attribute is an empty list."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["title"] = []
+    result = parser._get_label_text(li)
+    assert isinstance(result, str)
+
+
+def test_get_label_text_get_text_non_string() -> None:
+    """Cover parser.py:286 — get_text() returns non-string (edge case)."""
+    parser = ReleaseNotesParser()
+    html = '<li role="treeitem" aria-level="2" id="rn_empty"></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    result = parser._get_label_text(li)
+    assert isinstance(result, str)
+
+
+def test_find_link_div_not_tag() -> None:
+    """Cover parser.py:300 — tree_item_div is not a Tag instance."""
+    parser = ReleaseNotesParser()
+    html = '<li role="treeitem" aria-level="3" id="rn_div_test"><div class="slds-tree__item">text</div></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    link = parser._find_link(li)
+    assert link is None
+
+
+def test_find_link_no_href_in_slds_item() -> None:
+    """Cover parser.py:304 — slds-tree__item div exists but no link inside."""
+    parser = ReleaseNotesParser()
+    html = """
+    <li role="treeitem" aria-level="3" id="rn_no_href">
+        <div class="slds-tree__item">
+            <span>No link here</span>
+        </div>
+    </li>
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    link = parser._find_link(li)
+    assert link is None
+
+
+def test_get_node_url_href_list_empty() -> None:
+    """Cover parser.py:316 — href attribute is an empty list."""
+    parser = ReleaseNotesParser()
+    html = '<li><a href="/s/articleView?id=rn_empty_href">Link</a></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    a_tag = li.find("a")
+    assert a_tag is not None
+    assert isinstance(a_tag, Tag)
+    a_tag["href"] = []
+    result = parser._get_node_url(li)
+    assert result == ""
+
+
+def test_get_node_url_href_list_non_string() -> None:
+    """Cover parser.py:320 — first href in list is not a string."""
+    parser = ReleaseNotesParser()
+    html = '<li><a href="/s/articleView?id=rn_non_string_href">Link</a></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    a_tag = li.find("a")
+    assert a_tag is not None
+    assert isinstance(a_tag, Tag)
+    a_tag["href"] = [42, "other"]  # type: ignore[list-item]
+    result = parser._get_node_url(li)
+    assert result == ""
+
+
+def test_get_node_url_href_empty_string() -> None:
+    """Cover parser.py:323 — href is an empty string."""
+    parser = ReleaseNotesParser()
+    html = '<li><a href="">Empty Link</a></li>'
+    soup = BeautifulSoup(html, "html.parser")
+    li = soup.find("li")
+    assert li is not None
+    assert isinstance(li, Tag)
+    a_tag = li.find("a")
+    assert a_tag is not None
+    assert isinstance(a_tag, Tag)
+    a_tag["href"] = ""
+    result = parser._get_node_url(li)
+    assert result == ""

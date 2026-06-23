@@ -217,60 +217,103 @@ class ReleaseNotesParser:
         return node
 
     def _get_node_id(self, li: Tag) -> str:
+        """Extract node ID from a treeitem element with null-safe access."""
         raw_id = li.get("id", "")
         if isinstance(raw_id, list):
-            raw_id = raw_id[0] if raw_id else ""
-        return re.sub(r"[^a-zA-Z0-9_]", "", raw_id) if raw_id else ""
+            if not raw_id:
+                return ""
+            first_id = raw_id[0]
+            if isinstance(first_id, str) and first_id:
+                return re.sub(r"[^a-zA-Z0-9_]", "", first_id)
+            return ""
+        if isinstance(raw_id, str) and raw_id:
+            return re.sub(r"[^a-zA-Z0-9_]", "", raw_id)
+        return ""
 
     def _get_aria_level(self, li: Tag) -> int:
+        """Extract aria-level from a treeitem element with null-safe access."""
         raw = li.get("aria-level", "1")
         if isinstance(raw, list):
-            raw = raw[0] if raw else "1"
-        if not isinstance(raw, str):
-            raw = "1"
-        try:
-            return int(raw)
-        except (ValueError, TypeError):
+            if not raw:
+                return 1
+            first_level = raw[0]
+            if isinstance(first_level, str):
+                try:
+                    return int(first_level)
+                except (ValueError, TypeError):
+                    return 1
             return 1
+        if isinstance(raw, str):
+            try:
+                return int(raw)
+            except (ValueError, TypeError):
+                return 1
+        return 1
 
     def _get_label_text(self, li: Tag) -> str:
+        """Extract label text from a treeitem element with null-safe access.
+
+        Tries title attribute first, then span.tree-item-label, then
+        div[role="label"], then falls back to first text content.
+        """
         title_attr = li.get("title", "")
-        if title_attr and isinstance(title_attr, str):
+        if isinstance(title_attr, str) and title_attr:
             cleaned = ReleaseNotesParser._clean_text(title_attr)
             if cleaned:
                 return cleaned
+        elif isinstance(title_attr, list) and title_attr:
+            first_title = title_attr[0]
+            if isinstance(first_title, str):
+                cleaned = ReleaseNotesParser._clean_text(first_title)
+                if cleaned:
+                    return cleaned
 
         label_span = li.find("span", class_="tree-item-label")
         if isinstance(label_span, Tag):
-            return ReleaseNotesParser._clean_text(label_span.get_text())
+            text = label_span.get_text()
+            if isinstance(text, str):
+                return ReleaseNotesParser._clean_text(text)
 
         label_div = li.find("div", attrs={"role": "label"})
         if isinstance(label_div, Tag):
-            return ReleaseNotesParser._clean_text(label_div.get_text())
+            text = label_div.get_text()
+            if isinstance(text, str):
+                return ReleaseNotesParser._clean_text(text)
 
         first_text = li.get_text(strip=True)
         return ReleaseNotesParser._clean_text(first_text)
 
     def _find_link(self, li: Tag) -> Tag | None:
-        """Find the <a> tag in a treeitem, checking direct children and slds-tree__item."""
+        """Find the <a> tag in a treeitem with null-safe element access.
+
+        Checks direct children first, then looks inside slds-tree__item div.
+        """
         link = li.find("a", href=True, recursive=False)
         if isinstance(link, Tag):
             return link
         tree_item_div = li.find("div", class_="slds-tree__item")
-        if isinstance(tree_item_div, Tag):
-            link = tree_item_div.find("a", href=True, recursive=False)
-            if isinstance(link, Tag):
-                return link
+        if not isinstance(tree_item_div, Tag):
+            return None
+        link = tree_item_div.find("a", href=True, recursive=False)
+        if isinstance(link, Tag):
+            return link
         return None
 
     def _get_node_url(self, li: Tag) -> str:
+        """Extract URL from a treeitem element with null-safe href access."""
         link = self._find_link(li)
-        if isinstance(link, Tag):
-            href = link.get("href", "")
-            if isinstance(href, list):
-                href = href[0] if href else ""
-            if href:
-                return str(urljoin(SOURCE_BASE, href))
+        if not isinstance(link, Tag):
+            return ""
+        href = link.get("href", "")
+        if isinstance(href, list):
+            if not href:
+                return ""
+            first_href = href[0]
+            if isinstance(first_href, str) and first_href:
+                return str(urljoin(SOURCE_BASE, first_href))
+            return ""
+        if isinstance(href, str) and href:
+            return str(urljoin(SOURCE_BASE, href))
         return ""
 
     def _id_to_slug(self, node_id: str) -> str:

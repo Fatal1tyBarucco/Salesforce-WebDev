@@ -291,17 +291,30 @@ class SalesforceReleaseScraper:
         return await page.content()
 
     async def _expand_toc_nodes(self, page: Page) -> None:
-        """Click collapsed tree nodes in the ToC to reveal all topics."""
+        """Click collapsed tree nodes in the ToC to reveal all topics.
+
+        Checks element visibility and attachment before clicking to prevent
+        stale element exceptions when the DOM updates during iteration.
+        """
         try:
             collapsed = await page.query_selector_all('li[role="treeitem"][aria-expanded="false"]')
+            expanded_count = 0
             for node in collapsed:
                 try:
+                    is_visible = await node.is_visible()
+                    if not is_visible:
+                        continue
+                    box = await node.bounding_box()
+                    if box is None:
+                        continue
+                    await node.scroll_into_view_if_needed()
                     await node.click()
                     await page.wait_for_timeout(300)
+                    expanded_count += 1
                 except Exception:
                     pass
-            if collapsed:
-                logger.info("Expanded %d collapsed ToC nodes", len(collapsed))
+            if expanded_count > 0:
+                logger.info("Expanded %d collapsed ToC nodes", expanded_count)
         except Exception as e:
             logger.debug("ToC expansion skipped: %s", e)
 
@@ -344,7 +357,11 @@ class SalesforceReleaseScraper:
                 await page.close()
 
     async def _extract_toc_from_page(self, url: str, page: Page) -> Optional[str]:
-        """Navigate to URL and extract the ToC container HTML."""
+        """Navigate to URL and extract the ToC container HTML.
+
+        Uses safe element access patterns — checks for None after query_selector
+        and validates inner_html() result before returning.
+        """
         await page.goto(
             url,
             wait_until="domcontentloaded",
@@ -362,15 +379,16 @@ class SalesforceReleaseScraper:
         ]
         for selector in toc_selectors:
             element = await page.query_selector(selector)
-            if element:
-                html = await element.inner_html()
-                if html and len(html) > MIN_TOC_HTML_SIZE:
-                    logger.info(
-                        "ToC extracted with selector '%s' (%d bytes)",
-                        selector,
-                        len(html),
-                    )
-                    return html
+            if element is None:
+                continue
+            html = await element.inner_html()
+            if html and len(html) > MIN_TOC_HTML_SIZE:
+                logger.info(
+                    "ToC extracted with selector '%s' (%d bytes)",
+                    selector,
+                    len(html),
+                )
+                return html
 
         logger.warning("No ToC container found, returning full page HTML")
         return await page.content()
