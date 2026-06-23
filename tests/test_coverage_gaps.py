@@ -5981,6 +5981,255 @@ def test_workflow_diff_preview_with_analysis() -> None:
         assert "linhas" in preview
 
 
+# ============================================================
+# src/salesforce.py tests
+# ============================================================
+
+
+def test_salesforce_search_trailhead_success() -> None:
+    """salesforce: search_trailhead parses API response."""
+    from src.salesforce import search_trailhead
+
+    mock_data = {
+        "results": [
+            {
+                "title": "Module A",
+                "url": "/module/a",
+                "type": "module",
+                "estimatedTime": "20 mins",
+                "points": 100,
+            },
+            {
+                "title": "Module B",
+                "url": "/module/b",
+                "type": "project",
+                "estimatedTime": "30 mins",
+                "points": 200,
+            },
+        ]
+    }
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.salesforce.urlopen", return_value=mock_resp):
+        modules = search_trailhead("Apex")
+        assert len(modules) == 2
+        assert modules[0].title == "Module A"
+        assert modules[0].points == 100
+
+
+def test_salesforce_search_trailhead_failure() -> None:
+    """salesforce: search_trailhead returns [] on error."""
+    from src.salesforce import search_trailhead
+
+    with patch("src.salesforce.urlopen", side_effect=URLError("timeout")):
+        assert search_trailhead("Apex") == []
+
+
+def test_salesforce_search_trailhead_invalid_json() -> None:
+    """salesforce: search_trailhead returns [] on invalid JSON."""
+    from src.salesforce import search_trailhead
+
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = b"not json"
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.salesforce.urlopen", return_value=mock_resp):
+        assert search_trailhead("Apex") == []
+
+
+def test_salesforce_find_related_modules() -> None:
+    """salesforce: find_related_modules aggregates results."""
+    from src.salesforce import find_related_modules
+
+    mock_data = {"results": [{"title": "M1", "url": "/m1", "type": "module", "points": 50}]}
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.salesforce.urlopen", return_value=mock_resp):
+        results = find_related_modules(["Apex", "Flow"])
+        assert "Apex" in results
+        assert "Flow" in results
+        assert len(results["Apex"]) == 1
+
+
+def test_salesforce_assess_feature_readiness() -> None:
+    """salesforce: assess_feature_readiness checks config and license."""
+    from src.salesforce import assess_feature_readiness
+
+    mock_data = {"results": [{"title": "M", "url": "/m", "type": "module", "points": 10}]}
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.salesforce.urlopen", return_value=mock_resp):
+        readiness = assess_feature_readiness(
+            "Automação", {"requires_config": True, "contact_sf": True}
+        )
+        assert readiness.requires_config
+        assert readiness.requires_license
+        assert len(readiness.notes) == 2
+
+
+def test_salesforce_assess_no_trailhead() -> None:
+    """salesforce: assess_feature_readiness notes missing Trailhead."""
+    from src.salesforce import assess_feature_readiness
+
+    with patch("src.salesforce.search_trailhead", return_value=[]):
+        readiness = assess_feature_readiness("UnknownCategory")
+        assert len(readiness.trailhead_modules) == 0
+        assert any("Trailhead" in n for n in readiness.notes)
+
+
+def test_salesforce_check_sandbox_ready() -> None:
+    """salesforce: check_sandbox_readiness returns ready when limits OK."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(
+        api_requests_used=100,
+        api_requests_limit=10000,
+        data_storage_used_mb=100,
+        data_storage_limit_mb=10000,
+    )
+    status = check_sandbox_readiness(limits, 10)
+    assert status.ready
+    assert status.issues == []
+
+
+def test_salesforce_check_sandbox_high_api() -> None:
+    """salesforce: check_sandbox_readiness flags high API usage."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(api_requests_used=9500, api_requests_limit=10000)
+    status = check_sandbox_readiness(limits)
+    assert not status.ready
+    assert any("API" in i for i in status.issues)
+
+
+def test_salesforce_check_sandbox_high_storage() -> None:
+    """salesforce: check_sandbox_readiness flags high storage."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(data_storage_used_mb=9500, data_storage_limit_mb=10000)
+    status = check_sandbox_readiness(limits)
+    assert not status.ready
+    assert any("storage" in i for i in status.issues)
+
+
+def test_salesforce_check_sandbox_high_file_storage() -> None:
+    """salesforce: check_sandbox_readiness flags high file storage."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(file_storage_used_mb=9500, file_storage_limit_mb=10000)
+    status = check_sandbox_readiness(limits)
+    assert not status.ready
+    assert any("File" in i for i in status.issues)
+
+
+def test_salesforce_check_sandbox_high_async() -> None:
+    """salesforce: check_sandbox_readiness flags high async jobs."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(daily_async_jobs_used=950, daily_async_jobs_limit=1000)
+    status = check_sandbox_readiness(limits)
+    assert not status.ready
+    assert any("Async" in i for i in status.issues)
+
+
+def test_salesforce_check_sandbox_large_deployment() -> None:
+    """salesforce: check_sandbox_readiness warns on large deployment."""
+    from src.salesforce import check_sandbox_readiness
+
+    status = check_sandbox_readiness(None, features_to_deploy=600)
+    assert status.ready
+    assert any("Large" in w for w in status.warnings)
+
+
+def test_salesforce_check_sandbox_moderate_deployment() -> None:
+    """salesforce: check_sandbox_readiness warns on moderate deployment."""
+    from src.salesforce import check_sandbox_readiness
+
+    status = check_sandbox_readiness(None, features_to_deploy=300)
+    assert status.ready
+    assert any("Moderate" in w for w in status.warnings)
+
+
+def test_salesforce_check_sandbox_no_limits() -> None:
+    """salesforce: check_sandbox_readiness works without limits."""
+    from src.salesforce import check_sandbox_readiness
+
+    status = check_sandbox_readiness(None, 10)
+    assert status.ready
+    assert status.issues == []
+    assert status.warnings == []
+
+
+def test_salesforce_check_sandbox_api_warnings() -> None:
+    """salesforce: check_sandbox_readiness warns on elevated API."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(api_requests_used=7500, api_requests_limit=10000)
+    status = check_sandbox_readiness(limits)
+    assert status.ready
+    assert any("elevated" in w for w in status.warnings)
+
+
+def test_salesforce_check_sandbox_storage_warnings() -> None:
+    """salesforce: check_sandbox_readiness warns on elevated storage."""
+    from src.salesforce import check_sandbox_readiness, OrgLimits
+
+    limits = OrgLimits(data_storage_used_mb=7500, data_storage_limit_mb=10000)
+    status = check_sandbox_readiness(limits)
+    assert status.ready
+    assert any("elevated" in w for w in status.warnings)
+
+
+def test_salesforce_generate_readiness_report() -> None:
+    """salesforce: generate_readiness_report produces markdown."""
+    from src.salesforce import generate_readiness_report, OrgLimits
+
+    categories = [{"name": "Automação", "count": 81}, {"name": "Commerce", "count": 91}]
+    limits = OrgLimits(api_requests_used=100, api_requests_limit=10000)
+
+    mock_data = {"results": [{"title": "M", "url": "/m", "type": "module", "points": 10}]}
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    with patch("src.salesforce.urlopen", return_value=mock_resp):
+        report = generate_readiness_report(categories, limits)
+        assert "Prontidão" in report
+        assert "172" in report  # 81 + 91
+        assert "Automação" in report
+        assert "Commerce" in report
+
+
+def test_salesforce_generate_readiness_report_not_ready() -> None:
+    """salesforce: generate_readiness_report shows issues when not ready."""
+    from src.salesforce import generate_readiness_report, OrgLimits
+
+    categories = [{"name": "A", "count": 10}]
+    # High API (issue) + moderate storage (warning)
+    limits = OrgLimits(
+        api_requests_used=9500,
+        api_requests_limit=10000,
+        data_storage_used_mb=7500,
+        data_storage_limit_mb=10000,
+    )
+
+    with patch("src.salesforce.search_trailhead", return_value=[]):
+        report = generate_readiness_report(categories, limits)
+        assert "Não Pronta" in report
+        assert "⚠️" in report
+
+
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:
     """api: _parse_category_features handles OSError reading files."""
     from src.api import _parse_category_features

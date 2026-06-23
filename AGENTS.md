@@ -40,6 +40,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | Notifications | `src/notifications.py` | Email digest, Slack/Discord webhooks, configurable profiles |
 | Dashboard | `src/dashboard.py` | Interactive HTML dashboard with search, filter, comparison, heatmap |
 | Workflow | `src/workflow.py` | PR-based workflow with branch creation, diff preview, label triage |
+| Salesforce | `src/salesforce.py` | Trailhead linking, org limits cross-reference, sandbox readiness |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 
