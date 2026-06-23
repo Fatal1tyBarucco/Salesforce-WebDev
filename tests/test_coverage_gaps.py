@@ -6764,3 +6764,35 @@ def test_api_graphql_diff_previous_not_found(tmp_path: Path) -> None:
         result = _execute_graphql('{ diff(current: "summer_26", previous: "nope") { totalDelta } }')
         assert "errors" in result
         assert result["data"]["diff"] is None
+
+
+# ============================================================
+# src/api.py — _safe_path and _parse_category_features coverage
+# ============================================================
+
+
+def test_safe_path_traversal_detected(tmp_path: Path) -> None:
+    """api: _safe_path raises ValueError on path traversal."""
+    from src.api import _safe_path
+
+    try:
+        _safe_path(tmp_path, "../../etc/passwd")
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert "Path traversal" in str(e)
+
+
+def test_safe_path_valid(tmp_path: Path) -> None:
+    """api: _safe_path returns resolved path for valid slug."""
+    from src.api import _safe_path
+
+    result = _safe_path(tmp_path, "summer_26")
+    assert result.is_relative_to(tmp_path.resolve())
+
+
+def test_parse_category_features_invalid_slug(tmp_path: Path) -> None:
+    """api: _parse_category_features returns [] for invalid slug."""
+    from src.api import _parse_category_features
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        assert _parse_category_features("../traversal", "test") == []
