@@ -231,9 +231,7 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     """impact_analyzer: critical risk level for high-risk release."""
     release_dir = tmp_path / "critical"
     release_dir.mkdir()
-    features = "\n".join(
-        [f"- Breaking change: Remove feature {i}" for i in range(25)]
-    )
+    features = "\n".join([f"- Breaking change: Remove feature {i}" for i in range(25)])
     (release_dir / "features.md").write_text(f"# Features\n\n{features}")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
