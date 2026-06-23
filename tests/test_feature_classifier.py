@@ -137,12 +137,8 @@ def test_classify_release_skips_dotfiles(tmp_path: Path) -> None:
     """feature_classifier: skips dotfiles in release directory."""
     release_dir = tmp_path / "dotfiles"
     release_dir.mkdir()
-    (release_dir / ".hidden.md").write_text(
-        "# Hidden\n\n- Hidden feature\n"
-    )
-    (release_dir / "visible.md").write_text(
-        "# Visible\n\n- Important security feature for auth\n"
-    )
+    (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
+    (release_dir / "visible.md").write_text("# Visible\n\n- Important security feature for auth\n")
 
     classifier = FeatureClassifier()
     result = classifier.classify_release("dotfiles", base_dir=str(tmp_path))
