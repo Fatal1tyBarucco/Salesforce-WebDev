@@ -32,9 +32,7 @@ def test_index_all(tmp_path: Path) -> None:
     for name in ["summer_26", "winter_26"]:
         release_dir = tmp_path / name
         release_dir.mkdir()
-        (release_dir / "features.md").write_text(
-            f"# {name}\n\n- Feature for {name}\n"
-        )
+        (release_dir / "features.md").write_text(f"# {name}\n\n- Feature for {name}\n")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
     count = engine.index_all()
@@ -65,9 +63,7 @@ def test_search_returns_empty_for_no_match(tmp_path: Path) -> None:
     """nl_search: search returns empty for no match."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / "features.md").write_text(
-        "# Features\n\n- Security improvement\n"
-    )
+    (release_dir / "features.md").write_text("# Features\n\n- Security improvement\n")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
     engine.index_release("summer_26")
@@ -81,9 +77,7 @@ def test_search_respects_max_results(tmp_path: Path) -> None:
     """nl_search: search respects max_results limit."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    features = "\n".join(
-        [f"- Feature {i}: Important capability for testing" for i in range(20)]
-    )
+    features = "\n".join([f"- Feature {i}: Important capability for testing" for i in range(20)])
     (release_dir / "features.md").write_text(f"# Features\n\n{features}")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
@@ -118,12 +112,10 @@ def test_search_ranks_by_relevance(tmp_path: Path) -> None:
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
     (release_dir / "agentforce.md").write_text(
-        "# Agentforce\n\n## Agentforce Features\n\n"
-        "- Agent capability for customer service\n"
+        "# Agentforce\n\n## Agentforce Features\n\n" "- Agent capability for customer service\n"
     )
     (release_dir / "security.md").write_text(
-        "# Security\n\n## Security Features\n\n"
-        "- Security patch for authentication\n"
+        "# Security\n\n## Security Features\n\n" "- Security patch for authentication\n"
     )
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
@@ -147,12 +139,8 @@ def test_search_skips_dotfiles(tmp_path: Path) -> None:
     """nl_search: skips dotfiles during indexing."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / ".hidden.md").write_text(
-        "# Hidden\n\n- Hidden feature\n"
-    )
-    (release_dir / "visible.md").write_text(
-        "# Visible\n\n- Important visible feature\n"
-    )
+    (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
+    (release_dir / "visible.md").write_text("# Visible\n\n- Important visible feature\n")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
     count = engine.index_release("summer_26")
@@ -164,9 +152,7 @@ def test_search_case_insensitive(tmp_path: Path) -> None:
     """nl_search: search is case insensitive."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / "features.md").write_text(
-        "# Features\n\n- SECURITY improvement for auth\n"
-    )
+    (release_dir / "features.md").write_text("# Features\n\n- SECURITY improvement for auth\n")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
     engine.index_release("summer_26")
@@ -181,9 +167,7 @@ def test_search_multiple_releases(tmp_path: Path) -> None:
     for name in ["summer_26", "winter_26"]:
         release_dir = tmp_path / name
         release_dir.mkdir()
-        (release_dir / "features.md").write_text(
-            f"# {name}\n\n- Feature for {name}\n"
-        )
+        (release_dir / "features.md").write_text(f"# {name}\n\n- Feature for {name}\n")
 
     engine = NLSearchEngine(base_dir=str(tmp_path))
     engine.index_all()
