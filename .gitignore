@@ -23,3 +23,5 @@ site/
 exports/
 releases/test/
 releases/history.json
+notifications/trailhead_cache.json
+analytics/

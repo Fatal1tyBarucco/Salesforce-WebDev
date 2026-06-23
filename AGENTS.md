@@ -42,6 +42,7 @@ Pipeline: **Playwright Scraper → FeatureImpactParser → MarkdownGenerator →
 | Workflow | `src/workflow.py` | PR-based workflow with branch creation, diff preview, label triage |
 | Salesforce | `src/salesforce.py` | Trailhead linking, org limits cross-reference, sandbox readiness |
 | AI | `src/ai_automation.py` | Release comparison, regression detection, quality metrics, triage, deduplication |
+| Health | `src/health.py` | Health check, readiness, Prometheus metrics |
 | Logger | `src/logger.py` | `setup_logging()` for `src/` modules |
 
 ## Python & Tooling

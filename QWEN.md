@@ -8,11 +8,9 @@
 
 | Tecnologia | Propósito |
 |---|---|
-| Python 3.11+ | Linguagem principal |
+| Python 3.14 | Linguagem principal |
 | Playwright | Navegador headless para scraping SPA (Salesforce Help requer JS) |
 | BeautifulSoup4 + lxml | Parsing HTML e extração de links |
-| requests + tenacity | Cliente HTTP com retry |
-| python-slugify | Geração de slugs |
 | MkDocs + Material theme | Site de documentação (GitHub Pages) |
 | pytest | Executor de testes |
 | black + ruff | Formatação e linting |
@@ -20,55 +18,36 @@
 
 ### Arquitetura
 
-O projeto possui **dois módulos paralelos**:
-
-#### 1. `src/` — Módulo Principal (web scraping, Playwright)
-
-Pipeline que busca Release Notes diretamente do Salesforce Help via Playwright:
+O projeto utiliza um pipeline unificado em `src/`:
 
 ```
 src/
-├── main.py           — Orquestrador: fetch índice → parse links → generate markdown
-├── config.py         — Config central: ReleaseInfo, TopicConfig, BASE_URL, releases desde 2025
-├── scraper.py        — Playwright headless scraper (SPA, wait domcontentloaded + scroll)
-├── parser.py         — Extract article links by topic + build content from link titles
-├── generator.py      — Escrita de artefatos Markdown (releases/{slug}/{topic}.md)
-├── readme_updater.py — Atualização automática do índice no README.md
-├── logger.py         — Configuração de logging
+├── main.py              — Orquestrador central
+├── config.py            — Config central: ReleaseInfo, TopicNode, URLs
+├── scraper.py           — Playwright headless scraper (SPA)
+├── parser.py            — FeatureImpactParser + ReleaseNotesParser
+├── generator.py         — Markdown artifact writer
+├── readme_updater.py    — Auto-update README release section
+├── analytics.py         — Static HTML dashboard with SVG charts
+├── api.py               — REST API + GraphQL endpoint
+├── notifications.py     — Email, Slack, Discord webhooks
+├── dashboard.py         — Interactive HTML dashboard with JS
+├── workflow.py          — PR-based workflow with triage
+├── salesforce.py        — Trailhead linking, org limits, sandbox readiness
+├── ai_automation.py     — Release comparison, regressions, quality metrics
+├── health.py            — Health check, readiness, Prometheus metrics
+├── logger.py            — Structured logging with correlation IDs
 ```
 
 **Fluxo do `src/main.py`:**
-1. `SalesforceReleaseScraper.fetch_page(url)` — Busca índice via Playwright
-2. `ReleaseNotesParser.extract_article_links(soup)` — Extrai links por tópico
-3. `ReleaseNotesParser.build_topic_content_from_links()` — Gera resumos com links
-4. `MarkdownGenerator.generate()` — Escreve artefatos .md
-5. `_update_readme()` — Atualiza README.md
+1. `detect_new_release()` — Detecta nova release via comparação de conteúdo
+2. `SalesforceReleaseScraper.fetch_page_raw_text()` — Busca Feature Impact via Playwright
+3. `FeatureImpactParser.parse_text()` — Extrai categorias e features
+4. `_generate_release_files()` — Escreve artefatos .md por categoria
+5. `_update_readme_single()` — Salva .meta.json e atualiza history
+6. `_update_readme_all()` — Atualiza README.md com details/summary blocks
 
 **Salesforce Help é SPA** — requer Playwright com `wait_until="domcontentloaded"` + scroll + manual wait, não funciona com HTTP simples.
-
-#### 2. `automation/` — Módulo Moderno (strategy-based, extensível)
-
-Pipeline com padrão strategy, classificação ponderada e parsing semântico:
-
-```
-automation/
-├── core/        — Lógica de negócio (scraper, parser, classifier, etc.)
-├── shared/      — Constantes, modelos, utilitários (zero dependência de core/)
-├── strategies/  — Strategy pattern (HtmlStrategy)
-└── tests/       — Testes unitários
-```
-
-### Tópicos Monitorados
-
-O pipeline extrai e classifica conteúdo em 5 categorias:
-
-| Tópico | Slug | Keywords / URL Patterns |
-|---|---|---|
-| Apex | `apex` | rn_apex, trigger, batch, soql |
-| Lightning Web Components | `lwc` | rn_lwc, rn_lightning_web, aura, wire |
-| Flow & Automação | `flow` | rn_automate_flow, screen flow, process builder |
-| Segurança & Perms | `security` | rn_security, rn_identity, shield, oauth |
-| Integrações & APIs | `integrations` | rn_api, rn_rest, rn_soap, rn_bulk |
 
 ### Releases Configuradas (desde 2025)
 
@@ -113,7 +92,6 @@ pytest -v
 ruff check .
 black --check .
 mypy src/
-mypy automation/
 ```
 
 ### Site de Documentação
@@ -134,40 +112,29 @@ mkdocs build
 - **Tipos:** mypy strict. TODAS as assinaturas DEVEM ter type annotations.
 - **Imports:** Biblioteca padrão → terceiros → locais.
 - **Docstrings:** Presentes em classes e métodos públicos.
+- **Dataclasses:** Todos os data structures usam `@dataclass`, não Pydantic.
 
 ### Salesforce Help Scraping
 
 - **Obrigatório:** Playwright headless (SPA, `wait_until="domcontentloaded"`)
-- **Estratégia:** load → wait 5s → scroll → wait 2s → find `div.content`
-- **Seletor fallback:** `article`, `#articleViewContent`, `main`, `body`
+- **Estratégia:** load → wait → scroll → extract
 - **Não funciona:** `requests` / `networkidle` (SPA nunca settle, HTTP simples retorna shell vazio)
 
 ### Configuração de Tópicos
 
-**Três registros de keywords** devem ser mantidos em sincronia:
-
-1. `src/config.py` → `MONITORED_TOPICS` (usado pelo `src/` pipeline)
-2. `src/parser.py` → `TOPIC_URL_PATTERNS` (URL path matching para categorizar links)
-3. `automation/shared/constants.py` → `TOPIC_MAPPING` (usado por `TopicClassifier`)
-4. `automation/shared/topic_registry.py` → `TOPIC_REGISTRY` (usado por `WeightedTopicClassifier`)
-
-### Imutabilidade
-
-- Dataclasses de config: `@dataclass(frozen=True)` (ReleaseInfo, TopicConfig)
-- Constantes: `Final` annotation
-- Keywords: `dict[str, list[str]]` module-level constants
+Tópicos são descobertos dinamicamente a partir da árvore de navegação do Salesforce Help (não hardcoded). Use `EXCLUDED_NODE_SLUGS` em `config.py` para filtrar itens não-artigo.
 
 ---
 
 ## CI/CD (GitHub Actions)
 
 ### `release_notes_pipeline.yml`
-- Agendamento semanal + workflow_dispatch + PRs
-- Jobs: lint (ruff + mypy) → extract (pipeline + auto-commit `[skip ci]`)
+- Agendamento semanal + workflow_dispatch
+- Jobs: lint (ruff + mypy) → extract (pipeline + auto-commit)
 - Requer `playwright install chromium` no CI
 
 ### `python-quality.yml`
-- Ruff → Black check → Mypy (em `automation/`)
+- Ruff → Black check → Mypy (em `src/`)
 
 ---
 
@@ -177,11 +144,18 @@ mkdocs build
 |---|---|
 | `src/main.py` | Pipeline principal (web scraping) |
 | `src/scraper.py` | Playwright headless scraper |
-| `src/parser.py` | Article link extraction + topic grouping |
+| `src/parser.py` | FeatureImpactParser + ReleaseNotesParser |
 | `src/config.py` | Releases, tópicos, URLs |
 | `src/generator.py` | Markdown artifact writer |
-| `automation/shared/constants.py` | TOPIC_KEYWORDS + TOPIC_MAPPING |
-| `automation/shared/models.py` | ParsedSection, ClassificationResult |
+| `src/analytics.py` | Static HTML dashboard with SVG charts |
+| `src/api.py` | REST API + GraphQL endpoint |
+| `src/notifications.py` | Email, Slack, Discord webhooks |
+| `src/dashboard.py` | Interactive HTML dashboard |
+| `src/workflow.py` | PR-based workflow |
+| `src/salesforce.py` | Trailhead, org limits, sandbox readiness |
+| `src/ai_automation.py` | Release comparison, regressions, quality metrics |
+| `src/health.py` | Health check, readiness, Prometheus metrics |
+| `src/logger.py` | Structured logging |
 | `pyproject.toml` | black, ruff, mypy, pytest config |
 | `requirements.txt` | Runtime deps (incl. playwright) |
 | `requirements-dev.txt` | Dev tooling (incl. types-beautifulsoup4) |

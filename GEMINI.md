@@ -9,20 +9,23 @@ Plataforma de automação para extração, classificação e versionamento de **
 
 ## 🏗️ Arquitetura do Sistema
 
-O projeto é dividido em dois módulos distintos que operam em paralelo:
+O projeto utiliza um pipeline unificado em `src/`:
 
-### 1. Módulo `src/` (Pipeline Principal de Web Scraping)
+### Pipeline Principal (`src/`)
 Orquestra a busca direta no portal Salesforce Help via Playwright.
 - **main.py**: Orquestrador central.
 - **scraper.py**: Implementação do scraper Playwright headless. **Crítico:** O portal é um SPA, requer espera e scroll.
 - **parser.py**: Extração de links e agrupamento por tópicos.
 - **config.py**: Definições de releases (ids e nomes) e tópicos monitorados.
-
-### 2. Módulo `automation/` (Pipeline Moderno Baseado em Estratégias)
-Design extensível utilizando o padrão Strategy e classificação ponderada.
-- **core/**: Lógica de negócio e orquestração moderna.
-- **shared/**: Modelos e constantes (não deve depender de `core/`).
-- **strategies/**: Implementação de `HtmlStrategy`.
+- **analytics.py**: Dashboard HTML com gráficos SVG.
+- **api.py**: REST API e GraphQL endpoint.
+- **notifications.py**: Email, Slack, Discord webhooks.
+- **dashboard.py**: Dashboard interativo com JS.
+- **workflow.py**: PR-based workflow com triage.
+- **salesforce.py**: Trailhead linking, org limits, sandbox readiness.
+- **ai_automation.py**: Comparação, regressões, quality metrics.
+- **health.py**: Health check, readiness, Prometheus metrics.
+- **logger.py**: Logging estruturado com correlation IDs.
 
 ---
 
@@ -53,11 +56,8 @@ O portal Salesforce Help é uma Single Page Application (SPA) complexa.
 ## 📋 Gerenciamento de Tópicos e Releases
 
 ### Sincronização de Keywords
-Ao adicionar ou modificar tópicos, os seguintes arquivos devem ser mantidos em sincronia:
-1. `src/config.py` (`MONITORED_TOPICS`)
-2. `src/parser.py` (`TOPIC_URL_PATTERNS`)
-3. `automation/shared/constants.py` (`TOPIC_MAPPING`)
-4. `automation/shared/topic_registry.py` (`TOPIC_REGISTRY`)
+Ao adicionar ou modificar tópicos, o seguinte arquivo deve ser mantido:
+1. `src/config.py` (`EXCLUDED_NODE_SLUGS`)
 
 ### Numeração de Releases
 As releases seguem incrementos de 2 no `release_id`:
