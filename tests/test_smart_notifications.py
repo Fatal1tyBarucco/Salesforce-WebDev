@@ -16,8 +16,24 @@ def test_filter_notifications_by_interest():
     user = UserPreferences(user_id="test", interests=["security"])
 
     notifications = [
-        Notification("Security fix", "XSS vulnerability patched", NotificationPriority.HIGH, "security", "summer_26", 0.9, []),
-        Notification("New feature", "Added analytics dashboard", NotificationPriority.NORMAL, "new_feature", "summer_26", 0.5, []),
+        Notification(
+            "Security fix",
+            "XSS vulnerability patched",
+            NotificationPriority.HIGH,
+            "security",
+            "summer_26",
+            0.9,
+            [],
+        ),
+        Notification(
+            "New feature",
+            "Added analytics dashboard",
+            NotificationPriority.NORMAL,
+            "new_feature",
+            "summer_26",
+            0.5,
+            [],
+        ),
     ]
 
     filtered = engine.filter_notifications(notifications, user)
@@ -32,8 +48,24 @@ def test_filter_notifications_by_priority():
     user = UserPreferences(user_id="test", min_priority=NotificationPriority.HIGH)
 
     notifications = [
-        Notification("Urgent fix", "Critical bug", NotificationPriority.URGENT, "bug_fix", "summer_26", 0.9, []),
-        Notification("Minor update", "Cosmetic change", NotificationPriority.LOW, "general", "summer_26", 0.3, []),
+        Notification(
+            "Urgent fix",
+            "Critical bug",
+            NotificationPriority.URGENT,
+            "bug_fix",
+            "summer_26",
+            0.9,
+            [],
+        ),
+        Notification(
+            "Minor update",
+            "Cosmetic change",
+            NotificationPriority.LOW,
+            "general",
+            "summer_26",
+            0.3,
+            [],
+        ),
     ]
 
     filtered = engine.filter_notifications(notifications, user)
@@ -48,8 +80,12 @@ def test_filter_notifications_by_category():
     user = UserPreferences(user_id="test", categories=["security", "performance"])
 
     notifications = [
-        Notification("Security fix", "XSS patch", NotificationPriority.HIGH, "security", "summer_26", 0.9, []),
-        Notification("Bug fix", "Login error", NotificationPriority.NORMAL, "bug_fix", "summer_26", 0.5, []),
+        Notification(
+            "Security fix", "XSS patch", NotificationPriority.HIGH, "security", "summer_26", 0.9, []
+        ),
+        Notification(
+            "Bug fix", "Login error", NotificationPriority.NORMAL, "bug_fix", "summer_26", 0.5, []
+        ),
     ]
 
     filtered = engine.filter_notifications(notifications, user)
@@ -64,8 +100,24 @@ def test_generate_digest(tmp_path: Path) -> None:
     user = UserPreferences(user_id="test", interests=["security"])
 
     notifications = [
-        Notification("Security fix", "XSS patch", NotificationPriority.URGENT, "security", "summer_26", 0.9, []),
-        Notification("Security fix", "Auth patch", NotificationPriority.HIGH, "security", "summer_26", 0.8, []),
+        Notification(
+            "Security fix",
+            "XSS patch",
+            NotificationPriority.URGENT,
+            "security",
+            "summer_26",
+            0.9,
+            [],
+        ),
+        Notification(
+            "Security fix",
+            "Auth patch",
+            NotificationPriority.HIGH,
+            "security",
+            "summer_26",
+            0.8,
+            [],
+        ),
     ]
 
     digest = engine.generate_digest(notifications, user)
@@ -124,8 +176,12 @@ def test_notification_priority_comparison():
 
     notifications = [
         Notification("Low", "Minor", NotificationPriority.LOW, "general", "summer_26", 0.3, []),
-        Notification("Normal", "Update", NotificationPriority.NORMAL, "general", "summer_26", 0.5, []),
-        Notification("High", "Important", NotificationPriority.HIGH, "general", "summer_26", 0.7, []),
+        Notification(
+            "Normal", "Update", NotificationPriority.NORMAL, "general", "summer_26", 0.5, []
+        ),
+        Notification(
+            "High", "Important", NotificationPriority.HIGH, "general", "summer_26", 0.7, []
+        ),
     ]
 
     filtered = engine.filter_notifications(notifications, user)
@@ -141,7 +197,9 @@ def test_empty_interests_matches_all():
     user = UserPreferences(user_id="test", interests=[])
 
     notifications = [
-        Notification("Anything", "Content", NotificationPriority.NORMAL, "general", "summer_26", 0.5, []),
+        Notification(
+            "Anything", "Content", NotificationPriority.NORMAL, "general", "summer_26", 0.5, []
+        ),
     ]
 
     filtered = engine.filter_notifications(notifications, user)
@@ -164,12 +222,8 @@ def test_generate_from_release_skips_dotfiles(tmp_path: Path) -> None:
     """smart_notifications: skips dotfiles in release directory."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / ".hidden.md").write_text(
-        "# Hidden\n\n- Hidden feature\n"
-    )
-    (release_dir / "visible.md").write_text(
-        "# Visible\n\n- Important security feature for auth\n"
-    )
+    (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
+    (release_dir / "visible.md").write_text("# Visible\n\n- Important security feature for auth\n")
 
     engine = SmartNotificationEngine(base_dir=str(tmp_path))
     notifications = engine.generate_from_release("summer_26")
@@ -262,9 +316,7 @@ def test_extract_category_h2_heading(tmp_path: Path) -> None:
     """smart_notifications: extracts category from ## heading."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / "features.md").write_text(
-        "## Agentforce Features\n\n- Important feature\n"
-    )
+    (release_dir / "features.md").write_text("## Agentforce Features\n\n- Important feature\n")
 
     engine = SmartNotificationEngine(base_dir=str(tmp_path))
     notifications = engine.generate_from_release("summer_26")
@@ -277,9 +329,7 @@ def test_extract_category_fallback(tmp_path: Path) -> None:
     """smart_notifications: uses filename as fallback category."""
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    (release_dir / "my_features.md").write_text(
-        "- Feature without heading\n"
-    )
+    (release_dir / "my_features.md").write_text("- Feature without heading\n")
 
     engine = SmartNotificationEngine(base_dir=str(tmp_path))
     notifications = engine.generate_from_release("summer_26")
