@@ -162,7 +162,9 @@ def test_triage_github_issue_returns_none_on_timeout():
 
     triager = IssueTriager(repo="owner/repo")
 
-    with patch("src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)):
+    with patch(
+        "src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)
+    ):
         assert triager.triage_github_issue(123) is None
 
 
@@ -247,7 +249,9 @@ def test_apply_triage_handles_timeout():
         reasoning="Test",
     )
 
-    with patch("src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)):
+    with patch(
+        "src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)
+    ):
         assert triager.apply_triage(result) is False
 
 
