@@ -203,9 +203,7 @@ def test_summarizer_returns_none_for_short_sentences(tmp_path: Path) -> None:
     """release_summarizer: returns None when all sentences are too short."""
     release_dir = tmp_path / "short"
     release_dir.mkdir()
-    (release_dir / "short.md").write_text(
-        "# Short\n\n- A\n- B\n- C\n"
-    )
+    (release_dir / "short.md").write_text("# Short\n\n- A\n- B\n- C\n")
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
     summary = summarizer.summarize("short")
@@ -218,8 +216,7 @@ def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     release_dir = tmp_path / "h2category"
     release_dir.mkdir()
     (release_dir / "features.md").write_text(
-        "## Agentforce Features\n\n"
-        "- Important feature with long description for extraction\n"
+        "## Agentforce Features\n\n" "- Important feature with long description for extraction\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
