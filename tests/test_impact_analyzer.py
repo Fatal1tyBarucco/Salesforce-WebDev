@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.impact_analyzer import ImpactAnalyzer, ImpactReport
+from src.impact_analyzer import ImpactAnalyzer
 
 
 def test_analyze_returns_report(tmp_path: Path) -> None:
