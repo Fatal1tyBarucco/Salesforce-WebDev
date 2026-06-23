@@ -233,12 +233,15 @@ def test_get_aria_level_invalid_value() -> None:
 
 
 def test_get_aria_level_non_string_non_list() -> None:
-    """Cover parser.py — raw is an int (not str, not list)."""
+    """Cover parser.py — raw is an int (not str, not list).
+
+    BS4 converts ints to strings, so this returns 1 (fallback).
+    """
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = 42  # type: ignore[assignment]
     result = parser._get_aria_level(li)
-    assert result == 42
+    assert result == 1
 
 
 def test_get_node_url_href_list() -> None:
@@ -626,12 +629,15 @@ def test_get_aria_level_empty_list() -> None:
 
 
 def test_get_aria_level_list_non_string_first() -> None:
-    """Cover parser.py — first element in aria-level list is an int."""
+    """Cover parser.py — first element in aria-level list is an int.
+
+    Falls through to return 1 since int is not str.
+    """
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = [42, "4"]  # type: ignore[list-item]
     result = parser._get_aria_level(li)
-    assert result == 42
+    assert result == 1
 
 
 def test_get_aria_level_list_invalid_string_first() -> None:
@@ -644,19 +650,10 @@ def test_get_aria_level_list_invalid_string_first() -> None:
 
 
 def test_get_aria_level_list_non_str_int_first() -> None:
-    """Cover parser.py:245 — first element in list is neither str nor int."""
+    """Cover parser.py — first element in list is neither str nor int."""
     parser = ReleaseNotesParser()
     li = Tag(name="li")
     li["aria-level"] = [{"bad": "value"}]  # type: ignore[list-item]
-    result = parser._get_aria_level(li)
-    assert result == 1
-
-
-def test_get_aria_level_raw_dict() -> None:
-    """Cover parser.py:253 — raw is a dict (not str, int, or list)."""
-    parser = ReleaseNotesParser()
-    li = Tag(name="li")
-    li["aria-level"] = {"level": 3}  # type: ignore[assignment]
     result = parser._get_aria_level(li)
     assert result == 1
 

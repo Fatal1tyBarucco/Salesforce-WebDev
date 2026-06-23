@@ -237,14 +237,12 @@ class ReleaseNotesParser:
             if not raw:
                 return 1
             first_level = raw[0]
-            if isinstance(first_level, (str, int)):
+            if isinstance(first_level, str):
                 try:
                     return int(first_level)
                 except (ValueError, TypeError):
                     return 1
             return 1
-        if isinstance(raw, int):
-            return raw
         if isinstance(raw, str):
             try:
                 return int(raw)
