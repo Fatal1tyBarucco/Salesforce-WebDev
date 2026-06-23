@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from src.nl_search import NLSearchEngine, SearchResults
+from src.nl_search import NLSearchEngine
 
 
 def test_index_release(tmp_path: Path) -> None:
