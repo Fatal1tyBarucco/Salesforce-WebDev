@@ -6274,3 +6274,322 @@ def test_api_parse_category_features_oserror_target(tmp_path: Path) -> None:
         with patch.object(Path, "read_text", selective_read):
             features = _parse_category_features("summer_26", "Agentforce")
             assert features == []
+
+
+# ============================================================
+# src/api.py — GraphQL and OpenAPI tests
+# ============================================================
+
+
+def test_api_graphql_releases(tmp_path: Path) -> None:
+    """api: GraphQL releases query returns all releases."""
+    from src.api import _execute_graphql
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [{"name": "A", "count": 50}],
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql("{ releases { name slug totalFeatures } }")
+        assert "data" in result
+        assert len(result["data"]["releases"]) == 1
+        assert result["data"]["releases"][0]["name"] == "Summer '26"
+        assert result["data"]["releases"][0]["totalFeatures"] == 100
+
+
+def test_api_graphql_releases_with_categories(tmp_path: Path) -> None:
+    """api: GraphQL releases query includes categories."""
+    from src.api import _execute_graphql
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [{"name": "A", "count": 50}],
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql("{ releases { name categories } }")
+        cats = result["data"]["releases"][0]["categories"]
+        assert len(cats) == 1
+        assert cats[0]["name"] == "A"
+
+
+def test_api_graphql_release_by_slug(tmp_path: Path) -> None:
+    """api: GraphQL release(slug) query returns single release."""
+    from src.api import _execute_graphql
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql('{ release(slug: "summer_26") { name releaseId } }')
+        assert result["data"]["release"]["name"] == "Summer '26"
+        assert result["data"]["release"]["releaseId"] == 262
+
+
+def test_api_graphql_release_not_found(tmp_path: Path) -> None:
+    """api: GraphQL release(slug) returns error for missing slug."""
+    from src.api import _execute_graphql
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql('{ release(slug: "nope") { name } }')
+        assert result["data"]["release"] is None
+        assert "errors" in result
+
+
+def test_api_graphql_diff(tmp_path: Path) -> None:
+    """api: GraphQL diff query returns comparison."""
+    from src.api import _execute_graphql
+
+    for slug, rid, feats in [("spring_26", 260, 80), ("summer_26", 262, 100)]:
+        d = tmp_path / slug
+        d.mkdir()
+        (d / ".meta.json").write_text(
+            json.dumps(
+                {
+                    "name": slug.replace("_", " ").title(),
+                    "slug": slug,
+                    "release_id": rid,
+                    "total_features": feats,
+                    "categories": [{"name": "A", "count": feats}],
+                }
+            )
+        )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql(
+            '{ diff(current: "summer_26", previous: "spring_26") { totalDelta current } }'
+        )
+        assert result["data"]["diff"]["totalDelta"] == 20
+        assert result["data"]["diff"]["current"] == "Summer 26"
+
+
+def test_api_graphql_diff_not_found(tmp_path: Path) -> None:
+    """api: GraphQL diff returns error for missing release."""
+    from src.api import _execute_graphql
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql('{ diff(current: "nope", previous: "nope2") { totalDelta } }')
+        assert "errors" in result
+
+
+def test_api_graphql_unknown_query() -> None:
+    """api: GraphQL returns error for unknown query."""
+    from src.api import _execute_graphql
+
+    result = _execute_graphql("{ unknown { name } }")
+    assert "errors" in result
+
+
+def test_api_handler_post_graphql(tmp_path: Path) -> None:
+    """api: POST /graphql executes query."""
+    from src.api import APIHandler
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [],
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        handler = APIHandler.__new__(APIHandler)
+        handler.path = "/graphql"
+        handler.headers = {"Content-Length": "50"}
+        query_json = json.dumps({"query": "{ releases { name } }"})
+        handler.rfile = MagicMock()
+        handler.rfile.read.return_value = query_json.encode()
+
+        responses: list[tuple[int, Any]] = []
+
+        def fake_respond(code: int, data: Any) -> None:
+            responses.append((code, data))
+
+        handler._respond = fake_respond  # type: ignore[assignment]
+        handler.do_POST()
+        assert responses[0][0] == 200
+        assert len(responses[0][1]["data"]["releases"]) == 1
+
+
+def test_api_handler_post_empty_body() -> None:
+    """api: POST /graphql with empty body returns 400."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/graphql"
+    handler.headers = {"Content-Length": "0"}
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_POST()
+    assert responses[0][0] == 400
+
+
+def test_api_handler_post_invalid_json() -> None:
+    """api: POST /graphql with invalid JSON returns 400."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/graphql"
+    handler.headers = {"Content-Length": "10"}
+    handler.rfile = MagicMock()
+    handler.rfile.read.return_value = b"not json {{{"
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_POST()
+    assert responses[0][0] == 400
+
+
+def test_api_handler_post_missing_query() -> None:
+    """api: POST /graphql with missing query field returns 400."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/graphql"
+    handler.headers = {"Content-Length": "20"}
+    handler.rfile = MagicMock()
+    handler.rfile.read.return_value = json.dumps({"variables": {}}).encode()
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_POST()
+    assert responses[0][0] == 400
+
+
+def test_api_handler_post_non_graphql_path() -> None:
+    """api: POST /unknown returns 404."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/unknown"
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_POST()
+    assert responses[0][0] == 404
+
+
+def test_api_handler_get_openapi() -> None:
+    """api: GET /openapi.json returns OpenAPI spec."""
+    from src.api import APIHandler
+
+    handler = APIHandler.__new__(APIHandler)
+    handler.path = "/openapi.json"
+    responses: list[tuple[int, Any]] = []
+
+    def fake_respond(code: int, data: Any) -> None:
+        responses.append((code, data))
+
+    handler._respond = fake_respond  # type: ignore[assignment]
+    handler.do_GET()
+    assert responses[0][0] == 200
+    spec = responses[0][1]
+    assert spec["openapi"] == "3.0.3"
+    assert "/releases" in spec["paths"]
+    assert "/graphql" in spec["paths"]
+
+
+def test_api_generate_openapi_spec() -> None:
+    """api: _generate_openapi_spec returns valid spec."""
+    from src.api import _generate_openapi_spec
+
+    spec = _generate_openapi_spec()
+    assert "openapi" in spec
+    assert "paths" in spec
+    assert "components" in spec
+    assert "schemas" in spec["components"]
+
+
+def test_api_graphql_releases_no_fields(tmp_path: Path) -> None:
+    """api: GraphQL releases query with no fields returns all data."""
+    from src.api import _execute_graphql
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [],
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql("{ releases { } }")
+        assert len(result["data"]["releases"]) == 1
+        assert "name" in result["data"]["releases"][0]
+
+
+def test_api_graphql_diff_previous_not_found(tmp_path: Path) -> None:
+    """api: GraphQL diff returns error when previous release not found."""
+    from src.api import _execute_graphql
+
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+            }
+        )
+    )
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _execute_graphql('{ diff(current: "summer_26", previous: "nope") { totalDelta } }')
+        assert "errors" in result
+        assert result["data"]["diff"] is None
