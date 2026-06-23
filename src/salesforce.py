@@ -255,3 +255,86 @@ def generate_readiness_report(
     lines.append("---\n_Gerado automaticamente pelo pipeline de Release Notes_")
 
     return "\n".join(lines)
+
+
+TRAILHEAD_CACHE_FILE = "notifications/trailhead_cache.json"
+
+
+def _load_trailhead_cache() -> dict[str, list[str]]:
+    """Load previously known Trailhead module URLs per category."""
+    from pathlib import Path
+
+    cache_path = Path(TRAILHEAD_CACHE_FILE)
+    if not cache_path.exists():
+        return {}
+    try:
+        data: dict[str, list[str]] = json.loads(cache_path.read_text(encoding="utf-8"))
+        return data
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_trailhead_cache(cache: dict[str, list[str]]) -> None:
+    """Save Trailhead module URLs cache."""
+    from pathlib import Path
+
+    cache_path = Path(TRAILHEAD_CACHE_FILE)
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        logger.warning("Failed to save Trailhead cache")
+
+
+def detect_new_trailhead_content(
+    categories: list[str],
+    max_per_category: int = 5,
+) -> dict[str, list[TrailheadModule]]:
+    """Detect new Trailhead modules since last check.
+
+    Searches Trailhead for each category, compares with cached URLs,
+    and returns only newly discovered modules.
+
+    Returns:
+        Dict mapping category name to list of NEW modules not previously seen.
+    """
+    cache = _load_trailhead_cache()
+    new_modules: dict[str, list[TrailheadModule]] = {}
+
+    for category in categories:
+        modules = search_trailhead(category, max_results=max_per_category)
+        known_urls = set(cache.get(category, []))
+
+        fresh = [m for m in modules if m.url not in known_urls]
+        if fresh:
+            new_modules[category] = fresh
+
+        # Update cache with all current URLs
+        cache[category] = [m.url for m in modules]
+
+    _save_trailhead_cache(cache)
+    return new_modules
+
+
+def generate_trailhead_update_report(
+    new_modules: dict[str, list[TrailheadModule]],
+) -> str:
+    """Generate a markdown report of newly discovered Trailhead content."""
+    if not new_modules:
+        return "## ✅ Trailhead — Sem novidades\n\nNenhum novo módulo encontrado desde a última verificação.\n"
+
+    lines = ["## 🆕 Trailhead — Novos Módulos Detectados\n"]
+
+    total = sum(len(mods) for mods in new_modules.values())
+    lines.append(f"**{total} novos módulos** em {len(new_modules)} categorias:\n")
+
+    for category, modules in sorted(new_modules.items()):
+        lines.append(f"### {category}\n")
+        for mod in modules:
+            time_str = f" ({mod.estimated_time})" if mod.estimated_time else ""
+            points_str = f" — {mod.points} pts" if mod.points else ""
+            lines.append(f"- [{mod.title}]({mod.url}){time_str}{points_str}")
+        lines.append("")
+
+    lines.append("---\n_Gerado automaticamente pelo pipeline de Release Notes_")
+    return "\n".join(lines)

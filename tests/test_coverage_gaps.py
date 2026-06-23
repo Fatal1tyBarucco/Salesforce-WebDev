@@ -6230,6 +6230,157 @@ def test_salesforce_generate_readiness_report_not_ready() -> None:
         assert "⚠️" in report
 
 
+# ============================================================
+# src/salesforce.py — auto-detect Trailhead tests
+# ============================================================
+
+
+def test_salesforce_load_trailhead_cache_empty(tmp_path: Path) -> None:
+    """salesforce: _load_trailhead_cache returns {} when no file."""
+    from src.salesforce import _load_trailhead_cache
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "cache.json")):
+        assert _load_trailhead_cache() == {}
+
+
+def test_salesforce_load_trailhead_cache_invalid(tmp_path: Path) -> None:
+    """salesforce: _load_trailhead_cache returns {} on invalid JSON."""
+    from src.salesforce import _load_trailhead_cache
+
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text("not json")
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
+        assert _load_trailhead_cache() == {}
+
+
+def test_salesforce_load_trailhead_cache_with_data(tmp_path: Path) -> None:
+    """salesforce: _load_trailhead_cache loads cached URLs."""
+    from src.salesforce import _load_trailhead_cache
+
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text(json.dumps({"Apex": ["https://trailhead.salesforce.com/m1"]}))
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
+        cache = _load_trailhead_cache()
+        assert cache["Apex"] == ["https://trailhead.salesforce.com/m1"]
+
+
+def test_salesforce_save_trailhead_cache(tmp_path: Path) -> None:
+    """salesforce: _save_trailhead_cache writes cache file."""
+    from src.salesforce import _save_trailhead_cache
+
+    cache_file = tmp_path / "cache.json"
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
+        _save_trailhead_cache({"Apex": ["url1"]})
+        assert cache_file.exists()
+        data = json.loads(cache_file.read_text())
+        assert data["Apex"] == ["url1"]
+
+
+def test_salesforce_save_trailhead_cache_oserror() -> None:
+    """salesforce: _save_trailhead_cache handles OSError."""
+    from src.salesforce import _save_trailhead_cache
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", "/nonexistent/dir/cache.json"):
+        # Should not raise
+        _save_trailhead_cache({"A": []})
+
+
+def test_salesforce_detect_new_content(tmp_path: Path) -> None:
+    """salesforce: detect_new_trailhead_content returns new modules."""
+    from src.salesforce import detect_new_trailhead_content
+
+    mock_data = {
+        "results": [
+            {
+                "title": "Module A",
+                "url": "/module/a",
+                "type": "module",
+                "estimatedTime": "20 mins",
+                "points": 100,
+            },
+            {
+                "title": "Module B",
+                "url": "/module/b",
+                "type": "module",
+                "estimatedTime": "30 mins",
+                "points": 200,
+            },
+        ]
+    }
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text(json.dumps({"Apex": ["https://trailhead.salesforce.com/old"]}))
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
+        with patch("src.salesforce.urlopen", return_value=mock_resp):
+            new = detect_new_trailhead_content(["Apex"])
+            assert "Apex" in new
+            assert len(new["Apex"]) == 2  # Both are new (old URL doesn't match)
+
+
+def test_salesforce_detect_new_content_nothing_new(tmp_path: Path) -> None:
+    """salesforce: detect_new_trailhead_content returns {} when no new modules."""
+    from src.salesforce import detect_new_trailhead_content
+
+    mock_data = {
+        "results": [
+            {"title": "Module A", "url": "/module/a", "type": "module", "points": 100},
+        ]
+    }
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = json.dumps(mock_data).encode()
+    mock_resp.__enter__ = MagicMock(return_value=mock_resp)
+    mock_resp.__exit__ = MagicMock(return_value=False)
+
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text(json.dumps({"Apex": ["https://trailhead.salesforce.com/module/a"]}))
+
+    with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(cache_file)):
+        with patch("src.salesforce.urlopen", return_value=mock_resp):
+            new = detect_new_trailhead_content(["Apex"])
+            assert new == {}
+
+
+def test_salesforce_generate_trailhead_update_report_new() -> None:
+    """salesforce: generate_trailhead_update_report with new modules."""
+    from src.salesforce import generate_trailhead_update_report, TrailheadModule
+
+    modules = [
+        TrailheadModule("Module A", "https://trailhead.salesforce.com/a", "module", "20 mins", 100)
+    ]
+    report = generate_trailhead_update_report({"Apex": modules})
+    assert "Novos Módulos" in report
+    assert "Module A" in report
+    assert "100 pts" in report
+
+
+def test_salesforce_generate_trailhead_update_report_empty() -> None:
+    """salesforce: generate_trailhead_update_report with no new modules."""
+    from src.salesforce import generate_trailhead_update_report
+
+    report = generate_trailhead_update_report({})
+    assert "Sem novidades" in report
+
+
+def test_salesforce_generate_trailhead_update_report_multiple_categories() -> None:
+    """salesforce: generate_trailhead_update_report handles multiple categories."""
+    from src.salesforce import generate_trailhead_update_report, TrailheadModule
+
+    modules_a = [TrailheadModule("M1", "https://t/a", "module", "", 50)]
+    modules_b = [TrailheadModule("M2", "https://t/b", "project", "30 mins", 200)]
+    report = generate_trailhead_update_report({"Apex": modules_a, "Flow": modules_b})
+    assert "2 novos módulos" in report
+    assert "Apex" in report
+    assert "Flow" in report
+
+
 def test_api_parse_category_features_oserror(tmp_path: Path) -> None:
     """api: _parse_category_features handles OSError reading files."""
     from src.api import _parse_category_features
