@@ -56,23 +56,19 @@ def _validate_slug(slug: str) -> bool:
     return bool(re.match(r"^[a-z0-9_]+$", slug))
 
 
-def _safe_path(base: Path, slug: str) -> Path:
-    """Build a path safely, ensuring no traversal beyond base directory."""
-    resolved = (base / slug).resolve()
-    if not resolved.is_relative_to(base.resolve()):
-        raise ValueError(f"Path traversal detected: {slug}")
-    return resolved
-
-
 def _find_meta(slug: str) -> dict[str, Any] | None:
     """Find a release meta by slug."""
     if not _validate_slug(slug):
         return None
-    meta_path = _safe_path(Path(RELEASES_DIR), slug) / ".meta.json"
-    if not meta_path.exists():
+    base = Path(RELEASES_DIR).resolve()
+    meta_path = (base / slug).resolve()
+    if not meta_path.is_relative_to(base):
+        return None
+    meta_file = meta_path / ".meta.json"
+    if not meta_file.exists():
         return None
     try:
-        result: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
+        result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
     except (json.JSONDecodeError, OSError):
         return None
@@ -82,7 +78,10 @@ def _parse_category_features(slug: str, category_name: str) -> list[dict[str, An
     """Parse features from a category markdown file."""
     if not _validate_slug(slug):
         return []
-    releases_dir = _safe_path(Path(RELEASES_DIR), slug)
+    base = Path(RELEASES_DIR).resolve()
+    releases_dir = (base / slug).resolve()
+    if not releases_dir.is_relative_to(base):
+        return []
     if not releases_dir.exists():
         return []
 

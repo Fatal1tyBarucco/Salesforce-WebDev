@@ -6772,22 +6772,35 @@ def test_api_graphql_diff_previous_not_found(tmp_path: Path) -> None:
 
 
 def test_safe_path_traversal_detected(tmp_path: Path) -> None:
-    """api: _safe_path raises ValueError on path traversal."""
-    from src.api import _safe_path
+    """api: _find_meta returns None on path traversal attempt."""
+    from src.api import _find_meta
 
-    try:
-        _safe_path(tmp_path, "../../etc/passwd")
-        assert False, "Should have raised ValueError"
-    except ValueError as e:
-        assert "Path traversal" in str(e)
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _find_meta("../../etc/passwd")
+        assert result is None
+
+
+def test_find_meta_bypasses_validate(tmp_path: Path) -> None:
+    """api: _find_meta returns None when resolved path escapes base."""
+    from src.api import _find_meta
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with patch("src.api._validate_slug", return_value=True):
+            result = _find_meta("../../../etc/passwd")
+            assert result is None
 
 
 def test_safe_path_valid(tmp_path: Path) -> None:
-    """api: _safe_path returns resolved path for valid slug."""
-    from src.api import _safe_path
+    """api: _find_meta works with valid slug."""
+    from src.api import _find_meta
 
-    result = _safe_path(tmp_path, "summer_26")
-    assert result.is_relative_to(tmp_path.resolve())
+    d = tmp_path / "summer_26"
+    d.mkdir()
+    (d / ".meta.json").write_text(json.dumps({"name": "test"}))
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        result = _find_meta("summer_26")
+        assert result is not None
+        assert result["name"] == "test"
 
 
 def test_parse_category_features_invalid_slug(tmp_path: Path) -> None:
@@ -6796,3 +6809,12 @@ def test_parse_category_features_invalid_slug(tmp_path: Path) -> None:
 
     with patch("src.api.RELEASES_DIR", str(tmp_path)):
         assert _parse_category_features("../traversal", "test") == []
+
+
+def test_parse_category_features_bypasses_validate(tmp_path: Path) -> None:
+    """api: _parse_category_features returns [] when resolved path escapes base."""
+    from src.api import _parse_category_features
+
+    with patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with patch("src.api._validate_slug", return_value=True):
+            assert _parse_category_features("../../../etc/passwd", "test") == []
