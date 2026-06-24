@@ -7,15 +7,27 @@ __pycache__/
 .mypy_cache/
 .coverage
 htmlcov/
+*.egg-info/
+dist/
+build/
 
 # Environments
 .env
+.env.*
 .venv
 venv/
 ENV/
 
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
 # OS
 .DS_Store
+Thumbs.db
 
 # Project specific
 cache/
@@ -25,3 +37,7 @@ releases/test/
 releases/history.json
 notifications/trailhead_cache.json
 analytics/
+
+# Tool artifacts
+.mimocode/
+docs/compose/
