@@ -234,17 +234,10 @@ class ReleaseNotesParser:
         """Extract aria-level from a treeitem element with null-safe access."""
         raw = li.get("aria-level", "1")
         if isinstance(raw, list):
-            if not raw:
-                return 1
-            first_level = raw[0]
-            if isinstance(first_level, str):
-                try:
-                    return int(first_level)
-                except (ValueError, TypeError):
-                    return 1
-            return 1
+            raw = raw[0] if raw else "1"
+        value = str(raw) if raw is not None else "1"
         try:
-            return int(raw)
+            return int(value)
         except (ValueError, TypeError):
             return 1
 
