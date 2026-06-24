@@ -3,7 +3,6 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 from src.config import ReleaseInfo, TopicNode
 from src.generator import MarkdownGenerator
-from src.readme_updater import ReadmeUpdater
 from src.scraper import SalesforceReleaseScraper
 
 
@@ -103,96 +102,6 @@ def test_markdown_generator_list_releases(tmp_path: Path) -> None:
     assert len(releases) == 1
     assert releases[0][0] == "summer_26"
     assert "apex" in releases[0][1]
-
-
-def test_readme_updater_update_flow(tmp_path: Path) -> None:
-    readme_file = tmp_path / "README.md"
-    readme_file.write_text(
-        "Some Header\n<!-- RELEASE_INDEX_START -->\nold index\n<!-- RELEASE_INDEX_END -->\nSome Footer"
-    )
-
-    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(tmp_path))
-
-    summer_dir = tmp_path / "summer_26"
-    summer_dir.mkdir()
-    (summer_dir / "apex.md").write_text("details")
-
-    with patch(
-        "src.readme_updater.KNOWN_RELEASES",
-        [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")],
-    ):
-        success = updater.update()
-        assert success is True
-
-        content = readme_file.read_text()
-        assert "<!-- RELEASE_INDEX_START -->" in content
-        assert "Summer '26" in content
-        assert "[✅ Ver](./releases/summer_26/apex.md)" in content
-
-
-def test_readme_updater_dynamic_topics(tmp_path: Path) -> None:
-    readme_file = tmp_path / "README.md"
-    readme_file.write_text("<!-- RELEASE_INDEX_START -->\nold\n<!-- RELEASE_INDEX_END -->")
-
-    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(tmp_path))
-
-    summer_dir = tmp_path / "summer_26"
-    summer_dir.mkdir()
-    (summer_dir / "development.md").write_text("dev content")
-    (summer_dir / "security.md").write_text("sec content")
-
-    winter_dir = tmp_path / "winter_26"
-    winter_dir.mkdir()
-    (winter_dir / "development.md").write_text("dev content")
-
-    with patch(
-        "src.readme_updater.KNOWN_RELEASES",
-        [
-            ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
-            ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
-        ],
-    ):
-        success = updater.update()
-        assert success is True
-
-        content = readme_file.read_text()
-        assert "Development" in content
-        assert "Security" in content
-        assert "[✅ Ver](./releases/summer_26/development.md)" in content
-        assert "[✅ Ver](./releases/winter_26/development.md)" in content
-
-
-def test_readme_updater_non_existent_readme(tmp_path: Path) -> None:
-    readme_file = tmp_path / "README_NEW.md"
-    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(tmp_path))
-
-    with patch("src.readme_updater.KNOWN_RELEASES", []):
-        success = updater.update()
-        assert success is True
-        assert readme_file.exists()
-        content = readme_file.read_text()
-        assert "<!-- RELEASE_INDEX_START -->" in content
-        assert "<!-- RELEASE_INDEX_END -->" in content
-
-
-def test_readme_updater_missing_markers(tmp_path: Path) -> None:
-    readme_file = tmp_path / "README_NO_MARKERS.md"
-    readme_file.write_text("No markers inside this file at all.")
-    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(tmp_path))
-
-    success = updater.update()
-    assert success is False
-
-
-def test_readme_updater_non_existent_releases_dir(tmp_path: Path) -> None:
-    readme_file = tmp_path / "README.md"
-    readme_file.write_text("<!-- RELEASE_INDEX_START -->\nold\n<!-- RELEASE_INDEX_END -->")
-    non_existent = tmp_path / "non_existent_releases"
-    updater = ReadmeUpdater(readme_path=str(readme_file), releases_dir=str(non_existent))
-
-    with patch("src.readme_updater.KNOWN_RELEASES", []):
-        success = updater.update()
-        assert success is True
 
 
 def test_scraper_fetch_page_success() -> None:

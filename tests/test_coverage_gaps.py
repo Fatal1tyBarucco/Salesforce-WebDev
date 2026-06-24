@@ -6694,19 +6694,6 @@ def test_api_handler_post_invalid_content_length() -> None:
     assert responses[0][0] == 400
 
 
-def test_readme_updater_missing_end_marker(tmp_path: Path) -> None:
-    """readme_updater: _replace_index_block handles missing end marker."""
-    from src.readme_updater import ReadmeUpdater, README_INDEX_START_MARKER
-
-    updater = ReadmeUpdater(readme_path=str(tmp_path / "README.md"))
-    content = f"# Title\n{README_INDEX_START_MARKER}\nOld content\n# Footer"
-    new_block = f"{README_INDEX_START_MARKER}\nNew content\n<!-- RELEASE_INDEX_END -->\n"
-
-    # Should not raise ValueError
-    result = updater._replace_index_block(content, new_block)
-    assert "New content" in result
-
-
 def test_ai_automation_load_metas_invalid_json(tmp_path: Path) -> None:
     """ai_automation: _load_all_release_metas handles invalid JSON."""
     from src.ai_automation import _load_all_release_metas

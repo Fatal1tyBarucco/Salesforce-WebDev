@@ -49,9 +49,6 @@ RETRY_BASE_DELAY_SECONDS: Final[float] = 2.0  # backoff exponencial: 2^n
 MAX_CONCURRENT_PAGES: Final[int] = 4
 ARTICLE_FETCH_TIMEOUT_SECONDS: Final[int] = 45
 RELEASES_DIR: Final[str] = "releases"
-README_PATH: Final[str] = "README.md"
-README_INDEX_START_MARKER: Final[str] = "<!-- RELEASE_INDEX_START -->"
-README_INDEX_END_MARKER: Final[str] = "<!-- RELEASE_INDEX_END -->"
 
 USER_AGENT: Final[str] = (
     "Mozilla/5.0 (compatible; SalesforceReleaseBot/1.0; "
