@@ -14,7 +14,7 @@ jobs:
   auto-fix:
     name: Auto-fix Alert
     runs-on: ubuntu-latest
-    if: github.event.alert.state == 'open'
+    if: github.event_name == 'code_scanning_alert' && github.event.alert.state == 'open'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
