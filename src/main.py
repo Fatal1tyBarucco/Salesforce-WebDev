@@ -369,8 +369,8 @@ def _generate_release_files(
             lines.append(f"{cat.description}\n")
 
         if cat.entries:
-            lines.append("| Recurso | Usuários | Admins | Config | Contato |")
-            lines.append("| :--- | :---: | :---: | :---: | :---: |")
+            lines.append("| Recurso | Usuários | Admins | Config | Contato | Docs |")
+            lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
             for entry in cat.entries:
                 lines.append(_format_entry_table(entry))
             lines.append("")
@@ -378,8 +378,8 @@ def _generate_release_files(
         for sub_name, sub_entries in cat.subcategories.items():
             if sub_entries:
                 lines.append(f"### {sub_name}\n")
-                lines.append("| Recurso | Usuários | Admins | Config | Contato |")
-                lines.append("| :--- | :---: | :---: | :---: | :---: |")
+                lines.append("| Recurso | Usuários | Admins | Config | Contato | Docs |")
+                lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
                 for entry in sub_entries:
                     lines.append(_format_entry_table(entry))
                 lines.append("")
@@ -396,16 +396,18 @@ def _check(conf: bool) -> str:
     return "✅" if conf else "❌"
 
 
-def _format_entry_table(entry: FeatureImpactEntry) -> str:
+def _format_entry_table(entry: FeatureImpactEntry, docs_url: str = "") -> str:
     flag = ""
     if entry.confidence < 0.7:
         flag = " ⚠️"
+    docs_link = f" [🔗]({docs_url})" if docs_url else ""
     return (
         f"| **{entry.name}**{flag} "
         f"| {_check(entry.available_users)} "
         f"| {_check(entry.available_admins)} "
         f"| {_check(entry.requires_config)} "
-        f"| {_check(entry.contact_sf)} |"
+        f"| {_check(entry.contact_sf)} "
+        f"|{docs_link} |"
     )
 
 
