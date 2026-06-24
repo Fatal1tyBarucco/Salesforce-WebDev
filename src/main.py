@@ -612,7 +612,7 @@ def _update_readme_all() -> None:
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
-            link = f"./releases/{slug}/{cat_slug}.md"
+            link = f"./releases/{slug}/pt_BR/{cat_slug}.md"
 
             lines.append("\n<details>")
             lines.append(f"<summary><b>📄 {cat_name} ({count} recursos)</b></summary>\n")
