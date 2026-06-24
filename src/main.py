@@ -345,7 +345,7 @@ def _generate_release_files(
 ) -> list[Path]:
     """Generate per-category .md files for a release."""
 
-    from .salesforce import generate_release_resources_section
+    from .salesforce import generate_category_trailhead_section
 
     release_dir = Path(RELEASES_DIR) / release.slug
     release_dir.mkdir(parents=True, exist_ok=True)
@@ -359,15 +359,17 @@ def _generate_release_files(
 
         lines: list[str] = []
 
-        # Add Trailhead section to every category file
-        lines.append(generate_release_resources_section(release.slug, release.name))
-
+        # 1. Category heading
         lines.append(f"## {cat.name}\n")
+
+        # 2. Feature count
         lines.append(f"> **{total} recursos** nesta categoria\n")
 
+        # 3. Optional description
         if cat.description:
             lines.append(f"{cat.description}\n")
 
+        # 4. Feature table (main entries)
         if cat.entries:
             lines.append("| Recurso | Usuários | Admins | Config | Contato | Docs |")
             lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
@@ -375,6 +377,7 @@ def _generate_release_files(
                 lines.append(_format_entry_table(entry))
             lines.append("")
 
+        # 5. Subcategory tables
         for sub_name, sub_entries in cat.subcategories.items():
             if sub_entries:
                 lines.append(f"### {sub_name}\n")
@@ -383,6 +386,20 @@ def _generate_release_files(
                 for entry in sub_entries:
                     lines.append(_format_entry_table(entry))
                 lines.append("")
+
+        # 6. Category-specific Trailhead (NEW - after content)
+        trailhead_section = generate_category_trailhead_section(cat.name, release.slug)
+        lines.append(trailhead_section)
+
+        # 7. Resources footer
+        lines.append("## 📚 Recursos\n")
+        lines.append("- [📄 Release in a Box PDF](./release-in-a-box.pdf)")
+        lines.append(
+            f"- [🔗 Feature Impact Page](https://help.salesforce.com/s/articleView?"
+            f"id=release-notes.rn_feature_impact.htm&release={release.release_id}"
+            f"&type=5&language=pt_BR)"
+        )
+        lines.append("")
 
         body = "\n".join(lines) if lines else "_Sem recursos nesta categoria._\n"
         file_path.write_text(body, encoding="utf-8")
