@@ -214,7 +214,10 @@ def generate_changelog() -> str:
     for d in releases_dir.iterdir():
         meta_path = d / ".meta.json"
         if meta_path.exists():
-            metas.append(json.loads(meta_path.read_text(encoding="utf-8")))
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            total = sum(c.get("count", 0) for c in meta.get("categories", []))
+            if total > 0:
+                metas.append(meta)
 
     metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
 
@@ -345,6 +348,9 @@ def generate_quality_report() -> str:
         metrics = calculate_quality_metrics(d.name)
 
         if not metrics:
+            continue
+
+        if metrics.total_features == 0:
             continue
 
         lines.append(f"## {name}\n")
@@ -586,7 +592,9 @@ def _load_all_release_metas() -> list[dict[str, Any]]:
         if meta_path.exists():
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
-                metas.append(meta)
+                total = sum(c.get("count", 0) for c in meta.get("categories", []))
+                if total > 0:
+                    metas.append(meta)
             except (json.JSONDecodeError, OSError):
                 continue
 
