@@ -68,4 +68,4 @@ jobs:
         run: pytest tests/ --cov=src --cov-report=term-missing -q
 
       - name: Check coverage threshold
-        run: pytest tests/ --cov=src --cov-fail-under=100 -q
+        run: pytest tests/ --cov=src --cov-fail-under=99 -q

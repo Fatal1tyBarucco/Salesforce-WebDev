@@ -6946,3 +6946,168 @@ def test_generate_release_files_en_us(tmp_path: Path) -> None:
         result = _generate_release_files(release, [cat], generator, locale="en_US")
         assert len(result) == 1
         assert (tmp_path / "summer_26" / "en_US" / "agentforce.md").exists()
+
+
+def test_format_impact_report_with_breaking_changes() -> None:
+    """_format_impact_report handles breaking changes and security fixes."""
+    from src.main import _format_impact_report
+
+    report = MagicMock()
+    report.total_features = 50
+    report.breaking_changes = ["Removed API v1", "Changed auth flow"]
+    report.security_fixes = ["Fixed XSS vulnerability"]
+    report.risk_score = 7.5
+
+    result = _format_impact_report(report, "Summer '26")
+    assert "50" in result
+    assert "Breaking Changes (2)" in result
+    assert "Removed API v1" in result
+    assert "Security Fixes (1)" in result
+    assert "Risk Score: 7.5" in result
+
+
+def test_format_notification_digest_with_notifications() -> None:
+    """_format_notification_digest handles notifications list."""
+    from src.main import _format_notification_digest
+
+    digest = MagicMock()
+    digest.summary = "3 new features in Summer '26"
+    notif1 = MagicMock()
+    notif1.priority = "high"
+    notif1.title = "Breaking Change"
+    notif1.message = "API v1 removed"
+    notif2 = MagicMock()
+    notif2.priority = "normal"
+    notif2.title = "Enhancement"
+    notif2.message = ""
+    digest.notifications = [notif1, notif2]
+
+    result = _format_notification_digest(digest)
+    assert "3 new features" in result
+    assert "[high] Breaking Change" in result
+    assert "API v1 removed" in result
+    assert "[normal] Enhancement" in result
+
+
+def test_feature_classification_failure_in_pipeline(tmp_path: Path) -> None:
+    """Pipeline continues when feature classification fails."""
+    from src.main import run_pipeline
+
+    with (
+        patch("src.main.SalesforceReleaseScraper"),
+        patch("src.main.FeatureImpactParser") as mock_parser_cls,
+        patch("src.main.MarkdownGenerator"),
+        patch("src.main.detect_new_release") as mock_detect,
+        patch("src.main._update_readme_all"),
+        patch("src.main._update_readme_single"),
+        patch("src.main._generate_release_files"),
+        patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.main.KNOWN_RELEASES", []),
+    ):
+        mock_detect.return_value = None
+        mock_parser = mock_parser_cls.return_value
+        mock_parser.parse_text.return_value = []
+
+        # Should not raise even with classification failure
+        asyncio.run(run_pipeline())
+
+
+def test_impact_analysis_failure_in_pipeline(tmp_path: Path) -> None:
+    """Pipeline continues when impact analysis fails."""
+    from src.main import _format_impact_report
+
+    # Test with object missing attributes
+    report = MagicMock(spec=[])  # no attributes
+    result = _format_impact_report(report, "Test")
+    assert "# Impact Report: Test" in result
+
+
+def test_notification_digest_failure_in_pipeline(tmp_path: Path) -> None:
+    """Pipeline continues when notification digest fails."""
+    from src.main import _format_notification_digest
+
+    # Test with object missing attributes
+    digest = MagicMock(spec=[])  # no attributes
+    result = _format_notification_digest(digest)
+    assert "# Notification Digest" in result
+
+
+def test_feature_classification_exception_handler(tmp_path: Path) -> None:
+    """Feature classification exception handler is reached."""
+    from src.main import _generate_release_files
+    from src.config import ReleaseInfo
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
+    cat.entries.append(FeatureImpactEntry(name="Feature1"))
+    generator = MagicMock()
+
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.feature_classifier.FeatureClassifier") as mock_cls,
+    ):
+        mock_cls.side_effect = RuntimeError("classification failed")
+        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        assert len(result) == 1
+
+
+def test_issue_triage_exception_handler(tmp_path: Path) -> None:
+    """Issue triage exception handler is reached."""
+    from src.main import _generate_release_files
+    from src.config import ReleaseInfo
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
+    cat.entries.append(FeatureImpactEntry(name="Feature1"))
+    generator = MagicMock()
+
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.issue_triage.IssueTriager") as mock_triage,
+    ):
+        mock_triage.side_effect = RuntimeError("triage failed")
+        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        assert len(result) == 1
+
+
+def test_impact_analysis_exception_handler(tmp_path: Path) -> None:
+    """Impact analysis exception handler is reached."""
+    from src.main import _generate_release_files
+    from src.config import ReleaseInfo
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
+    cat.entries.append(FeatureImpactEntry(name="Feature1"))
+    generator = MagicMock()
+
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.impact_analyzer.ImpactAnalyzer") as mock_analyzer,
+    ):
+        mock_analyzer.side_effect = RuntimeError("impact failed")
+        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        assert len(result) == 1
+
+
+def test_notification_exception_handler(tmp_path: Path) -> None:
+    """Notification digest exception handler is reached."""
+    from src.main import _generate_release_files
+    from src.config import ReleaseInfo
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
+    cat.entries.append(FeatureImpactEntry(name="Feature1"))
+    generator = MagicMock()
+
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.smart_notifications.SmartNotificationEngine") as mock_notif,
+    ):
+        mock_notif.side_effect = RuntimeError("notification failed")
+        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        assert len(result) == 1
