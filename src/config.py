@@ -70,6 +70,62 @@ EXCLUDED_NODE_SLUGS: Final[frozenset[str]] = frozenset(
     }
 )
 
+# Mapeamento de nomes de categorias pt_BR → slug em inglês
+ENGLISH_CATEGORY_SLUGS: Final[dict[str, str]] = {
+    "Agentforce": "agentforce",
+    "Análise de dados": "data-analysis",
+    "Automação": "automation",
+    "Commerce": "commerce",
+    "Personalização": "customization",
+    "Data 360": "data-360",
+    "Desenvolvimento": "development",
+    "Experience Cloud": "experience-cloud",
+    "Field Service": "field-service",
+    "Hyperforce": "hyperforce",
+    "Setores": "industries",
+    "Marketing": "marketing",
+    "MuleSoft": "mulesoft",
+    "Aplicativo móvel": "mobile-app",
+    "OmniStudio": "omnistudio",
+    "Partner Cloud": "partner-cloud",
+    "Gerenciamento de receita": "revenue-management",
+    "Vendas": "sales",
+    "Integrações do Salesforce para Slack": "salesforce-slack-integrations",
+    "Segurança, identidade e privacidade": "security-identity-privacy",
+    "Serviço": "service",
+    "Outros produtos e serviços do Salesforce": "other-salesforce-products",
+    "Documentação legal": "legal-documentation",
+    "Salesforce geral": "salesforce-general",
+}
+
+# Mapeamento de nomes de categorias pt_BR → nome em inglês
+ENGLISH_CATEGORY_NAMES: Final[dict[str, str]] = {
+    "Agentforce": "Agentforce",
+    "Análise de dados": "Data Analysis",
+    "Automação": "Automation",
+    "Commerce": "Commerce",
+    "Personalização": "Customization",
+    "Data 360": "Data 360",
+    "Desenvolvimento": "Development",
+    "Experience Cloud": "Experience Cloud",
+    "Field Service": "Field Service",
+    "Hyperforce": "Hyperforce",
+    "Setores": "Industries",
+    "Marketing": "Marketing",
+    "MuleSoft": "MuleSoft",
+    "Aplicativo móvel": "Mobile App",
+    "OmniStudio": "OmniStudio",
+    "Partner Cloud": "Partner Cloud",
+    "Gerenciamento de receita": "Revenue Management",
+    "Vendas": "Sales",
+    "Integrações do Salesforce para Slack": "Salesforce Slack Integrations",
+    "Segurança, identidade e privacidade": "Security, Identity & Privacy",
+    "Serviço": "Service",
+    "Outros produtos e serviços do Salesforce": "Other Salesforce Products",
+    "Documentação legal": "Legal Documentation",
+    "Salesforce geral": "Salesforce General",
+}
+
 # ---------------------------------------------------------------------------
 # Mapeamento de Releases Conhecidas
 # release_id corresponde ao parâmetro ?release= da URL oficial do Salesforce.
