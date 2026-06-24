@@ -65,7 +65,7 @@ def test_generate_release_files() -> None:
 
             release_dir = Path(tmpdir) / "test_release"
             assert release_dir.exists()
-            md_files = list(release_dir.glob("*.md"))
+            md_files = list(release_dir.rglob("*.md"))
             assert len(md_files) >= 1
             content = md_files[0].read_text()
             assert "Feature One" in content

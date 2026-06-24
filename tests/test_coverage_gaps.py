@@ -151,7 +151,7 @@ def test_generate_release_files_with_categories(tmp_path: Path) -> None:
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         result = _generate_release_files(release, [cat], generator)
         assert len(result) == 1
-        assert (tmp_path / "test" / "test_category.md").exists()
+        assert (tmp_path / "test" / "pt_BR" / "test_category.md").exists()
 
 
 def test_update_readme_single(tmp_path: Path) -> None:
@@ -1199,7 +1199,7 @@ def test_generate_release_files_with_subcategories(tmp_path: Path) -> None:
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         result = _generate_release_files(release, [cat], generator)
         assert len(result) == 1
-        content = (tmp_path / "test" / "test_category.md").read_text()
+        content = (tmp_path / "test" / "pt_BR" / "test_category.md").read_text()
         assert "Feature1" in content
         assert "Sub1" in content
         assert "SubFeature1" in content
@@ -1214,7 +1214,7 @@ def test_generate_release_files_empty_body(tmp_path: Path) -> None:
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
         result = _generate_release_files(release, [cat], generator)
         assert len(result) == 1
-        content = (tmp_path / "test" / "empty_category.md").read_text()
+        content = (tmp_path / "test" / "pt_BR" / "empty_category.md").read_text()
         assert "Empty Category" in content
 
 

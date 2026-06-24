@@ -126,6 +126,39 @@ ENGLISH_CATEGORY_NAMES: Final[dict[str, str]] = {
     "Salesforce geral": "Salesforce General",
 }
 
+BILINGUAL_TEMPLATES: Final[dict[str, dict[str, str]]] = {
+    "pt_BR": {
+        "features_header": "Recurso",
+        "users_header": "Usuários",
+        "admins_header": "Admins",
+        "config_header": "Config",
+        "contact_header": "Contato",
+        "docs_header": "Docs",
+        "trailhead_section": "## 🎓 Módulos Trailhead Relacionados",
+        "resources_section": "## 📚 Recursos",
+        "no_modules": "Nenhum módulo específico encontrado para",
+        "resource_pdf": "📄 Release in a Box PDF",
+        "resource_feature_impact": "🔗 Feature Impact Page",
+        "empty_category": "_Sem recursos nesta categoria._",
+        "category_count_suffix": "recursos",
+    },
+    "en_US": {
+        "features_header": "Feature",
+        "users_header": "Users",
+        "admins_header": "Admins",
+        "config_header": "Config",
+        "contact_header": "Contact",
+        "docs_header": "Docs",
+        "trailhead_section": "## 🎓 Related Trailhead Modules",
+        "resources_section": "## 📚 Resources",
+        "no_modules": "No specific modules found for",
+        "resource_pdf": "📄 Release in a Box PDF",
+        "resource_feature_impact": "🔗 Feature Impact Page",
+        "empty_category": "_No features in this category._",
+        "category_count_suffix": "features",
+    },
+}
+
 # ---------------------------------------------------------------------------
 # Mapeamento de Releases Conhecidas
 # release_id corresponde ao parâmetro ?release= da URL oficial do Salesforce.

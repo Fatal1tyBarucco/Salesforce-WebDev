@@ -19,6 +19,9 @@ from pathlib import Path
 from typing import Any
 
 from .config import (
+    BILINGUAL_TEMPLATES,
+    ENGLISH_CATEGORY_NAMES,
+    ENGLISH_CATEGORY_SLUGS,
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
     RELEASES_DIR,
@@ -221,7 +224,8 @@ async def run_pipeline() -> None:
             categories = impact_parser.parse_text(raw_text)
             logger.info("Parsed %d categories from feature impact", len(categories))
 
-            _generate_release_files(release, categories, generator)
+            for locale in ["pt_BR", "en_US"]:
+                _generate_release_files(release, categories, generator, locale=locale)
             _update_readme_single(release, categories)
 
     _update_readme_all()
@@ -342,37 +346,49 @@ def _generate_release_files(
     release: ReleaseInfo,
     categories: list[FeatureImpactCategory],
     generator: MarkdownGenerator,
+    locale: str = "pt_BR",
 ) -> list[Path]:
-    """Generate per-category .md files for a release."""
+    """Generate per-category .md files for a release in a specific locale."""
 
     from .salesforce import generate_category_trailhead_section
 
-    release_dir = Path(RELEASES_DIR) / release.slug
+    templates = BILINGUAL_TEMPLATES[locale]
+    release_dir = Path(RELEASES_DIR) / release.slug / locale
     release_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
 
     for cat in categories:
         slug = _slugify_category(cat.name)
+        if locale == "en_US":
+            slug = ENGLISH_CATEGORY_SLUGS.get(cat.name, slug)
+
         file_path = release_dir / f"{slug}.md"
 
         total = cat.total_features
+        cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
 
         lines: list[str] = []
 
         # 1. Category heading
-        lines.append(f"## {cat.name}\n")
+        lines.append(f"## {cat_name}\n")
 
         # 2. Feature count
-        lines.append(f"> **{total} recursos** nesta categoria\n")
+        lines.append(f"> **{total} {templates['category_count_suffix']}**\n")
 
         # 3. Optional description
         if cat.description:
             lines.append(f"{cat.description}\n")
 
         # 4. Feature table (main entries)
+        table_headers = (
+            f"| {templates['features_header']} | {templates['users_header']} "
+            f"| {templates['admins_header']} | {templates['config_header']} "
+            f"| {templates['contact_header']} | {templates['docs_header']} |"
+        )
+        table_separator = "| :--- | :---: | :---: | :---: | :---: | :---: |"
         if cat.entries:
-            lines.append("| Recurso | Usuários | Admins | Config | Contato | Docs |")
-            lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
+            lines.append(table_headers)
+            lines.append(table_separator)
             for entry in cat.entries:
                 lines.append(_format_entry_table(entry))
             lines.append("")
@@ -381,27 +397,29 @@ def _generate_release_files(
         for sub_name, sub_entries in cat.subcategories.items():
             if sub_entries:
                 lines.append(f"### {sub_name}\n")
-                lines.append("| Recurso | Usuários | Admins | Config | Contato | Docs |")
-                lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
+                lines.append(table_headers)
+                lines.append(table_separator)
                 for entry in sub_entries:
                     lines.append(_format_entry_table(entry))
                 lines.append("")
 
-        # 6. Category-specific Trailhead (NEW - after content)
+        # 6. Category-specific Trailhead (after content)
         trailhead_section = generate_category_trailhead_section(cat.name, release.slug)
         lines.append(trailhead_section)
 
         # 7. Resources footer
-        lines.append("## 📚 Recursos\n")
-        lines.append("- [📄 Release in a Box PDF](./release-in-a-box.pdf)")
+        lang_param = "pt_BR" if locale == "pt_BR" else "en_US"
+        lines.append(f"{templates['resources_section']}\n")
+        lines.append(f"- [{templates['resource_pdf']}](./release-in-a-box.pdf)")
         lines.append(
-            f"- [🔗 Feature Impact Page](https://help.salesforce.com/s/articleView?"
+            f"- [{templates['resource_feature_impact']}]"
+            f"(https://help.salesforce.com/s/articleView?"
             f"id=release-notes.rn_feature_impact.htm&release={release.release_id}"
-            f"&type=5&language=pt_BR)"
+            f"&type=5&language={lang_param})"
         )
         lines.append("")
 
-        body = "\n".join(lines) if lines else "_Sem recursos nesta categoria._\n"
+        body = "\n".join(lines) if lines else f"_{templates['empty_category']}_\n"
         file_path.write_text(body, encoding="utf-8")
         generated.append(file_path)
         logger.info("Generated: %s (%d features)", file_path, len(cat.entries))
