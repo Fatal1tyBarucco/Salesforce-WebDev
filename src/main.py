@@ -417,6 +417,12 @@ def _generate_release_files(
             f"id=release-notes.rn_feature_impact.htm&release={release.release_id}"
             f"&type=5&language={lang_param})"
         )
+        lines.append(
+            f"- [{templates['resource_release_notes']}]"
+            f"(https://help.salesforce.com/s/articleView?"
+            f"id=release-notes.rn_release_notes.htm&release={release.release_id}"
+            f"&type=5&language={lang_param})"
+        )
         lines.append("")
 
         body = "\n".join(lines) if lines else f"_{templates['empty_category']}_\n"
