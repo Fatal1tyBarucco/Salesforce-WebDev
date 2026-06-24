@@ -9,7 +9,9 @@ from src.salesforce import (
     TRAILHEAD_BASE_URL,
     TrailheadMappingService,
     TrailheadModule,
+    _get_trailhead_service,
     generate_category_trailhead_section,
+    search_trailhead,
 )
 
 
@@ -116,7 +118,6 @@ def test_invalid_structure_raises(tmp_path: Path) -> None:
 
 
 def test_category_not_list_raises(tmp_path: Path) -> None:
-    """Cover salesforce.py:66 — category maps to non-list value."""
     data = {"Cat": "not a list"}
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
@@ -158,11 +159,44 @@ def test_categories_cached_property(service: TrailheadMappingService) -> None:
     assert c1 is c2
 
 
-def test_default_config_path_loads_real_data() -> None:
+def test_default_config_loads_from_src_trailhead_json() -> None:
+    json_path = Path(__file__).resolve().parent.parent / "src" / "trailhead.json"
+    assert json_path.exists(), f"Expected {json_path} to exist"
     svc = TrailheadMappingService()
     cats = svc.categories
-    assert len(cats) > 20
+    assert len(cats) == 22
     assert "Agentforce" in cats
+
+
+def test_all_21_categories_present() -> None:
+    expected = {
+        "Agentforce",
+        "Análise de dados",
+        "Automação",
+        "Commerce",
+        "Personalização",
+        "Data 360",
+        "Desenvolvimento",
+        "Experience Cloud",
+        "Field Service",
+        "Hyperforce",
+        "Setores",
+        "Marketing",
+        "MuleSoft",
+        "Aplicativo móvel",
+        "OmniStudio",
+        "Partner Cloud",
+        "Gerenciamento de receita",
+        "Vendas",
+        "Integrações do Salesforce para Slack",
+        "Segurança, identidade e privacidade",
+        "Serviço",
+        "Outros produtos e serviços do Salesforce",
+    }
+    svc = TrailheadMappingService()
+    cats = svc.categories
+    assert set(cats.keys()) == expected
+    assert len(cats) == 22
 
 
 def test_search_exact_vs_partial_priority(tmp_path: Path) -> None:
@@ -231,17 +265,58 @@ def test_real_json_includes_optional_fields() -> None:
 
 
 def test_generate_category_trailhead_section() -> None:
-    """salesforce: generates category-specific Trailhead section."""
     section = generate_category_trailhead_section("Agentforce", "summer_26")
-
     assert "Agentforce" in section
     assert "Trailhead" in section
     assert "##" in section
 
 
 def test_generate_category_trailhead_section_no_match() -> None:
-    """salesforce: handles category with no Trailhead modules."""
     section = generate_category_trailhead_section("NonExistentCategory123", "summer_26")
-
     assert "Nenhum módulo específico encontrado" in section
     assert "NonExistentCategory123" in section
+
+
+def test_singleton_returns_same_instance() -> None:
+    import src.salesforce as mod
+
+    mod._trailhead_service = None
+    svc1 = _get_trailhead_service()
+    svc2 = _get_trailhead_service()
+    assert svc1 is svc2
+    mod._trailhead_service = None
+
+
+def test_singleton_caches_categories() -> None:
+    import src.salesforce as mod
+
+    mod._trailhead_service = None
+    svc = _get_trailhead_service()
+    c1 = svc.categories
+    c2 = svc.categories
+    assert c1 is c2
+    mod._trailhead_service = None
+
+
+def test_search_trailhead_uses_singleton() -> None:
+    import src.salesforce as mod
+
+    mod._trailhead_service = None
+    modules = search_trailhead("Agentforce")
+    assert len(modules) > 0
+    assert mod._trailhead_service is not None
+    mod._trailhead_service = None
+
+
+def test_missing_json_file_fallback() -> None:
+    svc = TrailheadMappingService(config_path=Path("/nonexistent/path.json"))
+    with pytest.raises(ValueError, match="Trailhead config not found"):
+        _ = svc.categories
+
+
+def test_corrupt_json_fallback(tmp_path: Path) -> None:
+    p = tmp_path / "corrupt.json"
+    p.write_text("{invalid json content", encoding="utf-8")
+    svc = TrailheadMappingService(config_path=p)
+    with pytest.raises(ValueError, match="Invalid JSON"):
+        _ = svc.categories
