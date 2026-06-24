@@ -25,3 +25,7 @@ releases/test/
 releases/history.json
 notifications/trailhead_cache.json
 analytics/
+
+# Tool artifacts
+.mimocode/
+docs/compose/
