@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from src.salesforce import TRAILHEAD_BASE_URL, TrailheadMappingService, TrailheadModule
+from src.salesforce import (
+    TRAILHEAD_BASE_URL,
+    TrailheadMappingService,
+    TrailheadModule,
+    generate_category_trailhead_section,
+)
 
 
 @pytest.fixture
@@ -223,3 +228,20 @@ def test_real_json_includes_optional_fields() -> None:
     for m in modules:
         assert m.module_type != ""
         assert m.points > 0
+
+
+def test_generate_category_trailhead_section() -> None:
+    """salesforce: generates category-specific Trailhead section."""
+    section = generate_category_trailhead_section("Agentforce", "summer_26")
+
+    assert "Agentforce" in section
+    assert "Trailhead" in section
+    assert "##" in section
+
+
+def test_generate_category_trailhead_section_no_match() -> None:
+    """salesforce: handles category with no Trailhead modules."""
+    section = generate_category_trailhead_section("NonExistentCategory123", "summer_26")
+
+    assert "Nenhum módulo específico encontrado" in section
+    assert "NonExistentCategory123" in section

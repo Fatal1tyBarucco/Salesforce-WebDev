@@ -260,6 +260,33 @@ def generate_release_resources_section(release_slug: str, release_name: str) -> 
     return "\n".join(lines)
 
 
+def generate_category_trailhead_section(category_name: str, release_slug: str) -> str:
+    """Generate Trailhead section with category-specific modules.
+
+    Args:
+        category_name: The category name (e.g., "Agentforce")
+        release_slug: The release slug (e.g., "summer_26")
+
+    Returns:
+        Markdown section with relevant Trailhead modules.
+    """
+    service = TrailheadMappingService()
+    modules = service.search(category_name, max_results=5)
+
+    lines = ["## 🎓 Módulos Trailhead Relacionados\n"]
+
+    if modules:
+        for module in modules:
+            time_points = f" — {module.estimated_time}" if module.estimated_time else ""
+            points = f" | {module.points} pts" if module.points else ""
+            lines.append(f"- [{module.title}]({module.url}){time_points}{points}")
+    else:
+        lines.append(f"- Nenhum módulo específico encontrado para {category_name}")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
 def find_related_modules(
     feature_categories: list[str],
     max_per_category: int = 3,
