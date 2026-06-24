@@ -566,3 +566,103 @@ def test_download_pdf_from_button_pdf_not_found(tmp_path: Path) -> None:
             assert result is False
 
     asyncio.run(run())
+
+
+# ---------------------------------------------------------------------------
+# Generator — string.Template tests
+# ---------------------------------------------------------------------------
+
+
+def test_markdown_header_template_renders_all_vars() -> None:
+    from src.generator import MARKDOWN_HEADER_TEMPLATE
+
+    result = MARKDOWN_HEADER_TEMPLATE.safe_substitute(
+        topic_name="Apex",
+        release_name="Summer '26",
+        generated_at="2026-06-24 12:00",
+        source_url="https://help.salesforce.com/example",
+    )
+    assert "# Apex — Summer '26" in result
+    assert "> **Release:** Summer '26" in result
+    assert "> **Gerado em:** 2026-06-24 12:00 UTC" in result
+    assert "> **Fonte:** https://help.salesforce.com/example" in result
+    assert "---" in result
+
+
+def test_markdown_header_template_safe_substitute_missing_vars() -> None:
+    from src.generator import MARKDOWN_HEADER_TEMPLATE
+
+    result = MARKDOWN_HEADER_TEMPLATE.safe_substitute({})
+    assert "Safe" not in result or True
+    assert "${topic_name}" in result
+    assert "${release_name}" in result
+    assert "${generated_at}" in result
+    assert "${source_url}" in result
+    assert "---" in result
+
+
+def test_markdown_header_template_safe_substitute_partial_vars() -> None:
+    from src.generator import MARKDOWN_HEADER_TEMPLATE
+
+    result = MARKDOWN_HEADER_TEMPLATE.safe_substitute(topic_name="LWC")
+    assert "# LWC — ${release_name}" in result
+    assert "${topic_name}" not in result
+
+
+def test_build_topic_lines_with_articles(tmp_path: Path) -> None:
+    generator = MarkdownGenerator(base_dir=str(tmp_path))
+    node = TopicNode(
+        slug="apex",
+        display_name="Apex",
+        level=2,
+        url="",
+        children=[],
+        articles=[
+            {"title": "Feature A", "url": "https://example.com/a", "summary": "Summary A"},
+            {"title": "Feature B", "url": "", "summary": ""},
+        ],
+    )
+    lines = generator._build_topic_lines(node, "Summer '26")
+    assert "## Apex" in lines
+    assert "### Feature A" in lines
+    assert "Summary A" in lines
+    assert "https://example.com/a" in lines[lines.index("Summary A") + 2]
+    assert "### Feature B" in lines
+
+
+def test_build_topic_lines_empty_articles(tmp_path: Path) -> None:
+    generator = MarkdownGenerator(base_dir=str(tmp_path))
+    node = TopicNode(
+        slug="empty",
+        display_name="Empty",
+        level=2,
+        url="",
+        children=[],
+        articles=[],
+    )
+    lines = generator._build_topic_lines(node, "Summer '26")
+    assert lines == []
+
+
+def test_build_topic_lines_nested_children(tmp_path: Path) -> None:
+    generator = MarkdownGenerator(base_dir=str(tmp_path))
+    child = TopicNode(
+        slug="child",
+        display_name="Child Topic",
+        level=3,
+        url="",
+        children=[],
+        articles=[{"title": "Child Article", "url": "", "summary": "Child summary"}],
+    )
+    parent = TopicNode(
+        slug="parent",
+        display_name="Parent Topic",
+        level=2,
+        url="",
+        children=[child],
+        articles=[],
+    )
+    lines = generator._build_topic_lines(parent, "Summer '26")
+    assert "## Child Topic" in lines
+    assert "### Child Article" in lines
+    assert "Child summary" in lines

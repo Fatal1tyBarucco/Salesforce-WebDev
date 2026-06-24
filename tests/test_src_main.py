@@ -4,6 +4,7 @@ from src.main import (
     main,
     _generate_release_files,
     _format_entry,
+    _format_entry_table,
     _find_existing_releases,
     _slugify_category,
 )
@@ -64,7 +65,7 @@ def test_generate_release_files() -> None:
 
             release_dir = Path(tmpdir) / "test_release"
             assert release_dir.exists()
-            md_files = list(release_dir.glob("*.md"))
+            md_files = list(release_dir.rglob("*.md"))
             assert len(md_files) >= 1
             content = md_files[0].read_text()
             assert "Feature One" in content
@@ -293,3 +294,50 @@ def test_slugify_category_portuguese() -> None:
         _slugify_category("Integrações do Salesforce para Slack")
         == "integracoes_do_salesforce_para_slack"
     )
+
+
+def test_format_entry_table_with_docs_link() -> None:
+    entry = FeatureImpactEntry(
+        name="Test Feature",
+        available_users=True,
+        available_admins=False,
+        requires_config=True,
+        contact_sf=False,
+    )
+    result = _format_entry_table(entry, docs_url="https://help.salesforce.com/test")
+    assert "🔗" in result
+    assert "https://help.salesforce.com/test" in result
+    assert "**Test Feature**" in result
+
+
+def test_format_entry_table_no_docs_link() -> None:
+    entry = FeatureImpactEntry(
+        name="No Docs Feature",
+        available_users=True,
+        available_admins=True,
+        requires_config=False,
+        contact_sf=False,
+    )
+    result = _format_entry_table(entry)
+    assert "🔗" not in result
+    assert "| |" in result
+
+
+def test_format_entry_table_docs_empty_string() -> None:
+    entry = FeatureImpactEntry(name="Empty Docs")
+    result = _format_entry_table(entry, docs_url="")
+    assert "🔗" not in result
+
+
+def test_format_entry_table_docs_header_in_output() -> None:
+    entry = FeatureImpactEntry(
+        name="Feature",
+        available_users=True,
+        available_admins=True,
+        requires_config=False,
+        contact_sf=False,
+    )
+    result = _format_entry_table(entry, docs_url="https://example.com")
+    assert result.endswith("|")
+    parts = result.split("|")
+    assert len(parts) == 8

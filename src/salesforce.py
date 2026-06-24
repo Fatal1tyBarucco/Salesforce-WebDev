@@ -18,9 +18,17 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
-_DEFAULT_TRAILHEAD_JSON = (
-    Path(__file__).resolve().parent.parent / "data" / "trailhead_categories.json"
-)
+_DEFAULT_TRAILHEAD_JSON = Path(__file__).resolve().parent / "trailhead.json"
+
+_trailhead_service: TrailheadMappingService | None = None
+
+
+def _get_trailhead_service() -> TrailheadMappingService:
+    """Return the singleton TrailheadMappingService, loading JSON on first call."""
+    global _trailhead_service  # noqa: PLW0603
+    if _trailhead_service is None:
+        _trailhead_service = TrailheadMappingService()
+    return _trailhead_service
 
 
 @dataclass
@@ -167,7 +175,7 @@ def search_trailhead(query: str, max_results: int = 5) -> list[TrailheadModule]:
     Uses curated mapping of Salesforce feature categories to Trailhead modules.
     Falls back to URL-based search if category not found in mapping.
     """
-    return TrailheadMappingService().search(query, max_results)
+    return _get_trailhead_service().search(query, max_results)
 
 
 def get_release_trailhead_url(release_slug: str) -> str:
@@ -257,6 +265,33 @@ def generate_release_resources_section(release_slug: str, release_name: str) -> 
             lines.append(f"- [{topic['title']}]({topic['url']})")
         lines.append("")
 
+    return "\n".join(lines)
+
+
+def generate_category_trailhead_section(category_name: str, release_slug: str) -> str:
+    """Generate Trailhead section with category-specific modules.
+
+    Args:
+        category_name: The category name (e.g., "Agentforce")
+        release_slug: The release slug (e.g., "summer_26")
+
+    Returns:
+        Markdown section with relevant Trailhead modules.
+    """
+    service = _get_trailhead_service()
+    modules = service.search(category_name, max_results=5)
+
+    lines = ["## 🎓 Módulos Trailhead Relacionados\n"]
+
+    if modules:
+        for module in modules:
+            time_points = f" — {module.estimated_time}" if module.estimated_time else ""
+            points = f" | {module.points} pts" if module.points else ""
+            lines.append(f"- [{module.title}]({module.url}){time_points}{points}")
+    else:
+        lines.append(f"- Nenhum módulo específico encontrado para {category_name}")
+
+    lines.append("")
     return "\n".join(lines)
 
 

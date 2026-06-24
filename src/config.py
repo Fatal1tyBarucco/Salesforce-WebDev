@@ -70,6 +70,97 @@ EXCLUDED_NODE_SLUGS: Final[frozenset[str]] = frozenset(
     }
 )
 
+# Mapeamento de nomes de categorias pt_BR → slug em inglês
+ENGLISH_CATEGORY_SLUGS: Final[dict[str, str]] = {
+    "Agentforce": "agentforce",
+    "Análise de dados": "data-analysis",
+    "Automação": "automation",
+    "Commerce": "commerce",
+    "Personalização": "customization",
+    "Data 360": "data-360",
+    "Desenvolvimento": "development",
+    "Experience Cloud": "experience-cloud",
+    "Field Service": "field-service",
+    "Hyperforce": "hyperforce",
+    "Setores": "industries",
+    "Marketing": "marketing",
+    "MuleSoft": "mulesoft",
+    "Aplicativo móvel": "mobile-app",
+    "OmniStudio": "omnistudio",
+    "Partner Cloud": "partner-cloud",
+    "Gerenciamento de receita": "revenue-management",
+    "Vendas": "sales",
+    "Integrações do Salesforce para Slack": "salesforce-slack-integrations",
+    "Segurança, identidade e privacidade": "security-identity-privacy",
+    "Serviço": "service",
+    "Outros produtos e serviços do Salesforce": "other-salesforce-products",
+    "Documentação legal": "legal-documentation",
+    "Salesforce geral": "salesforce-general",
+}
+
+# Mapeamento de nomes de categorias pt_BR → nome em inglês
+ENGLISH_CATEGORY_NAMES: Final[dict[str, str]] = {
+    "Agentforce": "Agentforce",
+    "Análise de dados": "Data Analysis",
+    "Automação": "Automation",
+    "Commerce": "Commerce",
+    "Personalização": "Customization",
+    "Data 360": "Data 360",
+    "Desenvolvimento": "Development",
+    "Experience Cloud": "Experience Cloud",
+    "Field Service": "Field Service",
+    "Hyperforce": "Hyperforce",
+    "Setores": "Industries",
+    "Marketing": "Marketing",
+    "MuleSoft": "MuleSoft",
+    "Aplicativo móvel": "Mobile App",
+    "OmniStudio": "OmniStudio",
+    "Partner Cloud": "Partner Cloud",
+    "Gerenciamento de receita": "Revenue Management",
+    "Vendas": "Sales",
+    "Integrações do Salesforce para Slack": "Salesforce Slack Integrations",
+    "Segurança, identidade e privacidade": "Security, Identity & Privacy",
+    "Serviço": "Service",
+    "Outros produtos e serviços do Salesforce": "Other Salesforce Products",
+    "Documentação legal": "Legal Documentation",
+    "Salesforce geral": "Salesforce General",
+}
+
+BILINGUAL_TEMPLATES: Final[dict[str, dict[str, str]]] = {
+    "pt_BR": {
+        "features_header": "Recurso",
+        "users_header": "Usuários",
+        "admins_header": "Admins",
+        "config_header": "Config",
+        "contact_header": "Contato",
+        "docs_header": "Docs",
+        "trailhead_section": "## 🎓 Módulos Trailhead Relacionados",
+        "resources_section": "## 📚 Recursos",
+        "no_modules": "Nenhum módulo específico encontrado para",
+        "resource_pdf": "📄 Release in a Box PDF",
+        "resource_feature_impact": "🔗 Feature Impact Page",
+        "resource_release_notes": "📋 Release Notes",
+        "empty_category": "_Sem recursos nesta categoria._",
+        "category_count_suffix": "recursos",
+    },
+    "en_US": {
+        "features_header": "Feature",
+        "users_header": "Users",
+        "admins_header": "Admins",
+        "config_header": "Config",
+        "contact_header": "Contact",
+        "docs_header": "Docs",
+        "trailhead_section": "## 🎓 Related Trailhead Modules",
+        "resources_section": "## 📚 Resources",
+        "no_modules": "No specific modules found for",
+        "resource_pdf": "📄 Release in a Box PDF",
+        "resource_feature_impact": "🔗 Feature Impact Page",
+        "resource_release_notes": "📋 Release Notes",
+        "empty_category": "_No features in this category._",
+        "category_count_suffix": "features",
+    },
+}
+
 # ---------------------------------------------------------------------------
 # Mapeamento de Releases Conhecidas
 # release_id corresponde ao parâmetro ?release= da URL oficial do Salesforce.
