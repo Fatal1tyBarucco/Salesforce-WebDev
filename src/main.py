@@ -228,6 +228,38 @@ async def run_pipeline() -> None:
                 _generate_release_files(release, categories, generator, locale=locale)
             _update_readme_single(release, categories)
 
+            # Classify features and enrich .meta.json
+            try:
+                from .feature_classifier import FeatureClassifier
+
+                classifier = FeatureClassifier()
+                classification = classifier.classify_release(release.slug)
+                if classification:
+                    meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+                    if meta_path.exists():
+                        import json as _cli_json
+
+                        meta = _cli_json.loads(meta_path.read_text(encoding="utf-8"))
+                        avg_conf = (
+                            sum(f.confidence for f in classification.features)
+                            / len(classification.features)
+                            if classification.features
+                            else 0.0
+                        )
+                        meta["classification_summary"] = {
+                            "total_classified": classification.total_features,
+                            "avg_confidence": round(avg_conf, 2),
+                            "by_impact": classification.by_impact,
+                            "by_type": classification.by_type,
+                        }
+                        meta_path.write_text(
+                            _cli_json.dumps(meta, indent=2, ensure_ascii=False),
+                            encoding="utf-8",
+                        )
+                        logger.info("Feature classification added to .meta.json")
+            except Exception as e:
+                logger.warning("Feature classification failed: %s", e)
+
     _update_readme_all()
 
     # Generate AI reports
@@ -272,16 +304,114 @@ async def run_pipeline() -> None:
                 meta = _json.loads(meta_path.read_text(encoding="utf-8"))
                 cats = meta.get("categories", [])
                 total = sum(c.get("count", 0) for c in cats)
+
+                # Triage the release issue before creating
+                try:
+                    from .issue_triage import IssueTriager
+
+                    triager = IssueTriager()
+                    issue_title = f"Release: {release.name}"
+                    issue_body = (
+                        f"Release {release.name} with {total} features "
+                        f"across {len(cats)} categories."
+                    )
+                    triage = triager.triage_issue(issue_title, issue_body)
+                    if triage:
+                        logger.info(
+                            "Issue triaged: priority=%s, category=%s",
+                            triage.priority.value,
+                            triage.category.value,
+                        )
+                except Exception as e:
+                    logger.warning("Issue triage failed: %s", e)
+
                 issue_url = create_github_issue(release.name, total, len(cats))
                 if issue_url:
                     logger.info("GitHub Issue created: %s", issue_url)
 
         logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
+
+        # Generate impact report and notification digest
+        for release in releases_to_process:
+            try:
+                from .impact_analyzer import ImpactAnalyzer
+
+                analyzer = ImpactAnalyzer()
+                impact_report = analyzer.analyze(release.slug)
+                if impact_report:
+                    impact_path = Path("IMPACT_REPORT.md")
+                    impact_path.write_text(
+                        _format_impact_report(impact_report, release.name),
+                        encoding="utf-8",
+                    )
+                    logger.info("Impact report generated: IMPACT_REPORT.md")
+            except Exception as e:
+                logger.warning("Impact analysis failed: %s", e)
+
+            try:
+                from .smart_notifications import (
+                    SmartNotificationEngine,
+                    UserPreferences,
+                )
+
+                engine = SmartNotificationEngine()
+                notifications = engine.generate_from_release(release.slug)
+                if notifications:
+                    default_user = UserPreferences(
+                        user_id="pipeline",
+                        interests=["all"],
+                        categories=["all"],
+                    )
+                    digest = engine.generate_digest(notifications, default_user)
+                    notif_path = Path("NOTIFICATION_DIGEST.md")
+                    notif_path.write_text(
+                        _format_notification_digest(digest),
+                        encoding="utf-8",
+                    )
+                    logger.info("Notification digest generated: NOTIFICATION_DIGEST.md")
+            except Exception as e:
+                logger.warning("Notification digest failed: %s", e)
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
         set_pipeline_status("completed_with_errors")
     else:
         set_pipeline_status("completed")
+
+
+def _format_impact_report(report: object, release_name: str) -> str:
+    """Format an ImpactReport into Markdown."""
+    lines = [f"# Impact Report: {release_name}\n"]
+    if hasattr(report, "total_features"):
+        lines.append(f"**Total features analyzed:** {report.total_features}\n")
+    if hasattr(report, "breaking_changes") and report.breaking_changes:
+        lines.append(f"## Breaking Changes ({len(report.breaking_changes)})\n")
+        for item in report.breaking_changes:
+            lines.append(f"- {item}")
+        lines.append("")
+    if hasattr(report, "security_fixes") and report.security_fixes:
+        lines.append(f"## Security Fixes ({len(report.security_fixes)})\n")
+        for item in report.security_fixes:
+            lines.append(f"- {item}")
+        lines.append("")
+    if hasattr(report, "risk_score"):
+        lines.append(f"## Risk Score: {report.risk_score}\n")
+    return "\n".join(lines)
+
+
+def _format_notification_digest(digest: object) -> str:
+    """Format a NotificationDigest into Markdown."""
+    lines = ["# Notification Digest\n"]
+    if hasattr(digest, "summary"):
+        lines.append(f"{digest.summary}\n")
+    if hasattr(digest, "notifications"):
+        for notif in digest.notifications:
+            priority = getattr(notif, "priority", "info")
+            title = getattr(notif, "title", "Update")
+            message = getattr(notif, "message", "")
+            lines.append(f"### [{priority}] {title}\n")
+            if message:
+                lines.append(f"{message}\n")
+    return "\n".join(lines)
 
 
 def _slugify_category(name: str) -> str:
