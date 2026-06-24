@@ -427,6 +427,21 @@ def _generate_release_files(
     return generated
 
 
+def _generate_category_summary(category: FeatureImpactCategory) -> str:
+    """Generate a brief summary for a category."""
+    total = category.total_features
+    high_impact = sum(1 for e in category.entries if e.confidence >= 0.7)
+
+    if total == 0:
+        return ""
+
+    summary = f"{total} features"
+    if high_impact > 0:
+        summary += f", {high_impact} with high confidence"
+
+    return summary
+
+
 def _check(conf: bool) -> str:
     return "✅" if conf else "❌"
 
@@ -565,6 +580,10 @@ def _update_readme_all() -> None:
 
     metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
 
+    from .release_summarizer import ReleaseSummarizer
+
+    summarizer = ReleaseSummarizer(str(releases_dir))
+
     def get_release_emoji(name: str) -> str:
         name_lower = name.lower()
         if "winter" in name_lower:
@@ -584,6 +603,10 @@ def _update_readme_all() -> None:
         active = [c for c in categories if c.get("count", 0) > 0]
 
         lines.append(f"\n### {emoji} {name}\n")
+
+        summary = summarizer.summarize(slug)
+        if summary:
+            lines.append(f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n")
 
         for cat in active:
             cat_name = cat["name"]

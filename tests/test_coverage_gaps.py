@@ -17,6 +17,7 @@ from src.main import (
     _build_release_name,
     _build_release_slug,
     _find_existing_releases,
+    _generate_category_summary,
     _generate_release_files,
     _update_readme_single,
     _update_readme_all,
@@ -6818,3 +6819,143 @@ def test_parse_category_features_bypasses_validate(tmp_path: Path) -> None:
     with patch("src.api.RELEASES_DIR", str(tmp_path)):
         with patch("src.api._validate_slug", return_value=True):
             assert _parse_category_features("../../../etc/passwd", "test") == []
+
+
+# ============================================================
+# src/main.py _generate_category_summary tests
+# ============================================================
+
+
+def test_generate_category_summary_empty() -> None:
+    """main: _generate_category_summary returns empty for zero features."""
+    cat = FeatureImpactCategory(name="Test", description="")
+    assert _generate_category_summary(cat) == ""
+
+
+def test_generate_category_summary_with_features() -> None:
+    """main: _generate_category_summary with features."""
+    entry = FeatureImpactEntry(
+        name="Feature1",
+        available_users=True,
+        available_admins=False,
+        requires_config=False,
+        contact_sf=False,
+        confidence=0.9,
+    )
+    cat = FeatureImpactCategory(name="Test", description="")
+    cat.entries.append(entry)
+    result = _generate_category_summary(cat)
+    assert "1 features" in result
+    assert "high confidence" in result
+
+
+def test_generate_category_summary_low_confidence() -> None:
+    """main: _generate_category_summary with low confidence features."""
+    entry = FeatureImpactEntry(
+        name="Feature1",
+        available_users=True,
+        available_admins=False,
+        requires_config=False,
+        contact_sf=False,
+        confidence=0.5,
+    )
+    cat = FeatureImpactCategory(name="Test", description="")
+    cat.entries.append(entry)
+    result = _generate_category_summary(cat)
+    assert "1 features" in result
+    assert "high confidence" not in result
+
+
+# ============================================================
+# src/main.py _update_readme_all with summarizer tests
+# ============================================================
+
+
+def test_update_readme_all_with_summary(tmp_path: Path) -> None:
+    """main: _update_readme_all includes AI summary when available."""
+    import os
+
+    from src.release_summarizer import ReleaseSummary
+
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Agentforce", "count": 5}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
+
+    fake_summary = ReleaseSummary(
+        release_slug="summer_26",
+        release_name="Summer '26",
+        total_features=42,
+        top_categories=[("Agentforce", 10)],
+        key_highlights=["Test highlight"],
+        summary_text="Test summary text",
+        confidence=0.5,
+    )
+
+    old_cwd = os.getcwd()
+    os.chdir(tmp_path)
+    try:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.release_summarizer.ReleaseSummarizer") as mock_summarizer_cls:
+                mock_summarizer_cls.return_value.summarize.return_value = fake_summary
+                _update_readme_all()
+                content = readme_path.read_text()
+                assert "Resumo Executivo" in content
+                assert "Test summary text" in content
+    finally:
+        os.chdir(old_cwd)
+
+
+def test_update_readme_all_with_summary_none(tmp_path: Path) -> None:
+    """main: _update_readme_all handles None summary gracefully."""
+    import os
+
+    release_dir = tmp_path / "summer_26"
+    release_dir.mkdir()
+    meta = {
+        "name": "Summer '26",
+        "slug": "summer_26",
+        "release_id": 262,
+        "categories": [{"name": "Agentforce", "count": 5}],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta))
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
+    )
+
+    old_cwd = os.getcwd()
+    os.chdir(tmp_path)
+    try:
+        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+            with patch("src.release_summarizer.ReleaseSummarizer") as mock_summarizer_cls:
+                mock_summarizer_cls.return_value.summarize.return_value = None
+                _update_readme_all()
+                content = readme_path.read_text()
+                assert "Resumo Executivo" not in content
+    finally:
+        os.chdir(old_cwd)
+
+
+def test_generate_release_files_en_us(tmp_path: Path) -> None:
+    """main: _generate_release_files with en_US locale uses English slugs."""
+    release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
+    cat.entries.append(FeatureImpactEntry(name="Feature1"))
+    generator = MagicMock()
+
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        assert len(result) == 1
+        assert (tmp_path / "summer_26" / "en_US" / "agentforce.md").exists()
