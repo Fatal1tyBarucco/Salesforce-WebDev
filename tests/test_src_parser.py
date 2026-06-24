@@ -659,6 +659,15 @@ def test_get_aria_level_list_non_str_int_first() -> None:
     assert result == 1
 
 
+def test_get_aria_level_non_str_raw() -> None:
+    """Cover parser.py:247 — raw is not a str (e.g. None, int)."""
+    parser = ReleaseNotesParser()
+    li = Tag(name="li")
+    li["aria-level"] = None  # type: ignore[assignment]
+    result = parser._get_aria_level(li)
+    assert result == 1
+
+
 def test_get_label_text_title_list_type() -> None:
     """Cover parser.py:265-269 — title attribute is a list."""
     parser = ReleaseNotesParser()
