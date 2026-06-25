@@ -101,6 +101,7 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 
 
 
+
 ## 📋 Releases Disponíveis
 
 
@@ -461,6 +462,162 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 <summary><b>📄 Serviço (165 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/servico.md](./releases/spring_26/pt_BR/servico.md)
+
+</details>
+
+
+
+### ❄️ Winter '26
+
+
+<details>
+<summary><b>📄 Documentação legal (11 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/documentacao_legal.md](./releases/winter_26/pt_BR/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce geral (32 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/salesforce_geral.md](./releases/winter_26/pt_BR/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Análise de dados (91 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/analise_de_dados.md](./releases/winter_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (65 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/personalizacao.md](./releases/winter_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (101 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md](./releases/winter_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (39 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/agentforce.md](./releases/winter_26/pt_BR/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/experience_cloud.md](./releases/winter_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (24 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/field_service.md](./releases/winter_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/hyperforce.md](./releases/winter_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (459 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/setores.md](./releases/winter_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (87 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/marketing.md](./releases/winter_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (4 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/mulesoft.md](./releases/winter_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (7 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/aplicativo_movel.md](./releases/winter_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/omnistudio.md](./releases/winter_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (156 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/partner_cloud.md](./releases/winter_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (154 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md](./releases/winter_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Integrações do Salesforce para Slack (1 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (55 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (41 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/servico.md](./releases/winter_26/pt_BR/servico.md)
 
 </details>
 
