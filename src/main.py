@@ -803,14 +803,14 @@ async def _update_readme_all() -> None:
                 cat_lines.append("</details>\n")
 
             if is_latest:
-                # Latest release: fully expanded
+                # Latest release: open as whole, categories closed by default
                 lines.append(f"\n### {emoji} {name}\n")
                 if summary_text:
                     lines.append(summary_text)
                 lines.extend(cat_lines)
             else:
                 # Old releases: entire section collapsed
-                lines.append(f"\n<details>\n")
+                lines.append("\n<details>\n")
                 lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
                 if summary_text:
                     lines.append(summary_text)
