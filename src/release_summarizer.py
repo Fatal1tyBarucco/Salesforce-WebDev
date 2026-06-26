@@ -81,27 +81,31 @@ class ReleaseSummarizer:
         summary_text = await self._llm.generate_text(user_prompt, system_prompt)
 
         if not summary_text or summary_text == "Not Found" or "error" in summary_text.lower():
-            # Generate a rich fallback summary based on metadata
-            top_cats = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+            # Generate a rich fallback summary based on metadata and content analysis
+            top_cats = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
             total = sum(category_counts.values())
             
-            highlights = []
-            for cat_name, count in top_cats:
-                highlights.append(f"**{cat_name}** ({count} recursos)")
+            # Analyze content for key themes
+            all_content = "\n".join(content_fragments)
+            themes = self._extract_themes(all_content)
             
-            if total > 1000:
-                scale = "maior"
-            elif total > 500:
-                scale = "significativa"
-            else:
-                scale = "moderada"
+            # Build detailed summary
+            cat_highlights = []
+            for cat_name, count in top_cats[:5]:
+                pct = (count / total * 100) if total > 0 else 0
+                cat_highlights.append(f"**{cat_name}** ({count} recursos, {pct:.0f}%)")
+            
+            trend = "expansão significativa" if total > 1000 else "atualização moderada" if total > 500 else "atualização compacta"
             
             summary_text = (
-                f"A release {meta.get('name', release_slug)} apresenta uma {scale} atualização "
-                f"com **{total} recursos** distribuídos em **{len(category_counts)} categorias**. "
-                f"Destaques: {', '.join(highlights)}. "
-                f"Explore cada categoria para detalhes completos sobre as novidades."
+                f"🚀 **{meta.get('name', release_slug)}** — {trend} com **{total} recursos** "
+                f"em **{len(category_counts)} categorias**.\n\n"
+                f"**Principais destaques:**\n"
+                + "\n".join(f"• {h}" for h in cat_highlights)
             )
+            
+            if themes:
+                summary_text += f"\n\n**Temas-chave:** {', '.join(themes[:3])}"
 
         top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
         total_features = sum(category_counts.values())
@@ -149,3 +153,24 @@ class ReleaseSummarizer:
                 if len(parts) >= 2:
                     count += 1
         return count
+
+    def _extract_themes(self, content: str) -> list[str]:
+        """Extract key themes from content using keyword analysis."""
+        theme_keywords = {
+            "Segurança": ["segurança", "security", "autenticação", "compliance", "privacidade"],
+            "Inteligência Artificial": ["ia", "ai", "machine learning", "ml", "agentforce", "einstein"],
+            "Automação": ["automação", "automation", "flow", "workflow", "processo"],
+            "Desenvolvimento": ["desenvolvimento", "development", "api", "apex", "lwc", "lightning"],
+            "Dados": ["dados", "data", "analytics", "relatório", "dashboard"],
+            "Experiência do Usuário": ["experiência", "ui", "ux", "interface", "mobile"],
+            "Integração": ["integração", "integration", "conector", "muleoft"],
+        }
+        
+        content_lower = content.lower()
+        found_themes = []
+        
+        for theme, keywords in theme_keywords.items():
+            if any(kw in content_lower for kw in keywords):
+                found_themes.append(theme)
+        
+        return found_themes[:5]

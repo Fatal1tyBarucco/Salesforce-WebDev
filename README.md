@@ -133,13 +133,19 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** A release Summer '26 apresenta uma maior atualização com **1536 recursos** distribuídos em **22 categorias**. Destaques: **Setores** (319 recursos), **Serviço** (210 recursos), **Desenvolvimento** (13...
+> 📊 **Resumo Executivo:** 🚀 **Summer '26** — expansão significativa com **1536 recursos** em **22 categorias**.
+
+**Principais destaques:**
+• **Setores** (319 recursos, 21%)
+• **Serviço** (210 recursos, 14%)
+• **Desenvolvimento...
 
 
 <details>
@@ -323,7 +329,12 @@ uv run mypy src/
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Resumo Executivo:** A release Spring '26 apresenta uma maior atualização com **1596 recursos** distribuídos em **21 categorias**. Destaques: **Setores** (202 recursos), **Aplicativo móvel** (195 recursos), **Serviço** (1...
+> 📊 **Resumo Executivo:** 🚀 **Spring '26** — expansão significativa com **1596 recursos** em **21 categorias**.
+
+**Principais destaques:**
+• **Setores** (202 recursos, 13%)
+• **Aplicativo móvel** (195 recursos, 12%)
+• **Serviç...
 
 
 <details>
@@ -501,7 +512,12 @@ uv run mypy src/
 
 <summary><h3>❄️ Winter '26</h3></summary>
 
-> 📊 **Resumo Executivo:** A release Winter '26 apresenta uma maior atualização com **1487 recursos** distribuídos em **19 categorias**. Destaques: **Setores** (467 recursos), **Partner Cloud** (164 recursos), **Vendas** (161 r...
+> 📊 **Resumo Executivo:** 🚀 **Winter '26** — expansão significativa com **1487 recursos** em **19 categorias**.
+
+**Principais destaques:**
+• **Setores** (467 recursos, 31%)
+• **Partner Cloud** (164 recursos, 11%)
+• **Vendas** ...
 
 
 <details>
