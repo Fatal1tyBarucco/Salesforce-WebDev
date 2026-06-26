@@ -7,11 +7,11 @@ Os produtos e recursos do Data Cloud, do Marketing Cloud, da Plataforma e do Tab
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Acessar o Salesforce em mais regiões com o Hyperforce** | ❌ | ❌ | ✅ | ❌ | |
-| **Novos produtos e recursos disponíveis no Government Cloud Plus** | ❌ | ❌ | ✅ | ❌ | |
-| **Adicione a conectividade de rede direta ao Hyperforce com o AWS Direct Connect (DX)** | ❌ | ✅ | ❌ | ❌ | |
-| **Criptografe seu banco de dados com a Criptografia de banco de dados do Salesforce (disponível ao público em geral)** | ❌ | ❌ | ✅ | ❌ | |
-| **Recuperação de desastres do Salesforce fora da região renomeada para Continuidade avançada entre regiões** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 

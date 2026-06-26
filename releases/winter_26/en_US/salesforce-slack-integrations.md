@@ -7,7 +7,7 @@ Use o Slack e o Salesforce juntos para se conectar com os clientes, rastrear o p
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Criar canais do Salesforce mais facilmente** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

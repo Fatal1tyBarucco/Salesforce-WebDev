@@ -7,16 +7,16 @@ Valide seus fluxos de trabalho criados com OmniScripts e FlexCards de ponta a po
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Verificações de segurança aplicadas para o OmniStudio para pacotes gerenciados** | ✅ | ❌ | ❌ | ❌ | |
-| **Verificações de segurança impostas para o OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Automatizar o teste da IU para OmniScripts e FlexCards** | ✅ | ❌ | ❌ | ❌ | |
-| **Obtenha assistência de produto instantânea e solução de problemas com o Agente de IA de assistência do OmniStudio (piloto)** | ❌ | ❌ | ❌ | ✅ | |
-| **Aprimoramentos de acessibilidade no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Obtenha valores nulos facilmente com o novo operador É nulo em mapeadores de dados** | ✅ | ❌ | ❌ | ❌ | |
-| **Aprimore seus sites do LWR do Experience Cloud com FlexCards e OmniScripts (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Localizar a documentação da API do OmniStudio em um novo local** | ✅ | ❌ | ❌ | ❌ | |
-| **Removação do conteúdo hospedado do OmniStudio para pacotes gerenciados** | ✅ | ❌ | ❌ | ❌ | |
-| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 

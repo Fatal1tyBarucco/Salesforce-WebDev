@@ -136,13 +136,16 @@ uv run mypy src/
 
 
 
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** A release Summer '26 consolida a era da IA autônoma através da expansão massiva do Agentforce, integrando agentes inteligentes em todo o ecossistema Salesforce para transformar a produtividade, a auto...
+> 📊 **Resumo Executivo:** A versão Summer '26 consolida a era da IA autônoma ao integrar o Agentforce em todo o ecossistema Salesforce, transformando processos de vendas, atendimento e automação em operações inteligentes, alta...
 
 
 <details>
@@ -314,7 +317,7 @@ uv run mypy src/
 
 
 <details>
-<summary><b>📄 Serviço (196 recursos)</b></summary>
+<summary><b>📄 Serviço (198 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
@@ -326,7 +329,7 @@ uv run mypy src/
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Resumo Executivo:** A release Spring '26 consolida a transição para a IA autônoma com a expansão do Agentforce em vendas, serviços e processos industriais, permitindo que empresas escalem operações e automatizem fluxos d...
+> 📊 **Resumo Executivo:** A release Spring '26 consolida a era da autonomia empresarial ao expandir massivamente o Agentforce para todos os pilares de vendas, serviço e operações, permitindo que organizações escalem processos ...
 
 
 <details>
@@ -490,7 +493,7 @@ uv run mypy src/
 
 
 <details>
-<summary><b>📄 Serviço (165 recursos)</b></summary>
+<summary><b>📄 Serviço (167 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/servico.md](./releases/spring_26/pt_BR/servico.md)
 

@@ -7,14 +7,14 @@ O OmniStudio oferece FlexCards e OmniScripts em sites do Lightning Web Runtime (
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Aprimore seus sites do LWR do Experience Cloud com FlexCards e OmniScripts (beta)** | ❌ | ❌ | ❌ | ✅ | |
-| **Aprimore a consistência e a eficiência dos dados com o número automático global Omni** | ❌ | ❌ | ✅ | ❌ | |
-| **Removação do OmniOut no tempo de execução padrão do OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Integrar componentes do encapsulador do OmniStudio em LWCs personalizados para funcionalidade aprimorada** | ✅ | ❌ | ❌ | ❌ | |
-| **Aprimore o desempenho do tempo de execução de seus componentes do OmniStudio** | ❌ | ❌ | ✅ | ❌ | |
-| **Aprimoramentos de acessibilidade no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Outros aprimoramentos no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 

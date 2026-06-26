@@ -7,14 +7,14 @@ Use o pacote de produtos MuleSoft Anypoint Platform para conectar e integrar apl
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Catálogo da API do MuleSoft para Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Trazer servidores MCP do MuleSoft para o catálogo de API** | ❌ | ✅ | ❌ | ❌ | |
-| **Criar e gerenciar servidores MCP hospedados do Salesforce (beta)** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar serviços externos no catálogo de API** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar a sincronização do MuleSoft no catálogo de API** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar APIs REST do Apex no catálogo de API e ativar ações (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar APIs AuraEnabled no catálogo de API e ativar ações (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar APIs de consulta nomeadas no catálogo de API e ativar ações (beta)** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

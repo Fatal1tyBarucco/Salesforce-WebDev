@@ -7,13 +7,13 @@ Os administradores do Mobile Publisher obtêm segurança aprimorada, empacotamen
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Aplicativo Salesforce móvel** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Tudo o que há de novo no aplicativo Salesforce móvel** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Os requisitos do aplicativo Salesforce móvel mudaram** | ✅ | ❌ | ❌ | ❌ | |
-| **Fazer login sem seu nome de usuário** | ✅ | ❌ | ❌ | ❌ | |
-| **Leve a IA conversacional para seus usuários do aplicativo móvel** | ❌ | ❌ | ✅ | ❌ | |
-| **Mobile Publisher** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Criar e distribuir aplicativos Mobile Publisher usando aplicativos cliente externos** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

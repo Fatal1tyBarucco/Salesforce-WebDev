@@ -7,10 +7,10 @@ Comece a gerenciar o ciclo de vida completo do parceiro em um só lugar com ferr
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Automatizar o rastreamento de indicações com fluxos de indicação B2B** | ✅ | ❌ | ❌ | ❌ | |
-| **Criar e rastrear planos de negócios conjuntos com seus parceiros** | ✅ | ❌ | ❌ | ❌ | |
-| **Incluir códigos de indicação em registros de negócio** | ✅ | ❌ | ❌ | ❌ | |
-| **Monitore o desempenho do agente de parceiro com o Agent Analytics** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

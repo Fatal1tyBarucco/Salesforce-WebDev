@@ -7,27 +7,27 @@ Torne suas páginas do site do Aura e do LWR mais descobríveis para mecanismos 
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Sites do Aura e do LWR** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Tornar as páginas do site mais descobríveis por IA** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar regras de redirecionamento dinâmico em sites do Aura** | ❌ | ✅ | ❌ | ❌ | |
-| **Retornar os usuários à página anterior após o tempo limite da sessão** | ❌ | ✅ | ❌ | ❌ | |
-| **Componentes no Criador de experiências** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Projete sites do LWR com mais opções de componente padrão** | ✅ | ❌ | ❌ | ❌ | |
-| **Crie conteúdo HTML mais rico com marcações e atributos mais suportados** | ✅ | ❌ | ❌ | ❌ | |
-| **Guie e informe os usuários do Experience Cloud com componentes personalizados de tarefa e atividade** | ❌ | ❌ | ✅ | ❌ | |
-| **Envie registros para aprovação usando o componente Solicitar aprovação** | ❌ | ❌ | ✅ | ❌ | |
-| **Produtividade do desenvolvedor** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Criar tipos de propriedade personalizados e editores para componentes da Web Lightning em sites do Aura e do LWR (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **A configuração beta Desempenho da API do Connect foi removida** | ❌ | ✅ | ❌ | ❌ | |
-| **Desempenho do site** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique o gerenciamento de domínio personalizado com um nome de host de destino estável** | ❌ | ✅ | ❌ | ❌ | |
-| **Sites do Visualforce exibem apenas o Favicon especificado** | ✅ | ❌ | ❌ | ❌ | |
-| **O Salesforce migra domínios aprimorados e personalizados que apresentam experiências digitais para a CDN do Cloudflare** | ❌ | ✅ | ❌ | ❌ | |
-| **Conclua a atualização dos URLs do seu site Force.com legado** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Files** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerenciar arquivos de até 10 GB no Salesforce Files** | ❌ | ✅ | ❌ | ❌ | |
-| **Permitir que mais usuários excluam arquivos** | ❌ | ✅ | ❌ | ❌ | |
-| **Outras alterações** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

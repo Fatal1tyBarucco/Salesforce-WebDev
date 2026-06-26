@@ -7,24 +7,24 @@ Conclua tarefas de Configuração com mais eficiência com a ajuda de um assiste
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Configurar com o Agentforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique tarefas administrativas com a configuração com Agentforce (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Abrir páginas de configuração em uma guia dedicada (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Globalização** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Exporte e importe arquivos traduzidos com facilidade** | ❌ | ✅ | ❌ | ❌ | |
-| **Acelere atualizações de rótulo personalizadas no Workbench de tradução** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar códigos de estado atualizados para listas de opções** | ❌ | ✅ | ❌ | ❌ | |
-| **Revise traduções atualizadas de rótulos** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilitar os formatos de localidade de ICU (atualização de versão)** | ❌ | ✅ | ❌ | ❌ | |
-| **Modos de exibição de listas** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Os limites de edição do modo de exibição de lista são comunicados com mais clareza** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar um posicionamento de valor vazio atualizado na classificação do modo de exibição de lista** | ✅ | ❌ | ❌ | ❌ | |
-| **AppExchange** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Configurar novas páginas de login do Trialforce antes da versão Summer '26** | ❌ | ✅ | ❌ | ❌ | |
-| **Configuração geral** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Envie registros para aprovação usando o componente Solicitar aprovação** | ❌ | ❌ | ✅ | ❌ | |
-| **A ordem do botão foi atualizada em registros de usuário** | ❌ | ✅ | ❌ | ❌ | |
-| **Atualize o Apex code e os fluxos para alterar o comportamento de recálculo de compartilhamento (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

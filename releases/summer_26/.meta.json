@@ -2,9 +2,9 @@
   "name": "Summer '26",
   "slug": "summer_26",
   "release_id": 262,
-  "total_features": 1371,
+  "total_features": 1373,
   "avg_confidence": 0.65,
-  "generated_at": "2026-06-26T21:51:34.258463+00:00",
+  "generated_at": "2026-06-26T22:38:22.049705+00:00",
   "categories": [
     {
       "name": "Documentação legal",
@@ -92,7 +92,7 @@
     },
     {
       "name": "Serviço",
-      "count": 196
+      "count": 198
     }
   ]
 }

@@ -7,52 +7,52 @@ Aprenda sobre os recursos mais recentes do Service Cloud para aprimorar a produt
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Serviço de TI do Agentforce (disponível ao público em geral)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Salesforce Go** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Centralize a descoberta e a configuração de recursos de serviço Agentforce IT** | ❌ | ✅ | ❌ | ❌ | |
-| **Acelere a configuração do Gerenciamento de serviços de TI com soluções predefinidas** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de incidente** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Capture detalhes do incidente e resolva problemas de TI mais rapidamente** | ❌ | ✅ | ❌ | ❌ | |
-| **Lide com problemas críticos para os negócios e principais interrupções com aprovações integradas** | ❌ | ✅ | ❌ | ❌ | |
-| **Converter emails em incidentes para sua equipe de TI** | ❌ | ✅ | ❌ | ❌ | |
-| **Criar incidentes de transcrições de chat e voz** | ❌ | ✅ | ❌ | ❌ | |
-| **Obter informações e tendências de incidentes de painéis predefinidos** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de problemas** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Acelere a análise da causa raiz para problemas de TI** | ❌ | ✅ | ❌ | ❌ | |
-| **Obtenha visibilidade de tendências de problema com painéis predefinidos** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de mudanças** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Minimizar o risco com um processo de gerenciamento de mudanças estruturado** | ❌ | ✅ | ❌ | ❌ | |
-| **Calcular pontuações de risco automaticamente usando um questionário** | ❌ | ✅ | ❌ | ❌ | |
-| **Obtenha percepções em tempo real com painéis de gerenciamento de mudanças** | ❌ | ✅ | ❌ | ❌ | |
-| **Dê às suas equipes de TI uma vantagem inicial com modelos de definição de estágio para solicitações de alteração** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de versão** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Obtenha uma visão holística do ciclo de vida da versão** | ❌ | ✅ | ❌ | ❌ | |
-| **Monitorar status e integridade no painel de versão** | ❌ | ✅ | ❌ | ❌ | |
-| **Banco de dados de gerenciamento de configuração** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie uma visualização conectada do seu ambiente de TI com itens de configuração** | ❌ | ✅ | ❌ | ❌ | |
-| **Padronizar e dimensionar seu CMDB com tipos e atributos de item de configuração** | ❌ | ✅ | ❌ | ❌ | |
-| **Acelere a configuração do CMDB importando itens de configuração do arquivo CSV** | ❌ | ✅ | ❌ | ❌ | |
-| **Avalie o impacto do serviço e melhore a resiliência operacional com relacionamentos de item de configuração** | ❌ | ✅ | ❌ | ❌ | |
-| **Aprimore a análise de causa-raiz e a visibilidade de impacto conectando itens de configuração a registros de serviço de TI** | ❌ | ✅ | ❌ | ❌ | |
-| **Analisar dados de configuração com painel predefinido** | ❌ | ✅ | ❌ | ❌ | |
-| **Melhore a precisão dos dados com regras de identificação de tipo de item de configuração** | ❌ | ✅ | ❌ | ❌ | |
-| **Novos objetos no banco de dados do Gerenciamento de configuração** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ### Descoberta
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Acelere a detecção de ativos com aplicativos do Discovery, trabalhos de leitura e metas** | ❌ | ✅ | ❌ | ❌ | |
-| **Descubra ativos em ambientes híbridos com a varredura sem agente** | ❌ | ✅ | ❌ | ❌ | |
-| **Simplifique e estenda operações de descoberta com verificações baseadas em agente para pontos de extremidade** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar com segurança as credenciais do Discovery com o Gerenciador de credenciais** | ❌ | ✅ | ❌ | ❌ | |
-| **Automatizar e controlar o processamento de dados de descoberta com o Gerenciador de processos** | ❌ | ✅ | ❌ | ❌ | |
-| **Monitorar resultados da descoberta com o painel predefinido** | ❌ | ✅ | ❌ | ❌ | |
-| **Novos objetos no Discovery** | ❌ | ✅ | ❌ | ❌ | |
-| **Autoatendimento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Reduza a carga em equipes de suporte de TI com o Centro do agente para funcionários** | ❌ | ✅ | ❌ | ❌ | |
-| **Centralize produtos e serviços de TI em um único catálogo** | ❌ | ✅ | ❌ | ❌ | |
-| **Crie uma base de Knowledge abrangente para resolver problemas de TI mais rapidamente** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

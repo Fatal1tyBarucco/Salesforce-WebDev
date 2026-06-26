@@ -7,20 +7,20 @@ As verificações de malware para o Salesforce Files agora estão disponíveis a
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Sites do Aura e do LWR** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Configurar experiências de autoatendimento assistido por IA em sites do Aura e do LWR** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilite o Chatter para recursos dependentes do Chatter em sites do Aura e do LWR em novas organizações** | ❌ | ✅ | ❌ | ❌ | |
-| **Mantenha páginas privadas do LWR indisponíveis até que a configuração ou redefinição de senha seja concluída** | ❌ | ✅ | ❌ | ❌ | |
-| **Verificar arquivos para malware no Salesforce Files (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar e vincular registros relacionados de tabelas de dados de fluxo de tela** | ❌ | ✅ | ❌ | ❌ | |
-| **Personalizar fluxos de tela com mais substituições de estilo** | ✅ | ❌ | ❌ | ❌ | |
-| **Usar imagens de recurso estático para exibir texto em fluxos de tela (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Componentes no Criador de experiências** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Reduza a rolagem em fluxos de tela com grupos de botões de opção empilhados** | ❌ | ✅ | ❌ | ❌ | |
-| **Carregar arquivos maiores para sites do Experience Cloud** | ❌ | ✅ | ❌ | ❌ | |
-| **Segurança e compartilhamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Permitir que todos os usuários do site enviem emails** | ❌ | ✅ | ❌ | ❌ | |
-| **Outras alterações** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

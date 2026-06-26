@@ -7,11 +7,11 @@ Os produtos e recursos do Data 360, do Marketing Cloud, da Plataforma, do MuleSo
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Acessar o Salesforce em mais regiões com o Hyperforce** | ❌ | ❌ | ✅ | ❌ | |
-| **Localize referências embutidas em código usando o processo atualizado do Hyperforce Assistant** | ❌ | ✅ | ❌ | ❌ | |
-| **Intervalos de IP públicos do Hyperforce agora incluem endereços de entrada** | ❌ | ✅ | ❌ | ❌ | |
-| **Prepare-se para IPv6 em IPs públicos do Hyperforce** | ❌ | ✅ | ❌ | ❌ | |
-| **Ler arquivos para malware (beta)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

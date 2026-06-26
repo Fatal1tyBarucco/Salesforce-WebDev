@@ -7,14 +7,14 @@ Aproveite os recursos mais recentes do Lightning Web Runtime atualizando seus si
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Atualizar para sites do LWR aprimorados (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Aproveite os recursos mais recentes do Salesforce Flow para Experience Cloud** | ❌ | ✅ | ❌ | ❌ | |
-| **Crie sites e aplicativos eficientes com componentes predefinidos do Avonni** | ❌ | ❌ | ✅ | ❌ | |
-| **Atualizar referências aos URLs do seu site Force.com legado** | ❌ | ✅ | ❌ | ❌ | |
-| **Informar os usuários quando a sessão está prestes a terminar** | ❌ | ✅ | ❌ | ❌ | |
-| **Desenvolva componentes da Web Lightning mais rapidamente em uma visualização em tempo real do seu site do LWR (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Mudar para um certificado de domínio único para sua rede de distribuição de conteúdo do Salesforce (atualização de versão)** | ❌ | ✅ | ❌ | ❌ | |
-| **Descubra os recursos mais recentes dos aplicativos Mobile Publisher** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

@@ -7,10 +7,10 @@ Use o pacote de produtos MuleSoft Anypoint Platform para conectar e integrar apl
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Catálogo da API do MuleSoft para Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Autenticar conexões de API usando Básico, JWT e OAuth 2.0** | ❌ | ✅ | ❌ | ❌ | |
-| **Empacotar entidades do catálogo de API usando pacotes gerenciados de primeira ou segunda geração** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Selecionar conexões de API por ação no Fluxo** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 
