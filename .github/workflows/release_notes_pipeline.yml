@@ -152,7 +152,10 @@ jobs:
         run: |
           SLUG="${{ steps.params.outputs.release_slug }}"
           RELEASE_DIR="releases/${SLUG}"
-          TAG_NAME="v$(echo ${SLUG} | sed 's/_/-/g')"
+          # Extract year and season from slug (e.g., summer_26 -> v2026-summer)
+          YEAR="20$(echo ${SLUG} | grep -oP '\d+$')"
+          SEASON=$(echo ${SLUG} | sed 's/_[0-9]*$//')
+          TAG_NAME="v${YEAR}-${SEASON}"
           
           if [ -d "$RELEASE_DIR" ] && [ -f "${RELEASE_DIR}/.meta.json" ]; then
             if gh release view "${TAG_NAME}" > /dev/null 2>&1; then
@@ -162,6 +165,21 @@ jobs:
               RELEASE_NAME=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin)['name'])")
               TOTAL=$(echo "$META" | python3 -c "import sys, json; print(sum(c['count'] for c in json.load(sys.stdin).get('categories', [])))")
               CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
+              RELEASE_ID=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin).get('release_id', 0))")
+              
+              # Check if this is the latest release by comparing with existing ones
+              LATEST_EXISTS=$(gh release list --json tagName -q '.[].tagName' | grep -c "v2026-" || true)
+              if [ "$LATEST_EXISTS" -eq 0 ]; then
+                IS_LATEST="--latest"
+              else
+                # Get highest release_id from existing releases
+                MAX_ID=$(gh release list --json body -q '.[].body' | grep -oP 'release_id.*?(\d+)' | head -1 | grep -oP '\d+' || echo "0")
+                if [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
+                  IS_LATEST="--latest"
+                else
+                  IS_LATEST="--latest=false"
+                fi
+              fi
               
               NOTES="## 📦 ${RELEASE_NAME}\n\n"
               NOTES+="- **${TOTAL}** recursos em **${CATEGORIES}** categorias\n"
@@ -171,7 +189,7 @@ jobs:
               gh release create "${TAG_NAME}" \
                 --title "${RELEASE_NAME}" \
                 --notes "$(echo -e "$NOTES")" \
-                --latest=false
+                ${IS_LATEST}
               
               echo "GitHub Release created: ${TAG_NAME}"
             fi
