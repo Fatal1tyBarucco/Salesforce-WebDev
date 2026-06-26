@@ -40,7 +40,7 @@ jobs:
           fi
 
           SLUG=$(dirname $(dirname $LATEST_META) | xargs basename)
-          NAME=$(python -c "import json; print(json.load(open('$LATEST_META'))['release_name'])")
+          NAME=$(python -c "import json; print(json.load(open('$LATEST_META'))['name'])")
           FEATURES=$(python -c "import json; print(json.load(open('$LATEST_META')).get('total_features', 0))")
           DATE=$(python -c "import json; print(json.load(open('$LATEST_META')).get('generated_at', ''))")
           CATEGORY_COUNT=$(python -c "import json; print(len(json.load(open('$LATEST_META')).get('categories', [])))")

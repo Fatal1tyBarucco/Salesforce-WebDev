@@ -14,7 +14,7 @@ Pipeline automatizado para extração, classificação e versionamento das **Sal
 ![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?logo=playwright&logoColor=white)
 ![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg)
 ![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg)
-![Black](https://img.shields.io/badge/Formatter-Black-000000.svg)
+![uv](https://img.shields.io/badge/uv-Package_Manager-blue.svg)
 
 | Tecnologia / Ferramenta | Descrição | Status no Pipeline |
 | :--- | :--- | :---: |
@@ -23,77 +23,93 @@ Pipeline automatizado para extração, classificação e versionamento das **Sal
 | 🧪 **Pytest** | Suíte de testes unitários automatizados | `450+ testes` |
 | 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
 | ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |
+| 📦 **uv** | Gerenciamento de dependências com lock file determinístico | `Ativo` |
 
 ---
 
-## 📌 Visão Geral
+## 📖 Visão Geral
 
-Este repositório atua como uma **Base de Conhecimento Dinâmica (Knowledge Base)** que captura, estrutura e documenta as funcionalidades, atualizações de segurança e alterações arquiteturais introduzidas nas releases periódicas da **Salesforce** (Spring, Summer, Winter).
+Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
 
-A estrutura é desenhada para suportar revisões rápidas por **Arquitetos** e **Desenvolvedores**, mantendo um log histórico em formato legível (Markdown) nativo do repositório.
+## 🏗️ Arquitetura do Sistema
+
+```mermaid
+flowchart LR
+    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
+    B -->|DOM Parsing| C[parser.py]
+    C -->|Feature Impact| D[generator.py]
+    D -->|Markdown| E[releases/]
+    D -->|Update| F[README.md]
+    E -->|Jekyll| G[GitHub Pages]
+    F -->|Jekyll| G
+
+    B -->|Retry + Circuit Breaker| H{Resilience Layer}
+    H -->|Cache Hit| I[cache/]
+    H -->|Cache Miss| A
+```
+
+**Princípios de Design:**
+* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
+* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
+* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
+
+## ⚙️ Pré-requisitos e Instalação
+
+Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
+
+```bash
+# Instale o uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone e instale
+git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
+cd Salesforce-WebDev
+uv sync
+
+# Instale browsers do Playwright
+uv run playwright install chromium
+```
+
+## 🚀 Uso e Execução
+
+```bash
+# Executar pipeline completo
+uv run python -m src.main
+
+# Executar release específica
+uv run python -m src.main --release summer_26
+
+# Dry run (sem escrever arquivos)
+uv run python -m src.main --dry-run
+```
+
+## 🛡️ Governança e Resiliência
+
+| Componente | Configuração | Descrição |
+| :--- | :--- | :--- |
+| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
+| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
+| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
+| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
+
+## 🧪 Testes e Qualidade
+
+```bash
+# Executar testes
+uv run pytest tests/
+
+# Com cobertura
+uv run pytest tests/ --cov=src --cov-report=term-missing
+
+# Quality gate (ordem CI)
+uv run ruff check src/
+uv run black --check src/
+uv run mypy src/
+```
+
+**Meta:** Cobertura >99%, zero erros de tipo, zero warnings de lint.
 
 ---
-
-## ⚙️ Arquitetura de Atualização Dinâmica
-
-A governança do repositório é mantida por meio de processos automatizados que garantem que as últimas releases sejam extraídas, transformadas e carregadas (ETL) no repositório **sem intervenção manual**.
-
-![Pipeline Flow](./assets/pipeline-flow.png)
-
-### Fluxo de Execução
-
-1. **Detecção**: Compara conteúdo da página atual vs. próxima release
-2. **Extração**: Playwright extrai tabela Feature Impact (todas as categorias)
-3. **Geração**: Arquivos `.md` por categoria com flags de disponibilidade
-4. **PDF**: Download automático do "Release in a Box" via botão da página
-5. **Index**: README.md atualizado com `<details>/<summary>` por categoria
-6. **Deploy**: Jekyll publica no GitHub Pages automaticamente
-
----
-
-## 🚀 V3 — Production Hardening & Analytics
-
-O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e integração:
-
-### Production Hardening ✅
-
-| Feature | Módulo | Descrição |
-| :--- | :--- | :--- |
-| **Rate Limiter** | `src/scraper.py` | Token-bucket a 2 req/s para evitar throttling do Salesforce |
-| **Circuit Breaker** | `src/scraper.py` | Falha após 3 erros consecutivos, cooldown de 60s |
-| **Graceful Degradation** | `src/scraper.py` | Continua com dados em cache quando fetch falha |
-| **Structured Logging** | `src/logger.py` | JSON + text formatters com correlation IDs |
-| **Health Check** | `src/health.py` | `/health`, `/ready`, `/metrics` (Prometheus) |
-
-### Analytics & Dashboard ✅
-
-| Feature | Módulo | Descrição |
-| :--- | :--- | :--- |
-| **Analytics Dashboard** | `src/analytics.py` | Dashboard HTML estático com SVG (categorias, tendências, confiança) |
-| **Interactive Dashboard** | `src/dashboard.py` | Busca, filtros, comparação lado a lado, heatmap, export CSV/JSON |
-| **REST API** | `src/api.py` | `/releases`, `/releases/{slug}`, `/diff/{a}/{b}` — stdlib HTTP |
-
-### Notifications ✅
-
-| Feature | Módulo | Descrição |
-| :--- | :--- | :--- |
-| **Email Digest** | `src/notifications.py` | Digest HTML via SMTP após cada release |
-| **Slack Webhook** | `src/notifications.py` | Block Kit formatado |
-| **Discord Webhook** | `src/notifications.py` | Embeds formatados |
-| **Profiles** | `src/notifications.py` | Configurável por categoria, unsubscribe management |
-
-### Workflow & Integration ✅
-
-| Feature | Módulo | Descrição |
-| :--- | :--- | :--- |
-| **PR Workflow** | `src/workflow.py` | Cria branch, PR com diff preview, label triage automática |
-| **Trailhead Linking** | `src/salesforce.py` | Busca módulos Trailhead por categoria |
-| **Sandbox Readiness** | `src/salesforce.py` | Verificação de limites org e prontidão de deploy |
-
----
-
-
-
 
 
 
@@ -292,7 +308,6 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
 </details>
-
 
 
 ### 🌸 Spring '26
@@ -622,18 +637,18 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 </details>
 
 
-## 🛠️ Stack Tecnológico & Automação
+## 🛠️ Stack Tecnológico
 
 | Ferramenta | Uso no Projeto |
 | :--- | :--- |
 | **GitHub Actions** | CI/CD: lint, typecheck, extração, deploy automático |
+| **uv** | Gerenciamento de dependências com lock file determinístico |
 | **Playwright** | Scraper headless para páginas SPA do Salesforce Help |
 | **Python 3.14** | Linguagem principal com type hints completos |
 | **BeautifulSoup** | Parser HTML para extração de dados estruturados |
 | **Markdown** | Formato de saída para documentação técnica |
 | **MkDocs** | Portal técnico publicado no GitHub Pages |
 | **stdlib HTTP** | REST API e health check server (zero dependências externas) |
-| **smtplib** | Email digest para stakeholders |
 | **gh CLI** | PR workflow e GitHub integration |
 
 ### Módulos do Pipeline
@@ -641,18 +656,17 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 | Módulo | Responsabilidade |
 | :--- | :--- |
 | `src/main.py` | Orquestrador: detectar releases, extrair, parse, gerar, atualizar README |
-| `src/scraper.py` | Playwright headless, retries, download PDF, cache de conteúdo |
+| `src/scraper.py` | Playwright headless, circuit breaker, rate limiter, cache, download PDF |
 | `src/parser.py` | Extração de hierarquia ToC + tabela Feature Impact |
 | `src/generator.py` | Gera arquivos `.md` por categoria |
-| `src/readme_updater.py` | Atualiza seção de releases no README |
+| `src/ai_automation.py` | Comparação entre releases, detecção de regressões, quality metrics |
 | `src/analytics.py` | Dashboard HTML com gráficos SVG |
 | `src/api.py` | REST API para acesso programático |
-| `src/notifications.py` | Email, Slack, Discord webhooks |
+| `src/notifications.py` | Email digest, Slack/Discord webhooks |
 | `src/dashboard.py` | Dashboard interativo com JS |
 | `src/workflow.py` | PR-based workflow com triage |
 | `src/salesforce.py` | Trailhead linking, org limits, sandbox readiness |
-| `src/ai_automation.py` | Comparação, regressões, quality metrics, triage |
-| `src/health.py` | Health check, readiness, Prometheus metrics |
+| `src/health.py` | Health check (`/health`, `/ready`), Prometheus metrics (`/metrics`) |
 | `src/logger.py` | Logging estruturado com correlation IDs |
 
 ---
@@ -661,9 +675,17 @@ O pipeline V3 adiciona camadas de confiabilidade, analytics, notificações e in
 
 1. Faça o **Fork** do projeto
 2. Crie uma nova branch: `git checkout -b feature/minha-feature`
-3. Faça o commit: `git commit -m 'feat: descrição da alteração'`
-4. Envie: `git push origin feature/minha-feature`
-5. Abra um **Pull Request**
+3. Instale dependências: `uv sync --extra dev`
+4. Execute a quality gate:
+   ```bash
+   uv run ruff check src/
+   uv run black --check src/
+   uv run mypy src/
+   uv run pytest tests/ --cov=src --cov-fail-under=99
+   ```
+5. Faça o commit: `git commit -m 'feat: descrição da alteração'`
+6. Envie: `git push origin feature/minha-feature`
+7. Abra um **Pull Request**
 
 ---
 

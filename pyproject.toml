@@ -1,3 +1,30 @@
+[project]
+name = "salesforce-release-notes"
+version = "3.0.0"
+description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes"
+requires-python = ">=3.14"
+dependencies = [
+    "beautifulsoup4>=4.15.0,<5",
+    "lxml>=6.1.1,<7",
+    "playwright>=1.60.0,<2",
+]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-material>=9.7.6,<10",
+]
+dev = [
+    "black>=26.5.1,<27",
+    "ruff>=0.15.18,<1",
+    "pytest>=9.1.1,<10",
+    "pytest-xdist>=3.8.0,<4",
+    "pytest-cov>=7.1.0,<8",
+    "mypy>=2.1.0,<3",
+    "types-requests>=2.33.0,<3",
+    "types-beautifulsoup4>=4.12.0,<5",
+]
+
 [tool.black]
 line-length = 100
 

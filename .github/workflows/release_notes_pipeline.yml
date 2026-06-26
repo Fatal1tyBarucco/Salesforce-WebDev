@@ -52,14 +52,16 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v7
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: "pip"
 
       - name: Instalar dependências de desenvolvimento
-        run: pip install -r requirements.txt ruff mypy types-requests
+        run: uv sync --extra dev
 
       - name: Ruff — Linting e formatação
         run: ruff check src/ --output-format=github
@@ -78,14 +80,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: "pip"
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
+        run: uv sync
 
       - name: Instalar Playwright browsers
         run: playwright install chromium
