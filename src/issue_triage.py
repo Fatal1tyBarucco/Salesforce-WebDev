@@ -266,7 +266,7 @@ class IssueTriager:
             triage.issue_number = issue_number
             return triage
 
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
+        except subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError:
             return None
 
     def apply_triage(self, result: TriageResult) -> bool:
@@ -329,7 +329,7 @@ class IssueTriager:
 
             return True
 
-        except (subprocess.TimeoutExpired, FileNotFoundError):
+        except subprocess.TimeoutExpired, FileNotFoundError:
             return False
 
     def _classify_category(self, text: str) -> tuple[IssueCategory, float]:

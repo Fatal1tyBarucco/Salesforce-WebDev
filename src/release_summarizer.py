@@ -276,7 +276,7 @@ class ReleaseSummarizer:
             try:
                 result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
                 return result
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 pass
         return {}
 

@@ -461,7 +461,7 @@ def _load_trailhead_cache() -> dict[str, list[str]]:
     try:
         data: dict[str, list[str]] = json.loads(cache_path.read_text(encoding="utf-8"))
         return data
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return {}
 
 
