@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/customization.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/customization.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Customization
 
 > **33 features**
@@ -6,46 +7,46 @@ Permissões de modo de exibição de lista mais granulares permitem que os usuá
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Recursos de personalização lançados por mês** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **AgentExchange** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Explorar soluções com servidores MCP no AgentExchange** | ❌ | ✅ | ❌ | ❌ | |
-| **Adicione servidores MCP do registro Agentforce por meio de uma experiência integrada do AgentExchange** | ❌ | ✅ | ❌ | ❌ | |
-| **Avaliar ativos do agente rapidamente com a página de detalhes aprimorada** | ❌ | ✅ | ❌ | ❌ | |
-| **Não há suporte para novas páginas de login do Trialforce com marca no Cloudforce.com** | ❌ | ✅ | ❌ | ❌ | |
-| **Serviços externos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie integrações mais robustas com o suporte de serviços externos para enumerações** | ❌ | ✅ | ❌ | ❌ | |
-| **Faça mais com as melhorias de arquivo binário de Serviços externos** | ❌ | ✅ | ❌ | ❌ | |
-| **Globalização** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Oferecer suporte a mais fusos horários** | ❌ | ✅ | ❌ | ❌ | |
-| **Expanda traduções do idioma do usuário final para catalão e basco (beta)** | ❌ | ✅ | ❌ | ❌ | |
-| **Revise traduções atualizadas de rótulos** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilitar os formatos de localidade de ICU (atualização de versão)** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
 ### Permissões
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Revise o acesso ao campo entre perfis, conjuntos de permissões e grupos de conjuntos de permissões** | ❌ | ✅ | ❌ | ❌ | |
-| **Rastrear dependências de permissão mais facilmente** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilitar filtragem de perfil (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Monitore alterações administrativas em perfis com políticas de segurança da transação** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Connect** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie integrações mais seguras com suporte de adaptador entre organizações para credenciais nomeadas** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurar com o Agentforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique e acelere tarefas administrativas com a configuração com Agentforce (disponível ao público em geral)** | ❌ | ❌ | ✅ | ❌ | |
-| **A Configuração de uso com permissão Agentforce é necessária para habilitação** | ❌ | ❌ | ✅ | ❌ | |
-| **O agente legado para configuração não pode mais ser habilitado** | ❌ | ❌ | ✅ | ❌ | |
-| **Obter mais métricas de integridade e uso da organização (beta)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Compartilhamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Escolher se deseja conceder acesso usando hierarquias de papéis para filas** | ❌ | ✅ | ❌ | ❌ | |
-| **Atualize padrões organizacionais de modo mais rápido e confiável** | ❌ | ✅ | ❌ | ❌ | |
-| **Ampliar o acesso para usuários de licença de funcionário unificado** | ❌ | ✅ | ❌ | ❌ | |
-| **Atualize o Apex code e os fluxos para alterar o comportamento de recálculo de compartilhamento (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Configuração geral** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Faça mais com campos personalizados em entidades padrão** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar compartilhamento e edição de modo de exibição de lista com permissões granulares** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [Lightning App Builder](https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder) — 1 hr 30 mins | 300 pts
 - [Customization Basics & Navigation](https://trailhead.salesforce.com/content/learn/modules/customization_basics) — 2 hrs | 400 pts

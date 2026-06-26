@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/mobile-app.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/mobile-app.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Mobile App
 
 > **17 features**
@@ -6,25 +7,25 @@ O Agentforce Voice agora está disponível ao público em geral para integraçã
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Recursos móveis lançados por mês** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aplicativo Salesforce móvel** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Tudo o que há de novo no aplicativo Salesforce móvel** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Conclua tarefas diretamente de notificações telefônicas personalizadas (disponível ao público em geral)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Personalizar sua página inicial do aplicativo móvel (beta)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aprimorar reuniões presenciais com a Transcrição de IA móvel** | ✅ | ❌ | ❌ | ❌ | |
-| **Experimente uma IU atualizada com o Liquid Glass no aplicativo Salesforce móvel** | ✅ | ❌ | ❌ | ❌ | |
-| **Fazer login no aplicativo Salesforce móvel com email por padrão** | ✅ | ❌ | ❌ | ❌ | |
-| **Use a opção Login para administrador no aplicativo Salesforce móvel para acesso seguro** | ✅ | ❌ | ❌ | ❌ | |
-| **Mobile Publisher** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerenciar seus projetos de aplicativo móvel com renomeamento e arquivamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Acelere aprovações da App Store e do Google Play com a permissão do aplicativo Salesforce móvel** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Notificações** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Conclua tarefas diretamente de notificações telefônicas personalizadas (disponível ao público em geral)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Adicione o Voice ao seu aplicativo móvel com o Agentforce Voice** | ❌ | ✅ | ❌ | ❌ | |
-| **Integre o Agentforce aos seus aplicativos móveis usando o React Native** | ❌ | ✅ | ❌ | ❌ | |
-| **Personalize respostas do Agentforce móvel com tipos do Lightning** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [Salesforce Mobile App Customization](https://trailhead.salesforce.com/content/learn/modules/salesforce-mobile-app-customization) — 1 hr 30 mins | 300 pts
 

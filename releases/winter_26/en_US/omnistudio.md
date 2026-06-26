@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/omnistudio.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/omnistudio.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## OmniStudio
 
 > **8 features**
@@ -6,16 +7,16 @@ O OmniStudio oferece FlexCards e OmniScripts em sites do Lightning Web Runtime (
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Aprimore seus sites do LWR do Experience Cloud com FlexCards e OmniScripts (beta)** | ❌ | ❌ | ❌ | ✅ | |
-| **Aprimore a consistência e a eficiência dos dados com o número automático global Omni** | ❌ | ❌ | ✅ | ❌ | |
-| **Removação do OmniOut no tempo de execução padrão do OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Integrar componentes do encapsulador do OmniStudio em LWCs personalizados para funcionalidade aprimorada** | ✅ | ❌ | ❌ | ❌ | |
-| **Aprimore o desempenho do tempo de execução de seus componentes do OmniStudio** | ❌ | ❌ | ✅ | ❌ | |
-| **Aprimoramentos de acessibilidade no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Outros aprimoramentos no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [OmniStudio Basics](https://trailhead.salesforce.com/content/learn/modules/omnistudio-basics) — 1 hr 30 mins | 300 pts
 

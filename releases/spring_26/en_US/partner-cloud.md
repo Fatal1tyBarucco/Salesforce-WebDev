@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/partner-cloud.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/partner-cloud.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Partner Cloud
 
 > **4 features**
@@ -6,12 +7,12 @@ Comece a gerenciar o ciclo de vida completo do parceiro em um só lugar com ferr
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Automatizar o rastreamento de indicações com fluxos de indicação B2B** | ✅ | ❌ | ❌ | ❌ | |
-| **Criar e rastrear planos de negócios conjuntos com seus parceiros** | ✅ | ❌ | ❌ | ❌ | |
-| **Incluir códigos de indicação em registros de negócio** | ✅ | ❌ | ❌ | ❌ | |
-| **Monitore o desempenho do agente de parceiro com o Agent Analytics** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [Partner Cloud Basics](https://trailhead.salesforce.com/content/learn/modules/partner-cloud-basics) — 1 hr 30 mins | 300 pts
 

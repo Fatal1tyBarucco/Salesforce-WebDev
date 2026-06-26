@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/omnistudio.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/omnistudio.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## OmniStudio
 
 > **10 features**
@@ -6,18 +7,18 @@ Valide seus fluxos de trabalho criados com OmniScripts e FlexCards de ponta a po
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Verificações de segurança aplicadas para o OmniStudio para pacotes gerenciados** | ✅ | ❌ | ❌ | ❌ | |
-| **Verificações de segurança impostas para o OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Automatizar o teste da IU para OmniScripts e FlexCards** | ✅ | ❌ | ❌ | ❌ | |
-| **Obtenha assistência de produto instantânea e solução de problemas com o Agente de IA de assistência do OmniStudio (piloto)** | ❌ | ❌ | ❌ | ✅ | |
-| **Aprimoramentos de acessibilidade no OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
-| **Obtenha valores nulos facilmente com o novo operador É nulo em mapeadores de dados** | ✅ | ❌ | ❌ | ❌ | |
-| **Aprimore seus sites do LWR do Experience Cloud com FlexCards e OmniScripts (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Localizar a documentação da API do OmniStudio em um novo local** | ✅ | ❌ | ❌ | ❌ | |
-| **Removação do conteúdo hospedado do OmniStudio para pacotes gerenciados** | ✅ | ❌ | ❌ | ❌ | |
-| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [OmniStudio Basics](https://trailhead.salesforce.com/content/learn/modules/omnistudio-basics) — 1 hr 30 mins | 300 pts
 

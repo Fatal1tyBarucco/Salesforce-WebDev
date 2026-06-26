@@ -1,3 +1,4 @@
+<div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/hyperforce.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/hyperforce.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Hyperforce
 
 > **3 features**
@@ -6,11 +7,11 @@ A Continuidade Trans-Região Advanced do Salesforce agora está disponível na U
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Acessar o Salesforce em mais regiões com o Hyperforce** | ❌ | ❌ | ✅ | ❌ | |
-| **Novos produtos e recursos disponíveis na Defesa do Government Cloud** | ❌ | ❌ | ✅ | ❌ | |
-| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
-## 🎓 Módulos Trailhead Relacionados
+## 🎓 Related Trailhead Modules
 
 - [Hyperforce Basics](https://trailhead.salesforce.com/content/learn/modules/hyperforce-basics) — 1 hr 30 mins | 300 pts
 
