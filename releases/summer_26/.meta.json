@@ -1,0 +1,98 @@
+{
+  "name": "Summer '26",
+  "slug": "summer_26",
+  "release_id": 262,
+  "total_features": 1371,
+  "avg_confidence": 0.65,
+  "generated_at": "2026-06-26T20:28:16.723990+00:00",
+  "categories": [
+    {
+      "name": "Documentação legal",
+      "count": 6
+    },
+    {
+      "name": "Salesforce geral",
+      "count": 36
+    },
+    {
+      "name": "Agentforce",
+      "count": 37
+    },
+    {
+      "name": "Análise de dados",
+      "count": 58
+    },
+    {
+      "name": "Automação",
+      "count": 118
+    },
+    {
+      "name": "OmniStudio",
+      "count": 9
+    },
+    {
+      "name": "Personalização",
+      "count": 33
+    },
+    {
+      "name": "Data 360",
+      "count": 72
+    },
+    {
+      "name": "Desenvolvimento",
+      "count": 127
+    },
+    {
+      "name": "Experience Cloud",
+      "count": 14
+    },
+    {
+      "name": "Field Service",
+      "count": 48
+    },
+    {
+      "name": "Hyperforce",
+      "count": 3
+    },
+    {
+      "name": "Setores",
+      "count": 309
+    },
+    {
+      "name": "Marketing",
+      "count": 64
+    },
+    {
+      "name": "MuleSoft",
+      "count": 8
+    },
+    {
+      "name": "Aplicativo móvel",
+      "count": 17
+    },
+    {
+      "name": "Partner Cloud",
+      "count": 1
+    },
+    {
+      "name": "Gerenciamento de receita",
+      "count": 97
+    },
+    {
+      "name": "Vendas",
+      "count": 58
+    },
+    {
+      "name": "Integrações do Salesforce para Slack",
+      "count": 2
+    },
+    {
+      "name": "Segurança, identidade e privacidade",
+      "count": 58
+    },
+    {
+      "name": "Serviço",
+      "count": 196
+    }
+  ]
+}
