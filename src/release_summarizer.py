@@ -380,7 +380,6 @@ class ReleaseSummarizer:
         highlights: list[str],
     ) -> str:
         """Build a single-line executive summary for README blockquote."""
-        name = release_slug.replace("_", " ").title()
         cat_count = len(top_categories)
         top_name = top_categories[0][0] if top_categories else ""
         top_count = top_categories[0][1] if top_categories else 0
