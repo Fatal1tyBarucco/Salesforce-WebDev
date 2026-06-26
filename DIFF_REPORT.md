@@ -1,27 +1,28 @@
-# Diff: unknown → summer_26
+# Diff: Spring '26 → Summer '26
 
 | Categoria | Anterior | Atual | Delta |
 | :--- | :---: | :---: | :---: |
-| Agentforce | 0 | 19 | 📈 +19 |
-| Análise de dados | 0 | 33 | 📈 +33 |
-| Aplicativo móvel | 0 | 14 | 📈 +14 |
-| Automação | 0 | 81 | 📈 +81 |
+| Agentforce | 35 | 19 | 📉 -16 |
+| Análise de dados | 54 | 33 | 📉 -21 |
+| Aplicativo móvel | 187 | 14 | 📉 -173 |
+| Automação | 151 | 81 | 📉 -70 |
 | Commerce | 0 | 91 | 📈 +91 |
-| Data 360 | 0 | 37 | 📈 +37 |
-| Desenvolvimento | 0 | 102 | 📈 +102 |
-| Documentação legal | 0 | 6 | 📈 +6 |
-| Experience Cloud | 0 | 14 | 📈 +14 |
-| Field Service | 0 | 37 | 📈 +37 |
-| Gerenciamento de receita | 0 | 96 | 📈 +96 |
-| Hyperforce | 0 | 3 | 📈 +3 |
+| Data 360 | 53 | 37 | 📉 -16 |
+| Desenvolvimento | 97 | 102 | 📈 +5 |
+| Documentação legal | 6 | 6 | — |
+| Experience Cloud | 21 | 14 | 📉 -7 |
+| Field Service | 41 | 37 | 📉 -4 |
+| Gerenciamento de receita | 131 | 96 | 📉 -35 |
+| Hyperforce | 5 | 3 | 📉 -2 |
 | Integrações do Salesforce para Slack | 0 | 2 | 📈 +2 |
-| Marketing | 0 | 53 | 📈 +53 |
-| MuleSoft | 0 | 6 | 📈 +6 |
-| OmniStudio | 0 | 10 | 📈 +10 |
-| Personalização | 0 | 27 | 📈 +27 |
-| Salesforce geral | 0 | 31 | 📈 +31 |
-| Segurança, identidade e privacidade | 0 | 44 | 📈 +44 |
-| Serviço | 0 | 188 | 📈 +188 |
-| Setores | 0 | 327 | 📈 +327 |
-| Vendas | 0 | 56 | 📈 +56 |
-| **TOTAL** | **0** | **1277** | **+1277** |
+| Marketing | 72 | 53 | 📉 -19 |
+| MuleSoft | 8 | 6 | 📉 -2 |
+| OmniStudio | 10 | 10 | — |
+| Partner Cloud | 4 | 0 | 📉 -4 |
+| Personalização | 18 | 27 | 📈 +9 |
+| Salesforce geral | 38 | 31 | 📉 -7 |
+| Segurança, identidade e privacidade | 61 | 44 | 📉 -17 |
+| Serviço | 165 | 188 | 📈 +23 |
+| Setores | 194 | 327 | 📈 +133 |
+| Vendas | 85 | 56 | 📉 -29 |
+| **TOTAL** | **1436** | **1277** | **-159** |

@@ -1,5 +1,0 @@
-beautifulsoup4==4.15.0
-lxml==6.1.1
-playwright==1.60.0
-mkdocs==1.6.1
-mkdocs-material==9.7.6

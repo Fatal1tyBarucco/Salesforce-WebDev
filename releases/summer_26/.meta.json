@@ -94,21 +94,12 @@
   ],
   "classification_summary": {
     "total_classified": 1640,
-    "avg_confidence": 0.32,
+    "avg_confidence": 0.2,
     "by_impact": {
-      "low": 1586,
-      "medium": 44,
-      "high": 10
+      "low": 1640
     },
     "by_type": {
-      "other": 1122,
-      "new_feature": 86,
-      "integration": 138,
-      "ui_ux": 221,
-      "security": 41,
-      "bug_fix": 14,
-      "performance": 10,
-      "deprecation": 8
+      "other": 1640
     }
   }
 }
