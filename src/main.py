@@ -27,6 +27,7 @@ from .config import (
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .i18n import generate_toggle_html
 from .generator import MarkdownGenerator
 from .logger import setup_logging
 from .parser import (
@@ -497,7 +498,9 @@ def _generate_release_files(
         total = cat.total_features
         cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
 
-        lines: list[str] = []
+        toggle_html = generate_toggle_html(locale, slug, release.slug)
+
+        lines: list[str] = [toggle_html]
 
         # 1. Category heading
         lines.append(f"## {cat_name}\n")

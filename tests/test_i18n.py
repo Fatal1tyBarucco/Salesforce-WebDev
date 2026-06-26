@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from src.i18n import detect_locale, get_user_locale, generate_toggle_html, LOCALIZATION_MAP
 
 
@@ -53,3 +55,31 @@ def test_localization_map_has_required_keys() -> None:
     for locale in ["pt_BR", "en_US"]:
         assert "resources" in LOCALIZATION_MAP[locale]
         assert "category_count" in LOCALIZATION_MAP[locale]
+
+
+def test_toggle_in_generated_file(tmp_path: Path) -> None:
+    from src.main import _generate_release_files
+    from src.config import ReleaseInfo
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
+    from src.generator import MarkdownGenerator
+
+    release = ReleaseInfo(name="Summer '26", release_id=260, slug="summer_26")
+    cat = FeatureImpactCategory(name="Agentforce")
+    cat.entries = [
+        FeatureImpactEntry(
+            name="Voice feature",
+            available_users=True,
+            available_admins=True,
+            requires_config=False,
+            contact_sf=False,
+            confidence=0.9,
+        )
+    ]
+
+    generator = MarkdownGenerator(base_dir=str(tmp_path))
+    files = _generate_release_files(release, [cat], generator, locale="pt_BR")
+
+    assert len(files) > 0
+    content = files[0].read_text(encoding="utf-8")
+    assert "en_US/" in content
+    assert "English" in content
