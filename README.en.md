@@ -126,6 +126,9 @@ uv run mypy src/
 
 
 
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
@@ -133,7 +136,7 @@ uv run mypy src/
 ### ☀️ Summer '26
 
 
-<details open>
+<details>
 <summary><b>📄 Legal Documentation (6 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/documentacao_legal.md](./releases/summer_26/en_US/documentacao_legal.md)
@@ -141,7 +144,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Salesforce General (36 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/salesforce_geral.md](./releases/summer_26/en_US/salesforce_geral.md)
@@ -149,7 +152,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Agentforce (37 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
@@ -157,7 +160,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Data Analysis (58 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/analise_de_dados.md](./releases/summer_26/en_US/analise_de_dados.md)
@@ -165,7 +168,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Automation (118 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/automacao.md](./releases/summer_26/en_US/automacao.md)
@@ -173,7 +176,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 OmniStudio (9 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/omnistudio.md](./releases/summer_26/en_US/omnistudio.md)
@@ -181,7 +184,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Customization (33 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/personalizacao.md](./releases/summer_26/en_US/personalizacao.md)
@@ -189,7 +192,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Data 360 (72 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/data_360.md](./releases/summer_26/en_US/data_360.md)
@@ -197,7 +200,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Development (127 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
@@ -205,7 +208,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Experience Cloud (14 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/experience_cloud.md](./releases/summer_26/en_US/experience_cloud.md)
@@ -213,7 +216,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Field Service (48 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/field_service.md](./releases/summer_26/en_US/field_service.md)
@@ -221,7 +224,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Hyperforce (3 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/hyperforce.md](./releases/summer_26/en_US/hyperforce.md)
@@ -229,7 +232,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Industries (309 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/setores.md](./releases/summer_26/en_US/setores.md)
@@ -237,7 +240,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Marketing (64 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/marketing.md](./releases/summer_26/en_US/marketing.md)
@@ -245,7 +248,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 MuleSoft (8 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/mulesoft.md](./releases/summer_26/en_US/mulesoft.md)
@@ -253,7 +256,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Mobile App (17 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/aplicativo_movel.md](./releases/summer_26/en_US/aplicativo_movel.md)
@@ -261,7 +264,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Partner Cloud (1 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/partner_cloud.md](./releases/summer_26/en_US/partner_cloud.md)
@@ -269,7 +272,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Revenue Management (97 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/gerenciamento_de_receita.md](./releases/summer_26/en_US/gerenciamento_de_receita.md)
@@ -277,7 +280,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Sales (58 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
@@ -285,7 +288,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Salesforce Slack Integrations (2 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md)
@@ -293,7 +296,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Security, Identity & Privacy (58 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md](./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md)
@@ -301,7 +304,7 @@ uv run mypy src/
 </details>
 
 
-<details open>
+<details>
 <summary><b>📄 Service (196 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
@@ -310,7 +313,9 @@ uv run mypy src/
 
 
 
-### 🌸 Spring '26
+<details>
+
+<summary><h3>🌸 Spring '26</h3></summary>
 
 
 <details>
@@ -480,9 +485,13 @@ uv run mypy src/
 
 </details>
 
+</details>
 
 
-### ❄️ Winter '26
+
+<details>
+
+<summary><h3>❄️ Winter '26</h3></summary>
 
 
 <details>
@@ -633,6 +642,8 @@ uv run mypy src/
 <summary><b>📄 Service (41 features)</b></summary>
 
 > 📄 Full details: [./releases/winter_26/en_US/servico.md](./releases/winter_26/en_US/servico.md)
+
+</details>
 
 </details>
 
