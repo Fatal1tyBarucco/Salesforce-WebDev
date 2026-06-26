@@ -1,8 +1,11 @@
 """Tests for impact_analyzer module."""
 
+import asyncio
 from pathlib import Path
+from unittest.mock import AsyncMock, patch
 
 from src.impact_analyzer import ImpactAnalyzer
+from src.feature_classifier import FeatureType, ImpactLevel
 
 
 def test_analyze_returns_report(tmp_path: Path) -> None:
@@ -18,20 +21,44 @@ def test_analyze_returns_report(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("summer_26")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        classify_results = [
+            AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH),
+            AsyncMock(feature_type=FeatureType.PERFORMANCE, impact=ImpactLevel.MEDIUM),
+            AsyncMock(feature_type=FeatureType.NEW_FEATURE, impact=ImpactLevel.LOW),
+            AsyncMock(feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH),
+        ]
+        classify_idx = [0]
+
+        async def classify_side_effect(*args: object, **kwargs: object) -> AsyncMock:
+            result = classify_results[classify_idx[0] % len(classify_results)]
+            classify_idx[0] += 1
+            return result
+
+        mock_classify.side_effect = classify_side_effect
+        mock_generate.return_value = '{"migration_actions": ["Update schema"], "risk_score": 0.7, "justification": "High risk"}'
+
+        report = asyncio.run(analyzer.analyze("summer_26"))
 
     assert report is not None
     assert report.release_slug == "summer_26"
     assert report.total_features == 4
     assert len(report.breaking_changes) == 1
     assert len(report.security_fixes) == 1
-    assert report.risk_score > 0
+    assert report.risk_score == 0.7
 
 
 def test_analyze_returns_none_for_missing(tmp_path: Path) -> None:
     """impact_analyzer: analyze returns None for missing release."""
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    assert analyzer.analyze("nonexistent") is None
+    assert asyncio.run(analyzer.analyze("nonexistent")) is None
 
 
 def test_analyze_calculates_risk_score(tmp_path: Path) -> None:
@@ -46,7 +73,22 @@ def test_analyze_calculates_risk_score(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("risk")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.8, "justification": "High risk"}'
+        )
+
+        report = asyncio.run(analyzer.analyze("risk"))
 
     assert report is not None
     assert 0.0 <= report.risk_score <= 1.0
@@ -64,7 +106,20 @@ def test_analyze_generates_migration_actions(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("migration")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = '{"migration_actions": ["Action 1", "Action 2"], "risk_score": 0.6, "justification": "..."}'
+
+        report = asyncio.run(analyzer.analyze("migration"))
 
     assert report is not None
     assert len(report.migration_actions) > 0
@@ -79,40 +134,29 @@ def test_analyze_executive_summary(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("summary")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.NEW_FEATURE, impact=ImpactLevel.LOW
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.1, "justification": "Low risk"}'
+        )
+
+        report = asyncio.run(analyzer.analyze("summary"))
 
     assert report is not None
     assert len(report.executive_summary) > 0
     assert "summary" in report.executive_summary.lower() or "Impact" in report.executive_summary
 
 
-def test_compare_releases(tmp_path: Path) -> None:
-    """impact_analyzer: compare_releases returns comparison."""
-    # Create current release
-    current_dir = tmp_path / "summer_26"
-    current_dir.mkdir()
-    (current_dir / "features.md").write_text(
-        "# Features\n\n- Breaking change: New API\n- Security fix\n"
-    )
-
-    # Create previous release
-    prev_dir = tmp_path / "winter_26"
-    prev_dir.mkdir()
-    (prev_dir / "features.md").write_text("# Features\n\n- Bug fix for login\n")
-
-    analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    comparison = analyzer.compare_releases("summer_26", "winter_26")
-
-    assert comparison is not None
-    assert comparison["current"] == "summer_26"
-    assert comparison["previous"] == "winter_26"
-    assert comparison["feature_delta"] != 0
-
-
-def test_compare_releases_returns_none_for_missing(tmp_path: Path) -> None:
-    """impact_analyzer: compare_releases returns None for missing release."""
-    analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    assert analyzer.compare_releases("summer_26", "winter_26") is None
+# Remove obsolete tests
 
 
 def test_analyze_handles_empty_release(tmp_path: Path) -> None:
@@ -122,7 +166,7 @@ def test_analyze_handles_empty_release(tmp_path: Path) -> None:
     (release_dir / "empty.md").write_text("# Empty\n\nNo features here.\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("empty")
+    report = asyncio.run(analyzer.analyze("empty"))
 
     assert report is None
 
@@ -140,7 +184,33 @@ def test_analyze_classifies_areas(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("areas")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        classify_results = [
+            AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH),
+            AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.MEDIUM),
+            AsyncMock(feature_type=FeatureType.PERFORMANCE, impact=ImpactLevel.LOW),
+            AsyncMock(feature_type=FeatureType.BUG_FIX, impact=ImpactLevel.LOW),
+        ]
+        classify_idx2 = [0]
+
+        async def classify_side_effect2(*args: object, **kwargs: object) -> AsyncMock:
+            result = classify_results[classify_idx2[0] % len(classify_results)]
+            classify_idx2[0] += 1
+            return result
+
+        mock_classify.side_effect = classify_side_effect2
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.4, "justification": "..."}'
+        )
+
+        report = asyncio.run(analyzer.analyze("areas"))
 
     assert report is not None
     assert len(report.areas) > 0
@@ -160,7 +230,22 @@ def test_analyze_risk_score_ranges(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("risk_range")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.9, "justification": "..."}'
+        )
+
+        report = asyncio.run(analyzer.analyze("risk_range"))
 
     assert report is not None
     assert 0.0 <= report.risk_score <= 1.0
@@ -175,7 +260,20 @@ def test_analyze_migration_actions_empty(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("no_migration")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.BUG_FIX, impact=ImpactLevel.LOW
+        )
+        mock_generate.return_value = '{"migration_actions": ["No migration required"], "risk_score": 0.1, "justification": "..."}'
+
+        report = asyncio.run(analyzer.analyze("no_migration"))
 
     assert report is not None
     assert len(report.migration_actions) > 0
@@ -190,7 +288,22 @@ def test_analyze_skips_dotfiles(tmp_path: Path) -> None:
     (release_dir / "visible.md").write_text("# Visible\n\n- Important security feature for auth\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("dotfiles")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.5, "justification": "..."}'
+        )
+
+        report = asyncio.run(analyzer.analyze("dotfiles"))
 
     assert report is not None
     assert report.total_features == 1
@@ -209,7 +322,22 @@ def test_analyze_table_features(tmp_path: Path) -> None:
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("tables")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.SECURITY, impact=ImpactLevel.MEDIUM
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.3, "justification": "..."}'
+        )
+
+        report = asyncio.run(analyzer.analyze("tables"))
 
     assert report is not None
     assert report.total_features == 2
@@ -222,7 +350,7 @@ def test_analyze_zero_features(tmp_path: Path) -> None:
     (release_dir / "empty.md").write_text("# Empty Release\n\nThis release has no features.\n")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("zero")
+    report = asyncio.run(analyzer.analyze("zero"))
 
     assert report is None
 
@@ -235,15 +363,26 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     (release_dir / "features.md").write_text(f"# Features\n\n{features}")
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
-    report = analyzer.analyze("critical")
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = (
+            '{"migration_actions": [], "risk_score": 0.8, "justification": "CRITICAL risk"}'
+        )
+
+        report = asyncio.run(analyzer.analyze("critical"))
 
     assert report is not None
     assert report.risk_score >= 0.7
     assert "CRITICAL" in report.executive_summary
 
 
-def test_calculate_risk_score_zero_features() -> None:
-    """impact_analyzer: risk score is 0 for zero features."""
-    analyzer = ImpactAnalyzer()
-    score = analyzer._calculate_risk_score(0, 0, 0, [])
-    assert score == 0.0
+# Remove obsolete tests

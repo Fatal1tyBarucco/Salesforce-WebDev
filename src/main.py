@@ -158,6 +158,113 @@ def _build_release_slug(release_id: int) -> str:
     return f"{season.lower()}_{clean_year}"
 
 
+async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> None:
+    """Generate all AI reports concurrently."""
+    if not releases_to_process:
+        return
+    try:
+        from .ai_automation import AIAutomationService
+        from .issue_triage import IssueTriager
+        from .impact_analyzer import ImpactAnalyzer
+        from .smart_notifications import SmartNotificationEngine, UserPreferences
+
+        ai_service = AIAutomationService()
+        triager = IssueTriager()
+        analyzer = ImpactAnalyzer()
+        engine = SmartNotificationEngine()
+
+        # General reports
+        changelog_task = ai_service.generate_changelog()
+        quality_task = ai_service.generate_quality_report()
+
+        # Comparison reports for the latest release
+        current_slug = releases_to_process[-1].slug
+        known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
+        current_idx = next((i for i, r in enumerate(known_sorted) if r.slug == current_slug), -1)
+
+        previous_slug = None
+        if current_idx >= 0 and current_idx + 1 < len(known_sorted):
+            previous_slug = known_sorted[current_idx + 1].slug
+
+        diff_tasks = []
+        if previous_slug:
+            diff_tasks = [
+                ai_service.generate_regression_report(current_slug, previous_slug),
+                ai_service.generate_diff_report(current_slug, previous_slug),
+            ]
+
+        # Gather general and diff reports
+        all_initial_tasks = [changelog_task, quality_task] + diff_tasks
+        all_results = await asyncio.gather(*all_initial_tasks)
+
+        Path("CHANGELOG.md").write_text(all_results[0], encoding="utf-8")
+        Path("QUALITY_REPORT.md").write_text(all_results[1], encoding="utf-8")
+
+        if previous_slug:
+            Path("REGRESSION_REPORT.md").write_text(all_results[2], encoding="utf-8")
+            Path("DIFF_REPORT.md").write_text(all_results[3], encoding="utf-8")
+            logger.info("Regression and Diff reports generated.")
+
+        _update_badge(releases_to_process)
+
+        # Per-release AI processing
+        async def process_release_ai(release: ReleaseInfo) -> None:
+            meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+            if not meta_path.exists():
+                return
+
+            import json as _json
+
+            meta = _json.loads(meta_path.read_text(encoding="utf-8"))
+            cats = meta.get("categories", [])
+            total = sum(c.get("count", 0) for c in cats)
+
+            try:
+                issue_title = f"Release: {release.name}"
+                issue_body = (
+                    f"Release {release.name} with {total} features across {len(cats)} categories."
+                )
+                await triager.triage_issue(issue_title, issue_body)
+            except Exception as e:
+                logger.warning("Issue triage failed: %s", e)
+
+            issue_url = await ai_service.create_github_issue(release.name, total, len(cats))
+            if issue_url:
+                logger.info("GitHub Issue created: %s", issue_url)
+
+        await asyncio.gather(*(process_release_ai(r) for r in releases_to_process))
+
+        # Impact and Notification Reports
+        async def process_analytics(release: ReleaseInfo) -> None:
+            try:
+                report = await analyzer.analyze(release.slug)
+                if report:
+                    impact_path = Path("IMPACT_REPORT.md")
+                    impact_path.write_text(
+                        _format_impact_report(report, release.name), encoding="utf-8"
+                    )
+            except Exception as e:
+                logger.warning("Impact analysis failed: %s", e)
+
+            try:
+                notifs = await engine.generate_from_release(release.slug)
+                if notifs:
+                    default_user = UserPreferences(
+                        user_id="pipeline", interests=["all"], categories=["all"]
+                    )
+                    digest = await engine.generate_digest(notifs, default_user)
+                    notif_path = Path("NOTIFICATION_DIGEST.md")
+                    notif_path.write_text(_format_notification_digest(digest), encoding="utf-8")
+            except Exception as e:
+                logger.warning("Notification digest failed: %s", e)
+
+        await asyncio.gather(*(process_analytics(r) for r in releases_to_process))
+        logger.info("All AI reports generated concurrently.")
+
+    except ImportError as e:
+        logger.error("Failed to import AI automation modules: %s", e)
+
+
 async def run_pipeline() -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
     setup_logging()
@@ -199,7 +306,7 @@ async def run_pipeline() -> None:
                 releases_to_process.append(new_release)
             else:
                 logger.info("No new release detected. Updating README only.")
-                _update_readme_all()
+                await _update_readme_all()
                 return
 
         for release in releases_to_process:
@@ -238,7 +345,7 @@ async def run_pipeline() -> None:
                 from .feature_classifier import FeatureClassifier
 
                 classifier = FeatureClassifier()
-                classification = classifier.classify_release(release.slug)
+                classification = await classifier.classify_release(release.slug)
                 if classification:
                     meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
                     if meta_path.exists():
@@ -265,117 +372,10 @@ async def run_pipeline() -> None:
             except Exception as e:
                 logger.warning("Feature classification failed: %s", e)
 
-    _update_readme_all()
+    await _update_readme_all()
 
-    # Generate AI reports
     try:
-        from .ai_automation import (
-            create_github_issue,
-            generate_changelog,
-            generate_diff_report,
-            generate_quality_report,
-            generate_regression_report,
-        )
-
-        changelog = generate_changelog()
-        Path("CHANGELOG.md").write_text(changelog, encoding="utf-8")
-
-        quality = generate_quality_report()
-        Path("QUALITY_REPORT.md").write_text(quality, encoding="utf-8")
-
-        if len(releases_to_process) > 0:
-            current_slug = releases_to_process[-1].slug
-            known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
-            current_idx = next(
-                (i for i, r in enumerate(known_sorted) if r.slug == current_slug), -1
-            )
-            if current_idx >= 0 and current_idx + 1 < len(known_sorted):
-                previous_slug = known_sorted[current_idx + 1].slug
-                regression = generate_regression_report(current_slug, previous_slug)
-                Path("REGRESSION_REPORT.md").write_text(regression, encoding="utf-8")
-                logger.info("Regression report generated: REGRESSION_REPORT.md")
-
-                diff = generate_diff_report(current_slug, previous_slug)
-                Path("DIFF_REPORT.md").write_text(diff, encoding="utf-8")
-                logger.info("Diff report generated: DIFF_REPORT.md")
-
-        _update_badge(releases_to_process)
-
-        for release in releases_to_process:
-            meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
-            if meta_path.exists():
-                import json as _json
-
-                meta = _json.loads(meta_path.read_text(encoding="utf-8"))
-                cats = meta.get("categories", [])
-                total = sum(c.get("count", 0) for c in cats)
-
-                # Triage the release issue before creating
-                try:
-                    from .issue_triage import IssueTriager
-
-                    triager = IssueTriager()
-                    issue_title = f"Release: {release.name}"
-                    issue_body = (
-                        f"Release {release.name} with {total} features "
-                        f"across {len(cats)} categories."
-                    )
-                    triage = triager.triage_issue(issue_title, issue_body)
-                    if triage:
-                        logger.info(
-                            "Issue triaged: priority=%s, category=%s",
-                            triage.priority.value,
-                            triage.category.value,
-                        )
-                except Exception as e:
-                    logger.warning("Issue triage failed: %s", e)
-
-                issue_url = create_github_issue(release.name, total, len(cats))
-                if issue_url:
-                    logger.info("GitHub Issue created: %s", issue_url)
-
-        logger.info("AI reports generated: CHANGELOG.md, QUALITY_REPORT.md")
-
-        # Generate impact report and notification digest
-        for release in releases_to_process:
-            try:
-                from .impact_analyzer import ImpactAnalyzer
-
-                analyzer = ImpactAnalyzer()
-                impact_report = analyzer.analyze(release.slug)
-                if impact_report:
-                    impact_path = Path("IMPACT_REPORT.md")
-                    impact_path.write_text(
-                        _format_impact_report(impact_report, release.name),
-                        encoding="utf-8",
-                    )
-                    logger.info("Impact report generated: IMPACT_REPORT.md")
-            except Exception as e:
-                logger.warning("Impact analysis failed: %s", e)
-
-            try:
-                from .smart_notifications import (
-                    SmartNotificationEngine,
-                    UserPreferences,
-                )
-
-                engine = SmartNotificationEngine()
-                notifications = engine.generate_from_release(release.slug)
-                if notifications:
-                    default_user = UserPreferences(
-                        user_id="pipeline",
-                        interests=["all"],
-                        categories=["all"],
-                    )
-                    digest = engine.generate_digest(notifications, default_user)
-                    notif_path = Path("NOTIFICATION_DIGEST.md")
-                    notif_path.write_text(
-                        _format_notification_digest(digest),
-                        encoding="utf-8",
-                    )
-                    logger.info("Notification digest generated: NOTIFICATION_DIGEST.md")
-            except Exception as e:
-                logger.warning("Notification digest failed: %s", e)
+        await _generate_ai_reports_async(releases_to_process)
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
         set_pipeline_status("completed_with_errors")
@@ -698,7 +698,7 @@ def _update_release_history(release: ReleaseInfo, total_features: int, category_
     history_path.write_text(_json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def _update_readme_all() -> None:
+async def _update_readme_all() -> None:
     """Replace the release section in README.md with details/summary blocks."""
     readme_path = Path("README.md")
     releases_dir = Path(RELEASES_DIR)
@@ -790,11 +790,11 @@ def _update_readme_all() -> None:
             if summary:
                 if lang == "pt_BR":
                     lines.append(
-                        f"> \U0001f4ca **Resumo Executivo:** {summary.summary_text[:200]}...\n"
+                        f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
                     )
                 else:
                     lines.append(
-                        f"> \U0001f4ca **Executive Summary:** {summary.summary_text[:200]}...\n"
+                        f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
                     )
 
             for cat in active:
