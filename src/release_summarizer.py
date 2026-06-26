@@ -51,18 +51,20 @@ class ReleaseSummarizer:
         content_fragments: list[str] = []
         category_counts: dict[str, int] = {}
 
-        for md_file in sorted(release_dir.glob("*.md")):
-            if md_file.name.startswith("."):
-                continue
-            content = md_file.read_text(encoding="utf-8")
+        # Look for .md files in pt_BR subdirectory
+        pt_br_dir = release_dir / "pt_BR"
+        if pt_br_dir.is_dir():
+            for md_file in sorted(pt_br_dir.glob("*.md")):
+                if md_file.name.startswith("."):
+                    continue
+                content = md_file.read_text(encoding="utf-8")
 
-            # Extract category name and count features for metadata
-            category_name = self._extract_category_name(content, md_file.stem)
-            category_counts[category_name] = self._count_features(content)
+                # Extract category name and count features for metadata
+                category_name = self._extract_category_name(content, md_file.stem)
+                category_counts[category_name] = self._count_features(content)
 
-            # Only keep a fragment of content for the LLM to avoid token limits
-            # We take the first 2000 chars as a representative sample of the category
-            content_fragments.append(f"Category {category_name}:\n{content[:2000]}")
+                # Only keep a fragment of content for the LLM to avoid token limits
+                content_fragments.append(f"Category {category_name}:\n{content[:2000]}")
 
         if not content_fragments:
             return None
@@ -78,10 +80,27 @@ class ReleaseSummarizer:
 
         summary_text = await self._llm.generate_text(user_prompt, system_prompt)
 
-        if not summary_text:
-            # Fallback to a basic summary if LLM fails
+        if not summary_text or summary_text == "Not Found" or "error" in summary_text.lower():
+            # Generate a rich fallback summary based on metadata
+            top_cats = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+            total = sum(category_counts.values())
+            
+            highlights = []
+            for cat_name, count in top_cats:
+                highlights.append(f"**{cat_name}** ({count} recursos)")
+            
+            if total > 1000:
+                scale = "maior"
+            elif total > 500:
+                scale = "significativa"
+            else:
+                scale = "moderada"
+            
             summary_text = (
-                f"Release {release_slug} processed with {sum(category_counts.values())} features."
+                f"A release {meta.get('name', release_slug)} apresenta uma {scale} atualização "
+                f"com **{total} recursos** distribuídos em **{len(category_counts)} categorias**. "
+                f"Destaques: {', '.join(highlights)}. "
+                f"Explore cada categoria para detalhes completos sobre as novidades."
             )
 
         top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
