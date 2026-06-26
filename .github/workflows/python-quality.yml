@@ -37,13 +37,13 @@ jobs:
         run: uv sync --extra dev
 
       - name: Ruff
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Black
-        run: black --check .
+        run: uv run black --check .
 
       - name: Mypy
-        run: mypy src/
+        run: uv run mypy src/
 
   test:
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
         run: uv sync --extra dev
 
       - name: Run tests with coverage
-        run: pytest tests/ --cov=src --cov-report=term-missing -q
+        run: uv run pytest tests/ --cov=src --cov-report=term-missing -q
 
       - name: Check coverage threshold
-        run: pytest tests/ --cov=src --cov-fail-under=99 -q
+        run: uv run pytest tests/ --cov=src --cov-fail-under=99 -q
