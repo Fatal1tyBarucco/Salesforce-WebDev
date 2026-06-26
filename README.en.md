@@ -124,6 +124,7 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
@@ -303,6 +304,178 @@ uv run mypy src/
 <summary><b>📄 Service (196 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
+
+</details>
+
+
+
+### 🌸 Spring '26
+
+
+<details>
+<summary><b>📄 Legal Documentation (6 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/documentacao_legal.md](./releases/spring_26/en_US/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce General (38 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/salesforce_geral.md](./releases/spring_26/en_US/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (35 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/agentforce.md](./releases/spring_26/en_US/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data Analysis (54 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/analise_de_dados.md](./releases/spring_26/en_US/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Automation (151 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/automacao.md](./releases/spring_26/en_US/automacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Customization (18 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/personalizacao.md](./releases/spring_26/en_US/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data 360 (53 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/data_360.md](./releases/spring_26/en_US/data_360.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Development (97 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/desenvolvimento.md](./releases/spring_26/en_US/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (21 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/experience_cloud.md](./releases/spring_26/en_US/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (41 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/field_service.md](./releases/spring_26/en_US/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/hyperforce.md](./releases/spring_26/en_US/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Industries (194 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/setores.md](./releases/spring_26/en_US/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Mobile App (187 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/aplicativo_movel.md](./releases/spring_26/en_US/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (72 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/marketing.md](./releases/spring_26/en_US/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (8 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/mulesoft.md](./releases/spring_26/en_US/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (10 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/omnistudio.md](./releases/spring_26/en_US/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (4 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/partner_cloud.md](./releases/spring_26/en_US/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Revenue Management (131 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/gerenciamento_de_receita.md](./releases/spring_26/en_US/gerenciamento_de_receita.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Sales (85 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/vendas.md](./releases/spring_26/en_US/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Security, Identity & Privacy (61 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/seguranca_identidade_e_privacidade.md](./releases/spring_26/en_US/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Service (165 features)</b></summary>
+
+> 📄 Full details: [./releases/spring_26/en_US/servico.md](./releases/spring_26/en_US/servico.md)
 
 </details>
 

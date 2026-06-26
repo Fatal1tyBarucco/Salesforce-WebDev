@@ -124,6 +124,7 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
@@ -303,6 +304,178 @@ uv run mypy src/
 <summary><b>📄 Serviço (196 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
+
+</details>
+
+
+
+### 🌸 Spring '26
+
+
+<details>
+<summary><b>📄 Documentação legal (6 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/documentacao_legal.md](./releases/spring_26/pt_BR/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce geral (38 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/salesforce_geral.md](./releases/spring_26/pt_BR/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (35 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/agentforce.md](./releases/spring_26/pt_BR/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Análise de dados (54 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/analise_de_dados.md](./releases/spring_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Automação (151 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/automacao.md](./releases/spring_26/pt_BR/automacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (18 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/personalizacao.md](./releases/spring_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data 360 (53 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/data_360.md](./releases/spring_26/pt_BR/data_360.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (97 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/desenvolvimento.md](./releases/spring_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (21 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/experience_cloud.md](./releases/spring_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (41 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/field_service.md](./releases/spring_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/hyperforce.md](./releases/spring_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (194 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/setores.md](./releases/spring_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (187 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/aplicativo_movel.md](./releases/spring_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (72 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/marketing.md](./releases/spring_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/mulesoft.md](./releases/spring_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (10 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/omnistudio.md](./releases/spring_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (4 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/partner_cloud.md](./releases/spring_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Gerenciamento de receita (131 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/gerenciamento_de_receita.md](./releases/spring_26/pt_BR/gerenciamento_de_receita.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (85 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/vendas.md](./releases/spring_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (61 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (165 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/servico.md](./releases/spring_26/pt_BR/servico.md)
 
 </details>
 
