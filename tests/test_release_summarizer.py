@@ -31,7 +31,7 @@ def test_summarizer_returns_summary(tmp_path: Path) -> None:
     assert summary.total_features > 0
     assert len(summary.top_categories) > 0
     assert len(summary.key_highlights) > 0
-    assert "summer" in summary.summary_text.lower() or "Summer" in summary.summary_text
+    assert "recursos" in summary.summary_text.lower() or "features" in summary.summary_text.lower()
 
 
 def test_summarizer_returns_none_for_missing(tmp_path: Path) -> None:

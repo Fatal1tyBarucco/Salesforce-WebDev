@@ -123,15 +123,7 @@ uv run mypy src/
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** ## 📊 Executive Summary: Summer 26
-
-**1640** features across **5** categories.
-
-### 🏆 Top Categories
-
-- **Setores**: 320 features ████████████████████
-- **Serviço**: 212 features ████████████████████
--...
+> 📊 **1640** recursos em **22** categorias. Categoria com mais recursos: **Setores** (327). Destaques: Setores continua sendo a maior categoria com 327 recursos
 
 
 <details>
