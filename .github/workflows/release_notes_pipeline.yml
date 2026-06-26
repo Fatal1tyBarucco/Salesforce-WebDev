@@ -152,11 +152,17 @@ jobs:
         run: |
           SLUG="${{ steps.params.outputs.release_slug }}"
           RELEASE_DIR="releases/${SLUG}"
-          if [ -d "$RELEASE_DIR" ]; then
+          if [ -d "$RELEASE_DIR" ] && [ -f "${RELEASE_DIR}/.meta.json" ]; then
             META=$(cat "${RELEASE_DIR}/.meta.json")
             RELEASE_NAME=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin)['name'])")
             TOTAL=$(echo "$META" | python3 -c "import sys, json; print(sum(c['count'] for c in json.load(sys.stdin).get('categories', [])))")
             CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
+            
+            # Check if release already exists
+            if gh release view "${SLUG}" > /dev/null 2>&1; then
+              echo "Release ${SLUG} already exists, updating"
+              gh release delete "${SLUG}" --yes --cleanup-tag
+            fi
             
             NOTES="## 📦 ${RELEASE_NAME}\n\n"
             NOTES+="- **${TOTAL}** recursos em **${CATEGORIES}** categorias\n"
@@ -166,10 +172,11 @@ jobs:
             gh release create "${SLUG}" \
               --title "${RELEASE_NAME}" \
               --notes "$(echo -e "$NOTES")" \
-              --latest=false \
-              "${RELEASE_DIR}/.meta.json" \
-              "${RELEASE_DIR}/pt_BR/" \
-              "${RELEASE_DIR}/en_US/" 2>/dev/null || echo "Release already exists, skipping"
+              --latest=false
+            
+            echo "GitHub Release created: ${SLUG}"
+          else
+            echo "Release directory or meta.json not found for ${SLUG}"
           fi
 
       - name: Gerar sumário do pipeline

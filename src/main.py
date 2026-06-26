@@ -733,7 +733,11 @@ async def _update_readme_all() -> None:
         return "🌸"
 
     async def build_release_block(metas: list[dict[str, Any]], lang: str) -> str:
-        """Build release section for a specific language."""
+        """Build release section for a specific language.
+
+        Latest release: fully expanded (all categories open).
+        Old releases: entire section collapsed, with individual topic toggles inside.
+        """
         lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
         # Language toggle
@@ -761,24 +765,21 @@ async def _update_readme_all() -> None:
             slug = meta["slug"]
             name = meta["name"]
             emoji = get_release_emoji(name)
-            is_latest = idx == 0  # First release is the latest
+            is_latest = idx == 0
 
             categories = meta.get("categories", [])
             active = [c for c in categories if c.get("count", 0) > 0]
 
-            lines.append(f"\n### {emoji} {name}\n")
-
             summary = await summarizer.summarize(slug)
+            summary_text = ""
             if summary:
                 if lang == "pt_BR":
-                    lines.append(
-                        f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
-                    )
+                    summary_text = f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
                 else:
-                    lines.append(
-                        f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
-                    )
+                    summary_text = f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
 
+            # Build category details
+            cat_lines: list[str] = []
             for cat in active:
                 cat_name = cat["name"]
                 count = cat["count"]
@@ -794,15 +795,26 @@ async def _update_readme_all() -> None:
                     count_label = "recursos"
                     details_label = "Detalhes completos"
 
-                # Only expand the latest release's categories
-                if is_latest:
-                    lines.append("\n<details open>")
-                else:
-                    lines.append("\n<details>")
-                lines.append(
+                cat_lines.append("\n<details>")
+                cat_lines.append(
                     f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
                 )
-                lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
+                cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
+                cat_lines.append("</details>\n")
+
+            if is_latest:
+                # Latest release: fully expanded
+                lines.append(f"\n### {emoji} {name}\n")
+                if summary_text:
+                    lines.append(summary_text)
+                lines.extend(cat_lines)
+            else:
+                # Old releases: entire section collapsed
+                lines.append(f"\n<details>\n")
+                lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
+                if summary_text:
+                    lines.append(summary_text)
+                lines.extend(cat_lines)
                 lines.append("</details>\n")
 
             lines.append("")
