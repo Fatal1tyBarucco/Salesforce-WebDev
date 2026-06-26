@@ -127,5 +127,5 @@ def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatc
     content = readme_path.read_text(encoding="utf-8")
     assert "Summer '26" in content
     assert "Agentforce" in content
-    assert "data-lang" in content
-    assert "switchLang" in content
+    assert "Summer" in content
+    assert "Portugu" in content

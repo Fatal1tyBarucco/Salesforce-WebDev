@@ -1,18 +1,78 @@
-# Changelog de Releases Salesforce
-
-Este documento apresenta um resumo executivo das atualizações das versões mais recentes, destacando o volume de novos recursos e as principais tendências de desenvolvimento por categoria.
+# Changelog
 
 ## Summer '26
-**Total de recursos:** 1.373
-*   **Destaques de Volume:** Setores (309), Serviço (198), Desenvolvimento (127), Automação (118) e Gerenciamento de Receita (97).
-*   **Tendência Principal:** A release demonstra um foco estratégico em soluções verticais (Setores) e uma robustez significativa em capacidades de Serviço e Desenvolvimento, mantendo o equilíbrio com automação de processos.
+
+**1373 recursos** em 22 categorias
+
+- **Documentação legal**: 6 recursos
+- **Salesforce geral**: 36 recursos
+- **Agentforce**: 37 recursos
+- **Análise de dados**: 58 recursos
+- **Automação**: 118 recursos
+- **OmniStudio**: 9 recursos
+- **Personalização**: 33 recursos
+- **Data 360**: 72 recursos
+- **Desenvolvimento**: 127 recursos
+- **Experience Cloud**: 14 recursos
+- **Field Service**: 48 recursos
+- **Hyperforce**: 3 recursos
+- **Setores**: 309 recursos
+- **Marketing**: 64 recursos
+- **MuleSoft**: 8 recursos
+- **Aplicativo móvel**: 17 recursos
+- **Partner Cloud**: 1 recursos
+- **Gerenciamento de receita**: 97 recursos
+- **Vendas**: 58 recursos
+- **Integrações do Salesforce para Slack**: 2 recursos
+- **Segurança, identidade e privacidade**: 58 recursos
+- **Serviço**: 198 recursos
 
 ## Spring '26
-**Total de recursos:** 1.438
-*   **Destaques de Volume:** Setores (194), Aplicativo Móvel (187), Serviço (167), Automação (151) e Gerenciamento de Receita (131).
-*   **Tendência Principal:** Esta foi a release com maior volume total de recursos, apresentando um salto notável em capacidades de mobilidade (Aplicativo Móvel) e uma forte ênfase em automação e gestão de receita.
+
+**1438 recursos** em 21 categorias
+
+- **Documentação legal**: 6 recursos
+- **Salesforce geral**: 38 recursos
+- **Agentforce**: 35 recursos
+- **Análise de dados**: 54 recursos
+- **Automação**: 151 recursos
+- **Personalização**: 18 recursos
+- **Data 360**: 53 recursos
+- **Desenvolvimento**: 97 recursos
+- **Experience Cloud**: 21 recursos
+- **Field Service**: 41 recursos
+- **Hyperforce**: 5 recursos
+- **Setores**: 194 recursos
+- **Aplicativo móvel**: 187 recursos
+- **Marketing**: 72 recursos
+- **MuleSoft**: 8 recursos
+- **OmniStudio**: 10 recursos
+- **Partner Cloud**: 4 recursos
+- **Gerenciamento de receita**: 131 recursos
+- **Vendas**: 85 recursos
+- **Segurança, identidade e privacidade**: 61 recursos
+- **Serviço**: 167 recursos
 
 ## Winter '26
-**Total de recursos:** 1.348
-*   **Destaques de Volume:** Setores (459), Partner Cloud (156), Vendas (154), Desenvolvimento (101) e Análise de Dados (91).
-*   **Tendência Principal:** Caracterizada por um foco massivo em soluções específicas para setores (representando a maior concentração de recursos do período) e um fortalecimento do ecossistema de parceiros e vendas.
+
+**1348 recursos** em 19 categorias
+
+- **Documentação legal**: 11 recursos
+- **Salesforce geral**: 32 recursos
+- **Análise de dados**: 91 recursos
+- **Personalização**: 65 recursos
+- **Desenvolvimento**: 101 recursos
+- **Agentforce**: 39 recursos
+- **Experience Cloud**: 8 recursos
+- **Field Service**: 24 recursos
+- **Hyperforce**: 5 recursos
+- **Setores**: 459 recursos
+- **Marketing**: 87 recursos
+- **MuleSoft**: 4 recursos
+- **Aplicativo móvel**: 7 recursos
+- **OmniStudio**: 8 recursos
+- **Partner Cloud**: 156 recursos
+- **Vendas**: 154 recursos
+- **Integrações do Salesforce para Slack**: 1 recursos
+- **Segurança, identidade e privacidade**: 55 recursos
+- **Serviço**: 41 recursos

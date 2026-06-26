@@ -72,6 +72,7 @@ def test_circuit_breaker_half_open_recovery(llm_service):
             asyncio.run(llm_service.generate_text("Prompt", "System"))
 
         import time
+
         time.sleep(0.2)
 
         mock_call.side_effect = None
