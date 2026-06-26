@@ -143,11 +143,39 @@ jobs:
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release
-        if: false  # Disabled: repo has branch protection rules preventing tag creation
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          steps.git_status.outputs.has_changes == 'true' &&
+          steps.params.outputs.release_slug != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "GitHub Release creation disabled due to repository protection rules"
+          SLUG="${{ steps.params.outputs.release_slug }}"
+          RELEASE_DIR="releases/${SLUG}"
+          TAG_NAME="v$(echo ${SLUG} | sed 's/_/-/g')"
+          
+          if [ -d "$RELEASE_DIR" ] && [ -f "${RELEASE_DIR}/.meta.json" ]; then
+            if gh release view "${TAG_NAME}" > /dev/null 2>&1; then
+              echo "Release ${TAG_NAME} already exists, skipping"
+            else
+              META=$(cat "${RELEASE_DIR}/.meta.json")
+              RELEASE_NAME=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin)['name'])")
+              TOTAL=$(echo "$META" | python3 -c "import sys, json; print(sum(c['count'] for c in json.load(sys.stdin).get('categories', [])))")
+              CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
+              
+              NOTES="## 📦 ${RELEASE_NAME}\n\n"
+              NOTES+="- **${TOTAL}** recursos em **${CATEGORIES}** categorias\n"
+              NOTES+="- 🇧🇷 [Documentação pt_BR](./releases/${SLUG}/pt_BR/)\n"
+              NOTES+="- 🇺🇸 [Documentation en_US](./releases/${SLUG}/en_US/)\n"
+              
+              gh release create "${TAG_NAME}" \
+                --title "${RELEASE_NAME}" \
+                --notes "$(echo -e "$NOTES")" \
+                --latest=false
+              
+              echo "GitHub Release created: ${TAG_NAME}"
+            fi
+          fi
 
       - name: Gerar sumário do pipeline
         if: always()
