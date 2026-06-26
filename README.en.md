@@ -123,6 +123,7 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
@@ -302,6 +303,162 @@ uv run mypy src/
 <summary><b>📄 Service (196 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
+
+</details>
+
+
+
+### ❄️ Winter '26
+
+
+<details>
+<summary><b>📄 Legal Documentation (11 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/documentacao_legal.md](./releases/winter_26/en_US/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce General (32 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/salesforce_geral.md](./releases/winter_26/en_US/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data Analysis (91 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/analise_de_dados.md](./releases/winter_26/en_US/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Customization (65 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/personalizacao.md](./releases/winter_26/en_US/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Development (101 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/desenvolvimento.md](./releases/winter_26/en_US/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (39 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/agentforce.md](./releases/winter_26/en_US/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (8 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/experience_cloud.md](./releases/winter_26/en_US/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (24 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/field_service.md](./releases/winter_26/en_US/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/hyperforce.md](./releases/winter_26/en_US/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Industries (459 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/setores.md](./releases/winter_26/en_US/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (87 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/marketing.md](./releases/winter_26/en_US/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (4 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/mulesoft.md](./releases/winter_26/en_US/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Mobile App (7 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/aplicativo_movel.md](./releases/winter_26/en_US/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (8 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/omnistudio.md](./releases/winter_26/en_US/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (156 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/partner_cloud.md](./releases/winter_26/en_US/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Sales (154 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/vendas.md](./releases/winter_26/en_US/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce Slack Integrations (1 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Security, Identity & Privacy (55 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md](./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Service (41 features)</b></summary>
+
+> 📄 Full details: [./releases/winter_26/en_US/servico.md](./releases/winter_26/en_US/servico.md)
 
 </details>
 
