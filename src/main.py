@@ -757,10 +757,11 @@ async def _update_readme_all() -> None:
             )
         lines.append(toggle)
 
-        for meta in metas:
+        for idx, meta in enumerate(metas):
             slug = meta["slug"]
             name = meta["name"]
             emoji = get_release_emoji(name)
+            is_latest = idx == 0  # First release is the latest
 
             categories = meta.get("categories", [])
             active = [c for c in categories if c.get("count", 0) > 0]
@@ -793,7 +794,11 @@ async def _update_readme_all() -> None:
                     count_label = "recursos"
                     details_label = "Detalhes completos"
 
-                lines.append("\n<details>")
+                # Only expand the latest release's categories
+                if is_latest:
+                    lines.append("\n<details open>")
+                else:
+                    lines.append("\n<details>")
                 lines.append(
                     f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
                 )
