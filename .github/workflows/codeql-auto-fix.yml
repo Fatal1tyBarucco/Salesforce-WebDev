@@ -1,6 +1,9 @@
 name: "Auto-fix Code Scanning Alerts"
 
 on:
+  push:
+    paths:
+      - ".github/workflows/codeql-auto-fix.yml"
   code_scanning_alert:
     types: [created]
 
