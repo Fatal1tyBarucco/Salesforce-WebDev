@@ -125,6 +125,7 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
@@ -132,7 +133,7 @@ uv run mypy src/
 ### ☀️ Summer '26
 
 
-<details>
+<details open>
 <summary><b>📄 Documentação legal (6 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
@@ -140,7 +141,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Salesforce geral (36 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
@@ -148,7 +149,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Agentforce (37 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
@@ -156,7 +157,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Análise de dados (58 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
@@ -164,7 +165,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Automação (118 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
@@ -172,7 +173,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 OmniStudio (9 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
@@ -180,7 +181,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Personalização (33 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
@@ -188,7 +189,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Data 360 (72 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
@@ -196,7 +197,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
@@ -204,7 +205,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Experience Cloud (14 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
@@ -212,7 +213,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Field Service (48 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
@@ -220,7 +221,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Hyperforce (3 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
@@ -228,7 +229,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Setores (309 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
@@ -236,7 +237,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Marketing (64 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
@@ -244,7 +245,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 MuleSoft (8 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
@@ -252,7 +253,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
@@ -260,7 +261,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Partner Cloud (1 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
@@ -268,7 +269,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
@@ -276,7 +277,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Vendas (58 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
@@ -284,7 +285,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
@@ -292,7 +293,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
@@ -300,7 +301,7 @@ uv run mypy src/
 </details>
 
 
-<details>
+<details open>
 <summary><b>📄 Serviço (196 recursos)</b></summary>
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
