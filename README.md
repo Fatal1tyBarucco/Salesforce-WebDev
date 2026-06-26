@@ -7,7 +7,7 @@ Pipeline automatizado para extração, classificação e versionamento das **Sal
 ### ⚙️ CI/CD Status & Conformidade
 
 <!-- RELEASE_BADGE -->
-![Latest Release](https://img.shields.io/badge/Última%20Release-Summer%20'26-blue)
+![Latest Release](https://img.shields.io/badge/Última%20Release-Winter%20'26-blue)
 [![Python Quality & Validation](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml)
 [![Release Notes Pipeline](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml)
 ![Python](https://img.shields.io/badge/Python-3.14-blue.svg?logo=python&logoColor=white)
@@ -119,19 +119,164 @@ uv run mypy src/
 
 
 
+
 ## 📋 Releases Disponíveis
 
 <div id="lang-toggle" style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma:</strong> <a href="#" onclick="switchLang('pt_BR');return false;" id="btn-pt_BR" style="margin:0 8px;text-decoration:none;font-weight:bold;">🇧🇷 Português</a> <a href="#" onclick="switchLang('en_US');return false;" id="btn-en_US" style="margin:0 8px;text-decoration:none;">🇺🇸 English</a></div><script>(function(){var lang = navigator.language || navigator.userLanguage || 'pt-BR';lang = lang.startsWith('en') ? 'en_US' : 'pt_BR';switchLang(lang);function switchLang(l) {document.querySelectorAll('[data-lang]').forEach(function(el) {el.style.display = el.getAttribute('data-lang') === l ? 'block' : 'none';});document.getElementById('btn-pt_BR').style.fontWeight = l === 'pt_BR' ? 'bold' : 'normal';document.getElementById('btn-en_US').style.fontWeight = l === 'en_US' ? 'bold' : 'normal';}window.switchLang = switchLang;})();</script>
 
 <div data-lang="pt_BR">
 
-### ☀️ Summer '26
+### ❄️ Winter '26
 
 
 <details>
-<summary><b>📄 Agentforce (5 recursos)</b></summary>
+<summary><b>📄 Documentação legal (11 recursos)</b></summary>
 
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/documentacao_legal.md](./releases/winter_26/pt_BR/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce geral (32 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/salesforce_geral.md](./releases/winter_26/pt_BR/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Análise de dados (91 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/analise_de_dados.md](./releases/winter_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (65 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/personalizacao.md](./releases/winter_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (101 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md](./releases/winter_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (39 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/agentforce.md](./releases/winter_26/pt_BR/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/experience_cloud.md](./releases/winter_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (24 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/field_service.md](./releases/winter_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/hyperforce.md](./releases/winter_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (459 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/setores.md](./releases/winter_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (87 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/marketing.md](./releases/winter_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (4 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/mulesoft.md](./releases/winter_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (7 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/aplicativo_movel.md](./releases/winter_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/omnistudio.md](./releases/winter_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (156 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/partner_cloud.md](./releases/winter_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (154 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md](./releases/winter_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Integrações do Salesforce para Slack (1 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (55 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (41 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/servico.md](./releases/winter_26/pt_BR/servico.md)
 
 </details>
 
@@ -140,13 +285,157 @@ uv run mypy src/
 
 <div data-lang="en_US">
 
-### ☀️ Summer '26
+### ❄️ Winter '26
 
 
 <details>
-<summary><b>📄 Agentforce (5 features)</b></summary>
+<summary><b>📄 Legal Documentation (11 features)</b></summary>
 
-> 📄 Detalhes completos: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
+> 📄 Detalhes completos: [./releases/winter_26/en_US/documentacao_legal.md](./releases/winter_26/en_US/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce General (32 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/salesforce_geral.md](./releases/winter_26/en_US/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data Analysis (91 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/analise_de_dados.md](./releases/winter_26/en_US/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Customization (65 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/personalizacao.md](./releases/winter_26/en_US/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Development (101 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/desenvolvimento.md](./releases/winter_26/en_US/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (39 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/agentforce.md](./releases/winter_26/en_US/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (8 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/experience_cloud.md](./releases/winter_26/en_US/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (24 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/field_service.md](./releases/winter_26/en_US/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/hyperforce.md](./releases/winter_26/en_US/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Industries (459 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/setores.md](./releases/winter_26/en_US/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (87 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/marketing.md](./releases/winter_26/en_US/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (4 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/mulesoft.md](./releases/winter_26/en_US/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Mobile App (7 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/aplicativo_movel.md](./releases/winter_26/en_US/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (8 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/omnistudio.md](./releases/winter_26/en_US/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (156 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/partner_cloud.md](./releases/winter_26/en_US/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Sales (154 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/vendas.md](./releases/winter_26/en_US/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce Slack Integrations (1 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Security, Identity & Privacy (55 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md](./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Service (41 features)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/en_US/servico.md](./releases/winter_26/en_US/servico.md)
 
 </details>
 
