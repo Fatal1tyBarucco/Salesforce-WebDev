@@ -595,7 +595,7 @@ def _load_all_release_metas() -> list[dict[str, Any]]:
                 total = sum(c.get("count", 0) for c in meta.get("categories", []))
                 if total > 0:
                     metas.append(meta)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
 
     metas.sort(key=lambda m: m.get("release_id", 0))
@@ -967,7 +967,7 @@ def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
     try:
         data = json.loads(cache_path.read_text(encoding="utf-8"))
         return {k: ContentHash(**v) for k, v in data.items()}
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
 
 

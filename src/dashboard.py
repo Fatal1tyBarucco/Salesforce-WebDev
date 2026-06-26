@@ -34,7 +34,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
