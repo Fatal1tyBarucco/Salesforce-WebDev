@@ -1,6 +1,12 @@
+from __future__ import annotations
+
 import asyncio
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
+
+if TYPE_CHECKING:
+    import pytest
 
 from src.i18n import detect_locale, get_user_locale, generate_toggle_html, LOCALIZATION_MAP
 
@@ -88,3 +94,38 @@ def test_toggle_in_generated_file(tmp_path: Path) -> None:
     content = files[0].read_text(encoding="utf-8")
     assert "en_US/" in content
     assert "English" in content
+
+
+def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatch") -> None:
+    import json
+    from unittest.mock import patch
+    from src.main import _update_readme_all
+
+    readme_path = tmp_path / "README.md"
+    readme_path.write_text(
+        "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n",
+        encoding="utf-8",
+    )
+
+    releases_dir = tmp_path / "summer_26"
+    releases_dir.mkdir()
+    (releases_dir / ".meta.json").write_text(
+        json.dumps(
+            {
+                "slug": "summer_26",
+                "name": "Summer '26",
+                "release_id": 260,
+                "categories": [{"name": "Agentforce", "count": 5}],
+            }
+        )
+    )
+
+    monkeypatch.chdir(tmp_path)
+    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        _update_readme_all()
+
+    content = readme_path.read_text(encoding="utf-8")
+    assert "Summer '26" in content
+    assert "Agentforce" in content
+    assert "data-lang" in content
+    assert "switchLang" in content

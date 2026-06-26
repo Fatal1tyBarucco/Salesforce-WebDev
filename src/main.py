@@ -747,6 +747,33 @@ def _update_readme_all() -> None:
 
     lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
+    toggle_js = (
+        '<div id="lang-toggle" style="padding:12px;margin-bottom:20px;'
+        'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+        "<strong>\U0001f310 Idioma:</strong> "
+        '<a href="#" onclick="switchLang(\'pt_BR\');return false;" id="btn-pt_BR" '
+        'style="margin:0 8px;text-decoration:none;font-weight:bold;">\U0001f1e7\U0001f1f7 Portugu\u00eas</a> '
+        '<a href="#" onclick="switchLang(\'en_US\');return false;" id="btn-en_US" '
+        'style="margin:0 8px;text-decoration:none;">\U0001f1fa\U0001f1f8 English</a>'
+        "</div>"
+        "<script>"
+        "(function(){"
+        "var lang = navigator.language || navigator.userLanguage || 'pt-BR';"
+        "lang = lang.startsWith('en') ? 'en_US' : 'pt_BR';"
+        "switchLang(lang);"
+        "function switchLang(l) {"
+        "document.querySelectorAll('[data-lang]').forEach(function(el) {"
+        "el.style.display = el.getAttribute('data-lang') === l ? 'block' : 'none';"
+        "});"
+        "document.getElementById('btn-pt_BR').style.fontWeight = l === 'pt_BR' ? 'bold' : 'normal';"
+        "document.getElementById('btn-en_US').style.fontWeight = l === 'en_US' ? 'bold' : 'normal';"
+        "}"
+        "window.switchLang = switchLang;"
+        "})();"
+        "</script>"
+    )
+    lines.append(toggle_js)
+
     for meta in metas:
         slug = meta["slug"]
         name = meta["name"]
@@ -755,24 +782,43 @@ def _update_readme_all() -> None:
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
 
-        lines.append(f"\n### {emoji} {name}\n")
+        for lang in ("pt_BR", "en_US"):
+            lines.append(f'\n<div data-lang="{lang}">')
+            lines.append(f"\n### {emoji} {name}\n")
 
-        summary = summarizer.summarize(slug)
-        if summary:
-            lines.append(f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n")
+            summary = summarizer.summarize(slug)
+            if summary:
+                if lang == "pt_BR":
+                    lines.append(
+                        f"> \U0001f4ca **Resumo Executivo:** {summary.summary_text[:200]}...\n"
+                    )
+                else:
+                    lines.append(
+                        f"> \U0001f4ca **Executive Summary:** {summary.summary_text[:200]}...\n"
+                    )
 
-        for cat in active:
-            cat_name = cat["name"]
-            count = cat["count"]
-            cat_slug = _slugify_category(cat_name)
-            link = f"./releases/{slug}/pt_BR/{cat_slug}.md"
+            for cat in active:
+                cat_name = cat["name"]
+                count = cat["count"]
+                cat_slug = _slugify_category(cat_name)
+                link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
-            lines.append("\n<details>")
-            lines.append(f"<summary><b>📄 {cat_name} ({count} recursos)</b></summary>\n")
-            lines.append(f"> 📄 Detalhes completos: [{link}]({link})\n")
-            lines.append("</details>\n")
+                if lang == "en_US":
+                    display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
+                    count_label = "features"
+                else:
+                    display_name = cat_name
+                    count_label = "recursos"
 
-        lines.append("")
+                lines.append("\n<details>")
+                lines.append(
+                    f"<summary><b>\U0001f4c4 {display_name} ({count} {count_label})</b></summary>\n"
+                )
+                lines.append(f"> \U0001f4c4 Detalhes completos: [{link}]({link})\n")
+                lines.append("</details>\n")
+
+            lines.append("</div>")
+            lines.append("")
 
     new_block = "\n".join(lines)
 
