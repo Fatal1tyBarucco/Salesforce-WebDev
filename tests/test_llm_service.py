@@ -1,8 +1,9 @@
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock
-from openai import RateLimitError, APIConnectionError, InternalServerError
-from src.llm_service import LLMService, CircuitBreakerConfig
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+from src.llm_service import LLMService, CircuitBreakerConfig, LLMProvider
 
 
 @pytest.fixture
@@ -11,162 +12,127 @@ def config():
 
 
 @pytest.fixture
-def mock_client():
-    return AsyncMock()
+def mock_providers():
+    return [
+        LLMProvider(name="test1", api_key="key1", provider_type="openai"),
+        LLMProvider(name="test2", api_key="key2", provider_type="openai"),
+    ]
 
 
 @pytest.fixture
-def llm_service(config, mock_client):
-    return LLMService(config=config, client=mock_client)
+def llm_service(config, mock_providers):
+    return LLMService(config=config, providers=mock_providers)
 
 
-@pytest.mark.asyncio
-async def test_generate_success(llm_service, mock_client):
+def test_generate_success(llm_service):
     mock_response = MagicMock()
     mock_response.choices = [MagicMock(message=MagicMock(content="Hello world"))]
-    mock_client.chat.completions.create.return_value = mock_response
 
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result == "Hello world"
-    mock_client.chat.completions.create.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_generate_retry_on_rate_limit(llm_service, mock_client):
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="Success after retry"))]
-
-    mock_client.chat.completions.create.side_effect = [
-        RateLimitError("Rate limit exceeded", response=MagicMock(), body={}),
-        mock_response,
-    ]
-
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result == "Success after retry"
-    assert mock_client.chat.completions.create.call_count == 2
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.return_value = "Hello world"
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result == "Hello world"
 
 
-@pytest.mark.asyncio
-async def test_generate_retry_on_connection_error(llm_service, mock_client):
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="Success after conn error"))]
-
-    mock_client.chat.completions.create.side_effect = [
-        APIConnectionError(request=MagicMock()),
-        mock_response,
-    ]
-
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result == "Success after conn error"
-    assert mock_client.chat.completions.create.call_count == 2
+def test_fallback_to_next_provider(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = [
+            Exception("Provider 1 failed"),
+            "Success from provider 2",
+        ]
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result == "Success from provider 2"
+        assert mock_call.call_count == 2
 
 
-@pytest.mark.asyncio
-async def test_generate_retry_on_internal_server_error(llm_service, mock_client):
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="Success after server error"))]
-
-    mock_client.chat.completions.create.side_effect = [
-        InternalServerError("Server error", response=MagicMock(), body={}),
-        mock_response,
-    ]
-
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result == "Success after server error"
-    assert mock_client.chat.completions.create.call_count == 2
+def test_all_providers_fail(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = Exception("All failed")
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result is None
 
 
-@pytest.mark.asyncio
-async def test_circuit_breaker_trips(llm_service, mock_client):
-    mock_client.chat.completions.create.side_effect = InternalServerError(
-        "API Down", response=MagicMock(), body={}
-    )
+def test_circuit_breaker_trips(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = Exception("API Down")
 
-    for _ in range(llm_service._config.threshold):
-        await llm_service.generate_text("Prompt", "System")
+        for _ in range(llm_service._config.threshold):
+            asyncio.run(llm_service.generate_text("Prompt", "System"))
 
-    mock_client.chat.completions.create.reset_mock()
-    result = await llm_service.generate_text("Prompt", "System")
-
-    assert result is None
-    mock_client.chat.completions.create.assert_not_called()
+        mock_call.reset_mock()
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result is None
+        assert mock_call.call_count == 0
 
 
-@pytest.mark.asyncio
-async def test_circuit_breaker_half_open_recovery(llm_service, mock_client):
-    mock_client.chat.completions.create.side_effect = InternalServerError(
-        "API Down", response=MagicMock(), body={}
-    )
-    for _ in range(llm_service._config.threshold):
-        await llm_service.generate_text("Prompt", "System")
+def test_circuit_breaker_half_open_recovery(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = Exception("API Down")
+        for _ in range(llm_service._config.threshold):
+            asyncio.run(llm_service.generate_text("Prompt", "System"))
 
-    await asyncio.sleep(0.2)
+        import time
+        time.sleep(0.2)
 
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="Recovered"))]
-    mock_client.chat.completions.create.side_effect = None
-    mock_client.chat.completions.create.return_value = mock_response
+        mock_call.side_effect = None
+        mock_call.return_value = "Recovered"
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result == "Recovered"
 
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result == "Recovered"
-
-    mock_client.chat.completions.create.reset_mock()
-    await llm_service.generate_text("Prompt", "System")
-    mock_client.chat.completions.create.assert_called_once()
+        mock_call.reset_mock()
+        asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert mock_call.call_count == 1
 
 
-@pytest.mark.asyncio
-async def test_classify_text_default_prompt(llm_service, mock_client):
-    """classify_text uses default system_prompt when none provided."""
-    mock_response = MagicMock()
-    mock_response.choices = [
-        MagicMock(message=MagicMock(content='{"Security": {"applies": true}}'))
-    ]
-    mock_client.chat.completions.create.return_value = mock_response
-
-    result = await llm_service.classify_text("test text", ["Security"])
-    assert "Security" in result
+def test_rate_limit_failure_after_retries(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = Exception("Rate limit exceeded")
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result is None
+        assert llm_service._get_provider_state(llm_service._providers[0]).failures > 0
 
 
-@pytest.mark.asyncio
-async def test_classify_text_invalid_json(llm_service, mock_client):
-    """classify_text returns error on non-JSON LLM response."""
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="This is not JSON at all"))]
-    mock_client.chat.completions.create.return_value = mock_response
-
-    result = await llm_service.classify_text("test text", ["Security"])
-    assert "error" in result
+def test_generic_exception(llm_service):
+    with patch.object(llm_service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = ValueError("Unexpected")
+        result = asyncio.run(llm_service.generate_text("Prompt", "System"))
+        assert result is None
+        assert llm_service._get_provider_state(llm_service._providers[0]).failures > 0
 
 
-@pytest.mark.asyncio
-async def test_classify_text_no_json_braces(llm_service, mock_client):
-    """classify_text returns error when response has no JSON braces."""
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock(message=MagicMock(content="plain text response"))]
-    mock_client.chat.completions.create.return_value = mock_response
-
-    result = await llm_service.classify_text("test text", ["Security"])
-    assert "error" in result
+def test_classify_text_success(llm_service):
+    with patch.object(llm_service, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"Security": {"applies": true, "confidence": 0.9}}'
+        result = asyncio.run(llm_service.classify_text("text", ["Security"]))
+        assert "Security" in result
+        assert result["Security"]["applies"] is True
 
 
-@pytest.mark.asyncio
-async def test_generate_text_rate_limit_failure_after_retries(llm_service, mock_client):
-    """generate_text returns None when RateLimitError persists after all retries."""
-    mock_client.chat.completions.create.side_effect = RateLimitError(
-        "Rate limit exceeded", response=MagicMock(), body={}
-    )
-
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result is None
-    assert llm_service._failures > 0
+def test_classify_text_no_result(llm_service):
+    with patch.object(llm_service, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = None
+        result = asyncio.run(llm_service.classify_text("text", ["Security"]))
+        assert "error" in result
 
 
-@pytest.mark.asyncio
-async def test_generate_text_generic_exception(llm_service, mock_client):
-    """generate_text handles generic exceptions gracefully."""
-    mock_client.chat.completions.create.side_effect = ValueError("Unexpected")
+def test_classify_text_invalid_json(llm_service):
+    with patch.object(llm_service, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = "not json at all"
+        result = asyncio.run(llm_service.classify_text("text", ["Security"]))
+        assert "error" in result
 
-    result = await llm_service.generate_text("Prompt", "System")
-    assert result is None
-    assert llm_service._failures > 0
+
+def test_providers_loaded_from_env():
+    with patch.dict(
+        "os.environ",
+        {
+            "OPENAI_API_KEY": "test-key",
+            "GOOGLE_API_KEY": "google-key",
+            "OPENCODE_API_KEY": "opencode-key",
+        },
+    ):
+        service = LLMService()
+        names = [p.name for p in service._providers]
+        assert "openai" in names
+        assert "google" in names
+        assert "opencode" in names
