@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch, AsyncMock
+import asyncio
 import sys
 from src.main import (
     main,
@@ -58,10 +59,11 @@ def test_generate_release_files() -> None:
 
     release = ReleaseInfo(name="Test", release_id=262, slug="test_release")
     generator = MagicMock()
+    translator = MagicMock()
 
     with tempfile.TemporaryDirectory() as tmpdir:
         with patch("src.main.RELEASES_DIR", tmpdir):
-            _generate_release_files(release, categories, generator)
+            asyncio.run(_generate_release_files(release, categories, generator, translator))
 
             release_dir = Path(tmpdir) / "test_release"
             assert release_dir.exists()

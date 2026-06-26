@@ -137,9 +137,10 @@ def test_format_entry_no_flags() -> None:
 def test_generate_release_files_empty(tmp_path: Path) -> None:
     release = ReleaseInfo(name="Test", release_id=262, slug="test")
     generator = MagicMock()
+    translator = MagicMock()
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        result = _generate_release_files(release, [], generator)
+        result = asyncio.run(_generate_release_files(release, [], generator, translator))
         assert result == []
 
 
@@ -148,9 +149,10 @@ def test_generate_release_files_with_categories(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Test Category", description="Description")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = MagicMock()
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        result = _generate_release_files(release, [cat], generator)
+        result = asyncio.run(_generate_release_files(release, [cat], generator, translator))
         assert len(result) == 1
         assert (tmp_path / "test" / "pt_BR" / "test_category.md").exists()
 
@@ -1196,9 +1198,10 @@ def test_generate_release_files_with_subcategories(tmp_path: Path) -> None:
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     cat.subcategories["Sub1"] = [FeatureImpactEntry(name="SubFeature1")]
     generator = MagicMock()
+    translator = MagicMock()
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        result = _generate_release_files(release, [cat], generator)
+        result = asyncio.run(_generate_release_files(release, [cat], generator, translator))
         assert len(result) == 1
         content = (tmp_path / "test" / "pt_BR" / "test_category.md").read_text()
         assert "Feature1" in content
@@ -1211,9 +1214,10 @@ def test_generate_release_files_empty_body(tmp_path: Path) -> None:
     release = ReleaseInfo(name="Test", release_id=262, slug="test")
     cat = FeatureImpactCategory(name="Empty Category")
     generator = MagicMock()
+    translator = MagicMock()
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        result = _generate_release_files(release, [cat], generator)
+        result = asyncio.run(_generate_release_files(release, [cat], generator, translator))
         assert len(result) == 1
         content = (tmp_path / "test" / "pt_BR" / "empty_category.md").read_text()
         assert "Empty Category" in content
@@ -6941,9 +6945,12 @@ def test_generate_release_files_en_us(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = AsyncMock()
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        result = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="en_US")
+        )
         assert len(result) == 1
         assert (tmp_path / "summer_26" / "en_US" / "agentforce.md").exists()
 
@@ -7043,13 +7050,16 @@ def test_feature_classification_exception_handler(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = AsyncMock()
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path)),
         patch("src.feature_classifier.FeatureClassifier") as mock_cls,
     ):
         mock_cls.side_effect = RuntimeError("classification failed")
-        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        result = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="en_US")
+        )
         assert len(result) == 1
 
 
@@ -7063,13 +7073,16 @@ def test_issue_triage_exception_handler(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = AsyncMock()
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path)),
         patch("src.issue_triage.IssueTriager") as mock_triage,
     ):
         mock_triage.side_effect = RuntimeError("triage failed")
-        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        result = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="en_US")
+        )
         assert len(result) == 1
 
 
@@ -7083,13 +7096,16 @@ def test_impact_analysis_exception_handler(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = AsyncMock()
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path)),
         patch("src.impact_analyzer.ImpactAnalyzer") as mock_analyzer,
     ):
         mock_analyzer.side_effect = RuntimeError("impact failed")
-        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        result = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="en_US")
+        )
         assert len(result) == 1
 
 
@@ -7103,11 +7119,14 @@ def test_notification_exception_handler(tmp_path: Path) -> None:
     cat = FeatureImpactCategory(name="Agentforce", description="Agentforce features")
     cat.entries.append(FeatureImpactEntry(name="Feature1"))
     generator = MagicMock()
+    translator = AsyncMock()
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path)),
         patch("src.smart_notifications.SmartNotificationEngine") as mock_notif,
     ):
         mock_notif.side_effect = RuntimeError("notification failed")
-        result = _generate_release_files(release, [cat], generator, locale="en_US")
+        result = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="en_US")
+        )
         assert len(result) == 1

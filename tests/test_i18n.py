@@ -1,4 +1,6 @@
+import asyncio
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from src.i18n import detect_locale, get_user_locale, generate_toggle_html, LOCALIZATION_MAP
 
@@ -77,7 +79,10 @@ def test_toggle_in_generated_file(tmp_path: Path) -> None:
     ]
 
     generator = MarkdownGenerator(base_dir=str(tmp_path))
-    files = _generate_release_files(release, [cat], generator, locale="pt_BR")
+    translator = MagicMock()
+    files = asyncio.run(
+        _generate_release_files(release, [cat], generator, translator, locale="pt_BR")
+    )
 
     assert len(files) > 0
     content = files[0].read_text(encoding="utf-8")

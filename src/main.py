@@ -29,6 +29,7 @@ from .config import (
 )
 from .i18n import generate_toggle_html
 from .generator import MarkdownGenerator
+from .translator import TranslatorService
 from .logger import setup_logging
 from .parser import (
     FeatureImpactCategory,
@@ -172,6 +173,7 @@ async def run_pipeline() -> None:
     scraper = SalesforceReleaseScraper()
     impact_parser = FeatureImpactParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
+    translator = TranslatorService()
 
     args = sys.argv[1:]
     release_filter: str | None = None
@@ -226,7 +228,9 @@ async def run_pipeline() -> None:
             logger.info("Parsed %d categories from feature impact", len(categories))
 
             for locale in ["pt_BR", "en_US"]:
-                _generate_release_files(release, categories, generator, locale=locale)
+                await _generate_release_files(
+                    release, categories, generator, translator, locale=locale
+                )
             _update_readme_single(release, categories)
 
             # Classify features and enrich .meta.json
@@ -473,10 +477,11 @@ def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
     logger.info("Badge updated: %s (%d features)", name, total)
 
 
-def _generate_release_files(
+async def _generate_release_files(
     release: ReleaseInfo,
     categories: list[FeatureImpactCategory],
     generator: MarkdownGenerator,
+    translator: TranslatorService,
     locale: str = "pt_BR",
 ) -> list[Path]:
     """Generate per-category .md files for a release in a specific locale."""
@@ -497,6 +502,13 @@ def _generate_release_files(
 
         total = cat.total_features
         cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
+
+        if locale == "en_US" and translator:
+            for entry in cat.entries:
+                entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
+            for sub_entries in cat.subcategories.values():
+                for entry in sub_entries:
+                    entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
 
         toggle_html = generate_toggle_html(locale, slug, release.slug)
 
@@ -537,7 +549,9 @@ def _generate_release_files(
                 lines.append("")
 
         # 6. Category-specific Trailhead (after content)
-        trailhead_section = generate_category_trailhead_section(cat.name, release.slug)
+        trailhead_section = generate_category_trailhead_section(
+            cat.name, release.slug, locale=locale
+        )
         lines.append(trailhead_section)
 
         # 7. Resources footer
