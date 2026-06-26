@@ -732,7 +732,7 @@ async def _update_readme_all() -> None:
             return "☀️"
         return "🌸"
 
-    def build_release_block(metas: list[dict[str, Any]], lang: str) -> str:
+    async def build_release_block(metas: list[dict[str, Any]], lang: str) -> str:
         """Build release section for a specific language."""
         lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
@@ -813,7 +813,7 @@ async def _update_readme_all() -> None:
             next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
             if next_heading == -1:
                 next_heading = len(original)
-            new_block = build_release_block(metas, "pt_BR")
+            new_block = await build_release_block(metas, "pt_BR")
             updated = original[:heading_idx] + new_block + original[next_heading:]
             readme_path.write_text(updated, encoding="utf-8")
             logger.info("README.md atualizado (pt_BR)")
@@ -827,7 +827,7 @@ async def _update_readme_all() -> None:
             next_heading = original_en.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
             if next_heading == -1:
                 next_heading = len(original_en)
-            new_block = build_release_block(metas, "en_US")
+            new_block = await build_release_block(metas, "en_US")
             updated_en = original_en[:heading_idx] + new_block + original_en[next_heading:]
             readme_en_path.write_text(updated_en, encoding="utf-8")
             logger.info("README.en.md atualizado (en_US)")
