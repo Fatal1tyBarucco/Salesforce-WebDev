@@ -5,6 +5,8 @@ generates personalized digests, and supports multiple delivery channels.
 """
 
 from __future__ import annotations
+from typing import Any
+
 
 from dataclasses import dataclass, field
 from enum import Enum
@@ -12,6 +14,7 @@ from pathlib import Path
 
 from .config import RELEASES_DIR
 from .feature_classifier import FeatureClassifier
+from .llm_service import LLMService
 
 
 class NotificationPriority(Enum):
@@ -77,6 +80,7 @@ class SmartNotificationEngine:
     def __init__(self, base_dir: str = RELEASES_DIR) -> None:
         self._base_dir = Path(base_dir)
         self._classifier = FeatureClassifier()
+        self._llm = LLMService()
 
     def filter_notifications(
         self,
@@ -114,7 +118,7 @@ class SmartNotificationEngine:
 
         return filtered
 
-    def generate_digest(
+    async def generate_digest(
         self,
         notifications: list[Notification],
         user: UserPreferences,
@@ -133,7 +137,7 @@ class SmartNotificationEngine:
         urgent_count = sum(1 for n in filtered if n.priority == NotificationPriority.URGENT)
         high_count = sum(1 for n in filtered if n.priority == NotificationPriority.HIGH)
 
-        summary = self._generate_summary(filtered, urgent_count, high_count)
+        summary = await self._generate_summary(filtered, urgent_count, high_count)
 
         return NotificationDigest(
             user_id=user.user_id,
@@ -144,7 +148,7 @@ class SmartNotificationEngine:
             summary_text=summary,
         )
 
-    def classify_notification(
+    async def classify_notification(
         self,
         title: str,
         body: str,
@@ -160,16 +164,37 @@ class SmartNotificationEngine:
         Returns:
             Classified Notification.
         """
-        combined = f"{title} {body}".lower()
+        combined_text = f"Title: {title}\nBody: {body}"
 
-        # Determine priority
-        priority = self._classify_priority(combined)
+        system_prompt = (
+            "You are a notification intelligence agent. Classify the following notification "
+            "into a Priority (URGENT, HIGH, NORMAL, LOW), a Category, and calculate a "
+            "relevance score (0.0-1.0). Return as JSON: "
+            '{"priority": "URGENT", "category": "security", "relevance": 0.9}'
+        )
 
-        # Determine category
-        category = self._classify_category(combined)
+        llm_result = await self._llm.generate_text(combined_text, system_prompt)
 
-        # Calculate relevance score
-        relevance = self._calculate_relevance(combined)
+        if not llm_result:
+            parsed: dict[str, Any] = {}
+        else:
+            import json
+
+            try:
+                start_idx = llm_result.find("{")
+                end_idx = llm_result.rfind("}") + 1
+                parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
+            except ValueError, IndexError:
+                parsed = {}
+
+        # Fallbacks
+        try:
+            priority = NotificationPriority(parsed.get("priority", "NORMAL").lower())
+        except ValueError:
+            priority = NotificationPriority.NORMAL
+
+        category = parsed.get("category", "general")
+        relevance = min(1.0, max(0.0, float(parsed.get("relevance", 0.5))))
 
         return Notification(
             title=title,
@@ -181,7 +206,7 @@ class SmartNotificationEngine:
             channels=[DeliveryChannel.CONSOLE],
         )
 
-    def generate_from_release(self, release_slug: str) -> list[Notification]:
+    async def generate_from_release(self, release_slug: str) -> list[Notification]:
         """Generate notifications from a release.
 
         Args:
@@ -207,7 +232,7 @@ class SmartNotificationEngine:
             features = self._extract_key_features(content)
 
             for feature in features:
-                notif = self.classify_notification(
+                notif = await self.classify_notification(
                     title=feature,
                     body=f"New in {category}: {feature}",
                     release_slug=release_slug,
@@ -237,41 +262,6 @@ class SmartNotificationEngine:
         combined = f"{notif.title} {notif.body} {notif.category}".lower()
         return any(interest.lower() in combined for interest in interests)
 
-    def _classify_priority(self, text: str) -> NotificationPriority:
-        """Classify notification priority."""
-        if any(kw in text for kw in ["critical", "urgent", "security vulnerability", "breaking"]):
-            return NotificationPriority.URGENT
-        if any(kw in text for kw in ["important", "high", "regression", "bug fix"]):
-            return NotificationPriority.HIGH
-        if any(kw in text for kw in ["low", "minor", "cosmetic"]):
-            return NotificationPriority.LOW
-        return NotificationPriority.NORMAL
-
-    def _classify_category(self, text: str) -> str:
-        """Classify notification category."""
-        if any(kw in text for kw in ["security", "vulnerability", "auth"]):
-            return "security"
-        if any(kw in text for kw in ["performance", "speed", "optimization"]):
-            return "performance"
-        if any(kw in text for kw in ["bug", "fix", "error"]):
-            return "bug_fix"
-        if any(kw in text for kw in ["feature", "new", "add"]):
-            return "new_feature"
-        return "general"
-
-    def _calculate_relevance(self, text: str) -> float:
-        """Calculate relevance score."""
-        score = 0.5
-
-        if any(kw in text for kw in ["security", "critical", "urgent"]):
-            score += 0.3
-        if any(kw in text for kw in ["breaking", "migration"]):
-            score += 0.2
-        if any(kw in text for kw in ["new feature", "improvement"]):
-            score += 0.1
-
-        return min(1.0, score)
-
     def _extract_category(self, content: str, fallback: str) -> str:
         """Extract category from markdown heading."""
         for line in content.split("\n"):
@@ -293,36 +283,28 @@ class SmartNotificationEngine:
                     features.append(text)
         return features[:5]  # Limit to top 5 features
 
-    def _generate_summary(
+    async def _generate_summary(
         self,
         notifications: list[Notification],
         urgent_count: int,
         high_count: int,
     ) -> str:
-        """Generate digest summary text."""
+        """Generate digest summary text using LLM."""
         if not notifications:
             return "No new notifications matching your interests."
 
-        lines = ["## 📬 Notification Digest"]
+        context = (
+            f"Urgent count: {urgent_count}\n"
+            f"High priority count: {high_count}\n"
+            f"Total notifications: {len(notifications)}\n"
+            f"Notifications: {', '.join([n.title for n in notifications])}"
+        )
 
-        if urgent_count > 0:
-            lines.append(
-                f"\n🚨 **{urgent_count} urgent** notification(s) require immediate attention."
-            )
+        system_prompt = (
+            "You are a personalized notification assistant. Generate a professional, "
+            "concise Markdown summary for a notification digest. Include a clear "
+            "heading and highlight urgent items. Use emojis sparingly."
+        )
 
-        if high_count > 0:
-            lines.append(f"⚠️ **{high_count} high-priority** notification(s).")
-
-        lines.append(f"\n📋 **{len(notifications)} total** notifications matching your interests.")
-
-        # Group by category
-        by_category: dict[str, int] = {}
-        for notif in notifications:
-            by_category[notif.category] = by_category.get(notif.category, 0) + 1
-
-        if by_category:
-            lines.append("\n### By Category")
-            for cat, count in sorted(by_category.items(), key=lambda x: x[1], reverse=True):
-                lines.append(f"- {cat}: {count}")
-
-        return "\n".join(lines)
+        summary = await self._llm.generate_text(context, system_prompt)
+        return summary if summary else "Notification digest generated."

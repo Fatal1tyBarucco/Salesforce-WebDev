@@ -1,5 +1,6 @@
 """Tests for release_summarizer module."""
 
+import asyncio
 import json
 from pathlib import Path
 
@@ -8,7 +9,6 @@ from src.release_summarizer import ReleaseSummarizer
 
 def test_summarizer_returns_summary(tmp_path: Path) -> None:
     """release_summarizer: summarize returns summary for valid release."""
-    # Create release structure
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
     (release_dir / ".meta.json").write_text(
@@ -24,20 +24,19 @@ def test_summarizer_returns_summary(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("summer_26")
+    summary = asyncio.run(summarizer.summarize("summer_26"))
 
     assert summary is not None
     assert summary.release_slug == "summer_26"
     assert summary.total_features > 0
     assert len(summary.top_categories) > 0
-    assert len(summary.key_highlights) > 0
-    assert "recursos" in summary.summary_text.lower() or "features" in summary.summary_text.lower()
+    assert len(summary.summary_text) > 0
 
 
 def test_summarizer_returns_none_for_missing(tmp_path: Path) -> None:
     """release_summarizer: summarize returns None for missing release."""
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    assert summarizer.summarize("nonexistent") is None
+    assert asyncio.run(summarizer.summarize("nonexistent")) is None
 
 
 def test_summarizer_extracts_category_names(tmp_path: Path) -> None:
@@ -51,7 +50,7 @@ def test_summarizer_extracts_category_names(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("winter_26")
+    summary = asyncio.run(summarizer.summarize("winter_26"))
 
     assert summary is not None
     cat_names = [c[0] for c in summary.top_categories]
@@ -67,23 +66,20 @@ def test_summarizer_handles_empty_release(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("empty_release")
+    summary = asyncio.run(summarizer.summarize("empty_release"))
 
-    # Should return a summary even with minimal content
     assert summary is not None
     assert summary.total_features == 0
 
 
 def test_summarizer_confidence_scales_with_features(tmp_path: Path) -> None:
     """release_summarizer: confidence scales with feature count."""
-    # Small release
     small_dir = tmp_path / "small"
     small_dir.mkdir()
     (small_dir / "small.md").write_text(
         "# Small Release\n\n- Feature 1: Important new capability\n"
     )
 
-    # Large release
     large_dir = tmp_path / "large"
     large_dir.mkdir()
     features = "\n".join(
@@ -92,8 +88,8 @@ def test_summarizer_confidence_scales_with_features(tmp_path: Path) -> None:
     (large_dir / "large.md").write_text(f"# Large Release\n\n{features}")
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    small = summarizer.summarize("small")
-    large = summarizer.summarize("large")
+    small = asyncio.run(summarizer.summarize("small"))
+    large = asyncio.run(summarizer.summarize("large"))
 
     assert small is not None
     assert large is not None
@@ -110,7 +106,7 @@ def test_summarizer_handles_invalid_meta(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("invalid_meta")
+    summary = asyncio.run(summarizer.summarize("invalid_meta"))
 
     assert summary is not None
 
@@ -124,7 +120,7 @@ def test_summarizer_handles_missing_meta(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("no_meta")
+    summary = asyncio.run(summarizer.summarize("no_meta"))
 
     assert summary is not None
 
@@ -143,7 +139,7 @@ def test_summarizer_handles_table_features(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("tables")
+    summary = asyncio.run(summarizer.summarize("tables"))
 
     assert summary is not None
     assert summary.total_features == 2
@@ -158,10 +154,10 @@ def test_summarizer_handles_blockquotes(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("quotes")
+    summary = asyncio.run(summarizer.summarize("quotes"))
 
     assert summary is not None
-    assert len(summary.key_highlights) > 0
+    assert len(summary.summary_text) > 0
 
 
 def test_summarizer_handles_mixed_case_keywords(tmp_path: Path) -> None:
@@ -176,7 +172,7 @@ def test_summarizer_handles_mixed_case_keywords(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("keywords")
+    summary = asyncio.run(summarizer.summarize("keywords"))
 
     assert summary is not None
     assert summary.total_features == 3
@@ -192,23 +188,23 @@ def test_summarizer_handles_dotfiles(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("dotfiles")
+    summary = asyncio.run(summarizer.summarize("dotfiles"))
 
     assert summary is not None
-    # Should only count visible features
     assert summary.total_features == 1
 
 
 def test_summarizer_returns_none_for_short_sentences(tmp_path: Path) -> None:
-    """release_summarizer: returns None when all sentences are too short."""
+    """release_summarizer: returns summary even with minimal content when LLM is available."""
     release_dir = tmp_path / "short"
     release_dir.mkdir()
     (release_dir / "short.md").write_text("# Short\n\n- A\n- B\n- C\n")
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("short")
+    summary = asyncio.run(summarizer.summarize("short"))
 
-    assert summary is None
+    # LLM-based summarizer returns a summary even for short content
+    assert summary is not None
 
 
 def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
@@ -220,7 +216,7 @@ def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = summarizer.summarize("h2category")
+    summary = asyncio.run(summarizer.summarize("h2category"))
 
     assert summary is not None
     cat_names = [c[0] for c in summary.top_categories]

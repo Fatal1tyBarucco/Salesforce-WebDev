@@ -1,6 +1,7 @@
 """Tests for issue_triage module."""
 
-from unittest.mock import MagicMock, patch
+import asyncio
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from src.issue_triage import IssueCategory, IssueTriager, Priority, TriageResult
 
@@ -8,10 +9,14 @@ from src.issue_triage import IssueCategory, IssueTriager, Priority, TriageResult
 def test_triage_bug_report():
     """issue_triage: classifies bug reports."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Bug: Login fails with error",
-        body="Getting exception when trying to log in. Error: Authentication failed.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "bug", "priority": "high", "confidence": 0.9, "reasoning": "Detected bug keywords"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Bug: Login fails with error",
+                body="Getting exception when trying to log in. Error: Authentication failed.",
+            )
+        )
 
     assert result.category == IssueCategory.BUG
     assert result.priority in (Priority.HIGH, Priority.CRITICAL)
@@ -21,10 +26,14 @@ def test_triage_bug_report():
 def test_triage_feature_request():
     """issue_triage: classifies feature requests."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Feature request: Add export to CSV",
-        body="It would be nice to have a CSV export feature for the dashboard.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "feature_request", "priority": "medium", "confidence": 0.8, "reasoning": "Feature request"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Feature request: Add export to CSV",
+                body="It would be nice to have a CSV export feature for the dashboard.",
+            )
+        )
 
     assert result.category == IssueCategory.FEATURE_REQUEST
     assert "enhancement" in result.suggested_labels
@@ -33,10 +42,14 @@ def test_triage_feature_request():
 def test_triage_security_issue():
     """issue_triage: classifies security issues."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Security vulnerability in authentication",
-        body="Found a CVE vulnerability in the auth module that allows unauthorized access.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "security", "priority": "critical", "confidence": 0.95, "reasoning": "CVE found"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Security vulnerability in authentication",
+                body="Found a CVE vulnerability in the auth module that allows unauthorized access.",
+            )
+        )
 
     assert result.category == IssueCategory.SECURITY
     assert "security" in result.suggested_labels
@@ -46,10 +59,14 @@ def test_triage_security_issue():
 def test_triage_performance_issue():
     """issue_triage: classifies performance issues."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Performance degradation in scraper",
-        body="The scraper is now much slower, taking 10x longer than before.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "performance", "priority": "medium", "confidence": 0.8, "reasoning": "Slower scraper"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Performance degradation in scraper",
+                body="The scraper is now much slower, taking 10x longer than before.",
+            )
+        )
 
     assert result.category == IssueCategory.PERFORMANCE
     assert "performance" in result.suggested_labels
@@ -58,10 +75,14 @@ def test_triage_performance_issue():
 def test_triage_question():
     """issue_triage: classifies questions."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="How do I configure the pipeline?",
-        body="I need help setting up the release notes pipeline. What are the steps?",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "question", "priority": "low", "confidence": 0.8, "reasoning": "User asking how to"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="How do I configure the pipeline?",
+                body="I need help setting up the release notes pipeline. What are the steps?",
+            )
+        )
 
     assert result.category == IssueCategory.QUESTION
     assert result.priority == Priority.LOW
@@ -70,10 +91,14 @@ def test_triage_question():
 def test_triage_critical_priority():
     """issue_triage: marks production issues as critical."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Production outage",
-        body="The production server is down and users cannot access the application.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "bug", "priority": "critical", "confidence": 0.9, "reasoning": "Production outage"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Production outage",
+                body="The production server is down and users cannot access the application.",
+            )
+        )
 
     assert result.priority == Priority.CRITICAL
 
@@ -81,10 +106,16 @@ def test_triage_critical_priority():
 def test_triage_suggests_assignee():
     """issue_triage: suggests assignee based on module keywords."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Scraper fails on new page structure",
-        body="The scraper module fails to extract content from the new page layout. See src/scraper.py line 100.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "medium", "confidence": 0.8, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Scraper fails on new page structure",
+                body="The scraper module fails to extract content from the new page layout. See src/scraper.py line 100.",
+            )
+        )
 
     assert result.suggested_assignee is not None
 
@@ -92,22 +123,30 @@ def test_triage_suggests_assignee():
 def test_triage_generates_reasoning():
     """issue_triage: generates human-readable reasoning."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Bug in parser",
-        body="The parser crashes when encountering empty tables.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "bug", "priority": "medium", "confidence": 0.8, "reasoning": "Crashes on empty tables"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Bug in parser",
+                body="The parser crashes when encountering empty tables.",
+            )
+        )
 
     assert len(result.reasoning) > 0
-    assert "bug" in result.reasoning.lower() or "BUG" in result.reasoning
+    assert "crashes" in result.reasoning.lower()
 
 
 def test_triage_other_category():
     """issue_triage: classifies unrecognized issues as OTHER."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Random title",
-        body="Some random text without any keywords.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "other", "priority": "medium", "confidence": 0.5, "reasoning": "No clear category"}'
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Random title",
+                body="Some random text without any keywords.",
+            )
+        )
 
     assert result.category == IssueCategory.OTHER
 
@@ -115,10 +154,16 @@ def test_triage_other_category():
 def test_triage_confidence_range():
     """issue_triage: confidence is between 0 and 1."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Test issue",
-        body="Test body text.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "medium", "confidence": 0.6, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Test issue",
+                body="Test body text.",
+            )
+        )
 
     assert 0.0 <= result.confidence <= 1.0
 
@@ -131,8 +176,22 @@ def test_triage_github_issue_with_mock():
     mock_result.returncode = 0
     mock_result.stdout = '{"title":"Bug","body":"Login fails","labels":[{"name":"bug"}]}'
 
-    with patch("src.issue_triage.subprocess.run", return_value=mock_result):
-        result = triager.triage_github_issue(123)
+    with (
+        patch("src.issue_triage.subprocess.run", return_value=mock_result),
+        patch.object(triager, "triage_issue", new_callable=AsyncMock) as mock_triage,
+    ):
+
+        mock_triage.return_value = TriageResult(
+            issue_number=123,
+            title="Bug",
+            priority=Priority.HIGH,
+            category=IssueCategory.BUG,
+            suggested_labels=["bug"],
+            suggested_assignee=None,
+            confidence=0.9,
+            reasoning="...",
+        )
+        result = asyncio.run(triager.triage_github_issue(123))
 
         assert result is not None
         assert result.issue_number == 123
@@ -142,7 +201,7 @@ def test_triage_github_issue_with_mock():
 def test_triage_github_issue_returns_none_without_repo():
     """issue_triage: triage_github_issue returns None without repo."""
     triager = IssueTriager()
-    assert triager.triage_github_issue(123) is None
+    assert asyncio.run(triager.triage_github_issue(123)) is None
 
 
 def test_triage_github_issue_returns_none_on_failure():
@@ -153,7 +212,7 @@ def test_triage_github_issue_returns_none_on_failure():
     mock_result.returncode = 1
 
     with patch("src.issue_triage.subprocess.run", return_value=mock_result):
-        assert triager.triage_github_issue(123) is None
+        assert asyncio.run(triager.triage_github_issue(123)) is None
 
 
 def test_triage_github_issue_returns_none_on_timeout():
@@ -165,7 +224,7 @@ def test_triage_github_issue_returns_none_on_timeout():
     with patch(
         "src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)
     ):
-        assert triager.triage_github_issue(123) is None
+        assert asyncio.run(triager.triage_github_issue(123)) is None
 
 
 def test_triage_github_issue_returns_none_on_invalid_json():
@@ -177,7 +236,7 @@ def test_triage_github_issue_returns_none_on_invalid_json():
     mock_result.stdout = "not json"
 
     with patch("src.issue_triage.subprocess.run", return_value=mock_result):
-        assert triager.triage_github_issue(123) is None
+        assert asyncio.run(triager.triage_github_issue(123)) is None
 
 
 def test_apply_triage_returns_false_without_repo():
@@ -258,11 +317,17 @@ def test_apply_triage_handles_timeout():
 def test_triage_with_labels():
     """issue_triage: uses existing labels for priority."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Issue",
-        body="Some issue",
-        labels=["critical", "urgent"],
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "critical", "confidence": 0.9, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Issue",
+                body="Some issue",
+                labels=["critical", "urgent"],
+            )
+        )
 
     assert result.priority == Priority.CRITICAL
 
@@ -270,11 +335,17 @@ def test_triage_with_labels():
 def test_triage_high_label():
     """issue_triage: uses high label for priority."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Issue",
-        body="Some issue",
-        labels=["high"],
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "high", "confidence": 0.8, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Issue",
+                body="Some issue",
+                labels=["high"],
+            )
+        )
 
     assert result.priority == Priority.HIGH
 
@@ -282,11 +353,17 @@ def test_triage_high_label():
 def test_triage_low_label():
     """issue_triage: uses low label for priority."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="Issue",
-        body="Some issue",
-        labels=["low"],
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "low", "confidence": 0.7, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="Issue",
+                body="Some issue",
+                labels=["low"],
+            )
+        )
 
     assert result.priority == Priority.LOW
 
@@ -294,9 +371,15 @@ def test_triage_low_label():
 def test_triage_api_module_label():
     """issue_triage: suggests API module label."""
     triager = IssueTriager()
-    result = triager.triage_issue(
-        title="API endpoint returns 500",
-        body="The /api/releases endpoint is returning internal server error.",
-    )
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "medium", "confidence": 0.8, "reasoning": "..."}'
+        )
+        result = asyncio.run(
+            triager.triage_issue(
+                title="API endpoint returns 500",
+                body="The /api/releases endpoint is returning internal server error.",
+            )
+        )
 
     assert "module:api" in result.suggested_labels

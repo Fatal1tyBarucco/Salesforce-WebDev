@@ -7,9 +7,12 @@ based on content analysis and keyword matching.
 from __future__ import annotations
 
 import json
+from typing import Any
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
+
+from .llm_service import LLMService
 
 
 class Priority(Enum):
@@ -47,120 +50,6 @@ class TriageResult:
     reasoning: str
 
 
-# ---------------------------------------------------------------------------
-# Keyword dictionaries for triage
-# ---------------------------------------------------------------------------
-
-BUG_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "bug",
-        "error",
-        "crash",
-        "fail",
-        "broken",
-        "issue",
-        "problem",
-        "exception",
-        "traceback",
-        "not working",
-        "doesn't work",
-        "regression",
-    }
-)
-
-FEATURE_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "feature",
-        "request",
-        "enhancement",
-        "proposal",
-        "idea",
-        "suggestion",
-        "would be nice",
-        "can we add",
-        "please add",
-    }
-)
-
-SECURITY_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "security",
-        "vulnerability",
-        "cve",
-        "exploit",
-        "xss",
-        "injection",
-        "authentication",
-        "authorization",
-        "data leak",
-        "exposed",
-    }
-)
-
-PERFORMANCE_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "performance",
-        "slow",
-        "timeout",
-        "latency",
-        "memory",
-        "cpu",
-        "optimization",
-        "bottleneck",
-    }
-)
-
-DOCUMENTATION_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "documentation",
-        "docs",
-        "readme",
-        "example",
-        "tutorial",
-        "how to",
-        "guide",
-        "missing info",
-    }
-)
-
-QUESTION_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "question",
-        "how do i",
-        "how to",
-        "what is",
-        "why",
-        "help",
-        "support",
-        "clarification",
-    }
-)
-
-CRITICAL_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "critical",
-        "urgent",
-        "production",
-        "down",
-        "outage",
-        "data loss",
-        "security vulnerability",
-        "breaking change",
-    }
-)
-
-HIGH_KEYWORDS: frozenset[str] = frozenset(
-    {
-        "important",
-        "blocking",
-        "blocker",
-        "regression",
-        "broken",
-        "error",
-        "failure",
-    }
-)
-
 # Module assignment based on file paths
 MODULE_ASSIGNEES: dict[str, str] = {
     "src/scraper.py": "Fatal1tyBarucco",
@@ -179,8 +68,9 @@ class IssueTriager:
 
     def __init__(self, repo: str | None = None) -> None:
         self._repo = repo
+        self._llm = LLMService()
 
-    def triage_issue(
+    async def triage_issue(
         self,
         title: str,
         body: str,
@@ -196,24 +86,56 @@ class IssueTriager:
         Returns:
             TriageResult with classification and suggestions.
         """
-        combined_text = f"{title} {body}".lower()
+        combined_text = f"Title: {title}\nBody: {body}"
 
-        # Determine category
-        category, cat_confidence = self._classify_category(combined_text)
+        # 1. Use LLM for category and priority classification
+        categories = [cat.value for cat in IssueCategory]
+        priorities = [pri.value for pri in Priority]
 
-        # Determine priority
-        priority, pri_confidence = self._classify_priority(combined_text, labels or [])
+        system_prompt = (
+            "You are a GitHub Issue Triage expert. Analyze the issue and return a JSON object "
+            "with the following keys: 'category' (one of the provided categories), "
+            "'priority' (one of the provided priorities), 'confidence' (0.0-1.0), "
+            "and 'reasoning' (a concise explanation). "
+            'Example output: {"category": "bug", "priority": "high", "confidence": 0.9, "reasoning": "..."}'
+        )
 
-        # Generate label suggestions
-        suggested_labels = self._suggest_labels(category, priority, combined_text)
+        user_prompt = (
+            f"Categories: {categories}\nPriorities: {priorities}\n\n"
+            f"Issue content:\n{combined_text}"
+        )
 
-        # Suggest assignee based on content
-        assignee = self._suggest_assignee(combined_text)
+        llm_result = await self._llm.generate_text(user_prompt, system_prompt)
 
-        # Generate reasoning
-        reasoning = self._generate_reasoning(category, priority, combined_text)
+        if not llm_result:
+            parsed: dict[str, Any] = {}
+        else:
+            import json
 
-        confidence = (cat_confidence + pri_confidence) / 2
+            try:
+                start_idx = llm_result.find("{")
+                end_idx = llm_result.rfind("}") + 1
+                parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
+            except ValueError, IndexError:
+                parsed = {}
+
+        # Fallbacks
+        try:
+            category = IssueCategory(parsed.get("category", "other"))
+        except ValueError:
+            category = IssueCategory.OTHER
+
+        try:
+            priority = Priority(parsed.get("priority", "medium"))
+        except ValueError:
+            priority = Priority.MEDIUM
+
+        confidence = float(parsed.get("confidence", 0.5))
+        reasoning = parsed.get("reasoning", "Classified based on general content analysis.")
+
+        # Generate label suggestions and assignee based on metadata
+        suggested_labels = self._suggest_labels(category, priority, combined_text.lower())
+        assignee = self._suggest_assignee(combined_text.lower())
 
         return TriageResult(
             issue_number=0,
@@ -226,7 +148,7 @@ class IssueTriager:
             reasoning=reasoning,
         )
 
-    def triage_github_issue(self, issue_number: int) -> TriageResult | None:
+    async def triage_github_issue(self, issue_number: int) -> TriageResult | None:
         """Triage a GitHub issue by number.
 
         Args:
@@ -262,7 +184,7 @@ class IssueTriager:
             body = data.get("body", "")
             labels = [label.get("name", "") for label in data.get("labels", [])]
 
-            triage = self.triage_issue(title, body, labels)
+            triage = await self.triage_issue(title, body, labels)
             triage.issue_number = issue_number
             return triage
 
@@ -332,52 +254,6 @@ class IssueTriager:
         except subprocess.TimeoutExpired, FileNotFoundError:
             return False
 
-    def _classify_category(self, text: str) -> tuple[IssueCategory, float]:
-        """Classify issue category."""
-        scores: dict[IssueCategory, float] = {}
-
-        for cat, keywords in [
-            (IssueCategory.BUG, BUG_KEYWORDS),
-            (IssueCategory.FEATURE_REQUEST, FEATURE_KEYWORDS),
-            (IssueCategory.SECURITY, SECURITY_KEYWORDS),
-            (IssueCategory.PERFORMANCE, PERFORMANCE_KEYWORDS),
-            (IssueCategory.DOCUMENTATION, DOCUMENTATION_KEYWORDS),
-            (IssueCategory.QUESTION, QUESTION_KEYWORDS),
-        ]:
-            matches = sum(1 for kw in keywords if kw in text)
-            if matches > 0:
-                scores[cat] = matches / len(keywords)
-
-        if scores:
-            best_cat = max(scores, key=lambda k: scores[k])
-            return best_cat, min(1.0, 0.5 + scores[best_cat])
-
-        return IssueCategory.OTHER, 0.2
-
-    def _classify_priority(self, text: str, labels: list[str]) -> tuple[Priority, float]:
-        """Classify issue priority."""
-        labels_lower = [label.lower() for label in labels]
-
-        # Check for critical indicators
-        if any(kw in text for kw in CRITICAL_KEYWORDS):
-            return Priority.CRITICAL, 0.9
-        if "critical" in labels_lower or "urgent" in labels_lower:
-            return Priority.CRITICAL, 0.95
-
-        # Check for high priority
-        if any(kw in text for kw in HIGH_KEYWORDS):
-            return Priority.HIGH, 0.7
-        if "high" in labels_lower or "important" in labels_lower:
-            return Priority.HIGH, 0.8
-
-        # Check for low priority
-        if any(kw in text for kw in QUESTION_KEYWORDS):
-            return Priority.LOW, 0.6
-        if "question" in labels_lower or "low" in labels_lower:
-            return Priority.LOW, 0.7
-
-        return Priority.MEDIUM, 0.5
-
     def _suggest_labels(self, category: IssueCategory, priority: Priority, text: str) -> list[str]:
         """Suggest labels for the issue."""
         labels: list[str] = []
@@ -416,20 +292,3 @@ class IssueTriager:
             if path.rstrip("/").lower() in text:
                 return assignee
         return None
-
-    def _generate_reasoning(self, category: IssueCategory, priority: Priority, text: str) -> str:
-        """Generate human-readable reasoning."""
-        reasons: list[str] = []
-
-        reasons.append(f"Classified as **{category.value}** based on keyword analysis.")
-
-        if priority == Priority.CRITICAL:
-            reasons.append("Marked as **CRITICAL** due to production/security indicators.")
-        elif priority == Priority.HIGH:
-            reasons.append("Marked as **HIGH** priority due to blocking/regression indicators.")
-        elif priority == Priority.LOW:
-            reasons.append(
-                "Marked as **LOW** priority — appears to be a question or documentation request."
-            )
-
-        return " ".join(reasons)
