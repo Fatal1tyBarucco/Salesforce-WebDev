@@ -268,20 +268,26 @@ def generate_release_resources_section(release_slug: str, release_name: str) -> 
     return "\n".join(lines)
 
 
-def generate_category_trailhead_section(category_name: str, release_slug: str) -> str:
+def generate_category_trailhead_section(
+    category_name: str, release_slug: str, locale: str = "pt_BR"
+) -> str:
     """Generate Trailhead section with category-specific modules.
 
     Args:
         category_name: The category name (e.g., "Agentforce")
         release_slug: The release slug (e.g., "summer_26")
+        locale: Locale for section headers (default: "pt_BR")
 
     Returns:
         Markdown section with relevant Trailhead modules.
     """
+    from .i18n import LOCALIZATION_MAP
+
+    i18n = LOCALIZATION_MAP[locale]
     service = _get_trailhead_service()
     modules = service.search(category_name, max_results=5)
 
-    lines = ["## 🎓 Módulos Trailhead Relacionados\n"]
+    lines = [f"## 🎓 {i18n['trailhead_section']}\n"]
 
     if modules:
         for module in modules:
@@ -289,7 +295,7 @@ def generate_category_trailhead_section(category_name: str, release_slug: str) -
             points = f" | {module.points} pts" if module.points else ""
             lines.append(f"- [{module.title}]({module.url}){time_points}{points}")
     else:
-        lines.append(f"- Nenhum módulo específico encontrado para {category_name}")
+        lines.append(f"- {i18n['trailhead_empty']} {category_name}")
 
     lines.append("")
     return "\n".join(lines)

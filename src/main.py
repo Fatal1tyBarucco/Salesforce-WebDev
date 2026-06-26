@@ -27,7 +27,9 @@ from .config import (
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .i18n import generate_toggle_html
 from .generator import MarkdownGenerator
+from .translator import TranslatorService
 from .logger import setup_logging
 from .parser import (
     FeatureImpactCategory,
@@ -278,6 +280,7 @@ async def run_pipeline() -> None:
     scraper = SalesforceReleaseScraper()
     impact_parser = FeatureImpactParser()
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
+    translator = TranslatorService()
 
     args = sys.argv[1:]
     release_filter: str | None = None
@@ -332,7 +335,9 @@ async def run_pipeline() -> None:
             logger.info("Parsed %d categories from feature impact", len(categories))
 
             for locale in ["pt_BR", "en_US"]:
-                _generate_release_files(release, categories, generator, locale=locale)
+                await _generate_release_files(
+                    release, categories, generator, translator, locale=locale
+                )
             _update_readme_single(release, categories)
 
             # Classify features and enrich .meta.json
@@ -472,10 +477,11 @@ def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
     logger.info("Badge updated: %s (%d features)", name, total)
 
 
-def _generate_release_files(
+async def _generate_release_files(
     release: ReleaseInfo,
     categories: list[FeatureImpactCategory],
     generator: MarkdownGenerator,
+    translator: TranslatorService,
     locale: str = "pt_BR",
 ) -> list[Path]:
     """Generate per-category .md files for a release in a specific locale."""
@@ -497,7 +503,16 @@ def _generate_release_files(
         total = cat.total_features
         cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
 
-        lines: list[str] = []
+        if locale == "en_US" and translator:
+            for entry in cat.entries:
+                entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
+            for sub_entries in cat.subcategories.values():
+                for entry in sub_entries:
+                    entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
+
+        toggle_html = generate_toggle_html(locale, slug, release.slug)
+
+        lines: list[str] = [toggle_html]
 
         # 1. Category heading
         lines.append(f"## {cat_name}\n")
@@ -534,7 +549,9 @@ def _generate_release_files(
                 lines.append("")
 
         # 6. Category-specific Trailhead (after content)
-        trailhead_section = generate_category_trailhead_section(cat.name, release.slug)
+        trailhead_section = generate_category_trailhead_section(
+            cat.name, release.slug, locale=locale
+        )
         lines.append(trailhead_section)
 
         # 7. Resources footer
@@ -730,6 +747,33 @@ async def _update_readme_all() -> None:
 
     lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
+    toggle_js = (
+        '<div id="lang-toggle" style="padding:12px;margin-bottom:20px;'
+        'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+        "<strong>\U0001f310 Idioma:</strong> "
+        '<a href="#" onclick="switchLang(\'pt_BR\');return false;" id="btn-pt_BR" '
+        'style="margin:0 8px;text-decoration:none;font-weight:bold;">\U0001f1e7\U0001f1f7 Portugu\u00eas</a> '
+        '<a href="#" onclick="switchLang(\'en_US\');return false;" id="btn-en_US" '
+        'style="margin:0 8px;text-decoration:none;">\U0001f1fa\U0001f1f8 English</a>'
+        "</div>"
+        "<script>"
+        "(function(){"
+        "var lang = navigator.language || navigator.userLanguage || 'pt-BR';"
+        "lang = lang.startsWith('en') ? 'en_US' : 'pt_BR';"
+        "switchLang(lang);"
+        "function switchLang(l) {"
+        "document.querySelectorAll('[data-lang]').forEach(function(el) {"
+        "el.style.display = el.getAttribute('data-lang') === l ? 'block' : 'none';"
+        "});"
+        "document.getElementById('btn-pt_BR').style.fontWeight = l === 'pt_BR' ? 'bold' : 'normal';"
+        "document.getElementById('btn-en_US').style.fontWeight = l === 'en_US' ? 'bold' : 'normal';"
+        "}"
+        "window.switchLang = switchLang;"
+        "})();"
+        "</script>"
+    )
+    lines.append(toggle_js)
+
     for meta in metas:
         slug = meta["slug"]
         name = meta["name"]
@@ -738,24 +782,43 @@ async def _update_readme_all() -> None:
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
 
-        lines.append(f"\n### {emoji} {name}\n")
+        for lang in ("pt_BR", "en_US"):
+            lines.append(f'\n<div data-lang="{lang}">')
+            lines.append(f"\n### {emoji} {name}\n")
 
-        summary = await summarizer.summarize(slug)
-        if summary:
-            lines.append(f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n")
+            summary = await summarizer.summarize(slug)
+            if summary:
+                if lang == "pt_BR":
+                    lines.append(
+                        f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
+                    )
+                else:
+                    lines.append(
+                        f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
+                    )
 
-        for cat in active:
-            cat_name = cat["name"]
-            count = cat["count"]
-            cat_slug = _slugify_category(cat_name)
-            link = f"./releases/{slug}/pt_BR/{cat_slug}.md"
+            for cat in active:
+                cat_name = cat["name"]
+                count = cat["count"]
+                cat_slug = _slugify_category(cat_name)
+                link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
-            lines.append("\n<details>")
-            lines.append(f"<summary><b>📄 {cat_name} ({count} recursos)</b></summary>\n")
-            lines.append(f"> 📄 Detalhes completos: [{link}]({link})\n")
-            lines.append("</details>\n")
+                if lang == "en_US":
+                    display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
+                    count_label = "features"
+                else:
+                    display_name = cat_name
+                    count_label = "recursos"
 
-        lines.append("")
+                lines.append("\n<details>")
+                lines.append(
+                    f"<summary><b>\U0001f4c4 {display_name} ({count} {count_label})</b></summary>\n"
+                )
+                lines.append(f"> \U0001f4c4 Detalhes completos: [{link}]({link})\n")
+                lines.append("</details>\n")
+
+            lines.append("</div>")
+            lines.append("")
 
     new_block = "\n".join(lines)
 
