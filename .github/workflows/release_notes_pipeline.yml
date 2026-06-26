@@ -138,9 +138,39 @@ jobs:
           steps.git_status.outputs.has_changes == 'true'
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-          git add releases/ README.md
+          git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
           git push origin HEAD:${{ github.ref_name }}
+
+      - name: Criar GitHub Release
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          steps.git_status.outputs.has_changes == 'true' &&
+          steps.params.outputs.release_slug != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SLUG="${{ steps.params.outputs.release_slug }}"
+          RELEASE_DIR="releases/${SLUG}"
+          if [ -d "$RELEASE_DIR" ]; then
+            META=$(cat "${RELEASE_DIR}/.meta.json")
+            RELEASE_NAME=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin)['name'])")
+            TOTAL=$(echo "$META" | python3 -c "import sys, json; print(sum(c['count'] for c in json.load(sys.stdin).get('categories', [])))")
+            CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
+            
+            NOTES="## 📦 ${RELEASE_NAME}\n\n"
+            NOTES+="- **${TOTAL}** recursos em **${CATEGORIES}** categorias\n"
+            NOTES+="- 🇧🇷 [Documentação pt_BR](./releases/${SLUG}/pt_BR/)\n"
+            NOTES+="- 🇺🇸 [Documentation en_US](./releases/${SLUG}/en_US/)\n"
+            
+            gh release create "${SLUG}" \
+              --title "${RELEASE_NAME}" \
+              --notes "$(echo -e "$NOTES")" \
+              --latest=false \
+              "${RELEASE_DIR}/.meta.json" \
+              "${RELEASE_DIR}/pt_BR/" \
+              "${RELEASE_DIR}/en_US/" 2>/dev/null || echo "Release already exists, skipping"
+          fi
 
       - name: Gerar sumário do pipeline
         if: always()
