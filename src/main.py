@@ -786,7 +786,7 @@ async def _update_readme_all() -> None:
             lines.append(f'\n<div data-lang="{lang}">')
             lines.append(f"\n### {emoji} {name}\n")
 
-            summary = summarizer.summarize(slug)
+            summary = await summarizer.summarize(slug)
             if summary:
                 if lang == "pt_BR":
                     lines.append(
