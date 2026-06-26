@@ -134,18 +134,15 @@ uv run mypy src/
 
 
 
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** 🚀 **Summer '26** — expansão significativa com **1536 recursos** em **22 categorias**.
-
-**Principais destaques:**
-• **Setores** (319 recursos, 21%)
-• **Serviço** (210 recursos, 14%)
-• **Desenvolvimento...
+> 📊 **Resumo Executivo:** A release Summer '26 consolida a era da IA autônoma através da expansão massiva do Agentforce, integrando agentes inteligentes em todo o ecossistema Salesforce para transformar a produtividade, a auto...
 
 
 <details>
@@ -329,12 +326,7 @@ uv run mypy src/
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Resumo Executivo:** 🚀 **Spring '26** — expansão significativa com **1596 recursos** em **21 categorias**.
-
-**Principais destaques:**
-• **Setores** (202 recursos, 13%)
-• **Aplicativo móvel** (195 recursos, 12%)
-• **Serviç...
+> 📊 **Resumo Executivo:** A release Spring '26 consolida a transição para a IA autônoma com a expansão do Agentforce em vendas, serviços e processos industriais, permitindo que empresas escalem operações e automatizem fluxos d...
 
 
 <details>
@@ -512,12 +504,7 @@ uv run mypy src/
 
 <summary><h3>❄️ Winter '26</h3></summary>
 
-> 📊 **Resumo Executivo:** 🚀 **Winter '26** — expansão significativa com **1487 recursos** em **19 categorias**.
-
-**Principais destaques:**
-• **Setores** (467 recursos, 31%)
-• **Partner Cloud** (164 recursos, 11%)
-• **Vendas** ...
+> 📊 **Resumo Executivo:** A release Winter '26 acelera a automação de processos e a inteligência de negócios ao integrar agentes de IA autônomos (Agentforce) em múltiplos fluxos de trabalho e potencializar a análise de dados a...
 
 
 <details>
