@@ -1,0 +1,86 @@
+{
+  "name": "Winter '26",
+  "slug": "winter_26",
+  "release_id": 258,
+  "total_features": 1348,
+  "avg_confidence": 0.648,
+  "generated_at": "2026-06-25T21:54:24.877617+00:00",
+  "categories": [
+    {
+      "name": "Documentação legal",
+      "count": 11
+    },
+    {
+      "name": "Salesforce geral",
+      "count": 32
+    },
+    {
+      "name": "Análise de dados",
+      "count": 91
+    },
+    {
+      "name": "Personalização",
+      "count": 65
+    },
+    {
+      "name": "Desenvolvimento",
+      "count": 101
+    },
+    {
+      "name": "Agentforce",
+      "count": 39
+    },
+    {
+      "name": "Experience Cloud",
+      "count": 8
+    },
+    {
+      "name": "Field Service",
+      "count": 24
+    },
+    {
+      "name": "Hyperforce",
+      "count": 5
+    },
+    {
+      "name": "Setores",
+      "count": 459
+    },
+    {
+      "name": "Marketing",
+      "count": 87
+    },
+    {
+      "name": "MuleSoft",
+      "count": 4
+    },
+    {
+      "name": "Aplicativo móvel",
+      "count": 7
+    },
+    {
+      "name": "OmniStudio",
+      "count": 8
+    },
+    {
+      "name": "Partner Cloud",
+      "count": 156
+    },
+    {
+      "name": "Vendas",
+      "count": 154
+    },
+    {
+      "name": "Integrações do Salesforce para Slack",
+      "count": 1
+    },
+    {
+      "name": "Segurança, identidade e privacidade",
+      "count": 55
+    },
+    {
+      "name": "Serviço",
+      "count": 41
+    }
+  ]
+}
