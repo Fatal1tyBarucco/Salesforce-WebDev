@@ -1,17 +1,21 @@
 """AI-powered impact analyzer.
 
 Analyzes release changes and predicts their impact on users,
-generates impact reports, and suggests migration actions.
+generates impact reports, and suggests migration actions using a resilient LLM service.
 """
 
 from __future__ import annotations
+from typing import Any
+
+import asyncio
+
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from .config import RELEASES_DIR
 from .feature_classifier import FeatureClassifier, FeatureType, ImpactLevel
+from .llm_service import LLMService
 
 
 @dataclass
@@ -40,14 +44,15 @@ class ImpactReport:
 
 
 class ImpactAnalyzer:
-    """Analyzes release impact on users and systems."""
+    """Analyzes release impact on users and systems using LLM."""
 
     def __init__(self, base_dir: str = RELEASES_DIR) -> None:
         self._base_dir = Path(base_dir)
         self._classifier = FeatureClassifier()
+        self._llm = LLMService()
 
-    def analyze(self, release_slug: str) -> ImpactReport | None:
-        """Analyze impact for a release.
+    async def analyze(self, release_slug: str) -> ImpactReport | None:
+        """Analyze impact for a release using a combination of classification and LLM analysis.
 
         Args:
             release_slug: The release directory name.
@@ -59,59 +64,89 @@ class ImpactAnalyzer:
         if not release_dir.is_dir():
             return None
 
-        all_features: list[str] = []
-        breaking_changes: list[str] = []
-        security_fixes: list[str] = []
+        all_feature_texts: list[str] = []
 
         for md_file in sorted(release_dir.glob("*.md")):
             if md_file.name.startswith("."):
                 continue
             content = md_file.read_text(encoding="utf-8")
-            features = self._extract_feature_texts(content)
-            all_features.extend(features)
+            all_feature_texts.extend(self._extract_feature_texts(content))
 
-            # Classify each feature
-            for text in features:
-                classified = self._classifier.classify_text(text)
-                if classified.feature_type == FeatureType.BREAKING_CHANGE:
-                    breaking_changes.append(text)
-                elif classified.feature_type == FeatureType.SECURITY:
-                    security_fixes.append(text)
-
-        if not all_features:
+        if not all_feature_texts:
             return None
 
-        # Analyze impact areas
-        areas = self._analyze_areas(all_features)
-
-        # Generate migration actions
-        migration_actions = self._generate_migration_actions(breaking_changes, areas)
-
-        # Calculate risk score
-        risk_score = self._calculate_risk_score(
-            len(all_features), len(breaking_changes), len(security_fixes), areas
+        # Classify all features in parallel
+        classified_features = await asyncio.gather(
+            *(self._classifier.classify_text(text) for text in all_feature_texts)
         )
 
-        # Count high impact features
-        high_impact_count = sum(
-            1
-            for text in all_features
-            if self._classifier.classify_text(text).impact == ImpactLevel.HIGH
+        breaking_changes: list[str] = []
+        security_fixes: list[str] = []
+        high_impact_count = 0
+
+        for text, classified in zip(all_feature_texts, classified_features):
+            if classified.feature_type == FeatureType.BREAKING_CHANGE:
+                breaking_changes.append(text)
+            elif classified.feature_type == FeatureType.SECURITY:
+                security_fixes.append(text)
+
+            if classified.impact == ImpactLevel.HIGH:
+                high_impact_count += 1
+
+        # 2. Use LLM to generate migration actions and executive summary
+        context = (
+            f"Release: {release_slug}\n"
+            f"Total Features: {len(all_feature_texts)}\n"
+            f"Breaking Changes: {len(breaking_changes)}\n"
+            f"Security Fixes: {len(security_fixes)}\n"
+            f"High Impact Features: {high_impact_count}\n"
+            f"Key Breaking Changes: {', '.join(breaking_changes[:5])}"
         )
 
-        # Generate executive summary
+        system_prompt = (
+            "You are a Salesforce Solution Architect. Analyze the provided release context "
+            "and generate: (1) A list of prioritized migration actions, and (2) A risk score (0.0-1.0) "
+            "with a brief justification. Return as JSON: "
+            '{"migration_actions": ["action 1", ...], "risk_score": 0.5, "justification": "..."}'
+        )
+
+        llm_result = await self._llm.generate_text(context, system_prompt)
+
+        if not llm_result:
+            parsed: dict[str, Any] = {}
+        else:
+            import json
+
+            try:
+                start_idx = llm_result.find("{")
+                end_idx = llm_result.rfind("}") + 1
+                parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
+            except ValueError, IndexError:
+                parsed = {}
+
+        migration_actions = parsed.get(
+            "migration_actions", ["Review release notes for manual updates"]
+        )
+        risk_score = float(parsed.get("risk_score", 0.5))
+        justification = parsed.get("justification", "Based on feature volume and breaking changes.")
+
+        # 3. Analyze areas
+        areas = await self._analyze_areas(all_feature_texts)
+
+        # 4. Generate executive summary
         executive_summary = self._generate_summary(
             release_slug,
-            len(all_features),
+            len(all_feature_texts),
             high_impact_count,
             len(breaking_changes),
             len(security_fixes),
             risk_score,
+            justification,
         )
 
         return ImpactReport(
             release_slug=release_slug,
-            total_features=len(all_features),
+            total_features=len(all_feature_texts),
             high_impact_count=high_impact_count,
             breaking_changes=breaking_changes,
             security_fixes=security_fixes,
@@ -120,35 +155,6 @@ class ImpactAnalyzer:
             risk_score=risk_score,
             executive_summary=executive_summary,
         )
-
-    def compare_releases(self, current_slug: str, previous_slug: str) -> dict[str, Any] | None:
-        """Compare impact between two releases.
-
-        Args:
-            current_slug: Current release directory name.
-            previous_slug: Previous release directory name.
-
-        Returns:
-            Comparison dict or None if either release not found.
-        """
-        current = self.analyze(current_slug)
-        previous = self.analyze(previous_slug)
-
-        if current is None or previous is None:
-            return None
-
-        return {
-            "current": current_slug,
-            "previous": previous_slug,
-            "feature_delta": current.total_features - previous.total_features,
-            "risk_delta": current.risk_score - previous.risk_score,
-            "new_breaking": [
-                bc for bc in current.breaking_changes if bc not in previous.breaking_changes
-            ],
-            "new_security_fixes": [
-                sf for sf in current.security_fixes if sf not in previous.security_fixes
-            ],
-        }
 
     def _extract_feature_texts(self, content: str) -> list[str]:
         """Extract feature texts from markdown content."""
@@ -165,17 +171,20 @@ class ImpactAnalyzer:
                     features.append(parts[0])
         return features
 
-    def _analyze_areas(self, features: list[str]) -> list[ImpactArea]:
-        """Analyze impact areas from features."""
+    async def _analyze_areas(self, features: list[str]) -> list[ImpactArea]:
+        """Analyze impact areas from features using the classifier."""
         area_counts: dict[str, int] = {}
         area_severity: dict[str, str] = {}
 
-        for text in features:
-            classified = self._classifier.classify_text(text)
+        # Classify all features in parallel
+        classified_features = await asyncio.gather(
+            *(self._classifier.classify_text(text) for text in features)
+        )
+
+        for classified in classified_features:
             area_name = self._map_type_to_area(classified.feature_type)
             area_counts[area_name] = area_counts.get(area_name, 0) + 1
 
-            # Track highest severity per area
             if classified.impact == ImpactLevel.HIGH:
                 area_severity[area_name] = "high"
             elif classified.impact == ImpactLevel.MEDIUM and area_severity.get(area_name) != "high":
@@ -213,51 +222,6 @@ class ImpactAnalyzer:
         }
         return mapping.get(ftype, "other")
 
-    def _generate_migration_actions(
-        self, breaking_changes: list[str], areas: list[ImpactArea]
-    ) -> list[str]:
-        """Generate migration action items."""
-        actions: list[str] = []
-
-        if breaking_changes:
-            actions.append(f"Review and address {len(breaking_changes)} breaking change(s)")
-
-        for area in areas:
-            if area.migration_required:
-                actions.append(f"Migrate {area.name} components ({area.affected_count} features)")
-
-        if not actions:
-            actions.append("No migration required — all changes are backward-compatible")
-
-        return actions
-
-    def _calculate_risk_score(
-        self,
-        total: int,
-        breaking: int,
-        security: int,
-        areas: list[ImpactArea],
-    ) -> float:
-        """Calculate overall risk score (0.0 to 1.0)."""
-        if total == 0:
-            return 0.0
-
-        # Base score from feature count
-        base = min(total / 200, 0.3)
-
-        # Breaking changes multiplier
-        breaking_factor = min(breaking / 10, 0.4)
-
-        # Security fixes (positive impact, reduces risk)
-        security_factor = -min(security / 20, 0.1)
-
-        # High severity areas
-        high_areas = sum(1 for a in areas if a.severity == "high")
-        area_factor = min(high_areas / 5, 0.2)
-
-        score = base + breaking_factor + security_factor + area_factor
-        return max(0.0, min(1.0, score))
-
     def _generate_summary(
         self,
         release_slug: str,
@@ -266,10 +230,10 @@ class ImpactAnalyzer:
         breaking: int,
         security: int,
         risk_score: float,
+        justification: str,
     ) -> str:
         """Generate executive summary text."""
         name = release_slug.replace("_", " ").title()
-
         risk_level = "LOW"
         if risk_score > 0.7:
             risk_level = "CRITICAL"
@@ -280,6 +244,7 @@ class ImpactAnalyzer:
             f"## 🎯 Impact Analysis: {name}",
             "",
             f"**Risk Level:** {risk_level} ({risk_score:.0%})",
+            f"*{justification}*",
             "",
             f"- **{total}** total features",
             f"- **{high_impact}** high-impact changes",

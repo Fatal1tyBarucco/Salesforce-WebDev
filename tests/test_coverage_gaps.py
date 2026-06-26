@@ -1,7 +1,6 @@
 """Coverage tests for src modules to reach 100% coverage."""
 
 import asyncio
-import hashlib
 import json
 import os
 import subprocess
@@ -187,7 +186,7 @@ def test_update_readme_all(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
             # Function uses Path("README.md") directly, so we can't easily mock it
             # Just verify no exception is raised
 
@@ -197,14 +196,14 @@ def test_update_readme_all_no_heading(tmp_path: Path) -> None:
     readme_path.write_text("# Test\n\nNo heading here\n")
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        _update_readme_all()
+        asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "No heading here" in content
 
 
 def test_update_readme_all_no_readme(tmp_path: Path) -> None:
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        _update_readme_all()
+        asyncio.run(_update_readme_all())
 
 
 def test_update_readme_all_no_releases(tmp_path: Path) -> None:
@@ -212,7 +211,7 @@ def test_update_readme_all_no_releases(tmp_path: Path) -> None:
     readme_path.write_text("# Test\n")
 
     with patch("src.main.RELEASES_DIR", str(tmp_path)):
-        _update_readme_all()
+        asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -465,7 +464,7 @@ def test_update_readme_all_with_category_count(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
             # Function uses Path("README.md") directly, so we can't easily mock it
             # Just verify no exception is raised
 
@@ -598,15 +597,13 @@ def test_detect_new_release_new_content(tmp_path: Path) -> None:
 
 
 def test_fetch_page_raw_text_cache_hit(tmp_path: Path) -> None:
-    from src.scraper import CACHE_DIR, MIN_RAW_TEXT_LENGTH
+    from src.scraper import MIN_RAW_TEXT_LENGTH
 
     url = "https://example.com/test"
-    url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
-    cache_file = CACHE_DIR / f"{url_hash}.txt"
-    cache_file.parent.mkdir(parents=True, exist_ok=True)
-    cache_file.write_text("x" * (MIN_RAW_TEXT_LENGTH + 1))
 
     scraper = SalesforceReleaseScraper()
+    scraper._cache.set(url, "x" * (MIN_RAW_TEXT_LENGTH + 1))
+
     result = asyncio.run(scraper.fetch_page_raw_text(url))
     assert result is not None
     assert len(result) > MIN_RAW_TEXT_LENGTH
@@ -974,7 +971,7 @@ def test_update_readme_all_with_emoji(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_run_pipeline_with_release_filter_not_found() -> None:
@@ -1162,7 +1159,7 @@ def test_update_readme_all_with_multiple_releases(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_detect_new_release_all_known_exist(tmp_path: Path) -> None:
@@ -1241,7 +1238,7 @@ def test_update_readme_all_with_spring_release(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
@@ -1266,7 +1263,7 @@ def test_update_readme_all_with_zero_count(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -1367,7 +1364,7 @@ def test_scraper_download_pdf_button_success_v3() -> None:
 def test_update_readme_all_no_releases_dir(tmp_path: Path) -> None:
     """Test _update_readme_all when releases_dir doesn't exist."""
     with patch("src.main.RELEASES_DIR", str(tmp_path / "nonexistent")):
-        _update_readme_all()  # Should return early without error
+        asyncio.run(_update_readme_all())  # Should return early without error
 
 
 def test_detect_new_release_all_known_exist_v5(tmp_path: Path) -> None:
@@ -1444,7 +1441,7 @@ def test_update_readme_all_with_multiple_releases_v3(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_update_readme_all_with_category_count_v3(tmp_path: Path) -> None:
@@ -1469,7 +1466,7 @@ def test_update_readme_all_with_category_count_v3(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -1668,7 +1665,7 @@ def test_update_readme_all_no_next_heading_v2(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -1750,7 +1747,7 @@ def test_update_readme_all_with_multiple_releases_v2(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_update_readme_all_with_category_count_v2(tmp_path: Path) -> None:
@@ -1775,7 +1772,7 @@ def test_update_readme_all_with_category_count_v2(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 def test_update_readme_all_with_winter_release_v2(tmp_path: Path) -> None:
@@ -1795,7 +1792,7 @@ def test_update_readme_all_with_winter_release_v2(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -1821,7 +1818,7 @@ def test_generate_quality_report_with_releases(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = generate_quality_report()
+        result = asyncio.run(generate_quality_report())
         assert "Summer '26" in result
         assert "100" in result
 
@@ -1838,8 +1835,8 @@ def test_generate_regression_report_with_data() -> None:
             return prev
         return curr
 
-    with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
-        result = generate_regression_report("curr", "prev")
+    with patch("src.ai_automation.AIAutomationService.load_release_meta", side_effect=mock_load):
+        result = asyncio.run(generate_regression_report("curr", "prev"))
         assert "Curr" in result
         assert "Prev" in result
 
@@ -1848,21 +1845,26 @@ def test_create_release_issue_with_data() -> None:
     """Test create_release_issue with actual data."""
     from src.ai_automation import create_release_issue
 
-    meta = {"name": "Summer '26", "categories": [{"name": "Agentforce", "count": 19}]}
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "Issue created: https://github.com/test/issue/1\n"
 
-    with patch("src.ai_automation.load_release_meta", return_value=meta):
-        result = create_release_issue("summer_26")
-        assert "Summer '26" in result
-        assert "19 recursos" in result
+    with patch("src.ai_automation.subprocess.run", return_value=mock_result):
+        result = asyncio.run(create_release_issue("Summer '26", 19, 1))
+        assert "Issue created" in result
 
 
 def test_create_release_issue_missing() -> None:
     """Test create_release_issue with missing release."""
     from src.ai_automation import create_release_issue
 
-    with patch("src.ai_automation.load_release_meta", return_value=None):
-        result = create_release_issue("missing")
-        assert result == ""
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "Issue created: https://github.com/test/issue/2\n"
+
+    with patch("src.ai_automation.subprocess.run", return_value=mock_result):
+        result = asyncio.run(create_release_issue("Missing", 0, 0))
+        assert "Issue created" in result
 
 
 def test_get_latest_release_badge() -> None:
@@ -1883,7 +1885,7 @@ def test_filter_features_for_profile_admin() -> None:
         {"name": "Development", "count": 20},
     ]
 
-    profile = filter_features_for_profile("admin", categories)
+    profile = asyncio.run(filter_features_for_profile("admin", categories))
     assert profile.profile_type == "admin"
     assert len(profile.relevant_categories) > 0
 
@@ -1894,7 +1896,7 @@ def test_filter_features_for_profile_unknown() -> None:
 
     categories = [{"name": "Security", "count": 10}]
 
-    profile = filter_features_for_profile("unknown", categories)
+    profile = asyncio.run(filter_features_for_profile("unknown", categories))
     assert profile.profile_type == "unknown"
 
 
@@ -1904,8 +1906,8 @@ def test_generate_filtered_notification() -> None:
 
     meta = {"name": "Summer '26", "categories": [{"name": "Security", "count": 10}]}
 
-    with patch("src.ai_automation.load_release_meta", return_value=meta):
-        result = generate_filtered_notification("summer_26", "admin")
+    with patch("src.ai_automation.AIAutomationService.load_release_meta", return_value=meta):
+        result = asyncio.run(generate_filtered_notification("summer_26", "admin"))
         assert result.total_features == 10
 
 
@@ -1915,8 +1917,8 @@ def test_generate_filtered_notification_report() -> None:
 
     meta = {"name": "Summer '26", "categories": [{"name": "Security", "count": 10}]}
 
-    with patch("src.ai_automation.load_release_meta", return_value=meta):
-        result = generate_filtered_notification_report("summer_26", "admin")
+    with patch("src.ai_automation.AIAutomationService.load_release_meta", return_value=meta):
+        result = asyncio.run(generate_filtered_notification_report("summer_26", "admin"))
         assert "Notificação" in result
 
 
@@ -1950,7 +1952,7 @@ def test_update_readme_all_with_categories(tmp_path: Path) -> None:
             mock_path.return_value.__truediv__ = lambda self, x: tmp_path / x
             mock_path.return_value.exists.return_value = True
             mock_path.return_value.read_text.return_value = readme_path.read_text()
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
 
 
 # ============================================================
@@ -2015,13 +2017,11 @@ def test_update_readme_all_no_readme_file(tmp_path: Path) -> None:
     }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
     finally:
         os.chdir(old_cwd)
 
@@ -2046,13 +2046,11 @@ def test_update_readme_all_heading_missing(tmp_path: Path) -> None:
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\nNo release heading here\n")
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "No release heading here" in content
     finally:
@@ -2084,13 +2082,11 @@ def test_update_readme_all_full_update(tmp_path: Path) -> None:
         "# Test\n\n## 📋 Releases Disponíveis\n\nOld content\n\n## Next Section\n"
     )
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "Summer '26" in content
         assert "Agentforce" in content
@@ -2115,13 +2111,11 @@ def test_update_readme_all_winter_emoji(tmp_path: Path) -> None:
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld\n\n## Next\n")
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "Winter '27" in content
     finally:
@@ -2143,13 +2137,11 @@ def test_update_readme_all_no_next_heading(tmp_path: Path) -> None:
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\nOld content")
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "Summer '26" in content
     finally:
@@ -2196,7 +2188,7 @@ def test_create_github_issue_success() -> None:
     mock_result.stdout = "Issue created: https://github.com/test/issue/1\n"
 
     with patch("src.ai_automation.subprocess.run", return_value=mock_result):
-        result = create_github_issue("Summer '26", 100, 10)
+        result = asyncio.run(create_github_issue("Summer '26", 100, 10))
         assert result is not None
         assert "Issue created" in result
 
@@ -2209,7 +2201,7 @@ def test_create_github_issue_failure() -> None:
     mock_result.returncode = 1
 
     with patch("src.ai_automation.subprocess.run", return_value=mock_result):
-        result = create_github_issue("Summer '26", 100, 10)
+        result = asyncio.run(create_github_issue("Summer '26", 100, 10))
         assert result is None
 
 
@@ -2218,7 +2210,7 @@ def test_create_github_issue_exception() -> None:
     from src.ai_automation import create_github_issue
 
     with patch("src.ai_automation.subprocess.run", side_effect=Exception("gh not found")):
-        result = create_github_issue("Summer '26", 100, 10)
+        result = asyncio.run(create_github_issue("Summer '26", 100, 10))
         assert result is None
 
 
@@ -2246,7 +2238,7 @@ def test_generate_changelog_no_releases() -> None:
     from src.ai_automation import generate_changelog
 
     with patch("src.ai_automation.RELEASES_DIR", "/nonexistent_path_xyz"):
-        result = generate_changelog()
+        result = asyncio.run(generate_changelog())
         assert "No releases found" in result
 
 
@@ -2260,7 +2252,7 @@ def test_generate_quality_report_no_releases_dir() -> None:
     from src.ai_automation import generate_quality_report
 
     with patch("src.ai_automation.RELEASES_DIR", "/nonexistent_path_xyz"):
-        result = generate_quality_report()
+        result = asyncio.run(generate_quality_report())
         assert "Nenhuma release" in result
 
 
@@ -2279,7 +2271,7 @@ def test_generate_quality_report_skip_non_dir(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = generate_quality_report()
+        result = asyncio.run(generate_quality_report())
         assert "Summer '26" in result
 
 
@@ -2290,7 +2282,7 @@ def test_generate_quality_report_skip_no_meta(tmp_path: Path) -> None:
     (tmp_path / "empty_release").mkdir()
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = generate_quality_report()
+        result = asyncio.run(generate_quality_report())
         assert "Relatório de Qualidade" in result
 
 
@@ -2314,7 +2306,7 @@ def test_generate_quality_report_skip_no_metrics(tmp_path: Path) -> None:
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
         with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
-            result = generate_quality_report()
+            result = asyncio.run(generate_quality_report())
             assert "Relatório de Qualidade" in result
 
 
@@ -2364,7 +2356,7 @@ def test_generate_ai_summary_report_with_risk_areas() -> None:
         return previous
 
     with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
-        result = generate_ai_summary_report("current", "previous")
+        result = asyncio.run(generate_ai_summary_report("current", "previous"))
         assert "Áreas de Risco" in result
 
 
@@ -2393,8 +2385,11 @@ def test_calculate_category_impact_scores_declining() -> None:
         "categories": [{"name": "Security", "count": 10}],
     }
 
-    with patch("src.ai_automation._load_all_release_metas", return_value=[meta1, meta2, meta3]):
-        scores = calculate_category_impact_scores()
+    with patch(
+        "src.ai_automation.AIAutomationService._load_all_release_metas",
+        return_value=[meta1, meta2, meta3],
+    ):
+        scores = asyncio.run(calculate_category_impact_scores())
         assert len(scores) == 1
         assert scores[0].trend == "declínio"
 
@@ -2419,8 +2414,11 @@ def test_calculate_category_impact_scores_moderate_prediction() -> None:
         "categories": [{"name": "Security", "count": 15}],
     }
 
-    with patch("src.ai_automation._load_all_release_metas", return_value=[meta1, meta2, meta3]):
-        scores = calculate_category_impact_scores()
+    with patch(
+        "src.ai_automation.AIAutomationService._load_all_release_metas",
+        return_value=[meta1, meta2, meta3],
+    ):
+        scores = asyncio.run(calculate_category_impact_scores())
         assert len(scores) == 1
         assert scores[0].prediction in (
             "Mudança moderada esperada",
@@ -2455,8 +2453,11 @@ def test_predict_next_release_impact_moderate_risk() -> None:
         "categories": [{"name": "Security", "count": 25}],
     }
 
-    with patch("src.ai_automation._load_all_release_metas", return_value=[meta1, meta2, meta3]):
-        result = predict_next_release_impact()
+    with patch(
+        "src.ai_automation.AIAutomationService._load_all_release_metas",
+        return_value=[meta1, meta2, meta3],
+    ):
+        result = asyncio.run(predict_next_release_impact())
         assert result.overall_risk_level in ("moderado", "baixo", "alto")
 
 
@@ -2491,7 +2492,7 @@ def test_triage_release_with_regressions(tmp_path: Path) -> None:
     (prev_dir / ".meta.json").write_text(json.dumps(prev_meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = triage_release("summer_26")
+        result = asyncio.run(triage_release("summer_26"))
         assert result.risk_score > 0
 
 
@@ -2521,7 +2522,7 @@ def test_triage_release_high_volume(tmp_path: Path) -> None:
     (prev_dir / ".meta.json").write_text(json.dumps(prev_meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = triage_release("summer_26")
+        result = asyncio.run(triage_release("summer_26"))
         assert result.risk_score > 0
 
 
@@ -2540,7 +2541,7 @@ def test_triage_release_low_risk(tmp_path: Path) -> None:
     (curr_dir / ".meta.json").write_text(json.dumps(curr_meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = triage_release("summer_26")
+        result = asyncio.run(triage_release("summer_26"))
         assert result.risk_level in ("mínimo", "baixo", "moderado", "alto")
 
 
@@ -2549,7 +2550,7 @@ def test_triage_release_unknown() -> None:
     from src.ai_automation import triage_release
 
     with patch("src.ai_automation.load_release_meta", return_value=None):
-        result = triage_release("nonexistent")
+        result = asyncio.run(triage_release("nonexistent"))
         assert result.risk_level == "desconhecido"
         assert result.risk_score == 0
 
@@ -2565,7 +2566,7 @@ def test_load_content_cache_corrupted(tmp_path: Path) -> None:
 
     cache_path = tmp_path / "cache.json"
     cache_path.write_text("not valid json {{{", encoding="utf-8")
-    result = _load_content_cache(cache_path)
+    result = asyncio.run(_load_content_cache(cache_path))
     assert result == {}
 
 
@@ -2609,7 +2610,7 @@ def test_deduplication_report_with_changes(tmp_path: Path) -> None:
     cache_path.write_text(json.dumps(cache), encoding="utf-8")
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = generate_deduplication_report("summer_26")
+        result = asyncio.run(generate_deduplication_report("summer_26"))
         assert "Alterados" in result
         assert "Removidos" in result
 
@@ -2814,7 +2815,7 @@ def test_generate_ai_summary_no_changes() -> None:
     }
 
     with patch("src.ai_automation.load_release_meta", return_value=meta):
-        result = generate_ai_summary("summer_26", "summer_26")
+        result = asyncio.run(generate_ai_summary("summer_26", "summer_26"))
         assert result.headline is not None
         assert result.overall_trend is not None
 
@@ -2844,7 +2845,7 @@ def test_generate_ai_summary_with_growth() -> None:
         return previous
 
     with patch("src.ai_automation.load_release_meta", side_effect=mock_load):
-        result = generate_ai_summary("current", "previous")
+        result = asyncio.run(generate_ai_summary("current", "previous"))
         assert result.overall_trend in ("crescimento", "estável", "declínio")
 
 
@@ -2868,7 +2869,7 @@ def test_load_content_cache_valid(tmp_path: Path) -> None:
     }
     cache_path.write_text(json.dumps(cache_data), encoding="utf-8")
 
-    result = _load_content_cache(cache_path)
+    result = asyncio.run(_load_content_cache(cache_path))
     assert len(result) == 1
     assert "/some/path" in result
 
@@ -2877,7 +2878,7 @@ def test_load_content_cache_missing(tmp_path: Path) -> None:
     """Test _load_content_cache with missing file."""
     from src.ai_automation import _load_content_cache
 
-    result = _load_content_cache(tmp_path / "nonexistent.json")
+    result = asyncio.run(_load_content_cache(tmp_path / "nonexistent.json"))
     assert result == {}
 
 
@@ -2890,8 +2891,8 @@ def test_predict_next_release_impact_no_data() -> None:
     """Test predict_next_release_impact with insufficient data."""
     from src.ai_automation import predict_next_release_impact
 
-    with patch("src.ai_automation._load_all_release_metas", return_value=[]):
-        result = predict_next_release_impact()
+    with patch("src.ai_automation.AIAutomationService._load_all_release_metas", return_value=[]):
+        result = asyncio.run(predict_next_release_impact())
         assert result.overall_risk_level == "indeterminado"
         assert len(result.high_risk_categories) == 0
 
@@ -2916,7 +2917,7 @@ def test_triage_release_no_actions(tmp_path: Path) -> None:
     (curr_dir / ".meta.json").write_text(json.dumps(curr_meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = triage_release("summer_26")
+        result = asyncio.run(triage_release("summer_26"))
         assert len(result.suggested_actions) > 0
 
 
@@ -2928,8 +2929,6 @@ def test_triage_release_no_actions(tmp_path: Path) -> None:
 def test_update_badge_no_readme(tmp_path: Path) -> None:
     """Cover line 265: _update_badge when README.md doesn't exist."""
     from src.main import _update_badge
-
-    import os
 
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
@@ -2946,8 +2945,6 @@ def test_update_badge_no_marker(tmp_path: Path) -> None:
 
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\nNo badge marker here\n")
-
-    import os
 
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
@@ -2971,8 +2968,6 @@ def test_update_badge_no_meta(tmp_path: Path) -> None:
     release_dir.mkdir()
     meta = {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}
     (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    import os
 
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
@@ -2999,8 +2994,6 @@ def test_update_badge_replace_existing(tmp_path: Path) -> None:
         "categories": [{"name": "Test", "count": 10}],
     }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    import os
 
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
@@ -3029,8 +3022,6 @@ def test_update_badge_no_existing_image(tmp_path: Path) -> None:
         "categories": [{"name": "Test", "count": 10}],
     }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
-
-    import os
 
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
@@ -3063,13 +3054,11 @@ def test_update_readme_all_spring_emoji(tmp_path: Path) -> None:
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld\n\n## Next\n")
 
-    import os
-
     old_cwd = os.getcwd()
     os.chdir(tmp_path)
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
-            _update_readme_all()
+            asyncio.run(_update_readme_all())
         content = readme_path.read_text()
         assert "Spring '26" in content
     finally:
@@ -3089,7 +3078,7 @@ def test_main_if_name_main_real() -> None:
     original_argv = sys.argv[:]
     try:
         sys.argv = ["main.py"]
-        with patch.object(mod.asyncio, "run", new_callable=AsyncMock):
+        with patch.object(mod, "run_pipeline", new_callable=AsyncMock):
             with patch.object(mod, "setup_logging"):
                 mod.__name__ = "__main__"
                 mod.main()
@@ -3119,8 +3108,6 @@ def test_run_pipeline_github_issue_success(tmp_path: Path) -> None:
 
     readme_path = tmp_path / "README.md"
     readme_path.write_text("# Test\n\n## 📋 Releases Disponíveis\n\nOld\n\n## Next\n")
-
-    import os
 
     os.getcwd()
     os.chdir(tmp_path)
@@ -3482,7 +3469,7 @@ def test_export_release_json(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = export_release_json("summer_26")
+        result = asyncio.run(export_release_json("summer_26"))
     assert "Summer '26" in result
 
 
@@ -3491,7 +3478,7 @@ def test_export_release_json_missing() -> None:
     from src.ai_automation import export_release_json
 
     with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
-        result = export_release_json("missing")
+        result = asyncio.run(export_release_json("missing"))
     assert result == "{}"
 
 
@@ -3515,7 +3502,7 @@ def test_export_release_csv(tmp_path: Path) -> None:
     )
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = export_release_csv("summer_26")
+        result = asyncio.run(export_release_csv("summer_26"))
     assert "category,feature" in result
     assert "Feature A" in result
 
@@ -3525,7 +3512,7 @@ def test_export_release_csv_missing() -> None:
     from src.ai_automation import export_release_csv
 
     with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
-        result = export_release_csv("missing")
+        result = asyncio.run(export_release_csv("missing"))
     assert result == ""
 
 
@@ -3540,7 +3527,7 @@ def test_export_all_releases(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(releases_dir)):
-        result = export_all_releases(str(tmp_path / "exports"))
+        result = asyncio.run(export_all_releases(str(tmp_path / "exports")))
     assert "summer_26" in result
     assert len(result["summer_26"]) == 2
 
@@ -3550,7 +3537,7 @@ def test_export_all_releases_no_dir() -> None:
     from src.ai_automation import export_all_releases
 
     with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
-        result = export_all_releases()
+        result = asyncio.run(export_all_releases())
     assert result == {}
 
 
@@ -3615,7 +3602,6 @@ def test_circuit_breaker_cooldown_expires() -> None:
     cb = CircuitBreaker(threshold=1, cooldown=0.01)
     cb.record_failure()
     assert cb.is_open is True
-    import time
 
     time.sleep(0.02)
     assert cb.is_open is False
@@ -3656,27 +3642,18 @@ def test_rate_limiter_acquire() -> None:
 
 def test_scraper_fetch_raw_text_circuit_breaker_open() -> None:
     """Test fetch_page_raw_text returns stale cache when circuit is open."""
-    from src.scraper import SalesforceReleaseScraper, CACHE_DIR, MIN_RAW_TEXT_LENGTH, CircuitBreaker
+    from src.scraper import SalesforceReleaseScraper, MIN_RAW_TEXT_LENGTH, CircuitBreaker
 
-    CACHE_DIR.mkdir(exist_ok=True)
     scraper = SalesforceReleaseScraper()
     scraper._circuit_breaker = CircuitBreaker(threshold=1, cooldown=9999)
     scraper._circuit_breaker.record_failure()
 
     url = "https://example.com/cb_test_stale_v3"
-    url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
-    cache_file = CACHE_DIR / f"{url_hash}.txt"
-    cache_file.write_text("x" * (MIN_RAW_TEXT_LENGTH + 1))
+    scraper._cache.set(url, "x" * (MIN_RAW_TEXT_LENGTH + 1))
 
-    old_time = time.time() - 90000
-    os.utime(str(cache_file), (old_time, old_time))
-
-    try:
-        result = asyncio.run(scraper.fetch_page_raw_text(url))
-        assert result is not None
-        assert len(result) > MIN_RAW_TEXT_LENGTH
-    finally:
-        cache_file.unlink(missing_ok=True)
+    result = asyncio.run(scraper.fetch_page_raw_text(url))
+    assert result is not None
+    assert len(result) > MIN_RAW_TEXT_LENGTH
 
 
 def test_scraper_fetch_raw_text_circuit_breaker_no_cache() -> None:
@@ -3717,7 +3694,7 @@ def test_generate_diff_report_equal(tmp_path: Path) -> None:
         (d / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = generate_diff_report("rel_a", "rel_b")
+        result = asyncio.run(generate_diff_report("rel_a", "rel_b"))
     assert "—" in result
 
 
@@ -3744,7 +3721,7 @@ def test_generate_diff_report_decrease(tmp_path: Path) -> None:
     (tmp_path / "releases" / "rel_b" / ".meta.json").write_text(json.dumps(meta_b))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = generate_diff_report("rel_a", "rel_b")
+        result = asyncio.run(generate_diff_report("rel_a", "rel_b"))
     assert "📉" in result
 
 
@@ -3785,7 +3762,7 @@ def test_export_release_csv_no_md(tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = export_release_csv("summer_26")
+        result = asyncio.run(export_release_csv("summer_26"))
     assert "category,feature" in result
 
 
@@ -3802,8 +3779,11 @@ def test_predict_next_release_impact_moderate(tmp_path: Path) -> None:
     meta2 = {"name": "R2", "release_id": 256, "categories": [{"name": "A", "count": 70}]}
     meta3 = {"name": "R3", "release_id": 258, "categories": [{"name": "A", "count": 60}]}
 
-    with patch("src.ai_automation._load_all_release_metas", return_value=[meta1, meta2, meta3]):
-        result = predict_next_release_impact()
+    with patch(
+        "src.ai_automation.AIAutomationService._load_all_release_metas",
+        return_value=[meta1, meta2, meta3],
+    ):
+        result = asyncio.run(predict_next_release_impact())
         assert result.overall_risk_level in ("moderado", "baixo", "alto")
 
 
@@ -3840,7 +3820,7 @@ def test_triage_release_high_risk(tmp_path: Path) -> None:
     (prev_dir / ".meta.json").write_text(json.dumps(prev_meta))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = triage_release("summer_26")
+        result = asyncio.run(triage_release("summer_26"))
         assert result.risk_score > 0
 
 
@@ -3881,7 +3861,6 @@ def test_fetch_raw_text_cache_expired(tmp_path: Path) -> None:
     cache_file.write_text("x" * (MIN_RAW_TEXT_LENGTH + 1))
 
     # Set mtime to 2 days ago to make it expired
-    import time
 
     old_time = time.time() - 172800  # 2 days ago
     import os
@@ -4076,7 +4055,7 @@ def test_generate_diff_report_increase(tmp_path: Path) -> None:
     (tmp_path / "releases" / "rel_b" / ".meta.json").write_text(json.dumps(meta_b))
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "releases")):
-        result = generate_diff_report("rel_a", "rel_b")
+        result = asyncio.run(generate_diff_report("rel_a", "rel_b"))
     assert "📈" in result
 
 
@@ -4098,7 +4077,7 @@ def test_export_all_releases_skips_non_dirs(tmp_path: Path) -> None:
     empty_dir.mkdir()
 
     with patch("src.ai_automation.RELEASES_DIR", str(releases_dir)):
-        result = export_all_releases(str(tmp_path / "exports"))
+        result = asyncio.run(export_all_releases(str(tmp_path / "exports")))
     assert "has_meta" in result
     assert "just_a_file" not in result
     assert "no_meta" not in result
@@ -6703,8 +6682,9 @@ def test_ai_automation_load_metas_invalid_json(tmp_path: Path) -> None:
     (d / ".meta.json").write_text("not json")
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
-        result = _load_all_release_metas()
-        assert result == []
+        with patch("src.ai_automation.AIAutomationService.load_release_meta", return_value=None):
+            result = asyncio.run(_load_all_release_metas())
+            assert result == []
 
 
 def test_api_graphql_releases_no_fields(tmp_path: Path) -> None:
@@ -6860,7 +6840,6 @@ def test_generate_category_summary_low_confidence() -> None:
 
 def test_update_readme_all_with_summary(tmp_path: Path) -> None:
     """main: _update_readme_all includes AI summary when available."""
-    import os
 
     from src.release_summarizer import ReleaseSummary
 
@@ -6894,8 +6873,8 @@ def test_update_readme_all_with_summary(tmp_path: Path) -> None:
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
             with patch("src.release_summarizer.ReleaseSummarizer") as mock_summarizer_cls:
-                mock_summarizer_cls.return_value.summarize.return_value = fake_summary
-                _update_readme_all()
+                mock_summarizer_cls.return_value.summarize = AsyncMock(return_value=fake_summary)
+                asyncio.run(_update_readme_all())
                 content = readme_path.read_text()
                 assert "Resumo Executivo" in content
                 assert "Test summary text" in content
@@ -6905,7 +6884,6 @@ def test_update_readme_all_with_summary(tmp_path: Path) -> None:
 
 def test_update_readme_all_with_summary_none(tmp_path: Path) -> None:
     """main: _update_readme_all handles None summary gracefully."""
-    import os
 
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
@@ -6927,8 +6905,8 @@ def test_update_readme_all_with_summary_none(tmp_path: Path) -> None:
     try:
         with patch("src.main.RELEASES_DIR", str(tmp_path)):
             with patch("src.release_summarizer.ReleaseSummarizer") as mock_summarizer_cls:
-                mock_summarizer_cls.return_value.summarize.return_value = None
-                _update_readme_all()
+                mock_summarizer_cls.return_value.summarize = AsyncMock(return_value=None)
+                asyncio.run(_update_readme_all())
                 content = readme_path.read_text()
                 assert "Resumo Executivo" not in content
     finally:

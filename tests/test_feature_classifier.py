@@ -1,6 +1,8 @@
 """Tests for feature_classifier module."""
 
+import asyncio
 from pathlib import Path
+from unittest.mock import AsyncMock, patch
 
 from src.feature_classifier import (
     FeatureClassifier,
@@ -12,7 +14,16 @@ from src.feature_classifier import (
 def test_classify_text_security():
     """feature_classifier: classifies security features."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Security vulnerability fix for authentication")
+
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "high"},
+            "FeatureType": {"value": "security"},
+            "confidence": 0.9,
+        }
+        result = asyncio.run(
+            classifier.classify_text("Security vulnerability fix for authentication")
+        )
 
     assert result.impact == ImpactLevel.HIGH
     assert result.feature_type == FeatureType.SECURITY
@@ -22,7 +33,15 @@ def test_classify_text_security():
 def test_classify_text_performance():
     """feature_classifier: classifies performance features."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Performance optimization for query execution")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "medium"},
+            "FeatureType": {"value": "performance"},
+            "confidence": 0.8,
+        }
+        result = asyncio.run(
+            classifier.classify_text("Performance optimization for query execution")
+        )
 
     assert result.feature_type == FeatureType.PERFORMANCE
 
@@ -30,7 +49,13 @@ def test_classify_text_performance():
 def test_classify_text_bug_fix():
     """feature_classifier: classifies bug fixes."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Bug fix for login error")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "low"},
+            "FeatureType": {"value": "bug_fix"},
+            "confidence": 0.7,
+        }
+        result = asyncio.run(classifier.classify_text("Bug fix for login error"))
 
     assert result.feature_type == FeatureType.BUG_FIX
 
@@ -38,7 +63,13 @@ def test_classify_text_bug_fix():
 def test_classify_text_new_feature():
     """feature_classifier: classifies new features."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("New feature: AI-powered analytics")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "medium"},
+            "FeatureType": {"value": "new_feature"},
+            "confidence": 0.8,
+        }
+        result = asyncio.run(classifier.classify_text("New feature: AI-powered analytics"))
 
     assert result.feature_type == FeatureType.NEW_FEATURE
 
@@ -46,7 +77,13 @@ def test_classify_text_new_feature():
 def test_classify_text_deprecation():
     """feature_classifier: classifies deprecations."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Deprecated: Legacy API endpoint")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "high"},
+            "FeatureType": {"value": "deprecation"},
+            "confidence": 0.9,
+        }
+        result = asyncio.run(classifier.classify_text("Deprecated: Legacy API endpoint"))
 
     assert result.feature_type == FeatureType.DEPRECATION
     assert result.impact == ImpactLevel.HIGH
@@ -55,7 +92,13 @@ def test_classify_text_deprecation():
 def test_classify_text_breaking_change():
     """feature_classifier: classifies breaking changes."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Breaking change: Schema migration required")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "high"},
+            "FeatureType": {"value": "breaking_change"},
+            "confidence": 0.95,
+        }
+        result = asyncio.run(classifier.classify_text("Breaking change: Schema migration required"))
 
     assert result.feature_type == FeatureType.BREAKING_CHANGE
     assert result.impact == ImpactLevel.HIGH
@@ -64,9 +107,15 @@ def test_classify_text_breaking_change():
 def test_classify_text_other():
     """feature_classifier: classifies unknown features as OTHER."""
     classifier = FeatureClassifier()
-    result = classifier.classify_text("Random text without keywords")
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "low"},
+            "FeatureType": {"value": "other"},
+            "confidence": 0.2,
+        }
+        result = asyncio.run(classifier.classify_text("Random text without keywords"))
 
-    assert result.feature_type == ImpactLevel.LOW or result.feature_type == FeatureType.OTHER
+    assert result.feature_type == FeatureType.OTHER
 
 
 def test_classify_release(tmp_path: Path) -> None:
@@ -81,7 +130,25 @@ def test_classify_release(tmp_path: Path) -> None:
     )
 
     classifier = FeatureClassifier()
-    result = classifier.classify_release("summer_26", base_dir=str(tmp_path))
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.side_effect = [
+            {
+                "ImpactLevel": {"value": "high"},
+                "FeatureType": {"value": "security"},
+                "confidence": 0.9,
+            },
+            {
+                "ImpactLevel": {"value": "medium"},
+                "FeatureType": {"value": "performance"},
+                "confidence": 0.8,
+            },
+            {
+                "ImpactLevel": {"value": "low"},
+                "FeatureType": {"value": "bug_fix"},
+                "confidence": 0.7,
+            },
+        ]
+        result = asyncio.run(classifier.classify_release("summer_26", base_dir=str(tmp_path)))
 
     assert result is not None
     assert result.total_features == 3
@@ -92,7 +159,7 @@ def test_classify_release(tmp_path: Path) -> None:
 def test_classify_release_returns_none_for_missing(tmp_path: Path) -> None:
     """feature_classifier: returns None for missing release."""
     classifier = FeatureClassifier()
-    assert classifier.classify_release("nonexistent", base_dir=str(tmp_path)) is None
+    assert asyncio.run(classifier.classify_release("nonexistent", base_dir=str(tmp_path))) is None
 
 
 def test_classify_release_handles_tables(tmp_path: Path) -> None:
@@ -108,7 +175,13 @@ def test_classify_release_handles_tables(tmp_path: Path) -> None:
     )
 
     classifier = FeatureClassifier()
-    result = classifier.classify_release("tables", base_dir=str(tmp_path))
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "medium"},
+            "FeatureType": {"value": "security"},
+            "confidence": 0.8,
+        }
+        result = asyncio.run(classifier.classify_release("tables", base_dir=str(tmp_path)))
 
     assert result is not None
     assert result.total_features == 2
@@ -126,7 +199,25 @@ def test_classification_result_stats(tmp_path: Path) -> None:
     )
 
     classifier = FeatureClassifier()
-    result = classifier.classify_release("stats", base_dir=str(tmp_path))
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.side_effect = [
+            {
+                "ImpactLevel": {"value": "high"},
+                "FeatureType": {"value": "security"},
+                "confidence": 0.9,
+            },
+            {
+                "ImpactLevel": {"value": "medium"},
+                "FeatureType": {"value": "security"},
+                "confidence": 0.8,
+            },
+            {
+                "ImpactLevel": {"value": "low"},
+                "FeatureType": {"value": "performance"},
+                "confidence": 0.7,
+            },
+        ]
+        result = asyncio.run(classifier.classify_release("stats", base_dir=str(tmp_path)))
 
     assert result is not None
     assert result.by_type.get("security", 0) == 2
@@ -141,7 +232,13 @@ def test_classify_release_skips_dotfiles(tmp_path: Path) -> None:
     (release_dir / "visible.md").write_text("# Visible\n\n- Important security feature for auth\n")
 
     classifier = FeatureClassifier()
-    result = classifier.classify_release("dotfiles", base_dir=str(tmp_path))
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "high"},
+            "FeatureType": {"value": "security"},
+            "confidence": 0.9,
+        }
+        result = asyncio.run(classifier.classify_release("dotfiles", base_dir=str(tmp_path)))
 
     assert result is not None
     assert result.total_features == 1
@@ -154,6 +251,6 @@ def test_classify_release_returns_none_for_empty(tmp_path: Path) -> None:
     (release_dir / "empty.md").write_text("# Empty\n\nNo features here.\n")
 
     classifier = FeatureClassifier()
-    result = classifier.classify_release("empty", base_dir=str(tmp_path))
+    result = asyncio.run(classifier.classify_release("empty", base_dir=str(tmp_path)))
 
     assert result is None
