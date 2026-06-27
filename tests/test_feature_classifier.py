@@ -254,3 +254,29 @@ def test_classify_release_returns_none_for_empty(tmp_path: Path) -> None:
     result = asyncio.run(classifier.classify_release("empty", base_dir=str(tmp_path)))
 
     assert result is None
+
+
+def test_classify_text_invalid_impact():
+    """feature_classifier: defaults to LOW when impact is invalid."""
+    classifier = FeatureClassifier()
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "invalid_impact"},
+            "FeatureType": {"value": "security"},
+            "confidence": 0.8,
+        }
+        result = asyncio.run(classifier.classify_text("Test feature"))
+    assert result.impact == ImpactLevel.LOW
+
+
+def test_classify_text_invalid_type():
+    """feature_classifier: defaults to OTHER when type is invalid."""
+    classifier = FeatureClassifier()
+    with patch.object(classifier._llm, "classify_text", new_callable=AsyncMock) as mock_classify:
+        mock_classify.return_value = {
+            "ImpactLevel": {"value": "high"},
+            "FeatureType": {"value": "invalid_type"},
+            "confidence": 0.8,
+        }
+        result = asyncio.run(classifier.classify_text("Test feature"))
+    assert result.feature_type == FeatureType.OTHER

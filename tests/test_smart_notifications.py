@@ -368,3 +368,28 @@ def test_generate_summary_with_notifications(tmp_path: Path):
         summary = asyncio.run(engine._generate_summary(notifications, 1, 1))
 
     assert "urgent" in summary.lower() or "notification" in summary.lower()
+
+
+def test_generate_summary_empty_list(tmp_path: Path):
+    """smart_notifications: _generate_summary handles empty notifications."""
+    engine = SmartNotificationEngine(base_dir=str(tmp_path))
+    summary = asyncio.run(engine._generate_summary([], 0, 0))
+    assert "No new notifications" in summary
+
+
+def test_classify_notification_llm_returns_none(tmp_path: Path):
+    """smart_notifications: handles None LLM result."""
+    engine = SmartNotificationEngine(base_dir=str(tmp_path))
+    with patch.object(engine._llm, "generate_text", new_callable=AsyncMock) as mock_llm:
+        mock_llm.return_value = None
+        result = asyncio.run(engine.classify_notification("Test Title", "Test Body", "owner/repo"))
+    assert result.priority == NotificationPriority.NORMAL
+
+
+def test_classify_notification_invalid_json_with_braces(tmp_path: Path):
+    """smart_notifications: handles JSON with braces but invalid syntax."""
+    engine = SmartNotificationEngine(base_dir=str(tmp_path))
+    with patch.object(engine._llm, "generate_text", new_callable=AsyncMock) as mock_llm:
+        mock_llm.return_value = "{invalid json with braces}"
+        result = asyncio.run(engine.classify_notification("Test Title", "Test Body", "owner/repo"))
+    assert result.priority == NotificationPriority.NORMAL

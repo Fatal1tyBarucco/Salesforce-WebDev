@@ -221,3 +221,30 @@ def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     assert summary is not None
     cat_names = [c[0] for c in summary.top_categories]
     assert any("agentforce" in c.lower() for c in cat_names)
+
+
+def test_load_meta_invalid_json(tmp_path: Path):
+    """release_summarizer: handles invalid JSON in meta file."""
+    release_dir = tmp_path / "invalid_meta"
+    release_dir.mkdir()
+    (release_dir / ".meta.json").write_text("not valid json {{{")
+
+    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
+    result = summarizer._load_meta(release_dir)
+    assert result == {}
+
+
+def test_load_meta_os_error(tmp_path: Path):
+    """release_summarizer: handles OS error reading meta file."""
+    release_dir = tmp_path / "os_error_meta"
+    release_dir.mkdir()
+    meta_file = release_dir / ".meta.json"
+    meta_file.write_text('{"name": "test"}')
+    meta_file.chmod(0o000)
+
+    try:
+        summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
+        result = summarizer._load_meta(release_dir)
+        assert result == {}
+    finally:
+        meta_file.chmod(0o644)

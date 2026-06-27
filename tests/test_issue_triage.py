@@ -383,3 +383,44 @@ def test_triage_api_module_label():
         )
 
     assert "module:api" in result.suggested_labels
+
+
+def test_triage_invalid_json_response():
+    """issue_triage: handles invalid JSON from LLM."""
+    triager = IssueTriager()
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = "This is not JSON"
+        result = asyncio.run(triager.triage_issue(title="Bug report", body="Something broke"))
+    assert result.category == IssueCategory.OTHER
+    assert result.priority == Priority.MEDIUM
+
+
+def test_triage_invalid_category():
+    """issue_triage: defaults to OTHER for invalid category."""
+    triager = IssueTriager()
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "invalid_cat", "priority": "high", "confidence": 0.9, "reasoning": "..."}'
+        )
+        result = asyncio.run(triager.triage_issue(title="Bug", body="Test"))
+    assert result.category == IssueCategory.OTHER
+
+
+def test_triage_invalid_json_with_braces():
+    """issue_triage: handles JSON with braces but invalid syntax."""
+    triager = IssueTriager()
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = "{invalid json with braces}"
+        result = asyncio.run(triager.triage_issue(title="Bug", body="Test"))
+    assert result.category == IssueCategory.OTHER
+
+
+def test_triage_invalid_priority():
+    """issue_triage: defaults to MEDIUM for invalid priority."""
+    triager = IssueTriager()
+    with patch.object(triager._llm, "generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = (
+            '{"category": "bug", "priority": "invalid_pri", "confidence": 0.9, "reasoning": "..."}'
+        )
+        result = asyncio.run(triager.triage_issue(title="Bug", body="Test"))
+    assert result.priority == Priority.MEDIUM

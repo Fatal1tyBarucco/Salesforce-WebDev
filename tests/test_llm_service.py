@@ -137,3 +137,100 @@ def test_providers_loaded_from_env():
         assert "openai" in names
         assert "google" in names
         assert "opencode" in names
+
+
+def test_providers_loaded_mimocode():
+    with patch.dict("os.environ", {"MIMOCODE_API_KEY": "mimo-key"}):
+        service = LLMService()
+        names = [p.name for p in service._providers]
+        assert "mimocode" in names
+
+
+def test_call_openai_provider():
+    provider = LLMProvider(name="test", api_key="key", provider_type="openai")
+    service = LLMService(providers=[provider])
+
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock(message=MagicMock(content="Response"))]
+
+    with patch("openai.AsyncOpenAI") as MockOpenAI:
+        MockOpenAI.return_value.chat.completions.create = AsyncMock(return_value=mock_response)
+        result = asyncio.run(service._call_openai_provider(provider, "System", "User"))
+        assert result == "Response"
+
+
+def test_call_openai_provider_string_response():
+    provider = LLMProvider(name="test", api_key="key", provider_type="openai")
+    service = LLMService(providers=[provider])
+
+    with patch("openai.AsyncOpenAI") as MockOpenAI:
+        MockOpenAI.return_value.chat.completions.create = AsyncMock(return_value="String response")
+        result = asyncio.run(service._call_openai_provider(provider, "System", "User"))
+        assert result == "String response"
+
+
+def test_call_google_provider():
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_response = MagicMock()
+    mock_response.text = "Google response"
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(service._call_google_provider(provider, "System", "User"))
+        assert result == "Google response"
+
+
+def test_call_provider_routing():
+    service = LLMService()
+
+    google_provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    openai_provider = LLMProvider(name="openai", api_key="key", provider_type="openai")
+
+    with patch.object(service, "_call_google_provider", new_callable=AsyncMock) as mock_google:
+        mock_google.return_value = "Google"
+        result = asyncio.run(service._call_provider(google_provider, "System", "User"))
+        assert result == "Google"
+
+    with patch.object(service, "_call_openai_provider", new_callable=AsyncMock) as mock_openai:
+        mock_openai.return_value = "OpenAI"
+        result = asyncio.run(service._call_provider(openai_provider, "System", "User"))
+        assert result == "OpenAI"
+
+
+def test_auth_error_logging():
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    provider = LLMProvider(name="test", api_key="key", provider_type="openai")
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.side_effect = Exception("401 Unauthorized")
+        asyncio.run(service.generate_text("Prompt", "System"))
+
+
+def test_legacy_client_fallback():
+    service = LLMService(providers=[])
+    service._client = MagicMock()
+
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock(message=MagicMock(content="Legacy response"))]
+    service._client.chat.completions.create = AsyncMock(return_value=mock_response)
+
+    result = asyncio.run(service.generate_text("Prompt", "System"))
+    assert result == "Legacy response"
+
+
+def test_legacy_client_error():
+    service = LLMService(providers=[])
+    service._client = MagicMock()
+    service._client.chat.completions.create = AsyncMock(side_effect=Exception("Legacy error"))
+
+    result = asyncio.run(service.generate_text("Prompt", "System"))
+    assert result is None
