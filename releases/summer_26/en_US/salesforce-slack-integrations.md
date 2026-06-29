@@ -7,8 +7,8 @@ A partir da versão Summer '26, os canais do Salesforce estarão disponíveis po
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce** | ✅ | ❌ | ❌ | ❌ | |
+| **Acessar canais do Salesforce no painel do Slack** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

@@ -1,7 +1,7 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../pt_BR/servico.md" style="text-decoration:none;font-weight:bold;">🇧🇷 Português</a> &nbsp;|&nbsp; <a href="../en_US/servico.md" style="text-decoration:none;">🇺🇸 English</a></div>
 ## Serviço
 
-> **198 recursos**
+> **196 recursos**
 
 Aprenda sobre os recursos e atualizações mais recentes para dar suporte à produtividade e às operações da equipe.
 
@@ -238,8 +238,6 @@ Aprenda sobre os recursos e atualizações mais recentes para dar suporte à pro
 | **© Copyright 2026, Salesforce.com Inc. Todos os direitos reservados. Várias marcas comerciais dos respectivos proprietários.** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Salesforce Brasil, Av. Jornalista Roberto Marinho, 85 - 14º andar - Cidade Monções, São Paulo - SP, 04575-000 Brasil** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Salesforce Help | Article** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Utilizamos cookies para tornar suas interações com nosso website mais relevantes. Eles nos ajudam a entender melhor como nossos websites são utilizados, para podermos adaptar o conteúdo para você. Para obter mais informações sobre os diferentes cookies que estamos utilizando, leia a Declaração de privacidade. Para alterar suas preferências e configurações de cookies, consulte o Gerenciador de consentimento de cookies.** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **ACEITAR TODOS OS COOKIES** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 
 ## 🎓 Módulos Trailhead Relacionados
 

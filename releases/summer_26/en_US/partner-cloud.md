@@ -7,7 +7,7 @@ Acelere o crescimento dos negócios expandindo a conectividade do parceiro e ava
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
+| **Configurar emails com marca combinada para parceiros no Salesforce Go** | ❌ | ❌ | ✅ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 
