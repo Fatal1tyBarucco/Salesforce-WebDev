@@ -94,7 +94,7 @@ Aprenda sobre os recursos e atualizações mais recentes para dar suporte à pro
 | **Calcular pontuações de risco de solicitação de alteração de TI de modo consistente** | ❌ | ❌ | ✅ | ❌ | |
 | **Gerenciar mais operações de TI e negócios com modelos do Catálogo de serviços** | ❌ | ✅ | ❌ | ❌ | |
 | **Conectar conversas de email a incidentes com encadeamento avançado** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurar o comportamento do campo para uma criação de.. registro mais eficiente** | ❌ | ✅ | ❌ | ❌ | |
+| **Configurar o comportamento do campo para uma criação de registro mais eficiente** | ❌ | ✅ | ❌ | ❌ | |
 | **Criar incidentes para outros sem sair do seu fluxo de trabalho** | ❌ | ✅ | ❌ | ❌ | |
 | **Melhore a precisão dos relatórios com dados de incidente e alteração capturados automaticamente** | ❌ | ✅ | ❌ | ❌ | |
 | **Automatizar fluxos de trabalho do Catálogo de serviços com novos conectores externos** | ❌ | ✅ | ❌ | ❌ | |
