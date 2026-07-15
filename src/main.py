@@ -424,7 +424,8 @@ def _format_notification_digest(digest: NotificationDigest) -> str:
     if digest.summary_text:
         lines.append(f"{digest.summary_text}\n")
     for notif in digest.notifications:
-        lines.append(f"### [{notif.priority.value}] {notif.title}\n")
+        priority_str = notif.priority.value if hasattr(notif.priority, 'value') else str(notif.priority)
+        lines.append(f"### [{priority_str}] {notif.title}\n")
         if notif.body:
             lines.append(f"{notif.body}\n")
     return "\n".join(lines)
@@ -478,7 +479,7 @@ def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
     lines = readme.split("\n")
     for i, line in enumerate(lines):
         if RELEASE_BADGE_MARKER in line:
-            if i + 1 < len(lines) and lines[i + 1].startswith("!["):
+            if i + 1 < len(lines) and lines[i + 1].startswith("!["): 
                 lines[i + 1] = badge
             else:
                 lines[i] = new_line
