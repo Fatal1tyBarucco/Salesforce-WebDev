@@ -7,14 +7,14 @@ Use o pacote de produtos MuleSoft Anypoint Platform para conectar e integrar apl
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | |
+| **Catálogo de API para Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Mapear seus agentes para ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
+| **Mapear modelos de prompts para ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
+| **Adicionar anotações a ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
+| **Trazer servidores MCP do MuleSoft para o catálogo de API (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
+| **Descubra servidores MCP registrados manualmente no catálogo de API (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
+| **Visualizar APIs de consulta nomeadas no catálogo de API e ativar ações (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
+| **Inteligência de integração do MuleSoft** | ❌ | ✅ | ❌ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 
