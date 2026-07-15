@@ -74,7 +74,7 @@ def commit_and_push(message: str, branch: str) -> bool:
     """Stage all changes, commit, and push to the branch."""
     try:
         subprocess.run(
-            ["git", "add", "releases/", "README.md", "analytics/"],
+            ["git", "add", "-A"],
             capture_output=True,
             text=True,
             check=True,
@@ -128,7 +128,7 @@ def analyze_changes() -> ChangeAnalysis:
                     if len(nums) >= 2:
                         additions += int(nums[0])
                         deletions += int(nums[1])
-                except ValueError, IndexError:
+                except (ValueError, IndexError):
                     pass
 
     # Check for new release directories
@@ -200,7 +200,7 @@ def create_pr(
     if "/pull/" in pr_url:
         try:
             pr_number = int(pr_url.split("/pull/")[-1].split("/")[0].split("?")[0])
-        except ValueError, IndexError:
+        except (ValueError, IndexError):
             pass
 
     if auto_merge and pr_number:

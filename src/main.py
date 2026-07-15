@@ -16,7 +16,11 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .impact_analyzer import ImpactReport
+    from .smart_notifications import NotificationDigest
 
 from .config import (
     BILINGUAL_TEMPLATES,
@@ -284,10 +288,16 @@ async def run_pipeline() -> None:
 
     args = sys.argv[1:]
     release_filter: str | None = None
+    dry_run = False
 
     for i, arg in enumerate(args):
         if arg == "--release" and i + 1 < len(args):
             release_filter = args[i + 1]
+        elif arg == "--dry-run":
+            dry_run = True
+
+    if dry_run:
+        logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
 
     releases_to_process: list[ReleaseInfo] = []
 
@@ -324,6 +334,10 @@ async def run_pipeline() -> None:
             raw_text = await scraper.fetch_page_raw_text(impact_url)
 
             await pdf_task
+            if dry_run:
+                logger.info("[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.", len(raw_text or ""))
+                continue
+
             if not raw_text:
                 logger.warning(
                     "No content for %s — falling back to existing release data",
@@ -383,39 +397,33 @@ async def run_pipeline() -> None:
         set_pipeline_status("completed")
 
 
-def _format_impact_report(report: object, release_name: str) -> str:
+def _format_impact_report(report: ImpactReport, release_name: str) -> str:
     """Format an ImpactReport into Markdown."""
     lines = [f"# Impact Report: {release_name}\n"]
-    if hasattr(report, "total_features"):
-        lines.append(f"**Total features analyzed:** {report.total_features}\n")
-    if hasattr(report, "breaking_changes") and report.breaking_changes:
+    lines.append(f"**Total features analyzed:** {report.total_features}\n")
+    if report.breaking_changes:
         lines.append(f"## Breaking Changes ({len(report.breaking_changes)})\n")
         for item in report.breaking_changes:
             lines.append(f"- {item}")
         lines.append("")
-    if hasattr(report, "security_fixes") and report.security_fixes:
+    if report.security_fixes:
         lines.append(f"## Security Fixes ({len(report.security_fixes)})\n")
         for item in report.security_fixes:
             lines.append(f"- {item}")
         lines.append("")
-    if hasattr(report, "risk_score"):
-        lines.append(f"## Risk Score: {report.risk_score}\n")
+    lines.append(f"## Risk Score: {report.risk_score}\n")
     return "\n".join(lines)
 
 
-def _format_notification_digest(digest: object) -> str:
+def _format_notification_digest(digest: NotificationDigest) -> str:
     """Format a NotificationDigest into Markdown."""
     lines = ["# Notification Digest\n"]
-    if hasattr(digest, "summary"):
-        lines.append(f"{digest.summary}\n")
-    if hasattr(digest, "notifications"):
-        for notif in digest.notifications:
-            priority = getattr(notif, "priority", "info")
-            title = getattr(notif, "title", "Update")
-            message = getattr(notif, "message", "")
-            lines.append(f"### [{priority}] {title}\n")
-            if message:
-                lines.append(f"{message}\n")
+    if digest.summary_text:
+        lines.append(f"{digest.summary_text}\n")
+    for notif in digest.notifications:
+        lines.append(f"### [{notif.priority.value}] {notif.title}\n")
+        if notif.body:
+            lines.append(f"{notif.body}\n")
     return "\n".join(lines)
 
 
@@ -504,6 +512,8 @@ async def _generate_release_files(
         cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
 
         if locale == "en_US" and translator:
+            import copy
+            cat = copy.deepcopy(cat)
             for entry in cat.entries:
                 entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
             for sub_entries in cat.subcategories.values():
