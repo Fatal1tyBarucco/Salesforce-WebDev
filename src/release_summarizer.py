@@ -129,7 +129,7 @@ class ReleaseSummarizer:
         if meta_file.exists():
             try:
                 return cast(dict[str, Any], json.loads(meta_file.read_text(encoding="utf-8")))
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 pass
 
         return {}

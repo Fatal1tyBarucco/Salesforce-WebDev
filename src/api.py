@@ -45,7 +45,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
@@ -70,7 +70,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
 
 
@@ -193,8 +193,8 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
         return {
             "errors": [
                 {
-                    "message": "Unknown query. Supported: releases, release(slug: \"...\"), "
-                    "diff(current: \"...\", previous: \"...\")"
+                    "message": 'Unknown query. Supported: releases, release(slug: "..."), '
+                    'diff(current: "...", previous: "...")'
                 }
             ]
         }
@@ -204,8 +204,14 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
     if inner_match:
         raw_fields = re.findall(r"\b([a-zA-Z]\w*)\b", inner_match.group(1))
         graphql_keywords = {
-            "query", "mutation", "subscription", "fragment",
-            "on", "true", "false", "null",
+            "query",
+            "mutation",
+            "subscription",
+            "fragment",
+            "on",
+            "true",
+            "false",
+            "null",
         }
         requested_fields = list(dict.fromkeys(f for f in raw_fields if f not in graphql_keywords))
     else:
@@ -561,7 +567,7 @@ class APIHandler(BaseHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self._respond(400, {"error": "invalid Content-Length header"})
             return
         if content_length == 0:
@@ -571,7 +577,7 @@ class APIHandler(BaseHTTPRequestHandler):
         try:
             body = self.rfile.read(content_length)
             data: dict[str, Any] = json.loads(body.decode("utf-8"))
-        except (json.JSONDecodeError, UnicodeDecodeError):
+        except json.JSONDecodeError, UnicodeDecodeError:
             self._respond(400, {"error": "invalid JSON"})
             return
 

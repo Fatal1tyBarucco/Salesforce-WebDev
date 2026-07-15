@@ -184,7 +184,7 @@ class SmartNotificationEngine:
                 start_idx = llm_result.find("{")
                 end_idx = llm_result.rfind("}") + 1
                 parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
-            except (ValueError, IndexError):
+            except ValueError, IndexError:
                 parsed = {}
 
         # Fallbacks

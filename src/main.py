@@ -335,7 +335,10 @@ async def run_pipeline() -> None:
 
             await pdf_task
             if dry_run:
-                logger.info("[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.", len(raw_text or ""))
+                logger.info(
+                    "[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.",
+                    len(raw_text or ""),
+                )
                 continue
 
             if not raw_text:
@@ -513,6 +516,7 @@ async def _generate_release_files(
 
         if locale == "en_US" and translator:
             import copy
+
             cat = copy.deepcopy(cat)
             for entry in cat.entries:
                 entry.name = await translator.translate_feature(entry.name, "pt_BR", "en_US")
