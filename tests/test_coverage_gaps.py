@@ -8,10 +8,8 @@ import sys
 import time
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch, AsyncMock
-from urllib.error import URLError
+from unittest.mock import MagicMock, patch
 
-from src.config import build_release_info, _id_to_season, ReleaseInfo
 from src.main import (
     _build_release_name,
     _build_release_slug,
@@ -26,7 +24,6 @@ from src.main import (
     _format_notification_digest,
 )
 from src.parser import FeatureImpactCategory, FeatureImpactEntry, FeatureImpactParser
-from src.scraper import SalesforceReleaseScraper
 
 # ============================================================
 # GraphQL Tests - Fixes for KeyError: 'data'
