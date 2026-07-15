@@ -7,9 +7,9 @@ A Continuidade Trans-Região Advanced do Salesforce agora está disponível na U
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
-| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Acessar o Salesforce em mais regiões com o Hyperforce** | ❌ | ❌ | ✅ | ❌ | |
+| **Novos produtos e recursos disponíveis na Defesa do Government Cloud** | ❌ | ❌ | ✅ | ❌ | |
+| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 

@@ -40,7 +40,7 @@ Prepare-se para aprimoramentos de segurança novos e futuros. Restaure dados com
 | **Verificação de integridade de segurança** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Novos sinais para pontuações de verificação de integridade** | ❌ | ✅ | ❌ | ❌ | |
 | **Notificações semanais por padrão** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Shield** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **..Salesforce Shield** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Detecção de dados** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Visualizar e exportar fragmentos de dados confidenciais nos resultados da varredura de detecção de dados** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
 | **Ler campos criptografados para dados confidenciais na Detecção de dados** ⚠️ | ❌ | ❌ | ❌ | ❌ | |

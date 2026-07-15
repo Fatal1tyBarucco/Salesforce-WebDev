@@ -7,15 +7,15 @@ Retomar OmniScripts entre usuários com salvamento aprimorado para mais tarde	Ye
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
-| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Otimizar a consistência da implementação com controle de versão do Data Mapper** | ✅ | ❌ | ❌ | ❌ | |
+| **Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização** | ✅ | ❌ | ❌ | ❌ | |
+| **Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
+| **Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta)** | ❌ | ❌ | ❌ | ✅ | |
+| **Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto)** | ❌ | ❌ | ❌ | ✅ | |
+| **Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce** | ✅ | ❌ | ❌ | ❌ | |
+| **Abrir ações do FlexCard em uma nova janela ou guia do navegador** | ✅ | ❌ | ❌ | ❌ | |
+| **Aprimoramentos de acessibilidade no OmniStudio** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 
