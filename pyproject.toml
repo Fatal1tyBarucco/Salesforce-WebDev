@@ -2,7 +2,7 @@
 name = "salesforce-release-notes"
 version = "3.0.0"
 description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "beautifulsoup4>=4.15.0,<5",
     "lxml>=6.1.1,<7",
