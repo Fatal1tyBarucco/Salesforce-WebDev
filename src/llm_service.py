@@ -8,12 +8,6 @@ from dataclasses import dataclass
 
 import openai
 from google import genai
-from tenacity import (
-    retry,
-    stop_after_attempt,
-    wait_exponential,
-    retry_if_exception_type,
-)
 
 
 @dataclass
@@ -101,7 +95,7 @@ class LLMService:
                 LLMProvider(
                     name="google",
                     api_key=google_key,
-                    model="gemini-2.0-flash",
+                    model="gemma-4-26b-a4b-it",
                     provider_type="google",
                 )
             )
@@ -167,9 +161,7 @@ class LLMService:
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
         """Call OpenAI-compatible provider."""
-        client = openai.AsyncOpenAI(
-            api_key=provider.api_key, base_url=provider.base_url
-        )
+        client = openai.AsyncOpenAI(api_key=provider.api_key, base_url=provider.base_url)
         response = await client.chat.completions.create(
             model=provider.model,
             messages=[
@@ -234,7 +226,11 @@ class LLMService:
                 Exception,
             ) as e:
                 error_msg = str(e)
-                if "429" in error_msg or "rate" in error_msg.lower() or "quota" in error_msg.lower():
+                if (
+                    "429" in error_msg
+                    or "rate" in error_msg.lower()
+                    or "quota" in error_msg.lower()
+                ):
                     self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
                 elif "401" in error_msg or "auth" in error_msg.lower():
                     self._logger.warning("Provider '%s' auth error: %s", provider.name, e)

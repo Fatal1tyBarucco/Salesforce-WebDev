@@ -1,5 +1,15 @@
+import sys
+import types
 import pytest
 from unittest.mock import AsyncMock
+
+# Ensure google.genai is available as a mock before any test imports
+if "google" not in sys.modules:
+    _google = types.ModuleType("google")
+    _google.genai = types.ModuleType("google.genai")
+    _google.genai.Client = AsyncMock
+    sys.modules["google"] = _google
+    sys.modules["google.genai"] = _google.genai
 
 
 @pytest.fixture(autouse=True)

@@ -51,18 +51,20 @@ class ReleaseSummarizer:
         content_fragments: list[str] = []
         category_counts: dict[str, int] = {}
 
-        for md_file in sorted(release_dir.glob("*.md")):
-            if md_file.name.startswith("."):
-                continue
-            content = md_file.read_text(encoding="utf-8")
+        # Look for .md files in pt_BR subdirectory
+        pt_br_dir = release_dir / "pt_BR"
+        if pt_br_dir.is_dir():
+            for md_file in sorted(pt_br_dir.glob("*.md")):
+                if md_file.name.startswith("."):
+                    continue
+                content = md_file.read_text(encoding="utf-8")
 
-            # Extract category name and count features for metadata
-            category_name = self._extract_category_name(content, md_file.stem)
-            category_counts[category_name] = self._count_features(content)
+                # Extract category name and count features for metadata
+                category_name = self._extract_category_name(content, md_file.stem)
+                category_counts[category_name] = self._count_features(content)
 
-            # Only keep a fragment of content for the LLM to avoid token limits
-            # We take the first 2000 chars as a representative sample of the category
-            content_fragments.append(f"Category {category_name}:\n{content[:2000]}")
+                # Only keep a fragment of content for the LLM to avoid token limits
+                content_fragments.append(f"Category {category_name}:\n{content[:2000]}")
 
         if not content_fragments:
             return None
@@ -78,11 +80,35 @@ class ReleaseSummarizer:
 
         summary_text = await self._llm.generate_text(user_prompt, system_prompt)
 
-        if not summary_text:
-            # Fallback to a basic summary if LLM fails
-            summary_text = (
-                f"Release {release_slug} processed with {sum(category_counts.values())} features."
+        if not summary_text or summary_text == "Not Found" or "error" in summary_text.lower():
+            # Generate a rich fallback summary based on metadata and content analysis
+            top_cats = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
+            total = sum(category_counts.values())
+
+            # Analyze content for key themes
+            all_content = "\n".join(content_fragments)
+            themes = self._extract_themes(all_content)
+
+            # Build detailed summary
+            cat_highlights = []
+            for cat_name, count in top_cats[:5]:
+                pct = (count / total * 100) if total > 0 else 0
+                cat_highlights.append(f"**{cat_name}** ({count} recursos, {pct:.0f}%)")
+
+            trend = (
+                "expansão significativa"
+                if total > 1000
+                else "atualização moderada" if total > 500 else "atualização compacta"
             )
+
+            summary_text = (
+                f"🚀 **{meta.get('name', release_slug)}** — {trend} com **{total} recursos** "
+                f"em **{len(category_counts)} categorias**.\n\n"
+                f"**Principais destaques:**\n" + "\n".join(f"• {h}" for h in cat_highlights)
+            )
+
+            if themes:
+                summary_text += f"\n\n**Temas-chave:** {', '.join(themes[:3])}"
 
         top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
         total_features = sum(category_counts.values())
@@ -130,3 +156,38 @@ class ReleaseSummarizer:
                 if len(parts) >= 2:
                     count += 1
         return count
+
+    def _extract_themes(self, content: str) -> list[str]:
+        """Extract key themes from content using keyword analysis."""
+        theme_keywords = {
+            "Segurança": ["segurança", "security", "autenticação", "compliance", "privacidade"],
+            "Inteligência Artificial": [
+                "ia",
+                "ai",
+                "machine learning",
+                "ml",
+                "agentforce",
+                "einstein",
+            ],
+            "Automação": ["automação", "automation", "flow", "workflow", "processo"],
+            "Desenvolvimento": [
+                "desenvolvimento",
+                "development",
+                "api",
+                "apex",
+                "lwc",
+                "lightning",
+            ],
+            "Dados": ["dados", "data", "analytics", "relatório", "dashboard"],
+            "Experiência do Usuário": ["experiência", "ui", "ux", "interface", "mobile"],
+            "Integração": ["integração", "integration", "conector", "muleoft"],
+        }
+
+        content_lower = content.lower()
+        found_themes = []
+
+        for theme, keywords in theme_keywords.items():
+            if any(kw in content_lower for kw in keywords):
+                found_themes.append(theme)
+
+        return found_themes[:5]

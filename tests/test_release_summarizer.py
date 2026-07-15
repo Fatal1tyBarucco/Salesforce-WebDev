@@ -9,8 +9,8 @@ from src.release_summarizer import ReleaseSummarizer
 
 def test_summarizer_returns_summary(tmp_path: Path) -> None:
     """release_summarizer: summarize returns summary for valid release."""
-    release_dir = tmp_path / "summer_26"
-    release_dir.mkdir()
+    release_dir = tmp_path / "summer_26" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / ".meta.json").write_text(
         json.dumps({"release_name": "Summer '26", "total_features": 50})
     )
@@ -41,8 +41,8 @@ def test_summarizer_returns_none_for_missing(tmp_path: Path) -> None:
 
 def test_summarizer_extracts_category_names(tmp_path: Path) -> None:
     """release_summarizer: category names extracted from headings."""
-    release_dir = tmp_path / "winter_26"
-    release_dir.mkdir()
+    release_dir = tmp_path / "winter_26" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "agentforce.md").write_text(
         "# Agentforce\n\n## Agentforce Features\n\n"
         "- New agent capability for automated customer service\n"
@@ -59,8 +59,8 @@ def test_summarizer_extracts_category_names(tmp_path: Path) -> None:
 
 def test_summarizer_handles_empty_release(tmp_path: Path) -> None:
     """release_summarizer: handles release with no features."""
-    release_dir = tmp_path / "empty_release"
-    release_dir.mkdir()
+    release_dir = tmp_path / "empty_release" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "empty.md").write_text(
         "# Empty Release\n\nThis release contains no significant features or changes.\n"
     )
@@ -74,14 +74,14 @@ def test_summarizer_handles_empty_release(tmp_path: Path) -> None:
 
 def test_summarizer_confidence_scales_with_features(tmp_path: Path) -> None:
     """release_summarizer: confidence scales with feature count."""
-    small_dir = tmp_path / "small"
-    small_dir.mkdir()
+    small_dir = tmp_path / "small" / "pt_BR"
+    small_dir.mkdir(parents=True)
     (small_dir / "small.md").write_text(
         "# Small Release\n\n- Feature 1: Important new capability\n"
     )
 
-    large_dir = tmp_path / "large"
-    large_dir.mkdir()
+    large_dir = tmp_path / "large" / "pt_BR"
+    large_dir.mkdir(parents=True)
     features = "\n".join(
         [f"- Feature {i}: Detailed description of important feature {i}" for i in range(200)]
     )
@@ -98,8 +98,8 @@ def test_summarizer_confidence_scales_with_features(tmp_path: Path) -> None:
 
 def test_summarizer_handles_invalid_meta(tmp_path: Path) -> None:
     """release_summarizer: handles invalid .meta.json gracefully."""
-    release_dir = tmp_path / "invalid_meta"
-    release_dir.mkdir()
+    release_dir = tmp_path / "invalid_meta" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / ".meta.json").write_text("not valid json {{{")
     (release_dir / "features.md").write_text(
         "# Features\n\n- Important feature with long description for testing\n"
@@ -113,8 +113,8 @@ def test_summarizer_handles_invalid_meta(tmp_path: Path) -> None:
 
 def test_summarizer_handles_missing_meta(tmp_path: Path) -> None:
     """release_summarizer: handles missing .meta.json."""
-    release_dir = tmp_path / "no_meta"
-    release_dir.mkdir()
+    release_dir = tmp_path / "no_meta" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
         "# Features\n\n- Important feature with long description for testing\n"
     )
@@ -127,8 +127,8 @@ def test_summarizer_handles_missing_meta(tmp_path: Path) -> None:
 
 def test_summarizer_handles_table_features(tmp_path: Path) -> None:
     """release_summarizer: counts table row features."""
-    release_dir = tmp_path / "tables"
-    release_dir.mkdir()
+    release_dir = tmp_path / "tables" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
         "# Features\n\n"
         "This is a detailed description of the features in this release.\n\n"
@@ -147,8 +147,8 @@ def test_summarizer_handles_table_features(tmp_path: Path) -> None:
 
 def test_summarizer_handles_blockquotes(tmp_path: Path) -> None:
     """release_summarizer: extracts sentences from blockquotes."""
-    release_dir = tmp_path / "quotes"
-    release_dir.mkdir()
+    release_dir = tmp_path / "quotes" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
         "# Features\n\n> This is an important quote with enough text to be extracted.\n"
     )
@@ -162,8 +162,8 @@ def test_summarizer_handles_blockquotes(tmp_path: Path) -> None:
 
 def test_summarizer_handles_mixed_case_keywords(tmp_path: Path) -> None:
     """release_summarizer: boosts category keywords regardless of case."""
-    release_dir = tmp_path / "keywords"
-    release_dir.mkdir()
+    release_dir = tmp_path / "keywords" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
         "# Features\n\n"
         "- Security improvement for authentication system\n"
@@ -180,8 +180,8 @@ def test_summarizer_handles_mixed_case_keywords(tmp_path: Path) -> None:
 
 def test_summarizer_handles_dotfiles(tmp_path: Path) -> None:
     """release_summarizer: skips dotfiles in release directory."""
-    release_dir = tmp_path / "dotfiles"
-    release_dir.mkdir()
+    release_dir = tmp_path / "dotfiles" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
     (release_dir / "visible.md").write_text(
         "# Visible Features\n\n- Important visible feature with description\n"
@@ -196,8 +196,8 @@ def test_summarizer_handles_dotfiles(tmp_path: Path) -> None:
 
 def test_summarizer_returns_none_for_short_sentences(tmp_path: Path) -> None:
     """release_summarizer: returns summary even with minimal content when LLM is available."""
-    release_dir = tmp_path / "short"
-    release_dir.mkdir()
+    release_dir = tmp_path / "short" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "short.md").write_text("# Short\n\n- A\n- B\n- C\n")
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
@@ -209,8 +209,8 @@ def test_summarizer_returns_none_for_short_sentences(tmp_path: Path) -> None:
 
 def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     """release_summarizer: extracts category from ## heading."""
-    release_dir = tmp_path / "h2category"
-    release_dir.mkdir()
+    release_dir = tmp_path / "h2category" / "pt_BR"
+    release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
         "## Agentforce Features\n\n" "- Important feature with long description for extraction\n"
     )
@@ -221,3 +221,30 @@ def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     assert summary is not None
     cat_names = [c[0] for c in summary.top_categories]
     assert any("agentforce" in c.lower() for c in cat_names)
+
+
+def test_load_meta_invalid_json(tmp_path: Path):
+    """release_summarizer: handles invalid JSON in meta file."""
+    release_dir = tmp_path / "invalid_meta"
+    release_dir.mkdir()
+    (release_dir / ".meta.json").write_text("not valid json {{{")
+
+    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
+    result = summarizer._load_meta(release_dir)
+    assert result == {}
+
+
+def test_load_meta_os_error(tmp_path: Path):
+    """release_summarizer: handles OS error reading meta file."""
+    release_dir = tmp_path / "os_error_meta"
+    release_dir.mkdir()
+    meta_file = release_dir / ".meta.json"
+    meta_file.write_text('{"name": "test"}')
+    meta_file.chmod(0o000)
+
+    try:
+        summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
+        result = summarizer._load_meta(release_dir)
+        assert result == {}
+    finally:
+        meta_file.chmod(0o644)

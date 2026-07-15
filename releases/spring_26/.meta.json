@@ -1,0 +1,94 @@
+{
+  "name": "Spring '26",
+  "slug": "spring_26",
+  "release_id": 260,
+  "total_features": 1438,
+  "avg_confidence": 0.648,
+  "generated_at": "2026-06-26T22:45:11.108898+00:00",
+  "categories": [
+    {
+      "name": "Documentação legal",
+      "count": 6
+    },
+    {
+      "name": "Salesforce geral",
+      "count": 38
+    },
+    {
+      "name": "Agentforce",
+      "count": 35
+    },
+    {
+      "name": "Análise de dados",
+      "count": 54
+    },
+    {
+      "name": "Automação",
+      "count": 151
+    },
+    {
+      "name": "Personalização",
+      "count": 18
+    },
+    {
+      "name": "Data 360",
+      "count": 53
+    },
+    {
+      "name": "Desenvolvimento",
+      "count": 97
+    },
+    {
+      "name": "Experience Cloud",
+      "count": 21
+    },
+    {
+      "name": "Field Service",
+      "count": 41
+    },
+    {
+      "name": "Hyperforce",
+      "count": 5
+    },
+    {
+      "name": "Setores",
+      "count": 194
+    },
+    {
+      "name": "Aplicativo móvel",
+      "count": 187
+    },
+    {
+      "name": "Marketing",
+      "count": 72
+    },
+    {
+      "name": "MuleSoft",
+      "count": 8
+    },
+    {
+      "name": "OmniStudio",
+      "count": 10
+    },
+    {
+      "name": "Partner Cloud",
+      "count": 4
+    },
+    {
+      "name": "Gerenciamento de receita",
+      "count": 131
+    },
+    {
+      "name": "Vendas",
+      "count": 85
+    },
+    {
+      "name": "Segurança, identidade e privacidade",
+      "count": 61
+    },
+    {
+      "name": "Serviço",
+      "count": 167
+    }
+  ]
+}

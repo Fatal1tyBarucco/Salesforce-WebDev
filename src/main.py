@@ -699,25 +699,12 @@ def _update_release_history(release: ReleaseInfo, total_features: int, category_
 
 
 async def _update_readme_all() -> None:
-    """Replace the release section in README.md with details/summary blocks."""
-    readme_path = Path("README.md")
+    """Generate bilingual README files (pt_BR and en_US) with release sections."""
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
         return
 
     import json
-
-    if not readme_path.exists():
-        logger.warning("README.md not found, skipping update")
-        return
-
-    original = readme_path.read_text(encoding="utf-8")
-
-    if RELEASE_SECTION_HEADING not in original:
-        logger.warning(
-            "Release heading '%s' not found in README.md, skipping update", RELEASE_SECTION_HEADING
-        )
-        return
 
     metas: list[dict[str, Any]] = []
     for d in releases_dir.iterdir():
@@ -745,58 +732,54 @@ async def _update_readme_all() -> None:
             return "☀️"
         return "🌸"
 
-    lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
+    async def build_release_block(metas: list[dict[str, Any]], lang: str) -> str:
+        """Build release section for a specific language.
 
-    toggle_js = (
-        '<div id="lang-toggle" style="padding:12px;margin-bottom:20px;'
-        'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
-        "<strong>\U0001f310 Idioma:</strong> "
-        '<a href="#" onclick="switchLang(\'pt_BR\');return false;" id="btn-pt_BR" '
-        'style="margin:0 8px;text-decoration:none;font-weight:bold;">\U0001f1e7\U0001f1f7 Portugu\u00eas</a> '
-        '<a href="#" onclick="switchLang(\'en_US\');return false;" id="btn-en_US" '
-        'style="margin:0 8px;text-decoration:none;">\U0001f1fa\U0001f1f8 English</a>'
-        "</div>"
-        "<script>"
-        "(function(){"
-        "var lang = navigator.language || navigator.userLanguage || 'pt-BR';"
-        "lang = lang.startsWith('en') ? 'en_US' : 'pt_BR';"
-        "switchLang(lang);"
-        "function switchLang(l) {"
-        "document.querySelectorAll('[data-lang]').forEach(function(el) {"
-        "el.style.display = el.getAttribute('data-lang') === l ? 'block' : 'none';"
-        "});"
-        "document.getElementById('btn-pt_BR').style.fontWeight = l === 'pt_BR' ? 'bold' : 'normal';"
-        "document.getElementById('btn-en_US').style.fontWeight = l === 'en_US' ? 'bold' : 'normal';"
-        "}"
-        "window.switchLang = switchLang;"
-        "})();"
-        "</script>"
-    )
-    lines.append(toggle_js)
+        Latest release: fully expanded (all categories open).
+        Old releases: entire section collapsed, with individual topic toggles inside.
+        """
+        lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
-    for meta in metas:
-        slug = meta["slug"]
-        name = meta["name"]
-        emoji = get_release_emoji(name)
+        # Language toggle
+        if lang == "pt_BR":
+            toggle = (
+                '<div style="padding:12px;margin-bottom:20px;'
+                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+                "<strong>🌐 Idioma / Language:</strong> "
+                "<strong>🇧🇷 Português</strong> | "
+                '<a href="./README.en.md">🇺🇸 English</a>'
+                "</div>"
+            )
+        else:
+            toggle = (
+                '<div style="padding:12px;margin-bottom:20px;'
+                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+                "<strong>🌐 Language / Idioma:</strong> "
+                "<strong>🇺🇸 English</strong> | "
+                '<a href="./README.md">🇧🇷 Português</a>'
+                "</div>"
+            )
+        lines.append(toggle)
 
-        categories = meta.get("categories", [])
-        active = [c for c in categories if c.get("count", 0) > 0]
+        for idx, meta in enumerate(metas):
+            slug = meta["slug"]
+            name = meta["name"]
+            emoji = get_release_emoji(name)
+            is_latest = idx == 0
 
-        for lang in ("pt_BR", "en_US"):
-            lines.append(f'\n<div data-lang="{lang}">')
-            lines.append(f"\n### {emoji} {name}\n")
+            categories = meta.get("categories", [])
+            active = [c for c in categories if c.get("count", 0) > 0]
 
             summary = await summarizer.summarize(slug)
+            summary_text = ""
             if summary:
                 if lang == "pt_BR":
-                    lines.append(
-                        f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
-                    )
+                    summary_text = f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
                 else:
-                    lines.append(
-                        f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
-                    )
+                    summary_text = f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
 
+            # Build category details
+            cat_lines: list[str] = []
             for cat in active:
                 cat_name = cat["name"]
                 count = cat["count"]
@@ -806,31 +789,72 @@ async def _update_readme_all() -> None:
                 if lang == "en_US":
                     display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
                     count_label = "features"
+                    details_label = "Full details"
                 else:
                     display_name = cat_name
                     count_label = "recursos"
+                    details_label = "Detalhes completos"
 
-                lines.append("\n<details>")
-                lines.append(
-                    f"<summary><b>\U0001f4c4 {display_name} ({count} {count_label})</b></summary>\n"
+                cat_lines.append("\n<details>")
+                cat_lines.append(
+                    f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
                 )
-                lines.append(f"> \U0001f4c4 Detalhes completos: [{link}]({link})\n")
+                cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
+                cat_lines.append("</details>\n")
+
+            if is_latest:
+                # Latest release: open as whole, categories closed by default
+                lines.append(f"\n### {emoji} {name}\n")
+                if summary_text:
+                    lines.append(summary_text)
+                lines.extend(cat_lines)
+            else:
+                # Old releases: entire section collapsed
+                lines.append("\n<details>\n")
+                lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
+                if summary_text:
+                    lines.append(summary_text)
+                lines.extend(cat_lines)
                 lines.append("</details>\n")
 
-            lines.append("</div>")
             lines.append("")
 
-    new_block = "\n".join(lines)
+        return "\n".join(lines)
 
-    heading_idx = original.index(RELEASE_SECTION_HEADING)
-    next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
-    if next_heading == -1:
-        next_heading = len(original)
+    # Generate pt_BR README
+    readme_path = Path("README.md")
+    if readme_path.exists():
+        original = readme_path.read_text(encoding="utf-8")
+        if RELEASE_SECTION_HEADING in original:
+            heading_idx = original.index(RELEASE_SECTION_HEADING)
+            next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
+            if next_heading == -1:
+                next_heading = len(original)
+            new_block = await build_release_block(metas, "pt_BR")
+            updated = original[:heading_idx] + new_block + original[next_heading:]
+            readme_path.write_text(updated, encoding="utf-8")
+            logger.info("README.md atualizado (pt_BR)")
 
-    updated = original[:heading_idx] + new_block + original[next_heading:]
-
-    readme_path.write_text(updated, encoding="utf-8")
-    logger.info("README.md atualizado com details/summary (%d releases).", len(metas))
+    # Generate en_US README
+    readme_en_path = Path("README.en.md")
+    if readme_en_path.exists():
+        original_en = readme_en_path.read_text(encoding="utf-8")
+        if RELEASE_SECTION_HEADING in original_en:
+            heading_idx = original_en.index(RELEASE_SECTION_HEADING)
+            next_heading = original_en.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
+            if next_heading == -1:
+                next_heading = len(original_en)
+            new_block = await build_release_block(metas, "en_US")
+            updated_en = original_en[:heading_idx] + new_block + original_en[next_heading:]
+            readme_en_path.write_text(updated_en, encoding="utf-8")
+            logger.info("README.en.md atualizado (en_US)")
+        else:
+            # Create en_US README from pt_BR if it doesn't exist
+            pt_readme = readme_path.read_text(encoding="utf-8")
+            en_readme = pt_readme.replace("Português", "English")
+            en_readme = en_readme.replace("pt_BR", "en_US")
+            readme_en_path.write_text(en_readme, encoding="utf-8")
+            logger.info("README.en.md criado")
 
 
 def main() -> None:

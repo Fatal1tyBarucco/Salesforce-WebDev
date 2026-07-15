@@ -385,4 +385,53 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
     assert "CRITICAL" in report.executive_summary
 
 
+def test_analyze_llm_returns_none(tmp_path: Path) -> None:
+    """impact_analyzer: handles None LLM result gracefully."""
+    release_dir = tmp_path / "none_llm"
+    release_dir.mkdir()
+    (release_dir / "features.md").write_text("# Features\n\n- Security fix\n")
+
+    analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = None
+
+        report = asyncio.run(analyzer.analyze("none_llm"))
+
+    assert report is not None
+    assert report.risk_score == 0.5
+
+
+def test_analyze_llm_returns_invalid_json(tmp_path: Path) -> None:
+    """impact_analyzer: handles invalid JSON from LLM."""
+    release_dir = tmp_path / "invalid_json"
+    release_dir.mkdir()
+    (release_dir / "features.md").write_text("# Features\n\n- Security fix\n")
+
+    analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH
+        )
+        mock_generate.return_value = "This is not JSON at all"
+
+        report = asyncio.run(analyzer.analyze("invalid_json"))
+
+    assert report is not None
+
+
 # Remove obsolete tests

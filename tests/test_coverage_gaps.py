@@ -921,7 +921,7 @@ def test_fetch_raw_text_cache_write(tmp_path: Path) -> None:
 
     url = "https://example.com/write_test"
     url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
-    cache_file = CACHE_DIR / f"{url_hash}.txt"
+    cache_file = CACHE_DIR / f"{url_hash}.json"
 
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
@@ -1314,7 +1314,7 @@ def test_scraper_fetch_raw_text_cache_write_v3() -> None:
 
     url = "https://example.com/write_test_v3"
     url_hash = __import__("hashlib").sha256(url.encode("utf-8")).hexdigest()
-    cache_file = CACHE_DIR / f"{url_hash}.txt"
+    cache_file = CACHE_DIR / f"{url_hash}.json"
 
     scraper = SalesforceReleaseScraper()
     with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
