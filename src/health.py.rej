@@ -1,0 +1,10 @@
+diff a/src/health.py b/src/health.py	(rejected hunks)
+@@ -61,7 +61,7 @@ def _get_health_data() -> dict[str, object]:
+                     try:
+                         meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                         total_features += meta.get("total_features", 0)
+-                    except json.JSONDecodeError, OSError:
++                    except (json.JSONDecodeError, OSError):
+                         pass
+ 
+     return {

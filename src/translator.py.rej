@@ -1,0 +1,10 @@
+diff a/src/translator.py b/src/translator.py	(rejected hunks)
+@@ -29,7 +29,7 @@ class TranslatorService:
+         if cache_file.exists():
+             try:
+                 self._cache = json.loads(cache_file.read_text(encoding="utf-8"))
+-            except json.JSONDecodeError, OSError:
++            except (json.JSONDecodeError, OSError):
+                 self._cache = {}
+ 
+     def _save_cache(self) -> None:

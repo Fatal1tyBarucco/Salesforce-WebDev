@@ -1,0 +1,10 @@
+diff a/.github/workflows/release.yml b/.github/workflows/release.yml	(rejected hunks)
+@@ -11,7 +11,7 @@ permissions:
+   packages: write
+ 
+ env:
+-  PYTHON_VERSION: "3.14"
++  PYTHON_VERSION: "3.13"
+ 
+ jobs:
+   release:
