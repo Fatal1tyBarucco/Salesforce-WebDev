@@ -26,7 +26,7 @@ from pathlib import Path
 from threading import Thread
 from typing import Any
 
-from .config import RELEASES_DIR
+from .config import RELEASES_DIR, KNOWN_RELEASES
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +52,11 @@ def _load_all_metas() -> list[dict[str, Any]]:
 
 
 def _validate_slug(slug: str) -> bool:
-    """Validate a slug to prevent path traversal."""
-    return bool(re.match(r"^[a-z0-9_]+$", slug))
+    """Validate a slug to prevent path traversal and ensure it maps to a known release."""
+    if not slug or not re.match(r"^[a-z0-9_]+$", slug):
+        return False
+    # Reject slugs that do not correspond to any known release.
+    return any(release.slug == slug for release in KNOWN_RELEASES)
 
 
 def _find_meta(slug: str) -> dict[str, Any] | None:
