@@ -1,29 +1,14 @@
 """Coverage tests for src modules to reach 100% coverage."""
 
-import asyncio
 import json
-import os
-import subprocess
-import sys
-import time
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 from src.main import (
-    _build_release_name,
-    _build_release_slug,
-    _find_existing_releases,
-    _generate_category_summary,
-    _generate_release_files,
-    _update_readme_single,
-    _update_readme_all,
-    _format_entry,
-    detect_new_release,
     _format_impact_report,
     _format_notification_digest,
 )
-from src.parser import FeatureImpactCategory, FeatureImpactEntry, FeatureImpactParser
 
 # ============================================================
 # GraphQL Tests - Fixes for KeyError: 'data'
