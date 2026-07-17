@@ -361,7 +361,8 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
             pass
         return None
 
-    def generate_dynamic_badge(self, release_name: str, total_features: int) -> str:
+    @staticmethod
+    def generate_dynamic_badge(release_name: str, total_features: int) -> str:
         """Generate a dynamic badge markdown for the latest release."""
         return f"![Latest Release](https://img.shields.io/badge/Última%20Release-{release_name.replace(' ', '%20')}-blue)"
 

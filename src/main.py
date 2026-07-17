@@ -98,11 +98,14 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
             break
 
     if current is None:
-        latest = known_sorted[0]
-        if latest.slug not in existing_slugs:
-            logger.info("No releases in repo, processing latest known: %s", latest.name)
-            return latest
-        return None  # pragma: no cover — unreachable: latest is first in sorted list
+        # No existing releases found. Process the latest known release,
+        # but if it already exists (e.g. repo populated manually), fall back
+        # to the next unseen release so we don't return an already-existing slug.
+        for r in known_sorted:
+            if r.slug not in existing_slugs:
+                logger.info("No releases in repo, processing latest known: %s", r.name)
+                return r
+        return None
 
     next_id = current.release_id + 2
     next_info = ReleaseInfo(
@@ -147,9 +150,17 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
 def _build_release_name(release_id: int) -> str:
     # Salesforce release IDs start at RELEASE_BASE_ID and increment by RELEASE_ID_STEP.
     # There are currently len(RELEASE_SEASONS) releases per year.
-    step = (release_id - RELEASE_BASE_ID) // RELEASE_ID_STEP
-    season = RELEASE_SEASONS[step % len(RELEASE_SEASONS)]
-    year = RELEASE_BASE_YEAR + step // len(RELEASE_SEASONS)
+    # This is robust to gaps in the numbering: we derive the step from the
+    # difference between the requested release_id and the base, so even if
+    # Salesforce changes numbering the season/year mapping stays consistent.
+    if release_id < RELEASE_BASE_ID:
+        # Fallback for unexpected IDs: use base season/year.
+        step = 0
+    else:
+        step = (release_id - RELEASE_BASE_ID) // RELEASE_ID_STEP
+    season_count = len(RELEASE_SEASONS)
+    season = RELEASE_SEASONS[step % season_count]
+    year = RELEASE_BASE_YEAR + step // season_count
     if season == "Winter":
         year += 1
     return f"{season} '{year}"
