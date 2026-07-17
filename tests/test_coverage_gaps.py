@@ -226,17 +226,17 @@ def test_format_notification_digest_with_notifications() -> None:
     """_format_notification_digest handles notifications list with priority.value."""
     digest = MagicMock()
     digest.summary_text = "3 new features in Summer '26"
-    
+
     notif1 = MagicMock()
     notif1.priority = MagicMock(value="high")
     notif1.title = "Breaking Change"
     notif1.body = "API v1 removed"
-    
+
     notif2 = MagicMock()
     notif2.priority = MagicMock(value="normal")
     notif2.title = "Enhancement"
     notif2.body = ""
-    
+
     digest.notifications = [notif1, notif2]
 
     result = _format_notification_digest(digest)
@@ -253,7 +253,7 @@ def test_impact_analysis_failure_in_pipeline() -> None:
     report.breaking_changes = []
     report.security_fixes = []
     report.risk_score = 3.5
-    
+
     result = _format_impact_report(report, "Test")
     assert "# Impact Report: Test" in result
     assert "10" in result
