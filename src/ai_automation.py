@@ -606,7 +606,7 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
                 risk_areas=data.get("risk_areas", []),
                 overall_trend=data.get("overall_trend", "indeterminado"),
             )
-        except (ValueError, IndexError):
+        except ValueError, IndexError:
             return self._generate_legacy_ai_summary(
                 comparison, regressions, current_metrics, previous_metrics
             )
@@ -1035,7 +1035,7 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
         try:
             data = json.loads(cache_path.read_text(encoding="utf-8"))
             return {k: ContentHash(**v) for k, v in data.items()}
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
 
     def _save_content_cache(self, cache_path: Path, cache: dict[str, ContentHash]) -> None:
