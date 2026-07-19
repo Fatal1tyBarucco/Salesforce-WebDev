@@ -939,7 +939,16 @@ async def _update_readme_all() -> None:
     # Generate en_US README
     readme_en_path = Path("README.en.md")
     if readme_en_path.exists():
-        await _update_single_readme(readme_en_path, metas, "en_US", summarizer)
+        original_en = readme_en_path.read_text(encoding="utf-8")
+        if RELEASE_SECTION_HEADING in original_en:
+            await _update_single_readme(readme_en_path, metas, "en_US", summarizer)
+        else:
+            # Create en_US README from pt_BR if heading not found
+            pt_readme = Path("README.md").read_text(encoding="utf-8")
+            en_readme = pt_readme.replace("Português", "English")
+            en_readme = en_readme.replace("pt_BR", "en_US")
+            readme_en_path.write_text(en_readme, encoding="utf-8")
+            logger.info("README.en.md recriado a partir do pt_BR")
     else:
         # Create en_US README from pt_BR if it doesn't exist
         pt_readme = Path("README.md").read_text(encoding="utf-8")
