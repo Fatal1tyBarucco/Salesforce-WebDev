@@ -41,3 +41,7 @@ analytics/
 # Tool artifacts
 .mimocode/
 docs/compose/
+
+# Coverage reports
+coverage.xml
+*.cover

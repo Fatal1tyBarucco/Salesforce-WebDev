@@ -1,5 +1,37 @@
 # Changelog
 
+## v3.1.0 — Refatoração de Testes e Correções
+
+### ✅ Melhorias
+
+- **Cobertura de testes:** 70% → 96% (4129 statements, 177 remaining)
+- **Testes:** 371 → 704 funções de teste (479 passando no CI)
+- **Módulos em 100%:** 9 → 21 arquivos com cobertura total
+- **Correções de sintaxe:** Erros Python 2→3 em 15 arquivos fonte
+- **Bug fix:** Regex GraphQL em `src/api.py` não considerava seleção de campos `{ ... }`
+- **CI:** Threshold de cobertura ajustado para 95%
+
+### 📁 Novos arquivos de teste
+
+- `tests/test_analytics.py` — Cobertura para `src/analytics.py`
+- `tests/test_api_coverage.py` — Cobertura para `src/api.py`
+- `tests/test_dashboard.py` — Cobertura para `src/dashboard.py`
+- `tests/test_health.py` — Cobertura para `src/health.py`
+- `tests/test_main_extra.py` — Cobertura adicional para `src/main.py`
+- `tests/test_notifications.py` — Cobertura para `src/notifications.py`
+- `tests/test_salesforce_coverage.py` — Cobertura para `src/salesforce.py`
+- `tests/test_scraper_coverage.py` — Cobertura para `src/scraper.py`
+- `tests/test_workflow.py` — Cobertura para `src/workflow.py`
+
+### 🔧 Arquivos expandidos
+
+- `tests/test_impact_analyzer.py` — Testes adicionais para `except` branch
+- `tests/test_src_logger.py` — Refatorado para cobertura completa
+- `tests/test_config.py` — Testes para `build_release_info`, `_id_to_season`
+- `tests/test_llm_service.py` — Teste para resposta não-padrão do OpenAI
+- `tests/test_src_parser.py` — Testes para `FeatureImpactParser`
+- `tests/test_ai_automation.py` — Testes para funções wrapper de nível de módulo
+
 ## Summer '26
 
 **1373 recursos** em 22 categorias

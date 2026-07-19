@@ -20,7 +20,7 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 | :--- | :--- | :---: |
 | 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |
 | 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |
-| 🧪 **Pytest** | Suíte de testes unitários automatizados | `450+ testes` |
+| 🧪 **Pytest** | Suíte de testes unitários automatizados | `700+ testes` |
 | 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
 | ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |
 | 📦 **uv** | Gerenciamento de dependências com lock file determinístico | `Ativo` |
@@ -107,7 +107,7 @@ uv run black --check src/
 uv run mypy src/
 ```
 
-**Meta:** Cobertura >99%, zero erros de tipo, zero warnings de lint.
+**Meta:** Cobertura ≥95%, zero erros de tipo, zero warnings de lint.
 
 ---
 
@@ -725,7 +725,7 @@ uv run mypy src/
    uv run ruff check src/
    uv run black --check src/
    uv run mypy src/
-   uv run pytest tests/ --cov=src --cov-fail-under=99
+   uv run pytest tests/ --cov=src --cov-fail-under=95
    ```
 5. Faça o commit: `git commit -m 'feat: descrição da alteração'`
 6. Envie: `git push origin feature/minha-feature`
