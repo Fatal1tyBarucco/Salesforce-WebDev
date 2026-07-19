@@ -525,12 +525,19 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
             return "# Relatório de Qualidade\n\nNenhuma release encontrada.\n"
 
         all_metrics = []
-        for d in sorted(releases_dir.iterdir()):
+        metas_loaded = []
+        for d in releases_dir.iterdir():
             if not d.is_dir():
                 continue
             meta = self.load_release_meta(d.name)
             if not meta:
                 continue
+            metas_loaded.append((d, meta))
+
+        # Sort by release_id descending (newest first)
+        metas_loaded.sort(key=lambda x: x[1].get("release_id", 0), reverse=True)
+
+        for d, meta in metas_loaded:
             metrics = await self.calculate_quality_metrics(d.name)
             if metrics and metrics.total_features > 0:
                 all_metrics.append({"name": meta.get("name", d.name), "metrics": vars(metrics)})
@@ -1244,12 +1251,20 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
         if not releases_dir.exists():
             return results
 
-        for d in sorted(releases_dir.iterdir()):
+        # Sort by release_id from metadata (newest first)
+        dirs_with_meta = []
+        for d in releases_dir.iterdir():
             if not d.is_dir() or d.name == "exports":
                 continue
             if not (d / ".meta.json").exists():
                 continue
+            meta = self.load_release_meta(d.name)
+            release_id = meta.get("release_id", 0) if meta else 0
+            dirs_with_meta.append((d, release_id))
 
+        dirs_with_meta.sort(key=lambda x: x[1], reverse=True)
+
+        for d, _ in dirs_with_meta:
             json_content = await self.export_release_json(d.name)
             json_path = out / f"{d.name}.json"
             json_path.write_text(json_content, encoding="utf-8")
