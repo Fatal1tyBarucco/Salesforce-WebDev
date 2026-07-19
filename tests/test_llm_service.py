@@ -234,3 +234,18 @@ def test_legacy_client_error():
 
     result = asyncio.run(service.generate_text("Prompt", "System"))
     assert result is None
+
+
+def test_call_openai_provider_non_standard_response():
+    """_call_openai_provider falls back to str(response) for non-standard types."""
+    provider = LLMProvider(name="test", api_key="key", provider_type="openai")
+    service = LLMService(providers=[provider])
+
+    # Return an object without 'choices' attribute and not a string
+    class WeirdResponse:
+        pass
+
+    with patch("openai.AsyncOpenAI") as MockOpenAI:
+        MockOpenAI.return_value.chat.completions.create = AsyncMock(return_value=WeirdResponse())
+        result = asyncio.run(service._call_openai_provider(provider, "System", "User"))
+        assert isinstance(result, str)

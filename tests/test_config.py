@@ -84,3 +84,26 @@ def test_topic_node_all_articles() -> None:
     assert len(all_arts) == 2
     assert all_arts[0]["title"] == "P1"
     assert all_arts[1]["title"] == "A1"
+
+
+def test_build_release_info_winter() -> None:
+    """build_release_info correctly handles Winter season (year += 1)."""
+    info = build_release_info(258)
+    assert info.name == "Winter '26"
+    assert info.slug == "winter_26"
+    assert info.release_id == 258
+
+
+def test_id_to_season() -> None:
+    """_id_to_season returns correct season for each release_id."""
+    from src.config import _id_to_season
+
+    assert _id_to_season(254) == "Spring"
+    assert _id_to_season(256) == "Summer"
+    assert _id_to_season(258) == "Winter"
+
+
+def test_topic_node_topic_file_slug() -> None:
+    """TopicNode.topic_file_slug returns the slug."""
+    node = TopicNode(slug="rn_dev", display_name="Dev", level=2, url="")
+    assert node.topic_file_slug() == "rn_dev"

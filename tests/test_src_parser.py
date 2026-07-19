@@ -774,3 +774,390 @@ def test_get_node_url_href_empty_string() -> None:
     a_tag["href"] = ""
     result = parser._get_node_url(li)
     assert result == ""
+
+
+# ============================================================
+# FeatureImpactParser tests — 100% coverage
+# ============================================================
+
+from src.parser import (
+    FeatureImpactCategory,
+    FeatureImpactEntry,
+    FeatureImpactParser,
+    SECTION_HEADERS_BY_LOCALE,
+)
+
+
+def test_feature_impact_entry_defaults() -> None:
+    """FeatureImpactEntry default values."""
+    e = FeatureImpactEntry(name="Test")
+    assert e.name == "Test"
+    assert e.available_users is False
+    assert e.available_admins is False
+    assert e.requires_config is False
+    assert e.contact_sf is False
+    assert e.confidence == 1.0
+
+
+def test_feature_impact_category_avg_confidence_empty() -> None:
+    """avg_confidence returns 0.0 for empty category."""
+    cat = FeatureImpactCategory(name="Empty")
+    assert cat.avg_confidence == 0.0
+
+
+def test_feature_impact_category_avg_confidence_with_entries() -> None:
+    """avg_confidence computes correctly."""
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="A", confidence=0.8))
+    cat.entries.append(FeatureImpactEntry(name="B", confidence=0.6))
+    assert cat.avg_confidence == 0.7
+
+
+def test_feature_impact_category_avg_confidence_with_subcategories() -> None:
+    """avg_confidence includes subcategory entries."""
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="A", confidence=1.0))
+    cat.subcategories["Sub"] = [FeatureImpactEntry(name="B", confidence=0.5)]
+    assert cat.avg_confidence == 0.75
+
+
+def test_feature_impact_category_total_features() -> None:
+    """total_features counts entries + subcategory entries."""
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="A"))
+    cat.subcategories["Sub"] = [
+        FeatureImpactEntry(name="B"),
+        FeatureImpactEntry(name="C"),
+    ]
+    assert cat.total_features == 3
+
+
+def test_feature_impact_parser_init_default_locale() -> None:
+    """FeatureImpactParser default locale is pt-BR."""
+    p = FeatureImpactParser()
+    assert p._locale == "pt-BR"
+
+
+def test_feature_impact_parser_init_en_locale() -> None:
+    """FeatureImpactParser en locale loads English headers."""
+    p = FeatureImpactParser(locale="en")
+    assert p._locale == "en"
+    assert "Salesforce General" in p._section_headers
+
+
+def test_feature_impact_parser_parse_text_basic() -> None:
+    """parse_text extracts categories and features."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nThis is a long description for category section\nFeature One\tYes\tNo\tYes\tNo\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert cats[0].name == "Salesforce geral"
+    assert len(cats[0].entries) == 1
+    assert cats[0].entries[0].name == "Feature One"
+
+
+def test_feature_impact_parser_parse_text_with_description() -> None:
+    """parse_text captures category description."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nThis is a long description for the category section\nFeature\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert cats[0].description != ""
+
+
+def test_feature_impact_parser_skips_table_header() -> None:
+    """parse_text skips RECURSO/ATIVADO table headers."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nRECURSO\tATIVADO\nFeature\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert len(cats[0].entries) == 1
+
+
+def test_feature_impact_parser_subcategory() -> None:
+    """parse_text detects subcategory headers."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nFeature One\tYes\nSub Category Name\nFeature Two\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    # Subcategory should be detected
+    assert len(cats[0].entries) >= 1
+
+
+def test_feature_impact_parser_duplicate_header_skips() -> None:
+    """Duplicate section header with >5 entries is skipped."""
+    p = FeatureImpactParser()
+    lines = ["Salesforce geral", "This is a long description for the section"]
+    for i in range(10):
+        lines.append(f"Feature {i}\tYes\tNo\tYes\tNo")
+    lines.append("Salesforce geral")  # duplicate
+    lines.append("Extra Feature\tYes")
+    text = "\n".join(lines)
+    cats = p.parse_text(text)
+    # The second "Salesforce geral" should be skipped
+    assert len(cats) == 1
+    assert len(cats[0].entries) == 10
+
+
+def test_feature_impact_parser_duplicate_header_removes() -> None:
+    """Duplicate section header with <=5 entries replaces existing."""
+    p = FeatureImpactParser()
+    text = (
+        "Salesforce geral\n"
+        "This is a long description for category\n"
+        "Feature One\tYes\n"
+        "Salesforce geral\n"
+        "Another long description for category here\n"
+        "New Feature\tYes\n"
+    )
+    cats = p.parse_text(text)
+    # Should have one category with the second set
+    assert len(cats) == 1
+
+
+def test_feature_impact_parser_parse_stats() -> None:
+    """parse_stats returns stats from last parse_text call."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nLong description for the category here\nFeature\tYes\n"
+    p.parse_text(text)
+    stats = p.parse_stats()
+    assert stats["total_lines"] == 3
+    assert stats["parsed"] == 1
+
+
+def test_feature_impact_parser_classification_quality() -> None:
+    """classification_quality returns aggregate metrics."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="A", confidence=0.9))
+    cat.entries.append(FeatureImpactEntry(name="B", confidence=0.5))
+    quality = p.classification_quality([cat])
+    assert quality["categories"] == 1
+    assert quality["total_features"] == 2
+    assert quality["low_confidence_count"] == 1
+
+
+def test_feature_impact_parser_classification_quality_with_subs() -> None:
+    """classification_quality counts subcategory entries."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="A", confidence=1.0))
+    cat.subcategories["S"] = [FeatureImpactEntry(name="B", confidence=0.3)]
+    quality = p.classification_quality([cat])
+    assert quality["total_features"] == 2
+    assert quality["low_confidence_count"] == 1
+
+
+def test_feature_impact_parser_empty_input() -> None:
+    """parse_text handles empty input."""
+    p = FeatureImpactParser()
+    assert p.parse_text("") == []
+    assert p.parse_text("\n\n") == []
+
+
+def test_feature_impact_parser_feature_line_no_tabs() -> None:
+    """Feature line without tabs but with Yes."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nShort\n"
+    cats = p.parse_text(text)
+    # "Short" is < 5 chars so not a feature
+    assert len(cats) == 0 or all(len(c.entries) == 0 for c in cats)
+
+
+def test_feature_impact_parser_feature_line_long_no_tabs() -> None:
+    """Long line without tabs becomes feature with low confidence."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nThis is a long description for category section\nThis is a long feature name without tabs\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert len(cats[0].entries) == 1
+    assert cats[0].entries[0].confidence == 0.5
+
+
+def test_feature_impact_parser_feature_line_short_name() -> None:
+    """Feature line with tab but name too short is skipped."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nLong description for category section here\nAB\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 0 or all(len(c.entries) == 0 for c in cats)
+
+
+def test_feature_impact_parser_feature_partial_flags() -> None:
+    """Feature with less than 5 tab parts gets confidence 0.7."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nLong description for category section here\nFeature Name\tYes\tNo\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert len(cats[0].entries) == 1
+    assert cats[0].entries[0].confidence == 0.7
+
+
+def test_feature_impact_parser_feature_all_flags() -> None:
+    """Feature with all 5 tab parts gets confidence 1.0."""
+    p = FeatureImpactParser()
+    text = "Salesforce geral\nLong description for the category section here\nFeature Name\tYes\tNo\tYes\tNo\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    entry = cats[0].entries[0]
+    assert entry.available_users is True
+    assert entry.available_admins is False
+    assert entry.requires_config is True
+    assert entry.contact_sf is False
+
+
+def test_feature_impact_parser_section_header_in_all_headers() -> None:
+    """English headers detected when locale is pt-BR (via _all_headers)."""
+    p = FeatureImpactParser(locale="pt-BR")
+    text = "Salesforce General\nFeature\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert cats[0].name == "Salesforce General"
+
+
+def test_feature_impact_parser_entry_without_cat_skipped() -> None:
+    """Entry found before any section header is skipped."""
+    p = FeatureImpactParser()
+    text = "Some Feature\tYes\tNo\tYes\tNo\nSalesforce geral\nAnother\tYes\n"
+    cats = p.parse_text(text)
+    stats = p.parse_stats()
+    assert stats["skipped"] == 1
+
+
+def test_feature_impact_parser_is_category_description() -> None:
+    """_is_category_description returns False when no current cat."""
+    p = FeatureImpactParser()
+    assert p._is_category_description("some text", None) is False
+
+
+def test_feature_impact_parser_is_category_description_existing_desc() -> None:
+    """_is_category_description returns False when cat already has description."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C", description="Already set")
+    assert p._is_category_description("new description text", cat) is False
+
+
+def test_feature_impact_parser_is_subcategory_header_no_cat() -> None:
+    """_is_subcategory_header returns False when no cat."""
+    p = FeatureImpactParser()
+    assert p._is_subcategory_header("Sub", None) is False
+
+
+def test_feature_impact_parser_is_subcategory_header_table_header() -> None:
+    """_is_subcategory_header returns False for table header."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    assert p._is_subcategory_header("RECURSO\tATIVADO", cat) is False
+
+
+def test_feature_impact_parser_is_subcategory_header_section_header() -> None:
+    """_is_subcategory_header returns False for section header."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    assert p._is_subcategory_header("Agentforce", cat) is False
+
+
+def test_feature_impact_parser_is_subcategory_header_feature_line() -> None:
+    """_is_subcategory_header returns False for feature line."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="X"))
+    assert p._is_subcategory_header("Feature\tYes\tNo\tYes\tNo", cat) is False
+
+
+def test_feature_impact_parser_is_subcategory_header_valid() -> None:
+    """_is_subcategory_header returns True for valid subcategory with entries already present."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="X"))
+    cat.subcategories["existing"] = [FeatureImpactEntry(name="Y")]
+    # Need a line that is NOT a feature line (between 5-80 chars, not parsed as feature)
+    # Short line < 10 chars without 'Yes' returns None from _parse_feature_line
+    assert p._is_subcategory_header("Sub Head", cat) is True
+
+
+def test_feature_impact_parser_parse_feature_line_empty() -> None:
+    """_parse_feature_line returns None for empty string."""
+    p = FeatureImpactParser()
+    assert p._parse_feature_line("") is None
+
+
+def test_feature_impact_parser_parse_feature_line_too_short() -> None:
+    """_parse_feature_line returns None for very short line."""
+    p = FeatureImpactParser()
+    assert p._parse_feature_line("AB") is None
+
+
+def test_feature_impact_parser_parse_feature_line_section_header() -> None:
+    """_parse_feature_line returns None for section header."""
+    p = FeatureImpactParser()
+    assert p._parse_feature_line("Salesforce geral") is None
+
+
+def test_feature_impact_parser_en_locale() -> None:
+    """FeatureImpactParser works with en locale."""
+    p = FeatureImpactParser(locale="en")
+    text = "Salesforce General\nFeature\tYes\n"
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+
+
+def test_feature_impact_parser_subcategory_in_parse_text() -> None:
+    """parse_text correctly handles subcategory detection and entry assignment."""
+    p = FeatureImpactParser()
+    text = (
+        "Salesforce geral\n"
+        "This is a long description for the category section\n"
+        "Feature One\tYes\tNo\tYes\tNo\n"
+        "SubCat\n"  # Subcategory header (5-10 chars, not a feature)
+        "Sub Feature\tYes\n"
+    )
+    cats = p.parse_text(text)
+    assert len(cats) == 1
+    assert len(cats[0].subcategories) == 1
+    assert "SubCat" in cats[0].subcategories
+    assert len(cats[0].subcategories["SubCat"]) == 1
+
+
+def test_feature_impact_parser_is_subcategory_header_too_long() -> None:
+    """_is_subcategory_header returns False for lines >= 80 chars."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    cat.entries.append(FeatureImpactEntry(name="X"))
+    long_line = "A" * 80
+    assert p._is_subcategory_header(long_line, cat) is False
+
+
+def test_feature_impact_parser_parse_feature_line_name_empty() -> None:
+    """_parse_feature_line returns None when name part is empty after strip."""
+    p = FeatureImpactParser()
+    # Tab-separated where first part is empty
+    result = p._parse_feature_line("\tYes\tNo")
+    assert result is None
+
+
+def test_feature_impact_parser_is_category_description_long_line() -> None:
+    """_is_category_description returns True for long line with no existing description."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    # Line > 20 chars, not a header, no existing description
+    assert p._is_category_description("This is a long description line", cat) is True
+    # Short line should return False
+    assert p._is_category_description("Short", cat) is False
+    # Line in _all_headers returns False (line 554)
+    assert p._is_category_description("Agentforce", cat) is False
+
+
+def test_feature_impact_parser_parse_feature_line_table_header() -> None:
+    """_parse_feature_line returns None for table header line."""
+    p = FeatureImpactParser()
+    result = p._parse_feature_line("RECURSO\tATIVADO")
+    assert result is None
+
+
+def test_feature_impact_parser_is_subcategory_header_empty_cat() -> None:
+    """_is_subcategory_header returns False when cat has no entries or subcategories."""
+    p = FeatureImpactParser()
+    cat = FeatureImpactCategory(name="C")
+    # cat has no entries and no subcategories, so inner condition fails
+    result = p._is_subcategory_header("ValidLine", cat)
+    assert result is False

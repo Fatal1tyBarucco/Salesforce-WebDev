@@ -498,3 +498,90 @@ def test_get_latest_release_badge(tmp_path: Path) -> None:
 
     with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
         assert get_latest_release_badge() == "Rel 1"
+
+
+# Module-level convenience function tests
+@pytest.mark.asyncio
+async def test_module_create_release_issue():
+    """Module-level create_release_issue delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.create_github_issue = AsyncMock(return_value="issue-1")
+        from src.ai_automation import create_release_issue
+        result = await create_release_issue("R1", 10, 5)
+        assert result == "issue-1"
+
+
+@pytest.mark.asyncio
+async def test_module_load_all_release_metas():
+    """Module-level _load_all_release_metas delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value._load_all_release_metas = AsyncMock(return_value=[{"name": "R1"}])
+        from src.ai_automation import _load_all_release_metas
+        result = await _load_all_release_metas()
+        assert len(result) == 1
+
+
+@pytest.mark.asyncio
+async def test_module_load_content_cache(tmp_path):
+    """Module-level _load_content_cache delegates to service."""
+    from src.ai_automation import _load_content_cache
+    result = await _load_content_cache(tmp_path / "nope.json")
+    assert isinstance(result, dict)
+
+
+@pytest.mark.asyncio
+async def test_module_generate_deduplication_report():
+    """Module-level generate_deduplication_report delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.generate_deduplication_report = AsyncMock(return_value="report")
+        from src.ai_automation import generate_deduplication_report
+        result = await generate_deduplication_report("summer_26")
+        assert result == "report"
+
+
+@pytest.mark.asyncio
+async def test_module_filter_features_for_profile():
+    """Module-level filter_features_for_profile delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        profile = UserProfile(profile_type="dev", name="dev", relevant_categories=[], filtered_features=[], priority_features=[], relevance_score=0.0)
+        MockSvc.return_value.filter_features_for_profile = AsyncMock(return_value=profile)
+        from src.ai_automation import filter_features_for_profile
+        result = await filter_features_for_profile("developer", [])
+        assert result.name == "dev"
+
+
+@pytest.mark.asyncio
+async def test_module_generate_filtered_notification():
+    """Module-level generate_filtered_notification delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        up = UserProfile(profile_type="dev", name="dev", relevant_categories=[], filtered_features=[], priority_features=[], relevance_score=0.0)
+        notif = FilteredNotification(profile=up, total_features=0, relevant_count=0, priority_count=0, summary="text")
+        MockSvc.return_value.generate_filtered_notification = AsyncMock(return_value=notif)
+        from src.ai_automation import generate_filtered_notification
+        result = await generate_filtered_notification("summer_26", "developer")
+        assert result.total_features == 0
+
+
+@pytest.mark.asyncio
+async def test_module_generate_filtered_notification_report():
+    """Module-level generate_filtered_notification_report delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.generate_filtered_notification_report = AsyncMock(return_value="report")
+        from src.ai_automation import generate_filtered_notification_report
+        result = await generate_filtered_notification_report("summer_26", "developer")
+        assert result == "report"
+
+
+def test_module_generate_dynamic_badge():
+    """Module-level generate_dynamic_badge delegates to service."""
+    from src.ai_automation import generate_dynamic_badge
+    result = generate_dynamic_badge("Summer '26", 100)
+    assert isinstance(result, str)
+
+
+def test_get_latest_release_badge_no_dir(tmp_path):
+    """get_latest_release_badge returns N/A when no releases dir."""
+    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path / "nope")):
+        from src.ai_automation import get_latest_release_badge
+        result = get_latest_release_badge()
+        assert result == "N/A"

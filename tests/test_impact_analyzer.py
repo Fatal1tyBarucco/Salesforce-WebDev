@@ -435,3 +435,29 @@ def test_analyze_llm_returns_invalid_json(tmp_path: Path) -> None:
 
 
 # Remove obsolete tests
+
+
+def test_analyze_llm_returns_malformed_json_braces(tmp_path: Path) -> None:
+    """impact_analyzer: handles LLM result with braces but invalid JSON inside."""
+    release_dir = tmp_path / "malformed"
+    release_dir.mkdir()
+    (release_dir / "features.md").write_text("# Features\n\n- Security fix\n")
+
+    analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
+
+    with (
+        patch.object(
+            analyzer._classifier, "classify_text", new_callable=AsyncMock
+        ) as mock_classify,
+        patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
+    ):
+        mock_classify.return_value = AsyncMock(
+            feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH
+        )
+        # Contains braces but invalid JSON inside — triggers ValueError
+        mock_generate.return_value = "{not valid json here}"
+
+        report = asyncio.run(analyzer.analyze("malformed"))
+
+    assert report is not None
+    assert report.risk_score == 0.5  # fallback default

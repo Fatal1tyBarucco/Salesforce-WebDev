@@ -583,8 +583,12 @@ async def test_subcategory_entry_translation_en_us(tmp_path: Path) -> None:
         await _generate_release_files(release, [cat], MagicMock(), mock_translator, locale="en_US")
 
     assert mock_translator.translate_feature.await_count == 2
-    sub_entries = cat.subcategories["Sub Test"]
-    assert sub_entries[0].name == "EN:Feature Sub"
+    # Translation operates on a deep copy, so original cat is unchanged
+    # Verify translator was called with both entries
+    calls = mock_translator.translate_feature.call_args_list
+    translated_names = [c.args[0] for c in calls]
+    assert "Feature Principal" in translated_names
+    assert "Feature Sub" in translated_names
 
 
 @pytest.mark.asyncio

@@ -45,7 +45,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except json.JSONDecodeError, OSError:
+            except (json.JSONDecodeError, OSError):
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
@@ -73,7 +73,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return None
 
 
@@ -182,12 +182,15 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
     query = re.sub(r"^\s*\{\s*", "", query)
     query = re.sub(r"\s*\}\s*$", "", query)
 
+    # Strip field selection braces for operation detection
+    query_op = re.sub(r"\s*\{[^}]*\}\s*$", "", query).strip()
+
     # Detect query type
-    releases_match = re.match(r"^releases\s*$", query)
-    release_match = re.match(r'^release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)$', query)
+    releases_match = re.match(r"^releases\s*$", query_op)
+    release_match = re.match(r'^release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)$', query_op)
     diff_match = re.match(
         r'^diff\s*\(\s*current\s*:\s*"([^"]+)"\s*,\s*previous\s*:\s*"([^"]+)"\s*\)$',
-        query,
+        query_op,
     )
 
     # Validate: only one top-level operation allowed
@@ -570,7 +573,7 @@ class APIHandler(BaseHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-        except ValueError, TypeError:
+        except (ValueError, TypeError):
             self._respond(400, {"error": "invalid Content-Length header"})
             return
         if content_length == 0:
@@ -580,7 +583,7 @@ class APIHandler(BaseHTTPRequestHandler):
         try:
             body = self.rfile.read(content_length)
             data: dict[str, Any] = json.loads(body.decode("utf-8"))
-        except json.JSONDecodeError, UnicodeDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             self._respond(400, {"error": "invalid JSON"})
             return
 
