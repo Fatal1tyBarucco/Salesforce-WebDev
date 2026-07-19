@@ -173,6 +173,63 @@ def _build_release_slug(release_id: int) -> str:
     return f"{season.lower()}_{clean_year}"
 
 
+async def _process_release_triage(
+    ai_service: Any,
+    triager: Any,
+    release: ReleaseInfo,
+) -> None:
+    """Triage and create GitHub Issue for a single release."""
+    meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+    if not meta_path.exists():
+        return
+
+    import json as _json
+
+    meta = _json.loads(meta_path.read_text(encoding="utf-8"))
+    cats = meta.get("categories", [])
+    total = sum(c.get("count", 0) for c in cats)
+
+    try:
+        issue_title = f"Release: {release.name}"
+        issue_body = f"Release {release.name} with {total} features across {len(cats)} categories."
+        await triager.triage_issue(issue_title, issue_body)
+    except Exception as e:
+        logger.warning("Issue triage failed: %s", e)
+
+    issue_url = await ai_service.create_github_issue(release.name, total, len(cats))
+    if issue_url:
+        logger.info("GitHub Issue created: %s", issue_url)
+
+
+async def _process_release_analytics(
+    analyzer: Any,
+    engine: Any,
+    release: ReleaseInfo,
+) -> None:
+    """Generate impact report and notification digest for a single release."""
+    try:
+        report = await analyzer.analyze(release.slug)
+        if report:
+            impact_path = Path("IMPACT_REPORT.md")
+            impact_path.write_text(_format_impact_report(report, release.name), encoding="utf-8")
+    except Exception as e:
+        logger.warning("Impact analysis failed: %s", e)
+
+    try:
+        notifs = await engine.generate_from_release(release.slug)
+        if notifs:
+            from .smart_notifications import UserPreferences
+
+            default_user = UserPreferences(
+                user_id="pipeline", interests=["all"], categories=["all"]
+            )
+            digest = await engine.generate_digest(notifs, default_user)
+            notif_path = Path("NOTIFICATION_DIGEST.md")
+            notif_path.write_text(_format_notification_digest(digest), encoding="utf-8")
+    except Exception as e:
+        logger.warning("Notification digest failed: %s", e)
+
+
 async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> None:
     """Generate all AI reports concurrently."""
     if not releases_to_process:
@@ -181,7 +238,7 @@ async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> 
         from .ai_automation import AIAutomationService
         from .issue_triage import IssueTriager
         from .impact_analyzer import ImpactAnalyzer
-        from .smart_notifications import SmartNotificationEngine, UserPreferences
+        from .smart_notifications import SmartNotificationEngine
 
         ai_service = AIAutomationService()
         triager = IssueTriager()
@@ -223,61 +280,121 @@ async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> 
         _update_badge(releases_to_process)
 
         # Per-release AI processing
-        async def process_release_ai(release: ReleaseInfo) -> None:
-            meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
-            if not meta_path.exists():
-                return
-
-            import json as _json
-
-            meta = _json.loads(meta_path.read_text(encoding="utf-8"))
-            cats = meta.get("categories", [])
-            total = sum(c.get("count", 0) for c in cats)
-
-            try:
-                issue_title = f"Release: {release.name}"
-                issue_body = (
-                    f"Release {release.name} with {total} features across {len(cats)} categories."
-                )
-                await triager.triage_issue(issue_title, issue_body)
-            except Exception as e:
-                logger.warning("Issue triage failed: %s", e)
-
-            issue_url = await ai_service.create_github_issue(release.name, total, len(cats))
-            if issue_url:
-                logger.info("GitHub Issue created: %s", issue_url)
-
-        await asyncio.gather(*(process_release_ai(r) for r in releases_to_process))
+        await asyncio.gather(
+            *(_process_release_triage(ai_service, triager, r) for r in releases_to_process)
+        )
 
         # Impact and Notification Reports
-        async def process_analytics(release: ReleaseInfo) -> None:
-            try:
-                report = await analyzer.analyze(release.slug)
-                if report:
-                    impact_path = Path("IMPACT_REPORT.md")
-                    impact_path.write_text(
-                        _format_impact_report(report, release.name), encoding="utf-8"
-                    )
-            except Exception as e:
-                logger.warning("Impact analysis failed: %s", e)
-
-            try:
-                notifs = await engine.generate_from_release(release.slug)
-                if notifs:
-                    default_user = UserPreferences(
-                        user_id="pipeline", interests=["all"], categories=["all"]
-                    )
-                    digest = await engine.generate_digest(notifs, default_user)
-                    notif_path = Path("NOTIFICATION_DIGEST.md")
-                    notif_path.write_text(_format_notification_digest(digest), encoding="utf-8")
-            except Exception as e:
-                logger.warning("Notification digest failed: %s", e)
-
-        await asyncio.gather(*(process_analytics(r) for r in releases_to_process))
+        await asyncio.gather(
+            *(_process_release_analytics(analyzer, engine, r) for r in releases_to_process)
+        )
         logger.info("All AI reports generated concurrently.")
 
     except ImportError as e:
         logger.error("Failed to import AI automation modules: %s", e)
+
+
+def _parse_args() -> tuple[str | None, bool]:
+    """Parse command line arguments.
+
+    Returns:
+        Tuple of (release_filter, dry_run).
+    """
+    args = sys.argv[1:]
+    release_filter: str | None = None
+    dry_run = False
+
+    for i, arg in enumerate(args):
+        if arg == "--release" and i + 1 < len(args):
+            release_filter = args[i + 1]
+        elif arg == "--dry-run":
+            dry_run = True
+
+    return release_filter, dry_run
+
+
+async def _process_single_release(
+    release: ReleaseInfo,
+    scraper: SalesforceReleaseScraper,
+    impact_parser: FeatureImpactParser,
+    generator: MarkdownGenerator,
+    translator: TranslatorService,
+    dry_run: bool,
+) -> bool:
+    """Process a single release: fetch, parse, generate files.
+
+    Returns:
+        True if content was processed successfully, False otherwise.
+    """
+    logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
+
+    release_dir = Path(RELEASES_DIR) / release.slug
+    release_dir.mkdir(parents=True, exist_ok=True)
+
+    impact_url = FEATURE_IMPACT_URL.format(release_id=release.release_id)
+    logger.info("Fetching feature impact: %s", impact_url)
+
+    pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
+    pdf_task = asyncio.create_task(scraper.download_pdf_from_button(impact_url, pdf_dest))
+
+    raw_text = await scraper.fetch_page_raw_text(impact_url)
+
+    await pdf_task
+    if dry_run:
+        logger.info(
+            "[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.",
+            len(raw_text or ""),
+        )
+        return False
+
+    if not raw_text:
+        logger.warning(
+            "No content for %s — falling back to existing release data",
+            release.name,
+        )
+        return False
+
+    categories = impact_parser.parse_text(raw_text)
+    logger.info("Parsed %d categories from feature impact", len(categories))
+
+    for locale in ["pt_BR", "en_US"]:
+        await _generate_release_files(release, categories, generator, translator, locale=locale)
+    _update_readme_single(release, categories)
+    return True
+
+
+async def _enrich_meta_with_classification(release: ReleaseInfo) -> None:
+    """Add feature classification to .meta.json."""
+    try:
+        from .feature_classifier import FeatureClassifier
+
+        classifier = FeatureClassifier()
+        classification = await classifier.classify_release(release.slug)
+        if classification:
+            meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+            if meta_path.exists():
+                import json as _cli_json
+
+                meta = _cli_json.loads(meta_path.read_text(encoding="utf-8"))
+                avg_conf = (
+                    sum(f.confidence for f in classification.features)
+                    / len(classification.features)
+                    if classification.features
+                    else 0.0
+                )
+                meta["classification_summary"] = {
+                    "total_classified": classification.total_features,
+                    "avg_confidence": round(avg_conf, 2),
+                    "by_impact": classification.by_impact,
+                    "by_type": classification.by_type,
+                }
+                meta_path.write_text(
+                    _cli_json.dumps(meta, indent=2, ensure_ascii=False),
+                    encoding="utf-8",
+                )
+                logger.info("Feature classification added to .meta.json")
+    except Exception as e:
+        logger.warning("Feature classification failed: %s", e)
 
 
 async def run_pipeline() -> None:
@@ -297,15 +414,7 @@ async def run_pipeline() -> None:
     generator = MarkdownGenerator(base_dir=RELEASES_DIR)
     translator = TranslatorService()
 
-    args = sys.argv[1:]
-    release_filter: str | None = None
-    dry_run = False
-
-    for i, arg in enumerate(args):
-        if arg == "--release" and i + 1 < len(args):
-            release_filter = args[i + 1]
-        elif arg == "--dry-run":
-            dry_run = True
+    release_filter, dry_run = _parse_args()
 
     if dry_run:
         logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
@@ -331,74 +440,11 @@ async def run_pipeline() -> None:
                 return
 
         for release in releases_to_process:
-            logger.info("Processing release: %s (id=%d)", release.name, release.release_id)
-
-            release_dir = Path(RELEASES_DIR) / release.slug
-            release_dir.mkdir(parents=True, exist_ok=True)
-
-            impact_url = FEATURE_IMPACT_URL.format(release_id=release.release_id)
-            logger.info("Fetching feature impact: %s", impact_url)
-
-            pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
-            pdf_task = asyncio.create_task(scraper.download_pdf_from_button(impact_url, pdf_dest))
-
-            raw_text = await scraper.fetch_page_raw_text(impact_url)
-
-            await pdf_task
-            if dry_run:
-                logger.info(
-                    "[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.",
-                    len(raw_text or ""),
-                )
-                continue
-
-            if not raw_text:
-                logger.warning(
-                    "No content for %s — falling back to existing release data",
-                    release.name,
-                )
-                continue
-
-            categories = impact_parser.parse_text(raw_text)
-            logger.info("Parsed %d categories from feature impact", len(categories))
-
-            for locale in ["pt_BR", "en_US"]:
-                await _generate_release_files(
-                    release, categories, generator, translator, locale=locale
-                )
-            _update_readme_single(release, categories)
-
-            # Classify features and enrich .meta.json
-            try:
-                from .feature_classifier import FeatureClassifier
-
-                classifier = FeatureClassifier()
-                classification = await classifier.classify_release(release.slug)
-                if classification:
-                    meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
-                    if meta_path.exists():
-                        import json as _cli_json
-
-                        meta = _cli_json.loads(meta_path.read_text(encoding="utf-8"))
-                        avg_conf = (
-                            sum(f.confidence for f in classification.features)
-                            / len(classification.features)
-                            if classification.features
-                            else 0.0
-                        )
-                        meta["classification_summary"] = {
-                            "total_classified": classification.total_features,
-                            "avg_confidence": round(avg_conf, 2),
-                            "by_impact": classification.by_impact,
-                            "by_type": classification.by_type,
-                        }
-                        meta_path.write_text(
-                            _cli_json.dumps(meta, indent=2, ensure_ascii=False),
-                            encoding="utf-8",
-                        )
-                        logger.info("Feature classification added to .meta.json")
-            except Exception as e:
-                logger.warning("Feature classification failed: %s", e)
+            await _process_single_release(
+                release, scraper, impact_parser, generator, translator, dry_run
+            )
+            if not dry_run:
+                await _enrich_meta_with_classification(release)
 
     await _update_readme_all()
 
@@ -502,6 +548,30 @@ def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
     logger.info("Badge updated: %s (%d features)", name, total)
 
 
+def _build_resource_footer(
+    release: ReleaseInfo, templates: dict[str, str], locale: str
+) -> list[str]:
+    """Build the resource footer section for a category file."""
+    lang_param = "pt_BR" if locale == "pt_BR" else "en_US"
+    lines: list[str] = []
+    lines.append(f"{templates['resources_section']}\n")
+    lines.append(f"- [{templates['resource_pdf']}](./release-in-a-box.pdf)")
+    lines.append(
+        f"- [{templates['resource_feature_impact']}]"
+        f"(https://help.salesforce.com/s/articleView?"
+        f"id=release-notes.rn_feature_impact.htm&release={release.release_id}"
+        f"&type=5&language={lang_param})"
+    )
+    lines.append(
+        f"- [{templates['resource_release_notes']}]"
+        f"(https://help.salesforce.com/s/articleView?"
+        f"id=release-notes.rn_release_notes.htm&release={release.release_id}"
+        f"&type=5&language={lang_param})"
+    )
+    lines.append("")
+    return lines
+
+
 async def _generate_release_files(
     release: ReleaseInfo,
     categories: list[FeatureImpactCategory],
@@ -583,22 +653,7 @@ async def _generate_release_files(
         lines.append(trailhead_section)
 
         # 7. Resources footer
-        lang_param = "pt_BR" if locale == "pt_BR" else "en_US"
-        lines.append(f"{templates['resources_section']}\n")
-        lines.append(f"- [{templates['resource_pdf']}](./release-in-a-box.pdf)")
-        lines.append(
-            f"- [{templates['resource_feature_impact']}]"
-            f"(https://help.salesforce.com/s/articleView?"
-            f"id=release-notes.rn_feature_impact.htm&release={release.release_id}"
-            f"&type=5&language={lang_param})"
-        )
-        lines.append(
-            f"- [{templates['resource_release_notes']}]"
-            f"(https://help.salesforce.com/s/articleView?"
-            f"id=release-notes.rn_release_notes.htm&release={release.release_id}"
-            f"&type=5&language={lang_param})"
-        )
-        lines.append("")
+        lines.extend(_build_resource_footer(release, templates, locale))
 
         body = "\n".join(lines) if lines else f"_{templates['empty_category']}_\n"
         file_path.write_text(body, encoding="utf-8")
@@ -726,6 +781,134 @@ def _update_release_history(release: ReleaseInfo, total_features: int, category_
     history_path.write_text(_json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def _get_release_emoji(name: str) -> str:
+    """Get emoji for a release based on season name."""
+    name_lower = name.lower()
+    if "winter" in name_lower:
+        return "❄️"
+    elif "summer" in name_lower:
+        return "☀️"
+    return "🌸"
+
+
+async def _build_release_block(
+    metas: list[dict[str, Any]],
+    lang: str,
+    summarizer: Any,
+) -> str:
+    """Build release section for a specific language.
+
+    Latest release: fully expanded (all categories open).
+    Old releases: entire section collapsed, with individual topic toggles inside.
+    """
+    lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
+
+    # Language toggle
+    if lang == "pt_BR":
+        toggle = (
+            '<div style="padding:12px;margin-bottom:20px;'
+            'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+            "<strong>🌐 Idioma / Language:</strong> "
+            "<strong>🇧🇷 Português</strong> | "
+            '<a href="./README.en.md">🇺🇸 English</a>'
+            "</div>"
+        )
+    else:
+        toggle = (
+            '<div style="padding:12px;margin-bottom:20px;'
+            'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+            "<strong>🌐 Language / Idioma:</strong> "
+            "<strong>🇺🇸 English</strong> | "
+            '<a href="./README.md">🇧🇷 Português</a>'
+            "</div>"
+        )
+    lines.append(toggle)
+
+    for idx, meta in enumerate(metas):
+        slug = meta["slug"]
+        name = meta["name"]
+        emoji = _get_release_emoji(name)
+        is_latest = idx == 0
+
+        categories = meta.get("categories", [])
+        active = [c for c in categories if c.get("count", 0) > 0]
+
+        summary = await summarizer.summarize(slug)
+        summary_text = ""
+        if summary:
+            if lang == "pt_BR":
+                summary_text = f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
+            else:
+                summary_text = f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
+
+        # Build category details
+        cat_lines: list[str] = []
+        for cat in active:
+            cat_name = cat["name"]
+            count = cat["count"]
+            cat_slug = _slugify_category(cat_name)
+            link = f"./releases/{slug}/{lang}/{cat_slug}.md"
+
+            if lang == "en_US":
+                display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
+                count_label = "features"
+                details_label = "Full details"
+            else:
+                display_name = cat_name
+                count_label = "recursos"
+                details_label = "Detalhes completos"
+
+            cat_lines.append("\n<details>")
+            cat_lines.append(
+                f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
+            )
+            cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
+            cat_lines.append("</details>\n")
+
+        if is_latest:
+            lines.append(f"\n### {emoji} {name}\n")
+            if summary_text:
+                lines.append(summary_text)
+            lines.extend(cat_lines)
+        else:
+            lines.append("\n<details>\n")
+            lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
+            if summary_text:
+                lines.append(summary_text)
+            lines.extend(cat_lines)
+            lines.append("</details>\n")
+
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def _update_single_readme(
+    readme_path: Path,
+    metas: list[dict[str, Any]],
+    lang: str,
+    summarizer: Any,
+) -> None:
+    """Update a single README file with release sections."""
+    import asyncio as _asyncio
+
+    if not readme_path.exists():
+        return
+
+    original = readme_path.read_text(encoding="utf-8")
+    if RELEASE_SECTION_HEADING not in original:
+        return
+
+    heading_idx = original.index(RELEASE_SECTION_HEADING)
+    next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
+    if next_heading == -1:
+        next_heading = len(original)
+    new_block = _asyncio.run(_build_release_block(metas, lang, summarizer))
+    updated = original[:heading_idx] + new_block + original[next_heading:]
+    readme_path.write_text(updated, encoding="utf-8")
+    logger.info("README atualizado (%s)", lang)
+
+
 async def _update_readme_all() -> None:
     """Generate bilingual README files (pt_BR and en_US) with release sections."""
     releases_dir = Path(RELEASES_DIR)
@@ -752,137 +935,20 @@ async def _update_readme_all() -> None:
 
     summarizer = ReleaseSummarizer(str(releases_dir))
 
-    def get_release_emoji(name: str) -> str:
-        name_lower = name.lower()
-        if "winter" in name_lower:
-            return "❄️"
-        elif "summer" in name_lower:
-            return "☀️"
-        return "🌸"
-
-    async def build_release_block(metas: list[dict[str, Any]], lang: str) -> str:
-        """Build release section for a specific language.
-
-        Latest release: fully expanded (all categories open).
-        Old releases: entire section collapsed, with individual topic toggles inside.
-        """
-        lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
-
-        # Language toggle
-        if lang == "pt_BR":
-            toggle = (
-                '<div style="padding:12px;margin-bottom:20px;'
-                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
-                "<strong>🌐 Idioma / Language:</strong> "
-                "<strong>🇧🇷 Português</strong> | "
-                '<a href="./README.en.md">🇺🇸 English</a>'
-                "</div>"
-            )
-        else:
-            toggle = (
-                '<div style="padding:12px;margin-bottom:20px;'
-                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
-                "<strong>🌐 Language / Idioma:</strong> "
-                "<strong>🇺🇸 English</strong> | "
-                '<a href="./README.md">🇧🇷 Português</a>'
-                "</div>"
-            )
-        lines.append(toggle)
-
-        for idx, meta in enumerate(metas):
-            slug = meta["slug"]
-            name = meta["name"]
-            emoji = get_release_emoji(name)
-            is_latest = idx == 0
-
-            categories = meta.get("categories", [])
-            active = [c for c in categories if c.get("count", 0) > 0]
-
-            summary = await summarizer.summarize(slug)
-            summary_text = ""
-            if summary:
-                if lang == "pt_BR":
-                    summary_text = f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
-                else:
-                    summary_text = f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
-
-            # Build category details
-            cat_lines: list[str] = []
-            for cat in active:
-                cat_name = cat["name"]
-                count = cat["count"]
-                cat_slug = _slugify_category(cat_name)
-                link = f"./releases/{slug}/{lang}/{cat_slug}.md"
-
-                if lang == "en_US":
-                    display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
-                    count_label = "features"
-                    details_label = "Full details"
-                else:
-                    display_name = cat_name
-                    count_label = "recursos"
-                    details_label = "Detalhes completos"
-
-                cat_lines.append("\n<details>")
-                cat_lines.append(
-                    f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
-                )
-                cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
-                cat_lines.append("</details>\n")
-
-            if is_latest:
-                # Latest release: open as whole, categories closed by default
-                lines.append(f"\n### {emoji} {name}\n")
-                if summary_text:
-                    lines.append(summary_text)
-                lines.extend(cat_lines)
-            else:
-                # Old releases: entire section collapsed
-                lines.append("\n<details>\n")
-                lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
-                if summary_text:
-                    lines.append(summary_text)
-                lines.extend(cat_lines)
-                lines.append("</details>\n")
-
-            lines.append("")
-
-        return "\n".join(lines)
-
     # Generate pt_BR README
-    readme_path = Path("README.md")
-    if readme_path.exists():
-        original = readme_path.read_text(encoding="utf-8")
-        if RELEASE_SECTION_HEADING in original:
-            heading_idx = original.index(RELEASE_SECTION_HEADING)
-            next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
-            if next_heading == -1:
-                next_heading = len(original)
-            new_block = await build_release_block(metas, "pt_BR")
-            updated = original[:heading_idx] + new_block + original[next_heading:]
-            readme_path.write_text(updated, encoding="utf-8")
-            logger.info("README.md atualizado (pt_BR)")
+    _update_single_readme(Path("README.md"), metas, "pt_BR", summarizer)
 
     # Generate en_US README
     readme_en_path = Path("README.en.md")
     if readme_en_path.exists():
-        original_en = readme_en_path.read_text(encoding="utf-8")
-        if RELEASE_SECTION_HEADING in original_en:
-            heading_idx = original_en.index(RELEASE_SECTION_HEADING)
-            next_heading = original_en.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
-            if next_heading == -1:
-                next_heading = len(original_en)
-            new_block = await build_release_block(metas, "en_US")
-            updated_en = original_en[:heading_idx] + new_block + original_en[next_heading:]
-            readme_en_path.write_text(updated_en, encoding="utf-8")
-            logger.info("README.en.md atualizado (en_US)")
-        else:
-            # Create en_US README from pt_BR if it doesn't exist
-            pt_readme = readme_path.read_text(encoding="utf-8")
-            en_readme = pt_readme.replace("Português", "English")
-            en_readme = en_readme.replace("pt_BR", "en_US")
-            readme_en_path.write_text(en_readme, encoding="utf-8")
-            logger.info("README.en.md criado")
+        _update_single_readme(readme_en_path, metas, "en_US", summarizer)
+    else:
+        # Create en_US README from pt_BR if it doesn't exist
+        pt_readme = Path("README.md").read_text(encoding="utf-8")
+        en_readme = pt_readme.replace("Português", "English")
+        en_readme = en_readme.replace("pt_BR", "en_US")
+        readme_en_path.write_text(en_readme, encoding="utf-8")
+        logger.info("README.en.md criado")
 
 
 def main() -> None:

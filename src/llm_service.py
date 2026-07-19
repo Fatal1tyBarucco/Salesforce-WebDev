@@ -9,6 +9,8 @@ from dataclasses import dataclass
 import openai
 from google import genai
 
+from .exceptions import LLMError, LLMProviderExhausted  # noqa: F401
+
 
 @dataclass
 class CircuitBreakerConfig:
