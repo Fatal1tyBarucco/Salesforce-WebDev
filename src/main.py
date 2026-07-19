@@ -883,15 +883,13 @@ async def _build_release_block(
     return "\n".join(lines)
 
 
-def _update_single_readme(
+async def _update_single_readme(
     readme_path: Path,
     metas: list[dict[str, Any]],
     lang: str,
     summarizer: Any,
 ) -> None:
     """Update a single README file with release sections."""
-    import asyncio as _asyncio
-
     if not readme_path.exists():
         return
 
@@ -903,7 +901,7 @@ def _update_single_readme(
     next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
     if next_heading == -1:
         next_heading = len(original)
-    new_block = _asyncio.run(_build_release_block(metas, lang, summarizer))
+    new_block = await _build_release_block(metas, lang, summarizer)
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
     logger.info("README atualizado (%s)", lang)
@@ -936,12 +934,12 @@ async def _update_readme_all() -> None:
     summarizer = ReleaseSummarizer(str(releases_dir))
 
     # Generate pt_BR README
-    _update_single_readme(Path("README.md"), metas, "pt_BR", summarizer)
+    await _update_single_readme(Path("README.md"), metas, "pt_BR", summarizer)
 
     # Generate en_US README
     readme_en_path = Path("README.en.md")
     if readme_en_path.exists():
-        _update_single_readme(readme_en_path, metas, "en_US", summarizer)
+        await _update_single_readme(readme_en_path, metas, "en_US", summarizer)
     else:
         # Create en_US README from pt_BR if it doesn't exist
         pt_readme = Path("README.md").read_text(encoding="utf-8")
