@@ -8,7 +8,7 @@ from typing import Any, Optional
 from .models import AISummary, QualityMetrics, Regression, ReleaseComparison
 
 
-def _get_releases_dir() -> "Path":  # noqa: F821
+def _get_releases_dir() -> "Path":  # type: ignore[name-defined]  # type: ignore[override]  # noqa: F821
     from pathlib import Path
 
     from ..config import RELEASES_DIR
@@ -45,9 +45,9 @@ async def generate_changelog(
     )
     user_prompt = f"Release Metadata: {json.dumps(metas)}"
 
-    result = await llm.generate_text(user_prompt, system_prompt)
+    result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
-        return result
+        return str(result)
 
     lines = ["# Changelog\n"]
     for meta in metas:
@@ -81,9 +81,9 @@ async def generate_regression_report(
     }
     user_prompt = f"Analysis Data: {json.dumps(analysis_data)}"
 
-    result = await llm.generate_text(user_prompt, system_prompt)
+    result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
-        return result
+        return str(result)
 
     lines = [
         "# Relatório de Regressões\n",
@@ -150,9 +150,9 @@ async def generate_diff_report(
     )
     user_prompt = f"Diff Data: {json.dumps(diff_data)}"
 
-    result = await llm.generate_text(user_prompt, system_prompt)
+    result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
-        return result
+        return str(result)
 
     lines = [
         f"# Diff: {comparison.previous_name} → {comparison.current_name}\n",

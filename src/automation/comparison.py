@@ -153,9 +153,9 @@ async def generate_quality_report(
     )
     user_prompt = f"Quality Metrics: {json.dumps(all_metrics)}"
 
-    result = await llm.generate_text(user_prompt, system_prompt)
+    result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
-        return result
+        return str(result)
 
     lines = ["# Relatório de Qualidade\n"]
     for item in all_metrics:
