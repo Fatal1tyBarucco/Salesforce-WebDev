@@ -14,7 +14,7 @@ import logging
 import random
 import time
 
-from .exceptions import ScraperError
+from .exceptions import ScraperError  # noqa: F401
 import urllib.request
 from pathlib import Path
 from types import TracebackType
@@ -208,8 +208,6 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(html_content or ""),
                 )
-            except ScraperError:
-                raise
             except Exception as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()

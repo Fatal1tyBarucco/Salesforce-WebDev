@@ -9,7 +9,7 @@ from dataclasses import dataclass
 import openai
 from google import genai
 
-from .exceptions import LLMError, LLMProviderExhausted  # noqa: F401
+from .exceptions import LLMProviderExhausted  # noqa: F401
 
 
 @dataclass
