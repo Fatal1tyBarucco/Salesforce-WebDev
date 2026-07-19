@@ -45,3 +45,10 @@ docs/compose/
 # Coverage reports
 coverage.xml
 *.cover
+
+# AI Agent configurations (internal use only)
+AGENTS.md
+GEMINI.md
+QWEN.md
+.geminiignore
+.mimocode/
