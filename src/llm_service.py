@@ -10,8 +10,6 @@ import openai
 from google import genai
 
 
-
-
 @dataclass
 class CircuitBreakerConfig:
     threshold: int = 3
