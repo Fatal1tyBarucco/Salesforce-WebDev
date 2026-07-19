@@ -28,6 +28,52 @@ from .automation.badge import generate_dynamic_badge, get_latest_release_badge  
 from .config import RELEASES_DIR  # noqa: F401
 from .llm_service import LLMService  # noqa: F401
 
+__all__ = [
+    "AIAutomationService",
+    "AISummary",
+    "CategoryImpactScore",
+    "ContentHash",
+    "DeduplicationResult",
+    "FilteredNotification",
+    "ImpactPrediction",
+    "LLMService",
+    "QualityMetrics",
+    "RELEASES_DIR",
+    "Regression",
+    "ReleaseComparison",
+    "TriageResult",
+    "UserProfile",
+    "analyze_content_changes",
+    "calculate_category_impact_scores",
+    "calculate_quality_metrics",
+    "compare_releases",
+    "create_github_issue",
+    "create_release_issue",
+    "detect_regressions",
+    "export_all_releases",
+    "export_release_csv",
+    "export_release_json",
+    "filter_features_for_profile",
+    "generate_ai_summary",
+    "generate_ai_summary_report",
+    "generate_changelog",
+    "generate_deduplication_report",
+    "generate_diff_report",
+    "generate_dynamic_badge",
+    "generate_filtered_notification",
+    "generate_filtered_notification_report",
+    "generate_impact_prediction_report",
+    "generate_quality_report",
+    "generate_regression_report",
+    "generate_triage_report",
+    "get_content_hash",
+    "get_latest_release_badge",
+    "is_content_unchanged",
+    "load_release_meta",
+    "predict_next_release_impact",
+    "triage_release",
+]
+
 # ---------------------------------------------------------------------------
 # Backward Compatibility Wrappers
 # ---------------------------------------------------------------------------

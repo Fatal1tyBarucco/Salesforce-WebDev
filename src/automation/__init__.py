@@ -4,7 +4,7 @@ Re-exports models and AIAutomationService for backward compatibility.
 Module-level wrapper functions are in ``ai_automation.py``.
 """
 
-from .models import (  # noqa: F401
+from .models import (
     AISummary,
     CategoryImpactScore,
     ContentHash,
@@ -17,5 +17,21 @@ from .models import (  # noqa: F401
     TriageResult,
     UserProfile,
 )
-from .notifications import USER_PROFILES as USER_PROFILES  # noqa: F401
-from .service import AIAutomationService as AIAutomationService  # noqa: F401
+from .notifications import USER_PROFILES
+from .service import AIAutomationService
+
+__all__ = [
+    "AIAutomationService",
+    "AISummary",
+    "CategoryImpactScore",
+    "ContentHash",
+    "DeduplicationResult",
+    "FilteredNotification",
+    "ImpactPrediction",
+    "QualityMetrics",
+    "Regression",
+    "ReleaseComparison",
+    "TriageResult",
+    "UserProfile",
+    "USER_PROFILES",
+]
