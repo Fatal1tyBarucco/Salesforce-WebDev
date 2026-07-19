@@ -61,7 +61,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
     (curr_dir / "salesforce_geral.md").write_text("# Salesforce Geral\nContent here.")
     (curr_dir / "agentforce.md").write_text("# Agentforce\nNew features.")
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         # Feature 1: AI Summary
         summary = asyncio.run(generate_ai_summary("summer_26", "winter_26"))
         assert summary.headline is not None
@@ -151,7 +151,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
 
 def test_ai_features_with_missing_data() -> None:
     """Test all AI features handle missing data gracefully."""
-    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+    with patch("src.config.RELEASES_DIR", "/nonexistent"):
         summary = asyncio.run(generate_ai_summary("missing", "missing"))
         assert summary.headline is not None
 
