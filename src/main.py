@@ -949,13 +949,6 @@ async def _update_readme_all() -> None:
             en_readme = en_readme.replace("pt_BR", "en_US")
             readme_en_path.write_text(en_readme, encoding="utf-8")
             logger.info("README.en.md recriado a partir do pt_BR")
-    else:
-        # Create en_US README from pt_BR if it doesn't exist
-        pt_readme = Path("README.md").read_text(encoding="utf-8")
-        en_readme = pt_readme.replace("Português", "English")
-        en_readme = en_readme.replace("pt_BR", "en_US")
-        readme_en_path.write_text(en_readme, encoding="utf-8")
-        logger.info("README.en.md criado")
 
 
 def main() -> None:
