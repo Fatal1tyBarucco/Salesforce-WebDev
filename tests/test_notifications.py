@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 
 from src.notifications import (
     NotificationProfile,
@@ -68,7 +68,12 @@ class TestBuildDigest:
             assert build_digest("nope") is None
 
     def test_builds_digest(self, tmp_path: Path) -> None:
-        meta = {"name": "R1", "total_features": 10, "categories": [{"name": "A", "count": 10}], "generated_at": ""}
+        meta = {
+            "name": "R1",
+            "total_features": 10,
+            "categories": [{"name": "A", "count": 10}],
+            "generated_at": "",
+        }
         with patch("src.notifications._load_release_meta", return_value=meta):
             d = build_digest("r1")
             assert d is not None
@@ -317,8 +322,16 @@ class TestSendNotifications:
         profile = make_profile(slack_webhook="https://s", discord_webhook="https://d")
         with patch("src.notifications.build_digest", return_value=digest):
             with patch("src.notifications._load_unsubscribed", return_value=set()):
-                with patch("src.notifications.send_email", return_value=NotificationResult("email", True)):
-                    with patch("src.notifications.send_slack", return_value=NotificationResult("slack", True)):
-                        with patch("src.notifications.send_discord", return_value=NotificationResult("discord", True)):
+                with patch(
+                    "src.notifications.send_email", return_value=NotificationResult("email", True)
+                ):
+                    with patch(
+                        "src.notifications.send_slack",
+                        return_value=NotificationResult("slack", True),
+                    ):
+                        with patch(
+                            "src.notifications.send_discord",
+                            return_value=NotificationResult("discord", True),
+                        ):
                             results = send_notifications("s", profiles=[profile])
                             assert len(results) == 3

@@ -2,7 +2,6 @@
 
 import json
 import logging
-from unittest.mock import patch
 
 from src.logger import (
     CorrelationFilter,
@@ -149,7 +148,7 @@ class TestSetupLogging:
         """setup_logging clears existing handlers."""
         root = logging.getLogger()
         root.addHandler(logging.StreamHandler())
-        initial_count = len(root.handlers)
+        len(root.handlers)
         setup_logging()
         # Should have cleared and added exactly 1
         assert len(root.handlers) == 1

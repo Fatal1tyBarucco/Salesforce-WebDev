@@ -196,7 +196,9 @@ class TestGenerateDashboardHtml:
                     "categories": [{"name": "A", "count": 5}],
                 }
             ],
-            "features": [{"name": "F1", "category": "A", "release": "summer_26", "availability": ""}],
+            "features": [
+                {"name": "F1", "category": "A", "release": "summer_26", "availability": ""}
+            ],
             "total_releases": 1,
             "total_features": 1,
         }

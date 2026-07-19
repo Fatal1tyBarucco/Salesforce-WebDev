@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, patch
 from src.salesforce import (
     FeatureReadiness,
     OrgLimits,
-    SandboxStatus,
     TrailheadModule,
     _load_trailhead_cache,
     _save_trailhead_cache,
@@ -26,7 +25,13 @@ from src.salesforce import (
 
 
 def make_module(title="Test Module", url="https://trailhead.com/m/test", **kwargs):
-    defaults = {"title": title, "url": url, "module_type": "", "estimated_time": "30 min", "points": 100}
+    defaults = {
+        "title": title,
+        "url": url,
+        "module_type": "",
+        "estimated_time": "30 min",
+        "points": 100,
+    }
     defaults.update(kwargs)
     return TrailheadModule(**defaults)
 
@@ -94,34 +99,88 @@ class TestCheckSandboxReadiness:
         assert s.ready is True
 
     def test_api_high(self) -> None:
-        limits = OrgLimits(api_requests_used=950, api_requests_limit=1000, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
+        limits = OrgLimits(
+            api_requests_used=950,
+            api_requests_limit=1000,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert s.ready is False
         assert any("API" in i for i in s.issues)
 
     def test_api_elevated(self) -> None:
-        limits = OrgLimits(api_requests_used=750, api_requests_limit=1000, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
+        limits = OrgLimits(
+            api_requests_used=750,
+            api_requests_limit=1000,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert s.ready is True
         assert any("API" in w for w in s.warnings)
 
     def test_storage_high(self) -> None:
-        limits = OrgLimits(api_requests_used=0, api_requests_limit=0, data_storage_used_mb=950, data_storage_limit_mb=1000, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
+        limits = OrgLimits(
+            api_requests_used=0,
+            api_requests_limit=0,
+            data_storage_used_mb=950,
+            data_storage_limit_mb=1000,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert any("Data" in i for i in s.issues)
 
     def test_storage_elevated(self) -> None:
-        limits = OrgLimits(api_requests_used=0, api_requests_limit=0, data_storage_used_mb=750, data_storage_limit_mb=1000, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
+        limits = OrgLimits(
+            api_requests_used=0,
+            api_requests_limit=0,
+            data_storage_used_mb=750,
+            data_storage_limit_mb=1000,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert any("Data" in w for w in s.warnings)
 
     def test_file_storage_high(self) -> None:
-        limits = OrgLimits(api_requests_used=0, api_requests_limit=0, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=950, file_storage_limit_mb=1000, daily_async_jobs_used=0, daily_async_jobs_limit=0)
+        limits = OrgLimits(
+            api_requests_used=0,
+            api_requests_limit=0,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=950,
+            file_storage_limit_mb=1000,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert any("File" in i for i in s.issues)
 
     def test_async_high(self) -> None:
-        limits = OrgLimits(api_requests_used=0, api_requests_limit=0, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=950, daily_async_jobs_limit=1000)
+        limits = OrgLimits(
+            api_requests_used=0,
+            api_requests_limit=0,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=950,
+            daily_async_jobs_limit=1000,
+        )
         s = check_sandbox_readiness(limits, 0)
         assert any("Async" in i for i in s.issues)
 
@@ -136,21 +195,48 @@ class TestCheckSandboxReadiness:
 
 class TestGenerateReadinessReport:
     def test_ready(self) -> None:
-        with patch("src.salesforce.assess_feature_readiness", return_value=FeatureReadiness("A", [], False, False, True, [])):
+        with patch(
+            "src.salesforce.assess_feature_readiness",
+            return_value=FeatureReadiness("A", [], False, False, True, []),
+        ):
             report = generate_readiness_report([{"name": "A", "count": 10}])
             assert "Prontidão" in report
             assert "Sandbox" in report
 
     def test_not_ready(self) -> None:
-        limits = OrgLimits(api_requests_used=950, api_requests_limit=1000, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
-        with patch("src.salesforce.assess_feature_readiness", return_value=FeatureReadiness("A", [], False, False, True, [])):
+        limits = OrgLimits(
+            api_requests_used=950,
+            api_requests_limit=1000,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
+        with patch(
+            "src.salesforce.assess_feature_readiness",
+            return_value=FeatureReadiness("A", [], False, False, True, []),
+        ):
             report = generate_readiness_report([{"name": "A", "count": 10}], limits)
             assert "Não Pronta" in report
 
     def test_ready_with_warnings(self) -> None:
         # Need sandbox NOT ready (has issues) AND has warnings
-        limits = OrgLimits(api_requests_used=950, api_requests_limit=1000, data_storage_used_mb=0, data_storage_limit_mb=0, file_storage_used_mb=0, file_storage_limit_mb=0, daily_async_jobs_used=0, daily_async_jobs_limit=0)
-        with patch("src.salesforce.assess_feature_readiness", return_value=FeatureReadiness("A", [], False, False, True, [])):
+        limits = OrgLimits(
+            api_requests_used=950,
+            api_requests_limit=1000,
+            data_storage_used_mb=0,
+            data_storage_limit_mb=0,
+            file_storage_used_mb=0,
+            file_storage_limit_mb=0,
+            daily_async_jobs_used=0,
+            daily_async_jobs_limit=0,
+        )
+        with patch(
+            "src.salesforce.assess_feature_readiness",
+            return_value=FeatureReadiness("A", [], False, False, True, []),
+        ):
             report = generate_readiness_report([{"name": "A", "count": 600}], limits)
             assert "Não Pronta" in report
             assert "⚠️" in report
@@ -180,7 +266,9 @@ class TestTrailheadCache:
             assert json.loads(p.read_text()) == {"A": ["url1"]}
 
     def test_save_os_error(self, tmp_path: Path) -> None:
-        with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "nonexistent" / "cache.json")):
+        with patch(
+            "src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "nonexistent" / "cache.json")
+        ):
             with patch("pathlib.Path.mkdir", side_effect=OSError("perm")):
                 _save_trailhead_cache({"A": ["url1"]})  # Should not raise
 
@@ -189,7 +277,10 @@ class TestDetectNewTrailheadContent:
     def test_detects_new(self) -> None:
         mod = make_module(url="https://new-url")
         with (
-            patch("src.salesforce._load_trailhead_cache", return_value={"Security": ["https://old-url"]}),
+            patch(
+                "src.salesforce._load_trailhead_cache",
+                return_value={"Security": ["https://old-url"]},
+            ),
             patch("src.salesforce.search_trailhead", return_value=[mod]),
             patch("src.salesforce._save_trailhead_cache"),
         ):
@@ -200,7 +291,10 @@ class TestDetectNewTrailheadContent:
     def test_no_new(self) -> None:
         mod = make_module(url="https://known-url")
         with (
-            patch("src.salesforce._load_trailhead_cache", return_value={"Security": ["https://known-url"]}),
+            patch(
+                "src.salesforce._load_trailhead_cache",
+                return_value={"Security": ["https://known-url"]},
+            ),
             patch("src.salesforce.search_trailhead", return_value=[mod]),
             patch("src.salesforce._save_trailhead_cache"),
         ):
@@ -293,7 +387,21 @@ class TestTrailheadMappingService:
         from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
-        p.write_text(json.dumps({"Security": [{"title": "T", "url": "http://x.com", "type": "module", "estimated_time": "30 min", "points": "100"}]}))
+        p.write_text(
+            json.dumps(
+                {
+                    "Security": [
+                        {
+                            "title": "T",
+                            "url": "http://x.com",
+                            "type": "module",
+                            "estimated_time": "30 min",
+                            "points": "100",
+                        }
+                    ]
+                }
+            )
+        )
         svc = TrailheadMappingService(config_path=p)
         assert "Security" in svc.categories
 
@@ -301,7 +409,9 @@ class TestTrailheadMappingService:
         from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
-        p.write_text(json.dumps({"Security": [{"title": "Security Basics", "url": "http://x.com"}]}))
+        p.write_text(
+            json.dumps({"Security": [{"title": "Security Basics", "url": "http://x.com"}]})
+        )
         svc = TrailheadMappingService(config_path=p)
         results = svc.search("security")
         assert len(results) == 1

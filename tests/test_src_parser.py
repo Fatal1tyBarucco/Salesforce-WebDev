@@ -1,5 +1,10 @@
 from bs4 import BeautifulSoup, Tag
-from src.parser import ReleaseNotesParser
+from src.parser import (
+    ReleaseNotesParser,
+    FeatureImpactCategory,
+    FeatureImpactEntry,
+    FeatureImpactParser,
+)
 from src.config import TopicNode
 
 
@@ -780,13 +785,6 @@ def test_get_node_url_href_empty_string() -> None:
 # FeatureImpactParser tests — 100% coverage
 # ============================================================
 
-from src.parser import (
-    FeatureImpactCategory,
-    FeatureImpactEntry,
-    FeatureImpactParser,
-    SECTION_HEADERS_BY_LOCALE,
-)
-
 
 def test_feature_impact_entry_defaults() -> None:
     """FeatureImpactEntry default values."""
@@ -1018,7 +1016,7 @@ def test_feature_impact_parser_entry_without_cat_skipped() -> None:
     """Entry found before any section header is skipped."""
     p = FeatureImpactParser()
     text = "Some Feature\tYes\tNo\tYes\tNo\nSalesforce geral\nAnother\tYes\n"
-    cats = p.parse_text(text)
+    p.parse_text(text)
     stats = p.parse_stats()
     assert stats["skipped"] == 1
 

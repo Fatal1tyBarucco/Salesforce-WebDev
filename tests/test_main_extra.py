@@ -1,8 +1,7 @@
 """Tests for src/main.py — coverage for remaining paths."""
 
-import json
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from src.main import (
     _check,
@@ -13,7 +12,6 @@ from src.main import (
     _generate_category_summary,
     _slugify_category,
 )
-from src.config import ReleaseInfo
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 
@@ -97,7 +95,14 @@ class TestCheck:
 
 class TestFormatEntryTable:
     def test_basic(self) -> None:
-        entry = FeatureImpactEntry(name="Test Feature", available_users=True, available_admins=False, requires_config=True, contact_sf=False, confidence=1.0)
+        entry = FeatureImpactEntry(
+            name="Test Feature",
+            available_users=True,
+            available_admins=False,
+            requires_config=True,
+            contact_sf=False,
+            confidence=1.0,
+        )
         result = _format_entry_table(entry)
         assert "Test Feature" in result
         assert "✅" in result

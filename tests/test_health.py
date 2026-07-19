@@ -8,8 +8,6 @@ from unittest.mock import MagicMock, patch
 from src.health import (
     HealthHandler,
     _get_health_data,
-    _last_run_status,
-    _metrics,
     inc_metric,
     set_pipeline_status,
     start_health_server,

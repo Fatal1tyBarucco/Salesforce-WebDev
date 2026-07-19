@@ -177,8 +177,16 @@ class TestParseCategoryFeatures:
 
 class TestBuildDiff:
     def test_builds_diff(self) -> None:
-        current = {"name": "Summer '26", "total_features": 100, "categories": [{"name": "A", "count": 50}]}
-        previous = {"name": "Spring '26", "total_features": 80, "categories": [{"name": "A", "count": 40}]}
+        current = {
+            "name": "Summer '26",
+            "total_features": 100,
+            "categories": [{"name": "A", "count": 50}],
+        }
+        previous = {
+            "name": "Spring '26",
+            "total_features": 80,
+            "categories": [{"name": "A", "count": 40}],
+        }
         diff = _build_diff(current, previous)
         assert diff["total_delta"] == 20
         assert diff["current"] == "Summer '26"
@@ -241,7 +249,9 @@ class TestAPIHandlerDoGET:
         for slug in ["spring_26", "summer_26"]:
             d = tmp_path / slug
             d.mkdir()
-            (d / ".meta.json").write_text(json.dumps({"name": slug, "total_features": 10, "categories": []}))
+            (d / ".meta.json").write_text(
+                json.dumps({"name": slug, "total_features": 10, "categories": []})
+            )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
             handler = make_handler("/diff/summer_26/spring_26")
             handler.do_GET()
@@ -256,7 +266,9 @@ class TestAPIHandlerDoGET:
     def test_diff_previous_not_found(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / ".meta.json").write_text(json.dumps({"name": "S", "total_features": 10, "categories": []}))
+        (d / ".meta.json").write_text(
+            json.dumps({"name": "S", "total_features": 10, "categories": []})
+        )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
             handler = make_handler("/diff/summer_26/nope")
             handler.do_GET()
@@ -299,7 +311,9 @@ class TestAPIHandlerDoPOST:
     def test_valid_query(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / ".meta.json").write_text(json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []}))
+        (d / ".meta.json").write_text(
+            json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []})
+        )
         body = json.dumps({"query": "{ releases { name } }"}).encode()
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
             handler = make_handler("/graphql", body=body)
@@ -329,7 +343,11 @@ class TestExecuteGraphqlExtended:
     def test_release_by_slug(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / ".meta.json").write_text(json.dumps({"name": "Summer '26", "release_id": 262, "total_features": 10, "categories": []}))
+        (d / ".meta.json").write_text(
+            json.dumps(
+                {"name": "Summer '26", "release_id": 262, "total_features": 10, "categories": []}
+            )
+        )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
             result = _execute_graphql('{ release(slug: "summer_26") { name releaseId } }')
             assert "data" in result
@@ -345,28 +363,42 @@ class TestExecuteGraphqlExtended:
         for slug, rid in [("spring_26", 260), ("summer_26", 262)]:
             d = tmp_path / slug
             d.mkdir()
-            (d / ".meta.json").write_text(json.dumps({"name": slug, "release_id": rid, "total_features": 10, "categories": []}))
+            (d / ".meta.json").write_text(
+                json.dumps(
+                    {"name": slug, "release_id": rid, "total_features": 10, "categories": []}
+                )
+            )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
-            result = _execute_graphql('{ diff(current: "summer_26", previous: "spring_26") { totalDelta } }')
+            result = _execute_graphql(
+                '{ diff(current: "summer_26", previous: "spring_26") { totalDelta } }'
+            )
             assert "data" in result
 
     def test_diff_current_not_found(self, tmp_path: Path) -> None:
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
-            result = _execute_graphql('{ diff(current: "nope", previous: "spring_26") { totalDelta } }')
+            result = _execute_graphql(
+                '{ diff(current: "nope", previous: "spring_26") { totalDelta } }'
+            )
             assert result["data"]["diff"] is None
 
     def test_diff_previous_not_found(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / ".meta.json").write_text(json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []}))
+        (d / ".meta.json").write_text(
+            json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []})
+        )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
-            result = _execute_graphql('{ diff(current: "summer_26", previous: "nope") { totalDelta } }')
+            result = _execute_graphql(
+                '{ diff(current: "summer_26", previous: "nope") { totalDelta } }'
+            )
             assert result["data"]["diff"] is None
 
     def test_no_fields(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / ".meta.json").write_text(json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []}))
+        (d / ".meta.json").write_text(
+            json.dumps({"name": "S", "release_id": 262, "total_features": 10, "categories": []})
+        )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
             result = _execute_graphql("{ releases }")
             assert "data" in result
