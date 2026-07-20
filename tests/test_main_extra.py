@@ -17,19 +17,28 @@ from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 class TestFindExistingReleases:
     def test_no_dir(self, tmp_path: Path) -> None:
-        with patch("src.main.RELEASES_DIR", str(tmp_path / "nope")):
+        with (
+            patch("src.main.RELEASES_DIR", str(tmp_path / "nope")),
+            patch("src.release_docs.RELEASES_DIR", str(tmp_path / "nope")),
+        ):
             assert _find_existing_releases() == set()
 
     def test_with_releases(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
         (d / "cat.md").write_text("## Cat\n\n- Feature\n")
-        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with (
+            patch("src.main.RELEASES_DIR", str(tmp_path)),
+            patch("src.release_docs.RELEASES_DIR", str(tmp_path)),
+        ):
             assert "summer_26" in _find_existing_releases()
 
     def test_skips_files(self, tmp_path: Path) -> None:
         (tmp_path / "file.txt").write_text("hi")
-        with patch("src.main.RELEASES_DIR", str(tmp_path)):
+        with (
+            patch("src.main.RELEASES_DIR", str(tmp_path)),
+            patch("src.release_docs.RELEASES_DIR", str(tmp_path)),
+        ):
             assert _find_existing_releases() == set()
 
 

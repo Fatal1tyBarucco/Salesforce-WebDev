@@ -121,7 +121,10 @@ def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatc
     )
 
     monkeypatch.chdir(tmp_path)
-    with patch("src.main.RELEASES_DIR", str(tmp_path)):
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.release_docs.RELEASES_DIR", str(tmp_path)),
+    ):
         asyncio.run(_update_readme_all())
 
     content = readme_path.read_text(encoding="utf-8")

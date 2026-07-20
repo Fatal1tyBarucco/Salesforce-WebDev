@@ -102,6 +102,7 @@ async def test_generate_ai_reports_async_normal_execution(tmp_path: Path) -> Non
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
@@ -150,6 +151,7 @@ async def test_generate_ai_reports_async_no_previous_release(tmp_path: Path) -> 
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", known_releases),
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
@@ -175,6 +177,7 @@ async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict(
@@ -211,6 +214,7 @@ async def test_generate_ai_reports_async_impact_and_notification(tmp_path: Path)
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict(
@@ -244,6 +248,7 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai, impact_result=None)),
@@ -263,6 +268,7 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict(
@@ -309,6 +315,7 @@ async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) ->
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict(
@@ -347,6 +354,7 @@ async def test_generate_ai_reports_async_issue_url_logged(tmp_path: Path) -> Non
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
@@ -407,6 +415,7 @@ async def test_feature_classification_enriches_meta(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main._update_readme_all", new_callable=AsyncMock),
         patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
@@ -451,6 +460,7 @@ async def test_feature_classification_no_meta_path(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main._update_readme_all", new_callable=AsyncMock),
         patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
@@ -491,6 +501,7 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main._update_readme_all", new_callable=AsyncMock),
         patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
@@ -533,6 +544,7 @@ async def test_feature_classification_empty_features(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main._update_readme_all", new_callable=AsyncMock),
         patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
@@ -577,6 +589,7 @@ async def test_subcategory_entry_translation_en_us(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
         patch("src.salesforce.generate_category_trailhead_section", return_value="Trailhead"),
     ):
@@ -606,6 +619,7 @@ async def test_no_translation_for_pt_br(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
         patch("src.salesforce.generate_category_trailhead_section", return_value="Trailhead"),
     ):
@@ -651,6 +665,7 @@ async def test_update_readme_all_english_with_heading(tmp_path: Path) -> None:
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -695,6 +710,7 @@ async def test_update_readme_all_english_no_heading_creates_file(tmp_path: Path)
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -736,6 +752,7 @@ async def test_update_readme_all_english_no_existing_file(tmp_path: Path) -> Non
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -780,6 +797,7 @@ async def test_update_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -821,6 +839,7 @@ async def test_update_readme_all_english_category_labels(tmp_path: Path) -> None
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -861,6 +880,7 @@ async def test_update_readme_all_no_summary(tmp_path: Path) -> None:
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()
@@ -885,6 +905,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path / "releases")),
+        patch("src.release_docs.RELEASES_DIR", str(tmp_path / "releases")),
         patch("src.main._update_readme_all", new_callable=AsyncMock),
         patch(
             "src.main._generate_ai_reports_async",
@@ -946,6 +967,7 @@ async def test_update_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
         os.chdir(tmp_path)
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
             await _update_readme_all()

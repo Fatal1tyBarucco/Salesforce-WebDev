@@ -14,7 +14,10 @@ from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 
 def test_find_existing_releases_empty() -> None:
-    with patch("src.main.RELEASES_DIR", "/nonexistent"):
+    with (
+        patch("src.main.RELEASES_DIR", "/nonexistent"),
+        patch("src.release_docs.RELEASES_DIR", "/nonexistent"),
+    ):
         result = _find_existing_releases()
         assert result == set()
 
@@ -62,7 +65,7 @@ def test_generate_release_files() -> None:
     translator = MagicMock()
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("src.main.RELEASES_DIR", tmpdir):
+        with patch("src.main.RELEASES_DIR", tmpdir), patch("src.release_docs.RELEASES_DIR", tmpdir):
             asyncio.run(_generate_release_files(release, categories, generator, translator))
 
             release_dir = Path(tmpdir) / "test_release"
