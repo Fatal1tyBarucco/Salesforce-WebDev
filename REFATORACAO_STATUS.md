@@ -2,7 +2,7 @@
 
 Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 
-> Última atualização: 2026-07-19 (T1 e T2 concluídas)
+> Última atualização: 2026-07-20 (T1, T2 e T3 concluídas)
 
 ## 🔧 Workflow adotado
 - **1 branch por tarefa**: `refactor/<escopo>` (criada a partir de `main`).
@@ -16,7 +16,7 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 |---|---|---|---|---|
 | 1 | 1 | `ai_automation.py` 1428→5 módulos | ✅ Feito (`src/automation/`, 20 arquivos; `ai_automation.py` virou shim de 201 ln) | — |
 | 1 | 2 | `main.py` funções 100-157 ln | ⏳ Pendente (god-module 960 ln: pipeline + geração de docs + formatação) | `refactor/phase1-decompose-main` |
-| 1 | 3 | 15+ wrappers duplicados | ✅ Avaliado: obsoleto (sem duplicação real) | — |
+| 1 | 3 | 15+ wrappers duplicados | ✅ Resolvido (obsoleto, sem duplicação real) | — |
 | 1 | 4 | Config hardcoded | ✅ Feito (`config.py` centraliza; tópicos dinâmicos) | — |
 | 2 | 5 | `except Exception: pass` | ✅ Feito (T2: 6 silenciamentos → logging) | — |
 | 2 | 6 | Type stubs faltando | 🔍 A avaliar | — |
@@ -63,8 +63,14 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 - **Validação**: ruff ✅ | black ✅ | mypy ✅ | pytest ✅ (95% cov; 2 falhas pré-existentes ambientais).
 - **Notas**: 17 `except Exception` restantes já logam; narrowing fica como T2b opcional.
 
-### [ ] Próximas
-- T3 — Wrappers duplicados (#3): **avaliado e obsoleto** — marcar como resolvido (sem duplicação real).
+### [x] T3 — Wrappers duplicados (#3) ✅ CONCLUÍDA
+- **Branch**: `refactor/t3-resolve-wrappers`
+- **Objetivo**: confirmar se há duplicação real de wrappers e fechar o item.
+- **Achado**: `src/automation/github_ops.py::run_gh()` (função nested, exclusiva p/ `gh issue create`) e `src/workflow.py::_run_gh(args, check)` (wrapper genérico usado em PR/merge em `workflow.py:193,208`) têm responsabilidades e call sites distintos — **não é duplicação redundante**. Não foi removido nenhum código.
+- **Resultado**: item #3 marcado como resolvido (obsoleto). Sem alteração em `.py`.
+
+### [ ] Próximas (a partir de T4)
+
 - T4 (#6) — Type stubs (`stubs/` dir) · T5 (#7) — Cache com invalidação inteligente (content-hash) · T6 (#8) — Dependency Injection · T7 (#9) — Event System · T8 (#10) — Async Context Managers.
 - Testes (#11-13): integração real, property-based, snapshot.
 - Performance (#14-16): scraping paralelo, updates incrementais, streaming.
