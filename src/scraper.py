@@ -310,8 +310,8 @@ class SalesforceReleaseScraper:
                     await node.click()
                     await page.wait_for_timeout(300)
                     expanded_count += 1
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug("Falha ao expandir nó de ToC: %s", e)
             if expanded_count > 0:
                 logger.info("Expanded %d collapsed ToC nodes", expanded_count)
         except Exception as e:

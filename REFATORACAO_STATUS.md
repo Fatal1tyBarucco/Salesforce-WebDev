@@ -2,7 +2,7 @@
 
 Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 
-> Última atualização: 2026-07-19 (T1 concluída)
+> Última atualização: 2026-07-19 (T1 e T2 concluídas)
 
 ## 🔧 Workflow adotado
 - **1 branch por tarefa**: `refactor/<escopo>` (criada a partir de `main`).
@@ -16,9 +16,9 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 |---|---|---|---|---|
 | 1 | 1 | `ai_automation.py` 1428→5 módulos | ✅ Feito (`src/automation/`, 20 arquivos; `ai_automation.py` virou shim de 201 ln) | — |
 | 1 | 2 | `main.py` funções 100-157 ln | ⏳ Pendente (god-module 960 ln: pipeline + geração de docs + formatação) | `refactor/phase1-decompose-main` |
-| 1 | 3 | 15+ wrappers duplicados | 🔍 A avaliar | — |
+| 1 | 3 | 15+ wrappers duplicados | ✅ Avaliado: obsoleto (sem duplicação real) | — |
 | 1 | 4 | Config hardcoded | ✅ Feito (`config.py` centraliza; tópicos dinâmicos) | — |
-| 2 | 5 | `except Exception: pass` | ⏳ Pendente (6 silenciamentos + 17 `except Exception`) | — |
+| 2 | 5 | `except Exception: pass` | ✅ Feito (T2: 6 silenciamentos → logging) | — |
 | 2 | 6 | Type stubs faltando | 🔍 A avaliar | — |
 | 2 | 7 | Cache sem invalidação | 🔍 A avaliar | — |
 | 2-3 | 8 | Dependency Injection | 🔍 A avaliar | — |
@@ -55,10 +55,20 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 - **Resultado pytest**: 683 passaram / 685; as 2 falhas (`test_load_meta_os_error`, `test_load_cache_os_error`) são **pré-existentes e ambientais** (rodamos como `root` no sandbox; passam no runner GitHub). Nenhuma falha nova introduzida.
 - **Merge/Exclusão**: ✅ (merge em `main` + branch `refactor/phase1-decompose-main` excluída)
 
-### [ ] Próximas (a iniciar após T1)
-- T2 — Higiene de exceções (#5)
-- T3 — Wrappers duplicados (#3) — após avaliação
-- T4+ — demais itens do backlog conforme decidido
+### [x] T2 — Higiene de exceções (#5) ✅ CONCLUÍDA
+- **Branch**: `refactor/phase2-exception-hygiene`
+- **Status**: ✅ Concluída (merge em `main` local; push em lote pendente de aprovação)
+- **Objetivo**: eliminar os 6 `except ...: pass` silenciosos; `logger.debug` (best-effort: github CLI, ToC, diff/PR) e `logger.warning` (`.meta.json` corrompido).
+- **Arquivos**: `src/automation/github_ops.py` (_logger+_), `src/release_summarizer.py` (_logger+_), `src/health.py`, `src/scraper.py`, `src/workflow.py`.
+- **Validação**: ruff ✅ | black ✅ | mypy ✅ | pytest ✅ (95% cov; 2 falhas pré-existentes ambientais).
+- **Notas**: 17 `except Exception` restantes já logam; narrowing fica como T2b opcional.
+
+### [ ] Próximas
+- T3 — Wrappers duplicados (#3): **avaliado e obsoleto** — marcar como resolvido (sem duplicação real).
+- T4 (#6) — Type stubs (`stubs/` dir) · T5 (#7) — Cache com invalidação inteligente (content-hash) · T6 (#8) — Dependency Injection · T7 (#9) — Event System · T8 (#10) — Async Context Managers.
+- Testes (#11-13): integração real, property-based, snapshot.
+- Performance (#14-16): scraping paralelo, updates incrementais, streaming.
+- DX/Infra (#17-25): CLI (click/typer), logging estruturado, Prometheus, Docker, pre-commit, semantic release, GH Actions matrix, MkDocs, benchmarks.
 
 ## 📝 Notas
 - Plano original estava obsoleto: #1 e #4 já estavam implementados no código atual.

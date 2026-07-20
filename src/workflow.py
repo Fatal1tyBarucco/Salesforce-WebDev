@@ -128,8 +128,8 @@ def analyze_changes() -> ChangeAnalysis:
                     if len(nums) >= 2:
                         additions += int(nums[0])
                         deletions += int(nums[1])
-                except ValueError, IndexError:
-                    pass
+                except (ValueError, IndexError) as e:
+                    logger.debug("Não foi possível parsear linha de diff: %s", e)
 
     # Check for new release directories
     status_result = subprocess.run(
@@ -200,8 +200,8 @@ def create_pr(
     if "/pull/" in pr_url:
         try:
             pr_number = int(pr_url.split("/pull/")[-1].split("/")[0].split("?")[0])
-        except ValueError, IndexError:
-            pass
+        except (ValueError, IndexError) as e:
+            logger.debug("Não foi possível extrair número do PR: %s", e)
 
     if auto_merge and pr_number:
         merge_args = ["pr", "merge", str(pr_number), "--auto", "--squash"]

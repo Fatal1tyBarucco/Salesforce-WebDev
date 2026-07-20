@@ -61,8 +61,8 @@ def _get_health_data() -> dict[str, object]:
                     try:
                         meta = json.loads(meta_path.read_text(encoding="utf-8"))
                         total_features += meta.get("total_features", 0)
-                    except json.JSONDecodeError, OSError:
-                        pass
+                    except (json.JSONDecodeError, OSError) as e:
+                        logger.warning("Ignorando .meta.json corrompido: %s", e)
 
     return {
         "status": "healthy",
