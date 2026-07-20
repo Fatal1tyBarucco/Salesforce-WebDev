@@ -9,18 +9,17 @@ This platform uses **Playwright** to scrape the Salesforce Help portal (a JavaSc
 ## Quick Start
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+# Install dependencies (uv + Python 3.14)
+uv sync --extra dev
 
 # Install Playwright browser
-playwright install chromium
+uv run playwright install chromium
 
 # Run pipeline
-python -m src.main
+uv run python src/main.py
 
 # Run tests
-pytest
+uv run pytest
 ```
 
 ## Refatoração
