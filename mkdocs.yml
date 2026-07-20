@@ -54,6 +54,8 @@ extra:
 
 nav:
   - Home: index.md
+  - Refatoração:
+    - Status & Auditoria: refatoracao.md
   - Architecture:
     - Overview: architecture/overview.md
     - C4 Container: architecture/c4_container.md

@@ -23,6 +23,10 @@ python -m src.main
 pytest
 ```
 
+## Refatoração
+
+A iniciativa contínua de refatoração do código Python (regras de tolerância zero, auditoria de integrações) está documentada em [Refatoração — Status & Auditoria](refatoracao.md).
+
 ## Documentation
 
 Navigate the sidebar to explore architecture decisions, maintenance guides, runbooks, and the project roadmap.
