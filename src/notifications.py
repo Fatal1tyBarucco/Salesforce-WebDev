@@ -188,7 +188,7 @@ def send_email(
 
     try:
         context = ssl.create_default_context()
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
             server.starttls(context=context)
             if smtp_user and smtp_pass:
                 server.login(smtp_user, smtp_pass)

@@ -1,5 +1,6 @@
 """LLM service with fallback chain across multiple providers."""
 
+import asyncio
 import time
 import logging
 import os
@@ -8,6 +9,7 @@ from dataclasses import dataclass
 
 import openai
 from google import genai
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 
 @dataclass
@@ -157,18 +159,31 @@ class LLMService:
                 "Provider '%s' circuit breaker tripped. Cooldown started.", provider.name
             )
 
+    @retry(
+        retry=retry_if_exception_type((openai.APIConnectionError, openai.InternalServerError)),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     async def _call_openai_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
-        """Call OpenAI-compatible provider."""
-        client = openai.AsyncOpenAI(api_key=provider.api_key, base_url=provider.base_url)
-        response = await client.chat.completions.create(
-            model=provider.model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=0.0,
+        """Call OpenAI-compatible provider with timeout and retry."""
+        client = openai.AsyncOpenAI(
+            api_key=provider.api_key,
+            base_url=provider.base_url,
+            timeout=30.0,
+        )
+        response = await asyncio.wait_for(
+            client.chat.completions.create(
+                model=provider.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.0,
+            ),
+            timeout=60.0,
         )
         # Handle both standard OpenAI response and raw string responses
         if hasattr(response, "choices") and response.choices:
@@ -177,18 +192,27 @@ class LLMService:
             return response
         return str(response)
 
+    @retry(
+        retry=retry_if_exception_type((ConnectionError, TimeoutError)),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     async def _call_google_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
-        """Call Google Gemini provider."""
+        """Call Google Gemini provider with timeout and retry."""
         client = genai.Client(api_key=provider.api_key)
-        response = await client.aio.models.generate_content(
-            model=provider.model,
-            contents=user_prompt,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                temperature=0.0,
+        response = await asyncio.wait_for(
+            client.aio.models.generate_content(
+                model=provider.model,
+                contents=user_prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    temperature=0.0,
+                ),
             ),
+            timeout=60.0,
         )
         return response.text or ""
 
@@ -218,24 +242,24 @@ class LLMService:
                 self._record_success(provider)
                 self._logger.info("Provider '%s' succeeded", provider.name)
                 return result
-            except (
-                openai.RateLimitError,
-                openai.APIConnectionError,
-                openai.InternalServerError,
-                openai.AuthenticationError,
-                Exception,
-            ) as e:
-                error_msg = str(e)
-                if (
-                    "429" in error_msg
-                    or "rate" in error_msg.lower()
-                    or "quota" in error_msg.lower()
-                ):
-                    self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
-                elif "401" in error_msg or "auth" in error_msg.lower():
-                    self._logger.warning("Provider '%s' auth error: %s", provider.name, e)
-                else:
-                    self._logger.error("Provider '%s' error: %s", provider.name, e)
+            except openai.RateLimitError as e:
+                self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except openai.AuthenticationError as e:
+                self._logger.warning("Provider '%s' auth error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (openai.APIConnectionError, openai.InternalServerError) as e:
+                self._logger.error("Provider '%s' connection/server error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (TimeoutError, asyncio.TimeoutError) as e:
+                self._logger.error("Provider '%s' timeout: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except Exception as e:
+                self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
 

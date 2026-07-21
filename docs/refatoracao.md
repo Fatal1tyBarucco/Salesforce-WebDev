@@ -34,6 +34,13 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | T3 (#3) | Wrappers marcados como resolvidos (`run_gh` vs `_run_gh` distintos; sem remoção de código) | ✅ | `a434213` |
 | #20 | Docker support (Dockerfile + `playwright install --with-deps chromium`) | ✅ | `b255f50` |
 | #21 | Pre-commit hooks (sem `ruff-format` conflitante com `black`) | ✅ | `af24705` |
+| F1 | OpenAPI spec extraída para `src/openapi_spec.json` (209 ln → 3 ln) | ✅ | `7056bf6` |
+| F1 | `_execute_graphql()` dividida em 4 handlers menores | ✅ | `7056bf6` |
+| F1 | Dashboard HTML extraído para `src/dashboard_template.html` | ✅ | `7056bf6` |
+| V1 | LLM: timeout (30s client / 60s asyncio) + retry tenacity (3 tentativas, backoff exponencial) | ✅ | `—` |
+| V1 | LLM: hierarquia de exceções corrigida (tipos específicos antes de Exception genérico) | ✅ | `—` |
+| V1 | SMTP: timeout de 30s adicionado em `smtplib.SMTP()` | ✅ | `—` |
+| V1 | Testes: 30+ novos testes para cobertura (95.01%) | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 
@@ -42,7 +49,7 @@ _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.co
 - **T4** (#6) Type stubs · **T5** (#7) Cache com invalidação por content-hash · **T6** (#8) Dependency Injection · **T7** (#9) Event System · **T8** (#10) Async Context Managers.
 - **Testes** #11 integração real · #12 property-based · #13 snapshot.
 - **Performance** #14 scraping paralelo · #15 updates incrementais · #16 streaming.
-- **DX/Infra** #17 CLI (click/typer) · #18 logging estruturado (structlog) · #19 Prometheus · #22 semantic release · #23 GH Actions matrix · #24 MkDocs · #25 benchmarks.
+- **DX/Infra** #17 CLI (click/typer) · #18 logging estruturado (structlog) · #19 Prometheus · #22 semantic release · #23 GH Actions matrix · #25 benchmarks.
 
 ## Auditoria de Integração (Comando de Inicialização)
 
