@@ -215,7 +215,7 @@ async def generate_ai_summary(
             risk_areas=data.get("risk_areas", []),
             overall_trend=data.get("overall_trend", "indeterminado"),
         )
-    except ValueError, IndexError:
+    except (ValueError, IndexError):
         return _generate_legacy_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )
