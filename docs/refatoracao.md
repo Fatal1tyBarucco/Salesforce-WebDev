@@ -46,6 +46,10 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | P0 | 18 blocos `except Exception` substituídos por exceções específicas | ✅ | `—` |
 | P0 | 7 `raise ValueError` em `salesforce.py` → `ConfigError` | ✅ | `—` |
 | P0 | Testes atualizados para validar hierarquia de exceções | ✅ | `—` |
+| P1 | CircuitBreaker extraído para `src/circuit_breaker.py` (reutilizável, thread-safe) | ✅ | `—` |
+| P1 | `scraper.py`: CircuitBreaker inline → módulo compartilhado | ✅ | `—` |
+| P1 | `llm_service.py`: ProviderState → CircuitBreaker unificado | ✅ | `—` |
+| P1 | `PipelineConfig` dataclass com DI em `run_pipeline()` | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 

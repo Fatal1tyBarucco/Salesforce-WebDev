@@ -419,10 +419,10 @@ class TestLLMServiceResilience:
 
     @pytest.mark.asyncio
     async def test_rate_limit_error_handled(self) -> None:
-        from src.llm_service import ProviderState
+        from src.circuit_breaker import CircuitBreaker
 
         service = self._make_service()
-        service._provider_states = {"test": ProviderState()}
+        service._provider_states = {"test": CircuitBreaker(threshold=3, cooldown=60.0)}
 
         with patch("src.llm_service.openai.AsyncOpenAI") as mock_client_cls:
             mock_client = MagicMock()
@@ -440,10 +440,10 @@ class TestLLMServiceResilience:
 
     @pytest.mark.asyncio
     async def test_auth_error_handled(self) -> None:
-        from src.llm_service import ProviderState
+        from src.circuit_breaker import CircuitBreaker
 
         service = self._make_service()
-        service._provider_states = {"test": ProviderState()}
+        service._provider_states = {"test": CircuitBreaker(threshold=3, cooldown=60.0)}
 
         with patch("src.llm_service.openai.AsyncOpenAI") as mock_client_cls:
             mock_client = MagicMock()

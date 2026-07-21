@@ -23,6 +23,7 @@ from playwright.async_api import async_playwright, Browser, Page, Playwright
 
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .cache_manager import CacheManager
+from .circuit_breaker import CircuitBreaker
 from .exceptions import BrowserError, ScraperError
 
 logger = logging.getLogger(__name__)
@@ -69,51 +70,6 @@ RATE_LIMIT_MIN_INTERVAL = 1.0 / RATE_LIMIT_RPS
 # Circuit breaker: after N consecutive failures, stop trying for cooldown
 CIRCUIT_BREAKER_THRESHOLD = 3
 CIRCUIT_BREAKER_COOLDOWN = 60  # seconds
-
-
-class CircuitBreaker:
-    """Circuit breaker — stops making requests after consecutive failures."""
-
-    def __init__(
-        self,
-        threshold: int = CIRCUIT_BREAKER_THRESHOLD,
-        cooldown: float = CIRCUIT_BREAKER_COOLDOWN,
-    ) -> None:
-        self._threshold = threshold
-        self._cooldown = cooldown
-        self._failures = 0
-        self._opened_at: float = 0.0
-
-    @property
-    def is_open(self) -> bool:
-        """True when circuit is tripped (too many failures, in cooldown)."""
-        if self._failures < self._threshold:
-            return False
-        elapsed = time.monotonic() - self._opened_at
-        if elapsed > self._cooldown:
-            self._failures = 0
-            return False
-        return True
-
-    def record_success(self) -> None:
-        self._failures = 0
-
-    def record_failure(self) -> None:
-        self._failures += 1
-        if self._failures >= self._threshold:
-            now = time.monotonic()
-            # Reset cooldown timer if previous cooldown expired
-            if self._opened_at == 0.0 or (now - self._opened_at) > self._cooldown:
-                self._opened_at = now
-                logger.warning(
-                    "Circuit breaker tripped after %d failures, cooling down for %ds",
-                    self._failures,
-                    self._cooldown,
-                )
-
-    @property
-    def failure_count(self) -> int:
-        return self._failures
 
 
 class RateLimiter:

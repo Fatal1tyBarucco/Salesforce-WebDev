@@ -11,6 +11,7 @@ Strategy:
 from __future__ import annotations
 
 import asyncio
+from dataclasses import dataclass
 import logging
 import sys
 from pathlib import Path
@@ -366,7 +367,39 @@ async def _enrich_meta_with_classification(release: ReleaseInfo) -> None:
         logger.warning("Feature classification failed: %s", e)
 
 
-async def run_pipeline() -> None:
+@dataclass
+class PipelineConfig:
+    """Dependency injection container for the release notes pipeline.
+
+    All fields have sensible defaults for production use.  Override any field
+    in tests or when running with alternative implementations.
+
+    Example::
+
+        config = PipelineConfig(dry_run=True)
+        await run_pipeline(config)
+    """
+
+    scraper: SalesforceReleaseScraper | None = None
+    impact_parser: FeatureImpactParser | None = None
+    generator: MarkdownGenerator | None = None
+    translator: TranslatorService | None = None
+    release_filter: str | None = None
+    dry_run: bool = False
+
+    def __post_init__(self) -> None:
+        """Initialize defaults for fields left as None."""
+        if self.scraper is None:
+            self.scraper = SalesforceReleaseScraper()
+        if self.impact_parser is None:
+            self.impact_parser = FeatureImpactParser()
+        if self.generator is None:
+            self.generator = MarkdownGenerator(base_dir=RELEASES_DIR)
+        if self.translator is None:
+            self.translator = TranslatorService()
+
+
+async def run_pipeline(config: PipelineConfig | None = None) -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
     setup_logging()
     from .logger import new_correlation_id
@@ -378,14 +411,21 @@ async def run_pipeline() -> None:
 
     set_pipeline_status("running")
 
-    scraper = SalesforceReleaseScraper()
-    impact_parser = FeatureImpactParser()
-    generator = MarkdownGenerator(base_dir=RELEASES_DIR)
-    translator = TranslatorService()
+    if config is None:
+        release_filter, dry_run = _parse_args()
+        config = PipelineConfig(release_filter=release_filter, dry_run=dry_run)
 
-    release_filter, dry_run = _parse_args()
+    scraper = config.scraper
+    impact_parser = config.impact_parser
+    generator = config.generator
+    translator = config.translator
 
-    if dry_run:
+    assert scraper is not None, "scraper must be initialized"
+    assert impact_parser is not None, "impact_parser must be initialized"
+    assert generator is not None, "generator must be initialized"
+    assert translator is not None, "translator must be initialized"
+
+    if config.dry_run:
         logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
 
     releases_to_process: list[ReleaseInfo] = []
@@ -410,9 +450,9 @@ async def run_pipeline() -> None:
 
         for release in releases_to_process:
             await _process_single_release(
-                release, scraper, impact_parser, generator, translator, dry_run
+                release, scraper, impact_parser, generator, translator, config.dry_run
             )
-            if not dry_run:
+            if not config.dry_run:
                 await _enrich_meta_with_classification(release)
 
     await _update_readme_all()

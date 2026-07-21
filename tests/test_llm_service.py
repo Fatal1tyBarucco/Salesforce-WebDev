@@ -90,7 +90,7 @@ def test_rate_limit_failure_after_retries(llm_service):
         mock_call.side_effect = Exception("Rate limit exceeded")
         result = asyncio.run(llm_service.generate_text("Prompt", "System"))
         assert result is None
-        assert llm_service._get_provider_state(llm_service._providers[0]).failures > 0
+        assert llm_service._get_provider_state(llm_service._providers[0]).failure_count > 0
 
 
 def test_generic_exception(llm_service):
@@ -98,7 +98,7 @@ def test_generic_exception(llm_service):
         mock_call.side_effect = ValueError("Unexpected")
         result = asyncio.run(llm_service.generate_text("Prompt", "System"))
         assert result is None
-        assert llm_service._get_provider_state(llm_service._providers[0]).failures > 0
+        assert llm_service._get_provider_state(llm_service._providers[0]).failure_count > 0
 
 
 def test_classify_text_success(llm_service):

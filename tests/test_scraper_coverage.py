@@ -5,8 +5,8 @@ import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+from src.circuit_breaker import CircuitBreaker
 from src.scraper import (
-    CircuitBreaker,
     RateLimiter,
     calculate_jittered_delay,
     is_rate_limited_response,

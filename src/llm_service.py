@@ -1,7 +1,6 @@
 """LLM service with fallback chain across multiple providers."""
 
 import asyncio
-import time
 import logging
 import os
 from typing import Any, Optional
@@ -10,10 +9,13 @@ from dataclasses import dataclass
 import openai
 from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from .circuit_breaker import CircuitBreaker
 
 
 @dataclass
 class CircuitBreakerConfig:
+    """Configuration for circuit breaker behavior."""
+
     threshold: int = 3
     cooldown: float = 60.0
 
@@ -27,15 +29,6 @@ class LLMProvider:
     base_url: str = "https://api.openai.com/v1"
     model: str = "gpt-4o"
     provider_type: str = "openai"  # "openai", "google", or "opencode"
-
-
-@dataclass
-class ProviderState:
-    """Tracks circuit breaker state for a provider."""
-
-    failures: int = 0
-    opened_at: float = 0.0
-    is_open: bool = False
 
 
 class LLMService:
@@ -53,7 +46,7 @@ class LLMService:
     ) -> None:
         self._config = config
         self._logger = logging.getLogger(__name__)
-        self._provider_states: dict[str, ProviderState] = {}
+        self._provider_states: dict[str, CircuitBreaker] = {}
         self._providers: list[LLMProvider] = []
 
         if providers:
@@ -62,7 +55,9 @@ class LLMService:
             self._providers = self._load_providers_from_env()
 
         for p in self._providers:
-            self._provider_states[p.name] = ProviderState()
+            self._provider_states[p.name] = CircuitBreaker(
+                threshold=config.threshold, cooldown=config.cooldown
+            )
 
         self._client = client
 
@@ -130,34 +125,18 @@ class LLMService:
 
         return providers
 
-    def _get_provider_state(self, provider: LLMProvider) -> ProviderState:
+    def _get_provider_state(self, provider: LLMProvider) -> CircuitBreaker:
         return self._provider_states[provider.name]
 
     def _is_provider_available(self, provider: LLMProvider) -> bool:
-        state = self._get_provider_state(provider)
-        if state.failures < self._config.threshold:
-            return True
-        elapsed = time.time() - state.opened_at
-        if elapsed > self._config.cooldown:
-            state.is_open = False
-            return True
-        return False
+        breaker = self._get_provider_state(provider)
+        return not breaker.is_open
 
     def _record_success(self, provider: LLMProvider) -> None:
-        state = self._get_provider_state(provider)
-        state.failures = 0
-        state.opened_at = 0.0
-        state.is_open = False
+        self._get_provider_state(provider).record_success()
 
     def _record_failure(self, provider: LLMProvider) -> None:
-        state = self._get_provider_state(provider)
-        state.failures += 1
-        if state.failures >= self._config.threshold:
-            state.opened_at = time.time()
-            state.is_open = True
-            self._logger.warning(
-                "Provider '%s' circuit breaker tripped. Cooldown started.", provider.name
-            )
+        self._get_provider_state(provider).record_failure()
 
     @retry(
         retry=retry_if_exception_type((openai.APIConnectionError, openai.InternalServerError)),
