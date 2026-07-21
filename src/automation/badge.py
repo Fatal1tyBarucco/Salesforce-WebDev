@@ -32,6 +32,6 @@ def get_latest_release_badge() -> str:
                 if meta and meta.get("release_id", 0) > latest_id:
                     latest_id = meta.get("release_id", 0)
                     latest = meta.get("name", d.name)
-            except json.JSONDecodeError, OSError:
+            except (json.JSONDecodeError, OSError):
                 continue
     return latest or "N/A"

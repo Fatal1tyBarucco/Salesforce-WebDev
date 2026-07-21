@@ -45,7 +45,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except json.JSONDecodeError, OSError:
+            except (json.JSONDecodeError, OSError):
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
@@ -73,7 +73,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return None
 
 
@@ -311,7 +311,8 @@ _OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
 
 def _generate_openapi_spec() -> dict[str, Any]:
     """Load OpenAPI 3.0 specification from bundled JSON file."""
-    return json.loads(_OPENAPI_SPEC_PATH.read_text(encoding="utf-8"))
+    spec: dict[str, Any] = json.loads(_OPENAPI_SPEC_PATH.read_text(encoding="utf-8"))
+    return spec
 
 
 class APIHandler(BaseHTTPRequestHandler):
@@ -382,7 +383,7 @@ class APIHandler(BaseHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-        except ValueError, TypeError:
+        except (ValueError, TypeError):
             self._respond(400, {"error": "invalid Content-Length header"})
             return
         if content_length == 0:
@@ -392,7 +393,7 @@ class APIHandler(BaseHTTPRequestHandler):
         try:
             body = self.rfile.read(content_length)
             data: dict[str, Any] = json.loads(body.decode("utf-8"))
-        except json.JSONDecodeError, UnicodeDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             self._respond(400, {"error": "invalid JSON"})
             return
 
