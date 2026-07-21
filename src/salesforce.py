@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import logging
+from .exceptions import ConfigError
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -57,33 +58,35 @@ class TrailheadMappingService:
 
     def _load_categories(self) -> dict[str, list[dict[str, str]]]:
         if not self._config_path.exists():
-            raise ValueError(f"Trailhead config not found at {self._config_path}")
+            raise ConfigError(f"Trailhead config not found at {self._config_path}")
 
         raw = self._config_path.read_text(encoding="utf-8")
         try:
             data: Any = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Invalid JSON in {self._config_path}: {exc}") from exc
+            raise ConfigError(f"Invalid JSON in {self._config_path}: {exc}") from exc
 
         if not isinstance(data, dict):
-            raise ValueError(f"Trailhead config must be a JSON object, got {type(data).__name__}")
+            raise ConfigError(f"Trailhead config must be a JSON object, got {type(data).__name__}")
 
         validated: dict[str, list[dict[str, str]]] = {}
         for category, modules in data.items():
             if not isinstance(modules, list):
-                raise ValueError(
+                raise ConfigError(
                     f"Category '{category}' must map to a list, got {type(modules).__name__}"
                 )
             entries: list[dict[str, str]] = []
             for entry in modules:
                 if not isinstance(entry, dict):
-                    raise ValueError(
+                    raise ConfigError(
                         f"Module entry in '{category}' must be an object, got {type(entry).__name__}"
                     )
                 if "title" not in entry:
-                    raise ValueError(f"Module entry in '{category}' missing required 'title' field")
+                    raise ConfigError(
+                        f"Module entry in '{category}' missing required 'title' field"
+                    )
                 if "url" not in entry:
-                    raise ValueError(f"Module entry in '{category}' missing required 'url' field")
+                    raise ConfigError(f"Module entry in '{category}' missing required 'url' field")
                 entry_dict: dict[str, str] = {
                     "title": str(entry["title"]),
                     "url": str(entry["url"]),

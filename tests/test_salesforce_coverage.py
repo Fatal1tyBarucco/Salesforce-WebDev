@@ -1,5 +1,6 @@
 """Tests for src/salesforce.py — 100% coverage."""
 
+from src.exceptions import ConfigError
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -320,7 +321,7 @@ class TestTrailheadMappingService:
         import pytest
 
         svc = TrailheadMappingService(config_path=tmp_path / "nope.json")
-        with pytest.raises(ValueError, match="not found"):
+        with pytest.raises(ConfigError, match="not found"):
             _ = svc.categories
 
     def test_invalid_json(self, tmp_path: Path) -> None:
@@ -330,7 +331,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "bad.json"
         p.write_text("not json{")
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="Invalid JSON"):
+        with pytest.raises(ConfigError, match="Invalid JSON"):
             _ = svc.categories
 
     def test_not_dict(self, tmp_path: Path) -> None:
@@ -340,7 +341,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "list.json"
         p.write_text(json.dumps([1, 2, 3]))
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="JSON object"):
+        with pytest.raises(ConfigError, match="JSON object"):
             _ = svc.categories
 
     def test_category_not_list(self, tmp_path: Path) -> None:
@@ -350,7 +351,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": "not a list"}))
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="must map to a list"):
+        with pytest.raises(ConfigError, match="must map to a list"):
             _ = svc.categories
 
     def test_entry_not_dict(self, tmp_path: Path) -> None:
@@ -360,7 +361,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": ["not a dict"]}))
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="must be an object"):
+        with pytest.raises(ConfigError, match="must be an object"):
             _ = svc.categories
 
     def test_missing_title(self, tmp_path: Path) -> None:
@@ -370,7 +371,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": [{"url": "http://x"}]}))
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="missing required 'title'"):
+        with pytest.raises(ConfigError, match="missing required 'title'"):
             _ = svc.categories
 
     def test_missing_url(self, tmp_path: Path) -> None:
@@ -380,7 +381,7 @@ class TestTrailheadMappingService:
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": [{"title": "T"}]}))
         svc = TrailheadMappingService(config_path=p)
-        with pytest.raises(ValueError, match="missing required 'url'"):
+        with pytest.raises(ConfigError, match="missing required 'url'"):
             _ = svc.categories
 
     def test_valid_config(self, tmp_path: Path) -> None:

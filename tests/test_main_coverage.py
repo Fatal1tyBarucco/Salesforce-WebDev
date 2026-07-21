@@ -8,6 +8,7 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from src.exceptions import LLMError, NotificationError
 
 from src.config import KNOWN_RELEASES, ReleaseInfo
 from src.main import (
@@ -182,7 +183,7 @@ async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
         patch("src.main._update_badge"),
         patch.dict(
             "sys.modules",
-            _ai_modules(mock_ai, triage_side_effect=RuntimeError("triage failed")),
+            _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed")),
         ),
     ):
         await _generate_ai_reports_async([release])
@@ -244,7 +245,7 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
     mock_ai = _make_ai_service()
 
     mock_impact_fail = MagicMock()
-    mock_impact_fail.analyze = AsyncMock(side_effect=RuntimeError("impact failed"))
+    mock_impact_fail.analyze = AsyncMock(side_effect=LLMError("impact failed"))
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
@@ -261,7 +262,7 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
     mock_triager.triage_issue = AsyncMock()
 
     mock_analyzer = MagicMock()
-    mock_analyzer.analyze = AsyncMock(side_effect=RuntimeError("impact failed"))
+    mock_analyzer.analyze = AsyncMock(side_effect=LLMError("impact failed"))
 
     mock_engine = MagicMock()
     mock_engine.generate_from_release = AsyncMock(return_value=None)
@@ -311,7 +312,7 @@ async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) ->
     mock_analyzer.analyze = AsyncMock(return_value=None)
 
     mock_engine = MagicMock()
-    mock_engine.generate_from_release = AsyncMock(side_effect=RuntimeError("notif failed"))
+    mock_engine.generate_from_release = AsyncMock(side_effect=NotificationError("notif failed"))
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
@@ -497,7 +498,7 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
 
     mock_classifier = mock_cls.return_value
-    mock_classifier.classify_release = AsyncMock(side_effect=RuntimeError("classifier error"))
+    mock_classifier.classify_release = AsyncMock(side_effect=LLMError("classifier error"))
 
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
@@ -910,7 +911,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
         patch(
             "src.main._generate_ai_reports_async",
             new_callable=AsyncMock,
-            side_effect=RuntimeError("AI failed"),
+            side_effect=LLMError("AI failed"),
         ),
         patch("src.health.set_pipeline_status") as mock_status,
         patch("src.main.logger"),

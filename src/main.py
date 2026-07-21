@@ -33,6 +33,7 @@ from .parser import (
     FeatureImpactParser,
 )
 from .scraper import SalesforceReleaseScraper
+from .exceptions import GitHubError, LLMError, NotificationError
 
 from .release_docs import (  # noqa: F401
     RELEASE_SECTION_HEADING,
@@ -161,7 +162,7 @@ async def _process_release_triage(
         issue_title = f"Release: {release.name}"
         issue_body = f"Release {release.name} with {total} features across {len(cats)} categories."
         await triager.triage_issue(issue_title, issue_body)
-    except Exception as e:
+    except (LLMError, GitHubError, OSError) as e:
         logger.warning("Issue triage failed: %s", e)
 
     issue_url = await ai_service.create_github_issue(release.name, total, len(cats))
@@ -180,7 +181,7 @@ async def _process_release_analytics(
         if report:
             impact_path = Path("IMPACT_REPORT.md")
             impact_path.write_text(_format_impact_report(report, release.name), encoding="utf-8")
-    except Exception as e:
+    except (LLMError, OSError) as e:
         logger.warning("Impact analysis failed: %s", e)
 
     try:
@@ -194,7 +195,7 @@ async def _process_release_analytics(
             digest = await engine.generate_digest(notifs, default_user)
             notif_path = Path("NOTIFICATION_DIGEST.md")
             notif_path.write_text(_format_notification_digest(digest), encoding="utf-8")
-    except Exception as e:
+    except (NotificationError, LLMError, OSError) as e:
         logger.warning("Notification digest failed: %s", e)
 
 
@@ -361,7 +362,7 @@ async def _enrich_meta_with_classification(release: ReleaseInfo) -> None:
                     encoding="utf-8",
                 )
                 logger.info("Feature classification added to .meta.json")
-    except Exception as e:
+    except (LLMError, OSError) as e:
         logger.warning("Feature classification failed: %s", e)
 
 
@@ -418,7 +419,7 @@ async def run_pipeline() -> None:
 
     try:
         await _generate_ai_reports_async(releases_to_process)
-    except Exception as e:
+    except (LLMError, GitHubError, NotificationError, OSError) as e:
         logger.warning("Failed to generate AI reports: %s", e)
         set_pipeline_status("completed_with_errors")
     else:

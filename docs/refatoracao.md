@@ -42,6 +42,10 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | V1 | SMTP: timeout de 30s adicionado em `smtplib.SMTP()` | ✅ | `—` |
 | V1 | Testes: 30+ novos testes para cobertura (95.01%) | ✅ | `—` |
 | CI | Black py314 + `except A, B:` (PEP 758) + `allow-prereleases` em todos os workflows | ✅ | `—` |
+| P0 | Hierarquia `exceptions.py` integrada: `ConfigError`, `ScraperError`, `BrowserError`, `LLMError`, `NotificationError`, `GitHubError` | ✅ | `—` |
+| P0 | 18 blocos `except Exception` substituídos por exceções específicas | ✅ | `—` |
+| P0 | 7 `raise ValueError` em `salesforce.py` → `ConfigError` | ✅ | `—` |
+| P0 | Testes atualizados para validar hierarquia de exceções | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 

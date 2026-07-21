@@ -7,6 +7,8 @@ import logging
 import subprocess
 from typing import Any, Optional, cast
 
+from ..exceptions import GitHubError
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,6 +56,6 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
         result = await asyncio.to_thread(run_gh)
         if result.returncode == 0:
             return cast(str, result.stdout.strip())
-    except Exception as e:
+    except (GitHubError, OSError, subprocess.SubprocessError) as e:
         logger.debug("github CLI indisponível ou falhou: %s", e)
     return None

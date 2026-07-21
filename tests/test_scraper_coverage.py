@@ -181,7 +181,7 @@ class TestScraperAsyncMethods:
         scraper = SalesforceReleaseScraper.__new__(SalesforceReleaseScraper)
         dest = tmp_path / "err.pdf"
 
-        with patch("urllib.request.urlopen", side_effect=Exception("timeout")):
+        with patch("urllib.request.urlopen", side_effect=TimeoutError("timeout")):
             result = asyncio.run(scraper.download_pdf("http://test.com/file.pdf", dest))
             assert result is False
 

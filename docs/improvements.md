@@ -86,3 +86,27 @@ Constantes extraídas: `_GRAPHQL_FIELD_MAP` e `_GRAPHQL_KEYWORDS`.
 | Novos testes (Fase 1 + V1) | 34 |
 
 Módulos com 100% de cobertura: `config`, `cache_manager`, `dashboard`, `generator`, `health`, `i18n`, `impact_analyzer`, `llm_service`, `logger`, `nl_search`, `notifications`, `parser`, `release_summarizer`, `salesforce`, `smart_notifications`, `translator`, `workflow`, `feature_classifier`, `automation/models`, `automation/notifications`.
+
+## P0 — Integração da Hierarquia de Exceções
+
+### Diagnóstico
+
+A hierarquia de exceções em `src/exceptions.py` (11 classes: `PipelineError`, `ScraperError`, `BrowserError`, `RateLimitError`, `ParserError`, `LLMError`, `LLMProviderExhausted`, `ConfigError`, `ExportError`, `NotificationError`, `GitHubError`) estava definida mas **nunca utilizada**. Todo o código usava `except Exception` genérico ou `raise ValueError`.
+
+### Mudanças
+
+| Arquivo | Antes | Depois |
+|---------|-------|--------|
+| `scraper.py` | 9× `except Exception` | `except (ScraperError, BrowserError, TimeoutError, OSError)` |
+| `main.py` | 5× `except Exception` | `except (LLMError, GitHubError, NotificationError, OSError)` |
+| `llm_service.py` | 2× `except Exception` (mantidos como último recurso) | Mantidos + import de `LLMError` |
+| `salesforce.py` | 7× `raise ValueError` | 7× `raise ConfigError` |
+| `github_ops.py` | 1× `except Exception` | `except (GitHubError, OSError, subprocess.SubprocessError)` |
+| `automation/github_ops.py` | `except Exception` | `except (GitHubError, OSError, subprocess.SubprocessError)` |
+
+### Benefícios
+
+- **Rastreabilidade**: cada erro é identificável pelo tipo
+- **Tratamento granular**: consumidores podem capturar exceções específicas
+- **Circuit breaker**: pode diferenciar erros transitórios de fatais
+- **Testes**: validam a hierarquia real, não apenas mensagens de erro
