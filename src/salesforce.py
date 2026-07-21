@@ -9,6 +9,8 @@ since the Trailhead public API is no longer available.
 
 from __future__ import annotations
 
+import functools
+
 import json
 import logging
 from .exceptions import ConfigError
@@ -21,15 +23,16 @@ logger = logging.getLogger(__name__)
 TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
 _DEFAULT_TRAILHEAD_JSON = Path(__file__).resolve().parent / "trailhead.json"
 
-_trailhead_service: TrailheadMappingService | None = None
-
 
 def _get_trailhead_service() -> TrailheadMappingService:
-    """Return the singleton TrailheadMappingService, loading JSON on first call."""
-    global _trailhead_service  # noqa: PLW0603
-    if _trailhead_service is None:
-        _trailhead_service = TrailheadMappingService()
-    return _trailhead_service
+    """Return a cached TrailheadMappingService instance (lazy singleton via lru_cache)."""
+    return _get_trailhead_service_cached()
+
+
+@functools.lru_cache(maxsize=1)
+def _get_trailhead_service_cached() -> TrailheadMappingService:
+    """Create and cache the TrailheadMappingService instance."""
+    return TrailheadMappingService()
 
 
 @dataclass

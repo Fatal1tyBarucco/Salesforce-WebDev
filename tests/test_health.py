@@ -19,27 +19,42 @@ class TestIncMetric:
 
     def test_inc_metric_default(self) -> None:
         """inc_metric increments by 1.0 by default."""
-        with patch("src.health._metrics", {"test_counter": 0}):
-            inc_metric("test_counter")
-            import src.health
+        import src.health as health_mod
 
-            assert src.health._metrics["test_counter"] == 1.0
+        state = health_mod._health_state
+        original = state._metrics.copy()
+        state._metrics = {"test_counter": 0}
+        try:
+            inc_metric("test_counter")
+            assert state._metrics["test_counter"] == 1.0
+        finally:
+            state._metrics = original
 
     def test_inc_metric_custom_value(self) -> None:
         """inc_metric increments by custom value."""
-        with patch("src.health._metrics", {"test_counter": 5}):
-            inc_metric("test_counter", 3.0)
-            import src.health
+        import src.health as health_mod
 
-            assert src.health._metrics["test_counter"] == 8.0
+        state = health_mod._health_state
+        original = state._metrics.copy()
+        state._metrics = {"test_counter": 5}
+        try:
+            inc_metric("test_counter", 3.0)
+            assert state._metrics["test_counter"] == 8.0
+        finally:
+            state._metrics = original
 
     def test_inc_metric_new_key(self) -> None:
         """inc_metric creates key if it doesn't exist."""
-        with patch("src.health._metrics", {}):
-            inc_metric("new_metric")
-            import src.health
+        import src.health as health_mod
 
-            assert src.health._metrics["new_metric"] == 1.0
+        state = health_mod._health_state
+        original = state._metrics.copy()
+        state._metrics = {}
+        try:
+            inc_metric("new_metric")
+            assert state._metrics["new_metric"] == 1.0
+        finally:
+            state._metrics = original
 
 
 class TestSetPipelineStatus:
@@ -47,28 +62,39 @@ class TestSetPipelineStatus:
 
     def test_set_status_completed(self) -> None:
         """set_pipeline_status('completed') increments pipeline_runs_total."""
-        with patch("src.health.inc_metric") as mock_inc:
-            set_pipeline_status("completed")
-            mock_inc.assert_any_call("pipeline_runs_total")
+        import src.health as health_mod
+
+        state = health_mod._health_state
+        original = state._metrics.get("pipeline_runs_total", 0)
+        set_pipeline_status("completed")
+        assert state._metrics["pipeline_runs_total"] == original + 1.0
 
     def test_set_status_completed_with_errors(self) -> None:
         """set_pipeline_status('completed_with_errors') increments pipeline_failures_total."""
-        with patch("src.health.inc_metric") as mock_inc:
-            set_pipeline_status("completed_with_errors")
-            mock_inc.assert_any_call("pipeline_failures_total")
+        import src.health as health_mod
+
+        state = health_mod._health_state
+        original = state._metrics.get("pipeline_failures_total", 0)
+        set_pipeline_status("completed_with_errors")
+        assert state._metrics["pipeline_failures_total"] == original + 1.0
 
     def test_set_status_running(self) -> None:
         """set_pipeline_status('running') does not increment counters."""
-        with patch("src.health.inc_metric") as mock_inc:
-            set_pipeline_status("running")
-            mock_inc.assert_not_called()
+        import src.health as health_mod
+
+        state = health_mod._health_state
+        runs_before = state._metrics.get("pipeline_runs_total", 0)
+        failures_before = state._metrics.get("pipeline_failures_total", 0)
+        set_pipeline_status("running")
+        assert state._metrics.get("pipeline_runs_total", 0) == runs_before
+        assert state._metrics.get("pipeline_failures_total", 0) == failures_before
 
     def test_set_status_updates_last_run_time(self) -> None:
         """set_pipeline_status updates last_run_time."""
         import src.health
 
         set_pipeline_status("running")
-        assert src.health._last_run_time != ""
+        assert src.health._health_state.last_run_time != ""
 
 
 class TestGetHealthData:

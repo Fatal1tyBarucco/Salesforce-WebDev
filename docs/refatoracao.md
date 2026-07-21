@@ -50,6 +50,9 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | P1 | `scraper.py`: CircuitBreaker inline → módulo compartilhado | ✅ | `—` |
 | P1 | `llm_service.py`: ProviderState → CircuitBreaker unificado | ✅ | `—` |
 | P1 | `PipelineConfig` dataclass com DI em `run_pipeline()` | ✅ | `—` |
+| P2 | Singleton `_trailhead_service` → `functools.lru_cache` (eliminado `global`) | ✅ | `—` |
+| P2 | Estado global `health.py` → `HealthState` class (encapsulado, injetável) | ✅ | `—` |
+| P2 | Trailhead cache migrada para `CacheManager` (TTL 7 dias) | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 

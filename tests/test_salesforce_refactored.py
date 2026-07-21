@@ -302,11 +302,16 @@ def test_singleton_caches_categories() -> None:
 def test_search_trailhead_uses_singleton() -> None:
     import src.salesforce as mod
 
-    mod._trailhead_service = None
+    # Clear lru_cache to ensure fresh instance
+    mod._get_trailhead_service_cached.cache_clear()
     modules = search_trailhead("Agentforce")
     assert len(modules) > 0
-    assert mod._trailhead_service is not None
-    mod._trailhead_service = None
+    # Verify cache is populated
+    assert (
+        mod._get_trailhead_service_cached.cache_info().hits > 0
+        or mod._get_trailhead_service_cached.cache_info().misses > 0
+    )
+    mod._get_trailhead_service_cached.cache_clear()
 
 
 def test_missing_json_file_fallback() -> None:
