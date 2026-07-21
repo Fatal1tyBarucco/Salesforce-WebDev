@@ -59,6 +59,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          allow-prereleases: true
 
       - name: Instalar dependências de desenvolvimento
         run: uv sync --extra dev
@@ -90,6 +91,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          allow-prereleases: true
 
       - name: Instalar dependências
         run: uv sync

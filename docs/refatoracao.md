@@ -41,6 +41,7 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | V1 | LLM: hierarquia de exceções corrigida (tipos específicos antes de Exception genérico) | ✅ | `—` |
 | V1 | SMTP: timeout de 30s adicionado em `smtplib.SMTP()` | ✅ | `—` |
 | V1 | Testes: 30+ novos testes para cobertura (95.01%) | ✅ | `—` |
+| CI | Black py314 + `except A, B:` (PEP 758) + `allow-prereleases` em todos os workflows | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 

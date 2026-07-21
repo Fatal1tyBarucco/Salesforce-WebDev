@@ -41,7 +41,7 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
         return False
     try:
         return int(status_code) == 429
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return False
 
 

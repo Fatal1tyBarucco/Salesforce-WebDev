@@ -45,7 +45,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
@@ -73,7 +73,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
 
 
@@ -188,9 +188,18 @@ _GRAPHQL_FIELD_MAP: dict[str, str] = {
     "category": "category",
 }
 
-_GRAPHQL_KEYWORDS = frozenset({
-    "query", "mutation", "subscription", "fragment", "on", "true", "false", "null",
-})
+_GRAPHQL_KEYWORDS = frozenset(
+    {
+        "query",
+        "mutation",
+        "subscription",
+        "fragment",
+        "on",
+        "true",
+        "false",
+        "null",
+    }
+)
 
 
 def _select_graphql_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
@@ -223,14 +232,22 @@ def _graphql_handle_release(slug: str, fields: list[str]) -> dict[str, Any]:
     return {"data": {"release": _select_graphql_fields(meta, fields)}}
 
 
-def _graphql_handle_diff(current_slug: str, previous_slug: str, fields: list[str]) -> dict[str, Any]:
+def _graphql_handle_diff(
+    current_slug: str, previous_slug: str, fields: list[str]
+) -> dict[str, Any]:
     """Handle `{ diff(current: "...", previous: "...") { ... } }` query."""
     current_meta = _find_meta(current_slug)
     if current_meta is None:
-        return {"data": {"diff": None}, "errors": [{"message": f"release '{current_slug}' not found"}]}
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{current_slug}' not found"}],
+        }
     previous_meta = _find_meta(previous_slug)
     if previous_meta is None:
-        return {"data": {"diff": None}, "errors": [{"message": f"release '{previous_slug}' not found"}]}
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{previous_slug}' not found"}],
+        }
     diff = _build_diff(current_meta, previous_meta)
     return {"data": {"diff": _select_graphql_fields(diff, fields)}}
 
@@ -263,7 +280,13 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
     # Validate: only one top-level operation allowed
     op_count = sum(1 for m in [releases_match, release_match, diff_match] if m)
     if op_count == 0:
-        return {"errors": [{"message": 'Unknown query. Supported: releases, release(slug: "..."), diff(current: "...", previous: "...")'}]}
+        return {
+            "errors": [
+                {
+                    "message": 'Unknown query. Supported: releases, release(slug: "..."), diff(current: "...", previous: "...")'
+                }
+            ]
+        }
 
     fields = _extract_requested_fields(query)
 
@@ -274,7 +297,14 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
     if diff_match:
         return _graphql_handle_diff(diff_match.group(1), diff_match.group(2), fields)
 
-    return {"errors": [{"message": "Unknown query. Supported: releases, release(slug), diff(current, previous)"}]}
+    return {
+        "errors": [
+            {
+                "message": "Unknown query. Supported: releases, release(slug), diff(current, previous)"
+            }
+        ]
+    }
+
 
 _OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
 
@@ -282,6 +312,7 @@ _OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
 def _generate_openapi_spec() -> dict[str, Any]:
     """Load OpenAPI 3.0 specification from bundled JSON file."""
     return json.loads(_OPENAPI_SPEC_PATH.read_text(encoding="utf-8"))
+
 
 class APIHandler(BaseHTTPRequestHandler):
     """HTTP handler for REST API, GraphQL, and OpenAPI endpoints."""
@@ -351,7 +382,7 @@ class APIHandler(BaseHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self._respond(400, {"error": "invalid Content-Length header"})
             return
         if content_length == 0:
@@ -361,7 +392,7 @@ class APIHandler(BaseHTTPRequestHandler):
         try:
             body = self.rfile.read(content_length)
             data: dict[str, Any] = json.loads(body.decode("utf-8"))
-        except (json.JSONDecodeError, UnicodeDecodeError):
+        except json.JSONDecodeError, UnicodeDecodeError:
             self._respond(400, {"error": "invalid JSON"})
             return
 
