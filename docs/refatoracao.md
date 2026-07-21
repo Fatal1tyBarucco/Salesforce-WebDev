@@ -55,6 +55,7 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 | P2 | Trailhead cache migrada para `CacheManager` (TTL 7 dias) | ✅ | `—` |
 | P2b | `CacheManager` enriquecido com `compute_file_hash`, `load/save_content_cache` | ✅ | `—` |
 | P2b | `content.py` migrada para usar `CacheManager` (eliminou JSON manual) | ✅ | `—` |
+| P3 | `py.typed` marker PEP 561 + mypy strict já compliance (39 source files) | ✅ | `—` |
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 
