@@ -1,0 +1,296 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Salesforce Release Notes API",
+    "description": "REST API for accessing Salesforce Release Notes data",
+    "version": "3.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081",
+      "description": "Local development"
+    }
+  ],
+  "paths": {
+    "/releases": {
+      "get": {
+        "summary": "List all releases",
+        "operationId": "listReleases",
+        "responses": {
+          "200": {
+            "description": "List of releases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "releases": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Release"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/releases/{slug}": {
+      "get": {
+        "summary": "Get release details",
+        "operationId": "getRelease",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Release details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Release"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Release not found"
+          }
+        }
+      }
+    },
+    "/releases/{slug}/categories/{name}": {
+      "get": {
+        "summary": "Get category features",
+        "operationId": "getCategoryFeatures",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category features",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryFeatures"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Release or category not found"
+          }
+        }
+      }
+    },
+    "/diff/{current}/{previous}": {
+      "get": {
+        "summary": "Compare two releases",
+        "operationId": "compareReleases",
+        "parameters": [
+          {
+            "name": "current",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previous",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Release comparison",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Diff"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Release not found"
+          }
+        }
+      }
+    },
+    "/graphql": {
+      "post": {
+        "summary": "GraphQL query endpoint",
+        "operationId": "graphql",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string"
+                  },
+                  "variables": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "GraphQL response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Release": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "release_id": {
+            "type": "integer"
+          },
+          "total_features": {
+            "type": "integer"
+          },
+          "avg_confidence": {
+            "type": "number"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      },
+      "CategoryFeatures": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Feature"
+            }
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "availability": {
+            "type": "string"
+          }
+        }
+      },
+      "Diff": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Change"
+            }
+          },
+          "total_delta": {
+            "type": "integer"
+          }
+        }
+      },
+      "Change": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "integer"
+          },
+          "current": {
+            "type": "integer"
+          },
+          "delta": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
