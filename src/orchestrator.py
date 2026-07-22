@@ -19,7 +19,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
-from .config import KNOWN_RELEASES, ReleaseInfo
+from .config import ReleaseInfo
 from .events import EventBus, get_event_bus
 from .exceptions import GitHubError, LLMError, NotificationError
 from .health import set_pipeline_status
@@ -111,8 +111,9 @@ class PipelineOrchestrator:
         """Detect which releases need processing."""
         release_filter = self._config.release_filter
 
+        known = self._config.known_releases or []
         if release_filter:
-            for r in KNOWN_RELEASES:
+            for r in known:
                 if r.slug == release_filter:
                     return [r]
             logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)

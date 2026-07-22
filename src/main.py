@@ -398,10 +398,13 @@ class PipelineConfig:
     cache: CacheManager | None = None
     event_bus: EventBus | None = None
     release_filter: str | None = None
+    known_releases: list[ReleaseInfo] | None = None
     dry_run: bool = False
 
     def __post_init__(self) -> None:
         """Initialize defaults for fields left as None."""
+        if self.known_releases is None:
+            self.known_releases = list(KNOWN_RELEASES)
         if self.cache is None:
             self.cache = CacheManager(cache_dir=Path("cache"), ttl_seconds=86400 * 7)
         if self.event_bus is None:
