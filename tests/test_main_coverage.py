@@ -13,9 +13,9 @@ from src.exceptions import LLMError, NotificationError
 from src.config import KNOWN_RELEASES, ReleaseInfo
 from src.main import (
     RELEASE_SECTION_HEADING,
-    _generate_ai_reports_async,
+    generate_ai_reports_async,
     _generate_release_files,
-    _update_readme_all,
+    update_readme_all,
 )
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
@@ -72,17 +72,17 @@ def _ai_modules(
 
 
 # ============================================================
-# 1. _generate_ai_reports_async (lines 161-265)
+# 1. generate_ai_reports_async (lines 161-265)
 # ============================================================
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_empty_list() -> None:
-    await _generate_ai_reports_async([])
+async def testgenerate_ai_reports_async_empty_list() -> None:
+    await generate_ai_reports_async([])
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_normal_execution(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_normal_execution(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -108,7 +108,7 @@ async def test_generate_ai_reports_async_normal_execution(tmp_path: Path) -> Non
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
     mock_ai.generate_changelog.assert_awaited_once()
     mock_ai.generate_quality_report.assert_awaited_once()
@@ -117,7 +117,7 @@ async def test_generate_ai_reports_async_normal_execution(tmp_path: Path) -> Non
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_import_error() -> None:
+async def testgenerate_ai_reports_async_import_error() -> None:
     """Test ImportError handling (lines 264-265)."""
     release = ReleaseInfo(name="Test", release_id=262, slug="test")
 
@@ -134,7 +134,7 @@ async def test_generate_ai_reports_async_import_error() -> None:
     # will raise ImportError (AIAutomationService not in failing_mod)
     sys.modules["src.ai_automation"] = failing_mod
     try:
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
     finally:
         if saved is not None:
             sys.modules["src.ai_automation"] = saved
@@ -143,7 +143,7 @@ async def test_generate_ai_reports_async_import_error() -> None:
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_no_previous_release(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_no_previous_release(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     release = ReleaseInfo(name="Spring '25", release_id=254, slug="spring_25")
@@ -157,14 +157,14 @@ async def test_generate_ai_reports_async_no_previous_release(tmp_path: Path) -> 
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
     mock_ai.generate_changelog.assert_awaited_once()
     mock_ai.generate_regression_report.assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -186,11 +186,11 @@ async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
             _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed")),
         ),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_impact_and_notification(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_impact_and_notification(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -228,11 +228,11 @@ async def test_generate_ai_reports_async_impact_and_notification(tmp_path: Path)
             ),
         ),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -287,13 +287,13 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
             },
         ),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
     mock_analyzer.analyze.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_notification_failure(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -334,13 +334,13 @@ async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) ->
             },
         ),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
     mock_engine.generate_from_release.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_issue_url_logged(tmp_path: Path) -> None:
+async def testgenerate_ai_reports_async_issue_url_logged(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -360,7 +360,7 @@ async def test_generate_ai_reports_async_issue_url_logged(tmp_path: Path) -> Non
         patch("src.main._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
-        await _generate_ai_reports_async([release])
+        await generate_ai_reports_async([release])
 
     mock_ai.create_github_issue.assert_awaited_once()
 
@@ -417,8 +417,8 @@ async def test_feature_classification_enriches_meta(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main._update_readme_all", new_callable=AsyncMock),
-        patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
+        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
@@ -462,8 +462,8 @@ async def test_feature_classification_no_meta_path(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main._update_readme_all", new_callable=AsyncMock),
-        patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
+        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
@@ -503,8 +503,8 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main._update_readme_all", new_callable=AsyncMock),
-        patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
+        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
@@ -546,8 +546,8 @@ async def test_feature_classification_empty_features(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main._update_readme_all", new_callable=AsyncMock),
-        patch("src.main._generate_ai_reports_async", new_callable=AsyncMock),
+        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
@@ -635,7 +635,7 @@ async def test_no_translation_for_pt_br(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_english_with_heading(tmp_path: Path) -> None:
+async def testupdate_readme_all_english_with_heading(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -669,7 +669,7 @@ async def test_update_readme_all_english_with_heading(tmp_path: Path) -> None:
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -681,7 +681,7 @@ async def test_update_readme_all_english_with_heading(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_english_no_heading_creates_file(tmp_path: Path) -> None:
+async def testupdate_readme_all_english_no_heading_creates_file(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -714,7 +714,7 @@ async def test_update_readme_all_english_no_heading_creates_file(tmp_path: Path)
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -723,7 +723,7 @@ async def test_update_readme_all_english_no_heading_creates_file(tmp_path: Path)
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_english_no_existing_file(tmp_path: Path) -> None:
+async def testupdate_readme_all_english_no_existing_file(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -756,7 +756,7 @@ async def test_update_readme_all_english_no_existing_file(tmp_path: Path) -> Non
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -764,7 +764,7 @@ async def test_update_readme_all_english_no_existing_file(tmp_path: Path) -> Non
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
+async def testupdate_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
 
@@ -801,7 +801,7 @@ async def test_update_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -812,7 +812,7 @@ async def test_update_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_english_category_labels(tmp_path: Path) -> None:
+async def testupdate_readme_all_english_category_labels(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -843,7 +843,7 @@ async def test_update_readme_all_english_category_labels(tmp_path: Path) -> None
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -853,7 +853,7 @@ async def test_update_readme_all_english_category_labels(tmp_path: Path) -> None
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_no_summary(tmp_path: Path) -> None:
+async def testupdate_readme_all_no_summary(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -884,7 +884,7 @@ async def test_update_readme_all_no_summary(tmp_path: Path) -> None:
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 
@@ -900,16 +900,16 @@ async def test_update_readme_all_no_summary(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
-    """Test that _generate_ai_reports_async exception sets completed_with_errors."""
+    """Test that generate_ai_reports_async exception sets completed_with_errors."""
     (tmp_path / "releases").mkdir()
     release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
 
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path / "releases")),
         patch("src.release_docs.RELEASES_DIR", str(tmp_path / "releases")),
-        patch("src.main._update_readme_all", new_callable=AsyncMock),
+        patch("src.main.update_readme_all", new_callable=AsyncMock),
         patch(
-            "src.main._generate_ai_reports_async",
+            "src.main.generate_ai_reports_async",
             new_callable=AsyncMock,
             side_effect=LLMError("AI failed"),
         ),
@@ -937,7 +937,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_update_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
+async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
     """Test en_US README where heading is at end of file (next_heading == -1)."""
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
@@ -971,7 +971,7 @@ async def test_update_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
             patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
             patch("src.release_summarizer.ReleaseSummarizer", return_value=mock_summarizer),
         ):
-            await _update_readme_all()
+            await update_readme_all()
     finally:
         os.chdir(original_dir)
 

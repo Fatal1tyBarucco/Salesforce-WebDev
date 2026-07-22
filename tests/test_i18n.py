@@ -99,7 +99,7 @@ def test_toggle_in_generated_file(tmp_path: Path) -> None:
 def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatch") -> None:
     import json
     from unittest.mock import patch
-    from src.main import _update_readme_all
+    from src.main import update_readme_all
 
     readme_path = tmp_path / "README.md"
     readme_path.write_text(
@@ -125,7 +125,7 @@ def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatc
         patch("src.main.RELEASES_DIR", str(tmp_path)),
         patch("src.release_docs.RELEASES_DIR", str(tmp_path)),
     ):
-        asyncio.run(_update_readme_all())
+        asyncio.run(update_readme_all())
 
     content = readme_path.read_text(encoding="utf-8")
     assert "Summer '26" in content
