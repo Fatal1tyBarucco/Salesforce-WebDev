@@ -8,14 +8,17 @@ from __future__ import annotations
 from typing import Any
 
 import asyncio
-
+import logging
 
 from dataclasses import dataclass
 from pathlib import Path
 
 from .config import RELEASES_DIR
 from .feature_classifier import FeatureClassifier, FeatureType, ImpactLevel
+from .heuristic_classifier import HeuristicFeatureClassifier
 from .llm_service import LLMService
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -50,6 +53,7 @@ class ImpactAnalyzer:
         self._base_dir = Path(base_dir)
         self._llm = llm or LLMService()
         self._classifier = FeatureClassifier(llm=self._llm)
+        self._heuristic = HeuristicFeatureClassifier()
 
     async def analyze(self, release_slug: str) -> ImpactReport | None:
         """Analyze impact for a release using a combination of classification and LLM analysis.
@@ -75,10 +79,35 @@ class ImpactAnalyzer:
         if not all_feature_texts:
             return None
 
-        # Classify all features in parallel
-        classified_features = await asyncio.gather(
-            *(self._classifier.classify_text(text) for text in all_feature_texts)
+        # Classify all features in parallel with heuristic fallback
+        raw_results = await asyncio.gather(
+            *(self._classifier.classify_text(text) for text in all_feature_texts),
+            return_exceptions=True,
         )
+
+        classified_features = []
+        for i, result in enumerate(raw_results):
+            if isinstance(result, BaseException):
+                logger.warning(
+                    "LLM classification failed for '%s', using heuristic: %s",
+                    all_feature_texts[i][:50],
+                    result,
+                )
+                fallback = self._heuristic.classify_text(all_feature_texts[i])
+                # Convert to ClassifiedFeature-like object
+                classified_features.append(
+                    type(
+                        "HeuristicResult",
+                        (),
+                        {
+                            "feature_type": FeatureType(fallback.get("type", "other")),
+                            "impact_level": ImpactLevel(fallback.get("impact", "medium")),
+                            "confidence": fallback.get("confidence", 0.3),
+                        },
+                    )()
+                )
+            else:
+                classified_features.append(result)
 
         breaking_changes: list[str] = []
         security_fixes: list[str] = []
@@ -176,10 +205,30 @@ class ImpactAnalyzer:
         area_counts: dict[str, int] = {}
         area_severity: dict[str, str] = {}
 
-        # Classify all features in parallel
-        classified_features = await asyncio.gather(
-            *(self._classifier.classify_text(text) for text in features)
+        # Classify all features in parallel with heuristic fallback
+        raw_results = await asyncio.gather(
+            *(self._classifier.classify_text(text) for text in features),
+            return_exceptions=True,
         )
+
+        classified_features = []
+        for i, result in enumerate(raw_results):
+            if isinstance(result, BaseException):
+                logger.warning("LLM classification failed, using heuristic: %s", result)
+                fallback = self._heuristic.classify_text(features[i])
+                classified_features.append(
+                    type(
+                        "HeuristicResult",
+                        (),
+                        {
+                            "feature_type": FeatureType(fallback.get("type", "other")),
+                            "impact_level": ImpactLevel(fallback.get("impact", "medium")),
+                            "confidence": fallback.get("confidence", 0.3),
+                        },
+                    )()
+                )
+            else:
+                classified_features.append(result)
 
         for classified in classified_features:
             area_name = self._map_type_to_area(classified.feature_type)

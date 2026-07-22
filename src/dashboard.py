@@ -131,9 +131,31 @@ def _build_dashboard_data() -> dict[str, Any]:
     }
 
 
+def _sanitize_value(value: Any) -> Any:
+    """Recursively sanitize string values to prevent XSS.
+
+    Escapes HTML special characters in all string values within
+    dicts and lists, preventing injection into the dashboard template.
+    """
+    if isinstance(value, str):
+        return (
+            value.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+        )
+    elif isinstance(value, dict):
+        return {k: _sanitize_value(v) for k, v in value.items()}
+    elif isinstance(value, list):
+        return [_sanitize_value(v) for v in value]
+    return value
+
+
 def generate_dashboard_html(data: dict[str, Any]) -> str:
-    """Generate interactive HTML dashboard."""
-    data_json = json.dumps(data, ensure_ascii=True)
+    """Generate interactive HTML dashboard with XSS-safe data."""
+    sanitized = _sanitize_value(data)
+    data_json = json.dumps(sanitized, ensure_ascii=True)
     template_path = Path(__file__).parent / "dashboard_template.html"
     template = template_path.read_text(encoding="utf-8")
     return template.replace("{DATA_JSON}", data_json)

@@ -27,6 +27,7 @@ from threading import Thread
 from typing import Any
 
 from .config import RELEASES_DIR, KNOWN_RELEASES
+from .models import ErrorResponse, ReleaseResponse
 
 logger = logging.getLogger(__name__)
 
@@ -328,15 +329,16 @@ class APIHandler(BaseHTTPRequestHandler):
         metas = _load_all_metas()
 
         if path == "/releases":
-            self._respond(200, {"releases": metas})
+            validated = [ReleaseResponse.model_validate(m).model_dump() for m in metas]
+            self._respond(200, {"releases": validated})
 
         elif path.startswith("/releases/") and path.count("/") == 2:
             slug = path.split("/")[2]
             meta = _find_meta(slug)
             if meta is None:
-                self._respond(404, {"error": f"release '{slug}' not found"})
+                self._respond(404, ErrorResponse(error=f"release '{slug}' not found").model_dump())
                 return
-            self._respond(200, meta)
+            self._respond(200, ReleaseResponse.model_validate(meta).model_dump())
 
         elif path.startswith("/releases/") and path.count("/") == 4:
             parts = path.split("/")

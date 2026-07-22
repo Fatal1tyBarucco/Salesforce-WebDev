@@ -127,10 +127,13 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
         next_id,
     )
 
-    current_text, next_text = await asyncio.gather(
+    results = await asyncio.gather(
         scraper.fetch_page_raw_text(current_url),
         scraper.fetch_page_raw_text(next_url),
+        return_exceptions=True,
     )
+    current_text = results[0] if not isinstance(results[0], BaseException) else None
+    next_text = results[1] if not isinstance(results[1], BaseException) else None
 
     if not current_text or not next_text:
         logger.info("Could not fetch pages for comparison")
@@ -241,29 +244,45 @@ async def _generate_ai_reports_async(
                 ai_service.generate_diff_report(current_slug, previous_slug),
             ]
 
-        # Gather general and diff reports
+        # Gather general and diff reports with graceful error handling
         all_initial_tasks = [changelog_task, quality_task] + diff_tasks
-        all_results = await asyncio.gather(*all_initial_tasks)
+        all_results = await asyncio.gather(*all_initial_tasks, return_exceptions=True)
 
-        Path("CHANGELOG.md").write_text(all_results[0], encoding="utf-8")
-        Path("QUALITY_REPORT.md").write_text(all_results[1], encoding="utf-8")
+        def _safe_write(result: Any, path: str) -> None:
+            if isinstance(result, BaseException):
+                logger.warning("Failed to generate %s: %s", path, result)
+                Path(path).write_text(f"# Error\n\n{result}\n", encoding="utf-8")
+            else:
+                Path(path).write_text(result, encoding="utf-8")
+
+        _safe_write(all_results[0], "CHANGELOG.md")
+        _safe_write(all_results[1], "QUALITY_REPORT.md")
 
         if previous_slug:
-            Path("REGRESSION_REPORT.md").write_text(all_results[2], encoding="utf-8")
-            Path("DIFF_REPORT.md").write_text(all_results[3], encoding="utf-8")
+            _safe_write(all_results[2], "REGRESSION_REPORT.md")
+            _safe_write(all_results[3], "DIFF_REPORT.md")
             logger.info("Regression and Diff reports generated.")
 
         _update_badge(releases_to_process)
 
-        # Per-release AI processing
-        await asyncio.gather(
-            *(_process_release_triage(ai_service, triager, r) for r in releases_to_process)
+        # Per-release AI processing (each release independent)
+        triage_results = await asyncio.gather(
+            *(_process_release_triage(ai_service, triager, r) for r in releases_to_process),
+            return_exceptions=True,
         )
+        for i, result in enumerate(triage_results):
+            if isinstance(result, BaseException):
+                logger.warning("Triage failed for %s: %s", releases_to_process[i].slug, result)
 
-        # Impact and Notification Reports
-        await asyncio.gather(
-            *(_process_release_analytics(analyzer, engine, r) for r in releases_to_process)
+        # Impact and Notification Reports (each release independent)
+        analytics_results = await asyncio.gather(
+            *(_process_release_analytics(analyzer, engine, r) for r in releases_to_process),
+            return_exceptions=True,
         )
+        for i, result in enumerate(analytics_results):
+            if isinstance(result, BaseException):
+                logger.warning("Analytics failed for %s: %s", releases_to_process[i].slug, result)
+
         logger.info("All AI reports generated concurrently.")
 
     except ImportError as e:
