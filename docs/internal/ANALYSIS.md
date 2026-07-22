@@ -1,7 +1,7 @@
 # 📊 Análise Profunda — Salesforce Release Notes Intelligence
 
-**Data:** 2026-07-20  
-**Versão atual:** 3.1.0  
+**Data:** 2026-07-20
+**Versão atual:** 3.1.0
 **Base:** 8.861 linhas de código (25 módulos), 704 testes
 
 ---
@@ -243,9 +243,9 @@ python -m src.cli badge --update
 
 **Solução:** Padronizar com structlog ou logging config:
 ```python
-logger.info("release_processed", 
-    release="summer_26", 
-    features=1373, 
+logger.info("release_processed",
+    release="summer_26",
+    features=1373,
     categories=22,
     duration_ms=45000)
 ```

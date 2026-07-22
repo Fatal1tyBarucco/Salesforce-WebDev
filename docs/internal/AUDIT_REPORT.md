@@ -1,7 +1,7 @@
 # 🔍 Relatório de Auditoria Completa — Salesforce-WebDev
 
-**Data:** 2026-07-15  
-**Escopo:** Todos os módulos de automação (`src/`), CI/CD (`.github/workflows/`), e testes  
+**Data:** 2026-07-15
+**Escopo:** Todos os módulos de automação (`src/`), CI/CD (`.github/workflows/`), e testes
 **Metodologia:** Revisão manual linha-a-linha de todos os 24 módulos Python + 7 workflows CI/CD
 
 ---
@@ -10,7 +10,7 @@
 
 ### BUG-001: SyntaxError em 13+ arquivos — `except X, Y:` é sintaxe Python 2
 
-**Severidade:** 🔴 CRÍTICA (impede execução em Python 3)  
+**Severidade:** 🔴 CRÍTICA (impede execução em Python 3)
 **Afeta:** scraper.py, translator.py, ai_automation.py, health.py, notifications.py, workflow.py, smart_notifications.py, impact_analyzer.py, issue_triage.py, release_summarizer.py, dashboard.py, api.py, analytics.py
 
 **O problema:** Múltiplos arquivos usam `except ExcecaoA, ExcecaoB:` que é sintaxe **Python 2**. Em Python 3, isso é interpretado como `except ExcecaoA:` com alias `ExcecaoB`, o que:
@@ -56,7 +56,7 @@ except (TypeError, ValueError):
 
 ### BUG-002: Circuit Breaker do Scraper não reseta falhas após cooldown
 
-**Severidade:** 🔴 CRÍTICA  
+**Severidade:** 🔴 CRÍTICA
 **Arquivo:** `scraper.py` — classe `CircuitBreaker`
 
 ```python
@@ -89,7 +89,7 @@ def is_open(self) -> bool:
 
 ### BUG-003: Logger duplicado em `scraper.py`
 
-**Severidade:** 🟡 MÉDIA  
+**Severidade:** 🟡 MÉDIA
 **Arquivo:** `scraper.py`, linhas 20-22
 
 ```python
@@ -104,7 +104,7 @@ logger = logging.getLogger(__name__)  # ← Duplicata
 
 ### BUG-004: `main.py` — `detect_new_release` pode retornar release já existente
 
-**Severidade:** 🔴 CRÍTICA  
+**Severidade:** 🔴 CRÍTICA
 **Arquivo:** `main.py`, função `detect_new_release`
 
 ```python
@@ -122,7 +122,7 @@ if current is None:
 
 ### BUG-005: `_build_release_name` assume sequência perfeita de releases
 
-**Severidade:** 🟠 ALTA  
+**Severidade:** 🟠 ALTA
 **Arquivo:** `main.py`
 
 ```python
@@ -138,7 +138,7 @@ RELEASE_ID_STEP = 2
 
 ### BUG-006: Tradução não afeta subcategorias no `main.py`
 
-**Severidade:** 🟡 MÉDIA  
+**Severidade:** 🟡 MÉDIA
 **Arquivo:** `main.py`, `_generate_release_files`
 
 ```python
@@ -158,7 +158,7 @@ if locale == "en_US" and translator:
 
 ### BUG-007: `_format_impact_report` e `_format_notification_digest` usam `object` como tipo
 
-**Severidade:** 🟡 MÉDIA  
+**Severidade:** 🟡 MÉDIA
 **Arquivo:** `main.py`
 
 ```python
@@ -172,7 +172,7 @@ def _format_notification_digest(digest: object) -> str:
 
 ### BUG-008: `generate_dynamic_badge` é método de instância mas chamado como estático
 
-**Severidade:** 🟡 MÉDIA  
+**Severidade:** 🟡 MÉDIA
 **Arquivo:** `ai_automation.py` + `main.py`
 
 Em `ai_automation.py`:
@@ -198,7 +198,7 @@ Mas isso cria uma instância desnecessária de `AIAutomationService` (e seu `LLM
 
 ### BUG-009: `workflow.py` — `commit_and_push` hardcodeia diretórios
 
-**Severidade:** 🟠 ALTA  
+**Severidade:** 🟠 ALTA
 **Arquivo:** `workflow.py`
 
 ```python
@@ -214,7 +214,7 @@ subprocess.run(
 
 ### BUG-010: API GraphQL — parser regex é frágil e inseguro
 
-**Severidade:** 🟠 ALTA  
+**Severidade:** 🟠 ALTA
 **Arquivo:** `api.py`, `_execute_graphql`
 
 ```python
@@ -222,7 +222,7 @@ releases_match = re.search(r"releases\s*\{", query)
 release_match = re.search(r'release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)\s*\{', query)
 ```
 
-**O problema:** 
+**O problema:**
 1. O parser regex não suporta queries GraphQL reais (fragments, variables inline, nested queries)
 2. Não valida a query contra um schema
 3. `requested_fields` extrai **todas** as palavras após o primeiro `{`, incluindo keywords de controle

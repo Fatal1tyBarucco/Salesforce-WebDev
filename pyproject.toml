@@ -48,7 +48,7 @@ mypy_path = "stubs"
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = "-q --tb=short"
+addopts = "-q --tb=short --durations=10"
 filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]
