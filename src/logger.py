@@ -106,7 +106,7 @@ def _setup_sentry() -> None:
         return
 
     try:
-        import sentry_sdk
+        import sentry_sdk  # type: ignore[import-not-found]
 
         sentry_sdk.init(
             dsn=dsn,
