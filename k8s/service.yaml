@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: salesforce-release-notes
+  labels:
+    app: salesforce-release-notes
+spec:
+  selector:
+    app: salesforce-release-notes
+  ports:
+    - name: health
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP

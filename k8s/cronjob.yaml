@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: salesforce-release-notes
+  labels:
+    app: salesforce-release-notes
+spec:
+  schedule: "0 8 * * 1"  # Every Monday at 08:00 UTC
+  concurrencyPolicy: Forbid  # Never run concurrently
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: salesforce-release-notes
+        spec:
+          containers:
+            - name: pipeline
+              image: ghcr.io/fatal1tybarucco/salesforce-webdev:latest
+              command: ["uv", "run", "python", "src/main.py"]
+              env:
+                - name: OPENAI_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: llm-secrets
+                      key: openai-api-key
+                      optional: true
+                - name: GOOGLE_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: llm-secrets
+                      key: google-api-key
+                      optional: true
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "2Gi"
+                  cpu: "1000m"
+          restartPolicy: OnFailure
