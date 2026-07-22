@@ -54,12 +54,13 @@ class LLMService:
         self._clients: dict[str, Any] = {}  # Lazy-initialized, cached per provider
         self._cache = cache
 
-        if providers:
+        _auto_loaded = providers is None
+        if providers is not None:
             self._providers = providers
         else:
             self._providers = self._load_providers_from_env()
 
-        if not self._providers and client is None:
+        if _auto_loaded and not self._providers and client is None:
             raise ValueError(
                 "No LLM providers configured. Set at least one of: "
                 "OPENAI_API_KEY, GOOGLE_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "

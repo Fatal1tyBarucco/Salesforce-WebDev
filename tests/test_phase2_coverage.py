@@ -400,7 +400,9 @@ class TestLLMServiceResilience:
                 )
             ]
         with patch.dict(os.environ, {}, clear=True):
-            service = LLMService(config=CircuitBreakerConfig(threshold=1, cooldown=0))
+            service = LLMService(
+                config=CircuitBreakerConfig(threshold=1, cooldown=0), providers=providers
+            )
         service._providers = providers
         service._provider_states = {
             p.name: MagicMock(failures=0, circuit_open=False) for p in providers
