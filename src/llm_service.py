@@ -2,6 +2,7 @@
 
 import asyncio
 import hashlib
+import inspect
 import logging
 import os
 from typing import Any, Optional
@@ -96,7 +97,7 @@ class LLMService:
         for name, client in self._clients.items():
             try:
                 close = getattr(client, "close", None)
-                if close and asyncio.iscoroutinefunction(close):
+                if close and inspect.iscoroutinefunction(close):
                     await close()
                 elif close:
                     close()
@@ -225,7 +226,7 @@ class LLMService:
             return response.choices[0].message.content or ""
         elif isinstance(response, str):
             return response
-        return str(response)
+        return ""
 
     @retry(
         retry=retry_if_exception_type((ConnectionError, TimeoutError)),
