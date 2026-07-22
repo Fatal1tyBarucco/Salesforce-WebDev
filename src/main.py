@@ -36,6 +36,7 @@ from .parser import (
 from .scraper import SalesforceReleaseScraper
 from .exceptions import GitHubError, LLMError, NotificationError
 from .llm_service import LLMService
+from .events import EventBus, get_event_bus
 
 from .release_docs import (  # noqa: F401
     RELEASE_SECTION_HEADING,
@@ -394,6 +395,7 @@ class PipelineConfig:
     translator: TranslatorService | None = None
     llm: LLMService | None = None
     cache: CacheManager | None = None
+    event_bus: EventBus | None = None
     release_filter: str | None = None
     dry_run: bool = False
 
@@ -401,6 +403,8 @@ class PipelineConfig:
         """Initialize defaults for fields left as None."""
         if self.cache is None:
             self.cache = CacheManager(cache_dir=Path("cache"), ttl_seconds=86400 * 7)
+        if self.event_bus is None:
+            self.event_bus = get_event_bus()
         if self.llm is None:
             self.llm = LLMService(cache=self.cache)
         if self.scraper is None:
@@ -444,6 +448,9 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
         logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
 
     releases_to_process: list[ReleaseInfo] = []
+    bus = config.event_bus or get_event_bus()
+
+    await bus.emit("pipeline.started", {"dry_run": config.dry_run}, source="run_pipeline")
 
     async with scraper:
         if release_filter:
@@ -453,14 +460,17 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
                     break
             if not releases_to_process:
                 logger.error("Release '%s' not found in KNOWN_RELEASES", release_filter)
+                await bus.emit("pipeline.error", {"error": "release not found"}, source="run_pipeline")
                 return
         else:
             new_release = await detect_new_release(scraper)
             if new_release:
                 releases_to_process.append(new_release)
+                await bus.emit("release.detected", {"slug": new_release.slug, "name": new_release.name}, source="run_pipeline")
             else:
                 logger.info("No new release detected. Updating README only.")
                 await _update_readme_all()
+                await bus.emit("pipeline.completed", {"new_releases": 0}, source="run_pipeline")
                 return
 
         async with llm:
@@ -468,8 +478,10 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
                 await _process_single_release(
                     release, scraper, impact_parser, generator, translator, config.dry_run
                 )
+                await bus.emit("release.processed", {"slug": release.slug, "name": release.name}, source="run_pipeline")
                 if not config.dry_run:
                     await _enrich_meta_with_classification(release, classifier=None)
+                    await bus.emit("release.classified", {"slug": release.slug}, source="run_pipeline")
 
             await _update_readme_all()
 
@@ -478,8 +490,10 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
             except (LLMError, GitHubError, NotificationError, OSError) as e:
                 logger.warning("Failed to generate AI reports: %s", e)
                 set_pipeline_status("completed_with_errors")
+                await bus.emit("pipeline.error", {"error": str(e)}, source="run_pipeline")
             else:
                 set_pipeline_status("completed")
+                await bus.emit("pipeline.completed", {"new_releases": len(releases_to_process)}, source="run_pipeline")
 
 
 def main() -> None:
