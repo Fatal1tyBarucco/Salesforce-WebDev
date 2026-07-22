@@ -17,6 +17,7 @@ if "google" not in sys.modules:
 
 # Prevent LLMService from raising ValueError when no API keys are set
 import os
+
 os.environ.setdefault("OPENAI_API_KEY", "test-key-placeholder")
 
 
