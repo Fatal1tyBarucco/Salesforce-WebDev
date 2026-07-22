@@ -275,7 +275,10 @@ def generate_release_resources_section(release_slug: str, release_name: str) -> 
 
 
 def generate_category_trailhead_section(
-    category_name: str, release_slug: str, locale: str = "pt_BR"
+    category_name: str,
+    release_slug: str,
+    locale: str = "pt_BR",
+    trailhead_service: TrailheadMappingService | None = None,
 ) -> str:
     """Generate Trailhead section with category-specific modules.
 
@@ -283,6 +286,7 @@ def generate_category_trailhead_section(
         category_name: The category name (e.g., "Agentforce")
         release_slug: The release slug (e.g., "summer_26")
         locale: Locale for section headers (default: "pt_BR")
+        trailhead_service: Optional injected service (defaults to singleton).
 
     Returns:
         Markdown section with relevant Trailhead modules.
@@ -290,7 +294,7 @@ def generate_category_trailhead_section(
     from .i18n import LOCALIZATION_MAP
 
     i18n = LOCALIZATION_MAP[locale]
-    service = _get_trailhead_service()
+    service = trailhead_service or _get_trailhead_service()
     modules = service.search(category_name, max_results=5)
 
     lines = [f"## 🎓 {i18n['trailhead_section']}\n"]

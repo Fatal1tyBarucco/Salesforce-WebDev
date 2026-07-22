@@ -78,6 +78,9 @@ def setup_logging(*, json_format: bool = False) -> None:
     root.addHandler(handler)
     root.addFilter(_correlation_filter)
 
+    # Optional Sentry integration (requires sentry-sdk)
+    _setup_sentry()
+
 
 def new_correlation_id() -> str:
     """Generate a new correlation ID and set it as the active one."""
@@ -89,3 +92,27 @@ def new_correlation_id() -> str:
 def get_correlation_id() -> str:
     """Get the current correlation ID."""
     return _correlation_filter.correlation_id
+
+
+def _setup_sentry() -> None:
+    """Initialize Sentry if SENTRY_DSN is configured.
+
+    Requires ``sentry-sdk`` to be installed.  Silently skips if not available.
+    """
+    import os
+
+    dsn = os.environ.get("SENTRY_DSN", "")
+    if not dsn:
+        return
+
+    try:
+        import sentry_sdk
+
+        sentry_sdk.init(
+            dsn=dsn,
+            traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "0.1")),
+            environment=os.environ.get("SENTRY_ENVIRONMENT", "production"),
+        )
+        logging.getLogger(__name__).info("Sentry error tracking initialized")
+    except ImportError:
+        logging.getLogger(__name__).debug("sentry-sdk not installed, skipping Sentry integration")
