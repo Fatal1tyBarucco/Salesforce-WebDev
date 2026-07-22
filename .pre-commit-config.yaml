@@ -25,8 +25,31 @@ repos:
     hooks:
       - id: mypy
         files: ^src/
+        args:
+          - --ignore-missing-imports
+          - --disallow-untyped-defs
+          - --disallow-incomplete-defs
         additional_dependencies:
           - types-requests
           - types-beautifulsoup4
           - types-html5lib
           - types-webencodings
+
+  # Local hooks — run in the project's own venv (uv)
+  - repo: local
+    hooks:
+      - id: pytest-fast
+        name: 🧪 Pytest (fast, no coverage)
+        entry: uv run pytest tests/ -x -q --tb=short --no-header
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: pytest-coverage
+        name: 🧪 Pytest (coverage ≥95%)
+        entry: uv run pytest tests/ --cov=src --cov-fail-under=95 -q --tb=short --no-header
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [manual]
