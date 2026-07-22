@@ -48,6 +48,7 @@ class LLMService:
         self._logger = logging.getLogger(__name__)
         self._provider_states: dict[str, CircuitBreaker] = {}
         self._providers: list[LLMProvider] = []
+        self._clients: dict[str, Any] = {}  # Lazy-initialized, cached per provider
 
         if providers:
             self._providers = providers
@@ -60,6 +61,46 @@ class LLMService:
             )
 
         self._client = client
+
+    async def __aenter__(self) -> "LLMService":
+        """Enter async context — pre-warm clients for all providers."""
+        for provider in self._providers:
+            self._get_or_create_client(provider)
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any,
+    ) -> None:
+        """Exit async context — close all cached clients."""
+        for name, client in self._clients.items():
+            try:
+                close = getattr(client, "close", None)
+                if close and asyncio.iscoroutine_function(close):
+                    await close()
+                elif close:
+                    close()
+            except Exception:
+                self._logger.debug("Error closing client %s", name, exc_info=True)
+        self._clients.clear()
+
+    def _get_or_create_client(self, provider: LLMProvider) -> Any:
+        """Return a cached client for the provider, creating one if needed."""
+        if provider.name in self._clients:
+            return self._clients[provider.name]
+
+        if provider.provider_type == "google":
+            client = genai.Client(api_key=provider.api_key)
+        else:
+            client = openai.AsyncOpenAI(
+                api_key=provider.api_key,
+                base_url=provider.base_url,
+                timeout=30.0,
+            )
+        self._clients[provider.name] = client
+        return client
 
     def _load_providers_from_env(self) -> list[LLMProvider]:
         """Load provider configurations from environment variables.
@@ -148,11 +189,7 @@ class LLMService:
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
         """Call OpenAI-compatible provider with timeout and retry."""
-        client = openai.AsyncOpenAI(
-            api_key=provider.api_key,
-            base_url=provider.base_url,
-            timeout=30.0,
-        )
+        client = self._get_or_create_client(provider)
         response = await asyncio.wait_for(
             client.chat.completions.create(
                 model=provider.model,
@@ -181,7 +218,7 @@ class LLMService:
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
         """Call Google Gemini provider with timeout and retry."""
-        client = genai.Client(api_key=provider.api_key)
+        client = self._get_or_create_client(provider)
         response = await asyncio.wait_for(
             client.aio.models.generate_content(
                 model=provider.model,

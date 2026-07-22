@@ -460,22 +460,23 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
                 await _update_readme_all()
                 return
 
-        for release in releases_to_process:
-            await _process_single_release(
-                release, scraper, impact_parser, generator, translator, config.dry_run
-            )
-            if not config.dry_run:
-                await _enrich_meta_with_classification(release, classifier=None)
+        async with llm:
+            for release in releases_to_process:
+                await _process_single_release(
+                    release, scraper, impact_parser, generator, translator, config.dry_run
+                )
+                if not config.dry_run:
+                    await _enrich_meta_with_classification(release, classifier=None)
 
-    await _update_readme_all()
+            await _update_readme_all()
 
-    try:
-        await _generate_ai_reports_async(releases_to_process, llm=llm)
-    except (LLMError, GitHubError, NotificationError, OSError) as e:
-        logger.warning("Failed to generate AI reports: %s", e)
-        set_pipeline_status("completed_with_errors")
-    else:
-        set_pipeline_status("completed")
+            try:
+                await _generate_ai_reports_async(releases_to_process, llm=llm)
+            except (LLMError, GitHubError, NotificationError, OSError) as e:
+                logger.warning("Failed to generate AI reports: %s", e)
+                set_pipeline_status("completed_with_errors")
+            else:
+                set_pipeline_status("completed")
 
 
 def main() -> None:
