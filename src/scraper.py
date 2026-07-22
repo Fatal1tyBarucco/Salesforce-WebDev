@@ -243,8 +243,8 @@ class SalesforceReleaseScraper:
             await self._expand_toc_nodes(page)
 
         if return_text:
-            return await page.inner_text("body")
-        return await page.content()
+            return str(await page.inner_text("body"))
+        return str(await page.content())
 
     async def _expand_toc_nodes(self, page: Page) -> None:
         """Click collapsed tree nodes in the ToC to reveal all topics.
@@ -344,10 +344,10 @@ class SalesforceReleaseScraper:
                     selector,
                     len(html),
                 )
-                return html
+                return str(html)
 
         logger.warning("No ToC container found, returning full page HTML")
-        return await page.content()
+        return str(await page.content())
 
     async def fetch_page_raw_text(self, url: str) -> Optional[str]:
         """Fetch page and return inner_text of body (for feature impact page).
@@ -397,6 +397,29 @@ class SalesforceReleaseScraper:
 
         logger.error("All %d attempts failed for raw text: %s", MAX_RETRY_ATTEMPTS, url)
         return None
+
+    async def fetch_multiple_raw_text(
+        self,
+        urls: list[str],
+        max_concurrent: int = 5,
+    ) -> list[Optional[str]]:
+        """Fetch raw text from multiple URLs concurrently with rate limiting.
+
+        Args:
+            urls: List of URLs to fetch.
+            max_concurrent: Maximum concurrent requests (respects rate limiter).
+
+        Returns:
+            List of responses aligned with input URLs.
+        """
+        semaphore = asyncio.Semaphore(max_concurrent)
+
+        async def _fetch_one(url: str) -> Optional[str]:
+            async with semaphore:
+                await self._rate_limiter.acquire()
+                return await self.fetch_page_raw_text(url)
+
+        return list(await asyncio.gather(*(_fetch_one(u) for u in urls)))
 
     async def _ensure_browser(self) -> bool:
         """Ensure the browser is running. Relaunch if crashed."""
