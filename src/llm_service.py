@@ -1,6 +1,7 @@
 """LLM service with fallback chain across multiple providers."""
 
 import asyncio
+import hashlib
 import logging
 import os
 from typing import Any, Optional
@@ -10,6 +11,7 @@ import openai
 from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from .circuit_breaker import CircuitBreaker
+from .cache_manager import CacheManager
 
 
 @dataclass
@@ -43,12 +45,14 @@ class LLMService:
         config: CircuitBreakerConfig = CircuitBreakerConfig(),
         client: Any = None,
         providers: list[LLMProvider] | None = None,
+        cache: CacheManager | None = None,
     ) -> None:
         self._config = config
         self._logger = logging.getLogger(__name__)
         self._provider_states: dict[str, CircuitBreaker] = {}
         self._providers: list[LLMProvider] = []
         self._clients: dict[str, Any] = {}  # Lazy-initialized, cached per provider
+        self._cache = cache
 
         if providers:
             self._providers = providers
@@ -61,6 +65,12 @@ class LLMService:
             )
 
         self._client = client
+
+    @staticmethod
+    def _prompt_hash(system_prompt: str, user_prompt: str) -> str:
+        """Generate a deterministic hash for a prompt pair."""
+        combined = f"{system_prompt}\x00{user_prompt}"
+        return hashlib.sha256(combined.encode("utf-8")).hexdigest()
 
     async def __aenter__(self) -> "LLMService":
         """Enter async context — pre-warm clients for all providers."""
@@ -246,8 +256,17 @@ class LLMService:
         """Generate text with automatic fallback across providers.
 
         Tries each provider in order. If one fails, moves to the next.
-        Returns the first successful response.
+        Returns the first successful response.  Uses prompt-hash cache
+        when a CacheManager was provided at construction time.
         """
+        # Cache lookup
+        cache_key = self._prompt_hash(system_prompt, user_prompt)
+        if self._cache is not None:
+            cached = self._cache.get(cache_key, namespace="llm")
+            if cached is not None:
+                self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
+                return cached
+
         for provider in self._providers:
             if not self._is_provider_available(provider):
                 self._logger.debug("Provider '%s' unavailable, trying next", provider.name)
@@ -257,6 +276,8 @@ class LLMService:
                 result = await self._call_provider(provider, system_prompt, user_prompt)
                 self._record_success(provider)
                 self._logger.info("Provider '%s' succeeded", provider.name)
+                if self._cache is not None:
+                    self._cache.set(cache_key, result, namespace="llm")
                 return result
             except openai.RateLimitError as e:
                 self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
@@ -290,7 +311,10 @@ class LLMService:
                     ],
                     temperature=0.0,
                 )
-                return response.choices[0].message.content or ""
+                result = response.choices[0].message.content or ""
+                if self._cache is not None:
+                    self._cache.set(cache_key, result, namespace="llm")
+                return result
             except Exception as e:
                 self._logger.error("Legacy client error: %s", e)
 

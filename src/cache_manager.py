@@ -1,8 +1,10 @@
-"""Unified file-based caching with TTL and content-hash support.
+"""Unified file-based caching with TTL, content-hash, and namespace support.
 
 Provides a single source of truth for all caching in the pipeline:
 - TTL-based expiration for API responses and metadata
 - Content-hash based invalidation for file change detection
+- Namespace-based grouping for bulk invalidation
+- Cache statistics (hits, misses, evictions)
 - Thread-safe file operations
 
 Usage::
@@ -13,6 +15,14 @@ Usage::
     cache = CacheManager(cache_dir=Path("cache"), ttl_seconds=3600)
     cache.set("key", {"data": "value"})
     result = cache.get("key")
+
+    # Namespaced cache (group-related entries)
+    cache.set("prompt1", "response", namespace="llm")
+    cache.invalidate_namespace("llm")  # clear all LLM cache
+
+    # Cache statistics
+    stats = cache.stats
+    print(f"Hit rate: {stats.hit_rate:.0%}")
 
     # Content-hash cache (file change detection)
     file_hash = cache.get_content_hash(Path("file.md"))
@@ -25,10 +35,37 @@ import hashlib
 import json
 import logging
 import time
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CacheStats:
+    """Cache performance statistics."""
+
+    hits: int = 0
+    misses: int = 0
+    evictions: int = 0
+    sets: int = 0
+
+    @property
+    def total(self) -> int:
+        """Total number of cache lookups."""
+        return self.hits + self.misses
+
+    @property
+    def hit_rate(self) -> float:
+        """Cache hit rate (0.0 to 1.0)."""
+        return self.hits / self.total if self.total > 0 else 0.0
+
+    def __repr__(self) -> str:
+        return (
+            f"CacheStats(hits={self.hits}, misses={self.misses}, "
+            f"evictions={self.evictions}, hit_rate={self.hit_rate:.1%})"
+        )
 
 
 class CacheManager:
@@ -43,59 +80,134 @@ class CacheManager:
         self._cache_dir = cache_dir
         self._ttl_seconds = ttl_seconds
         self._cache_dir.mkdir(parents=True, exist_ok=True)
+        self._stats = CacheStats()
 
-    def _get_cache_path(self, key: str) -> Path:
+    @property
+    def stats(self) -> CacheStats:
+        """Return current cache statistics."""
+        return self._stats
+
+    def _get_cache_path(self, key: str, namespace: str = "") -> Path:
         """Return the cache file path for a given key."""
-        key_hash = hashlib.sha256(key.encode("utf-8")).hexdigest()
+        full_key = f"{namespace}:{key}" if namespace else key
+        key_hash = hashlib.sha256(full_key.encode("utf-8")).hexdigest()
+        if namespace:
+            ns_dir = self._cache_dir / namespace
+            ns_dir.mkdir(parents=True, exist_ok=True)
+            return ns_dir / f"{key_hash}.json"
         return self._cache_dir / f"{key_hash}.json"
 
-    def set(self, key: str, data: Any, ttl: Optional[int] = None) -> None:
+    def set(self, key: str, data: Any, ttl: Optional[int] = None, namespace: str = "") -> None:
         """Store data in the cache.
 
         Args:
             key: Cache key (will be hashed).
             data: Data to cache (must be JSON-serializable).
             ttl: Override default TTL in seconds.
+            namespace: Optional namespace for grouping related entries.
         """
-        path = self._get_cache_path(key)
+        path = self._get_cache_path(key, namespace)
         effective_ttl = ttl if ttl is not None else self._ttl_seconds
-        payload = {"timestamp": time.time(), "ttl": effective_ttl, "data": data}
+        payload = {
+            "timestamp": time.time(),
+            "ttl": effective_ttl,
+            "namespace": namespace,
+            "data": data,
+        }
         path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        self._stats.sets += 1
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str, namespace: str = "") -> Optional[Any]:
         """Retrieve data from the cache.
 
         Args:
             key: Cache key.
+            namespace: Optional namespace.
 
         Returns:
             Cached data if found and not expired, ``None`` otherwise.
         """
-        path = self._get_cache_path(key)
+        path = self._get_cache_path(key, namespace)
         if not path.exists():
+            self._stats.misses += 1
             return None
 
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
+            self._stats.misses += 1
             return None
 
         ttl = payload.get("ttl", self._ttl_seconds)
         if time.time() - payload.get("timestamp", 0) > ttl:
             path.unlink()
+            self._stats.evictions += 1
+            self._stats.misses += 1
             return None
 
+        self._stats.hits += 1
         return payload.get("data")
 
-    def invalidate(self, key: str) -> None:
+    def invalidate(self, key: str, namespace: str = "") -> None:
         """Manually remove an item from the cache.
 
         Args:
             key: Cache key to remove.
+            namespace: Optional namespace.
         """
-        path = self._get_cache_path(key)
+        path = self._get_cache_path(key, namespace)
         if path.exists():
             path.unlink()
+
+    def invalidate_namespace(self, namespace: str) -> int:
+        """Remove all entries in a namespace.
+
+        Args:
+            namespace: Namespace to invalidate.
+
+        Returns:
+            Number of entries removed.
+        """
+        ns_dir = self._cache_dir / namespace
+        if not ns_dir.exists():
+            return 0
+
+        count = 0
+        for entry in ns_dir.iterdir():
+            if entry.suffix == ".json":
+                entry.unlink()
+                count += 1
+
+        try:
+            ns_dir.rmdir()
+        except OSError:
+            pass
+
+        logger.info("[CACHE] Invalidated namespace '%s': %d entries removed", namespace, count)
+        return count
+
+    def clear_expired(self) -> int:
+        """Remove all expired entries across all namespaces.
+
+        Returns:
+            Number of expired entries removed.
+        """
+        removed = 0
+        now = time.time()
+        for path in self._cache_dir.rglob("*.json"):
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                ttl = payload.get("ttl", self._ttl_seconds)
+                if now - payload.get("timestamp", 0) > ttl:
+                    path.unlink()
+                    removed += 1
+            except (json.JSONDecodeError, OSError):
+                continue
+
+        if removed > 0:
+            self._stats.evictions += removed
+            logger.info("[CACHE] Cleared %d expired entries", removed)
+        return removed
 
     # ------------------------------------------------------------------
     # Content-hash based caching for file change detection

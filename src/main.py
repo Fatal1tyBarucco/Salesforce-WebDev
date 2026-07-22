@@ -393,13 +393,16 @@ class PipelineConfig:
     generator: MarkdownGenerator | None = None
     translator: TranslatorService | None = None
     llm: LLMService | None = None
+    cache: CacheManager | None = None
     release_filter: str | None = None
     dry_run: bool = False
 
     def __post_init__(self) -> None:
         """Initialize defaults for fields left as None."""
+        if self.cache is None:
+            self.cache = CacheManager(cache_dir=Path("cache"), ttl_seconds=86400 * 7)
         if self.llm is None:
-            self.llm = LLMService()
+            self.llm = LLMService(cache=self.cache)
         if self.scraper is None:
             self.scraper = SalesforceReleaseScraper()
         if self.impact_parser is None:
