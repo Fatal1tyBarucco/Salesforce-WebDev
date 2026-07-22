@@ -40,7 +40,7 @@ repos:
     hooks:
       - id: pytest-fast
         name: 🧪 Pytest (fast, no coverage)
-        entry: python3 -m pytest tests/ -x -q --tb=short --no-header
+        entry: bash .hooks/pytest-pre-push.sh
         language: system
         pass_filenames: false
         always_run: true
