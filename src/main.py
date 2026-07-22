@@ -35,6 +35,7 @@ from .parser import (
 )
 from .scraper import SalesforceReleaseScraper
 from .exceptions import GitHubError, LLMError, NotificationError
+from .llm_service import LLMService
 
 from .release_docs import (  # noqa: F401
     RELEASE_SECTION_HEADING,
@@ -200,7 +201,10 @@ async def _process_release_analytics(
         logger.warning("Notification digest failed: %s", e)
 
 
-async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> None:
+async def _generate_ai_reports_async(
+    releases_to_process: list[ReleaseInfo],
+    llm: LLMService | None = None,
+) -> None:
     """Generate all AI reports concurrently."""
     if not releases_to_process:
         return
@@ -211,9 +215,9 @@ async def _generate_ai_reports_async(releases_to_process: list[ReleaseInfo]) -> 
         from .smart_notifications import SmartNotificationEngine
 
         ai_service = AIAutomationService()
-        triager = IssueTriager()
-        analyzer = ImpactAnalyzer()
-        engine = SmartNotificationEngine()
+        triager = IssueTriager(llm=llm)
+        analyzer = ImpactAnalyzer(llm=llm)
+        engine = SmartNotificationEngine(llm=llm)
 
         # General reports
         changelog_task = ai_service.generate_changelog()
@@ -333,12 +337,16 @@ async def _process_single_release(
     return True
 
 
-async def _enrich_meta_with_classification(release: ReleaseInfo) -> None:
+async def _enrich_meta_with_classification(
+    release: ReleaseInfo,
+    classifier: Any | None = None,
+) -> None:
     """Add feature classification to .meta.json."""
     try:
         from .feature_classifier import FeatureClassifier
 
-        classifier = FeatureClassifier()
+        if classifier is None:
+            classifier = FeatureClassifier()
         classification = await classifier.classify_release(release.slug)
         if classification:
             meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
@@ -384,11 +392,14 @@ class PipelineConfig:
     impact_parser: FeatureImpactParser | None = None
     generator: MarkdownGenerator | None = None
     translator: TranslatorService | None = None
+    llm: LLMService | None = None
     release_filter: str | None = None
     dry_run: bool = False
 
     def __post_init__(self) -> None:
         """Initialize defaults for fields left as None."""
+        if self.llm is None:
+            self.llm = LLMService()
         if self.scraper is None:
             self.scraper = SalesforceReleaseScraper()
         if self.impact_parser is None:
@@ -396,7 +407,7 @@ class PipelineConfig:
         if self.generator is None:
             self.generator = MarkdownGenerator(base_dir=RELEASES_DIR)
         if self.translator is None:
-            self.translator = TranslatorService()
+            self.translator = TranslatorService(llm=self.llm)
 
 
 async def run_pipeline(config: PipelineConfig | None = None) -> None:
@@ -419,6 +430,7 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
     impact_parser = config.impact_parser
     generator = config.generator
     translator = config.translator
+    llm = config.llm
 
     assert scraper is not None, "scraper must be initialized"
     assert impact_parser is not None, "impact_parser must be initialized"
@@ -453,12 +465,12 @@ async def run_pipeline(config: PipelineConfig | None = None) -> None:
                 release, scraper, impact_parser, generator, translator, config.dry_run
             )
             if not config.dry_run:
-                await _enrich_meta_with_classification(release)
+                await _enrich_meta_with_classification(release, classifier=None)
 
     await _update_readme_all()
 
     try:
-        await _generate_ai_reports_async(releases_to_process)
+        await _generate_ai_reports_async(releases_to_process, llm=llm)
     except (LLMError, GitHubError, NotificationError, OSError) as e:
         logger.warning("Failed to generate AI reports: %s", e)
         set_pipeline_status("completed_with_errors")

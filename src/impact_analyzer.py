@@ -46,10 +46,10 @@ class ImpactReport:
 class ImpactAnalyzer:
     """Analyzes release impact on users and systems using LLM."""
 
-    def __init__(self, base_dir: str = RELEASES_DIR) -> None:
+    def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._classifier = FeatureClassifier()
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
+        self._classifier = FeatureClassifier(llm=self._llm)
 
     async def analyze(self, release_slug: str) -> ImpactReport | None:
         """Analyze impact for a release using a combination of classification and LLM analysis.

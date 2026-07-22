@@ -66,9 +66,9 @@ MODULE_ASSIGNEES: dict[str, str] = {
 class IssueTriager:
     """Triages GitHub issues automatically."""
 
-    def __init__(self, repo: str | None = None) -> None:
+    def __init__(self, repo: str | None = None, llm: LLMService | None = None) -> None:
         self._repo = repo
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
 
     async def triage_issue(
         self,

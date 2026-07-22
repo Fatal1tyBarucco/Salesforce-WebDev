@@ -33,9 +33,9 @@ class ReleaseSummary:
 class ReleaseSummarizer:
     """Generates executive summaries from release markdown files using LLM."""
 
-    def __init__(self, base_dir: str = RELEASES_DIR) -> None:
+    def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
 
     async def summarize(self, release_slug: str) -> ReleaseSummary | None:
         """Generate a summary for a release using an LLM.

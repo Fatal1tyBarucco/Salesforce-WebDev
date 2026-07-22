@@ -64,8 +64,8 @@ class ClassificationResult:
 class FeatureClassifier:
     """Classifies features by impact and type using an LLM."""
 
-    def __init__(self) -> None:
-        self._llm = LLMService()
+    def __init__(self, llm: LLMService | None = None) -> None:
+        self._llm = llm or LLMService()
 
     async def classify_text(self, text: str) -> ClassifiedFeature:
         """Classify a single feature text using the LLM.
