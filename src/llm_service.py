@@ -359,3 +359,61 @@ class LLMService:
         except (ValueError, IndexError) as e:
             self._logger.error("Failed to parse LLM classification JSON: %s", e)
             return {"error": "Invalid JSON response"}
+
+    async def generate_batch(
+        self,
+        prompts: list[str],
+        system_prompt: str = "You are a helpful assistant.",
+        batch_size: int = 10,
+    ) -> list[Optional[str]]:
+        """Generate text for multiple prompts, batching them into single LLM calls.
+
+        Combines up to ``batch_size`` prompts into a single request to reduce
+        API calls and cost.  Falls back to individual calls when the batch
+        response cannot be parsed.
+
+        Args:
+            prompts: List of user prompts.
+            system_prompt: Shared system prompt for all prompts.
+            batch_size: Maximum number of prompts per LLM call.
+
+        Returns:
+            List of responses aligned with the input prompts.
+        """
+        results: list[Optional[str]] = [None] * len(prompts)
+
+        for start in range(0, len(prompts), batch_size):
+            chunk = prompts[start : start + batch_size]
+            if len(chunk) == 1:
+                results[start] = await self.generate_text(chunk[0], system_prompt)
+                continue
+
+            # Build a batch prompt that asks the LLM to respond to N prompts at once
+            numbered = "\n".join(f"[{i + 1}] {p}" for i, p in enumerate(chunk))
+            batch_user = (
+                f"Respond to each of the following {len(chunk)} items. "
+                f"Return your responses as a JSON array of strings, one per item, "
+                f'in the same order. Example: ["response 1", "response 2", ...]\n\n'
+                f"{numbered}"
+            )
+
+            raw = await self.generate_text(batch_user, system_prompt)
+            if raw:
+                try:
+                    import json
+
+                    start_idx = raw.find("[")
+                    end_idx = raw.rfind("]") + 1
+                    parsed = json.loads(raw[start_idx:end_idx])
+                    if isinstance(parsed, list) and len(parsed) == len(chunk):
+                        for i, val in enumerate(parsed):
+                            results[start + i] = str(val) if val is not None else None
+                        continue
+                except (json.JSONDecodeError, ValueError):
+                    pass
+
+            # Fallback: individual calls
+            for i, prompt in enumerate(chunk):
+                results[start + i] = await self.generate_text(prompt, system_prompt)
+
+        return results
