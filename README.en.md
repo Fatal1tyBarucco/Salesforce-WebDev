@@ -68,6 +68,10 @@ uv sync
 
 # Instale browsers do Playwright
 uv run playwright install chromium
+
+# Instale hooks de pré-commit (ruff, black, mypy, pytest)
+uv run pre-commit install
+uv run pre-commit install --hook-type pre-push
 ```
 
 ## 🚀 Uso e Execução

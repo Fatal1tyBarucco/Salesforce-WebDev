@@ -320,7 +320,11 @@ uv sync --extra dev
 # 3. Instale o navegador Playwright
 uv run playwright install chromium
 
-# 4. Configure as chaves LLM (pelo menos uma)
+# 4. Instale os hooks de pré-commit (ruff, black, mypy, pytest)
+uv run pre-commit install
+uv run pre-commit install --hook-type pre-push
+
+# 5. Configure as chaves LLM (pelo menos uma)
 export OPENAI_API_KEY="sk-..."    # ou
 export GOOGLE_API_KEY="AIza..."   # ou
 export OPENCODE_API_KEY="..."     # ou
