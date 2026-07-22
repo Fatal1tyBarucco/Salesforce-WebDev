@@ -101,6 +101,7 @@ class LLMService:
         if provider.name in self._clients:
             return self._clients[provider.name]
 
+        client: Any
         if provider.provider_type == "google":
             client = genai.Client(api_key=provider.api_key)
         else:
