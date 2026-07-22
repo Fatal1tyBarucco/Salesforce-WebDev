@@ -165,8 +165,10 @@ class PipelineOrchestrator:
         self, releases: list[ReleaseInfo], llm: Any, result: PipelineResult
     ) -> None:
         """Generate AI reports and update README."""
-        from .main import _generate_ai_reports_async  # noqa: F811
-        from .release_docs import _update_readme_all  # noqa: F811
+        import src.main as main_module
+
+        _update_readme_all = getattr(main_module, "_update_readme_all")
+        _generate_ai_reports_async = getattr(main_module, "_generate_ai_reports_async")
 
         await _update_readme_all()
 
