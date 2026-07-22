@@ -38,6 +38,9 @@ target-version = ["py313"]
 [tool.ruff]
 line-length = 100
 
+[tool.ruff.lint]
+extend-select = ["F401", "F821", "E741"]  # Unused imports, undefined vars, ambiguous names
+
 [tool.mypy]
 strict = true
 mypy_path = "stubs"

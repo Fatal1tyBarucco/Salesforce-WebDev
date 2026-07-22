@@ -59,6 +59,13 @@ class LLMService:
         else:
             self._providers = self._load_providers_from_env()
 
+        if not self._providers and client is None:
+            raise ValueError(
+                "No LLM providers configured. Set at least one of: "
+                "OPENAI_API_KEY, GOOGLE_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
+                "or pass a client/providers directly."
+            )
+
         for p in self._providers:
             self._provider_states[p.name] = CircuitBreaker(
                 threshold=config.threshold, cooldown=config.cooldown

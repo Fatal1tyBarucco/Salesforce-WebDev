@@ -137,6 +137,12 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Validar artefatos gerados
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          steps.git_status.outputs.has_changes == 'true'
+        run: uv run pytest tests/ -q --tb=short
+
       - name: Commit e push dos artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
