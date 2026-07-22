@@ -133,5 +133,5 @@ def test_clear_expired(tmp_path):
         mock_time.return_value = 5000.0
         removed = cache.clear_expired()
 
-    assert removed == 1
-    assert cache.get("fresh") == "data"
+        assert removed == 1
+        assert cache.get("fresh") == "data"
