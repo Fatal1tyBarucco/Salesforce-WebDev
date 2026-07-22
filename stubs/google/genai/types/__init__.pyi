@@ -8,6 +8,7 @@ from __future__ import annotations
 
 class GenerateContentConfig:
     """Configuration for content generation."""
+
     def __init__(
         self,
         *,

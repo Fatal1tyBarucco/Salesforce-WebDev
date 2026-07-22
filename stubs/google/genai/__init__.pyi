@@ -12,6 +12,7 @@ from . import types as types
 
 class _AsyncModels:
     """Async interface for model operations."""
+
     async def generate_content(
         self,
         *,
@@ -22,6 +23,7 @@ class _AsyncModels:
 
 class _Models:
     """Sync interface for model operations."""
+
     def generate_content(
         self,
         *,
@@ -32,6 +34,7 @@ class _Models:
 
 class Client:
     """Google Generative AI client."""
+
     def __init__(self, *, api_key: str = ...) -> None: ...
     @property
     def aio(self) -> _AsyncAioClient: ...
@@ -40,10 +43,12 @@ class Client:
 
 class _AsyncAioClient:
     """Async sub-client accessed via client.aio."""
+
     @property
     def models(self) -> _AsyncModels: ...
 
 class GenerateContentResponse:
     """Response from generate_content."""
+
     @property
     def text(self) -> str: ...
