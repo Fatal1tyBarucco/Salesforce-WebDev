@@ -88,7 +88,7 @@ class LLMService:
         for name, client in self._clients.items():
             try:
                 close = getattr(client, "close", None)
-                if close and asyncio.iscoroutine_function(close):
+                if close and asyncio.iscoroutinefunction(close):
                     await close()
                 elif close:
                     close()
@@ -265,7 +265,7 @@ class LLMService:
             cached = self._cache.get(cache_key, namespace="llm")
             if cached is not None:
                 self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
-                return cached
+                return str(cached)
 
         for provider in self._providers:
             if not self._is_provider_available(provider):

@@ -106,7 +106,9 @@ class EventBus:
         except ValueError:
             pass
 
-    async def emit(self, event_name: str, data: dict[str, Any] | None = None, source: str = "") -> int:
+    async def emit(
+        self, event_name: str, data: dict[str, Any] | None = None, source: str = ""
+    ) -> int:
         """Dispatch an event to all registered handlers.
 
         Args:
