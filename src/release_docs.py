@@ -34,6 +34,15 @@ logger = logging.getLogger(__name__)
 
 RELEASE_SECTION_HEADING = "## 📋 Releases Disponíveis"
 
+# Known heading variants used in README remodels. The pipeline auto-detects
+# whichever heading is present, so future renames won't break the automation.
+_RELEASE_HEADING_VARIANTS: tuple[str, ...] = (
+    "## 📋 Releases Disponíveis",
+    "## 📦 Releases Catalogadas",
+    "## 📦 Available Releases",
+    "## 📋 Available Releases",
+)
+
 RELEASE_SEASONS = ("Spring", "Summer", "Winter")
 
 RELEASE_BASE_ID = 254  # release_id for Spring '25 — first release in this numbering scheme
@@ -517,6 +526,34 @@ async def _build_release_block(
     return "\n".join(lines)
 
 
+def _find_release_heading(text: str) -> str | None:
+    """Find the releases section heading in README text.
+
+    Searches known variants first (exact match), then falls back to
+    detecting any ``## `` heading containing release-related keywords
+    near the badge marker. Returns the heading string if found, else None.
+    """
+    for heading in _RELEASE_HEADING_VARIANTS:
+        if heading in text:
+            return heading
+
+    # Fallback: look for a ## heading with release-related keywords
+    # within 500 chars after the badge marker.
+    badge_idx = text.find(RELEASE_BADGE_MARKER)
+    if badge_idx == -1:
+        return None
+
+    search_window = text[badge_idx : badge_idx + 2000]
+    match = re.search(r"^## .+$", search_window, re.MULTILINE)
+    if match:
+        heading = match.group(0).strip()
+        lower = heading.lower()
+        if any(kw in lower for kw in ("release", "releases", "catalog")):
+            return heading
+
+    return None
+
+
 async def _update_single_readme(
     readme_path: Path,
     metas: list[dict[str, Any]],
@@ -528,17 +565,22 @@ async def _update_single_readme(
         return
 
     original = readme_path.read_text(encoding="utf-8")
-    if RELEASE_SECTION_HEADING not in original:
+    heading = _find_release_heading(original)
+    if heading is None:
+        logger.warning(
+            "README %s: nenhuma seção de releases encontrada — skip",
+            readme_path.name,
+        )
         return
 
-    heading_idx = original.index(RELEASE_SECTION_HEADING)
-    next_heading = original.find("\n## ", heading_idx + len(RELEASE_SECTION_HEADING))
+    heading_idx = original.index(heading)
+    next_heading = original.find("\n## ", heading_idx + len(heading))
     if next_heading == -1:
         next_heading = len(original)
     new_block = await _build_release_block(metas, lang, summarizer)
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
-    logger.info("README atualizado (%s)", lang)
+    logger.info("README atualizado (%s) — heading='%s'", lang, heading)
 
 
 async def _update_readme_all() -> None:
@@ -574,7 +616,7 @@ async def _update_readme_all() -> None:
     readme_en_path = Path("README.en.md")
     if readme_en_path.exists():
         original_en = readme_en_path.read_text(encoding="utf-8")
-        if RELEASE_SECTION_HEADING in original_en:
+        if _find_release_heading(original_en) is not None:
             await _update_single_readme(readme_en_path, metas, "en_US", summarizer)
         else:
             # Create en_US README from pt_BR if heading not found
