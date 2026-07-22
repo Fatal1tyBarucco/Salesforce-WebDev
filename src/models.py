@@ -60,5 +60,5 @@ class FeatureClassificationResponse(BaseModel):  # type: ignore[misc]
 class ErrorResponse(BaseModel):  # type: ignore[misc]
     """Standard error response for API endpoints."""
 
-    error: str = Field(..., description="Error message")
-    detail: str = Field("", description="Additional error detail")
+    error: str = ""
+    detail: str = ""
