@@ -65,7 +65,7 @@ from .release_docs import (  # noqa: F401
     _get_release_emoji,
     _build_release_block,
     _update_single_readme,
-    _update_readme_all,
+    update_readme_all,
 )
 
 # Salesforce release naming/numbering scheme assumptions.
@@ -206,7 +206,7 @@ async def _process_release_analytics(
         logger.warning("Notification digest failed: %s", e)
 
 
-async def _generate_ai_reports_async(
+async def generate_ai_reports_async(
     releases_to_process: list[ReleaseInfo],
     llm: LLMService | None = None,
 ) -> None:
@@ -308,7 +308,7 @@ def _parse_args() -> tuple[str | None, bool]:
     return release_filter, dry_run
 
 
-async def _process_single_release(
+async def process_single_release(
     release: ReleaseInfo,
     scraper: SalesforceReleaseScraper,
     impact_parser: FeatureImpactParser,
@@ -358,7 +358,7 @@ async def _process_single_release(
     return True
 
 
-async def _enrich_meta_with_classification(
+async def enrich_meta_with_classification(
     release: ReleaseInfo,
     classifier: Any | None = None,
 ) -> None:

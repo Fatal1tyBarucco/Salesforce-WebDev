@@ -583,7 +583,7 @@ async def _update_single_readme(
     logger.info("README atualizado (%s) — heading='%s'", lang, heading)
 
 
-async def _update_readme_all() -> None:
+async def update_readme_all() -> None:
     """Generate bilingual README files (pt_BR and en_US) with release sections."""
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():

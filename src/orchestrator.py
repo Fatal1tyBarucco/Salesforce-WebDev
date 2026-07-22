@@ -80,9 +80,9 @@ class PipelineOrchestrator:
 
         releases = await self._detect_releases(scraper)
         if not releases:
-            from .release_docs import _update_readme_all
+            from .release_docs import update_readme_all
 
-            await _update_readme_all()
+            await update_readme_all()
             result.status = "no_new_releases"
             await self._bus.emit("pipeline.completed", {"new_releases": 0}, source="orchestrator")
             return result
@@ -144,9 +144,9 @@ class PipelineOrchestrator:
         translator: Any,
     ) -> None:
         """Process a single release: scrape, parse, generate files."""
-        from .main import _enrich_meta_with_classification, _process_single_release
+        from .main import enrich_meta_with_classification, process_single_release
 
-        await _process_single_release(
+        await process_single_release(
             release, scraper, impact_parser, generator, translator, self._config.dry_run
         )
         await self._bus.emit(
@@ -156,7 +156,7 @@ class PipelineOrchestrator:
         )
 
         if not self._config.dry_run:
-            await _enrich_meta_with_classification(release, classifier=None)
+            await enrich_meta_with_classification(release, classifier=None)
             await self._bus.emit(
                 "release.classified", {"slug": release.slug}, source="orchestrator"
             )
@@ -165,15 +165,13 @@ class PipelineOrchestrator:
         self, releases: list[ReleaseInfo], llm: Any, result: PipelineResult
     ) -> None:
         """Generate AI reports and update README."""
-        import src.main as main_module
+        from .main import generate_ai_reports_async
+        from .release_docs import update_readme_all
 
-        _update_readme_all = getattr(main_module, "_update_readme_all")
-        _generate_ai_reports_async = getattr(main_module, "_generate_ai_reports_async")
-
-        await _update_readme_all()
+        await update_readme_all()
 
         try:
-            await _generate_ai_reports_async(releases, llm=llm)
+            await generate_ai_reports_async(releases, llm=llm)
             result.status = "completed"
         except (LLMError, GitHubError, NotificationError, OSError) as e:
             logger.warning("Failed to generate AI reports: %s", e)
