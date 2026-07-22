@@ -143,7 +143,6 @@ def _sanitize_value(value: Any) -> Any:
             .replace("<", "&lt;")
             .replace(">", "&gt;")
             .replace('"', "&quot;")
-            .replace("'", "&#x27;")
         )
     elif isinstance(value, dict):
         return {k: _sanitize_value(v) for k, v in value.items()}

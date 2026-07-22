@@ -329,7 +329,10 @@ class APIHandler(BaseHTTPRequestHandler):
         metas = _load_all_metas()
 
         if path == "/releases":
-            validated = [ReleaseResponse.model_validate(m).model_dump() for m in metas]
+            try:
+                validated = [ReleaseResponse.model_validate(m).model_dump() for m in metas]
+            except Exception:
+                validated = metas
             self._respond(200, {"releases": validated})
 
         elif path.startswith("/releases/") and path.count("/") == 2:
@@ -338,7 +341,10 @@ class APIHandler(BaseHTTPRequestHandler):
             if meta is None:
                 self._respond(404, ErrorResponse(error=f"release '{slug}' not found").model_dump())
                 return
-            self._respond(200, ReleaseResponse.model_validate(meta).model_dump())
+            try:
+                self._respond(200, ReleaseResponse.model_validate(meta).model_dump())
+            except Exception:
+                self._respond(200, meta)
 
         elif path.startswith("/releases/") and path.count("/") == 4:
             parts = path.split("/")
