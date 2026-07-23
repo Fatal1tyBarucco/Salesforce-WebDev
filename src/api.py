@@ -50,6 +50,7 @@ _PUBLIC_PATHS: frozenset[str] = frozenset({"/health", "/ready", "/metrics", "/op
 # GraphQL recursive-descent parser
 # ---------------------------------------------------------------------------
 
+
 class _GQLToken:
     """Lightweight token for the GraphQL lexer."""
 
@@ -147,12 +148,12 @@ class _GQLParser:
         """Parse (key: "value", ...) arguments."""
         args: dict[str, str] = {}
         self._expect("LPAREN")
-        while self._peek() and self._peek().kind != "RPAREN":
+        while (tok := self._peek()) is not None and tok.kind != "RPAREN":
             name = self._expect("NAME").value
             self._expect("COLON")
             val = self._expect("STRING").value
             args[name] = val
-            if self._peek() and self._peek().kind == "COMMA":
+            if (tok := self._peek()) is not None and tok.kind == "COMMA":
                 self._advance()
         self._expect("RPAREN")
         return args
@@ -161,11 +162,11 @@ class _GQLParser:
         """Parse { field1 field2 nested { ... } } and return flat field names."""
         fields: list[str] = []
         self._expect("LBRACE")
-        while self._peek() and self._peek().kind != "RBRACE":
+        while (tok := self._peek()) is not None and tok.kind != "RBRACE":
             name_tok = self._expect("NAME")
             fields.append(name_tok.value)
             # Skip nested selection sets (e.g. categories { name count })
-            if self._peek() and self._peek().kind == "LBRACE":
+            if (tok := self._peek()) is not None and tok.kind == "LBRACE":
                 self._parse_field_set()  # recurse, discard
         self._expect("RBRACE")
         return fields
@@ -177,7 +178,8 @@ class _GQLParser:
             (operation_name, arguments, requested_fields)
         """
         # Strip optional outer braces
-        if self._peek() and self._peek().kind == "LBRACE":
+        tok = self._peek()
+        if tok is not None and tok.kind == "LBRACE":
             self._advance()
 
             # Check if this is a bare { op(...) { ... } } or { op { ... } }
@@ -189,14 +191,14 @@ class _GQLParser:
             args: dict[str, str] = {}
             fields: list[str] = []
 
-            if self._peek() and self._peek().kind == "LPAREN":
+            if (tok := self._peek()) is not None and tok.kind == "LPAREN":
                 args = self._parse_arguments()
 
-            if self._peek() and self._peek().kind == "LBRACE":
+            if (tok := self._peek()) is not None and tok.kind == "LBRACE":
                 fields = self._parse_field_set()
 
             # Consume optional closing brace
-            if self._peek() and self._peek().kind == "RBRACE":
+            if (tok := self._peek()) is not None and tok.kind == "RBRACE":
                 self._advance()
 
             return op_name, args, fields
@@ -485,7 +487,9 @@ class APIHandler(BaseHTTPRequestHandler):
         if provided == _API_KEY:
             return True
 
-        self._respond(401, {"error": "Unauthorized. Provide X-API-Key or Authorization: Bearer <key>."})
+        self._respond(
+            401, {"error": "Unauthorized. Provide X-API-Key or Authorization: Bearer <key>."}
+        )
         return False
 
     def do_GET(self) -> None:
