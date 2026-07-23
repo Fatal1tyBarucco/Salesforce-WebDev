@@ -6,12 +6,15 @@ Generates intelligent executive summaries from release notes files using a resil
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
 from .config import RELEASES_DIR
 from .llm_service import LLMService
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -30,9 +33,9 @@ class ReleaseSummary:
 class ReleaseSummarizer:
     """Generates executive summaries from release markdown files using LLM."""
 
-    def __init__(self, base_dir: str = RELEASES_DIR) -> None:
+    def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
 
     async def summarize(self, release_slug: str) -> ReleaseSummary | None:
         """Generate a summary for a release using an LLM.
@@ -129,8 +132,8 @@ class ReleaseSummarizer:
         if meta_file.exists():
             try:
                 return cast(dict[str, Any], json.loads(meta_file.read_text(encoding="utf-8")))
-            except json.JSONDecodeError, OSError:
-                pass
+            except (json.JSONDecodeError, OSError) as e:
+                logger.warning("Não foi possível ler .meta.json: %s", e)
 
         return {}
 

@@ -9,8 +9,11 @@ since the Trailhead public API is no longer available.
 
 from __future__ import annotations
 
+import functools
+
 import json
 import logging
+from .exceptions import ConfigError
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -20,15 +23,16 @@ logger = logging.getLogger(__name__)
 TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
 _DEFAULT_TRAILHEAD_JSON = Path(__file__).resolve().parent / "trailhead.json"
 
-_trailhead_service: TrailheadMappingService | None = None
-
 
 def _get_trailhead_service() -> TrailheadMappingService:
-    """Return the singleton TrailheadMappingService, loading JSON on first call."""
-    global _trailhead_service  # noqa: PLW0603
-    if _trailhead_service is None:
-        _trailhead_service = TrailheadMappingService()
-    return _trailhead_service
+    """Return a cached TrailheadMappingService instance (lazy singleton via lru_cache)."""
+    return _get_trailhead_service_cached()
+
+
+@functools.lru_cache(maxsize=1)
+def _get_trailhead_service_cached() -> TrailheadMappingService:
+    """Create and cache the TrailheadMappingService instance."""
+    return TrailheadMappingService()
 
 
 @dataclass
@@ -57,33 +61,35 @@ class TrailheadMappingService:
 
     def _load_categories(self) -> dict[str, list[dict[str, str]]]:
         if not self._config_path.exists():
-            raise ValueError(f"Trailhead config not found at {self._config_path}")
+            raise ConfigError(f"Trailhead config not found at {self._config_path}")
 
         raw = self._config_path.read_text(encoding="utf-8")
         try:
             data: Any = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Invalid JSON in {self._config_path}: {exc}") from exc
+            raise ConfigError(f"Invalid JSON in {self._config_path}: {exc}") from exc
 
         if not isinstance(data, dict):
-            raise ValueError(f"Trailhead config must be a JSON object, got {type(data).__name__}")
+            raise ConfigError(f"Trailhead config must be a JSON object, got {type(data).__name__}")
 
         validated: dict[str, list[dict[str, str]]] = {}
         for category, modules in data.items():
             if not isinstance(modules, list):
-                raise ValueError(
+                raise ConfigError(
                     f"Category '{category}' must map to a list, got {type(modules).__name__}"
                 )
             entries: list[dict[str, str]] = []
             for entry in modules:
                 if not isinstance(entry, dict):
-                    raise ValueError(
+                    raise ConfigError(
                         f"Module entry in '{category}' must be an object, got {type(entry).__name__}"
                     )
                 if "title" not in entry:
-                    raise ValueError(f"Module entry in '{category}' missing required 'title' field")
+                    raise ConfigError(
+                        f"Module entry in '{category}' missing required 'title' field"
+                    )
                 if "url" not in entry:
-                    raise ValueError(f"Module entry in '{category}' missing required 'url' field")
+                    raise ConfigError(f"Module entry in '{category}' missing required 'url' field")
                 entry_dict: dict[str, str] = {
                     "title": str(entry["title"]),
                     "url": str(entry["url"]),
@@ -269,7 +275,10 @@ def generate_release_resources_section(release_slug: str, release_name: str) -> 
 
 
 def generate_category_trailhead_section(
-    category_name: str, release_slug: str, locale: str = "pt_BR"
+    category_name: str,
+    release_slug: str,
+    locale: str = "pt_BR",
+    trailhead_service: TrailheadMappingService | None = None,
 ) -> str:
     """Generate Trailhead section with category-specific modules.
 
@@ -277,6 +286,7 @@ def generate_category_trailhead_section(
         category_name: The category name (e.g., "Agentforce")
         release_slug: The release slug (e.g., "summer_26")
         locale: Locale for section headers (default: "pt_BR")
+        trailhead_service: Optional injected service (defaults to singleton).
 
     Returns:
         Markdown section with relevant Trailhead modules.
@@ -284,7 +294,7 @@ def generate_category_trailhead_section(
     from .i18n import LOCALIZATION_MAP
 
     i18n = LOCALIZATION_MAP[locale]
-    service = _get_trailhead_service()
+    service = trailhead_service or _get_trailhead_service()
     modules = service.search(category_name, max_results=5)
 
     lines = [f"## 🎓 {i18n['trailhead_section']}\n"]
@@ -467,7 +477,7 @@ def _load_trailhead_cache() -> dict[str, list[str]]:
     try:
         data: dict[str, list[str]] = json.loads(cache_path.read_text(encoding="utf-8"))
         return data
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return {}
 
 

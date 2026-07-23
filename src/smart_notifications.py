@@ -77,10 +77,10 @@ class NotificationDigest:
 class SmartNotificationEngine:
     """Filters and prioritizes notifications based on user interests."""
 
-    def __init__(self, base_dir: str = RELEASES_DIR) -> None:
+    def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._classifier = FeatureClassifier()
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
+        self._classifier = FeatureClassifier(llm=self._llm)
 
     def filter_notifications(
         self,
@@ -184,7 +184,7 @@ class SmartNotificationEngine:
                 start_idx = llm_result.find("{")
                 end_idx = llm_result.rfind("}") + 1
                 parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
-            except ValueError, IndexError:
+            except (ValueError, IndexError):
                 parsed = {}
 
         # Fallbacks

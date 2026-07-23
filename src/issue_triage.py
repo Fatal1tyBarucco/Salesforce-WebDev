@@ -66,9 +66,9 @@ MODULE_ASSIGNEES: dict[str, str] = {
 class IssueTriager:
     """Triages GitHub issues automatically."""
 
-    def __init__(self, repo: str | None = None) -> None:
+    def __init__(self, repo: str | None = None, llm: LLMService | None = None) -> None:
         self._repo = repo
-        self._llm = LLMService()
+        self._llm = llm or LLMService()
 
     async def triage_issue(
         self,
@@ -116,7 +116,7 @@ class IssueTriager:
                 start_idx = llm_result.find("{")
                 end_idx = llm_result.rfind("}") + 1
                 parsed = json.loads(llm_result[start_idx:end_idx]) if start_idx != -1 else {}
-            except ValueError, IndexError:
+            except (ValueError, IndexError):
                 parsed = {}
 
         # Fallbacks
@@ -188,7 +188,7 @@ class IssueTriager:
             triage.issue_number = issue_number
             return triage
 
-        except subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError:
+        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
             return None
 
     def apply_triage(self, result: TriageResult) -> bool:
@@ -251,7 +251,7 @@ class IssueTriager:
 
             return True
 
-        except subprocess.TimeoutExpired, FileNotFoundError:
+        except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
 
     def _suggest_labels(self, category: IssueCategory, priority: Priority, text: str) -> list[str]:

@@ -124,7 +124,7 @@ def test_scraper_fetch_page_all_attempts_fail() -> None:
 
     async def run() -> None:
         with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock_fetch:
-            mock_fetch.side_effect = Exception("Browser error")
+            mock_fetch.side_effect = OSError("Browser error")
 
             result = await scraper.fetch_page("https://fake.url")
             assert result is None
@@ -250,7 +250,7 @@ def test_expand_toc_nodes_click_exception() -> None:
     async def run() -> None:
         mock_page = AsyncMock()
         mock_node = AsyncMock()
-        mock_node.click.side_effect = Exception("Click failed")
+        mock_node.click.side_effect = TimeoutError("Click failed")
         mock_page.query_selector_all.return_value = [mock_node]
 
         await scraper._expand_toc_nodes(mock_page)
@@ -264,7 +264,7 @@ def test_expand_toc_nodes_query_exception() -> None:
 
     async def run() -> None:
         mock_page = AsyncMock()
-        mock_page.query_selector_all.side_effect = Exception("Query failed")
+        mock_page.query_selector_all.side_effect = OSError("Query failed")
 
         await scraper._expand_toc_nodes(mock_page)
 
@@ -371,7 +371,7 @@ def test_extract_toc_html_exception() -> None:
 
     async def run() -> None:
         with patch("src.scraper.async_playwright") as mock_ap:
-            mock_ap.return_value.__aenter__.side_effect = Exception("PW failed")
+            mock_ap.return_value.__aenter__.side_effect = OSError("PW failed")
 
             result = await scraper.extract_toc_html("https://fake.url")
             assert result is None

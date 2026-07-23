@@ -71,7 +71,7 @@ def _load_release_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
         return result
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return None
 
 
@@ -188,7 +188,7 @@ def send_email(
 
     try:
         context = ssl.create_default_context()
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
             server.starttls(context=context)
             if smtp_user and smtp_pass:
                 server.login(smtp_user, smtp_pass)
@@ -269,7 +269,7 @@ def _load_profiles() -> list[NotificationProfile]:
             )
             for p in data
         ]
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return []
 
 
@@ -281,7 +281,7 @@ def _load_unsubscribed() -> set[str]:
     try:
         data: list[str] = json.loads(unsub_path.read_text(encoding="utf-8"))
         return set(data)
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return set()
 
 

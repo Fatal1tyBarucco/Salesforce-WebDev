@@ -14,7 +14,10 @@ from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 
 def test_find_existing_releases_empty() -> None:
-    with patch("src.main.RELEASES_DIR", "/nonexistent"):
+    with (
+        patch("src.main.RELEASES_DIR", "/nonexistent"),
+        patch("src.release_docs.RELEASES_DIR", "/nonexistent"),
+    ):
         result = _find_existing_releases()
         assert result == set()
 
@@ -62,7 +65,7 @@ def test_generate_release_files() -> None:
     translator = MagicMock()
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("src.main.RELEASES_DIR", tmpdir):
+        with patch("src.main.RELEASES_DIR", tmpdir), patch("src.release_docs.RELEASES_DIR", tmpdir):
             asyncio.run(_generate_release_files(release, categories, generator, translator))
 
             release_dir = Path(tmpdir) / "test_release"
@@ -78,7 +81,7 @@ def test_generate_release_files() -> None:
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._generate_release_files")
-@patch("src.main._update_readme_all")
+@patch("src.main.update_readme_all")
 @patch("src.main._update_readme_single")
 @patch("src.main._find_existing_releases")
 def test_main_execution_success(
@@ -132,7 +135,7 @@ def test_main_execution_success(
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._generate_release_files")
-@patch("src.main._update_readme_all")
+@patch("src.main.update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_no_content(
@@ -167,7 +170,7 @@ def test_main_execution_no_content(
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._generate_release_files")
-@patch("src.main._update_readme_all")
+@patch("src.main.update_readme_all")
 @patch("src.main.detect_new_release", new_callable=AsyncMock)
 @patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_all_releases_exist(
@@ -200,7 +203,7 @@ def test_main_execution_all_releases_exist(
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._generate_release_files")
-@patch("src.main._update_readme_all")
+@patch("src.main.update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_valid_release_filter(
@@ -245,7 +248,7 @@ def test_main_execution_valid_release_filter(
 @patch("src.main.FeatureImpactParser")
 @patch("src.main.MarkdownGenerator")
 @patch("src.main._generate_release_files")
-@patch("src.main._update_readme_all")
+@patch("src.main.update_readme_all")
 @patch("src.main._find_existing_releases")
 @patch("src.main.run_pipeline", new_callable=AsyncMock)
 def test_main_execution_unknown_release(

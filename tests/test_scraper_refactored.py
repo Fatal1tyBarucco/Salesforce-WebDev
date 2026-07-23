@@ -132,7 +132,7 @@ def test_expand_toc_nodes_click_exception() -> None:
     scraper = SalesforceReleaseScraper()
     mock_page = AsyncMock()
     mock_node = AsyncMock()
-    mock_node.click = AsyncMock(side_effect=Exception("stale element"))
+    mock_node.click = AsyncMock(side_effect=TimeoutError("stale element"))
     mock_page.query_selector_all = AsyncMock(return_value=[mock_node])
 
     # Should not raise

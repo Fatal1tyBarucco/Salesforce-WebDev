@@ -40,7 +40,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PYTHON_VERSION: "3.14"
+  PYTHON_VERSION: "3.13"
   WORKING_DIR: "."
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
@@ -68,6 +68,9 @@ jobs:
 
       - name: Mypy — Verificação de tipos estáticos
         run: uv run mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
+
+      - name: Pytest — Testes automatizados
+        run: uv run pytest tests/ -q --tb=short
       
   extract:
     name: 📥 Extração e Geração de Artefatos
@@ -131,6 +134,12 @@ jobs:
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Validar artefatos gerados
+        if: |
+          steps.params.outputs.dry_run == 'false' &&
+          steps.git_status.outputs.has_changes == 'true'
+        run: uv run pytest tests/ -q --tb=short
 
       - name: Commit e push dos artefatos gerados
         if: |

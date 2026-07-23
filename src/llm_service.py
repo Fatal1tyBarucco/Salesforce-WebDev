@@ -1,17 +1,54 @@
 """LLM service with fallback chain across multiple providers."""
 
-import time
+import asyncio
+import hashlib
+import inspect
 import logging
 import os
+import time
 from typing import Any, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import openai
 from google import genai
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from .circuit_breaker import CircuitBreaker
+from .cache_manager import CacheManager
+
+
+@dataclass
+class RateLimiter:
+    """Async token-bucket rate limiter.
+
+    Limits the number of requests per time window.  Thread-safe via asyncio.Lock.
+    """
+
+    max_requests: int = 60
+    window_seconds: float = 60.0
+    _timestamps: list[float] = field(default_factory=list, repr=False)
+    _lock: asyncio.Lock = field(default_factory=asyncio.Lock, repr=False)
+
+    async def acquire(self) -> None:
+        """Wait until a request slot is available."""
+        async with self._lock:
+            now = time.monotonic()
+            # Purge timestamps outside the window
+            self._timestamps = [t for t in self._timestamps if now - t < self.window_seconds]
+            if len(self._timestamps) >= self.max_requests:
+                # Sleep until the oldest timestamp expires
+                sleep_until = self._timestamps[0] + self.window_seconds
+                wait = sleep_until - now
+                if wait > 0:
+                    await asyncio.sleep(wait)
+                now = time.monotonic()
+                self._timestamps = [t for t in self._timestamps if now - t < self.window_seconds]
+            self._timestamps.append(time.monotonic())
 
 
 @dataclass
 class CircuitBreakerConfig:
+    """Configuration for circuit breaker behavior."""
+
     threshold: int = 3
     cooldown: float = 60.0
 
@@ -27,15 +64,6 @@ class LLMProvider:
     provider_type: str = "openai"  # "openai", "google", or "opencode"
 
 
-@dataclass
-class ProviderState:
-    """Tracks circuit breaker state for a provider."""
-
-    failures: int = 0
-    opened_at: float = 0.0
-    is_open: bool = False
-
-
 class LLMService:
     """Resilient LLM service with automatic fallback across providers.
 
@@ -48,21 +76,83 @@ class LLMService:
         config: CircuitBreakerConfig = CircuitBreakerConfig(),
         client: Any = None,
         providers: list[LLMProvider] | None = None,
+        cache: CacheManager | None = None,
+        rate_limiter: RateLimiter | None = None,
     ) -> None:
         self._config = config
         self._logger = logging.getLogger(__name__)
-        self._provider_states: dict[str, ProviderState] = {}
+        self._provider_states: dict[str, CircuitBreaker] = {}
         self._providers: list[LLMProvider] = []
+        self._clients: dict[str, Any] = {}  # Lazy-initialized, cached per provider
+        self._cache = cache
+        self._rate_limiter = rate_limiter or RateLimiter(max_requests=60, window_seconds=60.0)
 
-        if providers:
+        _auto_loaded = providers is None
+        if providers is not None:
             self._providers = providers
         else:
             self._providers = self._load_providers_from_env()
 
+        if _auto_loaded and not self._providers and client is None:
+            raise ValueError(
+                "No LLM providers configured. Set at least one of: "
+                "OPENAI_API_KEY, GOOGLE_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
+                "or pass a client/providers directly."
+            )
+
         for p in self._providers:
-            self._provider_states[p.name] = ProviderState()
+            self._provider_states[p.name] = CircuitBreaker(
+                threshold=config.threshold, cooldown=config.cooldown
+            )
 
         self._client = client
+
+    @staticmethod
+    def _prompt_hash(system_prompt: str, user_prompt: str) -> str:
+        """Generate a deterministic hash for a prompt pair."""
+        combined = f"{system_prompt}\x00{user_prompt}"
+        return hashlib.sha256(combined.encode("utf-8")).hexdigest()
+
+    async def __aenter__(self) -> "LLMService":
+        """Enter async context — pre-warm clients for all providers."""
+        for provider in self._providers:
+            self._get_or_create_client(provider)
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any,
+    ) -> None:
+        """Exit async context — close all cached clients."""
+        for name, client in self._clients.items():
+            try:
+                close = getattr(client, "close", None)
+                if close and inspect.iscoroutinefunction(close):
+                    await close()
+                elif close:
+                    close()
+            except Exception:
+                self._logger.debug("Error closing client %s", name, exc_info=True)
+        self._clients.clear()
+
+    def _get_or_create_client(self, provider: LLMProvider) -> Any:
+        """Return a cached client for the provider, creating one if needed."""
+        if provider.name in self._clients:
+            return self._clients[provider.name]
+
+        client: Any
+        if provider.provider_type == "google":
+            client = genai.Client(api_key=provider.api_key)
+        else:
+            client = openai.AsyncOpenAI(
+                api_key=provider.api_key,
+                base_url=provider.base_url,
+                timeout=30.0,
+            )
+        self._clients[provider.name] = client
+        return client
 
     def _load_providers_from_env(self) -> list[LLMProvider]:
         """Load provider configurations from environment variables.
@@ -128,67 +218,69 @@ class LLMService:
 
         return providers
 
-    def _get_provider_state(self, provider: LLMProvider) -> ProviderState:
+    def _get_provider_state(self, provider: LLMProvider) -> CircuitBreaker:
         return self._provider_states[provider.name]
 
     def _is_provider_available(self, provider: LLMProvider) -> bool:
-        state = self._get_provider_state(provider)
-        if state.failures < self._config.threshold:
-            return True
-        elapsed = time.time() - state.opened_at
-        if elapsed > self._config.cooldown:
-            state.is_open = False
-            return True
-        return False
+        breaker = self._get_provider_state(provider)
+        return not breaker.is_open
 
     def _record_success(self, provider: LLMProvider) -> None:
-        state = self._get_provider_state(provider)
-        state.failures = 0
-        state.opened_at = 0.0
-        state.is_open = False
+        self._get_provider_state(provider).record_success()
 
     def _record_failure(self, provider: LLMProvider) -> None:
-        state = self._get_provider_state(provider)
-        state.failures += 1
-        if state.failures >= self._config.threshold:
-            state.opened_at = time.time()
-            state.is_open = True
-            self._logger.warning(
-                "Provider '%s' circuit breaker tripped. Cooldown started.", provider.name
-            )
+        self._get_provider_state(provider).record_failure()
 
+    @retry(
+        retry=retry_if_exception_type((openai.APIConnectionError, openai.InternalServerError)),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     async def _call_openai_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
-        """Call OpenAI-compatible provider."""
-        client = openai.AsyncOpenAI(api_key=provider.api_key, base_url=provider.base_url)
-        response = await client.chat.completions.create(
-            model=provider.model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=0.0,
+        """Call OpenAI-compatible provider with timeout and retry."""
+        client = self._get_or_create_client(provider)
+        response = await asyncio.wait_for(
+            client.chat.completions.create(
+                model=provider.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.0,
+            ),
+            timeout=60.0,
         )
         # Handle both standard OpenAI response and raw string responses
         if hasattr(response, "choices") and response.choices:
             return response.choices[0].message.content or ""
         elif isinstance(response, str):
             return response
-        return str(response)
+        return ""
 
+    @retry(
+        retry=retry_if_exception_type((ConnectionError, TimeoutError)),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     async def _call_google_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
     ) -> str:
-        """Call Google Gemini provider."""
-        client = genai.Client(api_key=provider.api_key)
-        response = await client.aio.models.generate_content(
-            model=provider.model,
-            contents=user_prompt,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                temperature=0.0,
+        """Call Google Gemini provider with timeout and retry."""
+        client = self._get_or_create_client(provider)
+        response = await asyncio.wait_for(
+            client.aio.models.generate_content(
+                model=provider.model,
+                contents=user_prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    temperature=0.0,
+                ),
             ),
+            timeout=60.0,
         )
         return response.text or ""
 
@@ -206,8 +298,20 @@ class LLMService:
         """Generate text with automatic fallback across providers.
 
         Tries each provider in order. If one fails, moves to the next.
-        Returns the first successful response.
+        Returns the first successful response.  Uses prompt-hash cache
+        when a CacheManager was provided at construction time.
         """
+        # Cache lookup
+        cache_key = self._prompt_hash(system_prompt, user_prompt)
+        if self._cache is not None:
+            cached = self._cache.get(cache_key, namespace="llm")
+            if cached is not None:
+                self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
+                return str(cached)
+
+        # Rate limiting
+        await self._rate_limiter.acquire()
+
         for provider in self._providers:
             if not self._is_provider_available(provider):
                 self._logger.debug("Provider '%s' unavailable, trying next", provider.name)
@@ -217,25 +321,27 @@ class LLMService:
                 result = await self._call_provider(provider, system_prompt, user_prompt)
                 self._record_success(provider)
                 self._logger.info("Provider '%s' succeeded", provider.name)
+                if self._cache is not None:
+                    self._cache.set(cache_key, result, namespace="llm")
                 return result
-            except (
-                openai.RateLimitError,
-                openai.APIConnectionError,
-                openai.InternalServerError,
-                openai.AuthenticationError,
-                Exception,
-            ) as e:
-                error_msg = str(e)
-                if (
-                    "429" in error_msg
-                    or "rate" in error_msg.lower()
-                    or "quota" in error_msg.lower()
-                ):
-                    self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
-                elif "401" in error_msg or "auth" in error_msg.lower():
-                    self._logger.warning("Provider '%s' auth error: %s", provider.name, e)
-                else:
-                    self._logger.error("Provider '%s' error: %s", provider.name, e)
+            except openai.RateLimitError as e:
+                self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except openai.AuthenticationError as e:
+                self._logger.warning("Provider '%s' auth error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (openai.APIConnectionError, openai.InternalServerError) as e:
+                self._logger.error("Provider '%s' connection/server error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (TimeoutError, asyncio.TimeoutError) as e:
+                self._logger.error("Provider '%s' timeout: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except Exception as e:
+                self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
 
@@ -250,7 +356,10 @@ class LLMService:
                     ],
                     temperature=0.0,
                 )
-                return response.choices[0].message.content or ""
+                result = response.choices[0].message.content or ""
+                if self._cache is not None:
+                    self._cache.set(cache_key, result, namespace="llm")
+                return result
             except Exception as e:
                 self._logger.error("Legacy client error: %s", e)
 
@@ -285,3 +394,61 @@ class LLMService:
         except (ValueError, IndexError) as e:
             self._logger.error("Failed to parse LLM classification JSON: %s", e)
             return {"error": "Invalid JSON response"}
+
+    async def generate_batch(
+        self,
+        prompts: list[str],
+        system_prompt: str = "You are a helpful assistant.",
+        batch_size: int = 10,
+    ) -> list[Optional[str]]:
+        """Generate text for multiple prompts, batching them into single LLM calls.
+
+        Combines up to ``batch_size`` prompts into a single request to reduce
+        API calls and cost.  Falls back to individual calls when the batch
+        response cannot be parsed.
+
+        Args:
+            prompts: List of user prompts.
+            system_prompt: Shared system prompt for all prompts.
+            batch_size: Maximum number of prompts per LLM call.
+
+        Returns:
+            List of responses aligned with the input prompts.
+        """
+        results: list[Optional[str]] = [None] * len(prompts)
+
+        for start in range(0, len(prompts), batch_size):
+            chunk = prompts[start : start + batch_size]
+            if len(chunk) == 1:
+                results[start] = await self.generate_text(chunk[0], system_prompt)
+                continue
+
+            # Build a batch prompt that asks the LLM to respond to N prompts at once
+            numbered = "\n".join(f"[{i + 1}] {p}" for i, p in enumerate(chunk))
+            batch_user = (
+                f"Respond to each of the following {len(chunk)} items. "
+                f"Return your responses as a JSON array of strings, one per item, "
+                f'in the same order. Example: ["response 1", "response 2", ...]\n\n'
+                f"{numbered}"
+            )
+
+            raw = await self.generate_text(batch_user, system_prompt)
+            if raw:
+                try:
+                    import json
+
+                    start_idx = raw.find("[")
+                    end_idx = raw.rfind("]") + 1
+                    parsed = json.loads(raw[start_idx:end_idx])
+                    if isinstance(parsed, list) and len(parsed) == len(chunk):
+                        for i, val in enumerate(parsed):
+                            results[start + i] = str(val) if val is not None else None
+                        continue
+                except (json.JSONDecodeError, ValueError):
+                    pass
+
+            # Fallback: individual calls
+            for i, prompt in enumerate(chunk):
+                results[start + i] = await self.generate_text(prompt, system_prompt)
+
+        return results

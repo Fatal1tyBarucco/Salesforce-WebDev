@@ -13,6 +13,7 @@ import asyncio
 import logging
 import random
 import time
+
 import urllib.request
 from pathlib import Path
 from types import TracebackType
@@ -22,8 +23,8 @@ from playwright.async_api import async_playwright, Browser, Page, Playwright
 
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .cache_manager import CacheManager
-
-logger = logging.getLogger(__name__)
+from .circuit_breaker import CircuitBreaker
+from .exceptions import BrowserError, ScraperError
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
         return False
     try:
         return int(status_code) == 429
-    except TypeError, ValueError:
+    except (TypeError, ValueError):
         return False
 
 
@@ -69,50 +70,6 @@ RATE_LIMIT_MIN_INTERVAL = 1.0 / RATE_LIMIT_RPS
 # Circuit breaker: after N consecutive failures, stop trying for cooldown
 CIRCUIT_BREAKER_THRESHOLD = 3
 CIRCUIT_BREAKER_COOLDOWN = 60  # seconds
-
-
-class CircuitBreaker:
-    """Circuit breaker — stops making requests after consecutive failures."""
-
-    def __init__(
-        self,
-        threshold: int = CIRCUIT_BREAKER_THRESHOLD,
-        cooldown: float = CIRCUIT_BREAKER_COOLDOWN,
-    ) -> None:
-        self._threshold = threshold
-        self._cooldown = cooldown
-        self._failures = 0
-        self._opened_at: float = 0.0
-
-    @property
-    def is_open(self) -> bool:
-        """True when circuit is tripped (too many failures, in cooldown)."""
-        if self._failures < self._threshold:
-            return False
-        elapsed = time.monotonic() - self._opened_at
-        if elapsed > self._cooldown:
-            return False
-        return True
-
-    def record_success(self) -> None:
-        self._failures = 0
-
-    def record_failure(self) -> None:
-        self._failures += 1
-        if self._failures >= self._threshold:
-            now = time.monotonic()
-            # Reset cooldown timer if previous cooldown expired
-            if self._opened_at == 0.0 or (now - self._opened_at) > self._cooldown:
-                self._opened_at = now
-                logger.warning(
-                    "Circuit breaker tripped after %d failures, cooling down for %ds",
-                    self._failures,
-                    self._cooldown,
-                )
-
-    @property
-    def failure_count(self) -> int:
-        return self._failures
 
 
 class RateLimiter:
@@ -207,7 +164,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(html_content or ""),
                 )
-            except Exception as e:
+            except (ScraperError, BrowserError, OSError, TimeoutError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
 
@@ -276,7 +233,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except Exception:
+        except (TimeoutError, Exception) as _wait_err:
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -286,8 +243,8 @@ class SalesforceReleaseScraper:
             await self._expand_toc_nodes(page)
 
         if return_text:
-            return await page.inner_text("body")
-        return await page.content()
+            return str(await page.inner_text("body"))
+        return str(await page.content())
 
     async def _expand_toc_nodes(self, page: Page) -> None:
         """Click collapsed tree nodes in the ToC to reveal all topics.
@@ -310,11 +267,11 @@ class SalesforceReleaseScraper:
                     await node.click()
                     await page.wait_for_timeout(300)
                     expanded_count += 1
-                except Exception:
-                    pass
+                except (TimeoutError, OSError) as e:
+                    logger.debug("Falha ao expandir nó de ToC: %s", e)
             if expanded_count > 0:
                 logger.info("Expanded %d collapsed ToC nodes", expanded_count)
-        except Exception as e:
+        except (ScraperError, TimeoutError, OSError) as e:
             logger.debug("ToC expansion skipped: %s", e)
 
     async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
@@ -348,7 +305,7 @@ class SalesforceReleaseScraper:
 
             assert page is not None
             return await self._extract_toc_from_page(url, page)
-        except Exception as e:
+        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
             logger.error("ToC extraction failed: %s", e)
             return None
         finally:
@@ -387,10 +344,10 @@ class SalesforceReleaseScraper:
                     selector,
                     len(html),
                 )
-                return html
+                return str(html)
 
         logger.warning("No ToC container found, returning full page HTML")
-        return await page.content()
+        return str(await page.content())
 
     async def fetch_page_raw_text(self, url: str) -> Optional[str]:
         """Fetch page and return inner_text of body (for feature impact page).
@@ -428,7 +385,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(text or ""),
                 )
-            except Exception as e:
+            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -441,6 +398,29 @@ class SalesforceReleaseScraper:
         logger.error("All %d attempts failed for raw text: %s", MAX_RETRY_ATTEMPTS, url)
         return None
 
+    async def fetch_multiple_raw_text(
+        self,
+        urls: list[str],
+        max_concurrent: int = 5,
+    ) -> list[Optional[str]]:
+        """Fetch raw text from multiple URLs concurrently with rate limiting.
+
+        Args:
+            urls: List of URLs to fetch.
+            max_concurrent: Maximum concurrent requests (respects rate limiter).
+
+        Returns:
+            List of responses aligned with input URLs.
+        """
+        semaphore = asyncio.Semaphore(max_concurrent)
+
+        async def _fetch_one(url: str) -> Optional[str]:
+            async with semaphore:
+                await self._rate_limiter.acquire()
+                return await self.fetch_page_raw_text(url)
+
+        return list(await asyncio.gather(*(_fetch_one(u) for u in urls)))
+
     async def _ensure_browser(self) -> bool:
         """Ensure the browser is running. Relaunch if crashed."""
         if self._browser and self._browser.is_connected():
@@ -450,7 +430,7 @@ class SalesforceReleaseScraper:
                 self._browser = await self._playwright.chromium.launch(headless=True)
                 logger.info("Browser relaunched successfully")
                 return True
-        except Exception as e:
+        except (BrowserError, OSError) as e:
             logger.error("Failed to relaunch browser: %s", e)
         return False
 
@@ -484,7 +464,7 @@ class SalesforceReleaseScraper:
 
             try:
                 await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-            except Exception:
+            except (TimeoutError, Exception) as _pdf_btn_err:
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:
@@ -509,7 +489,7 @@ class SalesforceReleaseScraper:
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
 
-        except Exception as e:
+        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
             logger.warning("PDF button download failed: %s", e)
             return False
 
@@ -526,6 +506,6 @@ class SalesforceReleaseScraper:
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
-        except Exception as e:
+        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
             logger.warning("PDF download failed: %s", e)
             return False

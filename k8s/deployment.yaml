@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: salesforce-release-notes
+  labels:
+    app: salesforce-release-notes
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # Pipeline should not run concurrently
+  selector:
+    matchLabels:
+      app: salesforce-release-notes
+  template:
+    metadata:
+      labels:
+        app: salesforce-release-notes
+    spec:
+      containers:
+        - name: pipeline
+          image: ghcr.io/fatal1tybarucco/salesforce-webdev:latest
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-secrets
+                  key: openai-api-key
+                  optional: true
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-secrets
+                  key: google-api-key
+                  optional: true
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: sentry-dsn
+                  optional: true
+          livenessProbe:
+            exec:
+              command: ["python", "-c", "import sys; sys.exit(0)"]
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+      restartPolicy: Always

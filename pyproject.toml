@@ -1,8 +1,8 @@
 [project]
 name = "salesforce-release-notes"
-version = "3.0.0"
+version = "3.1.0"
 description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes"
-requires-python = ">=3.14"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "beautifulsoup4>=4.15.0,<5",
     "lxml>=6.1.1,<7",
@@ -11,12 +11,16 @@ dependencies = [
     "google-genai>=1.0.0",
     "tenacity>=9.0.0",
     "aiohttp>=3.11.0",
+    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
 docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.7.6,<10",
+]
+observability = [
+    "prometheus-client>=0.21.0,<1",
 ]
 dev = [
     "black>=26.5.1,<27",
@@ -28,22 +32,28 @@ dev = [
     "freezegun>=1.4.0",
     "types-requests>=2.33.0,<3",
     "types-beautifulsoup4>=4.12.0,<5",
+    "pre-commit>=4.0.0",
 ]
 
 [tool.black]
 line-length = 100
-target-version = ["py314"]
+target-version = ["py312"]
 
 [tool.ruff]
 line-length = 100
 
+[tool.ruff.lint]
+extend-select = ["F401", "F821", "E741"]  # Unused imports, undefined vars, ambiguous names
+
 [tool.mypy]
 strict = true
+mypy_path = "stubs"
+warn_unused_ignores = false
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = "-q --tb=short"
+addopts = "-q --tb=short --durations=10"
 filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]

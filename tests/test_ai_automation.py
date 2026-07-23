@@ -62,7 +62,7 @@ def service(llm_service):
 @pytest.fixture(autouse=True)
 def mock_llm_class(llm_service):
     """Global patch for LLMService instantiation in module-level wrappers."""
-    with patch("src.ai_automation.LLMService", return_value=llm_service):
+    with patch("src.automation.service.LLMService", return_value=llm_service):
         yield llm_service
 
 
@@ -73,7 +73,7 @@ async def test_load_release_meta_existing(tmp_path: Path) -> None:
     release_dir.mkdir()
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         result = await load_release_meta("test")
         assert result is not None
         assert result["name"] == "Test"
@@ -81,7 +81,7 @@ async def test_load_release_meta_existing(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_load_release_meta_missing() -> None:
-    with patch("src.ai_automation.RELEASES_DIR", "/nonexistent"):
+    with patch("src.config.RELEASES_DIR", "/nonexistent"):
         result = await load_release_meta("missing")
         assert result is None
 
@@ -146,7 +146,7 @@ async def test_generate_changelog_ai(service, llm_service, tmp_path: Path) -> No
     meta = {"name": "Summer '26", "release_id": 262, "categories": [{"name": "A", "count": 10}]}
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         result = await generate_changelog()
         assert result == "AI generated content"
         llm_service.generate_text.assert_called_once()
@@ -162,7 +162,7 @@ async def test_generate_changelog_fallback(service, tmp_path: Path) -> None:
     meta = {"name": "Summer '26", "release_id": 262, "categories": [{"name": "A", "count": 10}]}
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         result = await generate_changelog()
         assert "Summer '26" in result
         assert "10 recursos" in result
@@ -203,7 +203,7 @@ async def test_generate_quality_report_ai(service, llm_service, tmp_path: Path) 
     meta = {"name": "Summer '26", "categories": [{"name": "A", "count": 10}]}
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         result = await generate_quality_report()
         assert result == "AI generated content"
         llm_service.generate_text.assert_called_once()
@@ -264,7 +264,7 @@ async def test_generate_ai_summary_fallback(service, tmp_path: Path) -> None:
 @pytest.mark.asyncio
 async def test_generate_ai_summary_report(service) -> None:
     with patch(
-        "src.ai_automation.AIAutomationService.generate_ai_summary",
+        "src.automation.reporting.generate_ai_summary",
         AsyncMock(
             return_value=AISummary(
                 headline="Test Headline",
@@ -302,7 +302,7 @@ async def test_calculate_category_impact_scores(service, tmp_path: Path) -> None
         r.mkdir()
         (r / ".meta.json").write_text(json.dumps(m))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         scores = await calculate_category_impact_scores()
         assert len(scores) == 2
         assert scores[0].risk_score >= 0
@@ -318,7 +318,7 @@ async def test_predict_next_release_impact(service, tmp_path: Path) -> None:
         r.mkdir()
         (r / ".meta.json").write_text(json.dumps(m))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         prediction = await predict_next_release_impact()
         assert isinstance(prediction, ImpactPrediction)
         assert prediction.overall_risk_level in ["alto", "moderado", "baixo", "indeterminado"]
@@ -334,7 +334,7 @@ async def test_generate_impact_prediction_report(service, tmp_path: Path) -> Non
         r.mkdir()
         (r / ".meta.json").write_text(json.dumps(m))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         report = await generate_impact_prediction_report()
         assert "Previsão de Impacto" in report
 
@@ -395,7 +395,7 @@ async def test_analyze_content_changes(service, tmp_path: Path) -> None:
     (release_dir / "file1.md").write_text("content1")
     (release_dir / "file2.md").write_text("content2")
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         result = await analyze_content_changes("test_release")
         assert isinstance(result, DeduplicationResult)
         assert len(result.new_files) == 2
@@ -428,7 +428,7 @@ async def test_generate_deduplication_report(service, tmp_path: Path) -> None:
     release_dir.mkdir()
     (release_dir / "file1.md").write_text("content1")
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         report = await generate_deduplication_report("test_release")
         assert "Deduplicação de Conteúdo" in report
 
@@ -476,7 +476,7 @@ async def test_export_functions(service, tmp_path: Path) -> None:
     (release_dir / ".meta.json").write_text(json.dumps(meta))
     (release_dir / "sec.md").write_text("| Feature | Yes | Yes | Yes | Yes |")
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         json_res = await export_release_json("test_rel")
         assert "Test" in json_res
         csv_res = await export_release_csv("test_rel")
@@ -496,5 +496,119 @@ def test_get_latest_release_badge(tmp_path: Path) -> None:
     r1.mkdir()
     (r1 / ".meta.json").write_text(json.dumps({"name": "Rel 1", "release_id": 1}))
 
-    with patch("src.ai_automation.RELEASES_DIR", str(tmp_path)):
+    with patch("src.config.RELEASES_DIR", str(tmp_path)):
         assert get_latest_release_badge() == "Rel 1"
+
+
+# Module-level convenience function tests
+@pytest.mark.asyncio
+async def test_module_create_release_issue():
+    """Module-level create_release_issue delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.create_github_issue = AsyncMock(return_value="issue-1")
+        from src.ai_automation import create_release_issue
+
+        result = await create_release_issue("R1", 10, 5)
+        assert result == "issue-1"
+
+
+@pytest.mark.asyncio
+async def test_module_load_all_release_metas():
+    """Module-level _load_all_release_metas delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value._load_all_release_metas = AsyncMock(return_value=[{"name": "R1"}])
+        from src.ai_automation import _load_all_release_metas
+
+        result = await _load_all_release_metas()
+        assert len(result) == 1
+
+
+@pytest.mark.asyncio
+async def test_module_load_content_cache(tmp_path):
+    """Module-level _load_content_cache delegates to service."""
+    from src.ai_automation import _load_content_cache
+
+    result = await _load_content_cache(tmp_path / "nope.json")
+    assert isinstance(result, dict)
+
+
+@pytest.mark.asyncio
+async def test_module_generate_deduplication_report():
+    """Module-level generate_deduplication_report delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.generate_deduplication_report = AsyncMock(return_value="report")
+        from src.ai_automation import generate_deduplication_report
+
+        result = await generate_deduplication_report("summer_26")
+        assert result == "report"
+
+
+@pytest.mark.asyncio
+async def test_module_filter_features_for_profile():
+    """Module-level filter_features_for_profile delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        profile = UserProfile(
+            profile_type="dev",
+            name="dev",
+            relevant_categories=[],
+            filtered_features=[],
+            priority_features=[],
+            relevance_score=0.0,
+        )
+        MockSvc.return_value.filter_features_for_profile = AsyncMock(return_value=profile)
+        from src.ai_automation import filter_features_for_profile
+
+        result = await filter_features_for_profile("developer", [])
+        assert result.name == "dev"
+
+
+@pytest.mark.asyncio
+async def test_module_generate_filtered_notification():
+    """Module-level generate_filtered_notification delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        up = UserProfile(
+            profile_type="dev",
+            name="dev",
+            relevant_categories=[],
+            filtered_features=[],
+            priority_features=[],
+            relevance_score=0.0,
+        )
+        notif = FilteredNotification(
+            profile=up, total_features=0, relevant_count=0, priority_count=0, summary="text"
+        )
+        MockSvc.return_value.generate_filtered_notification = AsyncMock(return_value=notif)
+        from src.ai_automation import generate_filtered_notification
+
+        result = await generate_filtered_notification("summer_26", "developer")
+        assert result.total_features == 0
+
+
+@pytest.mark.asyncio
+async def test_module_generate_filtered_notification_report():
+    """Module-level generate_filtered_notification_report delegates to service."""
+    with patch("src.ai_automation.AIAutomationService") as MockSvc:
+        MockSvc.return_value.generate_filtered_notification_report = AsyncMock(
+            return_value="report"
+        )
+        from src.ai_automation import generate_filtered_notification_report
+
+        result = await generate_filtered_notification_report("summer_26", "developer")
+        assert result == "report"
+
+
+def test_module_generate_dynamic_badge():
+    """Module-level generate_dynamic_badge delegates to service."""
+    from src.ai_automation import generate_dynamic_badge
+
+    result = generate_dynamic_badge("Summer '26", 100)
+    assert isinstance(result, str)
+
+
+def test_get_latest_release_badge_no_dir(tmp_path):
+    """get_latest_release_badge returns N/A when no releases dir."""
+    with patch("src.config.RELEASES_DIR", str(tmp_path / "nope")):
+        from src.ai_automation import get_latest_release_badge
+
+        result = get_latest_release_badge()
+        assert result == "N/A"

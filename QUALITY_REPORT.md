@@ -1,13 +1,5 @@
 # Relatório de Qualidade
 
-## Spring '26
-
-- **Total de recursos:** 1438
-- **Total de categorias:** 21
-- **Média por categoria:** 68.5
-- **Maior categoria:** Setores (194)
-- **Menor categoria:** Partner Cloud (4)
-
 ## Summer '26
 
 - **Total de recursos:** 1373
@@ -15,6 +7,14 @@
 - **Média por categoria:** 62.4
 - **Maior categoria:** Setores (309)
 - **Menor categoria:** Partner Cloud (1)
+
+## Spring '26
+
+- **Total de recursos:** 1438
+- **Total de categorias:** 21
+- **Média por categoria:** 68.5
+- **Maior categoria:** Setores (194)
+- **Menor categoria:** Partner Cloud (4)
 
 ## Winter '26
 

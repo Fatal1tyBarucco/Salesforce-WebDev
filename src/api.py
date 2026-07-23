@@ -14,23 +14,301 @@ GraphQL Endpoint:
 
 OpenAPI:
     GET  /openapi.json                     — OpenAPI 3.0 specification
+
+Authentication:
+    Set ``API_KEY`` environment variable to enable API key auth.
+    Clients must send ``X-API-Key: <key>`` or ``Authorization: Bearer <key>``.
+    When ``API_KEY`` is not set, all requests are allowed (development mode).
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
 from typing import Any
 
-from .config import RELEASES_DIR
+from .config import RELEASES_DIR, KNOWN_RELEASES
+from .models import ErrorResponse, ReleaseResponse
 
 logger = logging.getLogger(__name__)
 
 API_PORT = 8081
+
+# API Key for authentication (empty = no auth required)
+_API_KEY: str = os.environ.get("API_KEY", "")
+
+# Paths that do not require authentication
+_PUBLIC_PATHS: frozenset[str] = frozenset({"/health", "/ready", "/metrics", "/openapi.json"})
+
+
+# ---------------------------------------------------------------------------
+# GraphQL recursive-descent parser
+# ---------------------------------------------------------------------------
+
+class _GQLToken:
+    """Lightweight token for the GraphQL lexer."""
+
+    __slots__ = ("kind", "value")
+
+    def __init__(self, kind: str, value: str = "") -> None:
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self) -> str:
+        return f"Token({self.kind}, {self.value!r})"
+
+
+def _gql_lex(query: str) -> list[_GQLToken]:
+    """Tokenize a GraphQL query string."""
+    tokens: list[_GQLToken] = []
+    i = 0
+    n = len(query)
+    while i < n:
+        c = query[i]
+        # Whitespace
+        if c in " \t\n\r":
+            i += 1
+            continue
+        # Punctuation
+        if c == "{":
+            tokens.append(_GQLToken("LBRACE"))
+            i += 1
+        elif c == "}":
+            tokens.append(_GQLToken("RBRACE"))
+            i += 1
+        elif c == "(":
+            tokens.append(_GQLToken("LPAREN"))
+            i += 1
+        elif c == ")":
+            tokens.append(_GQLToken("RPAREN"))
+            i += 1
+        elif c == ":":
+            tokens.append(_GQLToken("COLON"))
+            i += 1
+        elif c == ",":
+            tokens.append(_GQLToken("COMMA"))
+            i += 1
+        # String literal
+        elif c == '"':
+            j = i + 1
+            while j < n and query[j] != '"':
+                if query[j] == "\\":
+                    j += 1  # skip escaped char
+                j += 1
+            tokens.append(_GQLToken("STRING", query[i + 1 : j]))
+            i = j + 1
+        # Name / keyword
+        elif c.isalpha() or c == "_":
+            j = i
+            while j < n and (query[j].isalnum() or query[j] == "_"):
+                j += 1
+            tokens.append(_GQLToken("NAME", query[i:j]))
+            i = j
+        else:
+            i += 1  # skip unknown
+    return tokens
+
+
+class _GQLParser:
+    """Recursive-descent parser for the project's GraphQL subset.
+
+    Supports:
+        { releases { name slug } }
+        { release(slug: "summer_26") { name totalFeatures } }
+        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
+    """
+
+    def __init__(self, tokens: list[_GQLToken]) -> None:
+        self._tokens = tokens
+        self._pos = 0
+
+    def _peek(self) -> _GQLToken | None:
+        if self._pos < len(self._tokens):
+            return self._tokens[self._pos]
+        return None
+
+    def _advance(self) -> _GQLToken:
+        tok = self._tokens[self._pos]
+        self._pos += 1
+        return tok
+
+    def _expect(self, kind: str) -> _GQLToken:
+        tok = self._advance()
+        if tok.kind != kind:
+            raise ValueError(f"Expected {kind}, got {tok.kind} ({tok.value!r})")
+        return tok
+
+    def _parse_arguments(self) -> dict[str, str]:
+        """Parse (key: "value", ...) arguments."""
+        args: dict[str, str] = {}
+        self._expect("LPAREN")
+        while self._peek() and self._peek().kind != "RPAREN":
+            name = self._expect("NAME").value
+            self._expect("COLON")
+            val = self._expect("STRING").value
+            args[name] = val
+            if self._peek() and self._peek().kind == "COMMA":
+                self._advance()
+        self._expect("RPAREN")
+        return args
+
+    def _parse_field_set(self) -> list[str]:
+        """Parse { field1 field2 nested { ... } } and return flat field names."""
+        fields: list[str] = []
+        self._expect("LBRACE")
+        while self._peek() and self._peek().kind != "RBRACE":
+            name_tok = self._expect("NAME")
+            fields.append(name_tok.value)
+            # Skip nested selection sets (e.g. categories { name count })
+            if self._peek() and self._peek().kind == "LBRACE":
+                self._parse_field_set()  # recurse, discard
+        self._expect("RBRACE")
+        return fields
+
+    def parse(self) -> tuple[str, dict[str, str], list[str]]:
+        """Parse a top-level query.
+
+        Returns:
+            (operation_name, arguments, requested_fields)
+        """
+        # Strip optional outer braces
+        if self._peek() and self._peek().kind == "LBRACE":
+            self._advance()
+
+            # Check if this is a bare { op(...) { ... } } or { op { ... } }
+            name_tok = self._advance()
+            if name_tok.kind != "NAME":
+                raise ValueError(f"Expected operation name, got {name_tok.kind}")
+
+            op_name = name_tok.value
+            args: dict[str, str] = {}
+            fields: list[str] = []
+
+            if self._peek() and self._peek().kind == "LPAREN":
+                args = self._parse_arguments()
+
+            if self._peek() and self._peek().kind == "LBRACE":
+                fields = self._parse_field_set()
+
+            # Consume optional closing brace
+            if self._peek() and self._peek().kind == "RBRACE":
+                self._advance()
+
+            return op_name, args, fields
+
+        raise ValueError("Expected '{' at start of query")
+
+
+# ---------------------------------------------------------------------------
+# GraphQL field mapping & handlers
+# ---------------------------------------------------------------------------
+
+_GRAPHQL_FIELD_MAP: dict[str, str] = {
+    "name": "name",
+    "slug": "slug",
+    "releaseId": "release_id",
+    "release_id": "release_id",
+    "totalFeatures": "total_features",
+    "total_features": "total_features",
+    "avgConfidence": "avg_confidence",
+    "avg_confidence": "avg_confidence",
+    "generatedAt": "generated_at",
+    "generated_at": "generated_at",
+    "categories": "categories",
+    "totalDelta": "total_delta",
+    "total_delta": "total_delta",
+    "current": "current",
+    "previous": "previous",
+    "changes": "changes",
+    "delta": "delta",
+    "category": "category",
+}
+
+
+def _select_graphql_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
+    """Select and map GraphQL field names to internal keys."""
+    if not fields:
+        return data
+    return {f: data.get(_GRAPHQL_FIELD_MAP[f], None) for f in fields if f in _GRAPHQL_FIELD_MAP}
+
+
+def _graphql_handle_releases(fields: list[str]) -> dict[str, Any]:
+    """Handle `{ releases { ... } }` query."""
+    metas = _load_all_metas()
+    return {"data": {"releases": [_select_graphql_fields(m, fields) for m in metas]}}
+
+
+def _graphql_handle_release(slug: str, fields: list[str]) -> dict[str, Any]:
+    """Handle `{ release(slug: "...") { ... } }` query."""
+    meta = _find_meta(slug)
+    if meta is None:
+        return {"data": {"release": None}, "errors": [{"message": f"release '{slug}' not found"}]}
+    return {"data": {"release": _select_graphql_fields(meta, fields)}}
+
+
+def _graphql_handle_diff(
+    current_slug: str, previous_slug: str, fields: list[str]
+) -> dict[str, Any]:
+    """Handle `{ diff(current: "...", previous: "...") { ... } }` query."""
+    current_meta = _find_meta(current_slug)
+    if current_meta is None:
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{current_slug}' not found"}],
+        }
+    previous_meta = _find_meta(previous_slug)
+    if previous_meta is None:
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{previous_slug}' not found"}],
+        }
+    diff = _build_diff(current_meta, previous_meta)
+    return {"data": {"diff": _select_graphql_fields(diff, fields)}}
+
+
+def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Execute a GraphQL query using recursive-descent parser.
+
+    Supports:
+        { releases { name slug totalFeatures categories { name count } } }
+        { release(slug: "summer_26") { name totalFeatures } }
+        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
+    """
+    try:
+        tokens = _gql_lex(query)
+        parser = _GQLParser(tokens)
+        op_name, args, fields = parser.parse()
+    except (ValueError, IndexError) as exc:
+        return {"errors": [{"message": f"Parse error: {exc}"}]}
+
+    if op_name == "releases":
+        return _graphql_handle_releases(fields)
+    if op_name == "release":
+        slug = args.get("slug", "")
+        return _graphql_handle_release(slug, fields)
+    if op_name == "diff":
+        return _graphql_handle_diff(args.get("current", ""), args.get("previous", ""), fields)
+
+    return {
+        "errors": [
+            {
+                "message": (
+                    f"Unknown operation '{op_name}'. "
+                    "Supported: releases, release(slug), diff(current, previous)"
+                )
+            }
+        ]
+    }
+
+
+# ---------------------------------------------------------------------------
+# REST helpers
+# ---------------------------------------------------------------------------
 
 
 def _load_all_metas() -> list[dict[str, Any]]:
@@ -45,15 +323,18 @@ def _load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except json.JSONDecodeError, OSError:
+            except (json.JSONDecodeError, OSError):
                 continue
     metas.sort(key=lambda m: m.get("release_id", 0))
     return metas
 
 
 def _validate_slug(slug: str) -> bool:
-    """Validate a slug to prevent path traversal."""
-    return bool(re.match(r"^[a-z0-9_]+$", slug))
+    """Validate a slug to prevent path traversal and ensure it maps to a known release."""
+    if not slug or not re.match(r"^[a-z0-9_]+$", slug):
+        return False
+    # Reject slugs that do not correspond to any known release.
+    return any(release.slug == slug for release in KNOWN_RELEASES)
 
 
 def _find_meta(slug: str) -> dict[str, Any] | None:
@@ -70,7 +351,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_file.read_text(encoding="utf-8"))
         return result
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return None
 
 
@@ -164,331 +445,52 @@ def _build_diff(current_meta: dict[str, Any], previous_meta: dict[str, Any]) -> 
     }
 
 
-def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Execute a simplified GraphQL query.
+# ---------------------------------------------------------------------------
+# HTTP handler
+# ---------------------------------------------------------------------------
 
-    Supports:
-        { releases { name slug totalFeatures categories { name count } } }
-        { release(slug: "summer_26") { name totalFeatures } }
-        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
-    """
-    query = query.strip()
-    variables = variables or {}
-
-    # Simple parser: extract operation and fields
-    # { releases { ... } } or { release(slug: "...") { ... } }
-
-    # Detect query type
-    releases_match = re.search(r"releases\s*\{", query)
-    release_match = re.search(r'release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)\s*\{', query)
-    diff_match = re.search(
-        r'diff\s*\(\s*current\s*:\s*"([^"]+)"\s*,\s*previous\s*:\s*"([^"]+)"\s*\)\s*\{',
-        query,
-    )
-
-    # Extract all field names from the query (flat extraction, ignores nesting)
-    requested_fields = list(
-        dict.fromkeys(re.findall(r"\b(\w+)\b", query.split("{", 2)[-1] if "{" in query else query))
-    )
-    # Remove GraphQL keywords
-    graphql_keywords = {
-        "query",
-        "mutation",
-        "subscription",
-        "fragment",
-        "on",
-        "true",
-        "false",
-        "null",
-    }
-    requested_fields = [f for f in requested_fields if f not in graphql_keywords]
-
-    def _select_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
-        if not fields:
-            return data
-        result: dict[str, Any] = {}
-        field_map = {
-            "name": "name",
-            "slug": "slug",
-            "releaseId": "release_id",
-            "release_id": "release_id",
-            "totalFeatures": "total_features",
-            "total_features": "total_features",
-            "avgConfidence": "avg_confidence",
-            "avg_confidence": "avg_confidence",
-            "generatedAt": "generated_at",
-            "generated_at": "generated_at",
-            "categories": "categories",
-            "totalDelta": "total_delta",
-            "total_delta": "total_delta",
-            "current": "current",
-            "previous": "previous",
-            "changes": "changes",
-            "delta": "delta",
-            "category": "category",
-        }
-        for field in fields:
-            if field in field_map:
-                result[field] = data.get(field_map[field], None)
-        return result
-
-    if releases_match:
-        metas = _load_all_metas()
-        results = [_select_fields(m, requested_fields) for m in metas]
-        return {"data": {"releases": results}}
-
-    if release_match:
-        slug = release_match.group(1)
-        meta = _find_meta(slug)
-        if meta is None:
-            return {
-                "data": {"release": None},
-                "errors": [{"message": f"release '{slug}' not found"}],
-            }
-        return {"data": {"release": _select_fields(meta, requested_fields)}}
-
-    if diff_match:
-        current_slug = diff_match.group(1)
-        previous_slug = diff_match.group(2)
-        current_meta = _find_meta(current_slug)
-        previous_meta = _find_meta(previous_slug)
-        if current_meta is None:
-            return {
-                "data": {"diff": None},
-                "errors": [{"message": f"release '{current_slug}' not found"}],
-            }
-        if previous_meta is None:
-            return {
-                "data": {"diff": None},
-                "errors": [{"message": f"release '{previous_slug}' not found"}],
-            }
-        diff = _build_diff(current_meta, previous_meta)
-        return {"data": {"diff": _select_fields(diff, requested_fields)}}
-
-    return {
-        "errors": [
-            {
-                "message": "Unknown query. Supported: releases, release(slug), diff(current, previous)"
-            }
-        ]
-    }
+_OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
 
 
 def _generate_openapi_spec() -> dict[str, Any]:
-    """Generate OpenAPI 3.0 specification."""
-    return {
-        "openapi": "3.0.3",
-        "info": {
-            "title": "Salesforce Release Notes API",
-            "description": "REST API for accessing Salesforce Release Notes data",
-            "version": "3.0.0",
-        },
-        "servers": [{"url": "http://localhost:8081", "description": "Local development"}],
-        "paths": {
-            "/releases": {
-                "get": {
-                    "summary": "List all releases",
-                    "operationId": "listReleases",
-                    "responses": {
-                        "200": {
-                            "description": "List of releases",
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "type": "object",
-                                        "properties": {
-                                            "releases": {
-                                                "type": "array",
-                                                "items": {"$ref": "#/components/schemas/Release"},
-                                            }
-                                        },
-                                    }
-                                }
-                            },
-                        }
-                    },
-                }
-            },
-            "/releases/{slug}": {
-                "get": {
-                    "summary": "Get release details",
-                    "operationId": "getRelease",
-                    "parameters": [
-                        {
-                            "name": "slug",
-                            "in": "path",
-                            "required": True,
-                            "schema": {"type": "string"},
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "Release details",
-                            "content": {
-                                "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/Release"}
-                                }
-                            },
-                        },
-                        "404": {"description": "Release not found"},
-                    },
-                }
-            },
-            "/releases/{slug}/categories/{name}": {
-                "get": {
-                    "summary": "Get category features",
-                    "operationId": "getCategoryFeatures",
-                    "parameters": [
-                        {
-                            "name": "slug",
-                            "in": "path",
-                            "required": True,
-                            "schema": {"type": "string"},
-                        },
-                        {
-                            "name": "name",
-                            "in": "path",
-                            "required": True,
-                            "schema": {"type": "string"},
-                        },
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "Category features",
-                            "content": {
-                                "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/CategoryFeatures"}
-                                }
-                            },
-                        },
-                        "404": {"description": "Release or category not found"},
-                    },
-                }
-            },
-            "/diff/{current}/{previous}": {
-                "get": {
-                    "summary": "Compare two releases",
-                    "operationId": "compareReleases",
-                    "parameters": [
-                        {
-                            "name": "current",
-                            "in": "path",
-                            "required": True,
-                            "schema": {"type": "string"},
-                        },
-                        {
-                            "name": "previous",
-                            "in": "path",
-                            "required": True,
-                            "schema": {"type": "string"},
-                        },
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "Release comparison",
-                            "content": {
-                                "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/Diff"}
-                                }
-                            },
-                        },
-                        "404": {"description": "Release not found"},
-                    },
-                }
-            },
-            "/graphql": {
-                "post": {
-                    "summary": "GraphQL query endpoint",
-                    "operationId": "graphql",
-                    "requestBody": {
-                        "required": True,
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "query": {"type": "string"},
-                                        "variables": {"type": "object"},
-                                    },
-                                }
-                            }
-                        },
-                    },
-                    "responses": {
-                        "200": {
-                            "description": "GraphQL response",
-                            "content": {"application/json": {"schema": {"type": "object"}}},
-                        },
-                    },
-                }
-            },
-        },
-        "components": {
-            "schemas": {
-                "Release": {
-                    "type": "object",
-                    "properties": {
-                        "name": {"type": "string"},
-                        "slug": {"type": "string"},
-                        "release_id": {"type": "integer"},
-                        "total_features": {"type": "integer"},
-                        "avg_confidence": {"type": "number"},
-                        "categories": {
-                            "type": "array",
-                            "items": {"$ref": "#/components/schemas/Category"},
-                        },
-                    },
-                },
-                "Category": {
-                    "type": "object",
-                    "properties": {"name": {"type": "string"}, "count": {"type": "integer"}},
-                },
-                "CategoryFeatures": {
-                    "type": "object",
-                    "properties": {
-                        "release": {"type": "string"},
-                        "category": {"type": "string"},
-                        "features": {
-                            "type": "array",
-                            "items": {"$ref": "#/components/schemas/Feature"},
-                        },
-                        "count": {"type": "integer"},
-                    },
-                },
-                "Feature": {
-                    "type": "object",
-                    "properties": {"name": {"type": "string"}, "availability": {"type": "string"}},
-                },
-                "Diff": {
-                    "type": "object",
-                    "properties": {
-                        "current": {"type": "string"},
-                        "previous": {"type": "string"},
-                        "changes": {
-                            "type": "array",
-                            "items": {"$ref": "#/components/schemas/Change"},
-                        },
-                        "total_delta": {"type": "integer"},
-                    },
-                },
-                "Change": {
-                    "type": "object",
-                    "properties": {
-                        "category": {"type": "string"},
-                        "previous": {"type": "integer"},
-                        "current": {"type": "integer"},
-                        "delta": {"type": "integer"},
-                    },
-                },
-            }
-        },
-    }
+    """Load OpenAPI 3.0 specification from bundled JSON file."""
+    spec: dict[str, Any] = json.loads(_OPENAPI_SPEC_PATH.read_text(encoding="utf-8"))
+    return spec
 
 
 class APIHandler(BaseHTTPRequestHandler):
     """HTTP handler for REST API, GraphQL, and OpenAPI endpoints."""
 
+    def _check_auth(self) -> bool:
+        """Verify API key when authentication is enabled.
+
+        Returns True if the request is authorized (or auth is disabled).
+        Sends a 401 response and returns False otherwise.
+        """
+        if not _API_KEY:
+            return True  # auth disabled
+
+        path = self.path.split("?")[0].rstrip("/")
+        if path in _PUBLIC_PATHS:
+            return True  # public endpoint
+
+        # Check X-API-Key header
+        provided = self.headers.get("X-API-Key", "")
+        if not provided:
+            # Check Authorization: Bearer <key>
+            auth_header = self.headers.get("Authorization", "")
+            if auth_header.startswith("Bearer "):
+                provided = auth_header[7:].strip()
+
+        if provided == _API_KEY:
+            return True
+
+        self._respond(401, {"error": "Unauthorized. Provide X-API-Key or Authorization: Bearer <key>."})
+        return False
+
     def do_GET(self) -> None:
+        if not self._check_auth():
+            return
         path = self.path.rstrip("/")
 
         if path == "/openapi.json":
@@ -498,15 +500,22 @@ class APIHandler(BaseHTTPRequestHandler):
         metas = _load_all_metas()
 
         if path == "/releases":
-            self._respond(200, {"releases": metas})
+            try:
+                validated = [ReleaseResponse.model_validate(m).model_dump() for m in metas]
+            except Exception:
+                validated = metas
+            self._respond(200, {"releases": validated})
 
         elif path.startswith("/releases/") and path.count("/") == 2:
             slug = path.split("/")[2]
             meta = _find_meta(slug)
             if meta is None:
-                self._respond(404, {"error": f"release '{slug}' not found"})
+                self._respond(404, ErrorResponse(error=f"release '{slug}' not found").model_dump())
                 return
-            self._respond(200, meta)
+            try:
+                self._respond(200, ReleaseResponse.model_validate(meta).model_dump())
+            except Exception:
+                self._respond(200, meta)
 
         elif path.startswith("/releases/") and path.count("/") == 4:
             parts = path.split("/")
@@ -546,6 +555,8 @@ class APIHandler(BaseHTTPRequestHandler):
             self._respond(404, {"error": "not found"})
 
     def do_POST(self) -> None:
+        if not self._check_auth():
+            return
         path = self.path.rstrip("/")
         if path != "/graphql":
             self._respond(404, {"error": "not found"})
@@ -553,7 +564,7 @@ class APIHandler(BaseHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-        except ValueError, TypeError:
+        except (ValueError, TypeError):
             self._respond(400, {"error": "invalid Content-Length header"})
             return
         if content_length == 0:
@@ -563,7 +574,7 @@ class APIHandler(BaseHTTPRequestHandler):
         try:
             body = self.rfile.read(content_length)
             data: dict[str, Any] = json.loads(body.decode("utf-8"))
-        except json.JSONDecodeError, UnicodeDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             self._respond(400, {"error": "invalid JSON"})
             return
 

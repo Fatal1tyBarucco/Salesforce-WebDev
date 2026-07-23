@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+from src.exceptions import ConfigError
 import pytest
 
 from src.salesforce import (
@@ -98,13 +99,13 @@ def test_invalid_json_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text("NOT JSON", encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="Invalid JSON"):
+    with pytest.raises(ConfigError, match="Invalid JSON"):
         _ = svc.categories
 
 
 def test_missing_file_raises(tmp_path: Path) -> None:
     svc = TrailheadMappingService(config_path=tmp_path / "nonexistent.json")
-    with pytest.raises(ValueError, match="Trailhead config not found"):
+    with pytest.raises(ConfigError, match="Trailhead config not found"):
         _ = svc.categories
 
 
@@ -113,7 +114,7 @@ def test_invalid_structure_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="must be a JSON object"):
+    with pytest.raises(ConfigError, match="must be a JSON object"):
         _ = svc.categories
 
 
@@ -122,7 +123,7 @@ def test_category_not_list_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="must map to a list"):
+    with pytest.raises(ConfigError, match="must map to a list"):
         _ = svc.categories
 
 
@@ -131,7 +132,7 @@ def test_invalid_module_entry_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="must be an object"):
+    with pytest.raises(ConfigError, match="must be an object"):
         _ = svc.categories
 
 
@@ -140,7 +141,7 @@ def test_missing_title_field_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="title"):
+    with pytest.raises(ConfigError, match="title"):
         _ = svc.categories
 
 
@@ -149,7 +150,7 @@ def test_missing_url_field_raises(tmp_path: Path) -> None:
     p = tmp_path / "bad.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="url"):
+    with pytest.raises(ConfigError, match="url"):
         _ = svc.categories
 
 
@@ -301,16 +302,21 @@ def test_singleton_caches_categories() -> None:
 def test_search_trailhead_uses_singleton() -> None:
     import src.salesforce as mod
 
-    mod._trailhead_service = None
+    # Clear lru_cache to ensure fresh instance
+    mod._get_trailhead_service_cached.cache_clear()
     modules = search_trailhead("Agentforce")
     assert len(modules) > 0
-    assert mod._trailhead_service is not None
-    mod._trailhead_service = None
+    # Verify cache is populated
+    assert (
+        mod._get_trailhead_service_cached.cache_info().hits > 0
+        or mod._get_trailhead_service_cached.cache_info().misses > 0
+    )
+    mod._get_trailhead_service_cached.cache_clear()
 
 
 def test_missing_json_file_fallback() -> None:
     svc = TrailheadMappingService(config_path=Path("/nonexistent/path.json"))
-    with pytest.raises(ValueError, match="Trailhead config not found"):
+    with pytest.raises(ConfigError, match="Trailhead config not found"):
         _ = svc.categories
 
 
@@ -318,5 +324,5 @@ def test_corrupt_json_fallback(tmp_path: Path) -> None:
     p = tmp_path / "corrupt.json"
     p.write_text("{invalid json content", encoding="utf-8")
     svc = TrailheadMappingService(config_path=p)
-    with pytest.raises(ValueError, match="Invalid JSON"):
+    with pytest.raises(ConfigError, match="Invalid JSON"):
         _ = svc.categories
