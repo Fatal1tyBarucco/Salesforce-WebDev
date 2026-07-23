@@ -7,9 +7,8 @@ from io import BytesIO
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
-from src.api import APIHandler, _API_KEY
+from src.api import APIHandler
 
 
 def _make_handler(

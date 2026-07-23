@@ -16,7 +16,6 @@ from src.config import ReleaseInfo
 from src.events import EventBus
 from src.cache_manager import CacheManager
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -68,7 +67,7 @@ class TestPipelineE2E:
         tmp_path: Path,
     ) -> None:
         """Dry-run pipeline should not create any files."""
-        from src.main import process_single_release, PipelineConfig
+        from src.main import process_single_release
 
         scraper = AsyncMock()
         scraper.fetch_page_raw_text.return_value = sample_feature_impact_text
@@ -76,7 +75,15 @@ class TestPipelineE2E:
 
         impact_parser = MagicMock()
         impact_parser.parse_text.return_value = [
-            {"name": "Segurança", "features": [{"name": "Melhoria na autenticação MFA", "availability": "geralmente disponível"}]},
+            {
+                "name": "Segurança",
+                "features": [
+                    {
+                        "name": "Melhoria na autenticação MFA",
+                        "availability": "geralmente disponível",
+                    }
+                ],
+            },
         ]
 
         generator = MagicMock()
