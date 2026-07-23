@@ -144,14 +144,19 @@ class TestPipelineE2E:
             with patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen:
                 mock_gen.return_value = None
                 with patch("src.main._update_readme_single"):
-                    result = await process_single_release(
-                        release=sample_release,
-                        scraper=scraper,
-                        impact_parser=impact_parser,
-                        generator=generator,
-                        translator=translator,
-                        dry_run=False,
-                    )
+                    with patch(
+                        "src.feature_enricher.FeatureEnricher.enrich_release",
+                        new_callable=AsyncMock,
+                        return_value={},
+                    ):
+                        result = await process_single_release(
+                            release=sample_release,
+                            scraper=scraper,
+                            impact_parser=impact_parser,
+                            generator=generator,
+                            translator=translator,
+                            dry_run=False,
+                        )
 
         assert result is True
 

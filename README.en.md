@@ -184,18 +184,34 @@ uv run mypy src/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Executive Summary:** 🚀 **Summer '26** — expansão significativa com **1600 recursos** em **22 categorias**.
-
-**Principais destaques:**
-• **Setores** (319 recursos, 20%)
-• **Serviço** (210 recursos, 13%)
-• **Desenvolvimento...
+> 📊 **Executive Summary:** A release Summer '26 representa uma expansão significativa do ecossistema Salesforce com **1434 novos recursos** distribuídos em **22 categorias**. As áreas com maior volume de inovação são Setores, S...
 
 
 <details>
@@ -379,12 +395,7 @@ uv run mypy src/
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Executive Summary:** 🚀 **Spring '26** — expansão significativa com **1598 recursos** em **21 categorias**.
-
-**Principais destaques:**
-• **Setores** (202 recursos, 13%)
-• **Aplicativo móvel** (195 recursos, 12%)
-• **Serviç...
+> 📊 **Executive Summary:** A release Spring '26 representa uma expansão significativa do ecossistema Salesforce com **1438 novos recursos** distribuídos em **21 categorias**. As áreas com maior volume de inovação são Setores, A...
 
 
 <details>
@@ -562,12 +573,7 @@ uv run mypy src/
 
 <summary><h3>❄️ Winter '26</h3></summary>
 
-> 📊 **Executive Summary:** 🚀 **Winter '26** — expansão significativa com **1487 recursos** em **19 categorias**.
-
-**Principais destaques:**
-• **Setores** (467 recursos, 31%)
-• **Partner Cloud** (164 recursos, 11%)
-• **Vendas** ...
+> 📊 **Executive Summary:** A release Winter '26 representa uma expansão significativa do ecossistema Salesforce com **1348 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, P...
 
 
 <details>

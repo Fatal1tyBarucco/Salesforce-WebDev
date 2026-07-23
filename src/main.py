@@ -352,8 +352,22 @@ async def process_single_release(
     categories = impact_parser.parse_text(raw_text)
     logger.info("Parsed %d categories from feature impact", len(categories))
 
+    # Enrich features with AI-generated descriptions and impact levels
+    from .feature_enricher import FeatureEnricher
+
+    enricher = FeatureEnricher(llm=translator._llm if hasattr(translator, "_llm") else None)
+    enrichments = await enricher.enrich_release(release.slug, release.name)
+    logger.info("Enriched %d categories with AI descriptions", len(enrichments))
+
     for locale in ["pt_BR", "en_US"]:
-        await _generate_release_files(release, categories, generator, translator, locale=locale)
+        await _generate_release_files(
+            release,
+            categories,
+            generator,
+            translator,
+            locale=locale,
+            enrichments=enrichments,
+        )
     _update_readme_single(release, categories)
     return True
 
