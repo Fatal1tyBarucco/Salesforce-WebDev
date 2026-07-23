@@ -95,18 +95,34 @@ Este repositório automatiza todo o ciclo:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** 🚀 **Summer '26** — expansão significativa com **1600 recursos** em **22 categorias**.
-
-**Principais destaques:**
-• **Setores** (319 recursos, 20%)
-• **Serviço** (210 recursos, 13%)
-• **Desenvolvimento...
+> 📊 **Resumo Executivo:** A release Summer '26 representa uma expansão significativa do ecossistema Salesforce com **1434 novos recursos** distribuídos em **22 categorias**. As áreas com maior volume de inovação são Setores, S...
 
 
 <details>
@@ -290,12 +306,7 @@ Este repositório automatiza todo o ciclo:
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Resumo Executivo:** 🚀 **Spring '26** — expansão significativa com **1598 recursos** em **21 categorias**.
-
-**Principais destaques:**
-• **Setores** (202 recursos, 13%)
-• **Aplicativo móvel** (195 recursos, 12%)
-• **Serviç...
+> 📊 **Resumo Executivo:** A release Spring '26 representa uma expansão significativa do ecossistema Salesforce com **1438 novos recursos** distribuídos em **21 categorias**. As áreas com maior volume de inovação são Setores, A...
 
 
 <details>
@@ -473,12 +484,7 @@ Este repositório automatiza todo o ciclo:
 
 <summary><h3>❄️ Winter '26</h3></summary>
 
-> 📊 **Resumo Executivo:** 🚀 **Winter '26** — expansão significativa com **1487 recursos** em **19 categorias**.
-
-**Principais destaques:**
-• **Setores** (467 recursos, 31%)
-• **Partner Cloud** (164 recursos, 11%)
-• **Vendas** ...
+> 📊 **Resumo Executivo:** A release Winter '26 representa uma expansão significativa do ecossistema Salesforce com **1348 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, P...
 
 
 <details>

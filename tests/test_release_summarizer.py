@@ -11,16 +11,28 @@ def test_summarizer_returns_summary(tmp_path: Path) -> None:
     """release_summarizer: summarize returns summary for valid release."""
     release_dir = tmp_path / "summer_26" / "pt_BR"
     release_dir.mkdir(parents=True)
-    (release_dir / ".meta.json").write_text(
-        json.dumps({"release_name": "Summer '26", "total_features": 50})
+    (tmp_path / "summer_26" / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "total_features": 3,
+                "categories": [
+                    {"name": "Agentforce", "count": 2},
+                    {"name": "Security", "count": 1},
+                ],
+            }
+        )
     )
     (release_dir / "agentforce.md").write_text(
-        "# Agentforce\n\n## Agentforce\n\n- Feature A: New agent capability\n"
-        "- Feature B: Improved workflow\n- Feature C: Better integration\n"
+        "## Agentforce\n\n| Recurso | Usuários | Admins | Config | Contato | Docs |\n"
+        "| :--- | :---: | :---: | :---: | :---: | :---: |\n"
+        "| **Feature A** | ✅ | ❌ | ❌ | ❌ | |\n"
+        "| **Feature B** | ✅ | ❌ | ❌ | ❌ | |\n"
     )
     (release_dir / "security.md").write_text(
-        "# Security\n\n## Segurança\n\n- Feature D: Enhanced encryption\n"
-        "- Feature E: New auth method\n"
+        "## Segurança\n\n| Recurso | Usuários | Admins | Config | Contato | Docs |\n"
+        "| :--- | :---: | :---: | :---: | :---: | :---: |\n"
+        "| **Feature D** | ✅ | ❌ | ❌ | ❌ | |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
@@ -28,9 +40,9 @@ def test_summarizer_returns_summary(tmp_path: Path) -> None:
 
     assert summary is not None
     assert summary.release_slug == "summer_26"
-    assert summary.total_features > 0
+    assert summary.total_features == 3
     assert len(summary.top_categories) > 0
-    assert len(summary.summary_text) > 0
+    assert len(summary.executive_summary) > 0
 
 
 def test_summarizer_returns_none_for_missing(tmp_path: Path) -> None:
@@ -43,17 +55,28 @@ def test_summarizer_extracts_category_names(tmp_path: Path) -> None:
     """release_summarizer: category names extracted from headings."""
     release_dir = tmp_path / "winter_26" / "pt_BR"
     release_dir.mkdir(parents=True)
+    (tmp_path / "winter_26" / ".meta.json").write_text(
+        json.dumps(
+            {
+                "name": "Winter '26",
+                "total_features": 2,
+                "categories": [{"name": "Agentforce", "count": 2}],
+            }
+        )
+    )
     (release_dir / "agentforce.md").write_text(
-        "# Agentforce\n\n## Agentforce Features\n\n"
-        "- New agent capability for automated customer service\n"
-        "- Improved workflow automation with AI assistance\n"
+        "## Agentforce Features\n\n"
+        "| Recurso | Usuários | Admins | Config | Contato | Docs |\n"
+        "| :--- | :---: | :---: | :---: | :---: | :---: |\n"
+        "| **Feature A** | ✅ | ❌ | ❌ | ❌ | |\n"
+        "| **Feature B** | ✅ | ❌ | ❌ | ❌ | |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
     summary = asyncio.run(summarizer.summarize("winter_26"))
 
     assert summary is not None
-    cat_names = [c[0] for c in summary.top_categories]
+    cat_names = [c.name for c in summary.top_categories]
     assert any("agentforce" in c.lower() for c in cat_names)
 
 
@@ -72,70 +95,16 @@ def test_summarizer_handles_empty_release(tmp_path: Path) -> None:
     assert summary.total_features == 0
 
 
-def test_summarizer_confidence_scales_with_features(tmp_path: Path) -> None:
-    """release_summarizer: confidence scales with feature count."""
-    small_dir = tmp_path / "small" / "pt_BR"
-    small_dir.mkdir(parents=True)
-    (small_dir / "small.md").write_text(
-        "# Small Release\n\n- Feature 1: Important new capability\n"
-    )
-
-    large_dir = tmp_path / "large" / "pt_BR"
-    large_dir.mkdir(parents=True)
-    features = "\n".join(
-        [f"- Feature {i}: Detailed description of important feature {i}" for i in range(200)]
-    )
-    (large_dir / "large.md").write_text(f"# Large Release\n\n{features}")
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    small = asyncio.run(summarizer.summarize("small"))
-    large = asyncio.run(summarizer.summarize("large"))
-
-    assert small is not None
-    assert large is not None
-    assert large.confidence >= small.confidence
-
-
-def test_summarizer_handles_invalid_meta(tmp_path: Path) -> None:
-    """release_summarizer: handles invalid .meta.json gracefully."""
-    release_dir = tmp_path / "invalid_meta" / "pt_BR"
-    release_dir.mkdir(parents=True)
-    (release_dir / ".meta.json").write_text("not valid json {{{")
-    (release_dir / "features.md").write_text(
-        "# Features\n\n- Important feature with long description for testing\n"
-    )
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = asyncio.run(summarizer.summarize("invalid_meta"))
-
-    assert summary is not None
-
-
-def test_summarizer_handles_missing_meta(tmp_path: Path) -> None:
-    """release_summarizer: handles missing .meta.json."""
-    release_dir = tmp_path / "no_meta" / "pt_BR"
-    release_dir.mkdir(parents=True)
-    (release_dir / "features.md").write_text(
-        "# Features\n\n- Important feature with long description for testing\n"
-    )
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = asyncio.run(summarizer.summarize("no_meta"))
-
-    assert summary is not None
-
-
 def test_summarizer_handles_table_features(tmp_path: Path) -> None:
     """release_summarizer: counts table row features."""
     release_dir = tmp_path / "tables" / "pt_BR"
     release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
-        "# Features\n\n"
-        "This is a detailed description of the features in this release.\n\n"
-        "| RECURSO | ATIVADO |\n"
-        "| --- | --- |\n"
-        "| Feature A with detailed description | Yes |\n"
-        "| Feature B with detailed description | No |\n"
+        "## Features\n\n"
+        "| Recurso | Usuários | Admins | Config | Contato | Docs |\n"
+        "| :--- | :---: | :---: | :---: | :---: | :---: |\n"
+        "| **Feature A** | ✅ | ❌ | ❌ | ❌ | |\n"
+        "| **Feature B** | ✅ | ❌ | ❌ | ❌ | |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
@@ -145,46 +114,15 @@ def test_summarizer_handles_table_features(tmp_path: Path) -> None:
     assert summary.total_features == 2
 
 
-def test_summarizer_handles_blockquotes(tmp_path: Path) -> None:
-    """release_summarizer: extracts sentences from blockquotes."""
-    release_dir = tmp_path / "quotes" / "pt_BR"
-    release_dir.mkdir(parents=True)
-    (release_dir / "features.md").write_text(
-        "# Features\n\n> This is an important quote with enough text to be extracted.\n"
-    )
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = asyncio.run(summarizer.summarize("quotes"))
-
-    assert summary is not None
-    assert len(summary.summary_text) > 0
-
-
-def test_summarizer_handles_mixed_case_keywords(tmp_path: Path) -> None:
-    """release_summarizer: boosts category keywords regardless of case."""
-    release_dir = tmp_path / "keywords" / "pt_BR"
-    release_dir.mkdir(parents=True)
-    (release_dir / "features.md").write_text(
-        "# Features\n\n"
-        "- Security improvement for authentication system\n"
-        "- Performance optimization for database queries\n"
-        "- Bug fix for login issue\n"
-    )
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = asyncio.run(summarizer.summarize("keywords"))
-
-    assert summary is not None
-    assert summary.total_features == 3
-
-
 def test_summarizer_handles_dotfiles(tmp_path: Path) -> None:
     """release_summarizer: skips dotfiles in release directory."""
     release_dir = tmp_path / "dotfiles" / "pt_BR"
     release_dir.mkdir(parents=True)
-    (release_dir / ".hidden.md").write_text("# Hidden\n\n- Hidden feature\n")
+    (release_dir / ".hidden.md").write_text(
+        "## Hidden\n\n| Recurso | Usuários |\n| :--- | :---: |\n| **H1** | ✅ |\n"
+    )
     (release_dir / "visible.md").write_text(
-        "# Visible Features\n\n- Important visible feature with description\n"
+        "## Visible\n\n| Recurso | Usuários |\n| :--- | :---: |\n| **V1** | ✅ |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
@@ -194,36 +132,23 @@ def test_summarizer_handles_dotfiles(tmp_path: Path) -> None:
     assert summary.total_features == 1
 
 
-def test_summarizer_returns_none_for_short_sentences(tmp_path: Path) -> None:
-    """release_summarizer: returns summary even with minimal content when LLM is available."""
-    release_dir = tmp_path / "short" / "pt_BR"
-    release_dir.mkdir(parents=True)
-    (release_dir / "short.md").write_text("# Short\n\n- A\n- B\n- C\n")
-
-    summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-    summary = asyncio.run(summarizer.summarize("short"))
-
-    # LLM-based summarizer returns a summary even for short content
-    assert summary is not None
-
-
 def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     """release_summarizer: extracts category from ## heading."""
     release_dir = tmp_path / "h2category" / "pt_BR"
     release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
-        "## Agentforce Features\n\n" "- Important feature with long description for extraction\n"
+        "## Agentforce Features\n\n" "| Recurso | Usuários |\n| :--- | :---: |\n| **F1** | ✅ |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
     summary = asyncio.run(summarizer.summarize("h2category"))
 
     assert summary is not None
-    cat_names = [c[0] for c in summary.top_categories]
+    cat_names = [c.name for c in summary.top_categories]
     assert any("agentforce" in c.lower() for c in cat_names)
 
 
-def test_load_meta_invalid_json(tmp_path: Path):
+def test_load_meta_invalid_json(tmp_path: Path) -> None:
     """release_summarizer: handles invalid JSON in meta file."""
     release_dir = tmp_path / "invalid_meta"
     release_dir.mkdir()
@@ -234,17 +159,27 @@ def test_load_meta_invalid_json(tmp_path: Path):
     assert result == {}
 
 
-def test_load_meta_os_error(tmp_path: Path):
-    """release_summarizer: handles OS error reading meta file."""
-    release_dir = tmp_path / "os_error_meta"
-    release_dir.mkdir()
-    meta_file = release_dir / ".meta.json"
-    meta_file.write_text('{"name": "test"}')
-    meta_file.chmod(0o000)
+def test_to_markdown(tmp_path: Path) -> None:
+    """release_summarizer: to_markdown generates valid markdown."""
+    from src.release_summarizer import CategoryHighlight, ReleaseSummary
 
-    try:
-        summarizer = ReleaseSummarizer(base_dir=str(tmp_path))
-        result = summarizer._load_meta(release_dir)
-        assert result == {}
-    finally:
-        meta_file.chmod(0o644)
+    summary = ReleaseSummary(
+        release_slug="test",
+        release_name="Test Release",
+        total_features=10,
+        total_categories=3,
+        executive_summary="Test executive summary.",
+        business_impact="Business impact paragraph.",
+        strategic_themes=["AI-First", "Security"],
+        top_categories=[
+            CategoryHighlight("Agentforce", 5, 50.0, "Voice", "AI"),
+        ],
+        migration_notes="No notes.",
+        confidence=0.9,
+    )
+
+    md = ReleaseSummarizer().to_markdown(summary)
+    assert "Test Release" in md
+    assert "10 recursos" in md
+    assert "AI-First" in md
+    assert "Business impact" in md

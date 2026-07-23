@@ -21,6 +21,7 @@ from .config import (
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .feature_enricher import CategoryEnrichment
 from .i18n import generate_toggle_html
 from .generator import MarkdownGenerator
 from .translator import TranslatorService
@@ -221,8 +222,14 @@ async def _generate_release_files(
     generator: MarkdownGenerator,
     translator: TranslatorService,
     locale: str = "pt_BR",
+    enrichments: dict[str, CategoryEnrichment] | None = None,
 ) -> list[Path]:
-    """Generate per-category .md files for a release in a specific locale."""
+    """Generate per-category .md files for a release in a specific locale.
+
+    Args:
+        enrichments: Optional dict of category slug -> CategoryEnrichment.
+            When provided, adds AI-generated descriptions and impact levels.
+    """
 
     from .salesforce import generate_category_trailhead_section
 
@@ -258,36 +265,64 @@ async def _generate_release_files(
         # 1. Category heading
         lines.append(f"## {cat_name}\n")
 
-        # 2. Feature count
-        lines.append(f"> **{total} {templates['category_count_suffix']}**\n")
+        # 2. Feature count (enriched with impact breakdown if available)
+        enrichment = enrichments.get(slug) if enrichments else None
+        if enrichment and enrichment.high_impact_count:
+            impact_summary = (
+                f"> **{total} {templates['category_count_suffix']}** "
+                f"| 🔴 {enrichment.high_impact_count} alto impacto "
+                f"| 🟡 {enrichment.medium_impact_count} médio "
+                f"| 🟢 {enrichment.low_impact_count} baixo\n"
+            )
+            lines.append(impact_summary)
+        else:
+            lines.append(f"> **{total} {templates['category_count_suffix']}**\n")
 
-        # 3. Optional description
-        if cat.description:
+        # 3. AI-generated introduction (if enrichment available)
+        if enrichment and enrichment.introduction:
+            lines.append(f"{enrichment.introduction}\n")
+        elif cat.description:
             lines.append(f"{cat.description}\n")
 
-        # 4. Feature table (main entries)
-        table_headers = (
-            f"| {templates['features_header']} | {templates['users_header']} "
-            f"| {templates['admins_header']} | {templates['config_header']} "
-            f"| {templates['contact_header']} | {templates['docs_header']} |"
-        )
-        table_separator = "| :--- | :---: | :---: | :---: | :---: | :---: |"
-        if cat.entries:
-            lines.append(table_headers)
-            lines.append(table_separator)
-            for entry in cat.entries:
-                lines.append(_format_entry_table(entry))
+        # 4. Feature table (enriched or standard)
+        if enrichment and enrichment.features:
+            # Enriched table with descriptions and impact
+            lines.append(f"| {templates['features_header']} | Descrição | Impacto |")
+            lines.append("| :--- | :--- | :---: |")
+            for ef in enrichment.features:
+                lines.append(ef.to_markdown_row())
             lines.append("")
+        else:
+            # Standard table (no enrichment)
+            table_headers = (
+                f"| {templates['features_header']} | {templates['users_header']} "
+                f"| {templates['admins_header']} | {templates['config_header']} "
+                f"| {templates['contact_header']} | {templates['docs_header']} |"
+            )
+            table_separator = "| :--- | :---: | :---: | :---: | :---: | :---: |"
+            if cat.entries:
+                lines.append(table_headers)
+                lines.append(table_separator)
+                for entry in cat.entries:
+                    lines.append(_format_entry_table(entry))
+                lines.append("")
 
         # 5. Subcategory tables
         for sub_name, sub_entries in cat.subcategories.items():
             if sub_entries:
                 lines.append(f"### {sub_name}\n")
-                lines.append(table_headers)
-                lines.append(table_separator)
-                for entry in sub_entries:
-                    lines.append(_format_entry_table(entry))
-                lines.append("")
+                if not (enrichment and enrichment.features):
+                    table_headers = (
+                        f"| {templates['features_header']} | {templates['users_header']} "
+                        f"| {templates['admins_header']} | {templates['config_header']} "
+                        f"| {templates['contact_header']} | {templates['docs_header']} |"
+                    )
+                    table_separator = "| :--- | :---: | :---: | :---: | :---: | :---: |"
+                    lines.append(table_headers)
+                    lines.append(table_separator)
+                    for entry in sub_entries:
+                        lines.append(_format_entry_table(entry))
+                    lines.append("")
 
         # 6. Category-specific Trailhead (after content)
         trailhead_section = generate_category_trailhead_section(
@@ -505,9 +540,9 @@ async def _build_release_block(
         summary_text = ""
         if summary:
             if lang == "pt_BR":
-                summary_text = f"> 📊 **Resumo Executivo:** {summary.summary_text[:200]}...\n"
+                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:200]}...\n"
             else:
-                summary_text = f"> 📊 **Executive Summary:** {summary.summary_text[:200]}...\n"
+                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:200]}...\n"
 
         # Build category details
         cat_lines: list[str] = []
