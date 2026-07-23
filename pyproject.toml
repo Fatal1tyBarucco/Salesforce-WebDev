@@ -19,6 +19,9 @@ docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.7.6,<10",
 ]
+observability = [
+    "prometheus-client>=0.21.0,<1",
+]
 dev = [
     "black>=26.5.1,<27",
     "ruff>=0.15.18,<1",

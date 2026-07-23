@@ -14,12 +14,18 @@ GraphQL Endpoint:
 
 OpenAPI:
     GET  /openapi.json                     — OpenAPI 3.0 specification
+
+Authentication:
+    Set ``API_KEY`` environment variable to enable API key auth.
+    Clients must send ``X-API-Key: <key>`` or ``Authorization: Bearer <key>``.
+    When ``API_KEY`` is not set, all requests are allowed (development mode).
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -32,6 +38,12 @@ from .models import ErrorResponse, ReleaseResponse
 logger = logging.getLogger(__name__)
 
 API_PORT = 8081
+
+# API Key for authentication (empty = no auth required)
+_API_KEY: str = os.environ.get("API_KEY", "")
+
+# Paths that do not require authentication
+_PUBLIC_PATHS: frozenset[str] = frozenset({"/health", "/ready", "/metrics", "/openapi.json"})
 
 
 # ---------------------------------------------------------------------------
@@ -449,7 +461,36 @@ def _generate_openapi_spec() -> dict[str, Any]:
 class APIHandler(BaseHTTPRequestHandler):
     """HTTP handler for REST API, GraphQL, and OpenAPI endpoints."""
 
+    def _check_auth(self) -> bool:
+        """Verify API key when authentication is enabled.
+
+        Returns True if the request is authorized (or auth is disabled).
+        Sends a 401 response and returns False otherwise.
+        """
+        if not _API_KEY:
+            return True  # auth disabled
+
+        path = self.path.split("?")[0].rstrip("/")
+        if path in _PUBLIC_PATHS:
+            return True  # public endpoint
+
+        # Check X-API-Key header
+        provided = self.headers.get("X-API-Key", "")
+        if not provided:
+            # Check Authorization: Bearer <key>
+            auth_header = self.headers.get("Authorization", "")
+            if auth_header.startswith("Bearer "):
+                provided = auth_header[7:].strip()
+
+        if provided == _API_KEY:
+            return True
+
+        self._respond(401, {"error": "Unauthorized. Provide X-API-Key or Authorization: Bearer <key>."})
+        return False
+
     def do_GET(self) -> None:
+        if not self._check_auth():
+            return
         path = self.path.rstrip("/")
 
         if path == "/openapi.json":
@@ -514,6 +555,8 @@ class APIHandler(BaseHTTPRequestHandler):
             self._respond(404, {"error": "not found"})
 
     def do_POST(self) -> None:
+        if not self._check_auth():
+            return
         path = self.path.rstrip("/")
         if path != "/graphql":
             self._respond(404, {"error": "not found"})
