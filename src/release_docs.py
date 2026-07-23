@@ -364,7 +364,9 @@ def _format_entry_table(entry: FeatureImpactEntry, docs_url: str = "") -> str:
     flag = ""
     if entry.confidence < 0.7:
         flag = " ⚠️"
-    docs_link = f" [🔗]({docs_url})" if docs_url else ""
+    # Use entry's docs_url if available, otherwise use the parameter
+    url = entry.docs_url if entry.docs_url else docs_url
+    docs_link = f" [🔗]({url})" if url else ""
     return (
         f"| **{entry.name}**{flag} "
         f"| {_check(entry.available_users)} "

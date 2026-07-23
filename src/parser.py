@@ -398,6 +398,7 @@ class FeatureImpactEntry:
         "requires_config",
         "contact_sf",
         "confidence",
+        "docs_url",
     )
 
     def __init__(
@@ -408,6 +409,7 @@ class FeatureImpactEntry:
         requires_config: bool = False,
         contact_sf: bool = False,
         confidence: float = 1.0,
+        docs_url: str = "",
     ) -> None:
         self.name = name
         self.available_users = available_users
@@ -415,6 +417,7 @@ class FeatureImpactEntry:
         self.requires_config = requires_config
         self.contact_sf = contact_sf
         self.confidence = confidence
+        self.docs_url = docs_url
 
 
 class FeatureImpactCategory:
@@ -450,7 +453,19 @@ class FeatureImpactParser:
         self._section_headers = SECTION_HEADERS_BY_LOCALE.get(locale, SECTION_HEADERS)
         self._all_headers: frozenset[str] = frozenset().union(*SECTION_HEADERS_BY_LOCALE.values())
 
-    def parse_text(self, text: str) -> list[FeatureImpactCategory]:
+    def parse_text(
+        self, text: str, link_map: dict[str, str] | None = None
+    ) -> list[FeatureImpactCategory]:
+        """Parse feature impact text into categories.
+
+        Args:
+            text: Raw text content from the Feature Impact page.
+            link_map: Optional dict mapping feature names to their docs URLs.
+                When provided, features will have their docs_url populated.
+
+        Returns:
+            List of FeatureImpactCategory with parsed features.
+        """
         lines = [ln.strip() for ln in text.split("\n") if ln.strip()]
         categories: list[FeatureImpactCategory] = []
         current_cat: FeatureImpactCategory | None = None
@@ -495,7 +510,19 @@ class FeatureImpactParser:
                 i += 1
                 continue
 
-            entry = self._parse_feature_line(line)
+            # Look up docs_url from link_map if available
+            docs_url = ""
+            if link_map:
+                # Try exact match first, then fuzzy match
+                docs_url = link_map.get(line, "")
+                if not docs_url:
+                    # Try matching by prefix (line may have tab-separated flags)
+                    for name, url in link_map.items():
+                        if line.startswith(name):
+                            docs_url = url
+                            break
+
+            entry = self._parse_feature_line(line, docs_url=docs_url)
             if entry and current_cat:
                 self._last_stats["parsed"] += 1
                 if current_sub and current_sub in current_cat.subcategories:
@@ -571,7 +598,7 @@ class FeatureImpactParser:
                 return True
         return False
 
-    def _parse_feature_line(self, line: str) -> FeatureImpactEntry | None:
+    def _parse_feature_line(self, line: str, docs_url: str = "") -> FeatureImpactEntry | None:
         if not line or len(line) < 5:
             return None
         if self._is_table_header(line):
@@ -585,7 +612,7 @@ class FeatureImpactParser:
         if len(parts) < 2:
             if "Yes" not in line and len(line) > 10:
                 confidence = 0.5
-                return FeatureImpactEntry(name=line, confidence=confidence)
+                return FeatureImpactEntry(name=line, confidence=confidence, docs_url=docs_url)
             return None
 
         name = parts[0]
@@ -608,4 +635,5 @@ class FeatureImpactParser:
             requires_config=requires_config,
             contact_sf=contact_sf,
             confidence=confidence,
+            docs_url=docs_url,
         )

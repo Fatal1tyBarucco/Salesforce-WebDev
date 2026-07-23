@@ -332,7 +332,18 @@ async def process_single_release(
     pdf_dest = release_dir / f"release-in-a-box-{release.slug}.pdf"
     pdf_task = asyncio.create_task(scraper.download_pdf_from_button(impact_url, pdf_dest))
 
-    raw_text = await scraper.fetch_page_raw_text(impact_url)
+    # Fetch both raw text and features with links in parallel
+    raw_text_task = asyncio.create_task(scraper.fetch_page_raw_text(impact_url))
+    features_with_links_task = asyncio.create_task(scraper.fetch_features_with_links(impact_url))
+
+    raw_text = await raw_text_task
+    features_with_links = await features_with_links_task
+
+    # Build link_map: feature_name -> docs_url
+    link_map: dict[str, str] = {}
+    if features_with_links:
+        link_map = {f["name"]: f["docs_url"] for f in features_with_links if f.get("docs_url")}
+        logger.info("Extracted %d feature links from HTML", len(link_map))
 
     await pdf_task
     if dry_run:
@@ -349,7 +360,7 @@ async def process_single_release(
         )
         return False
 
-    categories = impact_parser.parse_text(raw_text)
+    categories = impact_parser.parse_text(raw_text, link_map=link_map if link_map else None)
     logger.info("Parsed %d categories from feature impact", len(categories))
 
     # Enrich features with AI-generated descriptions and impact levels

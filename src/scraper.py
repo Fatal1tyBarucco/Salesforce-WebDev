@@ -398,6 +398,149 @@ class SalesforceReleaseScraper:
         logger.error("All %d attempts failed for raw text: %s", MAX_RETRY_ATTEMPTS, url)
         return None
 
+    async def fetch_features_with_links(self, url: str) -> list[dict[str, str]]:
+        """Fetch feature impact page and extract features with their documentation links.
+
+        Parses the HTML to find feature names and their associated article URLs
+        from the Salesforce Help Feature Impact page.
+
+        Args:
+            url: The Feature Impact page URL.
+
+        Returns:
+            List of dicts with 'name' and 'docs_url' keys.
+        """
+        logger.info("Fetching features with links: %s", url)
+
+        if self._circuit_breaker.is_open:
+            logger.warning("Circuit breaker open — skipping feature link extraction")
+            return []
+
+        for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
+            try:
+                if not await self._ensure_browser():
+                    logger.error("Cannot recover browser for attempt %d", attempt)
+                    break
+
+                html = await self._fetch_with_playwright(url, return_text=False)
+                if not html:
+                    logger.warning("Attempt %d: empty HTML", attempt)
+                    continue
+
+                features = self._extract_features_from_html(html)
+                if features:
+                    logger.info(
+                        "Extracted %d features with links (attempt %d)",
+                        len(features),
+                        attempt,
+                    )
+                    self._circuit_breaker.record_success()
+                    return features
+
+                logger.warning("Attempt %d: no features found in HTML", attempt)
+
+            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+                logger.error("Attempt %d failed: %s", attempt, e)
+                self._circuit_breaker.record_failure()
+                self._browser = None
+
+            if attempt < MAX_RETRY_ATTEMPTS:
+                delay = calculate_jittered_delay(RETRY_BASE_DELAY_SECONDS, attempt)
+                logger.info("Retrying in %.1fs...", delay)
+                await asyncio.sleep(delay)
+
+        logger.error("All %d attempts failed for feature extraction: %s", MAX_RETRY_ATTEMPTS, url)
+        return []
+
+    @staticmethod
+    def _extract_features_from_html(html: str) -> list[dict[str, str]]:
+        """Extract feature names and documentation links from HTML.
+
+        Parses the Salesforce Help Feature Impact page HTML to find:
+        - Feature names from table rows or list items
+        - Associated article links (href attributes)
+
+        Args:
+            html: Raw HTML content from the Feature Impact page.
+
+        Returns:
+            List of dicts with 'name' and 'docs_url' keys.
+        """
+        from bs4 import BeautifulSoup
+
+        features: list[dict[str, str]] = []
+        soup = BeautifulSoup(html, "lxml")
+
+        # Strategy 1: Find links inside table rows (common pattern)
+        for tr in soup.find_all("tr"):
+            cells = tr.find_all("td")
+            if not cells:
+                continue
+
+            # First cell usually has the feature name
+            name_cell = cells[0]
+            name = name_cell.get_text(strip=True)
+            if not name or len(name) < 3:
+                continue
+
+            # Look for a link in the row
+            link = tr.find("a", href=True)
+            docs_url = ""
+            if link:
+                href = link.get("href", "")
+                if isinstance(href, str) and ("salesforce.com" in href or href.startswith("/")):
+                    docs_url = (
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                    )
+
+            features.append({"name": name, "docs_url": docs_url})
+
+        # Strategy 2: Find links in article list items
+        if not features:
+            for li in soup.find_all("li"):
+                link = li.find("a", href=True)
+                if not link:
+                    continue
+
+                name = link.get_text(strip=True)
+                if not name or len(name) < 3:
+                    continue
+
+                href = link.get("href", "")
+                if isinstance(href, str) and (
+                    "release-notes" in href or "help.salesforce.com" in href
+                ):
+                    docs_url = (
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                    )
+                    features.append({"name": name, "docs_url": docs_url})
+
+        # Strategy 3: Find any anchor with release-notes in href
+        if not features:
+            for a in soup.find_all("a", href=True):
+                href = a.get("href", "")
+                if not isinstance(href, str):
+                    continue
+                if "release-notes" not in href:
+                    continue
+
+                name = a.get_text(strip=True)
+                if name and len(name) >= 3:
+                    docs_url = (
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                    )
+                    features.append({"name": name, "docs_url": docs_url})
+
+        # Deduplicate by name
+        seen: set[str] = set()
+        unique: list[dict[str, str]] = []
+        for f in features:
+            if f["name"] not in seen:
+                seen.add(f["name"])
+                unique.append(f)
+
+        return unique
+
     async def fetch_multiple_raw_text(
         self,
         urls: list[str],
