@@ -10,7 +10,7 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 ![Latest Release](https://img.shields.io/badge/Última%20Release-Summer%20'26-blue)
 [![Python Quality & Validation](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml)
 [![Release Notes Pipeline](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml)
-![Python](https://img.shields.io/badge/Python-3.14-blue.svg?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?logo=playwright&logoColor=white)
 ![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg)
 ![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg)
@@ -18,7 +18,7 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 
 | Technology / Tool | Description | Pipeline Status |
 | :--- | :--- | :---: |
-| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |
+| 🐍 **Python 3.12+** | Ambiente de execução principal | `Conforme` |
 | 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |
 | 🧪 **Pytest** | Suíte de testes unitários automatizados | `700+ testes` |
 | 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
@@ -693,7 +693,7 @@ uv run mypy src/
 | **GitHub Actions** | CI/CD: lint, typecheck, extração, deploy automático |
 | **uv** | Gerenciamento de dependências com lock file determinístico |
 | **Playwright** | Scraper headless para páginas SPA do Salesforce Help |
-| **Python 3.14** | Linguagem principal com type hints completos |
+| **Python 3.12+** | Linguagem principal com type hints completos |
 | **BeautifulSoup** | Parser HTML para extração de dados estruturados |
 | **Markdown** | Formato de saída para documentação técnica |
 | **MkDocs** | Portal técnico publicado no GitHub Pages |

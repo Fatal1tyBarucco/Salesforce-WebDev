@@ -34,6 +34,271 @@ logger = logging.getLogger(__name__)
 API_PORT = 8081
 
 
+# ---------------------------------------------------------------------------
+# GraphQL recursive-descent parser
+# ---------------------------------------------------------------------------
+
+class _GQLToken:
+    """Lightweight token for the GraphQL lexer."""
+
+    __slots__ = ("kind", "value")
+
+    def __init__(self, kind: str, value: str = "") -> None:
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self) -> str:
+        return f"Token({self.kind}, {self.value!r})"
+
+
+def _gql_lex(query: str) -> list[_GQLToken]:
+    """Tokenize a GraphQL query string."""
+    tokens: list[_GQLToken] = []
+    i = 0
+    n = len(query)
+    while i < n:
+        c = query[i]
+        # Whitespace
+        if c in " \t\n\r":
+            i += 1
+            continue
+        # Punctuation
+        if c == "{":
+            tokens.append(_GQLToken("LBRACE"))
+            i += 1
+        elif c == "}":
+            tokens.append(_GQLToken("RBRACE"))
+            i += 1
+        elif c == "(":
+            tokens.append(_GQLToken("LPAREN"))
+            i += 1
+        elif c == ")":
+            tokens.append(_GQLToken("RPAREN"))
+            i += 1
+        elif c == ":":
+            tokens.append(_GQLToken("COLON"))
+            i += 1
+        elif c == ",":
+            tokens.append(_GQLToken("COMMA"))
+            i += 1
+        # String literal
+        elif c == '"':
+            j = i + 1
+            while j < n and query[j] != '"':
+                if query[j] == "\\":
+                    j += 1  # skip escaped char
+                j += 1
+            tokens.append(_GQLToken("STRING", query[i + 1 : j]))
+            i = j + 1
+        # Name / keyword
+        elif c.isalpha() or c == "_":
+            j = i
+            while j < n and (query[j].isalnum() or query[j] == "_"):
+                j += 1
+            tokens.append(_GQLToken("NAME", query[i:j]))
+            i = j
+        else:
+            i += 1  # skip unknown
+    return tokens
+
+
+class _GQLParser:
+    """Recursive-descent parser for the project's GraphQL subset.
+
+    Supports:
+        { releases { name slug } }
+        { release(slug: "summer_26") { name totalFeatures } }
+        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
+    """
+
+    def __init__(self, tokens: list[_GQLToken]) -> None:
+        self._tokens = tokens
+        self._pos = 0
+
+    def _peek(self) -> _GQLToken | None:
+        if self._pos < len(self._tokens):
+            return self._tokens[self._pos]
+        return None
+
+    def _advance(self) -> _GQLToken:
+        tok = self._tokens[self._pos]
+        self._pos += 1
+        return tok
+
+    def _expect(self, kind: str) -> _GQLToken:
+        tok = self._advance()
+        if tok.kind != kind:
+            raise ValueError(f"Expected {kind}, got {tok.kind} ({tok.value!r})")
+        return tok
+
+    def _parse_arguments(self) -> dict[str, str]:
+        """Parse (key: "value", ...) arguments."""
+        args: dict[str, str] = {}
+        self._expect("LPAREN")
+        while self._peek() and self._peek().kind != "RPAREN":
+            name = self._expect("NAME").value
+            self._expect("COLON")
+            val = self._expect("STRING").value
+            args[name] = val
+            if self._peek() and self._peek().kind == "COMMA":
+                self._advance()
+        self._expect("RPAREN")
+        return args
+
+    def _parse_field_set(self) -> list[str]:
+        """Parse { field1 field2 nested { ... } } and return flat field names."""
+        fields: list[str] = []
+        self._expect("LBRACE")
+        while self._peek() and self._peek().kind != "RBRACE":
+            name_tok = self._expect("NAME")
+            fields.append(name_tok.value)
+            # Skip nested selection sets (e.g. categories { name count })
+            if self._peek() and self._peek().kind == "LBRACE":
+                self._parse_field_set()  # recurse, discard
+        self._expect("RBRACE")
+        return fields
+
+    def parse(self) -> tuple[str, dict[str, str], list[str]]:
+        """Parse a top-level query.
+
+        Returns:
+            (operation_name, arguments, requested_fields)
+        """
+        # Strip optional outer braces
+        if self._peek() and self._peek().kind == "LBRACE":
+            self._advance()
+
+            # Check if this is a bare { op(...) { ... } } or { op { ... } }
+            name_tok = self._advance()
+            if name_tok.kind != "NAME":
+                raise ValueError(f"Expected operation name, got {name_tok.kind}")
+
+            op_name = name_tok.value
+            args: dict[str, str] = {}
+            fields: list[str] = []
+
+            if self._peek() and self._peek().kind == "LPAREN":
+                args = self._parse_arguments()
+
+            if self._peek() and self._peek().kind == "LBRACE":
+                fields = self._parse_field_set()
+
+            # Consume optional closing brace
+            if self._peek() and self._peek().kind == "RBRACE":
+                self._advance()
+
+            return op_name, args, fields
+
+        raise ValueError("Expected '{' at start of query")
+
+
+# ---------------------------------------------------------------------------
+# GraphQL field mapping & handlers
+# ---------------------------------------------------------------------------
+
+_GRAPHQL_FIELD_MAP: dict[str, str] = {
+    "name": "name",
+    "slug": "slug",
+    "releaseId": "release_id",
+    "release_id": "release_id",
+    "totalFeatures": "total_features",
+    "total_features": "total_features",
+    "avgConfidence": "avg_confidence",
+    "avg_confidence": "avg_confidence",
+    "generatedAt": "generated_at",
+    "generated_at": "generated_at",
+    "categories": "categories",
+    "totalDelta": "total_delta",
+    "total_delta": "total_delta",
+    "current": "current",
+    "previous": "previous",
+    "changes": "changes",
+    "delta": "delta",
+    "category": "category",
+}
+
+
+def _select_graphql_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
+    """Select and map GraphQL field names to internal keys."""
+    if not fields:
+        return data
+    return {f: data.get(_GRAPHQL_FIELD_MAP[f], None) for f in fields if f in _GRAPHQL_FIELD_MAP}
+
+
+def _graphql_handle_releases(fields: list[str]) -> dict[str, Any]:
+    """Handle `{ releases { ... } }` query."""
+    metas = _load_all_metas()
+    return {"data": {"releases": [_select_graphql_fields(m, fields) for m in metas]}}
+
+
+def _graphql_handle_release(slug: str, fields: list[str]) -> dict[str, Any]:
+    """Handle `{ release(slug: "...") { ... } }` query."""
+    meta = _find_meta(slug)
+    if meta is None:
+        return {"data": {"release": None}, "errors": [{"message": f"release '{slug}' not found"}]}
+    return {"data": {"release": _select_graphql_fields(meta, fields)}}
+
+
+def _graphql_handle_diff(
+    current_slug: str, previous_slug: str, fields: list[str]
+) -> dict[str, Any]:
+    """Handle `{ diff(current: "...", previous: "...") { ... } }` query."""
+    current_meta = _find_meta(current_slug)
+    if current_meta is None:
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{current_slug}' not found"}],
+        }
+    previous_meta = _find_meta(previous_slug)
+    if previous_meta is None:
+        return {
+            "data": {"diff": None},
+            "errors": [{"message": f"release '{previous_slug}' not found"}],
+        }
+    diff = _build_diff(current_meta, previous_meta)
+    return {"data": {"diff": _select_graphql_fields(diff, fields)}}
+
+
+def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Execute a GraphQL query using recursive-descent parser.
+
+    Supports:
+        { releases { name slug totalFeatures categories { name count } } }
+        { release(slug: "summer_26") { name totalFeatures } }
+        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
+    """
+    try:
+        tokens = _gql_lex(query)
+        parser = _GQLParser(tokens)
+        op_name, args, fields = parser.parse()
+    except (ValueError, IndexError) as exc:
+        return {"errors": [{"message": f"Parse error: {exc}"}]}
+
+    if op_name == "releases":
+        return _graphql_handle_releases(fields)
+    if op_name == "release":
+        slug = args.get("slug", "")
+        return _graphql_handle_release(slug, fields)
+    if op_name == "diff":
+        return _graphql_handle_diff(args.get("current", ""), args.get("previous", ""), fields)
+
+    return {
+        "errors": [
+            {
+                "message": (
+                    f"Unknown operation '{op_name}'. "
+                    "Supported: releases, release(slug), diff(current, previous)"
+                )
+            }
+        ]
+    }
+
+
+# ---------------------------------------------------------------------------
+# REST helpers
+# ---------------------------------------------------------------------------
+
+
 def _load_all_metas() -> list[dict[str, Any]]:
     """Load all .meta.json files sorted by release_id."""
     releases_dir = Path(RELEASES_DIR)
@@ -168,144 +433,9 @@ def _build_diff(current_meta: dict[str, Any], previous_meta: dict[str, Any]) -> 
     }
 
 
-_GRAPHQL_FIELD_MAP: dict[str, str] = {
-    "name": "name",
-    "slug": "slug",
-    "releaseId": "release_id",
-    "release_id": "release_id",
-    "totalFeatures": "total_features",
-    "total_features": "total_features",
-    "avgConfidence": "avg_confidence",
-    "avg_confidence": "avg_confidence",
-    "generatedAt": "generated_at",
-    "generated_at": "generated_at",
-    "categories": "categories",
-    "totalDelta": "total_delta",
-    "total_delta": "total_delta",
-    "current": "current",
-    "previous": "previous",
-    "changes": "changes",
-    "delta": "delta",
-    "category": "category",
-}
-
-_GRAPHQL_KEYWORDS = frozenset(
-    {
-        "query",
-        "mutation",
-        "subscription",
-        "fragment",
-        "on",
-        "true",
-        "false",
-        "null",
-    }
-)
-
-
-def _select_graphql_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
-    """Select and map GraphQL field names to internal keys."""
-    if not fields:
-        return data
-    return {f: data.get(_GRAPHQL_FIELD_MAP[f], None) for f in fields if f in _GRAPHQL_FIELD_MAP}
-
-
-def _extract_requested_fields(query: str) -> list[str]:
-    """Extract requested field names from a GraphQL query string."""
-    inner_match = re.search(r"\{([^}]+)\}\s*$", query)
-    if not inner_match:
-        return []
-    raw_fields = re.findall(r"\b([a-zA-Z]\w*)\b", inner_match.group(1))
-    return list(dict.fromkeys(f for f in raw_fields if f not in _GRAPHQL_KEYWORDS))
-
-
-def _graphql_handle_releases(fields: list[str]) -> dict[str, Any]:
-    """Handle `{ releases { ... } }` query."""
-    metas = _load_all_metas()
-    return {"data": {"releases": [_select_graphql_fields(m, fields) for m in metas]}}
-
-
-def _graphql_handle_release(slug: str, fields: list[str]) -> dict[str, Any]:
-    """Handle `{ release(slug: "...") { ... } }` query."""
-    meta = _find_meta(slug)
-    if meta is None:
-        return {"data": {"release": None}, "errors": [{"message": f"release '{slug}' not found"}]}
-    return {"data": {"release": _select_graphql_fields(meta, fields)}}
-
-
-def _graphql_handle_diff(
-    current_slug: str, previous_slug: str, fields: list[str]
-) -> dict[str, Any]:
-    """Handle `{ diff(current: "...", previous: "...") { ... } }` query."""
-    current_meta = _find_meta(current_slug)
-    if current_meta is None:
-        return {
-            "data": {"diff": None},
-            "errors": [{"message": f"release '{current_slug}' not found"}],
-        }
-    previous_meta = _find_meta(previous_slug)
-    if previous_meta is None:
-        return {
-            "data": {"diff": None},
-            "errors": [{"message": f"release '{previous_slug}' not found"}],
-        }
-    diff = _build_diff(current_meta, previous_meta)
-    return {"data": {"diff": _select_graphql_fields(diff, fields)}}
-
-
-def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Execute a simplified GraphQL query.
-
-    Supports:
-        { releases { name slug totalFeatures categories { name count } } }
-        { release(slug: "summer_26") { name totalFeatures } }
-        { diff(current: "summer_26", previous: "spring_26") { totalDelta } }
-    """
-    query = query.strip()
-
-    # Strip outer braces and whitespace
-    query = re.sub(r"^\s*\{\s*", "", query)
-    query = re.sub(r"\s*\}\s*$", "", query)
-
-    # Strip field selection braces for operation detection
-    query_op = re.sub(r"\s*\{[^}]*\}\s*$", "", query).strip()
-
-    # Detect query type
-    releases_match = re.match(r"^releases\s*$", query_op)
-    release_match = re.match(r'^release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)$', query_op)
-    diff_match = re.match(
-        r'^diff\s*\(\s*current\s*:\s*"([^"]+)"\s*,\s*previous\s*:\s*"([^"]+)"\s*\)$',
-        query_op,
-    )
-
-    # Validate: only one top-level operation allowed
-    op_count = sum(1 for m in [releases_match, release_match, diff_match] if m)
-    if op_count == 0:
-        return {
-            "errors": [
-                {
-                    "message": 'Unknown query. Supported: releases, release(slug: "..."), diff(current: "...", previous: "...")'
-                }
-            ]
-        }
-
-    fields = _extract_requested_fields(query)
-
-    if releases_match:
-        return _graphql_handle_releases(fields)
-    if release_match:
-        return _graphql_handle_release(release_match.group(1), fields)
-    if diff_match:
-        return _graphql_handle_diff(diff_match.group(1), diff_match.group(2), fields)
-
-    return {
-        "errors": [
-            {
-                "message": "Unknown query. Supported: releases, release(slug), diff(current, previous)"
-            }
-        ]
-    }
-
+# ---------------------------------------------------------------------------
+# HTTP handler
+# ---------------------------------------------------------------------------
 
 _OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
 

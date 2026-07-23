@@ -28,5 +28,5 @@ assignees: ''
 ## Environment
 
 - OS: [e.g., Ubuntu 22.04]
-- Python: [e.g., 3.14]
+- Python: [e.g., 3.12]
 - MiMoCode: [e.g., 0.1.1]

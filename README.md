@@ -9,7 +9,7 @@
 [![Python Quality](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml)
 [![Pipeline](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml)
 [![Docs](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/documentation-build.yml/badge.svg)](https://fatal1tybarucco.github.io/Salesforce-WebDev/)
-![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-Headless-2EAD33?logo=playwright&logoColor=white)
 ![Coverage](https://img.shields.io/badge/Cobertura-95%25-2ECC71)
 ![License](https://img.shields.io/badge/License-Educacional-blue)
@@ -303,7 +303,7 @@ flowchart LR
 
 | Requisito | Versão | Instalação |
 |:----------|:-------|:-----------|
-| Python | 3.14+ | [python.org](https://www.python.org/) |
+| Python | 3.12+ | [python.org](https://www.python.org/) |
 | uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Playwright | Chromium | `uv run playwright install chromium` |
 
@@ -402,7 +402,7 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 
 | Ferramenta | Configuração | Status |
 |:-----------|:-------------|:------:|
-| 🐍 **Python** | 3.14, type hints completos | ✅ |
+| 🐍 **Python** | 3.12-3.13, type hints completos | ✅ |
 | 🔍 **Mypy** | `strict = true` | ✅ |
 | ⚡ **Ruff** | `line-length = 100` | ✅ |
 | 🖤 **Black** | `target-version = py313` | ✅ |
