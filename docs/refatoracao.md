@@ -6,7 +6,7 @@
 
 O repositório automatiza a extração, classificação e versionamento de *Release Notes* da Salesforce (Trailhead) como artefatos Markdown estruturados, com integrações externas (Salesforce Help/SPA via Playwright, LLMs OpenAI/Gemini, GitHub CLI, SMTP/Slack/Discord, API REST/GraphQL).
 
-- **Stack:** `uv` + Python 3.14 · `ruff` · `black` (line-length=100, target py314) · `mypy` (strict em `src/`).
+- **Stack:** `uv` + Python 3.12-3.13 · `ruff` · `black` (line-length=100, target py312) · `mypy` (strict em `src/`).
 - **Cobertura mínima:** **≥95%** (`--cov-fail-under=95`).
 - **Workflow:** 1 branch `refactor/<escopo>` por tarefa → commit incremental → merge em `main` + exclusão da branch; push exige aprovação.
 

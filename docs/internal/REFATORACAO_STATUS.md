@@ -9,7 +9,7 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 - **Commits incrementais** + push (com aprovação do usuário).
 - **Ao concluir**: merge em `main` + **exclusão da branch** (remoto + local).
 - **Validação**: `uv run ruff` + `black --check` + `mypy src/` + `pytest` (cobertura ≥ 95% via CI e local).
-- **Ambiente**: `uv` + Python 3.14; deps via `uv sync --extra dev`.
+- **Ambiente**: `uv` + Python 3.12-3.13; deps via `uv sync --extra dev`.
 
 ## 📊 Backlog reconciliado (plano original × código real)
 | Fase | # | Item do plano | Estado real | Ação |
@@ -79,4 +79,4 @@ Template de acompanhamento de alterações. **Atualizado a cada tarefa/branch.**
 ## 📝 Notas
 - Plano original estava obsoleto: #1 e #4 já estavam implementados no código atual.
 - CI exige **cobertura mínima de 95%** (`--cov-fail-under=95`); qualquer refactor deve mantê-la.
-- Ambiente sandbox é **arm64**; `uv` provê Python 3.14 para arm64.
+- Ambiente sandbox é **arm64**; `uv` provê Python 3.12 para arm64.

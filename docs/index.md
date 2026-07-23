@@ -40,15 +40,16 @@ graph LR
 
 | Camada | Módulos | Responsabilidade |
 |--------|---------|------------------|
-| **Orquestração** | `main.py` | Pipeline principal, DI, detecção de novas releases |
+| **Orquestração** | `main.py`, `orchestrator.py` | Pipeline principal, DI, detecção de novas releases |
 | **Scraping** | `scraper.py` | Playwright headless, circuit breaker, rate limiter |
 | **Parsing** | `parser.py` | Árvore de navegação, tabelas de feature impact |
-| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini), retry, fallback |
-| **Automação** | `automation/` | Relatórios AI, triage, impacto, deduplicação |
+| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode/MiMoCode), retry, fallback, rate limiting |
+| **Enriquecimento AI** | `feature_enricher.py`, `release_summarizer.py` | Descrições por feature, resumos executivos, impacto por categoria |
+| **Automação** | `automation/` | Relatórios AI, triage, impacto, deduplicação, exportação |
 | **Integração** | `salesforce.py`, `workflow.py` | Trailhead, GitHub CLI, PRs |
-| **Saída** | `generator.py`, `notifications.py` | Markdown, Email, Slack, Discord |
-| **API** | `api.py` | REST + GraphQL + OpenAPI |
-| **Infra** | `cache_manager.py`, `circuit_breaker.py`, `health.py` | Cache, resiliência, monitoramento |
+| **Saída** | `generator.py`, `release_docs.py`, `notifications.py` | Markdown enriquecido, Email, Slack, Discord |
+| **API** | `api.py` | REST + GraphQL + Autenticação + OpenAPI |
+| **Infra** | `cache_manager.py`, `circuit_breaker.py`, `events.py`, `health.py` | Cache, resiliência, event bus, Prometheus metrics |
 
 ## Quick Start
 
@@ -298,7 +299,7 @@ Salesforce-WebDev/
 | **Ruff** | line-length=100 | ✅ Pass |
 | **Black** | target-version=py313 | ✅ Pass |
 | **Mypy** | strict=true | ✅ Pass |
-| **Pytest** | --cov-fail-under=95 | ✅ 95.71% |
+| **Pytest** | --cov-fail-under=95 | ✅ 95%+ |
 
 ## Documentação
 
