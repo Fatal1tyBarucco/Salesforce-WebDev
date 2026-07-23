@@ -176,18 +176,13 @@ jobs:
               CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
               RELEASE_ID=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin).get('release_id', 0))")
               
-              # Check if this is the latest release by comparing with existing ones
-              LATEST_EXISTS=$(gh release list --json tagName -q '.[].tagName' | grep -c "v2026-" || true)
-              if [ "$LATEST_EXISTS" -eq 0 ]; then
+              # Check if this is the latest release by comparing release_ids
+              EXISTING_IDS=$(gh release list --json body -q '.[].body' 2>/dev/null | grep -oP 'release_id.*?(\d+)' | grep -oP '\d+' | sort -n || true)
+              MAX_ID=$(echo "$EXISTING_IDS" | tail -1 || echo "0")
+              if [ -z "$MAX_ID" ] || [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
                 IS_LATEST="--latest"
               else
-                # Get highest release_id from existing releases
-                MAX_ID=$(gh release list --json body -q '.[].body' | grep -oP 'release_id.*?(\d+)' | head -1 | grep -oP '\d+' || echo "0")
-                if [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
-                  IS_LATEST="--latest"
-                else
-                  IS_LATEST="--latest=false"
-                fi
+                IS_LATEST="--latest=false"
               fi
               
               NOTES="## 📦 ${RELEASE_NAME}\n\n"

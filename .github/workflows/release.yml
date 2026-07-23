@@ -39,11 +39,18 @@ jobs:
             exit 0
           fi
 
-          SLUG=$(dirname $(dirname $LATEST_META) | xargs basename)
-          NAME=$(python -c "import json; print(json.load(open('$LATEST_META'))['name'])")
-          FEATURES=$(python -c "import json; print(json.load(open('$LATEST_META')).get('total_features', 0))")
-          DATE=$(python -c "import json; print(json.load(open('$LATEST_META')).get('generated_at', ''))")
-          CATEGORY_COUNT=$(python -c "import json; print(len(json.load(open('$LATEST_META')).get('categories', [])))")
+          SLUG=$(basename $(dirname $(dirname $LATEST_META)))
+          NAME=$(python3 -c "import json; print(json.load(open('$LATEST_META'))['name'])")
+          FEATURES=$(python3 -c "import json; d=json.load(open('$LATEST_META')); print(d.get('total_features', sum(c['count'] for c in d.get('categories', []))))")
+          DATE=$(python3 -c "import json; print(json.load(open('$LATEST_META')).get('generated_at', ''))")
+          CATEGORY_COUNT=$(python3 -c "import json; print(len(json.load(open('$LATEST_META')).get('categories', [])))")
+          RELEASE_ID=$(python3 -c "import json; print(json.load(open('$LATEST_META')).get('release_id', 0))")
+
+          # Build tag in vYEAR-season format (matching pipeline)
+          YEAR_SHORT=$(echo "$SLUG" | grep -oP '\d+$')
+          YEAR="20${YEAR_SHORT}"
+          SEASON=$(echo "$SLUG" | sed 's/_[0-9]*$//')
+          TAG_NAME="v${YEAR}-${SEASON}"
 
           echo "has_release=true" >> $GITHUB_OUTPUT
           echo "slug=$SLUG" >> $GITHUB_OUTPUT
@@ -51,82 +58,84 @@ jobs:
           echo "features=$FEATURES" >> $GITHUB_OUTPUT
           echo "date=$DATE" >> $GITHUB_OUTPUT
           echo "categories=$CATEGORY_COUNT" >> $GITHUB_OUTPUT
+          echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
       - name: Check for existing release
         if: steps.release_info.outputs.has_release == 'true'
         id: check_existing
         run: |
-          TAG="v${{ steps.release_info.outputs.slug }}"
+          TAG="${{ steps.release_info.outputs.tag_name }}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Download Release in a Box PDF
+      - name: Check for existing GitHub Release
         if: steps.release_info.outputs.has_release == 'true' && steps.check_existing.outputs.exists == 'false'
-        id: pdf
-        run: |
-          SLUG="${{ steps.release_info.outputs.slug }}"
-          # Extract season/year from slug
-          SEASON=$(echo "$SLUG" | sed 's/_[0-9]*//' | sed 's/\b\(.\)/\u\1/g')
-          YEAR_SHORT=$(echo "$SLUG" | grep -oP '\d+$')
-          YEAR="20${YEAR_SHORT}"
-
-          PDF_URL="https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/PDF/release-in-a-box-${SEASON,,}-${YEAR_SHORT}-v3.pdf"
-          PDF_DEST="releases/${SLUG}/release-in-a-box.pdf"
-
-          if curl -sSfL -o "$PDF_DEST" "$PDF_URL" 2>/dev/null; then
-            echo "downloaded=true" >> $GITHUB_OUTPUT
-            echo "pdf_path=$PDF_DEST" >> $GITHUB_OUTPUT
-          else
-            echo "downloaded=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create GitHub Release
-        if: steps.release_info.outputs.has_release == 'true' && steps.check_existing.outputs.exists == 'false'
+        id: gh_check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${{ steps.release_info.outputs.slug }}"
+          TAG="${{ steps.release_info.outputs.tag_name }}"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "gh_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "gh_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        if: |
+          steps.release_info.outputs.has_release == 'true' &&
+          steps.check_existing.outputs.exists == 'false' &&
+          steps.gh_check.outputs.gh_exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.release_info.outputs.tag_name }}"
           NAME="${{ steps.release_info.outputs.name }}"
           FEATURES="${{ steps.release_info.outputs.features }}"
           CATEGORIES="${{ steps.release_info.outputs.categories }}"
           DATE="${{ steps.release_info.outputs.date }}"
+          SLUG="${{ steps.release_info.outputs.slug }}"
 
-          NOTES="## 📋 ${NAME} Release Notes
+          NL=$'\n'
+          NOTES="## 📋 ${NAME} Release Notes${NL}${NL}"
+          NOTES+="### 📊 Statistics${NL}"
+          NOTES+="| Metric | Value |${NL}"
+          NOTES+="| --- | --- |${NL}"
+          NOTES+="| Features | ${FEATURES} |${NL}"
+          NOTES+="| Categories | ${CATEGORIES} |${NL}"
+          NOTES+="| Generated | ${DATE} |${NL}${NL}"
+          NOTES+="### 🔗 Links${NL}"
+          NOTES+="- [Full Release Notes](./releases/${SLUG}/)${NL}"
+          NOTES+="- [README](./README.md)${NL}"
+          NOTES+="- [Documentation](https://fatal1tybarucco.github.io/Salesforce-WebDev/)${NL}${NL}"
+          NOTES+="### 🏷️ Trailhead Modules${NL}"
+          NOTES+="Check individual category files for related Trailhead modules.${NL}${NL}"
+          NOTES+="---${NL}"
+          NOTES+="*Auto-generated by Salesforce Release Notes Pipeline*"
 
-          ### 📊 Statistics
-          | Metric | Value |
-          | --- | --- |
-          | Features | ${FEATURES} |
-          | Categories | ${CATEGORIES} |
-          | Generated | ${DATE} |
-
-          ### 🔗 Links
-          - [Full Release Notes](./releases/${{ steps.release_info.outputs.slug }}/)
-          - [README](./README.md)
-          - [Documentation](https://fatal1tybarucco.github.io/Salesforce-WebDev/)
-
-          ### 🏷️ Trailhead Modules
-          Check individual category files for related Trailhead modules.
-
-          ---
-          *Auto-generated by Salesforce Release Notes Pipeline*"
-
-          ASSETS=""
-          if [ "${{ steps.pdf.outputs.downloaded }}" == "true" ]; then
-            ASSETS="${{ steps.pdf.outputs.pdf_path }}"
+          # Determine --latest flag based on release_id
+          RELEASE_ID=${{ steps.release_info.outputs.release_id }}
+          MAX_EXISTING=$(gh release list --json body -q '.[].body' 2>/dev/null | grep -oP 'release_id.*?(\d+)' | grep -oP '\d+' | sort -n | tail -1 || echo "0")
+          if [ -z "$MAX_EXISTING" ] || [ "$RELEASE_ID" -gt "$MAX_EXISTING" ]; then
+            IS_LATEST="--latest"
+          else
+            IS_LATEST="--latest=false"
           fi
 
           gh release create "$TAG" \
             --title "$NAME" \
             --notes "$NOTES" \
-            --latest \
-            $ASSETS
+            ${IS_LATEST}
 
       - name: Update release badge
-        if: steps.release_info.outputs.has_release == 'true' && steps.check_existing.outputs.exists == 'false'
+        if: |
+          steps.release_info.outputs.has_release == 'true' &&
+          steps.check_existing.outputs.exists == 'false' &&
+          steps.gh_check.outputs.gh_exists == 'false'
         run: |
-          TAG="v${{ steps.release_info.outputs.slug }}"
+          TAG="${{ steps.release_info.outputs.tag_name }}"
           echo "Release created: $TAG"
