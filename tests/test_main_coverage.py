@@ -35,6 +35,7 @@ def _make_pipeline_scraper(*, raw_text: str | None = None) -> MagicMock:
     mock_scraper.__aenter__ = AsyncMock(return_value=mock_scraper)
     mock_scraper.__aexit__ = AsyncMock(return_value=False)
     mock_scraper.fetch_page_raw_text = AsyncMock(return_value=raw_text)
+    mock_scraper.fetch_features_with_links = AsyncMock(return_value=[])
     mock_scraper.download_pdf_from_button = AsyncMock(return_value=None)
     return mock_scraper
 
