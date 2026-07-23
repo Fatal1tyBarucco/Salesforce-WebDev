@@ -47,13 +47,16 @@ Este repositório automatiza todo o ciclo:
 | 🔍 **Detecção Automática** | Detecta novas releases comparando conteúdo com a versão anterior |
 | 🎭 **Scraping SPA** | Playwright renderiza JavaScript completo do portal Salesforce Help |
 | 🧠 **Classificação AI** | Classifica features por impacto (Alto/Médio/Baixo) e tipo via LLM |
+| 📝 **Enriquecimento AI** | Descrições profissionais e análise de impacto por feature via LLM |
+| 📋 **Resumos Executivos** | Sumários completos com impacto no negócio, temas estratégicos e migração |
 | 📊 **Relatórios Inteligentes** | Changelog, regressões, diff, qualidade — tudo gerado por AI |
 | 🔄 **Deduplicação** | Content-hash evita reprocessar conteúdo inalterado |
 | 📧 **Notificações** | Email, Slack e Discord com filtros por perfil de interesse |
 | 🐙 **GitHub Integration** | Issues automáticas, PRs com triage, badges dinâmicos |
-| 🌐 **REST + GraphQL API** | Acesso programático a todos os dados via HTTP |
+| 🌐 **REST + GraphQL API** | Acesso programático com autenticação via API Key |
 | 📈 **Dashboard Interativo** | HTML com busca, comparação, heatmap e exportação CSV/JSON |
 | 🏥 **Health Monitoring** | Endpoints `/health`, `/ready`, `/metrics` (Prometheus) |
+| 🔒 **Autenticação API** | API Key middleware (`X-API-Key` / `Bearer`) para endpoints protegidos |
 
 ---
 
@@ -866,14 +869,68 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 | 🔍 **Mypy** | `strict = true` | ✅ |
 | ⚡ **Ruff** | `line-length = 100` | ✅ |
 | 🖤 **Black** | `target-version = py313` | ✅ |
-| 🧪 **Pytest** | 95.71% cobertura | ✅ |
+| 🧪 **Pytest** | 95%+ cobertura | ✅ |
 | 📦 **uv** | Lock file determinístico | ✅ |
+
+---
+
+## 🤖 Automação AI
+
+O pipeline utiliza LLM (OpenAI, Google Gemini, OpenCode, MiMoCode) para gerar conteúdo inteligente:
+
+### Enriquecimento de Features (`feature_enricher.py`)
+
+Cada feature das release notes recebe automaticamente:
+- **Descrição profissional** com contexto de negócio
+- **Classificação de impacto**: 🔴 Alto / 🟡 Médio / 🟢 Baixo
+- **Audiência identificada**: Usuários / Admins / Ambos
+
+```markdown
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Voice Feature** | Permite interação por voz com Agentforce, reduzindo ~40% do tempo em tarefas repetitivas. | 🔴 alto |
+```
+
+### Resumos Executivos (`release_summarizer.py`)
+
+Cada release recebe um resumo completo com:
+- **Visão Geral**: 3-5 frases com escopo e foco principal
+- **Impacto para o Negócio**: valor concreto com exemplos reais
+- **Temas Estratégicos**: AI-First, Security, Developer Experience, etc.
+- **Top 5 Categorias**: com destaque e percentual
+- **Notas de Migração**: considerações para administradores
+
+### Introduções por Categoria
+
+Cada arquivo de categoria inclui:
+- Parágrafo introdutório AI sobre o tema e mudanças mais importantes
+- Linha de impacto: `🔴 5 alto | 🟡 12 médio | 🟢 3 baixo`
+
+### Cadeia de Fallback
+
+```
+OpenAI → Google Gemini → OpenCode → MiMoCode → Classificação Heurística
+```
+
+Quando nenhum LLM está disponível, o sistema usa classificação por keywords como fallback.
 
 ---
 
 ## 🌐 API
 
 O projeto expõe uma API REST + GraphQL standalone (zero dependências externas):
+
+### Autenticação
+
+Quando a variável de ambiente `API_KEY` está definida, todos os endpoints (exceto `/health`, `/ready`, `/metrics`, `/openapi.json`) requerem autenticação:
+
+```bash
+# Via header X-API-Key
+curl -H "X-API-Key: *** http://localhost:8081/releases
+
+# Via Authorization Bearer
+curl -H "Authorization: Bearer *** http://localhost:8081/releases
+```
 
 ### REST
 
@@ -909,7 +966,7 @@ curl http://localhost:8080/health
 # Readiness probe
 curl http://localhost:8080/ready
 
-# Prometheus metrics
+# Prometheus metrics (prometheus-client quando instalado)
 curl http://localhost:8080/metrics
 ```
 
@@ -922,48 +979,62 @@ Salesforce-WebDev/
 │
 ├── 📂 src/                          # Código fonte
 │   ├── main.py                      # 🎯 Orquestrador principal + DI
+│   ├── orchestrator.py              # 🔄 Pipeline orchestrator
 │   ├── scraper.py                   # 🎭 Playwright + Circuit Breaker
 │   ├── parser.py                    # 📋 Parser HTML/Markdown
-│   ├── llm_service.py               # 🧠 Multi-provider LLM
+│   ├── llm_service.py               # 🧠 Multi-provider LLM + Rate Limiting
+│   ├── feature_enricher.py          # 📝 Enriquecimento AI por feature
+│   ├── release_summarizer.py        # 📋 Resumos executivos por release
+│   ├── release_docs.py              # 📄 Geração de documentação por release
 │   ├── generator.py                 # 📦 Geração Markdown
 │   ├── config.py                    # ⚙️ Configuração central
 │   ├── exceptions.py                # ⚠️ Hierarquia de exceções
 │   ├── circuit_breaker.py           # ⚡ Circuit Breaker unificado
 │   ├── cache_manager.py             # 💾 Cache TTL + content-hash
-│   ├── health.py                    # 🏥 Health checks + métricas
-│   ├── api.py                       # 🌐 REST + GraphQL + OpenAPI
+│   ├── health.py                    # 🏥 Health checks + Prometheus metrics
+│   ├── api.py                       # 🌐 REST + GraphQL + Auth + OpenAPI
+│   ├── events.py                    # 📡 EventBus pub/sub assíncrono
+│   ├── models.py                    # 📐 Modelos Pydantic
 │   ├── notifications.py             # 📧 Email/Slack/Discord
 │   ├── salesforce.py                # 🔗 Trailhead integration
 │   ├── feature_classifier.py        # 🏷️ Classificação via LLM
+│   ├── heuristic_classifier.py      # 🏷️ Classificação heurística (fallback)
 │   ├── impact_analyzer.py           # 📊 Análise de impacto
 │   ├── issue_triage.py              # 🐙 Triage automático
-│   ├── logger.py                    # 📝 Logging JSON estruturado
+│   ├── logger.py                    # 📝 Logging JSON + Sentry
 │   ├── translator.py                # 🌍 Tradução via LLM
 │   ├── dashboard.py                 # 📈 Dashboard HTML interativo
+│   ├── dashboard_template.html      # 🎨 Template do dashboard
+│   ├── nl_search.py                 # 🔍 Busca semântica
+│   ├── i18n.py                      # 🌐 Internacionalização
 │   └── automation/                  # 🤖 Pacote de automação AI
 │       ├── service.py               #    Facade principal
-│       ├── reporting.py             #    Relatórios AI
+│       ├── reporting.py             #    Relatórios AI (changelog, diff, resumos)
 │       ├── comparison.py            #    Comparação entre releases
-│       ├── impact.py                #    Scores de impacto
-│       ├── content.py               #    Deduplicação
+│       ├── impact.py                #    Scores de impacto + predição
+│       ├── content.py               #    Deduplicação + content-hash
 │       ├── export.py                #    Exportação JSON/CSV
 │       ├── github_ops.py            #    GitHub Issues
 │       ├── notifications.py         #    Notificações filtradas
 │       ├── models.py                #    Dataclasses
 │       └── badge.py                 #    Badges dinâmicos
 │
-├── 📂 releases/                     # 📄 Artefatos Markdown
-│   ├── summer_26/
-│   ├── spring_26/
-│   └── winter_26/
+├── 📂 releases/                     # 📄 Artefatos Markdown versionados
+│   ├── summer_26/                   #    v2.1.0
+│   ├── spring_26/                   #    v2.0.0
+│   └── winter_26/                   #    v2.2.0
 │
-├── 📂 tests/                        # 🧪 Testes pytest
+├── 📂 tests/                        # 🧪 Testes pytest (95%+ cobertura)
 ├── 📂 docs/                         # 📚 Documentação MkDocs
+├── 📂 k8s/                          # ☸️ Manifestos Kubernetes
+├── 📂 stubs/                        # 📝 Type stubs (tenacity, google-genai)
 ├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
 │
 ├── mkdocs.yml                       # 📖 Config MkDocs
-├── pyproject.toml                   # 📦 Config do projeto
-└── uv.lock                          # 🔒 Lock file
+├── pyproject.toml                   # 📦 Config do projeto (Python >=3.12,<3.14)
+├── uv.lock                          # 🔒 Lock file
+├── Dockerfile                       # 🐳 Multi-stage build
+└── .pre-commit-config.yaml          # 🪝 Pre-commit hooks
 ```
 
 ---

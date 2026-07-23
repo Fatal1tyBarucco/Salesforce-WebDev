@@ -749,18 +749,22 @@ uv run mypy src/
 | Módulo | Responsabilidade |
 | :--- | :--- |
 | `src/main.py` | Orquestrador: detectar releases, extrair, parse, gerar, atualizar README |
+| `src/orchestrator.py` | Pipeline orchestrator com DI |
 | `src/scraper.py` | Playwright headless, circuit breaker, rate limiter, cache, download PDF |
 | `src/parser.py` | Extração de hierarquia ToC + tabela Feature Impact |
+| `src/llm_service.py` | Multi-provider LLM (OpenAI/Gemini/OpenCode/MiMoCode), fallback chain, rate limiting |
+| `src/feature_enricher.py` | Enriquecimento AI: descrições, impacto, audiência por feature |
+| `src/release_summarizer.py` | Resumos executivos com impacto no negócio e temas estratégicos |
+| `src/release_docs.py` | Geração de documentação enriquecida por release |
 | `src/generator.py` | Gera arquivos `.md` por categoria |
 | `src/ai_automation.py` | Comparação entre releases, detecção de regressões, quality metrics |
-| `src/analytics.py` | Dashboard HTML com gráficos SVG |
-| `src/api.py` | REST API para acesso programático |
+| `src/events.py` | EventBus pub/sub assíncrono para desacoplamento |
+| `src/models.py` | Modelos Pydantic para validação de dados |
+| `src/api.py` | REST API + GraphQL + Autenticação (API Key) + OpenAPI |
 | `src/notifications.py` | Email digest, Slack/Discord webhooks |
 | `src/dashboard.py` | Dashboard interativo com JS |
-| `src/workflow.py` | PR-based workflow com triage |
-| `src/salesforce.py` | Trailhead linking, org limits, sandbox readiness |
 | `src/health.py` | Health check (`/health`, `/ready`), Prometheus metrics (`/metrics`) |
-| `src/logger.py` | Logging estruturado com correlation IDs |
+| `src/logger.py` | Logging estruturado com Sentry integration |
 
 ---
 

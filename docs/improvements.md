@@ -110,3 +110,121 @@ A hierarquia de exceções em `src/exceptions.py` (11 classes: `PipelineError`, 
 - **Tratamento granular**: consumidores podem capturar exceções específicas
 - **Circuit breaker**: pode diferenciar erros transitórios de fatais
 - **Testes**: validam a hierarquia real, não apenas mensagens de erro
+
+---
+
+## Fase 2 — Automação AI Avançada
+
+### Enriquecimento de Features (`feature_enricher.py`)
+
+**Novo módulo** que utiliza LLM para gerar descrições profissionais e classificações de impacto para cada feature das release notes.
+
+| Aspecto | Implementação |
+|---------|---------------|
+| **Batch Prompting** | 1 chamada LLM por categoria (não por feature) — custo mínimo |
+| **Descrições AI** | Cada feature recebe descrição com contexto de negócio |
+| **Impacto** | Classificação 🔴 Alto / 🟡 Médio / 🟢 Baixo por feature |
+| **Audiência** | Identificação: Usuários / Admins / Ambos |
+| **Fallback** | Classificação heurística por keywords quando LLM indisponível |
+
+**Formato de saída:**
+```markdown
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Voice Feature** | Permite interação por voz com Agentforce, reduzindo ~40% do tempo em tarefas repetitivas. | 🔴 alto |
+```
+
+### Resumos Executivos (`release_summarizer.py`)
+
+**Refatoração completa** do módulo de sumarização, produzindo relatórios executivos profissionais.
+
+| Campo | Descrição |
+|-------|-----------|
+| `executive_summary` | 3-5 frases com visão geral da release |
+| `business_impact` | Parágrafo com valor concreto e exemplos reais |
+| `strategic_themes` | Lista de temas (AI-First, Security, Developer Experience) |
+| `top_categories` | Top 5 categorias com destaque e percentual |
+| `migration_notes` | Considerações para administradores |
+
+**Método `to_markdown()`** renderiza como documento Markdown completo.
+
+### Introduções por Categoria
+
+Cada arquivo de categoria agora inclui:
+- Parágrafo introdutório AI sobre o tema e mudanças mais importantes
+- Linha de impacto: `🔴 5 alto | 🟡 12 médio | 🟢 3 baixo`
+- Tabela enriquecida com colunas `Recurso | Descrição | Impacto`
+
+### GraphQL Parser Recursivo
+
+Substituição do parser regex frágil por um **recursive-descent parser** completo.
+
+| Componente | Descrição |
+|------------|-----------|
+| `_gql_lex()` | Lexer que tokeniza a query em tipos (LBRACE, NAME, STRING, etc.) |
+| `_GQLParser` | Parser recursivo com `_peek()`, `_advance()`, `_expect()` |
+| `_parse_arguments()` | Parsing de argumentos `(key: "value")` |
+| `_parse_field_set()` | Parsing de seleções de campos `{ field1 field2 }` com nesting |
+
+**Vantagens:** suporta queries aninhadas, mensagens de erro claras, sem dependências externas.
+
+### Autenticação API
+
+Middleware de autenticação para a API REST + GraphQL.
+
+| Feature | Implementação |
+|---------|---------------|
+| **Métodos** | `X-API-Key` header ou `Authorization: Bearer <token>` |
+| **Configuração** | Variável de ambiente `API_KEY` (vazio = sem auth) |
+| **Endpoints públicos** | `/health`, `/ready`, `/metrics`, `/openapi.json` |
+| **Resposta** | 401 com mensagem de erro clara |
+
+### Versionamento Semântico
+
+Campo `version` (major.minor.patch) adicionado ao `.meta.json` de cada release.
+
+| Componente | Lógica |
+|------------|--------|
+| **major** | Offset do ano (2025=1, 2026=2, ...) |
+| **minor** | Índice da estação (Spring=0, Summer=1, Winter=2) |
+| **patch** | Contagem de re-scrapes da mesma release |
+
+### Rate Limiting LLM
+
+Token-bucket rate limiter assíncrono integrado ao `LLMService`.
+
+| Configuração | Default |
+|--------------|---------|
+| `max_requests` | 60 |
+| `window_seconds` | 60.0 |
+| **Thread-safety** | `asyncio.Lock` |
+
+### Prometheus-client Integration
+
+Endpoint `/metrics` com dual-mode: `prometheus_client` quando instalado, fallback text/plain caso contrário.
+
+**Métricas disponíveis:**
+- `pipeline_runs_total` (counter, labels: status)
+- `features_processed_total` (counter)
+- `scraper_requests_total` (counter, labels: outcome)
+- `pipeline_run_duration_seconds` (histogram)
+- `release_feature_count` (gauge, labels: release_slug)
+- `pipeline_uptime_seconds` (gauge)
+
+### Python Version
+
+Downgrade de Python 3.14 (alpha) para `>=3.12,<3.14` (estável).
+
+| Arquivo | Mudança |
+|---------|---------|
+| `pyproject.toml` | `requires-python = ">=3.12,<3.14"` |
+| `Dockerfile` | `python:3.13-slim` |
+| CI matrix | `["3.12", "3.13"]` apenas |
+
+### Cobertura de Testes
+
+| Métrica | Valor |
+|---------|-------|
+| **Cobertura total** | **95%+** |
+| **Testes E2E** | Pipeline, API, EventBus, Cache, Auth |
+| **Testes AI** | Feature enricher, release summarizer, fallback |
