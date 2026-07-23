@@ -107,7 +107,7 @@ class TestGetHealthData:
             assert data["status"] == "healthy"
             assert data["releases_processed"] == 0
             assert data["total_features"] == 0
-            assert data["version"] == "3.0.0"
+            assert data["version"] == "3.1.0"
 
     def test_get_health_data_with_releases(self, tmp_path: Path) -> None:
         """_get_health_data counts releases and features."""

@@ -273,7 +273,7 @@ class TestEventBusE2E:
             received.append(data.get("event", ""))
 
         bus.subscribe("release.processed", handler)
-        await bus.publish("release.processed", {"event": "release.processed", "slug": "summer_26"})
+        await bus.emit("release.processed", {"event": "release.processed", "slug": "summer_26"})
 
         assert "release.processed" in received
 
@@ -293,5 +293,5 @@ class TestCacheE2E:
         cache.get("k1", namespace="ns")  # hit
         cache.get("k2", namespace="ns")  # miss
         stats = cache.stats()
-        assert stats["hits"] >= 1
-        assert stats["misses"] >= 1
+        assert stats.hits >= 1
+        assert stats.misses >= 1
