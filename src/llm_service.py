@@ -5,14 +5,44 @@ import hashlib
 import inspect
 import logging
 import os
+import time
 from typing import Any, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import openai
 from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from .circuit_breaker import CircuitBreaker
 from .cache_manager import CacheManager
+
+
+@dataclass
+class RateLimiter:
+    """Async token-bucket rate limiter.
+
+    Limits the number of requests per time window.  Thread-safe via asyncio.Lock.
+    """
+
+    max_requests: int = 60
+    window_seconds: float = 60.0
+    _timestamps: list[float] = field(default_factory=list, repr=False)
+    _lock: asyncio.Lock = field(default_factory=asyncio.Lock, repr=False)
+
+    async def acquire(self) -> None:
+        """Wait until a request slot is available."""
+        async with self._lock:
+            now = time.monotonic()
+            # Purge timestamps outside the window
+            self._timestamps = [t for t in self._timestamps if now - t < self.window_seconds]
+            if len(self._timestamps) >= self.max_requests:
+                # Sleep until the oldest timestamp expires
+                sleep_until = self._timestamps[0] + self.window_seconds
+                wait = sleep_until - now
+                if wait > 0:
+                    await asyncio.sleep(wait)
+                now = time.monotonic()
+                self._timestamps = [t for t in self._timestamps if now - t < self.window_seconds]
+            self._timestamps.append(time.monotonic())
 
 
 @dataclass
@@ -47,6 +77,7 @@ class LLMService:
         client: Any = None,
         providers: list[LLMProvider] | None = None,
         cache: CacheManager | None = None,
+        rate_limiter: RateLimiter | None = None,
     ) -> None:
         self._config = config
         self._logger = logging.getLogger(__name__)
@@ -54,6 +85,7 @@ class LLMService:
         self._providers: list[LLMProvider] = []
         self._clients: dict[str, Any] = {}  # Lazy-initialized, cached per provider
         self._cache = cache
+        self._rate_limiter = rate_limiter or RateLimiter(max_requests=60, window_seconds=60.0)
 
         _auto_loaded = providers is None
         if providers is not None:
@@ -276,6 +308,9 @@ class LLMService:
             if cached is not None:
                 self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
                 return str(cached)
+
+        # Rate limiting
+        await self._rate_limiter.acquire()
 
         for provider in self._providers:
             if not self._is_provider_available(provider):

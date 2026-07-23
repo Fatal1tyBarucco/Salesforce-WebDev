@@ -382,10 +382,35 @@ def _update_readme_single(
 
     avg_confidence = total_confidence / total_features if total_features else 0.0
 
+    # Semantic version: major.minor.patch
+    #   major = Salesforce release generation (increments yearly)
+    #   minor = release within current generation (season index 0-2)
+    #   patch = revision of the same release data (0 = first scrape)
+    _season_index = {"Spring": 0, "Summer": 1, "Winter": 2}
+    _season_part = release.name.split(" ")[0] if " " in release.name else "Spring"
+    _year_part = 25  # default
+    try:
+        _year_part = int(release.name.split("'")[1])
+    except (IndexError, ValueError):
+        pass
+    _major = _year_part - 24  # 2025 = v1.x.x
+    _minor = _season_index.get(_season_part, 0)
+    _patch = 0
+    if meta_path.exists():
+        try:
+            _prev = json.loads(meta_path.read_text(encoding="utf-8"))
+            _prev_ver = _prev.get("version", "1.0.0")
+            _prev_patch = int(_prev_ver.split(".")[2])
+            _patch = _prev_patch + 1
+        except (json.JSONDecodeError, OSError, IndexError, ValueError):
+            pass
+    version = f"{_major}.{_minor}.{_patch}"
+
     meta: dict[str, object] = {
         "name": release.name,
         "slug": release.slug,
         "release_id": release.release_id,
+        "version": version,
         "total_features": total_features,
         "avg_confidence": round(avg_confidence, 3),
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
