@@ -266,14 +266,16 @@ class TestEventBusE2E:
 
     @pytest.mark.asyncio
     async def test_publish_subscribe(self) -> None:
+        from src.events import Event
+
         bus = EventBus()
         received: list[str] = []
 
-        async def handler(data: dict) -> None:
-            received.append(data.get("event", ""))
+        async def handler(event: Event) -> None:
+            received.append(event.name)
 
         bus.subscribe("release.processed", handler)
-        await bus.emit("release.processed", {"event": "release.processed", "slug": "summer_26"})
+        await bus.emit("release.processed", {"slug": "summer_26"})
 
         assert "release.processed" in received
 
@@ -292,6 +294,6 @@ class TestCacheE2E:
         cache.set("k1", "v1", namespace="ns")
         cache.get("k1", namespace="ns")  # hit
         cache.get("k2", namespace="ns")  # miss
-        stats = cache.stats()
+        stats = cache.stats
         assert stats.hits >= 1
         assert stats.misses >= 1
