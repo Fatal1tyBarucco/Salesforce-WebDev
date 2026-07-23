@@ -146,16 +146,54 @@ uv run mypy src/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Executive Summary:** 🚀 **Summer '26** — expansão significativa com **1636 recursos** em **22 categorias**.
+> 📊 **Executive Summary:** 🚀 **Summer '26** — expansão significativa com **1600 recursos** em **22 categorias**.
 
 **Principais destaques:**
-• **Setores** (319 recursos, 19%)
+• **Setores** (319 recursos, 20%)
 • **Serviço** (210 recursos, 13%)
 • **Desenvolvimento...
 

@@ -3,6 +3,8 @@
 import json
 from io import BytesIO
 from pathlib import Path
+
+import pytest
 from unittest.mock import MagicMock, patch
 
 from src.health import (
@@ -205,3 +207,121 @@ class TestStartHealthServer:
         server = start_health_server(port=0)  # port 0 = random available
         assert server is not None
         server.shutdown()
+
+
+class TestNewHealthFeatures:
+    """Tests for new health features: duration, release count, prometheus."""
+
+    def _make_handler(self, path: str) -> HealthHandler:
+        """Create a HealthHandler with mocked socket."""
+        request = MagicMock()
+        request.makefile.return_value = BytesIO()
+        handler = HealthHandler(request, ("127.0.0.1", 12345), MagicMock())
+        handler.path = path
+        handler.wfile = BytesIO()
+        handler.request_version = "HTTP/1.1"
+        handler.send_response = MagicMock()
+        handler.send_header = MagicMock()
+        handler.end_headers = MagicMock()
+        return handler
+
+    def test_record_run_duration(self) -> None:
+        """record_run_duration stores the duration."""
+        from src.health import _health_state
+
+        _health_state.record_run_duration(42.5)
+        assert _health_state._last_run_duration == 42.5
+
+    def test_set_release_feature_count(self) -> None:
+        """set_release_feature_count doesn't raise."""
+        from src.health import set_release_feature_count
+
+        # Should not raise even without prometheus
+        set_release_feature_count("summer_26", 100)
+
+    def test_prometheus_available_flag(self) -> None:
+        """_PROMETHEUS_AVAILABLE is a bool."""
+        from src.health import _PROMETHEUS_AVAILABLE
+
+        assert isinstance(_PROMETHEUS_AVAILABLE, bool)
+
+    def test_fallback_metrics_text(self) -> None:
+        """_fallback_metrics_text returns Prometheus text format."""
+        from src.health import HealthHandler
+
+        text = HealthHandler._fallback_metrics_text()
+        assert "pipeline_runs_total" in text
+        assert "pipeline_uptime_seconds" in text
+        assert "# TYPE" in text
+
+    def test_health_data_includes_prometheus_field(self, tmp_path: Path) -> None:
+        """Health data response includes prometheus availability flag."""
+        with patch("src.health.RELEASES_DIR", str(tmp_path / "nonexistent")):
+            data = _get_health_data()
+            assert "prometheus" in data
+            assert isinstance(data["prometheus"], bool)
+
+    def test_do_GET_metrics_content_type(self) -> None:
+        """GET /metrics sets appropriate content type."""
+        handler = self._make_handler("/metrics")
+        handler.do_GET()
+        handler.send_response.assert_called_with(200)
+        # Verify Content-Type was set (either prometheus or plain text)
+        assert handler.send_header.call_count >= 2  # Content-Type + Content-Length
+
+    def test_inc_metric_prometheus_mirror(self) -> None:
+        """inc_metric mirrors to prometheus counters when available."""
+        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+
+        if not _PROMETHEUS_AVAILABLE:
+            pytest.skip("prometheus_client not installed")
+
+        # These should not raise
+        _health_state.inc_metric("features_processed_total", 1.0)
+        _health_state.inc_metric("scraper_requests_total", 1.0)
+        _health_state.inc_metric("scraper_failures_total", 1.0)
+        _health_state.inc_metric("circuit_breaker_trips_total", 1.0)
+
+    def test_set_pipeline_status_prometheus(self) -> None:
+        """set_pipeline_status mirrors to prometheus when available."""
+        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+
+        if not _PROMETHEUS_AVAILABLE:
+            pytest.skip("prometheus_client not installed")
+
+        _health_state.set_pipeline_status("completed")
+        _health_state.set_pipeline_status("completed_with_errors")
+
+    def test_record_run_duration_prometheus(self) -> None:
+        """record_run_duration mirrors to prometheus histogram when available."""
+        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+
+        if not _PROMETHEUS_AVAILABLE:
+            pytest.skip("prometheus_client not installed")
+
+        _health_state.record_run_duration(10.5)
+
+    def test_set_release_feature_count_prometheus(self) -> None:
+        """set_release_feature_count sets prometheus gauge when available."""
+        from src.health import _PROMETHEUS_AVAILABLE
+
+        if not _PROMETHEUS_AVAILABLE:
+            pytest.skip("prometheus_client not installed")
+
+        from src.health import set_release_feature_count
+
+        set_release_feature_count("summer_26", 150)
+
+    def test_metrics_with_prometheus_registry(self) -> None:
+        """GET /metrics uses prometheus_client.generate_latest when available."""
+        from src.health import _PROMETHEUS_AVAILABLE
+
+        if not _PROMETHEUS_AVAILABLE:
+            pytest.skip("prometheus_client not installed")
+
+        handler = self._make_handler("/metrics")
+        handler.do_GET()
+        handler.send_response.assert_called_with(200)
+        # Verify the body contains prometheus format
+        body = handler.wfile.getvalue().decode()
+        assert "pipeline_runs_total" in body or "pipeline_uptime_seconds" in body

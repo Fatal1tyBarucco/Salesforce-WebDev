@@ -57,129 +57,583 @@ Este repositório automatiza todo o ciclo:
 
 ---
 
-## 📦 Releases Catalogadas
 
-<!-- RELEASE_BADGE -->
-![Latest Release](https://img.shields.io/badge/Última%20Release-Summer%20'26-00A1E0?style=for-the-badge&logo=salesforce&logoColor=white)
 
-<table>
-<tr>
-<td align="center" width="33%">
-<img src="https://img.shields.io/badge/☀️-Summer_'26-FF6B35?style=for-the-badge" /><br/>
-<strong>1.373 recursos</strong><br/>
-22 categorias<br/>
-<a href="./releases/summer_26/">📄 Explorar</a>
-</td>
-<td align="center" width="33%">
-<img src="https://img.shields.io/badge/🌸-Spring_'26-FF69B4?style=for-the-badge" /><br/>
-<strong>1.438 recursos</strong><br/>
-21 categorias<br/>
-<a href="./releases/spring_26/">📄 Explorar</a>
-</td>
-<td align="center" width="33%">
-<img src="https://img.shields.io/badge/❄️-Winter_'26-00BFFF?style=for-the-badge" /><br/>
-<strong>1.348 recursos</strong><br/>
-19 categorias<br/>
-<a href="./releases/winter_26/">📄 Explorar</a>
-</td>
-</tr>
-</table>
 
-> **📊 Total: 4.159 recursos** catalogados em **3 releases** sazonais do Salesforce.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 📋 Releases Disponíveis
+
+<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
+
+### ☀️ Summer '26
+
+> 📊 **Resumo Executivo:** 🚀 **Summer '26** — expansão significativa com **1600 recursos** em **22 categorias**.
+
+**Principais destaques:**
+• **Setores** (319 recursos, 20%)
+• **Serviço** (210 recursos, 13%)
+• **Desenvolvimento...
+
 
 <details>
-<summary><b>☀️ Summer '26 — Detalhes por Categoria</b></summary>
+<summary><b>📄 Documentação legal (6 recursos)</b></summary>
 
-<br/>
-
-| Categoria | Recursos | Documentação |
-|:----------|:--------:|:-------------|
-| 🏭 Setores | 309 | [pt_BR](./releases/summer_26/pt_BR/setores.md) |
-| 🛠️ Serviço | 198 | [pt_BR](./releases/summer_26/pt_BR/servico.md) |
-| 💻 Desenvolvimento | 127 | [pt_BR](./releases/summer_26/pt_BR/desenvolvimento.md) |
-| ⚙️ Automação | 118 | [pt_BR](./releases/summer_26/pt_BR/automacao.md) |
-| 💰 Gerenciamento de Receita | 97 | [pt_BR](./releases/summer_26/pt_BR/gerenciamento_de_receita.md) |
-| 📊 Data 360 | 72 | [pt_BR](./releases/summer_26/pt_BR/data_360.md) |
-| 📈 Marketing | 64 | [pt_BR](./releases/summer_26/pt_BR/marketing.md) |
-| 🔬 Análise de Dados | 58 | [pt_BR](./releases/summer_26/pt_BR/analise_de_dados.md) |
-| 🔒 Segurança e Privacidade | 58 | [pt_BR](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md) |
-| 💼 Vendas | 58 | [pt_BR](./releases/summer_26/pt_BR/vendas.md) |
-| 🔧 Field Service | 48 | [pt_BR](./releases/summer_26/pt_BR/field_service.md) |
-| 🤖 Agentforce | 37 | [pt_BR](./releases/summer_26/pt_BR/agentforce.md) |
-| 📄 Salesforce Geral | 36 | [pt_BR](./releases/summer_26/pt_BR/salesforce_geral.md) |
-| 🎨 Personalização | 33 | [pt_BR](./releases/summer_26/pt_BR/personalizacao.md) |
-| 📱 Aplicativo Móvel | 17 | [pt_BR](./releases/summer_26/pt_BR/aplicativo_movel.md) |
-| 🌐 Experience Cloud | 14 | [pt_BR](./releases/summer_26/pt_BR/experience_cloud.md) |
-| 🏗️ OmniStudio | 9 | [pt_BR](./releases/summer_26/pt_BR/omnistudio.md) |
-| 🔗 MuleSoft | 8 | [pt_BR](./releases/summer_26/pt_BR/mulesoft.md) |
-| 📜 Documentação Legal | 6 | [pt_BR](./releases/summer_26/pt_BR/documentacao_legal.md) |
-| ⚡ Hyperforce | 3 | [pt_BR](./releases/summer_26/pt_BR/hyperforce.md) |
-| 💬 Slack Integration | 2 | [pt_BR](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md) |
-| 🤝 Partner Cloud | 1 | [pt_BR](./releases/summer_26/pt_BR/partner_cloud.md) |
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
 
 </details>
 
+
 <details>
-<summary><b>🌸 Spring '26 — Detalhes por Categoria</b></summary>
+<summary><b>📄 Salesforce geral (36 recursos)</b></summary>
 
-<br/>
-
-| Categoria | Recursos | Documentação |
-|:----------|:--------:|:-------------|
-| 🏭 Setores | 194 | [pt_BR](./releases/spring_26/pt_BR/setores.md) |
-| 📱 Aplicativo Móvel | 187 | [pt_BR](./releases/spring_26/pt_BR/aplicativo_movel.md) |
-| 🛠️ Serviço | 167 | [pt_BR](./releases/spring_26/pt_BR/servico.md) |
-| ⚙️ Automação | 151 | [pt_BR](./releases/spring_26/pt_BR/automacao.md) |
-| 💰 Gerenciamento de Receita | 131 | [pt_BR](./releases/spring_26/pt_BR/gerenciamento_de_receita.md) |
-| 💻 Desenvolvimento | 97 | [pt_BR](./releases/spring_26/pt_BR/desenvolvimento.md) |
-| 📈 Marketing | 72 | [pt_BR](./releases/spring_26/pt_BR/marketing.md) |
-| 🔒 Segurança e Privacidade | 61 | [pt_BR](./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md) |
-| 🔬 Análise de Dados | 54 | [pt_BR](./releases/spring_26/pt_BR/analise_de_dados.md) |
-| 📊 Data 360 | 53 | [pt_BR](./releases/spring_26/pt_BR/data_360.md) |
-| 💼 Vendas | 85 | [pt_BR](./releases/spring_26/pt_BR/vendas.md) |
-| 🔧 Field Service | 41 | [pt_BR](./releases/spring_26/pt_BR/field_service.md) |
-| 🤖 Agentforce | 35 | [pt_BR](./releases/spring_26/pt_BR/agentforce.md) |
-| 📄 Salesforce Geral | 38 | [pt_BR](./releases/spring_26/pt_BR/salesforce_geral.md) |
-| 🌐 Experience Cloud | 21 | [pt_BR](./releases/spring_26/pt_BR/experience_cloud.md) |
-| 🎨 Personalização | 18 | [pt_BR](./releases/spring_26/pt_BR/personalizacao.md) |
-| 🏗️ OmniStudio | 10 | [pt_BR](./releases/spring_26/pt_BR/omnistudio.md) |
-| 🔗 MuleSoft | 8 | [pt_BR](./releases/spring_26/pt_BR/mulesoft.md) |
-| 📜 Documentação Legal | 6 | [pt_BR](./releases/spring_26/pt_BR/documentacao_legal.md) |
-| ⚡ Hyperforce | 5 | [pt_BR](./releases/spring_26/pt_BR/hyperforce.md) |
-| 🤝 Partner Cloud | 4 | [pt_BR](./releases/spring_26/pt_BR/partner_cloud.md) |
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
 
 </details>
 
+
 <details>
-<summary><b>❄️ Winter '26 — Detalhes por Categoria</b></summary>
+<summary><b>📄 Agentforce (37 recursos)</b></summary>
 
-<br/>
-
-| Categoria | Recursos | Documentação |
-|:----------|:--------:|:-------------|
-| 🏭 Setores | 459 | [pt_BR](./releases/winter_26/pt_BR/setores.md) |
-| 💻 Desenvolvimento | 101 | [pt_BR](./releases/winter_26/pt_BR/desenvolvimento.md) |
-| 📈 Marketing | 87 | [pt_BR](./releases/winter_26/pt_BR/marketing.md) |
-| 🔬 Análise de Dados | 91 | [pt_BR](./releases/winter_26/pt_BR/analise_de_dados.md) |
-| 🎨 Personalização | 65 | [pt_BR](./releases/winter_26/pt_BR/personalizacao.md) |
-| 🔒 Segurança e Privacidade | 55 | [pt_BR](./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md) |
-| 💼 Vendas | 154 | [pt_BR](./releases/winter_26/pt_BR/vendas.md) |
-| 🤝 Partner Cloud | 156 | [pt_BR](./releases/winter_26/pt_BR/partner_cloud.md) |
-| 🛠️ Serviço | 41 | [pt_BR](./releases/winter_26/pt_BR/servico.md) |
-| 🤖 Agentforce | 39 | [pt_BR](./releases/winter_26/pt_BR/agentforce.md) |
-| 📄 Salesforce Geral | 32 | [pt_BR](./releases/winter_26/pt_BR/salesforce_geral.md) |
-| 🔧 Field Service | 24 | [pt_BR](./releases/winter_26/pt_BR/field_service.md) |
-| 🏗️ OmniStudio | 8 | [pt_BR](./releases/winter_26/pt_BR/omnistudio.md) |
-| 🌐 Experience Cloud | 8 | [pt_BR](./releases/winter_26/pt_BR/experience_cloud.md) |
-| 📱 Aplicativo Móvel | 7 | [pt_BR](./releases/winter_26/pt_BR/aplicativo_movel.md) |
-| 📜 Documentação Legal | 11 | [pt_BR](./releases/winter_26/pt_BR/documentacao_legal.md) |
-| ⚡ Hyperforce | 5 | [pt_BR](./releases/winter_26/pt_BR/hyperforce.md) |
-| 🔗 MuleSoft | 4 | [pt_BR](./releases/winter_26/pt_BR/mulesoft.md) |
-| 💬 Slack Integration | 1 | [pt_BR](./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md) |
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
 
 </details>
 
----
+
+<details>
+<summary><b>📄 Análise de dados (58 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Automação (118 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (9 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (33 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data 360 (72 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (14 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (48 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (3 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (309 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (64 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (1 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (58 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (198 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
+
+</details>
+
+
+
+<details>
+
+<summary><h3>🌸 Spring '26</h3></summary>
+
+> 📊 **Resumo Executivo:** 🚀 **Spring '26** — expansão significativa com **1598 recursos** em **21 categorias**.
+
+**Principais destaques:**
+• **Setores** (202 recursos, 13%)
+• **Aplicativo móvel** (195 recursos, 12%)
+• **Serviç...
+
+
+<details>
+<summary><b>📄 Documentação legal (6 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/documentacao_legal.md](./releases/spring_26/pt_BR/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce geral (38 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/salesforce_geral.md](./releases/spring_26/pt_BR/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (35 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/agentforce.md](./releases/spring_26/pt_BR/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Análise de dados (54 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/analise_de_dados.md](./releases/spring_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Automação (151 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/automacao.md](./releases/spring_26/pt_BR/automacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (18 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/personalizacao.md](./releases/spring_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Data 360 (53 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/data_360.md](./releases/spring_26/pt_BR/data_360.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (97 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/desenvolvimento.md](./releases/spring_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (21 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/experience_cloud.md](./releases/spring_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (41 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/field_service.md](./releases/spring_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/hyperforce.md](./releases/spring_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (194 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/setores.md](./releases/spring_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (187 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/aplicativo_movel.md](./releases/spring_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (72 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/marketing.md](./releases/spring_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/mulesoft.md](./releases/spring_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (10 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/omnistudio.md](./releases/spring_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (4 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/partner_cloud.md](./releases/spring_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Gerenciamento de receita (131 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/gerenciamento_de_receita.md](./releases/spring_26/pt_BR/gerenciamento_de_receita.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (85 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/vendas.md](./releases/spring_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (61 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (167 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/spring_26/pt_BR/servico.md](./releases/spring_26/pt_BR/servico.md)
+
+</details>
+
+</details>
+
+
+
+<details>
+
+<summary><h3>❄️ Winter '26</h3></summary>
+
+> 📊 **Resumo Executivo:** 🚀 **Winter '26** — expansão significativa com **1487 recursos** em **19 categorias**.
+
+**Principais destaques:**
+• **Setores** (467 recursos, 31%)
+• **Partner Cloud** (164 recursos, 11%)
+• **Vendas** ...
+
+
+<details>
+<summary><b>📄 Documentação legal (11 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/documentacao_legal.md](./releases/winter_26/pt_BR/documentacao_legal.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Salesforce geral (32 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/salesforce_geral.md](./releases/winter_26/pt_BR/salesforce_geral.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Análise de dados (91 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/analise_de_dados.md](./releases/winter_26/pt_BR/analise_de_dados.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Personalização (65 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/personalizacao.md](./releases/winter_26/pt_BR/personalizacao.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Desenvolvimento (101 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md](./releases/winter_26/pt_BR/desenvolvimento.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Agentforce (39 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/agentforce.md](./releases/winter_26/pt_BR/agentforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Experience Cloud (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/experience_cloud.md](./releases/winter_26/pt_BR/experience_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Field Service (24 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/field_service.md](./releases/winter_26/pt_BR/field_service.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/hyperforce.md](./releases/winter_26/pt_BR/hyperforce.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Setores (459 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/setores.md](./releases/winter_26/pt_BR/setores.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Marketing (87 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/marketing.md](./releases/winter_26/pt_BR/marketing.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 MuleSoft (4 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/mulesoft.md](./releases/winter_26/pt_BR/mulesoft.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Aplicativo móvel (7 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/aplicativo_movel.md](./releases/winter_26/pt_BR/aplicativo_movel.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 OmniStudio (8 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/omnistudio.md](./releases/winter_26/pt_BR/omnistudio.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Partner Cloud (156 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/partner_cloud.md](./releases/winter_26/pt_BR/partner_cloud.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Vendas (154 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md](./releases/winter_26/pt_BR/vendas.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Integrações do Salesforce para Slack (1 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Segurança, identidade e privacidade (55 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md)
+
+</details>
+
+
+<details>
+<summary><b>📄 Serviço (41 recursos)</b></summary>
+
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/servico.md](./releases/winter_26/pt_BR/servico.md)
+
+</details>
+
+</details>
+
 
 ## 🏗️ Como Funciona
 
