@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # Optional prometheus-client integration
 # ---------------------------------------------------------------------------
 try:
-    from prometheus_client import (
+    from prometheus_client import (  # type: ignore[import-not-found]
         CONTENT_TYPE_LATEST,
         CollectorRegistry,
         Counter,
