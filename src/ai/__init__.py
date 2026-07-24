@@ -16,6 +16,8 @@ from .generators.badges import (
     status_badge,
 )
 from .generators.markdown import MarkdownGenerator
+from .integrations.salesforce import AdoptionSuggestion, OrgMetadata, SalesforceAnalyzer
+from .integrations.trailhead import TrailheadIntegration, TrailheadModule, TrailheadSuggestion
 from .prompts.classification import (
     build_classification_system_prompt,
     build_classification_user_prompt,
@@ -45,13 +47,19 @@ from .prompts.validation import (
 )
 
 __all__ = [
+    "AdoptionSuggestion",
     "Badge",
     "ClassificationOutput",
     "EnrichmentFeatureOutput",
     "EnrichmentOutput",
     "ImpactPredictionOutput",
     "MarkdownGenerator",
+    "OrgMetadata",
     "ReportOutput",
+    "SalesforceAnalyzer",
+    "TrailheadIntegration",
+    "TrailheadModule",
+    "TrailheadSuggestion",
     "api_version_badge",
     "build_ai_summary_prompt",
     "build_changelog_prompt",
