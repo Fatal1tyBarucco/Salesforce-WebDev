@@ -636,9 +636,15 @@ async def _update_single_readme(
         return
 
     heading_idx = original.index(heading)
+    # Safety: only replace content AFTER the releases heading, never before it.
+    # Content before this heading (e.g., Guia Completo, project description) is preserved.
     next_heading = original.find("\n## ", heading_idx + len(heading))
     if next_heading == -1:
-        next_heading = len(original)
+        logger.warning(
+            "README %s: nenhum heading '## ' encontrado após releases — skip para preservar conteúdo",
+            readme_path.name,
+        )
+        return
     new_block = await _build_release_block(metas, lang, summarizer)
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
