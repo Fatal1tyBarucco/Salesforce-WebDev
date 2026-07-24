@@ -149,6 +149,258 @@ Este repositório automatiza todo o ciclo:
 
 
 
+---
+
+## 📖 Guia Completo: Atualizações de Versão do Salesforce
+
+> **Nota:** documento consolidado em julho/2026. Release ativo em produção: **Summer '26** (API v67.0). Próximo release: **Winter '27** (previsto para outubro/2026). Sempre confirme o cronograma da sua instância no [Salesforce Trust](https://status.salesforce.com).
+
+### 1. O que é
+
+"Atualização de versão" no ecossistema Salesforce cobre **dois conceitos distintos e complementares**:
+
+| | **Release Sazonal** | **Release Update** |
+|---|---|---|
+| Nome oficial (Setup, PT-BR) | Versão sazonal (Spring/Summer/Winter) | Atualizações de Versão |
+| O que é | Upgrade completo da plataforma, aplicado a todos os orgs | Mudança pontual de comportamento associada a um release |
+| Frequência | 3x por ano | Dezenas por release |
+| É opcional? | Não — todo org é migrado, sem exceção | Parcialmente — pode ser testada e adiada até uma data-limite, mas eventualmente é forçada |
+| Onde consultar | help.salesforce.com/releasenotes | Setup → **Atualizações de Versão** |
+| Analogia | Upgrade de major version de SO (Windows 10 → 11) | Patch de segurança/comportamento dentro dessa versão do SO |
+
+#### 1.1 Release Sazonal
+Upgrade da plataforma como um todo: nova versão do Lightning Experience, novas features declarativas, nova versão de API, eventuais mudanças de governor limits. Acontece automaticamente, sem opt-in, para 100% dos orgs — inclusive Developer Edition, sandboxes e produção.
+
+#### 1.2 Release Update ("Atualizações de Versão")
+Mecanismo de governança criado para introduzir **mudanças de comportamento potencialmente disruptivas** (segurança, compilador Apex, deprecação de API) de forma controlada. O fluxo é sempre:
+
+1. Salesforce anuncia o update com antecedência (normalmente 1–3 releases antes do enforcement);
+2. Disponibiliza um **Test Run** para o admin habilitar/desabilitar e observar o impacto;
+3. Define uma data-limite (**Complete Steps By**);
+4. Após essa data, a mudança é aplicada automaticamente — independe de qualquer ação do admin.
+
+#### 1.3 Outros tipos de atualização
+- **Atualizações mensais**: alguns produtos (Data Cloud, B2B Commerce) publicam novidades com frequência mensal, sem esperar a release sazonal.
+- **Patches e maintenance releases**: correções menores e pontuais entre releases principais, aplicadas pela Salesforce.
+- **Mudanças de versão de API**: cada release incrementa a versão de API em +1, com novos recursos, campos e comportamentos.
+
+---
+
+### 2. Como funciona
+
+#### 2.1 Rollout faseado
+O Salesforce é **multi-tenant**: milhares de orgs compartilham a mesma base de código. Cada release é distribuído em ondas:
+
+1. **Pre-release org** (~6–8 semanas antes) — org Developer Edition novo, sem dados/metadados, só para explorar features.
+2. **Sandbox Preview** (~4–6 semanas antes) — subconjunto de sandboxes recebe o release antecipadamente. Primeira vez que você testa **com suas customizações reais**.
+3. **Produção** — rollout em múltiplos fins de semana consecutivos, janela específica por instância, publicada no Salesforce Trust.
+
+```mermaid
+flowchart LR
+    A[Pré-release org] --> B[Sandbox preview]
+    B --> C[Testes de regressão]
+    C --> D[Upgrade de produção]
+    D --> E[Patches / Release Updates / Ajustes]
+```
+
+#### 2.2 Mecânica interna do Release Update
+Em **Setup → Atualizações de Versão**, cada item aparece em uma de quatro abas:
+
+- **Precisa de Ação** — ainda não tratado, requer decisão do admin;
+- **Vence em Breve** — próximo da data-limite;
+- **Atrasado** — passou da data-limite (pode ser aplicado a qualquer momento);
+- **Arquivado** — já concluído, com o release em que foi efetivamente aplicado.
+
+Cada item traz descrição da mudança, link para documentação, a data **Complete Steps By** e o botão **"Ativar Execução de Teste"** — liga a mudança temporariamente em sandbox sem compromisso definitivo.
+
+---
+
+### 3. Quando ocorre
+
+#### 3.1 Calendário sazonal
+
+| Release | Época típica | Convenção de nome |
+|---|---|---|
+| **Spring** | Fevereiro | Leva o número do ano corrente |
+| **Summer** | Junho | Leva o número do ano corrente |
+| **Winter** | Outubro | Leva o número do **ano seguinte** (ex.: Winter '26 foi lançado em out/2025) |
+
+#### 3.2 Cronograma 2026 (exemplo real)
+
+| Release | Sandbox Preview | Ondas de produção | Versão de API |
+|---|---|---|---|
+| Spring '26 | 09/jan/2026 | 16/jan, 13/fev, 20/fev/2026 | v66.0 |
+| Summer '26 | 08/mai/2026 | 15/mai, 05/jun, 12/jun, 13/jun/2026 | v67.0 |
+| Winter '27 | a confirmar | a confirmar | v68.0 (previsto) |
+
+> As datas variam **por instância**. Confirme no [Salesforce Trust](https://status.salesforce.com), aba "Maintenances".
+
+---
+
+### 4. O que é atualizado
+
+#### 4.1 Plataforma e experiência
+Lightning Experience (UI, performance, acessibilidade), novidades declarativas (Flow, Agentforce, Data 360) e recursos de produto.
+
+#### 4.2 APIs e versionamento
+Cada release sazonal incrementa a versão de API em **+1**:
+
+```
+Spring '25  → v63.0
+Summer '25  → v64.0
+Winter '26  → v65.0
+Spring '26  → v66.0
+Summer '26  → v67.0
+Winter '27  → v68.0 (previsto)
+```
+
+**Pinning de versão:** toda `ApexClass`, `ApexTrigger`, Visualforce Page e componente Aura/LWC fica fixado na versão de API em que foi salvo pela última vez. Isso garante retrocompatibilidade — código antigo não muda de comportamento automaticamente. O trade-off:
+
+- código preso em versões antigas **não recebe** novos recursos de API;
+- versões muito antigas eventualmente são depreciadas (todas ≤ 30 já foram depreciadas a partir do Summer '25);
+- subir a versão manualmente pode expor comportamento novo (às vezes breaking) que precisa ser testado.
+
+#### 4.3 Mudanças de comportamento no Apex (exemplos reais)
+- **API v65.0+**: métodos `abstract` e `override` exigem modificador de acesso explícito (`public`, `protected` ou `global`).
+- **Release Update**: bloqueio de Apex anônimo disparado por pacotes gerenciados — pacotes novos com namespace criados a partir do Summer '26 já nascem bloqueados por padrão.
+
+#### 4.4 Segurança e autenticação
+- Exigência de **My Domain** para tráfego de API — adiada de Spring '26 para **Winter '27**.
+- Aposentadoria do método `login()` do SOAP API (versões 31.0–64.0), prevista para **Summer '27**.
+- Diretivas de CSP (Content Security Policy) e Trusted URLs.
+
+#### 4.5 Descontinuações em curso
+- **Salesforce to Salesforce**: suporte ativo encerrado no Summer '26; funcionalidade para de operar no Spring '27. Alternativas: Partner Cloud, Data Cloud One, MuleSoft.
+- **Analytics for Conversation Insights**: aposentado no Summer '26, substituído pelo Einstein Conversation Insights nativo.
+
+---
+
+### 5. Sandbox Preview
+
+- **Quem pode participar?** Clientes com sandboxes ativas (Full, Partial Copy, Developer Pro, Developer) que realizarem refresh após a data divulgada.
+- **Como ativar?** No Setup, em **Sandboxes**, opção de atualizar para versão de pré-visualização. Também é possível criar sandbox diretamente na versão preview.
+- **Prazo**: janela disponível até a data de atualização da produção. Após isso, sandbox alinhada automaticamente.
+- **Cuidados**: nem todos os recursos podem estar finalizados na preview; comportamento pode diferir minimamente.
+
+---
+
+### 6. Impactos
+
+| Área afetada | Risco típico | Ação recomendada |
+|---|---|---|
+| **Apex / Triggers** | Erro de compilação ou mudança de comportamento | Rodar 100% da suíte de testes no Sandbox Preview |
+| **LWC / Aura / Visualforce** | Quebra de UI por mudança de LWC Security | Testar telas críticas manualmente |
+| **Pacotes gerenciados** | Comportamento alterado sem controle do assinante | Consultar ISV sobre compatibilidade |
+| **Integrações externas** | Endpoint ou autenticação depreciada | Migrar para My Domain e auth atual |
+| **Processos de negócio** | Usuário impactado por mudança de UI/fluxo | Change management (comunicação + treinamento) |
+| **Compliance** | Update "Atrasado" aplicado sem teste | Tratar como rotina mensal, não última hora |
+
+#### Impactos positivos
+- Novos recursos e melhorias de performance
+- Maior segurança e UX aprimorada
+- Automações mais robustas e novos pontos de integração
+
+#### Riscos típicos para times de entrega
+- Apex com dependência de comportamento legado
+- LWC com chamadas a APIs alteradas
+- Flow com lógica sensível a mudanças de contexto
+- Integrações que usam API antiga
+- Pacotes de terceiros sem suporte imediato à nova release
+
+---
+
+### 7. Testes e preparação
+
+#### Checklist por release
+- [ ] Ler o Release Notes assim que publicado — não esperar o preview do sandbox
+- [ ] Confirmar a data de upgrade da instância no Salesforce Trust
+- [ ] Garantir que ao menos um sandbox esteja marcado para **Preview**
+- [ ] Rodar toda a suíte de testes Apex no sandbox em preview
+- [ ] Revisar manualmente telas críticas (LWC/Aura/VF)
+- [ ] Validar pacotes gerenciados com o fornecedor
+- [ ] Zerar a aba "Atrasado" em Atualizações de Versão antes de cada novo release
+- [ ] Comunicar mudanças de UI/fluxo para usuários finais
+
+#### Calendário de preparação recomendado
+
+| Fase | Ação |
+|---|---|
+| **3 meses antes** | Ler notas de versão preliminares; identificar mudanças críticas |
+| **8 semanas antes** | Criar/atualizar sandbox preview; executar testes de regressão |
+| **4 semanas antes** | Treinar usuários-chave; documentar mudanças que exigem ação |
+| **2 semanas antes** | Finalizar validações, corrigir códigos, habilitar recursos no Setup |
+| **Pós-release** | Monitorar logs, erros e feedback; habilitar funcionalidades restantes |
+
+#### Auditoria de versão de API via Tooling API
+```sql
+-- Identificar classes "presas" em versões antigas
+SELECT Id, Name, ApiVersion, Status
+FROM ApexClass
+WHERE ApiVersion < 60.0
+ORDER BY ApiVersion ASC
+```
+> O campo `ApiVersion` só é exposto pela **Tooling API** — não aparece via API de dados padrão.
+
+#### Trade-off: manter ou atualizar API version
+
+| Manter versão antiga (pinned) | Atualizar para versão atual |
+|---|---|
+| Zero risco de regressão | Acesso a novos recursos de linguagem/API |
+| Pode ficar de fora de otimizações | Exposição a mudanças que exigem reteste |
+| Risco: versões muito antigas são depreciadas | Alinhamento com suporte/consultoria |
+
+**Recomendação:** atualizar deliberadamente, dentro de uma janela de teste — nunca como efeito colateral de salvar sem revisão.
+
+---
+
+### 8. Recursos por release (últimos ciclos)
+
+| Versão | Destaques |
+|---|---|
+| **Spring '25** | Salesforce Connect sem limite de 100k linhas/hora, temas SLDS 2 (Beta), melhorias em Flow e Apex |
+| **Summer '25** | Sync de emails como atividades, novos canais LINE/BYOC no Service Cloud, MFA obrigatório |
+| **Winter '26** | Transferência de dashboards, Analytics Details, melhorias em Flow e Lightning |
+| **Spring '26** | Agentforce expandido, Data 360, Field Service, 1438 recursos em 21 categorias |
+| **Summer '26** | MCP servers nativos, Named Query API, 1434 recursos em 22 categorias |
+
+---
+
+### 9. Glossário
+
+| Termo | Definição |
+|---|---|
+| **Instância** | Cluster de infraestrutura onde um grupo de orgs reside (ex.: NA1, EU5). Determina a janela de manutenção. |
+| **Org** | Ambiente lógico do Salesforce — produção, sandbox ou developer edition. |
+| **Sandbox Preview** | Cópia de sandbox atualizada antecipadamente para testar o próximo release. |
+| **Pre-release org** | Org descartável, sem dados do cliente, para explorar features antes do sandbox preview. |
+| **Complete Steps By** | Data-limite para testar/preparar um Release Update antes do enforcement automático. |
+| **Enforcement** | Momento em que a mudança passa a valer independentemente de ação do admin. |
+| **API Version** | Número que fixa o comportamento de um artefato de metadado na semântica daquela versão. |
+| **Governor Limits** | Limites de recursos impostos pela plataforma para garantir equilíbrio multi-tenant. |
+
+---
+
+### 10. Referências oficiais
+
+| Recurso | Link |
+|---|---|
+| Release Notes | https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm |
+| Atualizações de Versão (PT-BR) | https://help.salesforce.com/s/articleView?id=sf.release_updates.htm&language=pt_BR |
+| Salesforce Trust | https://status.salesforce.com |
+| Sandbox Preview Instructions | https://help.salesforce.com/s/articleView?id=000391927 |
+| Upgrade Release Schedule FAQ | https://help.salesforce.com/s/articleView?id=005224913 |
+| Apex Release Notes | https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_releasenotes.htm |
+| REST API Release Notes | https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/rest_rns.htm |
+| SOAP API Release Notes | https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/soap_rns.htm |
+| Metadata API Release Notes | https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_rns.htm |
+| Tooling API Release Notes | https://developer.salesforce.com/docs/atlas.en-us.api_tooling.meta/api_tooling/tooling_rns.htm |
+| GraphQL API Release Notes | https://developer.salesforce.com/docs/platform/graphql/guide/graphql-release-notes.html |
+| Trailhead Release Readiness | https://trailhead.salesforce.com/credentials/releasereadiness |
+| Salesforce Developers Blog | https://developer.salesforce.com/blogs |
+| Salesforce Admins Blog | https://admin.salesforce.com |
+
+---
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
