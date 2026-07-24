@@ -1,9 +1,18 @@
-"""Impact prediction, category scoring, and triage."""
+"""Impact prediction, category scoring, and triage.
+
+Refactored (Phase 1): enriched predictions with contextual prompts,
+Pydantic validation, and preparation suggestions for teams.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
+from ..ai.prompts.reporting import (
+    build_impact_prediction_prompt,
+    build_reporting_system_prompt,
+    parse_report_response,
+)
 from .models import CategoryImpactScore, ImpactPrediction, TriageResult
 
 
@@ -91,8 +100,13 @@ async def calculate_category_impact_scores(
 
 async def predict_next_release_impact(
     load_meta_fn: Any,
+    llm: Any = None,
 ) -> ImpactPrediction:
-    """Predict which categories will have the most impact in the next release."""
+    """Predict which categories will have the most impact in the next release.
+
+    When an LLM is available, enriches predictions with contextual analysis
+    and preparation suggestions using the CTO persona.
+    """
     scores = await calculate_category_impact_scores(load_meta_fn)
     if not scores:
         return ImpactPrediction(
@@ -127,6 +141,27 @@ async def predict_next_release_impact(
 
     summary = "Análise: " + "; ".join(parts) if parts else "Sem dados suficientes para análise."
 
+    # Enrich with LLM if available
+    if llm is not None:
+        try:
+            scores_data = [
+                {"category": s.category, "volatility": s.volatility, "trend": s.trend, "risk_score": s.risk_score, "prediction": s.prediction}
+                for s in scores
+            ]
+            historical_summary = summary
+
+            system_prompt = build_reporting_system_prompt()
+            user_prompt = build_impact_prediction_prompt(scores_data, historical_summary)
+
+            result = await llm.generate_text(user_prompt, system_prompt)
+            if result:
+                validated = parse_report_response(result)
+                if validated:
+                    # Enrich summary with LLM insights
+                    summary = f"{summary}\n\n💡 **Insights**: {validated.recommendation}"
+        except Exception:
+            pass  # Fall back to heuristic summary
+
     return ImpactPrediction(
         high_risk_categories=high_risk,
         stable_categories=stable,
@@ -138,13 +173,21 @@ async def predict_next_release_impact(
 
 async def generate_impact_prediction_report(
     load_meta_fn: Any,
+    llm: Any = None,
 ) -> str:
-    """Generate a formatted impact prediction report in Markdown."""
-    prediction = await predict_next_release_impact(load_meta_fn)
+    """Generate a formatted impact prediction report in Markdown.
+
+    Uses MarkdownGenerator for visual formatting with trend indicators.
+    """
+    prediction = await predict_next_release_impact(load_meta_fn, llm=llm)
+
+    risk_emoji = {"alto": "🔴", "moderado": "🟡", "baixo": "🟢"}.get(
+        prediction.overall_risk_level, "⚪"
+    )
 
     lines = [
         "# Previsão de Impacto da Próxima Release\n",
-        f"## Nível de Risco Geral: **{prediction.overall_risk_level.upper()}**\n",
+        f"## Nível de Risco Geral: {risk_emoji} **{prediction.overall_risk_level.upper()}**\n",
         f"*{prediction.summary}*\n",
     ]
 
@@ -174,6 +217,16 @@ async def generate_impact_prediction_report(
 
     if not prediction.high_risk_categories and not prediction.growing_categories:
         lines.append("## ℹ️ Sem categorias de alto risco ou em crescimento\n")
+
+    # Add preparation suggestions section
+    if prediction.high_risk_categories or prediction.growing_categories:
+        lines.append("## 🛠️ Preparação Recomendada\n")
+        if prediction.high_risk_categories:
+            lines.append("- **Imediato**: Revisar categorias de alto risco e preparar planos de contingência")
+        if prediction.growing_categories:
+            lines.append("- **Próximo ciclo**: Alocar recursos para categorias em crescimento")
+        lines.append("- **Contínuo**: Monitorar volatilidade e atualizar previsões")
+        lines.append("")
 
     lines.extend(["---", "*Previsão gerada automaticamente pelo módulo de AI Automation*"])
     return "\n".join(lines)

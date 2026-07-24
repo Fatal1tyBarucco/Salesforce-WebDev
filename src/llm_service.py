@@ -301,6 +301,29 @@ class LLMService:
         Returns the first successful response.  Uses prompt-hash cache
         when a CacheManager was provided at construction time.
         """
+        return await self.generate_text_with_tier(user_prompt, system_prompt, tier="standard")
+
+    async def generate_text_with_tier(
+        self,
+        user_prompt: str,
+        system_prompt: str = "You are a helpful assistant.",
+        tier: str = "standard",
+    ) -> Optional[str]:
+        """Generate text with cost-aware provider selection.
+
+        Tiers:
+        - "cheap": Use cheapest available provider (classification, simple tasks)
+        - "standard": Normal fallback chain (default)
+        - "premium": Use best available provider (code generation, complex analysis)
+
+        Args:
+            user_prompt: The user prompt.
+            system_prompt: System prompt.
+            tier: Cost tier for provider selection.
+
+        Returns:
+            Generated text or None.
+        """
         # Cache lookup
         cache_key = self._prompt_hash(system_prompt, user_prompt)
         if self._cache is not None:
@@ -309,10 +332,13 @@ class LLMService:
                 self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
                 return str(cached)
 
+        # Select providers based on tier
+        providers = self._select_providers_by_tier(tier)
+
         # Rate limiting
         await self._rate_limiter.acquire()
 
-        for provider in self._providers:
+        for provider in providers:
             if not self._is_provider_available(provider):
                 self._logger.debug("Provider '%s' unavailable, trying next", provider.name)
                 continue
@@ -320,7 +346,7 @@ class LLMService:
             try:
                 result = await self._call_provider(provider, system_prompt, user_prompt)
                 self._record_success(provider)
-                self._logger.info("Provider '%s' succeeded", provider.name)
+                self._logger.info("Provider '%s' succeeded (tier=%s)", provider.name, tier)
                 if self._cache is not None:
                     self._cache.set(cache_key, result, namespace="llm")
                 return result
@@ -363,8 +389,43 @@ class LLMService:
             except Exception as e:
                 self._logger.error("Legacy client error: %s", e)
 
-        self._logger.error("All LLM providers exhausted")
+        self._logger.error("All LLM providers exhausted (tier=%s)", tier)
         return None
+
+    def _select_providers_by_tier(self, tier: str) -> list[LLMProvider]:
+        """Select providers ordered by cost tier.
+
+        Args:
+            tier: "cheap", "standard", or "premium".
+
+        Returns:
+            Ordered list of providers for the tier.
+        """
+        if not self._providers:
+            return []
+
+        if tier == "cheap":
+            # Prefer Google (cheaper), then OpenCode/MiMoCode, then OpenAI
+            cheap_order = ["google", "opencode", "mimocode", "openai"]
+        elif tier == "premium":
+            # Prefer OpenAI (best quality), then Google, then others
+            cheap_order = ["openai", "google", "opencode", "mimocode"]
+        else:
+            # Standard order as configured
+            return list(self._providers)
+
+        ordered: list[LLMProvider] = []
+        by_name = {p.name: p for p in self._providers}
+        for name in cheap_order:
+            if name in by_name:
+                ordered.append(by_name[name])
+
+        # Add any remaining providers not in the order
+        for p in self._providers:
+            if p not in ordered:
+                ordered.append(p)
+
+        return ordered
 
     async def classify_text(
         self, text: str, categories: list[str], system_prompt: Optional[str] = None

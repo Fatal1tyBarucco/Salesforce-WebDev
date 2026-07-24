@@ -388,8 +388,8 @@ class TestFeatureEnricherCoverage:
         enricher = FeatureEnricher(llm=AsyncMock())
         response = json.dumps(
             {
-                "intro": "Test",
-                "features": [{"name": "Extra", "description": "D", "impact": "alto"}],
+                "introduction": "Test category overview",
+                "features": [{"name": "Extra", "description": "Detailed description of feature", "impact": "alto", "audience": "ambos"}],
             }
         )
         result = enricher._parse_llm_response(response, [{"name": "Original"}])
@@ -519,9 +519,9 @@ class TestFeatureEnricherEdgeCases:
         mock_llm = AsyncMock()
         mock_llm.generate_text.return_value = json.dumps(
             {
-                "introduction": "Intro.",
+                "introduction": "Intro text for category",
                 "features": [
-                    {"name": "F1", "description": "Desc", "impact": "médio", "audience": "admins"}
+                    {"name": "F1", "description": "Description of feature one with details", "impact": "médio", "audience": "admins"}
                 ],
             }
         )
