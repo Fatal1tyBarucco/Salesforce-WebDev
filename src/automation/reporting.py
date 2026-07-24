@@ -1,10 +1,24 @@
-"""Report generation: changelog, diff, regression, AI summary."""
+"""Report generation: changelog, diff, regression, AI summary.
+
+Refactored (Phase 1): uses CTO persona prompts, Pydantic-validated outputs,
+and visual Markdown generators for stakeholder-ready reports.
+"""
 
 from __future__ import annotations
 
 import json
 from typing import Any, Optional
 
+from ..ai.generators.markdown import MarkdownGenerator
+from ..ai.prompts.reporting import (
+    build_ai_summary_prompt,
+    build_changelog_prompt,
+    build_diff_report_prompt,
+    build_regression_report_prompt,
+    build_reporting_system_prompt,
+    parse_report_response,
+)
+from ..ai.prompts.validation import ReportOutput
 from .models import AISummary, QualityMetrics, Regression, ReleaseComparison
 
 
@@ -20,7 +34,10 @@ async def generate_changelog(
     llm: Any,
     load_meta_fn: Any,
 ) -> str:
-    """Generate an intelligent CHANGELOG.md from release metadata."""
+    """Generate an intelligent CHANGELOG.md from release metadata.
+
+    Uses CTO persona with structured prompts and Pydantic validation.
+    """
     releases_dir = _get_releases_dir()
     if not releases_dir.exists():
         return "# Changelog\n\nNo releases found.\n"
@@ -37,13 +54,8 @@ async def generate_changelog(
     if not metas:
         return "# Changelog\n\nNo releases found.\n"
 
-    system_prompt = (
-        "You are an expert Salesforce Release Analyst. Generate a professional and concise "
-        "Markdown CHANGELOG based on the provided release metadata. "
-        "Focus on high-level trends and the volume of features. "
-        "Use Brazilian Portuguese. Format with ## for releases and bullet points for categories."
-    )
-    user_prompt = f"Release Metadata: {json.dumps(metas)}"
+    system_prompt = build_reporting_system_prompt()
+    user_prompt = build_changelog_prompt(metas)
 
     result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
@@ -69,17 +81,17 @@ async def generate_regression_report(
     comparison: ReleaseComparison,
     regressions: list[Regression],
 ) -> str:
-    """Generate an intelligent regression report between two releases."""
-    system_prompt = (
-        "You are an expert Salesforce Release Analyst. Analyze the release comparison "
-        "and detected regressions. Generate a detailed Markdown report in Brazilian Portuguese. "
-        "Explain the impact of the regressions and highlight new or removed categories."
+    """Generate an intelligent regression report between two releases.
+
+    Uses CTO persona with structured prompts.
+    """
+    system_prompt = build_reporting_system_prompt()
+    comparison_dict: dict[str, Any] = vars(comparison)
+    regressions_list: list[dict[str, Any]] = [vars(r) for r in regressions]
+    user_prompt = build_regression_report_prompt(
+        comparison_data=comparison_dict,
+        regressions_data=regressions_list,
     )
-    analysis_data = {
-        "comparison": vars(comparison),
-        "regressions": [vars(r) for r in regressions],
-    }
-    user_prompt = f"Analysis Data: {json.dumps(analysis_data)}"
 
     result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
@@ -125,7 +137,10 @@ async def generate_diff_report(
     current_slug: str,
     previous_slug: str,
 ) -> str:
-    """Generate an intelligent visual diff report between two releases."""
+    """Generate an intelligent visual diff report between two releases.
+
+    Uses CTO persona with structured prompts.
+    """
     current = load_meta_fn(current_slug)
     previous = load_meta_fn(previous_slug)
 
@@ -143,12 +158,8 @@ async def generate_diff_report(
             {"category": name, "previous": prev, "current": curr, "delta": curr - prev}
         )
 
-    system_prompt = (
-        "You are an expert Salesforce Release Analyst. Analyze the provided side-by-side diff "
-        "of feature counts between two releases. Generate a Markdown report in Brazilian Portuguese "
-        "including a summary table and an intelligent analysis of the most significant changes."
-    )
-    user_prompt = f"Diff Data: {json.dumps(diff_data)}"
+    system_prompt = build_reporting_system_prompt()
+    user_prompt = build_diff_report_prompt(diff_data)
 
     result: str | None = await llm.generate_text(user_prompt, system_prompt)
     if result:
@@ -182,7 +193,10 @@ async def generate_ai_summary(
     current_metrics: Optional[QualityMetrics],
     previous_metrics: Optional[QualityMetrics],
 ) -> AISummary:
-    """Generate an intelligent natural language summary of release differences."""
+    """Generate an intelligent natural language summary of release differences.
+
+    Uses CTO persona with structured prompts and Pydantic validation.
+    """
     analysis_data = {
         "comparison": vars(comparison),
         "regressions": [vars(r) for r in regressions],
@@ -190,14 +204,8 @@ async def generate_ai_summary(
         "previous_metrics": vars(previous_metrics) if previous_metrics else None,
     }
 
-    system_prompt = (
-        "You are an expert Salesforce Release Analyst. Analyze the provided release comparison data "
-        "and return a JSON object representing an AISummary with the following fields: "
-        "'headline' (concise one-liner), 'highlights' (list of key positive changes), "
-        "'risk_areas' (list of concerns), and 'overall_trend' (one of: 'crescimento', 'estável', 'declínio'). "
-        "The output must be valid JSON."
-    )
-    user_prompt = f"Comparison Data: {json.dumps(analysis_data)}"
+    system_prompt = build_reporting_system_prompt()
+    user_prompt = build_ai_summary_prompt(analysis_data)
 
     result_text = await llm.generate_text(user_prompt, system_prompt)
     if not result_text:
@@ -205,6 +213,17 @@ async def generate_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )
 
+    # Try Pydantic validation first
+    validated = parse_report_response(result_text)
+    if validated:
+        return AISummary(
+            headline=validated.headline,
+            highlights=validated.highlights,
+            risk_areas=validated.risk_areas,
+            overall_trend=validated.trend,
+        )
+
+    # Fallback to legacy JSON parsing
     try:
         start_idx = result_text.find("{")
         end_idx = result_text.rfind("}") + 1
@@ -277,40 +296,23 @@ async def generate_ai_summary_report(
     current_metrics: Optional[QualityMetrics],
     previous_metrics: Optional[QualityMetrics],
 ) -> str:
-    """Generate a formatted AI summary report in Markdown."""
+    """Generate a formatted AI summary report in Markdown.
+
+    Uses MarkdownGenerator for visual formatting with impact indicators.
+    """
     summary = await generate_ai_summary(
         llm, comparison, regressions, current_metrics, previous_metrics
     )
 
-    lines = [
-        "# Resumo Inteligente da Release\n",
-        f"## {summary.headline}\n",
-        "## 📈 Destaques\n",
-    ]
-
-    for highlight in summary.highlights:
-        lines.append(f"- {highlight}")
-
-    if not summary.highlights:
-        lines.append("- Nenhum destaque significativo")
-
-    lines.append("")
-    lines.append("## ⚠️ Áreas de Risco\n")
-
-    for risk in summary.risk_areas:
-        lines.append(f"- {risk}")
-
-    if not summary.risk_areas:
-        lines.append("- Nenhuma área de risco identificada")
-
-    lines.extend(
-        [
-            "",
-            f"## 📊 Tendência Geral: **{summary.overall_trend.upper()}**",
-            "",
-            "---",
-            "*Relatório gerado automaticamente pelo módulo de AI Automation*",
-        ]
+    # Build a ReportOutput for the visual generator
+    valid_trends = ("crescimento", "estável", "declínio")
+    trend_val = summary.overall_trend if summary.overall_trend in valid_trends else "estável"
+    report = ReportOutput(
+        headline=summary.headline,
+        highlights=summary.highlights if summary.highlights else ["Nenhum destaque significativo"],
+        risk_areas=summary.risk_areas if summary.risk_areas else ["Nenhuma área de risco identificada"],
+        recommendation="Revisar as mudanças e planejar adoção conforme prioridade.",
+        trend=trend_val,  # type: ignore[arg-type]
     )
 
-    return "\n".join(lines)
+    return MarkdownGenerator.report_section(report)

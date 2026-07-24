@@ -275,8 +275,10 @@ async def test_generate_ai_summary_report(service) -> None:
         ),
     ):
         result = await generate_ai_summary_report("curr", "prev")
-        assert "Resumo Inteligente" in result
         assert "Test Headline" in result
+        assert "Destaques" in result
+        assert "Áreas de Risco" in result
+        assert "Tendência" in result
 
 
 @pytest.mark.asyncio

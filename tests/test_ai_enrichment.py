@@ -140,7 +140,13 @@ class TestFeatureEnricher:
     @pytest.mark.asyncio
     async def test_enrich_category_llm_returns_markdown_fenced_json(self) -> None:
         mock_llm = AsyncMock()
-        mock_llm.generate_text.return_value = '```json\n{"introduction": "Test", "features": [{"name": "F1", "description": "D1", "impact": "alto", "audience": "ambos"}]}\n```'
+        mock_llm.generate_text.return_value = (
+            '```json\n'
+            '{"introduction": "Test category overview", "features": '
+            '[{"name": "F1", "description": "Detailed description of feature one", '
+            '"impact": "alto", "audience": "ambos"}]}'
+            '\n```'
+        )
 
         enricher = FeatureEnricher(llm=mock_llm)
         result = await enricher.enrich_category("Test", "test", [{"name": "F1"}])

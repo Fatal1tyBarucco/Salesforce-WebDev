@@ -3,17 +3,26 @@
 Generates professional descriptions and impact assessments for individual
 Salesforce release features using LLM analysis.  Operates in batch mode
 (one LLM call per category, not per feature) to minimize cost and latency.
+
+Refactored (Phase 1): uses structured prompts with CTA persona,
+Pydantic-validated outputs, and business context.
 """
 
 from __future__ import annotations
 
 import json
 import logging
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .ai.prompts.enrichment import (
+    build_enrichment_system_prompt,
+    build_enrichment_user_prompt,
+    build_release_context,
+    parse_enrichment_response,
+)
+from .ai.prompts.validation import EnrichmentOutput
 from .config import RELEASES_DIR
 from .llm_service import LLMService
 
@@ -99,37 +108,13 @@ class FeatureEnricher:
 
         features_text = "\n".join(feature_names)
 
-        system_prompt = (
-            "You are a senior Salesforce technical writer and product analyst. "
-            "Your task is to enrich Salesforce release notes with professional descriptions "
-            "and impact assessments.\n\n"
-            "You MUST respond with a valid JSON object (no markdown, no code fences) with this exact structure:\n"
-            "{\n"
-            '  "introduction": "2-3 sentence overview of the category theme and most important changes",\n'
-            '  "features": [\n'
-            "    {\n"
-            '      "name": "exact feature name as provided",\n'
-            '      "description": "professional 1-2 sentence description of what this feature does and why it matters",\n'
-            '      "impact": "alto|médio|baixo",\n'
-            '      "audience": "usuários|admins|ambos"\n'
-            "    }\n"
-            "  ]\n"
-            "}\n\n"
-            "Guidelines:\n"
-            "- 'alto' = features that change workflows, enable new capabilities, or have compliance/security impact\n"
-            "- 'médio' = useful improvements that enhance existing functionality\n"
-            "- 'baixo' = minor tweaks, UI changes, or niche features\n"
-            "- Descriptions should explain the business value, not just repeat the feature name\n"
-            "- Write in Brazilian Portuguese (pt-BR)\n"
-            "- Be concise but informative\n"
-            "- Every feature in the input MUST appear in the output, in the same order"
-        )
+        system_prompt = build_enrichment_system_prompt()
 
-        user_prompt = (
-            f"Release: {release_name}\n"
-            f"Category: {category_name}\n"
-            f"{f'Context: {release_context}' if release_context else ''}\n\n"
-            f"Features to enrich:\n{features_text}"
+        user_prompt = build_enrichment_user_prompt(
+            release_name=release_name,
+            category_name=category_name,
+            features_text=features_text,
+            release_context=release_context,
         )
 
         result = await self._llm.generate_text(user_prompt, system_prompt)
@@ -178,9 +163,10 @@ class FeatureEnricher:
         # Build release context from meta
         total = meta.get("total_features", 0)
         cats = meta.get("categories", [])
-        release_context = (
-            f"Release {release_name} com {total} recursos em {len(cats)} categorias. "
-            f"Categorias: {', '.join(c['name'] for c in cats[:10])}"
+        release_context = build_release_context(
+            release_name=release_name,
+            total_features=total,
+            categories=cats,
         )
 
         enrichments: dict[str, CategoryEnrichment] = {}
@@ -221,62 +207,58 @@ class FeatureEnricher:
     def _parse_llm_response(
         self, response: str, original_features: list[dict[str, str]]
     ) -> CategoryEnrichment | None:
-        """Parse the LLM JSON response into a CategoryEnrichment."""
-        try:
-            # Strip markdown code fences if present
-            clean = response.strip()
-            if clean.startswith("```"):
-                clean = re.sub(r"^```(?:json)?\s*", "", clean)
-                clean = re.sub(r"\s*```$", "", clean)
+        """Parse the LLM JSON response into a CategoryEnrichment.
 
-            data = json.loads(clean)
+        Uses Pydantic validation via parse_enrichment_response for type safety.
+        """
+        validated = parse_enrichment_response(response)
+        if validated is None:
+            logger.warning("Failed to parse/validate LLM enrichment response")
+            return None
 
-            introduction = data.get("introduction", "")
-            features_data = data.get("features", [])
+        return self._validated_to_enrichment(validated, original_features)
 
-            if not features_data:
-                return None
+    def _validated_to_enrichment(
+        self,
+        validated: EnrichmentOutput,
+        original_features: list[dict[str, str]],
+    ) -> CategoryEnrichment:
+        """Convert a validated EnrichmentOutput to CategoryEnrichment."""
+        enriched_features: list[EnrichedFeature] = []
+        high = medium = low = 0
 
-            enriched_features: list[EnrichedFeature] = []
-            high = medium = low = 0
+        for i, feat in enumerate(validated.features):
+            if feat.impact == "alto":
+                high += 1
+            elif feat.impact == "baixo":
+                low += 1
+            else:
+                medium += 1
 
-            for i, feat in enumerate(features_data):
-                impact = feat.get("impact", "médio").lower()
-                if impact == "alto":
-                    high += 1
-                elif impact == "baixo":
-                    low += 1
-                else:
-                    medium += 1
+            avail = ""
+            if i < len(original_features):
+                avail = original_features[i].get("availability", "")
 
-                avail = ""
-                if i < len(original_features):
-                    avail = original_features[i].get("availability", "")
-
-                enriched_features.append(
-                    EnrichedFeature(
-                        name=feat.get("name", "Unknown"),
-                        description=feat.get("description", ""),
-                        impact=impact,
-                        availability=avail,
-                        audience=feat.get("audience", ""),
-                    )
+            enriched_features.append(
+                EnrichedFeature(
+                    name=feat.name,
+                    description=feat.description,
+                    impact=feat.impact,
+                    availability=avail,
+                    audience=feat.audience,
                 )
-
-            return CategoryEnrichment(
-                category_name="",  # Will be set by caller
-                category_slug="",
-                introduction=introduction,
-                features=enriched_features,
-                total_features=len(enriched_features),
-                high_impact_count=high,
-                medium_impact_count=medium,
-                low_impact_count=low,
             )
 
-        except (json.JSONDecodeError, ValueError, KeyError) as e:
-            logger.warning("Failed to parse LLM enrichment response: %s", e)
-            return None
+        return CategoryEnrichment(
+            category_name="",
+            category_slug="",
+            introduction=validated.introduction,
+            features=enriched_features,
+            total_features=len(enriched_features),
+            high_impact_count=high,
+            medium_impact_count=medium,
+            low_impact_count=low,
+        )
 
     def _generate_fallback_enrichment(
         self,
