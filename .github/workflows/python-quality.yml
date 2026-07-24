@@ -26,15 +26,15 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v9
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --extra dev
+        run: uv sync --frozen --extra dev --group dev
 
       - name: Ruff
         run: uv run ruff check .
@@ -58,18 +58,15 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v9
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --extra dev
+        run: uv sync --frozen --extra dev --group dev
 
       - name: Run tests with coverage
-        run: uv run pytest tests/ --cov=src --cov-report=term-missing -q
-
-      - name: Check coverage threshold
-        run: uv run pytest tests/ --cov=src --cov-fail-under=95 -q
+        run: uv run pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=95 -q
