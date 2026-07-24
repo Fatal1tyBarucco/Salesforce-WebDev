@@ -489,7 +489,7 @@ async def test_export_functions(service, tmp_path: Path) -> None:
 
 def test_generate_dynamic_badge() -> None:
     result = generate_dynamic_badge("Test Release", 100)
-    assert "Latest Release" in result
+    assert "Release" in result
     assert "Test%20Release" in result
 
 

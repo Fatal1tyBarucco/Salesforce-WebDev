@@ -4,6 +4,17 @@ Provides structured prompt templates, Pydantic-validated outputs,
 and visual Markdown generators for Salesforce release analysis.
 """
 
+from .generators.badges import (
+    Badge,
+    api_version_badge,
+    category_badge,
+    category_header_badges,
+    feature_count_badge,
+    impact_badge,
+    release_badge,
+    release_meta_badges,
+    status_badge,
+)
 from .generators.markdown import MarkdownGenerator
 from .prompts.classification import (
     build_classification_system_prompt,
@@ -34,12 +45,14 @@ from .prompts.validation import (
 )
 
 __all__ = [
+    "Badge",
     "ClassificationOutput",
     "EnrichmentFeatureOutput",
     "EnrichmentOutput",
     "ImpactPredictionOutput",
     "MarkdownGenerator",
     "ReportOutput",
+    "api_version_badge",
     "build_ai_summary_prompt",
     "build_changelog_prompt",
     "build_classification_system_prompt",
@@ -51,7 +64,14 @@ __all__ = [
     "build_regression_report_prompt",
     "build_release_context",
     "build_reporting_system_prompt",
+    "category_badge",
+    "category_header_badges",
+    "feature_count_badge",
+    "impact_badge",
     "parse_classification_response",
     "parse_enrichment_response",
     "parse_report_response",
+    "release_badge",
+    "release_meta_badges",
+    "status_badge",
 ]
