@@ -188,7 +188,7 @@ class LLMService:
                     name="openrouter",
                     api_key=openrouter_key,
                     base_url="https://openrouter.ai/api/v1",
-                    model="google/gemini-2.5-flash-preview:free",
+                    model="google/gemma-4-27b-it:free",
                     provider_type="openai",
                 )
             )
