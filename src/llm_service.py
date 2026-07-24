@@ -175,7 +175,7 @@ class LLMService:
                 LLMProvider(
                     name="google",
                     api_key=google_key,
-                    model="gemini-2.5-flash",
+                    model="gemini-3.6-flash",
                     provider_type="google",
                 )
             )
