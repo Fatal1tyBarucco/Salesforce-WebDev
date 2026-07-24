@@ -454,14 +454,18 @@ class PipelineConfig:
         if self.event_bus is None:
             self.event_bus = get_event_bus()
         if self.llm is None:
-            self.llm = LLMService(cache=self.cache)
+            try:
+                self.llm = LLMService(cache=self.cache)
+            except ValueError:
+                # No API keys configured — llm stays None (dry-run, CI, etc.)
+                self.llm = None
         if self.scraper is None:
             self.scraper = SalesforceReleaseScraper()
         if self.impact_parser is None:
             self.impact_parser = FeatureImpactParser()
         if self.generator is None:
             self.generator = MarkdownGenerator(base_dir=RELEASES_DIR)
-        if self.translator is None:
+        if self.translator is None and self.llm is not None:
             self.translator = TranslatorService(llm=self.llm)
 
 

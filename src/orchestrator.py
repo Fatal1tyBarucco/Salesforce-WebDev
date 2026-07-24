@@ -72,8 +72,10 @@ class PipelineOrchestrator:
         assert scraper is not None
         assert impact_parser is not None
         assert generator is not None
-        assert translator is not None
-        assert llm is not None
+
+        if translator is None or llm is None:
+            if not self._config.dry_run:
+                logger.warning("LLM or translator not available — AI features disabled")
 
         if self._config.dry_run:
             logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
@@ -88,14 +90,26 @@ class PipelineOrchestrator:
             return result
 
         async with scraper:
-            async with llm:
+            if llm is not None:
+                async with llm:
+                    for release in releases:
+                        await self._process_release(
+                            release, scraper, impact_parser, generator, translator
+                        )
+                        result.releases_processed.append(release.slug)
+
+                    await self._run_ai_reports(releases, llm, result)
+            else:
                 for release in releases:
                     await self._process_release(
                         release, scraper, impact_parser, generator, translator
                     )
                     result.releases_processed.append(release.slug)
 
-                await self._run_ai_reports(releases, llm, result)
+                if not self._config.dry_run:
+                    await self._run_ai_reports(releases, llm, result)
+                else:
+                    result.status = "completed"
 
         set_pipeline_status(result.status)
         await self._bus.emit(
@@ -169,6 +183,11 @@ class PipelineOrchestrator:
         from .release_docs import update_readme_all
 
         await update_readme_all()
+
+        if llm is None:
+            logger.info("LLM not available — skipping AI reports")
+            result.status = "completed"
+            return
 
         try:
             await generate_ai_reports_async(releases, llm=llm)
