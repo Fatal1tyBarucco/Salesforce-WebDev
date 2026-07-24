@@ -26,15 +26,9 @@ class EnrichmentFeatureOutput(BaseModel):
     audience: Literal["usuários", "admins", "ambos"] = Field(
         ..., description="Target audience: usuários/admins/ambos"
     )
-    use_cases: list[str] = Field(
-        default_factory=list, description="2-3 practical use cases"
-    )
-    risks: list[str] = Field(
-        default_factory=list, description="Potential risks or considerations"
-    )
-    code_example: str = Field(
-        default="", description="Optional code/configuration example"
-    )
+    use_cases: list[str] = Field(default_factory=list, description="2-3 practical use cases")
+    risks: list[str] = Field(default_factory=list, description="Potential risks or considerations")
+    code_example: str = Field(default="", description="Optional code/configuration example")
 
 
 class EnrichmentOutput(BaseModel):
@@ -65,12 +59,8 @@ class ClassificationOutput(BaseModel):
         "ui_ux",
         "other",
     ] = Field(..., description="Feature classification type")
-    impact: Literal["alto", "médio", "baixo"] = Field(
-        ..., description="Impact level"
-    )
-    audience: Literal["usuários", "admins", "ambos"] = Field(
-        ..., description="Target audience"
-    )
+    impact: Literal["alto", "médio", "baixo"] = Field(..., description="Impact level")
+    audience: Literal["usuários", "admins", "ambos"] = Field(..., description="Target audience")
     priority: Literal["crítica", "importante", "opcional"] = Field(
         ..., description="Adoption priority"
     )
@@ -91,12 +81,8 @@ class ReportOutput(BaseModel):
         max_length=200,
         description="Catchy headline for the report",
     )
-    highlights: list[str] = Field(
-        ..., min_length=1, max_length=5, description="3 key highlights"
-    )
-    risk_areas: list[str] = Field(
-        ..., min_length=1, max_length=3, description="2 risk areas"
-    )
+    highlights: list[str] = Field(..., min_length=1, max_length=5, description="3 key highlights")
+    risk_areas: list[str] = Field(..., min_length=1, max_length=3, description="2 risk areas")
     recommendation: str = Field(
         ...,
         min_length=10,
@@ -111,15 +97,9 @@ class ReportOutput(BaseModel):
 class ImpactPredictionOutput(BaseModel):
     """Validated output for impact predictions."""
 
-    categories: list[str] = Field(
-        ..., description="Categories with highest predicted impact"
-    )
-    predictions: list[str] = Field(
-        ..., description="Specific predictions for each category"
-    )
-    risk_level: Literal["alto", "moderado", "baixo"] = Field(
-        ..., description="Overall risk level"
-    )
+    categories: list[str] = Field(..., description="Categories with highest predicted impact")
+    predictions: list[str] = Field(..., description="Specific predictions for each category")
+    risk_level: Literal["alto", "moderado", "baixo"] = Field(..., description="Overall risk level")
     preparation_suggestions: list[str] = Field(
         default_factory=list,
         description="Suggested preparation steps for teams",

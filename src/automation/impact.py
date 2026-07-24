@@ -145,7 +145,13 @@ async def predict_next_release_impact(
     if llm is not None:
         try:
             scores_data = [
-                {"category": s.category, "volatility": s.volatility, "trend": s.trend, "risk_score": s.risk_score, "prediction": s.prediction}
+                {
+                    "category": s.category,
+                    "volatility": s.volatility,
+                    "trend": s.trend,
+                    "risk_score": s.risk_score,
+                    "prediction": s.prediction,
+                }
                 for s in scores
             ]
             historical_summary = summary
@@ -222,7 +228,9 @@ async def generate_impact_prediction_report(
     if prediction.high_risk_categories or prediction.growing_categories:
         lines.append("## 🛠️ Preparação Recomendada\n")
         if prediction.high_risk_categories:
-            lines.append("- **Imediato**: Revisar categorias de alto risco e preparar planos de contingência")
+            lines.append(
+                "- **Imediato**: Revisar categorias de alto risco e preparar planos de contingência"
+            )
         if prediction.growing_categories:
             lines.append("- **Próximo ciclo**: Alocar recursos para categorias em crescimento")
         lines.append("- **Contínuo**: Monitorar volatilidade e atualizar previsões")

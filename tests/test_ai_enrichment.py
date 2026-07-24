@@ -141,11 +141,11 @@ class TestFeatureEnricher:
     async def test_enrich_category_llm_returns_markdown_fenced_json(self) -> None:
         mock_llm = AsyncMock()
         mock_llm.generate_text.return_value = (
-            '```json\n'
+            "```json\n"
             '{"introduction": "Test category overview", "features": '
             '[{"name": "F1", "description": "Detailed description of feature one", '
             '"impact": "alto", "audience": "ambos"}]}'
-            '\n```'
+            "\n```"
         )
 
         enricher = FeatureEnricher(llm=mock_llm)

@@ -99,17 +99,11 @@ class SalesforceAnalyzer:
             category = feature.get("category", "").lower()
 
             # Check if feature affects custom objects
-            impacted_objects = [
-                obj for obj in affected if obj in metadata.custom_objects
-            ]
+            impacted_objects = [obj for obj in affected if obj in metadata.custom_objects]
 
             # Check if feature affects triggers or flows
-            impacted_triggers = [
-                t for t in metadata.triggers if any(obj in t for obj in affected)
-            ]
-            impacted_flows = [
-                f for f in metadata.flows if any(obj in f for obj in affected)
-            ]
+            impacted_triggers = [t for t in metadata.triggers if any(obj in t for obj in affected)]
+            impacted_flows = [f for f in metadata.flows if any(obj in f for obj in affected)]
 
             affected_components = impacted_objects + impacted_triggers + impacted_flows
 
@@ -227,9 +221,7 @@ class SalesforceAnalyzer:
                 "SELECT QualifiedApiName FROM EntityDefinition "
                 "WHERE IsCustomSetting = false AND IsStandardObjectDefinition = false"
             )
-            custom_objects = [
-                r["QualifiedApiName"] for r in obj_result.get("records", [])
-            ]
+            custom_objects = [r["QualifiedApiName"] for r in obj_result.get("records", [])]
 
             # Apex classes
             class_result = self._sf.query("SELECT Name FROM ApexClass WHERE Status = 'Active'")
@@ -240,8 +232,7 @@ class SalesforceAnalyzer:
                 "SELECT Name, TableEnumOrId FROM ApexTrigger WHERE Status = 'Active'"
             )
             triggers = [
-                f"{r['Name']} ({r['TableEnumOrId']})"
-                for r in trigger_result.get("records", [])
+                f"{r['Name']} ({r['TableEnumOrId']})" for r in trigger_result.get("records", [])
             ]
 
             # Flows
@@ -251,7 +242,9 @@ class SalesforceAnalyzer:
             flows = [r["MasterLabel"] for r in flow_result.get("records", [])]
 
             # Permission sets
-            ps_result = self._sf.query("SELECT Name FROM PermissionSet WHERE IsOwnedByProfile = false")
+            ps_result = self._sf.query(
+                "SELECT Name FROM PermissionSet WHERE IsOwnedByProfile = false"
+            )
             permission_sets = [r["Name"] for r in ps_result.get("records", [])]
 
             return OrgMetadata(

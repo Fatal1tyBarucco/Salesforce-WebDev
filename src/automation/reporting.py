@@ -310,7 +310,9 @@ async def generate_ai_summary_report(
     report = ReportOutput(
         headline=summary.headline,
         highlights=summary.highlights if summary.highlights else ["Nenhum destaque significativo"],
-        risk_areas=summary.risk_areas if summary.risk_areas else ["Nenhuma área de risco identificada"],
+        risk_areas=(
+            summary.risk_areas if summary.risk_areas else ["Nenhuma área de risco identificada"]
+        ),
         recommendation="Revisar as mudanças e planejar adoção conforme prioridade.",
         trend=trend_val,  # type: ignore[arg-type]
     )

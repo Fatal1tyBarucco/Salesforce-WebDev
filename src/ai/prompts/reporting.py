@@ -58,7 +58,9 @@ def build_reporting_system_prompt() -> str:
     return _SYSTEM_TEMPLATE.format(persona=_PERSONA)
 
 
-def build_changelog_prompt(release_metas: list[dict[str, str | int | list[dict[str, str | int]]]]) -> str:
+def build_changelog_prompt(
+    release_metas: list[dict[str, str | int | list[dict[str, str | int]]]],
+) -> str:
     """Build prompt for CHANGELOG generation.
 
     Args:

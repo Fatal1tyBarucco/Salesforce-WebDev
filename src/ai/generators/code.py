@@ -119,7 +119,7 @@ def parse_code_response(response: str, feature_name: str, language: str) -> Code
 # ---------------------------------------------------------------------------
 
 _APEX_TEMPLATES: dict[str, str] = {
-    "trigger": '''// Trigger for {feature_name}
+    "trigger": """// Trigger for {feature_name}
 // {description}
 
 trigger {object}Trigger on {object} (before insert, before update, after insert, after update) {{
@@ -137,8 +137,8 @@ trigger {object}Trigger on {object} (before insert, before update, after insert,
             // Process after insert logic
         }}
     }}
-}}''',
-    "batch": '''// Batch Apex for {feature_name}
+}}""",
+    "batch": """// Batch Apex for {feature_name}
 // {description}
 
 public class {className} implements Database.Batchable<sObject>, Database.Stateful {{
@@ -160,8 +160,8 @@ public class {className} implements Database.Batchable<sObject>, Database.Statef
     public void finish(Database.BatchableContext bc) {{
         System.debug('Records processed: ' + recordsProcessed);
     }}
-}}''',
-    "invocable": '''// Invocable Method for {feature_name}
+}}""",
+    "invocable": """// Invocable Method for {feature_name}
 // {description}
 
 public class {className} {{
@@ -187,11 +187,11 @@ public class {className} {{
         @InvocableVariable(label='Output')
         public String output;
     }}
-}}''',
+}}""",
 }
 
 _LWC_TEMPLATES: dict[str, str] = {
-    "component": '''// {feature_name} - Lightning Web Component
+    "component": """// {feature_name} - Lightning Web Component
 // {description}
 
 import {{ LightningElement, api, wire, track }} from 'lwc';
@@ -216,8 +216,8 @@ export default class {className} extends LightningElement {{
     handleClick() {{
         // Handle user interaction
     }}
-}}''',
-    "apex_controller": '''// Apex Controller for {feature_name} LWC
+}}""",
+    "apex_controller": """// Apex Controller for {feature_name} LWC
 // {description}
 
 public with sharing class {className}Controller {{
@@ -233,18 +233,18 @@ public with sharing class {className}Controller {{
             throw new AuraHandledException(e.getMessage());
         }}
     }}
-}}''',
+}}""",
 }
 
 _SOQL_TEMPLATES: dict[str, str] = {
-    "query": '''-- SOQL Query for {feature_name}
+    "query": """-- SOQL Query for {feature_name}
 -- {description}
 
 SELECT Id, Name, CreatedDate, LastModifiedDate
 FROM {object}
 WHERE CreatedDate = LAST_N_DAYS:30
 ORDER BY CreatedDate DESC
-LIMIT 200''',
+LIMIT 200""",
 }
 
 

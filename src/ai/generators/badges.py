@@ -15,9 +15,9 @@ from typing import Literal
 # ---------------------------------------------------------------------------
 
 _IMPACT_COLORS: dict[str, tuple[str, str]] = {
-    "alto": ("#E53935", "#FFFFFF"),      # Red bg, white text
-    "médio": ("#FB8C00", "#FFFFFF"),     # Orange bg, white text
-    "baixo": ("#43A047", "#FFFFFF"),     # Green bg, white text
+    "alto": ("#E53935", "#FFFFFF"),  # Red bg, white text
+    "médio": ("#FB8C00", "#FFFFFF"),  # Orange bg, white text
+    "baixo": ("#43A047", "#FFFFFF"),  # Green bg, white text
     "high": ("#E53935", "#FFFFFF"),
     "medium": ("#FB8C00", "#FFFFFF"),
     "low": ("#43A047", "#FFFFFF"),
@@ -33,9 +33,9 @@ _STATUS_COLORS: dict[str, tuple[str, str]] = {
 }
 
 _RELEASE_COLORS: dict[str, tuple[str, str]] = {
-    "spring": ("#4CAF50", "#FFFFFF"),    # Green
-    "summer": ("#FF9800", "#FFFFFF"),     # Orange
-    "winter": ("#2196F3", "#FFFFFF"),     # Blue
+    "spring": ("#4CAF50", "#FFFFFF"),  # Green
+    "summer": ("#FF9800", "#FFFFFF"),  # Orange
+    "winter": ("#2196F3", "#FFFFFF"),  # Blue
 }
 
 
@@ -87,9 +87,9 @@ class Badge:
         safe_message = html.escape(self.message)
         return (
             f'<span style="background-color:{self.color};color:{self.label_color};'
-            f'padding:2px 8px;border-radius:4px;font-size:0.85em;'
+            f"padding:2px 8px;border-radius:4px;font-size:0.85em;"
             f'font-weight:bold;margin-right:4px;">'
-            f'{safe_label}: {safe_message}</span>'
+            f"{safe_label}: {safe_message}</span>"
         )
 
 
@@ -160,7 +160,9 @@ def api_version_badge(version: str) -> Badge:
     Returns:
         Badge instance.
     """
-    return Badge(label="API", message=version, color="#1E88E5", label_color="#FFFFFF", logo="salesforce")
+    return Badge(
+        label="API", message=version, color="#1E88E5", label_color="#FFFFFF", logo="salesforce"
+    )
 
 
 def status_badge(status: str) -> Badge:
@@ -223,7 +225,9 @@ def release_meta_badges(
     badges = [
         release_badge(release_name),
         feature_count_badge(total_features),
-        Badge(label="Categorias", message=str(category_count), color="#7B1FA2", label_color="#FFFFFF"),
+        Badge(
+            label="Categorias", message=str(category_count), color="#7B1FA2", label_color="#FFFFFF"
+        ),
     ]
     if api_version:
         badges.append(api_version_badge(api_version))
@@ -231,7 +235,9 @@ def release_meta_badges(
     return " ".join(b.to_shields_url() for b in badges)
 
 
-def category_header_badges(name: str, count: int, high: int = 0, medium: int = 0, low: int = 0) -> str:
+def category_header_badges(
+    name: str, count: int, high: int = 0, medium: int = 0, low: int = 0
+) -> str:
     """Generate badges for a category header.
 
     Args:
@@ -247,10 +253,16 @@ def category_header_badges(name: str, count: int, high: int = 0, medium: int = 0
     badges = [category_badge(name, count)]
 
     if high > 0:
-        badges.append(Badge(label="Alto", message=str(high), color="#E53935", label_color="#FFFFFF"))
+        badges.append(
+            Badge(label="Alto", message=str(high), color="#E53935", label_color="#FFFFFF")
+        )
     if medium > 0:
-        badges.append(Badge(label="Médio", message=str(medium), color="#FB8C00", label_color="#FFFFFF"))
+        badges.append(
+            Badge(label="Médio", message=str(medium), color="#FB8C00", label_color="#FFFFFF")
+        )
     if low > 0:
-        badges.append(Badge(label="Baixo", message=str(low), color="#43A047", label_color="#FFFFFF"))
+        badges.append(
+            Badge(label="Baixo", message=str(low), color="#43A047", label_color="#FFFFFF")
+        )
 
     return " ".join(b.to_shields_url() for b in badges)

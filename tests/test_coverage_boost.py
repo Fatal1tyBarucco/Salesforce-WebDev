@@ -389,7 +389,14 @@ class TestFeatureEnricherCoverage:
         response = json.dumps(
             {
                 "introduction": "Test category overview",
-                "features": [{"name": "Extra", "description": "Detailed description of feature", "impact": "alto", "audience": "ambos"}],
+                "features": [
+                    {
+                        "name": "Extra",
+                        "description": "Detailed description of feature",
+                        "impact": "alto",
+                        "audience": "ambos",
+                    }
+                ],
             }
         )
         result = enricher._parse_llm_response(response, [{"name": "Original"}])
@@ -521,7 +528,12 @@ class TestFeatureEnricherEdgeCases:
             {
                 "introduction": "Intro text for category",
                 "features": [
-                    {"name": "F1", "description": "Description of feature one with details", "impact": "médio", "audience": "admins"}
+                    {
+                        "name": "F1",
+                        "description": "Description of feature one with details",
+                        "impact": "médio",
+                        "audience": "admins",
+                    }
                 ],
             }
         )
