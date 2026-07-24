@@ -96,8 +96,8 @@ class LLMService:
         if _auto_loaded and not self._providers and client is None:
             raise ValueError(
                 "No LLM providers configured. Set at least one of: "
-                "OPENAI_API_KEY, GOOGLE_API_KEY, DEEPSEEK_API_KEY, "
-                "OPENROUTER_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
+                "GOOGLE_API_KEY, OPENROUTER_API_KEY, DEEPSEEK_API_KEY, "
+                "OPENAI_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
                 "or pass a client/providers directly."
             )
 
@@ -159,29 +159,16 @@ class LLMService:
         """Load provider configurations from environment variables.
 
         Priority order:
-        1. OPENAI_API_KEY (primary OpenAI)
-        2. GOOGLE_API_KEY (Google Gemini)
-        3. DEEPSEEK_API_KEY (DeepSeek)
-        4. OPENROUTER_API_KEY (OpenRouter)
-        5. OPENCODE_API_KEY (OpenCode - OpenAI compatible)
-        6. MIMOCODE_API_KEY (MiMoCode - OpenAI compatible)
+        1. GOOGLE_API_KEY (Google Gemini — primary, cost-effective)
+        2. OPENROUTER_API_KEY (OpenRouter free models)
+        3. DEEPSEEK_API_KEY (DeepSeek — cost-effective)
+        4. OPENAI_API_KEY (OpenAI)
+        5. OPENCODE_API_KEY (OpenCode)
+        6. MIMOCODE_API_KEY (MiMoCode)
         """
         providers: list[LLMProvider] = []
 
-        # 1. OpenAI (primary)
-        openai_key = os.environ.get("OPENAI_API_KEY", "")
-        if openai_key:
-            providers.append(
-                LLMProvider(
-                    name="openai",
-                    api_key=openai_key,
-                    base_url="https://api.openai.com/v1",
-                    model="gpt-4o",
-                    provider_type="openai",
-                )
-            )
-
-        # 2. Google Gemini (secondary)
+        # 1. Google Gemini (primary — fast, cost-effective)
         google_key = os.environ.get("GOOGLE_API_KEY", "")
         if google_key:
             providers.append(
@@ -193,7 +180,20 @@ class LLMService:
                 )
             )
 
-        # 3. DeepSeek (tertiary - OpenAI compatible, cost-effective)
+        # 2. OpenRouter (secondary — free models)
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
+        if openrouter_key:
+            providers.append(
+                LLMProvider(
+                    name="openrouter",
+                    api_key=openrouter_key,
+                    base_url="https://openrouter.ai/api/v1",
+                    model="google/gemini-2.5-flash-preview:free",
+                    provider_type="openai",
+                )
+            )
+
+        # 3. DeepSeek (tertiary — cost-effective)
         deepseek_key = os.environ.get("DEEPSEEK_API_KEY", "")
         if deepseek_key:
             providers.append(
@@ -206,15 +206,15 @@ class LLMService:
                 )
             )
 
-        # 4. OpenRouter (quaternary - multi-model gateway)
-        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
-        if openrouter_key:
+        # 4. OpenAI
+        openai_key = os.environ.get("OPENAI_API_KEY", "")
+        if openai_key:
             providers.append(
                 LLMProvider(
-                    name="openrouter",
-                    api_key=openrouter_key,
-                    base_url="https://openrouter.ai/api/v1",
-                    model="anthropic/claude-sonnet-4-20250514",
+                    name="openai",
+                    api_key=openai_key,
+                    base_url="https://api.openai.com/v1",
+                    model="gpt-4o",
                     provider_type="openai",
                 )
             )
@@ -434,11 +434,11 @@ class LLMService:
             return []
 
         if tier == "cheap":
-            # Prefer DeepSeek/Google (cheaper), then OpenRouter, then OpenAI
-            cheap_order = ["deepseek", "google", "openrouter", "opencode", "mimocode", "openai"]
+            # Google first, then OpenRouter free, then DeepSeek
+            cheap_order = ["google", "openrouter", "deepseek", "opencode", "mimocode", "openai"]
         elif tier == "premium":
-            # Prefer OpenAI (best quality), then OpenRouter, then Google
-            cheap_order = ["openai", "openrouter", "google", "deepseek", "opencode", "mimocode"]
+            # Google first, then OpenRouter, then OpenAI
+            cheap_order = ["google", "openrouter", "openai", "deepseek", "opencode", "mimocode"]
         else:
             # Standard order as configured
             return list(self._providers)
