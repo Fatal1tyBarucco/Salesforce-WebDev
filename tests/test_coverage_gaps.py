@@ -10,12 +10,10 @@ Targets:
 
 import json
 import logging
-import time
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 
 # ── badge.py tests ──────────────────────────────────────────────
 
@@ -182,6 +180,7 @@ class TestLLMServiceCoverage:
         limiter = RateLimiter(max_requests=1, window_seconds=0.1)
         await limiter.acquire()
         import asyncio
+
         await asyncio.sleep(0.15)
         await limiter.acquire()
 
@@ -345,7 +344,9 @@ class TestLLMServiceCoverage:
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
-        svc.generate_text = AsyncMock(return_value='{"Security": {"applies": true, "confidence": 0.9}}')
+        svc.generate_text = AsyncMock(
+            return_value='{"Security": {"applies": true, "confidence": 0.9}}'
+        )
         result = await svc.classify_text("test text", ["Security"])
         assert "Security" in result
 
@@ -477,9 +478,11 @@ class TestLLMServiceCoverage:
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
-        svc._call_provider = AsyncMock(side_effect=openai.RateLimitError(
-            message="rate limited", response=MagicMock(status_code=429), body=None
-        ))
+        svc._call_provider = AsyncMock(
+            side_effect=openai.RateLimitError(
+                message="rate limited", response=MagicMock(status_code=429), body=None
+            )
+        )
         svc._is_provider_available = MagicMock(return_value=True)
         svc._record_failure = MagicMock()
         result = await svc.generate_text("hello")
@@ -492,9 +495,11 @@ class TestLLMServiceCoverage:
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
-        svc._call_provider = AsyncMock(side_effect=openai.AuthenticationError(
-            message="auth failed", response=MagicMock(status_code=401), body=None
-        ))
+        svc._call_provider = AsyncMock(
+            side_effect=openai.AuthenticationError(
+                message="auth failed", response=MagicMock(status_code=401), body=None
+            )
+        )
         svc._is_provider_available = MagicMock(return_value=True)
         svc._record_failure = MagicMock()
         result = await svc.generate_text("hello")
@@ -561,9 +566,7 @@ class TestLLMServiceCoverage:
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
-        svc._call_provider = AsyncMock(side_effect=openai.APIConnectionError(
-            request=MagicMock()
-        ))
+        svc._call_provider = AsyncMock(side_effect=openai.APIConnectionError(request=MagicMock()))
         svc._is_provider_available = MagicMock(return_value=True)
         svc._record_failure = MagicMock()
         result = await svc.generate_text("hello")
@@ -576,9 +579,11 @@ class TestLLMServiceCoverage:
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
-        svc._call_provider = AsyncMock(side_effect=openai.InternalServerError(
-            message="500", response=MagicMock(status_code=500), body=None
-        ))
+        svc._call_provider = AsyncMock(
+            side_effect=openai.InternalServerError(
+                message="500", response=MagicMock(status_code=500), body=None
+            )
+        )
         svc._is_provider_available = MagicMock(return_value=True)
         svc._record_failure = MagicMock()
         result = await svc.generate_text("hello")
@@ -706,7 +711,12 @@ class TestHealthCoverage:
         assert state.metrics["pipeline_runs_total"] == 0
 
     def test_module_level_functions(self) -> None:
-        from src.health import inc_metric, set_pipeline_status, record_run_duration, set_release_feature_count
+        from src.health import (
+            inc_metric,
+            set_pipeline_status,
+            record_run_duration,
+            set_release_feature_count,
+        )
 
         inc_metric("test_metric", 1)
         set_pipeline_status("running")
@@ -882,7 +892,7 @@ class TestOrchestratorCoverage:
         config = MagicMock()
         config.event_bus = None
         with patch("src.orchestrator.get_event_bus") as mock_bus:
-            orch = PipelineOrchestrator(config)
+            PipelineOrchestrator(config)
             assert mock_bus.called
 
     @pytest.mark.asyncio
@@ -934,7 +944,9 @@ class TestOrchestratorCoverage:
         mock_release.slug = "summer_26"
 
         orch = PipelineOrchestrator(config)
-        with patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=mock_release):
+        with patch(
+            "src.main.detect_new_release", new_callable=AsyncMock, return_value=mock_release
+        ):
             result = await orch._detect_releases(MagicMock())
         assert len(result) == 1
 
@@ -978,8 +990,10 @@ class TestOrchestratorCoverage:
         result = PipelineResult(releases_processed=[], errors=[], status="running")
         mock_llm = MagicMock()
 
-        with patch("src.release_docs.update_readme_all", new_callable=AsyncMock), \
-             patch("src.main.generate_ai_reports_async", new_callable=AsyncMock):
+        with (
+            patch("src.release_docs.update_readme_all", new_callable=AsyncMock),
+            patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
+        ):
             await orch._run_ai_reports([MagicMock()], mock_llm, result)
         assert result.status == "completed"
 
@@ -996,8 +1010,14 @@ class TestOrchestratorCoverage:
         result = PipelineResult(releases_processed=[], errors=[], status="running")
         mock_llm = MagicMock()
 
-        with patch("src.release_docs.update_readme_all", new_callable=AsyncMock), \
-             patch("src.main.generate_ai_reports_async", new_callable=AsyncMock, side_effect=LLMError("fail")):
+        with (
+            patch("src.release_docs.update_readme_all", new_callable=AsyncMock),
+            patch(
+                "src.main.generate_ai_reports_async",
+                new_callable=AsyncMock,
+                side_effect=LLMError("fail"),
+            ),
+        ):
             await orch._run_ai_reports([MagicMock()], mock_llm, result)
         assert result.status == "completed_with_errors"
         assert len(result.errors) == 1
@@ -1019,8 +1039,10 @@ class TestLoggerCoverage:
     def test_setup_sentry_with_dsn_no_sdk(self) -> None:
         from src.logger import _setup_sentry
 
-        with patch.dict("os.environ", {"SENTRY_DSN": "https://example@sentry.io/123"}, clear=False), \
-             patch.dict("sys.modules", {"sentry_sdk": None}):
+        with (
+            patch.dict("os.environ", {"SENTRY_DSN": "https://example@sentry.io/123"}, clear=False),
+            patch.dict("sys.modules", {"sentry_sdk": None}),
+        ):
             # Should handle ImportError gracefully
             _setup_sentry()
 
@@ -1028,12 +1050,18 @@ class TestLoggerCoverage:
         from src.logger import _setup_sentry
 
         mock_sdk = MagicMock()
-        with patch.dict("os.environ", {
-            "SENTRY_DSN": "https://example@sentry.io/123",
-            "SENTRY_TRACES_SAMPLE_RATE": "0.2",
-            "SENTRY_ENVIRONMENT": "test",
-        }, clear=False), \
-             patch.dict("sys.modules", {"sentry_sdk": mock_sdk}):
+        with (
+            patch.dict(
+                "os.environ",
+                {
+                    "SENTRY_DSN": "https://example@sentry.io/123",
+                    "SENTRY_TRACES_SAMPLE_RATE": "0.2",
+                    "SENTRY_ENVIRONMENT": "test",
+                },
+                clear=False,
+            ),
+            patch.dict("sys.modules", {"sentry_sdk": mock_sdk}),
+        ):
             _setup_sentry()
             mock_sdk.init.assert_called_once()
 
@@ -1068,8 +1096,13 @@ class TestLoggerCoverage:
 
         formatter = JSONFormatter()
         record = logging.LogRecord(
-            name="test", level=logging.INFO, pathname="test.py",
-            lineno=1, msg="test message", args=(), exc_info=None,
+            name="test",
+            level=logging.INFO,
+            pathname="test.py",
+            lineno=1,
+            msg="test message",
+            args=(),
+            exc_info=None,
         )
         result = formatter.format(record)
         parsed = json.loads(result)
@@ -1080,8 +1113,13 @@ class TestLoggerCoverage:
 
         formatter = TextFormatter()
         record = logging.LogRecord(
-            name="test", level=logging.WARNING, pathname="test.py",
-            lineno=1, msg="warning msg", args=(), exc_info=None,
+            name="test",
+            level=logging.WARNING,
+            pathname="test.py",
+            lineno=1,
+            msg="warning msg",
+            args=(),
+            exc_info=None,
         )
         result = formatter.format(record)
         assert "warning msg" in result
@@ -1165,6 +1203,7 @@ class TestImpactCoverage:
         from src.automation.impact import calculate_category_impact_scores
 
         call_count = 0
+
         def load_meta_fn(slug: str) -> dict | None:
             nonlocal call_count
             call_count += 1
@@ -1187,11 +1226,15 @@ class TestImpactCoverage:
         from src.automation.impact import calculate_category_impact_scores
 
         call_count = 0
+
         def load_meta_fn(slug: str) -> dict | None:
             nonlocal call_count
             call_count += 1
             counts = [60, 30, 10]
-            return {"release_id": call_count, "categories": [{"name": "AI", "count": counts[call_count - 1]}]}
+            return {
+                "release_id": call_count,
+                "categories": [{"name": "AI", "count": counts[call_count - 1]}],
+            }
 
         releases_dir = tmp_path / "releases"
         for s in ["s25", "s26", "s27"]:
@@ -1207,10 +1250,14 @@ class TestImpactCoverage:
         from src.automation.impact import calculate_category_impact_scores
 
         call_count = 0
+
         def load_meta_fn(slug: str) -> dict | None:
             nonlocal call_count
             call_count += 1
-            return {"release_id": call_count, "categories": [{"name": "AI", "count": 50 + call_count}]}
+            return {
+                "release_id": call_count,
+                "categories": [{"name": "AI", "count": 50 + call_count}],
+            }
 
         releases_dir = tmp_path / "releases"
         for s in ["s25", "s26", "s27"]:
@@ -1226,11 +1273,15 @@ class TestImpactCoverage:
         from src.automation.impact import calculate_category_impact_scores
 
         call_count = 0
+
         def load_meta_fn(slug: str) -> dict | None:
             nonlocal call_count
             call_count += 1
             counts = [10, 100, 10, 100]
-            return {"release_id": call_count, "categories": [{"name": "Security", "count": counts[call_count - 1]}]}
+            return {
+                "release_id": call_count,
+                "categories": [{"name": "Security", "count": counts[call_count - 1]}],
+            }
 
         releases_dir = tmp_path / "releases"
         for s in ["s24", "s25", "s26", "s27"]:
@@ -1367,6 +1418,7 @@ class TestCacheManagerEdgeCases:
         cache = CacheManager(tmp_path / "cache", ttl_seconds=1)
         cache.set("key", "value", ttl=0)
         import time as time_mod
+
         time_mod.sleep(0.01)
         result = cache.get("key")
         assert result is None

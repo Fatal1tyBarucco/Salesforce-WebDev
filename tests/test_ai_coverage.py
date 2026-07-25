@@ -10,11 +10,9 @@ Targets:
 """
 
 import json
-from pathlib import Path
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock
 
 import pytest
-
 
 # ── markdown.py tests ───────────────────────────────────────────
 
@@ -256,7 +254,10 @@ class TestMarkdownGenerator:
 
         for level, emoji in [("moderado", "🟡"), ("baixo", "🟢")]:
             prediction = ImpactPredictionOutput(
-                risk_level=level, categories=["Cat"], predictions=["Pred"], preparation_suggestions=[]
+                risk_level=level,
+                categories=["Cat"],
+                predictions=["Pred"],
+                preparation_suggestions=[],
             )
             result = MarkdownGenerator.prediction_section(prediction)
             assert emoji in result
@@ -294,9 +295,7 @@ class TestCodeGenerator:
     def test_build_code_generation_prompt_basic(self) -> None:
         from src.ai.generators.code import build_code_generation_prompt
 
-        sys_prompt, user_prompt = build_code_generation_prompt(
-            "Feature A", "Description A", "apex"
-        )
+        sys_prompt, user_prompt = build_code_generation_prompt("Feature A", "Description A", "apex")
         assert "Salesforce" in sys_prompt
         assert "Feature A" in user_prompt
         assert "apex" in user_prompt
@@ -368,34 +367,27 @@ class TestCodeGenerator:
     def test_generate_template_snippet_apex(self) -> None:
         from src.ai.generators.code import generate_template_snippet
 
-        snippet = generate_template_snippet(
-            "My Feature", "Description here", "apex", "trigger"
-        )
+        snippet = generate_template_snippet("My Feature", "Description here", "apex", "trigger")
         assert snippet.feature_name == "My Feature"
         assert snippet.language == "apex"
 
     def test_generate_template_snippet_lwc(self) -> None:
         from src.ai.generators.code import generate_template_snippet
 
-        snippet = generate_template_snippet(
-            "My Feature", "Description here", "lwc", "component"
-        )
+        snippet = generate_template_snippet("My Feature", "Description here", "lwc", "component")
         assert snippet.language == "lwc"
 
     def test_generate_template_snippet_unknown(self) -> None:
         from src.ai.generators.code import generate_template_snippet
 
-        snippet = generate_template_snippet(
-            "My Feature", "Description here", "unknown_lang", "key"
-        )
+        snippet = generate_template_snippet("My Feature", "Description here", "unknown_lang", "key")
         assert snippet.language == "unknown_lang"
 
     def test_generate_template_snippet_with_kwargs(self) -> None:
         from src.ai.generators.code import generate_template_snippet
 
         snippet = generate_template_snippet(
-            "My Feature", "Description here", "apex", "trigger",
-            object="Contact"
+            "My Feature", "Description here", "apex", "trigger", object="Contact"
         )
         assert "Contact" in snippet.code or "My Feature" in snippet.code
 
@@ -726,16 +718,18 @@ class TestClassificationPrompts:
     def test_parse_classification_response_valid(self) -> None:
         from src.ai.prompts.classification import parse_classification_response
 
-        response = json.dumps({
-            "type": "security",
-            "impact": "alto",
-            "audience": "admins",
-            "priority": "crítica",
-            "justification": "Test justification for classification",
-        })
+        response = json.dumps(
+            {
+                "type": "security",
+                "impact": "alto",
+                "audience": "admins",
+                "priority": "crítica",
+                "justification": "Test justification for classification",
+            }
+        )
         result = parse_classification_response(response)
         # May return None if validation fails, that's OK for coverage
-        assert result is None or hasattr(result, 'type')
+        assert result is None or hasattr(result, "type")
 
     def test_parse_classification_response_with_fences(self) -> None:
         from src.ai.prompts.classification import parse_classification_response
@@ -743,7 +737,7 @@ class TestClassificationPrompts:
         response = '```json\n{"type": "security", "impact": "alto", "audience": "admins", "priority": "crítica", "justification": "Test justification"}\n```'
         result = parse_classification_response(response)
         # May return None if validation fails
-        assert result is None or hasattr(result, 'type')
+        assert result is None or hasattr(result, "type")
 
     def test_parse_classification_response_invalid(self) -> None:
         from src.ai.prompts.classification import parse_classification_response
@@ -765,7 +759,11 @@ class TestSalesforceAnalyzerExtended:
         cache = {"custom_objects": ["Account", "Contact"], "apex_classes": ["MyClass"]}
         analyzer = SalesforceAnalyzer(metadata_cache=cache)
         features = [
-            {"name": "Security Feature", "description": "New security feature", "category": "security"},
+            {
+                "name": "Security Feature",
+                "description": "New security feature",
+                "category": "security",
+            },
         ]
         result = await analyzer.generate_impact_report(features)
         assert "Relatório de Impacto" in result
