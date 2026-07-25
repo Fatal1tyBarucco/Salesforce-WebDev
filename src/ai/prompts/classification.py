@@ -7,9 +7,12 @@ Salesforce release features with business context and justification.
 from __future__ import annotations
 
 import json
+import logging
 import re
 
 from .validation import ClassificationOutput
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Persona & system prompt
@@ -107,6 +110,7 @@ def parse_classification_response(response: str) -> ClassificationOutput | None:
     Returns:
         Validated ClassificationOutput or None if parsing fails.
     """
+    data = None
     try:
         clean = response.strip()
         if clean.startswith("```"):
@@ -115,5 +119,11 @@ def parse_classification_response(response: str) -> ClassificationOutput | None:
 
         data = json.loads(clean)
         return ClassificationOutput.model_validate(data)
-    except Exception:
+    except json.JSONDecodeError as e:
+        logger.warning("Classification response is not valid JSON: %s", e)
+        return None
+    except Exception as e:
+        logger.warning("Classification response validation failed: %s", e)
+        if data and isinstance(data, dict):
+            logger.debug("Parsed data keys: %s", list(data.keys()))
         return None

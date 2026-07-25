@@ -6,9 +6,12 @@ rich, validated descriptions for Salesforce release features.
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from .validation import EnrichmentOutput
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Persona & system prompt
@@ -126,6 +129,7 @@ def parse_enrichment_response(response: str) -> EnrichmentOutput | None:
     import json
     import re
 
+    data = None
     try:
         clean = response.strip()
         if clean.startswith("```"):
@@ -134,5 +138,12 @@ def parse_enrichment_response(response: str) -> EnrichmentOutput | None:
 
         data = json.loads(clean)
         return EnrichmentOutput.model_validate(data)
-    except Exception:
+    except json.JSONDecodeError as e:
+        logger.warning("Enrichment response is not valid JSON: %s", e)
+        logger.debug("Raw response (first 500 chars): %s", response[:500])
+        return None
+    except Exception as e:
+        logger.warning("Enrichment response validation failed: %s", e)
+        if data and isinstance(data, dict):
+            logger.debug("Parsed data keys: %s", list(data.keys()))
         return None
