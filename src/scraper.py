@@ -20,6 +20,7 @@ from types import TracebackType
 from typing import Optional, cast
 
 from playwright.async_api import async_playwright, Browser, Page, Playwright
+from playwright._impl._errors import TimeoutError as PlaywrightTimeout
 
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .cache_manager import CacheManager
@@ -164,7 +165,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(html_content or ""),
                 )
-            except (ScraperError, BrowserError, OSError, TimeoutError) as e:
+            except (ScraperError, BrowserError, OSError, TimeoutError, PlaywrightTimeout) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
 
@@ -233,7 +234,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, Exception) as _wait_err:
+        except (TimeoutError, PlaywrightTimeout, Exception) as _wait_err:
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -267,11 +268,11 @@ class SalesforceReleaseScraper:
                     await node.click()
                     await page.wait_for_timeout(300)
                     expanded_count += 1
-                except (TimeoutError, OSError) as e:
+                except (TimeoutError, PlaywrightTimeout, OSError) as e:
                     logger.debug("Falha ao expandir nó de ToC: %s", e)
             if expanded_count > 0:
                 logger.info("Expanded %d collapsed ToC nodes", expanded_count)
-        except (ScraperError, TimeoutError, OSError) as e:
+        except (ScraperError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.debug("ToC expansion skipped: %s", e)
 
     async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
@@ -305,7 +306,7 @@ class SalesforceReleaseScraper:
 
             assert page is not None
             return await self._extract_toc_from_page(url, page)
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.error("ToC extraction failed: %s", e)
             return None
         finally:
@@ -385,7 +386,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(text or ""),
                 )
-            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -439,7 +440,7 @@ class SalesforceReleaseScraper:
 
                 logger.warning("Attempt %d: no features found in HTML", attempt)
 
-            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -607,7 +608,7 @@ class SalesforceReleaseScraper:
 
             try:
                 await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-            except (TimeoutError, Exception) as _pdf_btn_err:
+            except (TimeoutError, PlaywrightTimeout, Exception) as _pdf_btn_err:
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:
@@ -632,7 +633,7 @@ class SalesforceReleaseScraper:
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
 
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.warning("PDF button download failed: %s", e)
             return False
 
@@ -649,6 +650,6 @@ class SalesforceReleaseScraper:
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.warning("PDF download failed: %s", e)
             return False
