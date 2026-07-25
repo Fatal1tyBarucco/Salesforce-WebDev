@@ -915,6 +915,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
             side_effect=LLMError("AI failed"),
         ),
         patch("src.health.set_pipeline_status") as mock_status,
+        patch("src.orchestrator.set_pipeline_status") as mock_status2,
         patch("src.main.logger"),
     ):
         from src.main import run_pipeline
@@ -929,7 +930,11 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
         ):
             await run_pipeline()
 
-    mock_status.assert_any_call("completed_with_errors")
+    # Check either mock was called with completed_with_errors
+    all_calls = mock_status.call_args_list + mock_status2.call_args_list
+    assert any(
+        c == (("completed_with_errors",),) for c in all_calls
+    ), f"Expected 'completed_with_errors' but got: {all_calls}"
 
 
 # ============================================================
