@@ -28,6 +28,7 @@ dev = [
     "pytest>=9.1.1,<10",
     "pytest-xdist>=3.8.0,<4",
     "pytest-cov>=7.1.0,<8",
+    "pytest-asyncio>=1.4.0",
     "mypy>=2.1.0,<3",
     "freezegun>=1.4.0",
     "types-requests>=2.33.0,<3",
@@ -54,6 +55,7 @@ warn_unused_ignores = false
 pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-q --tb=short --durations=10"
+asyncio_mode = "auto"
 filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]
