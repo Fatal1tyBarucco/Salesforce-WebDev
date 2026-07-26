@@ -156,6 +156,8 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
+          # Pull with rebase to handle concurrent commits before pushing
+          git pull --rebase origin ${{ github.ref_name }}
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release

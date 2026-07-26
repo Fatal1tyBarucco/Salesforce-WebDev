@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
 
-          SLUG=$(basename $(dirname $(dirname $LATEST_META)))
+          SLUG=$(basename $(dirname $LATEST_META))
           NAME=$(python3 -c "import json; print(json.load(open('$LATEST_META'))['name'])")
           FEATURES=$(python3 -c "import json; d=json.load(open('$LATEST_META')); print(d.get('total_features', sum(c['count'] for c in d.get('categories', []))))")
           DATE=$(python3 -c "import json; print(json.load(open('$LATEST_META')).get('generated_at', ''))")
