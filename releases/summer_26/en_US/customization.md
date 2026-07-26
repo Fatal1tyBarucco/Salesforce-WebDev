@@ -1,50 +1,55 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/customization.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/customization.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Customization
 
-> **33 features**
+> **38 features**
 
 Permissões de modo de exibição de lista mais granulares permitem que os usuários compartilhem seus modos de exibição de lista sem permitir que editem todos os modos de exibição de lista da sua organização. Ajude seus usuários a se manterem sincronizados graças ao suporte para mais 27 fusos horários canônicos de acordo com os padrões IANA. Obtenha autenticação mais robusta e segura com o suporte do adaptador organizacional cruzado do Salesforce Connect para credenciais nomeadas.
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Recursos de personalização lançados por mês** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **AgentExchange** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Explorar soluções com servidores MCP no AgentExchange** | ❌ | ✅ | ❌ | ❌ | |
-| **Adicione servidores MCP do registro Agentforce por meio de uma experiência integrada do AgentExchange** | ❌ | ✅ | ❌ | ❌ | |
-| **Avaliar ativos do agente rapidamente com a página de detalhes aprimorada** | ❌ | ✅ | ❌ | ❌ | |
-| **Não há suporte para novas páginas de login do Trialforce com marca no Cloudforce.com** | ❌ | ✅ | ❌ | ❌ | |
-| **Serviços externos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie integrações mais robustas com o suporte de serviços externos para enumerações** | ❌ | ✅ | ❌ | ❌ | |
-| **Faça mais com as melhorias de arquivo binário de Serviços externos** | ❌ | ✅ | ❌ | ❌ | |
-| **Globalização** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Oferecer suporte a mais fusos horários** | ❌ | ✅ | ❌ | ❌ | |
-| **Expanda traduções do idioma do usuário final para catalão e basco (beta)** | ❌ | ✅ | ❌ | ❌ | |
-| **Revise traduções atualizadas de rótulos** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilitar os formatos de localidade de ICU (atualização de versão)** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_customization_monthly.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_appexchange.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_agentexchange_build_and_publish_custom_flow_connectors_on_agentexchange.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_appexchange_explore_solutions_featuring_mcp_servers_on_agentexchange.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_agentexchange_mcp_servers_agentforce_registry.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_agentexchange_agentforce_enhanced_asset_details.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_appexchange_trialforce_new_cloudforce_eos.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ext_services.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ext_services_schema_enums.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ext_services_enhancements.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_globalization.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_globalization_timezones.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_globalization_catalan_basque.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_globalization_review_label_translations.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_globalization_enable_icu_locale.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lab.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lab_command_center.htm&language=pt_BR&release=262&type=5) |
 
 ### Permissões
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Revise o acesso ao campo entre perfis, conjuntos de permissões e grupos de conjuntos de permissões** | ❌ | ✅ | ❌ | ❌ | |
-| **Rastrear dependências de permissão mais facilmente** | ❌ | ✅ | ❌ | ❌ | |
-| **Habilitar filtragem de perfil (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Monitore alterações administrativas em perfis com políticas de segurança da transação** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Connect** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie integrações mais seguras com suporte de adaptador entre organizações para credenciais nomeadas** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurar com o Agentforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique e acelere tarefas administrativas com a configuração com Agentforce (disponível ao público em geral)** | ❌ | ❌ | ✅ | ❌ | |
-| **A Configuração de uso com permissão Agentforce é necessária para habilitação** | ❌ | ❌ | ✅ | ❌ | |
-| **O agente legado para configuração não pode mais ser habilitado** | ❌ | ❌ | ✅ | ❌ | |
-| **Obter mais métricas de integridade e uso da organização (beta)** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Compartilhamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Escolher se deseja conceder acesso usando hierarquias de papéis para filas** | ❌ | ✅ | ❌ | ❌ | |
-| **Atualize padrões organizacionais de modo mais rápido e confiável** | ❌ | ✅ | ❌ | ❌ | |
-| **Ampliar o acesso para usuários de licença de funcionário unificado** | ❌ | ✅ | ❌ | ❌ | |
-| **Atualize o Apex code e os fluxos para alterar o comportamento de recálculo de compartilhamento (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Configuração geral** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Faça mais com campos personalizados em entidades padrão** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar compartilhamento e edição de modo de exibição de lista com permissões granulares** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_field_access.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_dependencies_modal.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_guest_agent_warning.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_profile_filtering_ru.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_transaction_security_policies.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_connect.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_connect_xorg_named_credentials.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce_permission.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce_legacy.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce_health_usage.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_setup_with_agentforce_objects1.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_queues_hierarchies.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_owd_parallel.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_all_restricted_users_group.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_apex_recalc_ru.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_customization_general.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_improved_support_for_custom_fields_on_standard_entities.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_listviews_share_private.htm&language=pt_BR&release=262&type=5) |
 
 ## 🎓 Related Trailhead Modules
 

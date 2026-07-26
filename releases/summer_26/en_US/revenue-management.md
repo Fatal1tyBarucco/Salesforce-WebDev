@@ -1,114 +1,117 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/revenue-management.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/revenue-management.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Revenue Management
 
-> **97 features**
+> **100 features**
 
 Aprenda sobre os novos recursos e aprimoramentos do Agentforce Revenue Management.
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Experiência de configuração aprimorada com o Salesforce Go** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique a coleta de receita com a Solução de orquestração Dunning** | ❌ | ✅ | ❌ | ❌ | |
-| **Descubra mais recursos de gerenciamento de receita** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de catálogo de produtos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie transações mais rapidamente com a Descoberta baseada em regra** | ✅ | ❌ | ❌ | ❌ | |
-| **Aplicar seleção de rampa consistente durante a descoberta e configuração do produto** | ✅ | ❌ | ❌ | ❌ | |
-| **Expanda suas ofertas de produto com variações de produto** | ✅ | ❌ | ❌ | ❌ | |
-| **Mostrar precificação precisa e consistente com suporte decimal estendido** | ✅ | ❌ | ❌ | ❌ | |
-| **Novas APIs REST do Connect no Gerenciamento de catálogo de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **APIs REST do Connect novas e alteradas na Descoberta de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações invocáveis novas e alteradas na Descoberta de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **runtime_industries_cpq Namespace** | ❌ | ✅ | ❌ | ❌ | |
-| **Precificação do Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Usar tabelas de decisão baseadas em CSV em procedimentos de precificação** | ❌ | ❌ | ✅ | ❌ | |
-| **Sincronizar tabelas de decisão para qualquer receita de precificação** | ✅ | ❌ | ❌ | ❌ | |
-| **Mapear mais variáveis no elemento de item de linha de mapa** | ✅ | ❌ | ❌ | ❌ | |
-| **APIs REST do Connect alteradas na precificação do Salesforce** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurador do produto** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Definir restrições para grupos de cotações e segmentos de rampa** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Carregar padrões de produto em restrições** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Atualizações no fluxo de configurador de produto padrão** | ❌ | ❌ | ✅ | ❌ | |
-| **API REST do Connect alterada no Product Configurator** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de transações** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aprimorar a visibilidade de atributo no editor de linha de transação de vendas** | ❌ | ❌ | ✅ | ❌ | |
-| **Trabalhe com mais eficiência com o editor de linha de transação de vendas aprimorado** | ✅ | ❌ | ❌ | ❌ | |
-| **Clonar cotações e pedidos com todos os registros relacionados** | ❌ | ❌ | ✅ | ❌ | |
-| **Vender variações de produto em cotações e pedidos** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplifique a cotação de vários anos usando uma agenda de rampa guiada** | ❌ | ❌ | ✅ | ❌ | |
-| **Renovar ativos perdidos antecipadamente para garantir receita futura** | ❌ | ❌ | ✅ | ❌ | |
-| **Lide com configurações de produto complexas com mais atributos** | ❌ | ❌ | ✅ | ❌ | |
-| **Processe mais registros para cada transação** | ❌ | ❌ | ✅ | ❌ | |
-| **Fortaleça o Criador de documentos com uma robusta arquitetura de serviço** | ✅ | ❌ | ❌ | ❌ | |
-| **Acompanhe dados de cotação e imposto com a visibilidade de objeto aprimorada** | ✅ | ❌ | ❌ | ❌ | |
-| **Proteger o acesso a dados para precificação com permissões elevadas** | ❌ | ❌ | ✅ | ❌ | |
-| **API REST do Connect alterada no Gerenciamento de transações** | ❌ | ✅ | ❌ | ❌ | |
-| **Nova ação invocável no Gerenciamento de transações** | ❌ | ❌ | ✅ | ❌ | |
-| **Advanced Approvals** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Mantenha as aprovações se movendo no Slack** | ❌ | ❌ | ✅ | ❌ | |
-| **Visualizar dependências da etapa de aprovação para seu envio** | ❌ | ❌ | ✅ | ❌ | |
-| **Personalize e automatize ações de aprovação com Fluxo e Apex** | ✅ | ❌ | ❌ | ❌ | |
-| **API REST do Connect alterada em Advanced Approvals** | ❌ | ❌ | ✅ | ❌ | |
-| **Orquestrador de receita dinâmica** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Orquestre negócios de vários anos com ativos de cumprimento com conhecimento em tempo** | ✅ | ❌ | ❌ | ❌ | |
-| **Agendar etapas de orquestração com atrasos negativos** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhorar o comportamento da etapa de tarefa automática aprovando parâmetros personalizados** | ✅ | ❌ | ❌ | ❌ | |
-| **Obter visibilidade operacional com relatórios de cumprimento** | ✅ | ❌ | ❌ | ❌ | |
-| **Migrar dados de condição do Orquestrador de receita dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **Objetos novos e alterados no Orquestrador de receita dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **API REST do Connect alterada no Orquestrador de receita dinâmica** | ❌ | ✅ | ❌ | ❌ | |
-| **Novo tipo de metadados no Orquestrador de receita dinâmica** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de uso** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Reduza o tempo de configuração para produtos de uso com um fluxo de trabalho guiado** | ❌ | ❌ | ✅ | ❌ | |
-| **Nova API REST do Connect no Gerenciamento de uso** | ❌ | ✅ | ❌ | ❌ | |
-| **Faturamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Customer 360** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Resumir transações de faturamento em um extrato de conta** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar todas as transações de faturamento na Central de liquidações de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar todos os relacionamentos de acordo de faturamento de registros de conta e fatura** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar consultas de faturamento de modo eficiente com métricas e criação de caso assistida** | ❌ | ✅ | ❌ | ❌ | |
-| **Agendas de faturamento e marcos de faturamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Alinhar o faturamento a cancelamentos em pedidos e cotações datados no futuro** | ❌ | ✅ | ❌ | ❌ | |
-| **Dar suporte a planos de marco para emendas** | ❌ | ✅ | ❌ | ❌ | |
-| **Mudar de frequências de faturamento mais altas para mais baixas em novos pedidos de vendas e cotações** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de fatura** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Tome decisões de cobrança mais inteligentes com pontuações de risco de fatura preditivas (piloto)** | ❌ | ✅ | ❌ | ❌ | |
-| **Transfira faturas mais rapidamente com execuções de lote de fatura atualizadas** | ❌ | ✅ | ❌ | ❌ | |
-| **Iniciar agendas de fatura diárias e semanais em dias úteis** | ❌ | ✅ | ❌ | ❌ | |
-| **Pagamentos e reembolsos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Agrupar faturas de uma conta em uma única solicitação de pagamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Iniciar reembolsos automatizados em faturas negativas e canceladas** | ❌ | ✅ | ❌ | ❌ | |
-| **Envie dados de Nível 2 e Nível 3 para pagamentos feitos por meio de adaptadores do Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerar links de Pagar agora e associar pagamentos a contas comerciais** | ❌ | ✅ | ❌ | ❌ | |
-| **Expanda suas opções de pagamento por meio do Portal de faturamento** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_revenue_monthly.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_fsc_go_soln_cntnr.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_go_dunning_orchestration_solution_bundle.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rev_go_revenue_management_features_with_salesforce_go.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_build_accurate_transactions_with_rule_based_discovery_and_preview.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_ensure_consistent_ramp_selection.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_expand_your_product_offerings_with_product_variations.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_show_precise_and_consistent_pricing_with_extended_decimal_support.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_catalog_management_connect_api_resources.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api_invocable_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_runtime_industries_cpq_namespace.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_pricing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_pricing_use_csv_based_decision_tables_in_pricing_procedures.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_pricing_sync_decision_tables_at_the_recipe_level.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_pricing_map_more_variables_in_the_map_line_item_element.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_configurator.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_configurator_rules_for_quote_groups_and_ramp_segments.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_configurator_load_product_defaults.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_product_configurator_flow_updates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_enhance_attribute_visibility_in_the_sales_transaction_line_editor_side_panel.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_sales_transaction_line_editor_layout.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_preserve_group_ramp_schedules_when_cloning_quotes_and_orders.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_clone_quotes_and_orders_with_complete_related_records.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_product_variations_in_quotes_and_orders.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_guided_ramp_schedules.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_early_renewal_of_ramped_assets.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_handle_complex_product_configurations_with_increased_attribute_capacity.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_process_more_records_per_transaction_with_increased_persistence_size.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tm_docbuilder_performance_for_high_volume_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_quote_objects_visibility.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_secure_data_access_for_pricing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_transaction_management_new_invocable_action_in_transaction_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_adv_approvals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_adv_approvals_slack_approvals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_adv_approvals_preview_step_dependencies.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_adv_approvals_customise_approval_actions_in_flows_and_apex.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dynamic_revenue_orchestrator.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_adv_amendments_time_aware_decomp.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_negative_delays.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_customize_auto_task.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_fulfillment_reporting.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_migrate_condition_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dro_new_metadata_type.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_um_usage_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_um_guided_setup.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_usage_management_new_connect_rest_api_resources.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_customer360.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_account_statement.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_billing_settlements_central.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_see_owned_and_billed_billing_schedule_groups_for_an_account.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_dispute_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_bsg_bs_milestone.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_arc_before_fdo.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_milestone_billing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_frequency.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_invoices.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_invoice_risk_score.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_generate_invoices_faster_with_upgraded_invoice_batch_runs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_invoice_exclude_holiday.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_payments_refunds.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_consolidate_payments.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_refunds_orchestration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_send_l2_l3_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_generate_pay_now_payment_links_and_associate_payments_with_business_accounts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_save_more_payment_methods_in_the_billing_portal.htm&language=pt_BR&release=262&type=5) |
 
 ### Coleções
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Automatize fluxos de trabalho de redução usando modelos dinâmicos do Orquestrador de receita** | ❌ | ✅ | ❌ | ❌ | |
-| **Cargas úteis simplificadas para a API de criação de agendas de faturamento independentes** | ❌ | ✅ | ❌ | ❌ | |
-| **Objetos novos e alterados para faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **API REST do Connect alterada no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Tipos de metadados alterados no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações invocáveis novas e alteradas no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Contracts** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Extraia dados de contrato de repositórios externos em massa** | ✅ | ❌ | ❌ | ❌ | |
-| **Extraia dados de contratos externos com pipelines de extração única flexíveis** | ✅ | ❌ | ❌ | ❌ | |
-| **Rotear aprovações de contrato com Advanced Approvals** | ✅ | ❌ | ❌ | ❌ | |
-| **Gerar documentos na localidade do usuário** | ✅ | ❌ | ❌ | ❌ | |
-| **Preserve tokens não resolvidos com tokens de contornação** | ✅ | ❌ | ❌ | ❌ | |
-| **Objetos novos e alterados na geração de documentos e contratos** | ❌ | ❌ | ✅ | ❌ | |
-| **APIs REST do Connect alteradas em Salesforce Contracts** | ❌ | ✅ | ❌ | ❌ | |
-| **Geração de documentos da Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerar documentos com pacotes hierárquicos e dados agrupados** | ✅ | ❌ | ❌ | ❌ | |
-| **Proteger e categorizar documentos com marcação d'água dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **Navegue em documentos complexos com um índice automatizado** | ✅ | ❌ | ❌ | ❌ | |
-| **Gerar documentos de páginas e fluxos de registro** | ✅ | ❌ | ❌ | ❌ | |
-| **Adicionar solicitações de processo de geração de documento a lotes ativos** | ✅ | ❌ | ❌ | ❌ | |
-| **Agentforce para Gestão de Receitas** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerenciar cobranças com a assistência do funcionário de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Resolver consultas de faturamento com o agente de assistência de serviço de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar o impacto financeiro do uso do cliente com o agente de consumo** | ❌ | ❌ | ✅ | ❌ | |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_dunning_orchestration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_api_updates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_billing_changed_metadata_types.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api_invocable_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_contracts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_contracts_bulk_data_extract_from_mutliple_contract_docs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_contracts_extract_data_from_external_contracts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_contracts_advanced_approval_integrations.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_contracts_user_locale_settings.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_contracts_preserve_unresolved_tokens.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_api.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_document_generation.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_docgen_heirarchicalbundles_and_grouped_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_docgen_dynamic_watermarking.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_docgen_toc.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_docgen_generate_document_component.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sf_docgen_add_docgen_while_batch_runs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rev_agentforce.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rev_agentforce_manage_collections.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rev_agentforce_billing_inquiries.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rev_agentforce_consumption_overage_in_amounts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_cpq_documentation.htm&language=pt_BR&release=262&type=5) |
 
 ## 🎓 Related Trailhead Modules
 

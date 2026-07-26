@@ -1,20 +1,20 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/mulesoft.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/mulesoft.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## MuleSoft
 
-> **8 features**
+> **12 features**
 
-Use o pacote de produtos MuleSoft Anypoint Platform para conectar e integrar aplicativos, sistemas e dados em sua empresa. Simplifique operações criando e automatizando processos com cliques, em vez de código.
+Categoria **MuleSoft** com 8 recursos nesta release.
 
-| Feature | Users | Admins | Config | Contact | Docs |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Catálogo de API para Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Mapear seus agentes para ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
-| **Mapear modelos de prompts para ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
-| **Adicionar anotações a ferramentas do servidor MCP** | ❌ | ✅ | ❌ | ❌ | |
-| **Trazer servidores MCP do MuleSoft para o catálogo de API (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Descubra servidores MCP registrados manualmente no catálogo de API (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar APIs de consulta nomeadas no catálogo de API e ativar ações (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Inteligência de integração do MuleSoft** | ❌ | ✅ | ❌ | ❌ | |
+| Feature | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Catálogo de API para Salesforce** | Recurso 'Catálogo de API para Salesforce' disponível na release. | 🟢 baixo |
+| **Mapear seus agentes para ferramentas do servidor MCP** — _admins_ | Recurso 'Mapear seus agentes para ferramentas do servidor MCP' disponível na release. Disponibilidade: admins. | 🟢 baixo |
+| **Mapear modelos de prompts para ferramentas do servidor MCP** — _admins_ | Recurso 'Mapear modelos de prompts para ferramentas do servidor MCP' disponível na release. Disponibilidade: admins. | 🟢 baixo |
+| **Adicionar anotações a ferramentas do servidor MCP** — _admins_ | Recurso 'Adicionar anotações a ferramentas do servidor MCP' disponível na release. Disponibilidade: admins. | 🟢 baixo |
+| **Trazer servidores MCP do MuleSoft para o catálogo de API (disponível ao público em geral)** — _admins_ | Recurso 'Trazer servidores MCP do MuleSoft para o catálogo de API (disponível ao público em geral)' disponível na releas… | 🟢 baixo |
+| **Descubra servidores MCP registrados manualmente no catálogo de API (disponível ao público em geral)** — _admins_ | Recurso 'Descubra servidores MCP registrados manualmente no catálogo de API (disponível ao público em geral)' disponível… | 🟢 baixo |
+| **Visualizar APIs de consulta nomeadas no catálogo de API e ativar ações (disponível ao público em geral)** — _admins_ | Recurso 'Visualizar APIs de consulta nomeadas no catálogo de API e ativar ações (disponível ao público em geral)' dispon… | 🟢 baixo |
+| **Inteligência de integração do MuleSoft** — _admins_ | Recurso 'Inteligência de integração do MuleSoft' disponível na release. Disponibilidade: admins. | 🟢 baixo |
 
 ## 🎓 Related Trailhead Modules
 

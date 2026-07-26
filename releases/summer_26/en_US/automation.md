@@ -1,130 +1,137 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/automation.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/automation.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Automation
 
-> **118 features**
+> **125 features**
 
 Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. Faça integrações entre qualquer sistema com a Integração de fluxo. Obtenha ajuda da IA para otimizar e automatizar seus processos de negócios da cadeia de abastecimento com a Agentforce Supply Chain. Automatize processos interdepartamentais e específicos do setor com a Automação para aplicativos e setores Customer 360.
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Recursos de automação lançados por mês** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Flow Builder** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Atualizações do Flow Builder** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Criar e usar agentes Agentforce diretamente no Flow Builder** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhorar o desempenho com lote para fluxos agendados** | ✅ | ❌ | ❌ | ❌ | |
-| **Evite corrigir manualmente referências de modelo de email depois de implementar fluxos em ambientes** | ❌ | ✅ | ❌ | ❌ | |
-| **Recolha caminhos de falha para focar seu fluxo principal** | ✅ | ❌ | ❌ | ❌ | |
-| **Localizar e selecionar recursos mais facilmente no elemento Adicionar instruções de prompt** | ❌ | ✅ | ❌ | ❌ | |
-| **Seleção de recurso aprimorada em elementos de fluxo de estratégia de recomendação** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar operadores de data na lógica de decisão** | ✅ | ❌ | ❌ | ❌ | |
-| **Agentforce para Fluxo agora é beta** | ❌ | ❌ | ✅ | ❌ | |
-| **Atualizações do fluxo de tela** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Atualizar fluxos de tela com avisos de linguagem natural (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Visualizar nomes de registro relacionados e abrir o registro relacionado em colunas de pesquisa de tabela de dados** | ❌ | ✅ | ❌ | ❌ | |
-| **Personalizar fluxos de tela com substituições de estilo em mais componentes** | ✅ | ❌ | ❌ | ❌ | |
-| **Adicionar imagens de recurso estático para exibir texto sem sair do Flow Builder (disponível ao público em geral)** | ❌ | ✅ | ❌ | ❌ | |
-| **Economizar espaço na tela com grupos de botões seletores em fluxos de tela** | ❌ | ✅ | ❌ | ❌ | |
-| **Expor a versão do tempo de execução do fluxo a componentes de tela personalizados** | ✅ | ❌ | ❌ | ❌ | |
-| **Marketing Cloud do Fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Personalizar mensagens com dados integrados usando cliques, não código** | ✅ | ❌ | ❌ | ❌ | |
-| **Visualizar e restaurar o histórico de edição da versão do fluxo** | ✅ | ❌ | ❌ | ❌ | |
-| **Usar elementos e recursos de fluxo em todos os tipos de fluxo de marketing** | ❌ | ✅ | ❌ | ❌ | |
-| **Coordenar jornadas complexas entre fluxos** | ✅ | ❌ | ❌ | ❌ | |
-| **Remover contatos automaticamente de um fluxo de engajamento ativo** | ✅ | ❌ | ❌ | ❌ | |
-| **Personalize fluxos com acesso mais profundo aos dados de origem** | ✅ | ❌ | ❌ | ❌ | |
-| **Alcance públicos de uma categoria de fluxo simplificada** | ✅ | ❌ | ❌ | ❌ | |
-| **Crie lógica mais precisa em elementos de decisão e regras de saída** | ✅ | ❌ | ❌ | ❌ | |
-| **Adicionar regras de saída que usam eventos** | ❌ | ✅ | ❌ | ❌ | |
-| **Definir condições e critérios de nova entrada para fluxos acionados por evento** | ❌ | ✅ | ❌ | ❌ | |
-| **Adicionar mais pontos de contato e DMOs relacionados a fluxos acionados por evento com sinais de engajamento aprimorados** | ❌ | ✅ | ❌ | ❌ | |
-| **Filtrar o Analytics do elemento por intervalo de datas** | ✅ | ❌ | ❌ | ❌ | |
-| **Visualizar métricas de resultado do caminho para experimento de caminho** | ✅ | ❌ | ❌ | ❌ | |
-| **Manter dados de registro de envio em fluxos de marketing** | ✅ | ❌ | ❌ | ❌ | |
-| **Os usuários agora podem visualizar dependências de fluxo** | ✅ | ❌ | ❌ | ❌ | |
-| **Fluxo do Data 360** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Usar ativações de DMO em lote, mais elementos de fluxo e depurar com fluxos acionados por ativação aprimorada** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar elementos Aguardar e fluxos de teste com aprimoramentos de fluxo de transmissão** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar conectores ilimitados do MuleSoft em fluxos acionados por segmento, acionados por ativação e de transmissão** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações de fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Notificar usuários com a ação Mostrar mensagem de toast** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplifique o fluxo de trabalho do usuário com a ação Abrir uma página** | ✅ | ❌ | ❌ | ❌ | |
-| **Usar o modo de fórmula para entradas de ação sem criar recursos** | ❌ | ✅ | ❌ | ❌ | |
-| **Controlar a visibilidade do caminho de tempo limite para ações assíncronas** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar o modo de transformação para entradas de ação sem adicionar elementos de transformação** | ❌ | ✅ | ❌ | ❌ | |
-| **Definir valores de campo diretamente para entradas definidas pelo Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Simplificar a seleção de tipo de objeto para entradas de ação de sObject genéricas** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurar entradas de ação do Apex opcionais sem incluir alternância** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar tipos de coleção personalizados e personalizados em parâmetros de saída de ação invocável** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações do agente de IA agora usam o elemento Executar agente** | ✅ | ❌ | ❌ | ❌ | |
-| **Depuração de fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Visualizar o caminho de execução ao testar um fluxo de tela** | ✅ | ❌ | ❌ | ❌ | |
-| **Solucionar e corrigir erros de fluxo com Agentforce (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Revise erros e avisos de fluxo com o painel de validação remodelado** | ✅ | ❌ | ❌ | ❌ | |
-| **Gerenciamento de fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Identificar alterações de versão do fluxo em uma visão geral** | ✅ | ❌ | ❌ | ❌ | |
-| **Comparar alterações de elemento de transformação em um fluxo** | ✅ | ❌ | ❌ | ❌ | |
-| **Triagem de problemas diretamente no modo de exibição de lista Fluxos** | ✅ | ❌ | ❌ | ❌ | |
-| **Os nomes de coluna de detalhes do registro do fluxo foram alterados** | ✅ | ❌ | ❌ | ❌ | |
-| **Extensões do fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Adicionar editores de propriedade personalizados a entradas de ação do Apex individuais** | ❌ | ✅ | ❌ | ❌ | |
-| **Definir valores da lista de opções para entradas de ação do Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Personalizar o cabeçalho do editor de propriedades padrão de uma ação do Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Simplifique a seleção de metadados para entradas de ação do Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Expor configurações de estilo para seus componentes de tela de fluxo personalizados** | ✅ | ❌ | ❌ | ❌ | |
-| **Atualizações de versão de fluxo e processo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Impor o Construtor sem argumento em classes do Apex usadas para parâmetros de ação invocável (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Classificar os resultados de ação em massa do Apex usando a ordem da solicitação (atualização de versão)** | ❌ | ❌ | ✅ | ❌ | |
-| **Processos de aprovação de fluxo** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Exigir aprovação unânime para etapas de aprovação atribuídas a grupos** | ❌ | ✅ | ❌ | ❌ | |
-| **Os designers de aprovação agora podem visualizar dependências de fluxo** | ✅ | ❌ | ❌ | ❌ | |
-| **Orquestração de fluxos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **A orquestração de fluxo agora é um recurso padrão** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **MuleSoft para fluxo: Integração** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aprimore a troca de dados com conectores de terceiros recém-adicionados** | ✅ | ❌ | ❌ | ❌ | |
-| **Integrar fluxos a sistemas externos usando ações de conector de terceiros** | ✅ | ❌ | ❌ | ❌ | |
-| **Centralize o gerenciamento de mapeamento de valor para o MuleSoft para Fluxo: Integração** | ✅ | ❌ | ❌ | ❌ | |
-| **Operações do Agentforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Concluir várias tarefas por vez** | ✅ | ❌ | ❌ | ❌ | |
-| **Iniciar até 2.500 fluxos de trabalho de um arquivo CSV** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurar vários escalonamentos de tarefa** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerar modelos descrevendo seu processo** | ❌ | ✅ | ❌ | ❌ | |
-| **Criar automações baseadas em Excel (beta)** | ❌ | ✅ | ❌ | ❌ | |
-| **Extraia dados mais precisos do novo agente do Leitor de documentos (beta)** | ❌ | ✅ | ❌ | ❌ | |
-| **Garanta que as tarefas do agente de IA estejam prontas antes da publicação em Operações do Agentforce** | ❌ | ✅ | ❌ | ❌ | |
-| **Automação para aplicativos e setores do Customer 360** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerenciamento em lote** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Processe atualizações de registro em escala com upload de CSV** | ❌ | ✅ | ❌ | ❌ | |
-| **Refinar a seleção de registro com o suporte aprimorado ao operador IN** | ❌ | ✅ | ❌ | ❌ | |
-| **Objetos do conjunto de ferramentas da API alterados para Gerenciamento em lote** | ❌ | ✅ | ❌ | ❌ | |
-| **Objetos alterados para Monitorar serviço de fluxo de trabalho** | ❌ | ✅ | ❌ | ❌ | |
-| **Mecanismo de regras de negócios** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aprimorar o controle e a conformidade com o controle de versão da tabela de decisão** | ❌ | ✅ | ❌ | ❌ | |
-| **Escalabilidade aprimorada no Mecanismo de regras de negócios** | ❌ | ✅ | ❌ | ❌ | |
-| **Melhor transparência em explicações de decisão** | ❌ | ✅ | ❌ | ❌ | |
-| **Melhore a agilidade com variáveis de lista locais em conjuntos de expressões** | ❌ | ✅ | ❌ | ❌ | |
-| **Migrar o mecanismo de regras de negócios com 2GP** | ❌ | ✅ | ❌ | ❌ | |
-| **Novos objetos no Mecanismo de regras de negócios** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações invocáveis alteradas no Mecanismo de regras de negócios** | ❌ | ✅ | ❌ | ❌ | |
-| **Usar tipo de dados de data em tabelas de decisão baseadas em CSV avançadas** | ❌ | ✅ | ❌ | ❌ | |
-| **Chamar tabelas de decisão de procedimentos de integração do OmniStudio** | ❌ | ✅ | ❌ | ❌ | |
-| **Serviço de contexto** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerar classes do Apex para definições de contexto** | ❌ | ✅ | ❌ | ❌ | |
-| **Aumente a escalabilidade do tempo de design com limites maiores de definição de contexto** | ❌ | ✅ | ❌ | ❌ | |
-| **Transforme dados de contexto em escala com o Mecanismo de processamento de dados** | ❌ | ✅ | ❌ | ❌ | |
-| **Adicionar várias condições de ordem de classificação em filtros de contexto** | ❌ | ✅ | ❌ | ❌ | |
-| **Objetos de serviço de contexto novos e alterados** | ❌ | ✅ | ❌ | ❌ | |
-| **Novas ações invocáveis para serviço de contexto** | ❌ | ✅ | ❌ | ❌ | |
-| **APIs de serviço de contexto novas e alteradas** | ❌ | ✅ | ❌ | ❌ | |
-| **Namespace de contexto** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Mecanismo de processamento de dados** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Processe conjuntos de dados pequenos mais rapidamente com o processamento sob demanda** | ❌ | ✅ | ❌ | ❌ | |
-| **Transformar dados de contexto e gravar dados em JSON com o Mecanismo de processamento de dados** | ❌ | ✅ | ❌ | ❌ | |
-| **Solucionar problemas de definições do Mecanismo de processamento de dados com o modo de depuração** | ❌ | ✅ | ❌ | ❌ | |
-| **Validar lógica e depurar definições de tempo de execução do Data 360 mais rapidamente com a visualização de dados** | ❌ | ✅ | ❌ | ❌ | |
-| **Agregue dados de modo eficiente entre registros relacionados com agregação hierárquica** | ❌ | ✅ | ❌ | ❌ | |
-| **Criar conjuntos de dados direcionados com junções de pesquisa de valor único e de vários valores** | ❌ | ✅ | ❌ | ❌ | |
-| **Selecionar tipos de operação de write-back para objetos do Data 360** | ❌ | ✅ | ❌ | ❌ | |
-| **Atribuir categorias de objeto de modelo de dados para compatibilidade com o Data 360** | ❌ | ✅ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_monthly.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_create_agent_in_flow_builder.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_scheduled_flow_batching.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_persist_email_template_references_across_environments.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_collapse_fault_paths.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_find_and_select_resources_easily_in_add_prompt_instructions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_resource_selection_in_resource_strategy_flow_elements.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_use_date_operators_in_decision_logic.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_copilot.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_screen_flows.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_update_screen_flows_with_natural_language_prompts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_screens_view_related_record_names_and_hyperlink_data_table.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_screens_more_component_styling_options.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_screens_find_and_upload_static_resource_images_from_the_display_text.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_screens_save_screen_space_with_radio_button_groups_in_screen_flows.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_expose_runtime_api_version.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_personalize_messaging.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_flow_version_edit_history.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_flow_type_consistency.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_send_to_a_flow.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_exit_from_a_flow.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_source_data_access.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_audience_flow_type.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_decision_element_logic.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_exit_rules_events.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_additional_conditions_re_entry.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_enhanced_engagement_signals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_element_analytics_date_range.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_path_experiment_outcome_metrics.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_send_log_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_citizen_users_view_flow_usage.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_data_360.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_activation_triggered_flow_updates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_broadcast_flow_updates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_unlimited_connectors.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_show_toast_message.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_open_a_page.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_use_formula_mode_for_action_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_control_timeout_path_visibility.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_use_transform_mode_for_action_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_use_complex_type_configurator_for_apex_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_inline_generic_action_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_remove_include_toggle_for_apex_action_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_use_custom_collection_types_invocable_action_output_params.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_ai_agent_actions_use_create_agent_element.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_debug.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_visualize_testing_path.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_troubleshoot_and_fix_flow_errors_with_agentforce_beta.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_redesigned_validation_panel.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mgmt.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_visual_flow_version_comparison.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_version_comparison_transform.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mgmt_element_error_rate.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_list_view_column_names_changed.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_extend.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_transcription_model_speech_to_text.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_extend_partial_cpes_for_apex_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_extend_define_picklist_values_for_apex_action_inputs.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_extend_add_custom_header_for_apex_action.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_assign_metadata_types_to_apex_input_parameters.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_screens_styling_hooks.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_release_update.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_release_update_enforce_perm_requirements_on_built_in_apex_classes.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_release_update_sort_apex_batch_action_result_by_request_order.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_automated_approvals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_automated_approvals_unanimous_approvals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_automated_approvals_designers_view_usage_details.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_orchestrator.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_orchestrator_standard_feature.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mfi_simplify_integration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mfi_enhance_data_exchange_with_third_party_connectors.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mfi_get_more_ways_to_act_on_flows_with_third_party_connectors.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_mfi_centralize_value_mapping_management.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_task_smart_views.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_start_multiple_workflows.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_escalations.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_ai_blueprint_generation.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_add_update_users_via_csv.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_update_field_config_in_blueprint_transfer.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_excel_agent.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_excel_agent_update.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_document_reader.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_generalist_agent.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_agentforce_supply_chain_ai_agent_plan_requirement.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_apps_industries.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management.htm&language=pt_BR&release=262&type=5) |
+| **Process record updates at scale with CSV upload** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_csv.htm&language=pt_BR&release=262&type=5) |
+| **Refine Record Selection with Enhanced Support for the IN Operator** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_operator.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_canceling_status.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_tooling_api_changes.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_changed_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_business_rules_engine_intro.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_csv_decision_table_versions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_guardrails.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_decision_explainer_tracks_executions_against_context_record.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_local_list_variables_with_context_expression_set.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_2gp_support.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_new_changed_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_new_changed_invocable_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_date_type.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_omnistudio_decision_table_action.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_intro.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_flow_with_apex_for_context_definitions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_guardrails.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_dpe_integration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_dpe_integration_processtype.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_multiple_sort_orders.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_new_and_changed_objects.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_new_invocable_actions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_new_and_changed_apis.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_apex_context_namespace.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_processing_engine.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_on_demand_processing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_context_service_integration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_debug_mode.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_data_preview.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_dmo_hierarchical_aggregation.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_debug_lookup_joins.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_datacloud_writeback_operations.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_dpe_dmo_category_assignment.htm&language=pt_BR&release=262&type=5) |
 
 ## 🎓 Related Trailhead Modules
 
