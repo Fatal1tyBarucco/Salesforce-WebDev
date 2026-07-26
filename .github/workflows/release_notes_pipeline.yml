@@ -156,9 +156,11 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          # Pull with rebase to handle concurrent commits before pushing
-          git pull --rebase origin ${{ github.ref_name }}
-          git push origin HEAD:${{ github.ref_name }}
+          # Fetch latest remote, then force-with-lease push.
+          # The pipeline is the sole author of releases/ and README.md,
+          # so we can safely overwrite remote if a rebase would conflict.
+          git fetch origin ${{ github.ref_name }}
+          git push --force-with-lease origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release
         if: |
