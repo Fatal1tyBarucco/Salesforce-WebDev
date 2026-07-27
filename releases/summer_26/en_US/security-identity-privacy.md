@@ -59,14 +59,14 @@ Prepare-se para aprimoramentos de segurança novos e futuros. Restaure dados com
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_health_check_changes.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_health_check_changes_new_signals.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_mobile_notifications.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_privacy_center.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_privacy_center_agent.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_shield.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_excerpt_snippet.htm&language=pt_BR&release=262&type=5) |
+| **Privacy Center** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_privacy_center.htm&language=pt_BR&release=262&type=5) |
+| **Automate data compliance with Agentforce in the Privacy Center** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_privacy_center_agent.htm&language=pt_BR&release=262&type=5) |
+| **Salesforce Shield** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_shield.htm&language=pt_BR&release=262&type=5) |
+| **Data detection** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_data_detect.htm&language=pt_BR&release=262&type=5) |
+| **View and export sensitive data snippets in data detection scan results** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_excerpt_snippet.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_scan_encrypted.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_keyword_file.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_schedule_scan.htm&language=pt_BR&release=262&type=5) |
+| **Enable precise scanning for exact keywords and phrases with Data Detection** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_keyword_file.htm&language=pt_BR&release=262&type=5) |
+| **Automate the monitoring of sensitive data with recurring checks in Data Detection** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_schedule_scan.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_dd_stop_running_data_scans.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_dd_data360.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_security_em.htm&language=pt_BR&release=262&type=5) |

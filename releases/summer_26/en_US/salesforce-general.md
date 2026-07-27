@@ -45,20 +45,20 @@ Aprenda sobre novos recursos e aprimoramentos que afetam sua experiência geral 
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_archive_settings.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_archive_classic_related_lists.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_archive_rename.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_archive_end_of_llife.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_overview.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_people_scoring.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_web_tracking.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_invoices.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_data_pipelines.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_azure_data_lake_output_connection_ga.htm&language=pt_BR&release=262&type=5) |
+| **Prepare for the Retirement of Your Own Archive and Legacy Archive Managed Package** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_archive_end_of_llife.htm&language=pt_BR&release=262&type=5) |
+| **Salesforce Foundations** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_overview.htm&language=pt_BR&release=262&type=5) |
+| **Prioritize Your Top Leads with Person Scoring in Foundations** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_people_scoring.htm&language=pt_BR&release=262&type=5) |
+| **Transform Web Traffic into Actionable Insights with Web Tracking** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_web_tracking.htm&language=pt_BR&release=262&type=5) |
+| **Simplify billing by managing your invoices in Salesforce Foundations** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_invoices.htm&language=pt_BR&release=262&type=5) |
+| **Salesforce Data Pipelines** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_data_pipelines.htm&language=pt_BR&release=262&type=5) |
+| **Increase performance and reliability with the Salesforce Data Pipeline Revenue Inspector** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
+| **Export revenue schedules to your external calendar for easy tracking** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
+| **Simplify recipe backup with direct upload and download in Data Manager** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
+| **Improve snapshot data recipe performance with optimized insert and insert and delete actions (generally available)** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
+| **Export data from Salesforce data pipelines to Azure Data Lake (Generally Available)** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_azure_data_lake_output_connection_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_show_category_specific_position_on_waitlist_participant_cards.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_help_users_resolve_appointment_errors_faster_with_custom_validation_messages.htm&language=pt_BR&release=262&type=5) |
+| **Help users resolve appointment errors faster with custom validation messages** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_help_users_resolve_appointment_errors_faster_with_custom_validation_messages.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ls_keep_custom_lobby_components_in_sync.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_trust.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_trust_site.htm&language=pt_BR&release=262&type=5) |

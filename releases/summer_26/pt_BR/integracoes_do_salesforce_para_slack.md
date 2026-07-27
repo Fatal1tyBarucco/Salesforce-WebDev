@@ -7,8 +7,8 @@ Categoria **Integrações do Salesforce para Slack** com 2 recursos nesta releas
 
 | Recurso | Descrição | Impacto |
 | :--- | :--- | :---: |
-| **Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce** — _usuários_ | Recurso 'Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce' disponível na release. Dispo… | 🟡 médio |
-| **Acessar canais do Salesforce no painel do Slack** — _admins_ | Recurso 'Acessar canais do Salesforce no painel do Slack' disponível na release. Disponibilidade: admins. | 🟢 baixo |
+| **Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce — _usuários_** | Recurso 'Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce — _usuários_' disponível na r… | 🟡 médio |
+| **Acessar canais do Salesforce no painel do Slack — _admins_** | Recurso 'Acessar canais do Salesforce no painel do Slack — _admins_' disponível na release. | 🟢 baixo |
 
 ## 🎓 Módulos Trailhead Relacionados
 

@@ -150,11 +150,11 @@ Aprenda sobre novos recursos e aprimoramentos nas nuvens de Indústrias.
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_home_health.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_home_health_automate_invoicing.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_home_health_assessment_save_for_later.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_unified_search.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_view_internal_assessments.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_targeted_goal_recs.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_referral_management.htm&language=pt_BR&release=262&type=5) |
+| **Integrated care management** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management.htm&language=pt_BR&release=262&type=5) |
+| **Find reviews more efficiently with a unified search experience** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_unified_search.htm&language=pt_BR&release=262&type=5) |
+| **Improve patient outcomes with historical access for internal assessments** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_view_internal_assessments.htm&language=pt_BR&release=262&type=5) |
+| **Personalize care plans faster with targeted goal recommendations** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_integrated_care_management_targeted_goal_recs.htm&language=pt_BR&release=262&type=5) |
+| **Referral Management** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_referral_management.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_patient_access_referral_management_setup.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_document_ai_patient_access.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_health_referral_management_prior_authorization_submissions.htm&language=pt_BR&release=262&type=5) |
