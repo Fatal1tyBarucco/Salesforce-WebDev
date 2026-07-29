@@ -77,6 +77,7 @@ class ReleaseSummarizer:
         if cache_file.exists():
             try:
                 import json as _json
+
                 cache = _json.loads(cache_file.read_text(encoding="utf-8"))
                 meta = self._load_meta(release_dir)
                 total = meta.get("total_features", 0)
