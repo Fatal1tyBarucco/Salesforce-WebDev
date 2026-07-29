@@ -67,7 +67,7 @@ class LLMProvider:
 class LLMService:
     """Resilient LLM service with automatic fallback across providers.
 
-    Tries providers in order: OpenAI → Google Gemini → OpenCode → MiMoCode.
+    Tries providers in order: Google Gemini → OpenRouter → DeepSeek → OpenCode → MiMoCode → OpenAI.
     When one fails, moves to the next after circuit breaker cooldown.
     """
 
@@ -235,12 +235,13 @@ class LLMService:
         # 6. MiMoCode (OpenAI compatible)
         mimocode_key = os.environ.get("MIMOCODE_API_KEY", "")
         if mimocode_key:
+            mimocode_url = os.environ.get("MIMO_API_BASE_URL", "https://api.mimocode.ai/v1")
             providers.append(
                 LLMProvider(
                     name="mimocode",
                     api_key=mimocode_key,
-                    base_url="https://api.mimocode.ai/v1",
-                    model="mimo-auto",
+                    base_url=mimocode_url,
+                    model="mimo-v2.5-pro",
                     provider_type="openai",
                 )
             )
@@ -440,8 +441,8 @@ class LLMService:
             # Google first, then OpenRouter, then OpenAI
             cheap_order = ["google", "openrouter", "openai", "deepseek", "opencode", "mimocode"]
         else:
-            # Standard order as configured
-            return list(self._providers)
+            # Standard: Google first, then cost-effective providers
+            cheap_order = ["google", "openrouter", "deepseek", "opencode", "mimocode", "openai"]
 
         ordered: list[LLMProvider] = []
         by_name = {p.name: p for p in self._providers}
