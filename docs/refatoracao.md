@@ -59,12 +59,26 @@ O repositório automatiza a extração, classificação e versionamento de *Rele
 
 _Status detalhado por tarefa/branch: [`REFATORACAO_STATUS.md`](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/REFATORACAO_STATUS.md)._
 
+## Concluído (pós-V3, antes classificado como pendente)
+
+| Item | Tarefa | Estado | Evidência |
+|---|---|---|---|
+| T5 | Cache com invalidação por content-hash | ✅ | `cache_manager.py`: `compute_file_hash()`, `get_content_hash()` |
+| T6 | Dependency Injection | ✅ | `main.py`: `PipelineConfig` dataclass com DI em `run_pipeline()` |
+| T7 | Event System | ✅ | `events.py`: `EventBus` com `emit()`, `on()`, async pub/sub |
+| T8 | Async Context Managers | ✅ | `scraper.py`: `__aenter__`/`__aexit__` para Playwright lifecycle |
+| #11 | Testes de integração | ✅ | `tests/test_ai_integration.py` |
+| #14 | Scraping paralelo | ✅ | `scraper.py`: `asyncio.Semaphore` + `asyncio.gather` em `fetch_multiple_raw_text()` |
+| #18 | Logging estruturado | ✅ | `logger.py`: `JSONFormatter` + `TextFormatter` + correlation IDs |
+| #19 | Prometheus | ✅ | `health.py`: integração `prometheus_client` com fallback text/plain |
+| #23 | GH Actions matrix | ✅ | `python-quality.yml`: matrix `["3.12", "3.13"]` |
+
 ## Pendente (planejado)
 
-- **T4** (#6) Type stubs · **T5** (#7) Cache com invalidação por content-hash · **T6** (#8) Dependency Injection · **T7** (#9) Event System · **T8** (#10) Async Context Managers.
-- **Testes** #11 integração real · #12 property-based · #13 snapshot.
-- **Performance** #14 scraping paralelo · #15 updates incrementais · #16 streaming.
-- **DX/Infra** #17 CLI (click/typer) · #18 logging estruturado (structlog) · #19 Prometheus · #22 semantic release · #23 GH Actions matrix · #25 benchmarks.
+- **T4** (#6) Type stubs.
+- **Testes** #12 property-based · #13 snapshot.
+- **Performance** #15 updates incrementais · #16 streaming.
+- **DX/Infra** #17 CLI (click/typer) · #22 semantic release · #25 benchmarks.
 
 ## Auditoria de Integração (Comando de Inicialização)
 
