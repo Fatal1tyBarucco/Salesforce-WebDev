@@ -27,244 +27,6 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 
 ---
 
-## 📖 Overview
-
-Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart LR
-    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
-    B -->|DOM Parsing| C[parser.py]
-    C -->|Feature Impact| D[generator.py]
-    D -->|Markdown| E[releases/]
-    D -->|Update| F[README.md]
-    E -->|Jekyll| G[GitHub Pages]
-    F -->|Jekyll| G
-
-    B -->|Retry + Circuit Breaker| H{Resilience Layer}
-    H -->|Cache Hit| I[cache/]
-    H -->|Cache Miss| A
-```
-
-**Princípios de Design:**
-* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
-* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
-* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
-
-## ⚙️ Pré-requisitos e Instalação
-
-Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
-
-```bash
-# Instale o uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone e instale
-git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
-cd Salesforce-WebDev
-uv sync
-
-# Instale browsers do Playwright
-uv run playwright install chromium
-
-# Instale hooks de pré-commit (ruff, black, mypy, pytest)
-uv run pre-commit install
-uv run pre-commit install --hook-type pre-push
-```
-
-## 🚀 Uso e Execução
-
-```bash
-# Executar pipeline completo
-uv run python -m src.main
-
-# Executar release específica
-uv run python -m src.main --release summer_26
-
-# Dry run (sem escrever arquivos)
-uv run python -m src.main --dry-run
-```
-
-## 🛡️ Governança e Resiliência
-
-| Componente | Configuração | Description |
-| :--- | :--- | :--- |
-| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
-| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
-| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
-| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
-
-## 🧪 Testes e Qualidade
-
-```bash
-# Executar testes
-uv run pytest tests/
-
-# Com cobertura
-uv run pytest tests/ --cov=src --cov-report=term-missing
-
-# Quality gate (ordem CI)
-uv run ruff check src/
-uv run black --check src/
-uv run mypy src/
-```
-
-**Meta:** Cobertura ≥95%, zero erros de tipo, zero warnings de lint.
-
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## 📋 Releases Disponíveis
 
@@ -1015,6 +777,246 @@ Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de I
 </details>
 
 </details>
+
+
+## 📖 Overview
+
+Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart LR
+    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
+    B -->|DOM Parsing| C[parser.py]
+    C -->|Feature Impact| D[generator.py]
+    D -->|Markdown| E[releases/]
+    D -->|Update| F[README.md]
+    E -->|Jekyll| G[GitHub Pages]
+    F -->|Jekyll| G
+
+    B -->|Retry + Circuit Breaker| H{Resilience Layer}
+    H -->|Cache Hit| I[cache/]
+    H -->|Cache Miss| A
+```
+
+**Princípios de Design:**
+* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
+* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
+* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
+
+## ⚙️ Pré-requisitos e Instalação
+
+Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
+
+```bash
+# Instale o uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone e instale
+git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
+cd Salesforce-WebDev
+uv sync
+
+# Instale browsers do Playwright
+uv run playwright install chromium
+
+# Instale hooks de pré-commit (ruff, black, mypy, pytest)
+uv run pre-commit install
+uv run pre-commit install --hook-type pre-push
+```
+
+## 🚀 Uso e Execução
+
+```bash
+# Executar pipeline completo
+uv run python -m src.main
+
+# Executar release específica
+uv run python -m src.main --release summer_26
+
+# Dry run (sem escrever arquivos)
+uv run python -m src.main --dry-run
+```
+
+## 🛡️ Governança e Resiliência
+
+| Componente | Configuração | Description |
+| :--- | :--- | :--- |
+| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
+| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
+| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
+| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
+
+## 🧪 Testes e Qualidade
+
+```bash
+# Executar testes
+uv run pytest tests/
+
+# Com cobertura
+uv run pytest tests/ --cov=src --cov-report=term-missing
+
+# Quality gate (ordem CI)
+uv run ruff check src/
+uv run black --check src/
+uv run mypy src/
+```
+
+**Meta:** Cobertura ≥95%, zero erros de tipo, zero warnings de lint.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 🛠️ Stack Tecnológico
