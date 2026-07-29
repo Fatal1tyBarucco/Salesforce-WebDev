@@ -175,6 +175,7 @@ def test_to_markdown(tmp_path: Path) -> None:
             CategoryHighlight("Agentforce", 5, 50.0, "Voice", "AI"),
         ],
         migration_notes="No notes.",
+        category_summaries={"Agentforce": "AI features summary."},
         confidence=0.9,
     )
 

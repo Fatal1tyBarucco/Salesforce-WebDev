@@ -540,11 +540,13 @@ async def _build_release_block(
 
         summary = await summarizer.summarize(slug)
         summary_text = ""
+        cat_summaries: dict[str, str] = {}
         if summary:
             if lang == "pt_BR":
-                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:200]}...\n"
+                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:5000]}\n"
             else:
-                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:200]}...\n"
+                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:5000]}\n"
+            cat_summaries = summary.category_summaries
 
         # Build category details
         cat_lines: list[str] = []
@@ -563,10 +565,16 @@ async def _build_release_block(
                 count_label = "recursos"
                 details_label = "Detalhes completos"
 
+            cat_summary_text = ""
+            if cat_name in cat_summaries:
+                cat_summary_text = f"\n> {cat_summaries[cat_name][:1000]}\n"
+
             cat_lines.append("\n<details>")
             cat_lines.append(
                 f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
             )
+            if cat_summary_text:
+                cat_lines.append(cat_summary_text)
             cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
             cat_lines.append("</details>\n")
 

@@ -297,6 +297,7 @@ class TestReleaseSummarizer:
                 CategoryHighlight("Agentforce", 47, 47.0, "Voice", "AI"),
             ],
             migration_notes="No migration notes.",
+            category_summaries={"Agentforce": "AI features summary."},
             confidence=0.95,
         )
 
