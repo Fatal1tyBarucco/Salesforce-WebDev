@@ -81,6 +81,7 @@ nav:
     - V1: roadmap/v1.md
     - V2: roadmap/v2.md
     - V3: roadmap/v3.md
+    - V4 (Atual): roadmap/v4.md
   - Internos:
     - Diretiva do Agente: internal/AGENT_DIRECTIVE.md
     - Análise: internal/ANALYSIS.md
