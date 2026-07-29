@@ -67,7 +67,7 @@ class LLMProvider:
 class LLMService:
     """Resilient LLM service with automatic fallback across providers.
 
-    Tries providers in order: Google Gemini → OpenRouter → DeepSeek → OpenCode → MiMoCode → OpenAI.
+    Tries providers in order: Google Gemini → OpenCode → OpenAI → OpenRouter → DeepSeek → MiMoCode.
     When one fails, moves to the next after circuit breaker cooldown.
     """
 
@@ -435,14 +435,14 @@ class LLMService:
             return []
 
         if tier == "cheap":
-            # Google first, then OpenRouter free, then DeepSeek
-            cheap_order = ["google", "openrouter", "deepseek", "opencode", "mimocode", "openai"]
+            # Google first, then OpenRouter free, then others
+            cheap_order = ["google", "openrouter", "openai", "opencode", "deepseek", "mimocode"]
         elif tier == "premium":
-            # Google first, then OpenRouter, then OpenAI
-            cheap_order = ["google", "openrouter", "openai", "deepseek", "opencode", "mimocode"]
+            # Google first, then OpenAI, then others
+            cheap_order = ["google", "openai", "openrouter", "opencode", "deepseek", "mimocode"]
         else:
-            # Standard: Google first, then cost-effective providers
-            cheap_order = ["google", "openrouter", "deepseek", "opencode", "mimocode", "openai"]
+            # Standard: Google first, then OpenCode/OpenAI/OpenRouter, then DeepSeek/MiMoCode
+            cheap_order = ["google", "opencode", "openai", "openrouter", "deepseek", "mimocode"]
 
         ordered: list[LLMProvider] = []
         by_name = {p.name: p for p in self._providers}
