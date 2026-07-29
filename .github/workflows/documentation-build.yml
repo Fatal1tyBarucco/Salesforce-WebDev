@@ -6,6 +6,11 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - "releases/**"
+      - "README.md"
+      - "README.en.md"
+      - "src/release_docs.py"
+      - "src/release_summarizer.py"
   workflow_dispatch:
 
 permissions:

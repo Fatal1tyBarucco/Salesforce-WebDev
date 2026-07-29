@@ -2,6 +2,25 @@
 
 Pipeline automatizado para extração, classificação, análise e versionamento das Release Notes da Salesforce como artefatos Markdown estruturados.
 
+## 📋 Releases Disponíveis
+
+| Release | Features | Categorias | Status |
+| :--- | :---: | :---: | :---: |
+| ☀️ **Summer '26** | 1.434 | 22 | ✅ Atual |
+| 🌸 **Spring '26** | 1.438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1.348 | 19 | ✅ Completo |
+
+> Cada release inclui resumos executivos gerados por AI (até 5.000 caracteres),
+> resumos por categoria (até 1.000 caracteres), e documentação completa em
+> português e inglês.
+
+**📄 Documentação completa:**
+
+- [🇧🇷 Português](https://github.com/Fatal1tyBarucco/Salesforce-WebDev#-releases-disponíveis)
+- [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-releases-disponíveis)
+
+---
+
 ## O Que Este Repositório Faz
 
 ```mermaid
