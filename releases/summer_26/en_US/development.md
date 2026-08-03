@@ -31,11 +31,11 @@ Quer você esteja usando componentes do Lightning, o Visualforce, o Apex ou as A
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_mfe_auto_resize.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_mfe_dirty_state.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_mfe_accessibility.htm&language=pt_BR&release=262&type=5) |
-| **Maximum number of actions imposed in a boxcar request** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_actions_limit.htm&language=pt_BR&release=262&type=5) |
-| **Lightning component version updates** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_rus.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_actions_limit.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_rus.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_rus_remove_nonpublic_fields_ru_262.htm&language=pt_BR&release=262&type=5) |
-| **Lightning Types** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt.htm&language=pt_BR&release=262&type=5) |
-| **Create mobile experiences with custom Lightning types** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt_mobile_metadata.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt_mobile_metadata.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt_mobile_setup.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt_preview_comp.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_lt_skills.htm&language=pt_BR&release=262&type=5) |

@@ -75,7 +75,7 @@ O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cl
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_productivity_eac_graph_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_productivity_eac_events_move_to_platform.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_productivity_eac_reports_retire_prepare.htm&language=pt_BR&release=262&type=5) |
-| **Lightning Sync** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_lightning_sync.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_lightning_sync.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_productivity_ls_ews_retirement.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_productivity_ls_retirement.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_sfo.htm&language=pt_BR&release=262&type=5) |

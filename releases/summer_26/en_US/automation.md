@@ -44,7 +44,7 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_data_360.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_activation_triggered_flow_updates.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_broadcast_flow_updates.htm&language=pt_BR&release=262&type=5) |
-| **Use unlimited MuleSoft connectors in segment-triggered, activation-triggered, and broadcast flows** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_unlimited_connectors.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_unlimited_connectors.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_show_toast_message.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_open_a_page.htm&language=pt_BR&release=262&type=5) |
@@ -104,7 +104,7 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_tooling_api_changes.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_changed_objects.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_business_rules_engine_intro.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_csv_decision_table_versions.htm&language=pt_BR&release=262&type=5) |
+| **Enhance Control and Compliance with Decision Table Version Control** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_csv_decision_table_versions.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_guardrails.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_decision_explainer_tracks_executions_against_context_record.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_local_list_variables_with_context_expression_set.htm&language=pt_BR&release=262&type=5) |
@@ -113,9 +113,9 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_new_changed_invocable_actions.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_date_type.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_omnistudio_decision_table_action.htm&language=pt_BR&release=262&type=5) |
-| **Context service** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_intro.htm&language=pt_BR&release=262&type=5) |
-| **Generate Apex classes for context definitions** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_flow_with_apex_for_context_definitions.htm&language=pt_BR&release=262&type=5) |
-| **Increase design-time scalability with higher context definition limits** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_guardrails.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_intro.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_flow_with_apex_for_context_definitions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_guardrails.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_dpe_integration.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_dpe_integration_processtype.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_ctx_multiple_sort_orders.htm&language=pt_BR&release=262&type=5) |
