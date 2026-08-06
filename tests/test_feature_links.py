@@ -194,9 +194,7 @@ class TestFetchFeaturesWithLinks:
 
         scraper = SalesforceReleaseScraper()
         with patch.object(scraper, "_ensure_browser", return_value=True):
-            with patch.object(
-                scraper, "_fetch_with_playwright", return_value=html
-            ):
+            with patch.object(scraper, "_fetch_with_playwright", return_value=html):
                 result = await scraper.fetch_features_with_links("http://example.com")
 
         assert len(result) == 1
@@ -237,9 +235,7 @@ class TestParserDocsUrl:
     def test_parse_feature_line_with_docs_url(self) -> None:
         """_parse_feature_line stores docs_url."""
         parser = FeatureImpactParser()
-        entry = parser._parse_feature_line(
-            "Feature Name\tYes", docs_url="https://example.com"
-        )
+        entry = parser._parse_feature_line("Feature Name\tYes", docs_url="https://example.com")
         assert entry is not None
         assert entry.docs_url == "https://example.com"
 
@@ -280,9 +276,7 @@ class TestParserDocsUrl:
 
     def test_feature_impact_entry_docs_url_slot(self) -> None:
         """FeatureImpactEntry has docs_url attribute."""
-        entry = FeatureImpactEntry(
-            name="Test", docs_url="https://example.com"
-        )
+        entry = FeatureImpactEntry(name="Test", docs_url="https://example.com")
         assert entry.docs_url == "https://example.com"
         assert hasattr(entry, "docs_url")
 
@@ -313,9 +307,7 @@ class TestFormatEntryTableDocsUrl:
         from src.release_docs import _format_entry_table
 
         entry = FeatureImpactEntry(name="Test Feature", available_users=True)
-        result = _format_entry_table(
-            entry, docs_url="https://example.com/fallback"
-        )
+        result = _format_entry_table(entry, docs_url="https://example.com/fallback")
         assert "🔗" in result
         assert "https://example.com/fallback" in result
 
@@ -336,9 +328,7 @@ class TestFormatEntryTableDocsUrl:
             available_users=True,
             docs_url="https://entry-url.com",
         )
-        result = _format_entry_table(
-            entry, docs_url="https://param-url.com"
-        )
+        result = _format_entry_table(entry, docs_url="https://param-url.com")
         # Extrai a URL renderizada do resultado e valida host/scheme com parsing
         rendered_url = next(
             token

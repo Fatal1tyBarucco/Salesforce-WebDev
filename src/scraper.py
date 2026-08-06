@@ -54,7 +54,7 @@ def calculate_jittered_delay(base_delay: float, attempt: int) -> float:
     Formula: base_delay * (2 ** attempt) + random.uniform(0, base_delay)
     Jitter prevents Thundering Herd when multiple instances retry simultaneously.
     """
-    exponential_delay: float = base_delay * (2 ** attempt)
+    exponential_delay: float = base_delay * (2**attempt)
     jitter: float = random.uniform(0, base_delay)
     return exponential_delay + jitter
 
@@ -254,9 +254,7 @@ class SalesforceReleaseScraper:
         stale element exceptions when the DOM updates during iteration.
         """
         try:
-            collapsed = await page.query_selector_all(
-                'li[role="treeitem"][aria-expanded="false"]'
-            )
+            collapsed = await page.query_selector_all('li[role="treeitem"][aria-expanded="false"]')
             expanded_count = 0
             for node in collapsed:
                 try:
@@ -366,9 +364,7 @@ class SalesforceReleaseScraper:
             return cast(str, cached_text)
 
         if self._circuit_breaker.is_open:
-            logger.warning(
-                "Circuit breaker open — returning stale cache if available for %s", url
-            )
+            logger.warning("Circuit breaker open — returning stale cache if available for %s", url)
             return None
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
@@ -452,9 +448,7 @@ class SalesforceReleaseScraper:
                 logger.info("Retrying in %.1fs...", delay)
                 await asyncio.sleep(delay)
 
-        logger.error(
-            "All %d attempts failed for feature extraction: %s", MAX_RETRY_ATTEMPTS, url
-        )
+        logger.error("All %d attempts failed for feature extraction: %s", MAX_RETRY_ATTEMPTS, url)
         return []
 
     @staticmethod
@@ -605,9 +599,7 @@ class SalesforceReleaseScraper:
         Reuses the existing browser when available; falls back to a standalone launch.
         """
         if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-            logger.info(
-                "PDF already exists, skipping: %s (%d bytes)", dest, dest.stat().st_size
-            )
+            logger.info("PDF already exists, skipping: %s (%d bytes)", dest, dest.stat().st_size)
             return True
 
         logger.info("Downloading PDF via button click: %s -> %s", page_url, dest)
@@ -625,14 +617,10 @@ class SalesforceReleaseScraper:
                 context = await browser.new_context(accept_downloads=True)
                 page = await context.new_page()
 
-            await page.goto(
-                page_url, wait_until="domcontentloaded", timeout=30000
-            )
+            await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
 
             try:
-                await page.wait_for_selector(
-                    "button[title='Open PDF']", timeout=15000
-                )
+                await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
             except (TimeoutError, PlaywrightTimeout, Exception):
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
@@ -653,9 +641,7 @@ class SalesforceReleaseScraper:
                 await browser_to_close.stop()
 
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                logger.info(
-                    "PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size
-                )
+                logger.info("PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size)
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
@@ -674,16 +660,12 @@ class SalesforceReleaseScraper:
         """Download a PDF file to dest using urllib (fallback)."""
         logger.info("Downloading PDF: %s -> %s", url, dest)
         try:
-            req = urllib.request.Request(
-                url, headers={"User-Agent": "Mozilla/5.0"}
-            )
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             response = urllib.request.urlopen(req, timeout=30)
             data = response.read()
             dest.write_bytes(data)
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                logger.info(
-                    "PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size
-                )
+                logger.info("PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size)
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
