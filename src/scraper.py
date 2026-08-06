@@ -519,8 +519,10 @@ class SalesforceReleaseScraper:
                     continue
 
                 href = link.get("href", "")
-                if isinstance(href, str) and (
-                    "release-notes" in href or "help.salesforce.com" in href
+                if (
+                    isinstance(href, str)
+                    and "release-notes" in href
+                    and _is_allowed_salesforce_href(href)
                 ):
                     docs_url = (
                         href if href.startswith("http") else f"https://help.salesforce.com{href}"
