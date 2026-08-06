@@ -364,7 +364,9 @@ class SalesforceReleaseScraper:
             return cast(str, cached_text)
 
         if self._circuit_breaker.is_open:
-            logger.warning("Circuit breaker open — returning stale cache if available for %s", url)
+            logger.warning(
+                "Circuit breaker open — returning stale cache if available for %s", url
+            )
             # The current CacheManager.get already handles TTL, so we'd need a 'get_stale'
             # but for now we just return None or rely on the user wanting fresh data.
             return None
@@ -450,7 +452,9 @@ class SalesforceReleaseScraper:
                 logger.info("Retrying in %.1fs...", delay)
                 await asyncio.sleep(delay)
 
-        logger.error("All %d attempts failed for feature extraction: %s", MAX_RETRY_ATTEMPTS, url)
+        logger.error(
+            "All %d attempts failed for feature extraction: %s", MAX_RETRY_ATTEMPTS, url
+        )
         return []
 
     @staticmethod
@@ -478,7 +482,7 @@ class SalesforceReleaseScraper:
             if parsed.scheme not in {"http", "https"}:
                 return False
             host = parsed.hostname
-            if not host:  # Verifica se host é None ou vazio
+            if not host:
                 return False
             return host == "salesforce.com" or host.endswith(".salesforce.com")
 
@@ -504,7 +508,9 @@ class SalesforceReleaseScraper:
                 href = link.get("href", "")
                 if isinstance(href, str) and _is_allowed_salesforce_href(href):
                     docs_url = (
-                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                        href
+                        if href.startswith("http")
+                        else f"https://help.salesforce.com{href}"
                     )
 
             features.append({"name": name, "docs_url": docs_url})
@@ -527,7 +533,9 @@ class SalesforceReleaseScraper:
                     and _is_allowed_salesforce_href(href)
                 ):
                     docs_url = (
-                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                        href
+                        if href.startswith("http")
+                        else f"https://help.salesforce.com{href}"
                     )
                     features.append({"name": name, "docs_url": docs_url})
 
@@ -543,7 +551,9 @@ class SalesforceReleaseScraper:
                 name = a.get_text(strip=True)
                 if name and len(name) >= 3:
                     docs_url = (
-                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
+                        href
+                        if href.startswith("http")
+                        else f"https://help.salesforce.com{href}"
                     )
                     features.append({"name": name, "docs_url": docs_url})
 
@@ -601,7 +611,9 @@ class SalesforceReleaseScraper:
         Reuses the existing browser when available; falls back to a standalone launch.
         """
         if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-            logger.info("PDF already exists, skipping: %s (%d bytes)", dest, dest.stat().st_size)
+            logger.info(
+                "PDF already exists, skipping: %s (%d bytes)", dest, dest.stat().st_size
+            )
             return True
 
         logger.info("Downloading PDF via button click: %s -> %s", page_url, dest)
@@ -619,10 +631,14 @@ class SalesforceReleaseScraper:
                 context = await browser.new_context(accept_downloads=True)
                 page = await context.new_page()
 
-            await page.goto(page_url, wait_until="domcontentloaded", timeout=30000)
+            await page.goto(
+                page_url, wait_until="domcontentloaded", timeout=30000
+            )
 
             try:
-                await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
+                await page.wait_for_selector(
+                    "button[title='Open PDF']", timeout=15000
+                )
             except (TimeoutError, PlaywrightTimeout, Exception) as _pdf_btn_err:
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
@@ -643,12 +659,20 @@ class SalesforceReleaseScraper:
                 await browser_to_close.stop()
 
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                logger.info("PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size)
+                logger.info(
+                    "PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size
+                )
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
 
-        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
+        except (
+            ScraperError,
+            BrowserError,
+            TimeoutError,
+            PlaywrightTimeout,
+            OSError,
+        ) as e:
             logger.warning("PDF button download failed: %s", e)
             return False
 
@@ -656,15 +680,25 @@ class SalesforceReleaseScraper:
         """Download a PDF file to dest using urllib (fallback)."""
         logger.info("Downloading PDF: %s -> %s", url, dest)
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "Mozilla/5.0"}
+            )
             response = urllib.request.urlopen(req, timeout=30)
             data = response.read()
             dest.write_bytes(data)
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                logger.info("PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size)
+                logger.info(
+                    "PDF downloaded: %s (%d bytes)", dest, dest.stat().st_size
+                )
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
-        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
+        except (
+            ScraperError,
+            BrowserError,
+            TimeoutError,
+            PlaywrightTimeout,
+            OSError,
+        ) as e:
             logger.warning("PDF download failed: %s", e)
             return False
