@@ -37,8 +37,8 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
         status_code: HTTP status code as int, str, or None.
 
     Returns:
-        ``True`` when *status_code* equals 429; ``False`` otherwise
-        (including ``None`` or non-numeric values).
+        True when *status_code* equals 429; False otherwise
+        (including None or non-numeric values).
     """
     if status_code is None:
         return False
@@ -54,7 +54,7 @@ def calculate_jittered_delay(base_delay: float, attempt: int) -> float:
     Formula: base_delay * (2 ** attempt) + random.uniform(0, base_delay)
     Jitter prevents Thundering Herd when multiple instances retry simultaneously.
     """
-    exponential_delay: float = base_delay * (2**attempt)
+    exponential_delay: float = base_delay * (2 ** attempt)
     jitter: float = random.uniform(0, base_delay)
     return exponential_delay + jitter
 
@@ -132,14 +132,14 @@ class SalesforceReleaseScraper:
 
         Args:
             url: The page URL to fetch.
-            page: Optional existing Playwright ``Page`` to reuse.
+            page: Optional existing Playwright Page to reuse.
             expand_toc: Whether to expand table-of-contents/navigation sections
-                before extraction. Set to ``False`` to skip TOC expansion
+                before extraction. Set to False to skip TOC expansion
                 (typically faster, but may return less complete content).
 
         Returns:
             The rendered HTML as a string when a valid response is obtained.
-            Returns ``None`` if all retry attempts fail or only insufficient
+            Returns None if all retry attempts fail or only insufficient
             content is retrieved.
         """
         logger.info("Fetching URL: %s", url)
@@ -150,7 +150,9 @@ class SalesforceReleaseScraper:
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
-                html_content = await self._fetch_with_playwright(url, page, expand_toc=expand_toc)
+                html_content = await self._fetch_with_playwright(
+                    url, page, expand_toc=expand_toc
+                )
                 if html_content and len(html_content) > MIN_VALID_CONTENT_SIZE:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
@@ -188,12 +190,12 @@ class SalesforceReleaseScraper:
                 page (and browser when needed) is created for this request.
             expand_toc: Whether to expand table-of-contents/accordion content before
                 extraction.
-            return_text: When ``False`` (default), return rendered HTML content.
-                When ``True``, return extracted visible text content instead.
+            return_text: When False (default), return rendered HTML content.
+                When True, return extracted visible text content instead.
 
         Returns:
-            The fetched content as a string (HTML or text based on ``return_text``),
-            or ``None`` if fetching fails.
+            The fetched content as a string (HTML or text based on return_text),
+            or None if fetching fails.
         """
         is_standalone = page is None
 
@@ -213,7 +215,9 @@ class SalesforceReleaseScraper:
 
         assert page is not None
         try:
-            return await self._exec_fetch(url, page, expand_toc=expand_toc, return_text=return_text)
+            return await self._exec_fetch(
+                url, page, expand_toc=expand_toc, return_text=return_text
+            )
         finally:
             if is_standalone and self._browser and page is not None:
                 await page.close()
@@ -234,7 +238,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, PlaywrightTimeout, Exception) as _wait_err:
+        except (TimeoutError, PlaywrightTimeout, Exception):
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -254,7 +258,9 @@ class SalesforceReleaseScraper:
         stale element exceptions when the DOM updates during iteration.
         """
         try:
-            collapsed = await page.query_selector_all('li[role="treeitem"][aria-expanded="false"]')
+            collapsed = await page.query_selector_all(
+                'li[role="treeitem"][aria-expanded="false"]'
+            )
             expanded_count = 0
             for node in collapsed:
                 try:
@@ -284,7 +290,7 @@ class SalesforceReleaseScraper:
 
         Returns:
             Optional[str]: ToC HTML when found; otherwise full page HTML when extraction
-            succeeds but no ToC container is matched; ``None`` when page creation, navigation,
+            succeeds but no ToC container is matched; None when page creation, navigation,
             or extraction raises an exception.
         """
         logger.info("Extracting ToC HTML from: %s", url)
@@ -367,8 +373,6 @@ class SalesforceReleaseScraper:
             logger.warning(
                 "Circuit breaker open — returning stale cache if available for %s", url
             )
-            # The current CacheManager.get already handles TTL, so we'd need a 'get_stale'
-            # but for now we just return None or rely on the user wanting fresh data.
             return None
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
@@ -508,9 +512,7 @@ class SalesforceReleaseScraper:
                 href = link.get("href", "")
                 if isinstance(href, str) and _is_allowed_salesforce_href(href):
                     docs_url = (
-                        href
-                        if href.startswith("http")
-                        else f"https://help.salesforce.com{href}"
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
                     )
 
             features.append({"name": name, "docs_url": docs_url})
@@ -533,9 +535,7 @@ class SalesforceReleaseScraper:
                     and _is_allowed_salesforce_href(href)
                 ):
                     docs_url = (
-                        href
-                        if href.startswith("http")
-                        else f"https://help.salesforce.com{href}"
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
                     )
                     features.append({"name": name, "docs_url": docs_url})
 
@@ -551,9 +551,7 @@ class SalesforceReleaseScraper:
                 name = a.get_text(strip=True)
                 if name and len(name) >= 3:
                     docs_url = (
-                        href
-                        if href.startswith("http")
-                        else f"https://help.salesforce.com{href}"
+                        href if href.startswith("http") else f"https://help.salesforce.com{href}"
                     )
                     features.append({"name": name, "docs_url": docs_url})
 
@@ -639,7 +637,7 @@ class SalesforceReleaseScraper:
                 await page.wait_for_selector(
                     "button[title='Open PDF']", timeout=15000
                 )
-            except (TimeoutError, PlaywrightTimeout, Exception) as _pdf_btn_err:
+            except (TimeoutError, PlaywrightTimeout, Exception):
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:
