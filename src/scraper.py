@@ -150,9 +150,7 @@ class SalesforceReleaseScraper:
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
             try:
-                html_content = await self._fetch_with_playwright(
-                    url, page, expand_toc=expand_toc
-                )
+                html_content = await self._fetch_with_playwright(url, page, expand_toc=expand_toc)
                 if html_content and len(html_content) > MIN_VALID_CONTENT_SIZE:
                     logger.info(
                         "Successfully fetched content from %s (%d bytes, attempt %d)",
@@ -215,9 +213,7 @@ class SalesforceReleaseScraper:
 
         assert page is not None
         try:
-            return await self._exec_fetch(
-                url, page, expand_toc=expand_toc, return_text=return_text
-            )
+            return await self._exec_fetch(url, page, expand_toc=expand_toc, return_text=return_text)
         finally:
             if is_standalone and self._browser and page is not None:
                 await page.close()
