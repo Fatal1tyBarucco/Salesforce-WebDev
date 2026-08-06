@@ -50,13 +50,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@v7
+        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -78,16 +78,16 @@ jobs:
     needs: lint
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@v7
+        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
