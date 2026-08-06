@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
+from urllib.parse import urlparse
 
 import openai
 
@@ -478,7 +479,9 @@ class TestAutomationServiceEdges:
         service = AIAutomationService()
         badge = service.generate_dynamic_badge("Summer '26", 100)
         assert "Summer" in badge
-        assert "shields.io" in badge
+        host = urlparse(badge).hostname
+        assert host is not None
+        assert host == "shields.io" or host.endswith(".shields.io")
 
 
 # ── OpenAPI spec ───────────────────────────────────────────────────
