@@ -478,7 +478,9 @@ class SalesforceReleaseScraper:
             if parsed.scheme not in {"http", "https"}:
                 return False
             host = parsed.hostname
-            return bool(host) and (host == "salesforce.com" or host.endswith(".salesforce.com"))
+            if not host:  # Verifica se host é None ou vazio
+                return False
+            return host == "salesforce.com" or host.endswith(".salesforce.com")
 
         features: list[dict[str, str]] = []
         soup = BeautifulSoup(html, "lxml")
