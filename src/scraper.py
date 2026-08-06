@@ -468,6 +468,17 @@ class SalesforceReleaseScraper:
             List of dicts with 'name' and 'docs_url' keys.
         """
         from bs4 import BeautifulSoup
+        from urllib.parse import urlparse
+
+        def _is_allowed_salesforce_href(href: str) -> bool:
+            """Return True for relative links or absolute links to salesforce.com domains."""
+            if href.startswith("/"):
+                return True
+            parsed = urlparse(href)
+            if parsed.scheme not in {"http", "https"}:
+                return False
+            host = parsed.hostname
+            return bool(host) and (host == "salesforce.com" or host.endswith(".salesforce.com"))
 
         features: list[dict[str, str]] = []
         soup = BeautifulSoup(html, "lxml")
@@ -489,7 +500,7 @@ class SalesforceReleaseScraper:
             docs_url = ""
             if link:
                 href = link.get("href", "")
-                if isinstance(href, str) and ("salesforce.com" in href or href.startswith("/")):
+                if isinstance(href, str) and _is_allowed_salesforce_href(href):
                     docs_url = (
                         href if href.startswith("http") else f"https://help.salesforce.com{href}"
                     )
