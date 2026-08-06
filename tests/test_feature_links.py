@@ -329,10 +329,12 @@ class TestFormatEntryTableDocsUrl:
             docs_url="https://entry-url.com",
         )
         result = _format_entry_table(entry, docs_url="https://param-url.com")
-        # Verifica se a URL do entry está presente e a do parâmetro não está
-        assert "entry-url.com" in result
-        # Usa urlparse para validar o hostname corretamente
-        parsed_url = urlparse("https://entry-url.com")
+        # Extrai a URL renderizada do resultado e valida host/scheme com parsing
+        rendered_url = next(
+            token for token in result.split() if token.startswith("http://") or token.startswith("https://")
+        )
+        parsed_url = urlparse(rendered_url)
+        assert parsed_url.scheme == "https"
         assert parsed_url.hostname == "entry-url.com"
         # Garante que a URL do parâmetro não está presente
         assert "param-url.com" not in result
