@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from urllib.parse import urlparse
 from unittest.mock import patch
 
 import pytest
@@ -128,7 +129,9 @@ class TestExtractFeaturesFromHtml:
         """
 
         features = SalesforceReleaseScraper._extract_features_from_html(html)
-        assert features[0]["docs_url"].startswith("https://help.salesforce.com")
+        parsed = urlparse(features[0]["docs_url"])
+        assert parsed.scheme == "https"
+        assert parsed.hostname == "help.salesforce.com"
 
     def test_non_salesforce_link_skipped(self) -> None:
         """Skips links that are not from Salesforce."""
