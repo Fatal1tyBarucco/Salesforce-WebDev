@@ -1,114 +1,111 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../pt_BR/gerenciamento_de_receita.md" style="text-decoration:none;font-weight:bold;">🇧🇷 Português</a> &nbsp;|&nbsp; <a href="../en_US/gerenciamento_de_receita.md" style="text-decoration:none;">🇺🇸 English</a></div>
 ## Gerenciamento de receita
 
-> **97 recursos**
+> **100 recursos**
 
-Aprenda sobre os novos recursos e aprimoramentos do Agentforce Revenue Management.
+Categoria **Gerenciamento de receita** com 97 recursos nesta release.
 
-| Recurso | Usuários | Admins | Config | Contato | Docs |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Experiência de configuração aprimorada com o Salesforce Go** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Simplifique a coleta de receita com a Solução de orquestração Dunning** | ❌ | ✅ | ❌ | ❌ | |
-| **Descubra mais recursos de gerenciamento de receita** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de catálogo de produtos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Crie transações mais rapidamente com a Descoberta baseada em regra** | ✅ | ❌ | ❌ | ❌ | |
-| **Aplicar seleção de rampa consistente durante a descoberta e configuração do produto** | ✅ | ❌ | ❌ | ❌ | |
-| **Expanda suas ofertas de produto com variações de produto** | ✅ | ❌ | ❌ | ❌ | |
-| **Mostrar precificação precisa e consistente com suporte decimal estendido** | ✅ | ❌ | ❌ | ❌ | |
-| **Novas APIs REST do Connect no Gerenciamento de catálogo de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **APIs REST do Connect novas e alteradas na Descoberta de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações invocáveis novas e alteradas na Descoberta de produtos** | ❌ | ✅ | ❌ | ❌ | |
-| **runtime_industries_cpq Namespace** | ❌ | ✅ | ❌ | ❌ | |
-| **Precificação do Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Usar tabelas de decisão baseadas em CSV em procedimentos de precificação** | ❌ | ❌ | ✅ | ❌ | |
-| **Sincronizar tabelas de decisão para qualquer receita de precificação** | ✅ | ❌ | ❌ | ❌ | |
-| **Mapear mais variáveis no elemento de item de linha de mapa** | ✅ | ❌ | ❌ | ❌ | |
-| **APIs REST do Connect alteradas na precificação do Salesforce** | ❌ | ✅ | ❌ | ❌ | |
-| **Configurador do produto** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Definir restrições para grupos de cotações e segmentos de rampa** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Carregar padrões de produto em restrições** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Atualizações no fluxo de configurador de produto padrão** | ❌ | ❌ | ✅ | ❌ | |
-| **API REST do Connect alterada no Product Configurator** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de transações** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aprimorar a visibilidade de atributo no editor de linha de transação de vendas** | ❌ | ❌ | ✅ | ❌ | |
-| **Trabalhe com mais eficiência com o editor de linha de transação de vendas aprimorado** | ✅ | ❌ | ❌ | ❌ | |
-| **Clonar cotações e pedidos com todos os registros relacionados** | ❌ | ❌ | ✅ | ❌ | |
-| **Vender variações de produto em cotações e pedidos** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplifique a cotação de vários anos usando uma agenda de rampa guiada** | ❌ | ❌ | ✅ | ❌ | |
-| **Renovar ativos perdidos antecipadamente para garantir receita futura** | ❌ | ❌ | ✅ | ❌ | |
-| **Lide com configurações de produto complexas com mais atributos** | ❌ | ❌ | ✅ | ❌ | |
-| **Processe mais registros para cada transação** | ❌ | ❌ | ✅ | ❌ | |
-| **Fortaleça o Criador de documentos com uma robusta arquitetura de serviço** | ✅ | ❌ | ❌ | ❌ | |
-| **Acompanhe dados de cotação e imposto com a visibilidade de objeto aprimorada** | ✅ | ❌ | ❌ | ❌ | |
-| **Proteger o acesso a dados para precificação com permissões elevadas** | ❌ | ❌ | ✅ | ❌ | |
-| **API REST do Connect alterada no Gerenciamento de transações** | ❌ | ✅ | ❌ | ❌ | |
-| **Nova ação invocável no Gerenciamento de transações** | ❌ | ❌ | ✅ | ❌ | |
-| **Advanced Approvals** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Mantenha as aprovações se movendo no Slack** | ❌ | ❌ | ✅ | ❌ | |
-| **Visualizar dependências da etapa de aprovação para seu envio** | ❌ | ❌ | ✅ | ❌ | |
-| **Personalize e automatize ações de aprovação com Fluxo e Apex** | ✅ | ❌ | ❌ | ❌ | |
-| **API REST do Connect alterada em Advanced Approvals** | ❌ | ❌ | ✅ | ❌ | |
-| **Orquestrador de receita dinâmica** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Orquestre negócios de vários anos com ativos de cumprimento com conhecimento em tempo** | ✅ | ❌ | ❌ | ❌ | |
-| **Agendar etapas de orquestração com atrasos negativos** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhorar o comportamento da etapa de tarefa automática aprovando parâmetros personalizados** | ✅ | ❌ | ❌ | ❌ | |
-| **Obter visibilidade operacional com relatórios de cumprimento** | ✅ | ❌ | ❌ | ❌ | |
-| **Migrar dados de condição do Orquestrador de receita dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **Objetos novos e alterados no Orquestrador de receita dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **API REST do Connect alterada no Orquestrador de receita dinâmica** | ❌ | ✅ | ❌ | ❌ | |
-| **Novo tipo de metadados no Orquestrador de receita dinâmica** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de uso** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Reduza o tempo de configuração para produtos de uso com um fluxo de trabalho guiado** | ❌ | ❌ | ✅ | ❌ | |
-| **Nova API REST do Connect no Gerenciamento de uso** | ❌ | ✅ | ❌ | ❌ | |
-| **Faturamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Customer 360** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Resumir transações de faturamento em um extrato de conta** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar todas as transações de faturamento na Central de liquidações de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar todos os relacionamentos de acordo de faturamento de registros de conta e fatura** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciar consultas de faturamento de modo eficiente com métricas e criação de caso assistida** | ❌ | ✅ | ❌ | ❌ | |
-| **Agendas de faturamento e marcos de faturamento** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Alinhar o faturamento a cancelamentos em pedidos e cotações datados no futuro** | ❌ | ✅ | ❌ | ❌ | |
-| **Dar suporte a planos de marco para emendas** | ❌ | ✅ | ❌ | ❌ | |
-| **Mudar de frequências de faturamento mais altas para mais baixas em novos pedidos de vendas e cotações** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerenciamento de fatura** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Tome decisões de cobrança mais inteligentes com pontuações de risco de fatura preditivas (piloto)** | ❌ | ✅ | ❌ | ❌ | |
-| **Transfira faturas mais rapidamente com execuções de lote de fatura atualizadas** | ❌ | ✅ | ❌ | ❌ | |
-| **Iniciar agendas de fatura diárias e semanais em dias úteis** | ❌ | ✅ | ❌ | ❌ | |
-| **Pagamentos e reembolsos** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Agrupar faturas de uma conta em uma única solicitação de pagamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Iniciar reembolsos automatizados em faturas negativas e canceladas** | ❌ | ✅ | ❌ | ❌ | |
-| **Envie dados de Nível 2 e Nível 3 para pagamentos feitos por meio de adaptadores do Apex** | ❌ | ✅ | ❌ | ❌ | |
-| **Gerar links de Pagar agora e associar pagamentos a contas comerciais** | ❌ | ✅ | ❌ | ❌ | |
-| **Expanda suas opções de pagamento por meio do Portal de faturamento** | ❌ | ✅ | ❌ | ❌ | |
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Experiência de configuração aprimorada com o Salesforce Go** | Recurso 'Experiência de configuração aprimorada com o Salesforce Go' disponível na release. | 🟢 baixo |
+| **Simplifique a coleta de receita com a Solução de orquestração Dunning — _admins_** | Recurso 'Simplifique a coleta de receita com a Solução de orquestração Dunning — _admins_' disponível na release. | 🟢 baixo |
+| **Descubra mais recursos de gerenciamento de receita — _admins_** | Recurso 'Descubra mais recursos de gerenciamento de receita — _admins_' disponível na release. | 🟢 baixo |
+| **Gerenciamento de catálogo de produtos** | Recurso 'Gerenciamento de catálogo de produtos' disponível na release. | 🟢 baixo |
+| **Crie transações mais rapidamente com a Descoberta baseada em regra — _usuários_** | Recurso 'Crie transações mais rapidamente com a Descoberta baseada em regra — _usuários_' disponível na release. | 🟢 baixo |
+| **Aplicar seleção de rampa consistente durante a descoberta e configuração do produto — _usuários_** | Recurso 'Aplicar seleção de rampa consistente durante a descoberta e configuração do produto — _usuários_' disponível na… | 🟢 baixo |
+| **Expanda suas ofertas de produto com variações de produto — _usuários_** | Recurso 'Expanda suas ofertas de produto com variações de produto — _usuários_' disponível na release. | 🟢 baixo |
+| **Mostrar precificação precisa e consistente com suporte decimal estendido — _usuários_** | Recurso 'Mostrar precificação precisa e consistente com suporte decimal estendido — _usuários_' disponível na release. | 🟢 baixo |
+| **Novas APIs REST do Connect no Gerenciamento de catálogo de produtos — _admins_** | Recurso 'Novas APIs REST do Connect no Gerenciamento de catálogo de produtos — _admins_' disponível na release. | 🟢 baixo |
+| **APIs REST do Connect novas e alteradas na Descoberta de produtos — _admins_** | Recurso 'APIs REST do Connect novas e alteradas na Descoberta de produtos — _admins_' disponível na release. | 🟢 baixo |
+| **Ações invocáveis novas e alteradas na Descoberta de produtos — _admins_** | Recurso 'Ações invocáveis novas e alteradas na Descoberta de produtos — _admins_' disponível na release. | 🟢 baixo |
+| **runtime_industries_cpq Namespace — _admins_** | Recurso 'runtime_industries_cpq Namespace — _admins_' disponível na release. | 🟢 baixo |
+| **Precificação do Salesforce** | Recurso 'Precificação do Salesforce' disponível na release. | 🟢 baixo |
+| **Usar tabelas de decisão baseadas em CSV em procedimentos de precificação — _config_** | Recurso 'Usar tabelas de decisão baseadas em CSV em procedimentos de precificação — _config_' disponível na release. | 🟢 baixo |
+| **Sincronizar tabelas de decisão para qualquer receita de precificação — _usuários_** | Recurso 'Sincronizar tabelas de decisão para qualquer receita de precificação — _usuários_' disponível na release. | 🟢 baixo |
+| **Mapear mais variáveis no elemento de item de linha de mapa — _usuários_** | Recurso 'Mapear mais variáveis no elemento de item de linha de mapa — _usuários_' disponível na release. | 🟢 baixo |
+| **APIs REST do Connect alteradas na precificação do Salesforce — _admins_** | Recurso 'APIs REST do Connect alteradas na precificação do Salesforce — _admins_' disponível na release. | 🟢 baixo |
+| **Configurador do produto** | Recurso 'Configurador do produto' disponível na release. | 🟢 baixo |
+| **Definir restrições para grupos de cotações e segmentos de rampa** | Recurso 'Definir restrições para grupos de cotações e segmentos de rampa' disponível na release. | 🟢 baixo |
+| **Carregar padrões de produto em restrições** | Recurso 'Carregar padrões de produto em restrições' disponível na release. | 🟡 médio |
+| **Atualizações no fluxo de configurador de produto padrão — _config_** | Recurso 'Atualizações no fluxo de configurador de produto padrão — _config_' disponível na release. | 🟢 baixo |
+| **API REST do Connect alterada no Product Configurator — _admins_** | Recurso 'API REST do Connect alterada no Product Configurator — _admins_' disponível na release. | 🟢 baixo |
+| **Gerenciamento de transações** | Recurso 'Gerenciamento de transações' disponível na release. | 🟢 baixo |
+| **Aprimorar a visibilidade de atributo no editor de linha de transação de vendas — _config_** | Recurso 'Aprimorar a visibilidade de atributo no editor de linha de transação de vendas — _config_' disponível na releas… | 🟢 baixo |
+| **Trabalhe com mais eficiência com o editor de linha de transação de vendas aprimorado — _usuários_** | Recurso 'Trabalhe com mais eficiência com o editor de linha de transação de vendas aprimorado — _usuários_' disponível n… | 🟢 baixo |
+| **Clonar cotações e pedidos com todos os registros relacionados — _config_** | Recurso 'Clonar cotações e pedidos com todos os registros relacionados — _config_' disponível na release. | 🟢 baixo |
+| **Vender variações de produto em cotações e pedidos — _usuários_** | Recurso 'Vender variações de produto em cotações e pedidos — _usuários_' disponível na release. | 🟢 baixo |
+| **Simplifique a cotação de vários anos usando uma agenda de rampa guiada — _config_** | Recurso 'Simplifique a cotação de vários anos usando uma agenda de rampa guiada — _config_' disponível na release. | 🟢 baixo |
+| **Renovar ativos perdidos antecipadamente para garantir receita futura — _config_** | Recurso 'Renovar ativos perdidos antecipadamente para garantir receita futura — _config_' disponível na release. | 🟡 médio |
+| **Lide com configurações de produto complexas com mais atributos — _config_** | Recurso 'Lide com configurações de produto complexas com mais atributos — _config_' disponível na release. | 🟢 baixo |
+| **Processe mais registros para cada transação — _config_** | Recurso 'Processe mais registros para cada transação — _config_' disponível na release. | 🟢 baixo |
+| **Fortaleça o Criador de documentos com uma robusta arquitetura de serviço — _usuários_** | Recurso 'Fortaleça o Criador de documentos com uma robusta arquitetura de serviço — _usuários_' disponível na release. | 🟢 baixo |
+| **Acompanhe dados de cotação e imposto com a visibilidade de objeto aprimorada — _usuários_** | Recurso 'Acompanhe dados de cotação e imposto com a visibilidade de objeto aprimorada — _usuários_' disponível na releas… | 🟢 baixo |
+| **Proteger o acesso a dados para precificação com permissões elevadas — _config_** | Recurso 'Proteger o acesso a dados para precificação com permissões elevadas — _config_' disponível na release. | 🟢 baixo |
+| **API REST do Connect alterada no Gerenciamento de transações — _admins_** | Recurso 'API REST do Connect alterada no Gerenciamento de transações — _admins_' disponível na release. | 🟢 baixo |
+| **Nova ação invocável no Gerenciamento de transações — _config_** | Recurso 'Nova ação invocável no Gerenciamento de transações — _config_' disponível na release. | 🟢 baixo |
+| **Advanced Approvals** | Recurso 'Advanced Approvals' disponível na release. | 🟢 baixo |
+| **Mantenha as aprovações se movendo no Slack — _config_** | Recurso 'Mantenha as aprovações se movendo no Slack — _config_' disponível na release. | 🟢 baixo |
+| **Visualizar dependências da etapa de aprovação para seu envio — _config_** | Recurso 'Visualizar dependências da etapa de aprovação para seu envio — _config_' disponível na release. | 🟢 baixo |
+| **Personalize e automatize ações de aprovação com Fluxo e Apex — _usuários_** | Recurso 'Personalize e automatize ações de aprovação com Fluxo e Apex — _usuários_' disponível na release. | 🟢 baixo |
+| **API REST do Connect alterada em Advanced Approvals — _config_** | Recurso 'API REST do Connect alterada em Advanced Approvals — _config_' disponível na release. | 🟢 baixo |
+| **Orquestrador de receita dinâmica** | Recurso 'Orquestrador de receita dinâmica' disponível na release. | 🟢 baixo |
+| **Orquestre negócios de vários anos com ativos de cumprimento com conhecimento em tempo — _usuários_** | Recurso 'Orquestre negócios de vários anos com ativos de cumprimento com conhecimento em tempo — _usuários_' disponível … | 🟢 baixo |
+| **Agendar etapas de orquestração com atrasos negativos — _usuários_** | Recurso 'Agendar etapas de orquestração com atrasos negativos — _usuários_' disponível na release. | 🟡 médio |
+| **Melhorar o comportamento da etapa de tarefa automática aprovando parâmetros personalizados — _usuários_** | Recurso 'Melhorar o comportamento da etapa de tarefa automática aprovando parâmetros personalizados — _usuários_' dispon… | 🟢 baixo |
+| **Obter visibilidade operacional com relatórios de cumprimento — _usuários_** | Recurso 'Obter visibilidade operacional com relatórios de cumprimento — _usuários_' disponível na release. | 🟢 baixo |
+| **Migrar dados de condição do Orquestrador de receita dinâmica — _usuários_** | Recurso 'Migrar dados de condição do Orquestrador de receita dinâmica — _usuários_' disponível na release. | 🟢 baixo |
+| **Objetos novos e alterados no Orquestrador de receita dinâmica — _usuários_** | Recurso 'Objetos novos e alterados no Orquestrador de receita dinâmica — _usuários_' disponível na release. | 🟢 baixo |
+| **API REST do Connect alterada no Orquestrador de receita dinâmica — _admins_** | Recurso 'API REST do Connect alterada no Orquestrador de receita dinâmica — _admins_' disponível na release. | 🟢 baixo |
+| **Novo tipo de metadados no Orquestrador de receita dinâmica — _admins_** | Recurso 'Novo tipo de metadados no Orquestrador de receita dinâmica — _admins_' disponível na release. | 🟢 baixo |
+| **Gerenciamento de uso** | Recurso 'Gerenciamento de uso' disponível na release. | 🟢 baixo |
+| **Reduza o tempo de configuração para produtos de uso com um fluxo de trabalho guiado — _config_** | Recurso 'Reduza o tempo de configuração para produtos de uso com um fluxo de trabalho guiado — _config_' disponível na r… | 🟢 baixo |
+| **Nova API REST do Connect no Gerenciamento de uso — _admins_** | Recurso 'Nova API REST do Connect no Gerenciamento de uso — _admins_' disponível na release. | 🟢 baixo |
+| **Faturamento** | Recurso 'Faturamento' disponível na release. | 🟢 baixo |
+| **Customer 360** | Recurso 'Customer 360' disponível na release. | 🟢 baixo |
+| **Resumir transações de faturamento em um extrato de conta — _admins_** | Recurso 'Resumir transações de faturamento em um extrato de conta — _admins_' disponível na release. | 🟢 baixo |
+| **Gerenciar todas as transações de faturamento na Central de liquidações de faturamento — _admins_** | Recurso 'Gerenciar todas as transações de faturamento na Central de liquidações de faturamento — _admins_' disponível na… | 🟢 baixo |
+| **Visualizar todos os relacionamentos de acordo de faturamento de registros de conta e fatura — _admins_** | Recurso 'Visualizar todos os relacionamentos de acordo de faturamento de registros de conta e fatura — _admins_' disponí… | 🟢 baixo |
+| **Gerenciar consultas de faturamento de modo eficiente com métricas e criação de caso assistida — _admins_** | Recurso 'Gerenciar consultas de faturamento de modo eficiente com métricas e criação de caso assistida — _admins_' dispo… | 🟢 baixo |
+| **Agendas de faturamento e marcos de faturamento** | Recurso 'Agendas de faturamento e marcos de faturamento' disponível na release. | 🟢 baixo |
+| **Alinhar o faturamento a cancelamentos em pedidos e cotações datados no futuro — _admins_** | Recurso 'Alinhar o faturamento a cancelamentos em pedidos e cotações datados no futuro — _admins_' disponível na release… | 🟢 baixo |
+| **Dar suporte a planos de marco para emendas — _admins_** | Recurso 'Dar suporte a planos de marco para emendas — _admins_' disponível na release. | 🟢 baixo |
+| **Mudar de frequências de faturamento mais altas para mais baixas em novos pedidos de vendas e cotações — _admins_** | Recurso 'Mudar de frequências de faturamento mais altas para mais baixas em novos pedidos de vendas e cotações — _admins… | 🟢 baixo |
+| **Gerenciamento de fatura** | Recurso 'Gerenciamento de fatura' disponível na release. | 🟢 baixo |
+| **Tome decisões de cobrança mais inteligentes com pontuações de risco de fatura preditivas (piloto) — _admins_** | Recurso 'Tome decisões de cobrança mais inteligentes com pontuações de risco de fatura preditivas (piloto) — _admins_' d… | 🟢 baixo |
+| **Transfira faturas mais rapidamente com execuções de lote de fatura atualizadas — _admins_** | Recurso 'Transfira faturas mais rapidamente com execuções de lote de fatura atualizadas — _admins_' disponível na releas… | 🟢 baixo |
+| **Iniciar agendas de fatura diárias e semanais em dias úteis — _admins_** | Recurso 'Iniciar agendas de fatura diárias e semanais em dias úteis — _admins_' disponível na release. | 🟢 baixo |
+| **Pagamentos e reembolsos** | Recurso 'Pagamentos e reembolsos' disponível na release. | 🟡 médio |
+| **Agrupar faturas de uma conta em uma única solicitação de pagamento — _admins_** | Recurso 'Agrupar faturas de uma conta em uma única solicitação de pagamento — _admins_' disponível na release. | 🟡 médio |
+| **Iniciar reembolsos automatizados em faturas negativas e canceladas — _admins_** | Recurso 'Iniciar reembolsos automatizados em faturas negativas e canceladas — _admins_' disponível na release. | 🟡 médio |
+| **Envie dados de Nível 2 e Nível 3 para pagamentos feitos por meio de adaptadores do Apex — _admins_** | Recurso 'Envie dados de Nível 2 e Nível 3 para pagamentos feitos por meio de adaptadores do Apex — _admins_' disponível … | 🟡 médio |
+| **Gerar links de Pagar agora e associar pagamentos a contas comerciais — _admins_** | Recurso 'Gerar links de Pagar agora e associar pagamentos a contas comerciais — _admins_' disponível na release. | 🟡 médio |
+| **Expanda suas opções de pagamento por meio do Portal de faturamento — _admins_** | Recurso 'Expanda suas opções de pagamento por meio do Portal de faturamento — _admins_' disponível na release. | 🟡 médio |
+| **Automatize fluxos de trabalho de redução usando modelos dinâmicos do Orquestrador de receita — _admins_** | Recurso 'Automatize fluxos de trabalho de redução usando modelos dinâmicos do Orquestrador de receita — _admins_' dispon… | 🟢 baixo |
+| **Cargas úteis simplificadas para a API de criação de agendas de faturamento independentes — _admins_** | Recurso 'Cargas úteis simplificadas para a API de criação de agendas de faturamento independentes — _admins_' disponível… | 🟡 médio |
+| **Objetos novos e alterados para faturamento — _admins_** | Recurso 'Objetos novos e alterados para faturamento — _admins_' disponível na release. | 🟢 baixo |
+| **API REST do Connect alterada no Billing — _admins_** | Recurso 'API REST do Connect alterada no Billing — _admins_' disponível na release. | 🟢 baixo |
+| **Tipos de metadados alterados no Billing — _admins_** | Recurso 'Tipos de metadados alterados no Billing — _admins_' disponível na release. | 🟢 baixo |
+| **Ações invocáveis novas e alteradas no Billing — _admins_** | Recurso 'Ações invocáveis novas e alteradas no Billing — _admins_' disponível na release. | 🟢 baixo |
+| **Salesforce Contracts** | Recurso 'Salesforce Contracts' disponível na release. | 🟢 baixo |
+| **Extraia dados de contrato de repositórios externos em massa — _usuários_** | Recurso 'Extraia dados de contrato de repositórios externos em massa — _usuários_' disponível na release. | 🟢 baixo |
+| **Extraia dados de contratos externos com pipelines de extração única flexíveis — _usuários_** | Recurso 'Extraia dados de contratos externos com pipelines de extração única flexíveis — _usuários_' disponível na relea… | 🟢 baixo |
+| **Rotear aprovações de contrato com Advanced Approvals — _usuários_** | Recurso 'Rotear aprovações de contrato com Advanced Approvals — _usuários_' disponível na release. | 🟢 baixo |
+| **Gerar documentos na localidade do usuário — _usuários_** | Recurso 'Gerar documentos na localidade do usuário — _usuários_' disponível na release. | 🟢 baixo |
+| **Preserve tokens não resolvidos com tokens de contornação — _usuários_** | Recurso 'Preserve tokens não resolvidos com tokens de contornação — _usuários_' disponível na release. | 🟢 baixo |
+| **Objetos novos e alterados na geração de documentos e contratos — _config_** | Recurso 'Objetos novos e alterados na geração de documentos e contratos — _config_' disponível na release. | 🟢 baixo |
+| **APIs REST do Connect alteradas em Salesforce Contracts — _admins_** | Recurso 'APIs REST do Connect alteradas em Salesforce Contracts — _admins_' disponível na release. | 🟢 baixo |
+| **Geração de documentos da Salesforce** | Recurso 'Geração de documentos da Salesforce' disponível na release. | 🟢 baixo |
+| **Gerar documentos com pacotes hierárquicos e dados agrupados — _usuários_** | Recurso 'Gerar documentos com pacotes hierárquicos e dados agrupados — _usuários_' disponível na release. | 🟢 baixo |
+| **Proteger e categorizar documentos com marcação d'água dinâmica — _usuários_** | Recurso 'Proteger e categorizar documentos com marcação d'água dinâmica — _usuários_' disponível na release. | 🟢 baixo |
+| **Navegue em documentos complexos com um índice automatizado — _usuários_** | Recurso 'Navegue em documentos complexos com um índice automatizado — _usuários_' disponível na release. | 🟢 baixo |
+| **Gerar documentos de páginas e fluxos de registro — _usuários_** | Recurso 'Gerar documentos de páginas e fluxos de registro — _usuários_' disponível na release. | 🟢 baixo |
+| **Adicionar solicitações de processo de geração de documento a lotes ativos — _usuários_** | Recurso 'Adicionar solicitações de processo de geração de documento a lotes ativos — _usuários_' disponível na release. | 🟢 baixo |
+| **Agentforce para Gestão de Receitas** | Recurso 'Agentforce para Gestão de Receitas' disponível na release. | 🟢 baixo |
+| **Gerenciar cobranças com a assistência do funcionário de faturamento — _admins_** | Recurso 'Gerenciar cobranças com a assistência do funcionário de faturamento — _admins_' disponível na release. | 🟢 baixo |
+| **Resolver consultas de faturamento com o agente de assistência de serviço de faturamento — _admins_** | Recurso 'Resolver consultas de faturamento com o agente de assistência de serviço de faturamento — _admins_' disponível … | 🟢 baixo |
+| **Visualizar o impacto financeiro do uso do cliente com o agente de consumo — _config_** | Recurso 'Visualizar o impacto financeiro do uso do cliente com o agente de consumo — _config_' disponível na release. | 🟢 baixo |
 
 ### Coleções
-
-| Recurso | Usuários | Admins | Config | Contato | Docs |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Automatize fluxos de trabalho de redução usando modelos dinâmicos do Orquestrador de receita** | ❌ | ✅ | ❌ | ❌ | |
-| **Cargas úteis simplificadas para a API de criação de agendas de faturamento independentes** | ❌ | ✅ | ❌ | ❌ | |
-| **Objetos novos e alterados para faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **API REST do Connect alterada no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Tipos de metadados alterados no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Ações invocáveis novas e alteradas no Billing** | ❌ | ✅ | ❌ | ❌ | |
-| **Salesforce Contracts** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Extraia dados de contrato de repositórios externos em massa** | ✅ | ❌ | ❌ | ❌ | |
-| **Extraia dados de contratos externos com pipelines de extração única flexíveis** | ✅ | ❌ | ❌ | ❌ | |
-| **Rotear aprovações de contrato com Advanced Approvals** | ✅ | ❌ | ❌ | ❌ | |
-| **Gerar documentos na localidade do usuário** | ✅ | ❌ | ❌ | ❌ | |
-| **Preserve tokens não resolvidos com tokens de contornação** | ✅ | ❌ | ❌ | ❌ | |
-| **Objetos novos e alterados na geração de documentos e contratos** | ❌ | ❌ | ✅ | ❌ | |
-| **APIs REST do Connect alteradas em Salesforce Contracts** | ❌ | ✅ | ❌ | ❌ | |
-| **Geração de documentos da Salesforce** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerar documentos com pacotes hierárquicos e dados agrupados** | ✅ | ❌ | ❌ | ❌ | |
-| **Proteger e categorizar documentos com marcação d'água dinâmica** | ✅ | ❌ | ❌ | ❌ | |
-| **Navegue em documentos complexos com um índice automatizado** | ✅ | ❌ | ❌ | ❌ | |
-| **Gerar documentos de páginas e fluxos de registro** | ✅ | ❌ | ❌ | ❌ | |
-| **Adicionar solicitações de processo de geração de documento a lotes ativos** | ✅ | ❌ | ❌ | ❌ | |
-| **Agentforce para Gestão de Receitas** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Gerenciar cobranças com a assistência do funcionário de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Resolver consultas de faturamento com o agente de assistência de serviço de faturamento** | ❌ | ✅ | ❌ | ❌ | |
-| **Visualizar o impacto financeiro do uso do cliente com o agente de consumo** | ❌ | ❌ | ✅ | ❌ | |
 
 ## 🎓 Módulos Trailhead Relacionados
 

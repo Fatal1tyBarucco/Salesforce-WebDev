@@ -67,7 +67,7 @@ class LLMProvider:
 class LLMService:
     """Resilient LLM service with automatic fallback across providers.
 
-    Tries providers in order: OpenAI → Google Gemini → OpenCode → MiMoCode.
+    Tries providers in order: Google Gemini → OpenCode → OpenAI → OpenRouter → DeepSeek → MiMoCode.
     When one fails, moves to the next after circuit breaker cooldown.
     """
 
@@ -96,7 +96,8 @@ class LLMService:
         if _auto_loaded and not self._providers and client is None:
             raise ValueError(
                 "No LLM providers configured. Set at least one of: "
-                "OPENAI_API_KEY, GOOGLE_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
+                "GOOGLE_API_KEY, OPENROUTER_API_KEY, DEEPSEEK_API_KEY, "
+                "OPENAI_API_KEY, OPENCODE_API_KEY, MIMOCODE_API_KEY "
                 "or pass a client/providers directly."
             )
 
@@ -158,14 +159,54 @@ class LLMService:
         """Load provider configurations from environment variables.
 
         Priority order:
-        1. OPENAI_API_KEY (primary OpenAI)
-        2. GOOGLE_API_KEY (Google Gemini)
-        3. OPENCODE_API_KEY (OpenCode - OpenAI compatible)
-        4. MIMOCODE_API_KEY (MiMoCode - OpenAI compatible)
+        1. GOOGLE_API_KEY (Google Gemini — primary, cost-effective)
+        2. OPENROUTER_API_KEY (OpenRouter free models)
+        3. DEEPSEEK_API_KEY (DeepSeek — cost-effective)
+        4. OPENAI_API_KEY (OpenAI)
+        5. OPENCODE_API_KEY (OpenCode)
+        6. MIMOCODE_API_KEY (MiMoCode)
         """
         providers: list[LLMProvider] = []
 
-        # 1. OpenAI (primary)
+        # 1. Google Gemini (primary — fast, cost-effective)
+        google_key = os.environ.get("GOOGLE_API_KEY", "")
+        if google_key:
+            providers.append(
+                LLMProvider(
+                    name="google",
+                    api_key=google_key,
+                    model="gemini-3.6-flash",
+                    provider_type="google",
+                )
+            )
+
+        # 2. OpenRouter (secondary — free models)
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
+        if openrouter_key:
+            providers.append(
+                LLMProvider(
+                    name="openrouter",
+                    api_key=openrouter_key,
+                    base_url="https://openrouter.ai/api/v1",
+                    model="google/gemma-4-31b-it:free",
+                    provider_type="openai",
+                )
+            )
+
+        # 3. DeepSeek (tertiary — cost-effective)
+        deepseek_key = os.environ.get("DEEPSEEK_API_KEY", "")
+        if deepseek_key:
+            providers.append(
+                LLMProvider(
+                    name="deepseek",
+                    api_key=deepseek_key,
+                    base_url="https://api.deepseek.com/v1",
+                    model="deepseek-chat",
+                    provider_type="openai",
+                )
+            )
+
+        # 4. OpenAI
         openai_key = os.environ.get("OPENAI_API_KEY", "")
         if openai_key:
             providers.append(
@@ -178,19 +219,7 @@ class LLMService:
                 )
             )
 
-        # 2. Google Gemini (secondary)
-        google_key = os.environ.get("GOOGLE_API_KEY", "")
-        if google_key:
-            providers.append(
-                LLMProvider(
-                    name="google",
-                    api_key=google_key,
-                    model="gemma-4-26b-a4b-it",
-                    provider_type="google",
-                )
-            )
-
-        # 3. OpenCode (tertiary - OpenAI compatible)
+        # 5. OpenCode (OpenAI compatible)
         opencode_key = os.environ.get("OPENCODE_API_KEY", "")
         if opencode_key:
             providers.append(
@@ -199,20 +228,21 @@ class LLMService:
                     api_key=opencode_key,
                     base_url="https://api.opencode.ai/v1",
                     model="gpt-4o",
-                    provider_type="opencode",
+                    provider_type="openai",
                 )
             )
 
-        # 4. MiMoCode (quaternary - OpenAI compatible)
+        # 6. MiMoCode (OpenAI compatible)
         mimocode_key = os.environ.get("MIMOCODE_API_KEY", "")
         if mimocode_key:
+            mimocode_url = os.environ.get("MIMO_API_BASE_URL", "https://api.mimocode.ai/v1")
             providers.append(
                 LLMProvider(
                     name="mimocode",
                     api_key=mimocode_key,
-                    base_url="https://api.mimocode.ai/v1",
-                    model="mimo-auto",
-                    provider_type="mimocode",
+                    base_url=mimocode_url,
+                    model="mimo-v2.5-pro",
+                    provider_type="openai",
                 )
             )
 
@@ -301,6 +331,29 @@ class LLMService:
         Returns the first successful response.  Uses prompt-hash cache
         when a CacheManager was provided at construction time.
         """
+        return await self.generate_text_with_tier(user_prompt, system_prompt, tier="standard")
+
+    async def generate_text_with_tier(
+        self,
+        user_prompt: str,
+        system_prompt: str = "You are a helpful assistant.",
+        tier: str = "standard",
+    ) -> Optional[str]:
+        """Generate text with cost-aware provider selection.
+
+        Tiers:
+        - "cheap": Use cheapest available provider (classification, simple tasks)
+        - "standard": Normal fallback chain (default)
+        - "premium": Use best available provider (code generation, complex analysis)
+
+        Args:
+            user_prompt: The user prompt.
+            system_prompt: System prompt.
+            tier: Cost tier for provider selection.
+
+        Returns:
+            Generated text or None.
+        """
         # Cache lookup
         cache_key = self._prompt_hash(system_prompt, user_prompt)
         if self._cache is not None:
@@ -309,10 +362,13 @@ class LLMService:
                 self._logger.debug("LLM cache hit for key=%s", cache_key[:12])
                 return str(cached)
 
+        # Select providers based on tier
+        providers = self._select_providers_by_tier(tier)
+
         # Rate limiting
         await self._rate_limiter.acquire()
 
-        for provider in self._providers:
+        for provider in providers:
             if not self._is_provider_available(provider):
                 self._logger.debug("Provider '%s' unavailable, trying next", provider.name)
                 continue
@@ -320,7 +376,7 @@ class LLMService:
             try:
                 result = await self._call_provider(provider, system_prompt, user_prompt)
                 self._record_success(provider)
-                self._logger.info("Provider '%s' succeeded", provider.name)
+                self._logger.info("Provider '%s' succeeded (tier=%s)", provider.name, tier)
                 if self._cache is not None:
                     self._cache.set(cache_key, result, namespace="llm")
                 return result
@@ -363,8 +419,43 @@ class LLMService:
             except Exception as e:
                 self._logger.error("Legacy client error: %s", e)
 
-        self._logger.error("All LLM providers exhausted")
+        self._logger.error("All LLM providers exhausted (tier=%s)", tier)
         return None
+
+    def _select_providers_by_tier(self, tier: str) -> list[LLMProvider]:
+        """Select providers ordered by cost tier.
+
+        Args:
+            tier: "cheap", "standard", or "premium".
+
+        Returns:
+            Ordered list of providers for the tier.
+        """
+        if not self._providers:
+            return []
+
+        if tier == "cheap":
+            # Google first, then OpenRouter free, then others
+            cheap_order = ["google", "openrouter", "openai", "opencode", "deepseek", "mimocode"]
+        elif tier == "premium":
+            # Google first, then OpenAI, then others
+            cheap_order = ["google", "openai", "openrouter", "opencode", "deepseek", "mimocode"]
+        else:
+            # Standard: Google first, then OpenCode/OpenAI/OpenRouter, then DeepSeek/MiMoCode
+            cheap_order = ["google", "opencode", "openai", "openrouter", "deepseek", "mimocode"]
+
+        ordered: list[LLMProvider] = []
+        by_name = {p.name: p for p in self._providers}
+        for name in cheap_order:
+            if name in by_name:
+                ordered.append(by_name[name])
+
+        # Add any remaining providers not in the order
+        for p in self._providers:
+            if p not in ordered:
+                ordered.append(p)
+
+        return ordered
 
     async def classify_text(
         self, text: str, categories: list[str], system_prompt: Optional[str] = None

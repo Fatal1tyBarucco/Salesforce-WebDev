@@ -124,10 +124,10 @@ class AIAutomationService:
         return await impact.calculate_category_impact_scores(self.load_release_meta)
 
     async def predict_next_release_impact(self) -> ImpactPrediction:
-        return await impact.predict_next_release_impact(self.load_release_meta)
+        return await impact.predict_next_release_impact(self.load_release_meta, llm=self._llm)
 
     async def generate_impact_prediction_report(self) -> str:
-        return await impact.generate_impact_prediction_report(self.load_release_meta)
+        return await impact.generate_impact_prediction_report(self.load_release_meta, llm=self._llm)
 
     async def triage_release(self, slug: str) -> TriageResult:
         return await impact.triage_release(self.load_release_meta, slug)

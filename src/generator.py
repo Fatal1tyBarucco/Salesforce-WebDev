@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from string import Template
 
+from .ai.generators.badges import release_meta_badges
 from .config import RELEASES_DIR, ReleaseInfo, TopicNode
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -200,3 +201,27 @@ class MarkdownGenerator:
             result.append((release_dir.name, topics))
 
         return result
+
+    def generate_release_header_with_badges(
+        self,
+        release: ReleaseInfo,
+        total_features: int = 0,
+        category_count: int = 0,
+    ) -> str:
+        """
+        Gera um cabeçalho visual com badges para uma release.
+
+        Args:
+            release: Metadados da release.
+            total_features: Total de features (opcional).
+            category_count: Número de categorias (opcional).
+
+        Returns:
+            String Markdown com cabeçalho e badges.
+        """
+        badges = release_meta_badges(
+            release_name=release.name,
+            total_features=total_features,
+            category_count=category_count,
+        )
+        return f"# {release.name}\n\n{badges}\n\n---\n\n"

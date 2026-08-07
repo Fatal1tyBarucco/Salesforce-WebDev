@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
+from urllib.parse import urlparse
 
 import openai
 
@@ -473,12 +474,19 @@ class TestAutomationServiceEdges:
     """Test automation service wrapper methods."""
 
     def test_generate_dynamic_badge_via_service(self) -> None:
+        import re
+
         from src.automation.service import AIAutomationService
 
         service = AIAutomationService()
         badge = service.generate_dynamic_badge("Summer '26", 100)
         assert "Summer" in badge
-        assert "shields.io" in badge
+        # O resultado é Markdown: ![label](url). Extrai a primeira URL.
+        urls = re.findall(r"https?://[^\s)]+", badge)
+        assert len(urls) >= 1
+        host = urlparse(urls[0]).hostname
+        assert host is not None
+        assert host == "img.shields.io" or host.endswith(".shields.io")
 
 
 # ── OpenAPI spec ───────────────────────────────────────────────────

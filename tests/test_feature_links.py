@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from urllib.parse import urlparse
 from unittest.mock import patch
 
 import pytest
@@ -128,7 +129,9 @@ class TestExtractFeaturesFromHtml:
         """
 
         features = SalesforceReleaseScraper._extract_features_from_html(html)
-        assert features[0]["docs_url"].startswith("https://help.salesforce.com")
+        parsed = urlparse(features[0]["docs_url"])
+        assert parsed.scheme == "https"
+        assert parsed.hostname == "help.salesforce.com"
 
     def test_non_salesforce_link_skipped(self) -> None:
         """Skips links that are not from Salesforce."""
@@ -326,5 +329,21 @@ class TestFormatEntryTableDocsUrl:
             docs_url="https://entry-url.com",
         )
         result = _format_entry_table(entry, docs_url="https://param-url.com")
-        assert "entry-url.com" in result
+        # A URL do entry deve estar presente (formato Markdown [🔗](url))
+        start = result.find("](")
+        end = result.find(")", start + 2)
+        assert start != -1 and end != -1
+        extracted_url = result[start + 2 : end]
+        parsed_extracted = urlparse(extracted_url)
+        parsed_expected = urlparse("https://entry-url.com")
+        assert (
+            parsed_extracted.scheme,
+            parsed_extracted.netloc,
+            parsed_extracted.path,
+        ) == (
+            parsed_expected.scheme,
+            parsed_expected.netloc,
+            parsed_expected.path,
+        )
+        # Garante que a URL do parâmetro não está presente
         assert "param-url.com" not in result

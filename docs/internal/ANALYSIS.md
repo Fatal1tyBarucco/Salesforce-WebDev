@@ -1,8 +1,8 @@
 # 📊 Análise Profunda — Salesforce Release Notes Intelligence
 
-**Data:** 2026-07-20
-**Versão atual:** 3.1.0
-**Base:** 8.861 linhas de código (25 módulos), 704 testes
+**Data:** 2026-07-29
+**Versão atual:** 4.0.0 (Roadmap V4)
+**Base:** 14.146 linhas de código (57 módulos), 38 arquivos de teste
 
 ---
 
@@ -10,390 +10,207 @@
 
 | Métrica | Valor | Status |
 |---|---|---|
-| Cobertura de testes | 96% | ✅ Bom |
-| Módulos em 100% | 21/25 | ✅ Bom |
-| Linhas por módulo (média) | 354 | ⚠️ Alto |
-| Maior módulo | ai_automation.py (1.428 linhas) | 🔴 Problema |
-| Funções > 50 linhas | 9 | ⚠️ Precisa refatorar |
-| Classes | 67 | ✅ OK |
-| Funções async | 95 | ✅ OK |
-| Dependências de produção | 7 | ✅ OK |
-| Duplicação de código | Wrapper functions | ⚠️ Moderado |
+| Cobertura de testes | 95%+ | ✅ Bom |
+| Módulos src/ | 57 | ✅ OK |
+| Linhas por módulo (média) | 248 | ✅ OK |
+| Maior módulo | `release_docs.py` | ⚠️ Moderado |
+| Hierarquia de exceções | 11 classes | ✅ Completa |
+| Classes | 67+ | ✅ OK |
+| Funções async | 95+ | ✅ OK |
+| Dependências de produção | 7 (pinadas) | ✅ OK |
+| Pre-commit hooks | ruff + black + mypy | ✅ Ativo |
+| Docker | Multi-stage build | ✅ Ativo |
 
 ---
 
-## 🔴 Problemas Críticos
+## ✅ Problemas Resolvidos (antes listados como críticos)
 
-### 1. `ai_automation.py` — Monolito de 1.428 linhas
+### 1. `ai_automation.py` — Monolito → ✅ RESOLVIDO
 
-**Problema:** Arquivo faz tudo: comparação de releases, métricas de qualidade, GitHub Issues, changelog, relatórios, cache, notificações filtradas, exportação JSON/CSV, badge dinâmico.
+**Solução:** Dividido em pacote `src/automation/` com 11 módulos:
+- `service.py` — Facade principal
+- `reporting.py` — Changelog, regression, diff, quality reports
+- `comparison.py` — Comparação entre releases
+- `impact.py` — Scores de impacto + predição
+- `content.py` — Deduplicação + content-hash
+- `export.py` — Exportação JSON/CSV
+- `github_ops.py` — GitHub Issues
+- `notifications.py` — Notificações filtradas
+- `models.py` — Dataclasses
+- `badge.py` — Badges dinâmicos
 
-**Impacto:**
-- Dificulta manutenção e testes
-- Acoplamento excessivo
-- Responsabilidade única violada (SRP)
+### 2. `main.py` — Funções longas → ✅ RESOLVIDO
 
-**Solução proposta:** Dividir em 5 módulos:
+**Solução:** Extraído para `src/release_docs.py` (~600 linhas):
+- `_build_release_block()` — Geração de blocos de release para README
+- `_update_single_readme()` — Atualização de README individual
+- `update_readme_all()` — Geração bilingue
+- `_generate_release_files()` — Geração de .md por categoria
+
+### 3. Configuração hardcoded → ✅ RESOLVIDO
+
+**Solução:** Centralizada em `src/config.py` com constantes tipadas (`Final[str]`, `Final[int]`).
+
+### 4. Tratamento de erros inconsistente → ✅ RESOLVIDO
+
+**Solução:** Hierarquia completa em `src/exceptions.py`:
 ```
-src/
-├── automation/
-│   ├── __init__.py
-│   ├── comparison.py      # ReleaseComparison, Regression detection
-│   ├── quality.py         # QualityMetrics, QualityReport
-│   ├── reporting.py       # Changelog, DiffReport, RegressionReport
-│   ├── notifications.py   # FilteredNotification, UserProfile
-│   └── export.py          # JSON/CSV export, ContentHash
+PipelineError
+├── ScraperError
+│   ├── BrowserError
+│   └── RateLimitError
+├── ParserError
+├── LLMError
+│   └── LLMProviderExhausted
+├── ConfigError
+├── ExportError
+├── NotificationError
+└── GitHubError
 ```
 
-### 2. `main.py` — Funções muito longas
+18 blocos `except Exception` substituídos por exceções específicas.
 
-**Problema:** Funções com 100-157 linhas:
-- `_update_readme_all()` — 157 linhas
-- `run_pipeline()` — 129 linhas
-- `_generate_release_files()` — 104 linhas
-- `_generate_ai_reports_async()` — 105 linhas
+### 5. Cache sem invalidação por content-hash → ✅ RESOLVIDO
 
-**Solução:** Extrair subfunções e usar padrão Strategy/Command.
+**Solução:** `CacheManager` em `src/cache_manager.py` com:
+- `compute_file_hash()` — SHA-256 de arquivos
+- `get_content_hash()` — Hash com cache
+- `load_content_cache()` / `save_content_cache()` — Cache de conteúdo
 
-### 3. Duplicação de Wrapper Functions
+### 6. Dependency Injection → ✅ RESOLVIDO
 
-**Problema:** 15+ funções são wrappers de nível módulo:
+**Solução:** `PipelineConfig` dataclass em `main.py` com DI completa:
 ```python
-async def generate_quality_report() -> str:
-    return await AIAutomationService().generate_quality_report()
+@dataclass
+class PipelineConfig:
+    scraper: SalesforceReleaseScraper | None = None
+    impact_parser: FeatureImpactParser | None = None
+    generator: MarkdownGenerator | None = None
+    translator: TranslatorService | None = None
+    llm: LLMService | None = None
+    cache: CacheManager | None = None
+    event_bus: EventBus | None = None
 ```
 
-**Solução:** Usar `__all__` e importar diretamente da classe, ou usar factory pattern.
+### 7. Event System → ✅ RESOLVIDO
+
+**Solução:** `EventBus` em `src/events.py` com pub/sub assíncrono:
+- `emit(event, data, source)` — Emite eventos
+- `on(event, handler)` — Registra handlers
+- Eventos: `pipeline.started`, `release.detected`, `release.processed`, `pipeline.completed`
+
+### 8. Async Context Managers → ✅ RESOLVIDO
+
+**Solução:** `SalesforceReleaseScraper` implementa `__aenter__`/`__aexit__` para lifecycle do Playwright.
+
+### 9. Scraping paralelo → ✅ RESOLVIDO
+
+**Solução:** `fetch_multiple_raw_text()` em `scraper.py`:
+- `asyncio.Semaphore(max_concurrent=5)` para limitar concorrência
+- `asyncio.gather()` para execução paralela
+
+### 10. Logging estruturado → ✅ RESOLVIDO
+
+**Solução:** `src/logger.py` com:
+- `JSONFormatter` — Saída JSON estruturada
+- `TextFormatter` — Saída humana legível
+- `CorrelationFilter` — IDs de correlação por request
+- `setup_logging(json_format=True)` — Configuração global
+
+### 11. Prometheus metrics → ✅ RESOLVIDO
+
+**Solução:** `src/health.py` com integração `prometheus_client`:
+- Dual-mode: `prometheus_client` quando instalado, fallback text/plain
+- Métricas: `pipeline_runs_total`, `features_processed_total`, `scraper_requests_total`, etc.
+
+### 12. Pre-commit hooks → ✅ RESOLVIDO
+
+**Solução:** `.pre-commit-config.yaml` com:
+- `ruff` (linting)
+- `black` (formatação)
+- `trailing-whitespace`, `end-of-file-fixer`, `check-yaml`, `check-toml`
+
+### 13. Docker support → ✅ RESOLVIDO
+
+**Solução:** `Dockerfile` multi-stage build com `python:3.13-slim` + Playwright Chromium.
+
+### 14. GitHub Actions matrix → ✅ RESOLVIDO
+
+**Solução:** `python-quality.yml` com matrix `["3.12", "3.13"]`.
+
+### 15. Type stubs → ✅ RESOLVIDO
+
+**Solução:** Diretório `stubs/` com stubs para `tenacity` e `google-genai`.
 
 ---
 
-## ⚠️ Problemas Moderados
+## ✅ Features Implementadas (pós-V3)
 
-### 4. Configuração hardcoded
+### 16. Enriquecimento AI por Feature → ✅
 
-**Problema:** URLs, timeouts e limites estão hardcoded:
-```python
-TRAILHEAD_BASE_URL = "https://trailhead.salesforce.com"
-API_PORT = 8081
-RATE_LIMIT_MIN_INTERVAL = 0.5
-MAX_RETRY_ATTEMPTS = 5
-```
+`src/feature_enricher.py` — LLM gera descrições, impacto (🔴/🟡/🟢) e audiência por feature.
 
-**Solução:** Mover para `config.py` ou variáveis de ambiente.
+### 17. Resumos Executivos (5000 chars) → ✅
 
-### 5. Tratamento de erros inconsistente
+`src/release_summarizer.py` — Resumo completo por release com `executive_summary`, `business_impact`, `strategic_themes`, `top_categories`, `migration_notes`.
 
-**Problema:** Alguns módulos usam `try/except` genérico:
-```python
-except Exception:
-    pass
-```
+### 18. Resumos por Categoria (1000 chars) → ✅
 
-**Solução:** Padronizar com exception hierarchy customizada:
-```python
-class PipelineError(Exception): ...
-class ScraperError(PipelineError): ...
-class ParserError(PipelineError): ...
-class LLMError(PipelineError): ...
-```
+Campo `category_summaries` no `ReleaseSummary` — cada categoria recebe resumo AI próprio.
 
-### 6. Falta de Type Stubs
+### 19. Cache de Resumos com Sub-Agentes → ✅
 
-**Problema:** `mypy --strict` exige tipos, mas dependências externas não têm stubs.
+`.summary_cache.json` por release — `ReleaseSummarizer` verifica cache antes de chamar LLM.
 
-**Solução:** Criar `stubs/` directory ou usar `# type: ignore[import]` com justificativa.
+### 20. README Bilingue Reorganizado → ✅
 
-### 7. Cache sem invalidação inteligente
+Seção de Releases movida para o topo (logo abaixo do banner) em `README.md` e `README.en.md`.
 
-**Problema:** `CacheManager` usa TTL fixo (24h), sem mecanismo de invalidação por conteúdo.
+### 21. GitHub Pages Sincronizado → ✅
 
-**Solução:** Implementar content-hash based invalidation (já existe em `ai_automation.py` mas não é usado pelo scraper).
+Workflow `documentation-build.yml` reage a `releases/**`, `README.md`, `mkdocs.yml`.
 
----
+### 22. GraphQL Parser Recursivo → ✅
 
-## 💡 Melhorias de Arquitetura
+Substituição do parser regex por recursive-descent parser (`_gql_lex()`, `_GQLParser`).
 
-### 8. Dependency Injection
+### 23. Autenticação API → ✅
 
-**Problema:** Muitos módulos criam suas próprias dependências:
-```python
-service = LLMService()  # hardcoded
-```
+Middleware `X-API-Key` / `Authorization: Bearer` para endpoints protegidos.
 
-**Solução:** Usar DI container ou factory pattern:
-```python
-# config.py
-def create_llm_service() -> LLMService:
-    return LLMService(providers=load_providers())
+### 24. Versionamento Semântico → ✅
 
-def create_scraper() -> SalesforceReleaseScraper:
-    return SalesforceReleaseScraper(cache=create_cache())
-```
+Campo `version` (major.minor.patch) em `.meta.json` de cada release.
 
-### 9. Event System para Pipeline
+### 25. Rate Limiting LLM → ✅
 
-**Problema:** Pipeline é linear e rígido.
-
-**Solução:** Implementar event emitter para desacoplar estágios:
-```python
-class PipelineEvents:
-    on_release_detected: Event
-    on_scraping_complete: Event
-    on_parsing_complete: Event
-    on_generation_complete: Event
-```
-
-### 10. Async Context Managers
-
-**Problema:** Recursos (browser, cache) não são gerenciados adequadamente.
-
-**Solução:** Usar `async with` para todos os recursos:
-```python
-async with ScraperContext() as scraper:
-    async with CacheContext() as cache:
-        # pipeline logic
-```
+Token-bucket assíncrono integrado ao `LLMService` (60 req/60s).
 
 ---
 
-## 🧪 Melhorias de Testes
+## 📋 Pendente (planejado)
 
-### 11. Testes de Integração Reais
-
-**Problema:** Testes atuais usam mocks extensivos, não testam integração real.
-
-**Solução:** Criar `tests/integration/` com:
-- Testes contra HTML fixtures reais do Salesforce
-- Testes de pipeline completo com dados mockados
-- Testes de performance com benchmarks
-
-### 12. Property-Based Testing
-
-**Problema:** Testes são example-based, não cobrem edge cases.
-
-**Solução:** Usar `hypothesis` para:
-- Parser robustness
-- URL validation
-- Slug generation
-- Category normalization
-
-### 13. Snapshot Testing
-
-**Problema:** Testes de saída Markdown são frágeis.
-
-**Solução:** Usar snapshot testing para:
-- README generation
-- CHANGELOG format
-- Report templates
-
----
-
-## 🚀 Melhorias de Performance
-
-### 14. Parallel Scraping
-
-**Problema:** Scraping é sequencial (1 página por vez).
-
-**Solução:** Usar `asyncio.gather()` para scraping paralelo:
-```python
-pages = await asyncio.gather(*[
-    scraper.fetch_page(url) for url in urls
-])
-```
-
-### 15. Incremental Updates
-
-**Problema:** Pipeline reprocessa tudo a cada execução.
-
-**Solução:** Implementar diff-based updates:
-- Só reprocessar releases que mudaram
-- Cache de conteúdo com content-hash
-- Skip de categorias inalteradas
-
-### 16. Streaming para arquivos grandes
-
-**Problema:** Arquivos grandes são carregados inteiramente em memória.
-
-**Solução:** Usar streaming para:
-- PDF downloads
-- Large markdown files
-- JSON exports
-
----
-
-## 🔧 Melhorias de DX (Developer Experience)
-
-### 17. CLI melhorada
-
-**Problema:** CLI é básica (`--release`, `--dry-run`).
-
-**Solução:** Usar `click` ou `typer`:
-```bash
-# Comandos propostos
-python -m src.cli generate --release summer_26
-python -m src.cli validate --all
-python -m src.cli diff summer_26 spring_26
-python -m src.cli export --format json --output exports/
-python -m src.cli badge --update
-```
-
-### 18. Logging estruturado
-
-**Problema:** Logging é inconsistente (mix de print, logger.info, logger.error).
-
-**Solução:** Padronizar com structlog ou logging config:
-```python
-logger.info("release_processed",
-    release="summer_26",
-    features=1373,
-    categories=22,
-    duration_ms=45000)
-```
-
-### 19. Health Dashboard
-
-**Problema:** `health.py` existe mas não é integrado com métricas reais.
-
-**Solução:** Integrar com Prometheus metrics:
-```python
-from prometheus_client import Counter, Histogram
-
-PIPELINE_RUNS = Counter('pipeline_runs_total', 'Total pipeline runs')
-SCRAPER_DURATION = Histogram('scraper_duration_seconds', 'Scraper duration')
-```
-
----
-
-## 📦 Melhorias de Dependências
-
-### 20. Dependency Pinning
-
-**Problema:** Dependências usam ranges amplos:
-```python
-"openai>=1.50.0",  # sem upper bound
-```
-
-**Solução:** Pin com upper bounds:
-```python
-"openai>=1.50.0,<3",
-"playwright>=1.60.0,<2",
-```
-
-### 21. Optional Dependencies
-
-**Problema:** LLM providers são obrigatórios mas podem não ser usados.
-
-**Solução:** Tornar opcionais:
-```python
-[project.optional-dependencies]
-llm-openai = ["openai>=1.50.0,<3"]
-llm-google = ["google-genai>=1.0.0,<3"]
-full = ["salesforce-release-notes[llm-openai,llm-google]"]
-```
-
-### 22. Pre-commit Hooks
-
-**Problema:** Validação só no CI.
-
-**Solução:** Configurar pre-commit:
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    hooks:
-      - id: ruff
-  - repo: https://github.com/psf/black
-    hooks:
-      - id: black
-```
-
----
-
-## 🏗️ Melhorias de Infraestrutura
-
-### 23. Docker Support
-
-**Problema:** Setup é manual.
-
-**Solução:** Criar `Dockerfile`:
-```dockerfile
-FROM python:3.14-slim
-RUN pip install uv
-COPY . /app
-WORKDIR /app
-RUN uv sync && uv run playwright install chromium
-CMD ["uv", "run", "python", "-m", "src.main"]
-```
-
-### 24. GitHub Actions Matrix
-
-**Problema:** CI testa apenas Python 3.14.
-
-**Solução:** Testar em matrix:
-```yaml
-strategy:
-  matrix:
-    python-version: ["3.13", "3.14"]
-```
-
-### 25. Release Automation
-
-**Problema:** Releases são manuais.
-
-**Solução:** Semantic Release com conventional commits:
-```yaml
-- uses: python-semantic-release/python-semantic-release@v9
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-```
-
----
-
-## 📋 Plano de Ação Priorizado
-
-### Fase 1 — Fundação (1-2 semanas)
-1. ✅ ~~Corrigir cobertura de testes (70% → 96%)~~
-2. ✅ ~~Corrigir ordenação cronológica~~
-3. ✅ ~~Remover arquivos de agentes AI~~
-4. 🔲 Dividir `ai_automation.py` em módulos
-5. 🔲 Extrair subfunções de `main.py`
-6. 🔲 Criar exception hierarchy
-
-### Fase 2 — Qualidade (2-3 semanas)
-7. 🔲 Configuração via variáveis de ambiente
-8. 🔲 Dependency injection básico
-9. 🔲 Pre-commit hooks
-10. 🔲 Testes de integração com fixtures
-11. 🔲 Property-based testing (hypothesis)
-
-### Fase 3 — Performance (1-2 semanas)
-12. 🔲 Parallel scraping
-13. 🔲 Incremental updates
-14. 🔲 Content-hash cache invalidation
-15. 🔲 Streaming para arquivos grandes
-
-### Fase 4 — DX & Infra (2-3 semanas)
-16. 🔲 CLI melhorada (click/typer)
-17. 🔲 Logging estruturado
-18. 🔲 Docker support
-19. 🔲 Semantic release
-20. 🔲 Prometheus metrics
-
-### Fase 5 — Avançado (ongoing)
-21. 🔲 Event system para pipeline
-22. 🔲 Snapshot testing
-23. 🔲 Performance benchmarks
-24. 🔲 Documentation site (MkDocs)
+| Item | Descrição | Prioridade |
+|------|-----------|-----------|
+| T4 | Type stubs adicionais | Baixa |
+| #12 | Property-based testing (hypothesis) | Baixa |
+| #13 | Snapshot testing | Baixa |
+| #15 | Updates incrementais | Média |
+| #16 | Streaming para arquivos grandes | Baixa |
+| #17 | CLI melhorada (click/typer) | Média |
+| #22 | Semantic release | Baixa |
+| #25 | Performance benchmarks | Baixa |
 
 ---
 
 ## 📊 Métricas Alvo
 
-| Métrica | Atual | Alvo | Prazo |
+| Métrica | Atual | Alvo | Status |
 |---|---|---|---|
-| Cobertura | 96% | 99% | Fase 2 |
-| Maior módulo | 1.428 linhas | < 500 | Fase 1 |
-| Funções > 50 linhas | 9 | 0 | Fase 1 |
-| Tempo de CI | ~2min | < 1min | Fase 3 |
-| Complexidade ciclomática | Alta | < 10/função | Fase 2 |
-| Dependências não pinadas | 3 | 0 | Fase 2 |
+| Cobertura | 95%+ | 99% | 🔄 Em progresso |
+| Maior módulo | ~600 linhas | < 500 | ⚠️ Moderado |
+| Módulos | 57 | — | ✅ OK |
+| Hierarquia de exceções | 11 classes | — | ✅ Completa |
+| Pre-commit | Ativo | — | ✅ OK |
+| Docker | Ativo | — | ✅ OK |
+| CI matrix | 3.12 + 3.13 | — | ✅ OK |

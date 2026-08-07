@@ -1,0 +1,248 @@
+# ──────────────────────────────────────────────────────────────────────
+# Auto-Healing Agent — GitHub Actions (Serverless)
+# ──────────────────────────────────────────────────────────────────────
+# Triggered automatically when Python Quality fails on main.
+# No webhook server needed — runs entirely on GitHub Actions.
+#
+# Required secret:
+#   GOOGLE_API_KEY — Gemini API key for LLM analysis
+# ──────────────────────────────────────────────────────────────────────
+
+name: Auto-Healing Agent
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: auto-healing-${{ github.event.workflow_run.id }}
+  cancel-in-progress: true
+
+jobs:
+  heal:
+    runs-on: ubuntu-latest
+    # Only run when the workflow failed on the main branch
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event_name == 'workflow_run'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install google-genai pydantic
+
+      - name: Download failure logs
+        id: logs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          echo "📥 Downloading logs for run ${RUN_ID}..."
+
+          # Download logs via GitHub CLI
+          gh api "repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs" \
+            --output logs.zip 2>/dev/null || true
+
+          if [[ -f logs.zip ]]; then
+            mkdir -p logs_extracted
+            unzip -o logs.zip -d logs_extracted 2>/dev/null || true
+            
+            # Concatenate all log files
+            LOG_TEXT=""
+            for f in logs_extracted/**/*.txt; do
+              if [[ -f "$f" ]]; then
+                LOG_TEXT="${LOG_TEXT}$(cat "$f")\n"
+              fi
+            done
+            
+            # Save to file (truncate if too long)
+            echo -e "$LOG_TEXT" | head -c 30000 > /tmp/failure_log.txt
+            echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
+            echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
+          else
+            echo "⚠️ Could not download logs"
+            echo "log_lines=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Analyze failure with Gemini
+        id: analyze
+        if: steps.logs.outputs.log_lines != '0'
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import json
+          import os
+          from google import genai
+
+          api_key = os.environ.get("GOOGLE_API_KEY", "")
+          if not api_key:
+              print("❌ GOOGLE_API_KEY not set")
+              exit(0)
+
+          with open("/tmp/failure_log.txt") as f:
+              log_text = f.read()
+
+          client = genai.Client(api_key=api_key)
+
+          prompt = f"""You are an expert DevOps engineer. Analyze this CI/CD failure.
+
+Respond with ONLY a valid JSON object (no markdown fences):
+{{
+    "root_cause_summary": "one paragraph summary",
+    "affected_file_path": "relative/path/to/file.py",
+    "corrected_code": "full corrected file content",
+    "explanation": "what was changed and why"
+}}
+
+Rules:
+- corrected_code must be the COMPLETE file, not a diff
+- Ensure corrected_code is valid Python
+- Preserve all existing functionality
+
+Failed Workflow Log:
+```
+{log_text[:25000]}
+```"""
+
+          try:
+              response = client.models.generate_content(
+                  model="gemini-2.0-flash",
+                  contents=prompt,
+              )
+              
+              raw = response.text.strip()
+              # Clean markdown fences
+              import re
+              raw = re.sub(r"^```(?:json)?\s*\n?", "", raw, flags=re.MULTILINE)
+              raw = re.sub(r"\n?```\s*$", "", raw, flags=re.MULTILINE)
+              raw = raw.strip()
+              
+              result = json.loads(raw)
+              
+              # Validate required fields
+              if not result.get("corrected_code"):
+                  print("❌ No corrected_code in response")
+                  exit(0)
+              if not result.get("affected_file_path"):
+                  print("❌ No affected_file_path in response")
+                  exit(0)
+              
+              # Save outputs
+              with open("/tmp/analysis.json", "w") as f:
+                  json.dump(result, f)
+              
+              # Write outputs for GitHub Actions
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write(f"file_path={result['affected_file_path']}\n")
+                  f.write(f"summary={result['root_cause_summary'][:200]}\n")
+              
+              print(f"✅ Analysis complete: {result['affected_file_path']}")
+              print(f"   Root cause: {result['root_cause_summary'][:100]}...")
+              
+          except json.JSONDecodeError as e:
+              print(f"❌ Failed to parse LLM response as JSON: {e}")
+              print(f"   Raw response: {raw[:500]}")
+          except Exception as e:
+              print(f"❌ LLM analysis failed: {e}")
+          PYEOF
+
+      - name: Apply fix and create PR
+        id: fix
+        if: steps.analyze.outputs.file_path != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Read analysis
+          FILE_PATH=$(python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['affected_file_path'])")
+          SUMMARY=$(python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['root_cause_summary'][:72])")
+          CODE=$(python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['corrected_code'])")
+          EXPLANATION=$(python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['explanation'])")
+          RUN_ID="${{ github.event.workflow_run.id }}"
+
+          # Check if file exists
+          if [[ ! -f "$FILE_PATH" ]]; then
+            echo "❌ File not found: $FILE_PATH"
+            exit 0
+          fi
+
+          # Create branch
+          BRANCH="auto-fix/${RUN_ID}"
+          git checkout -b "$BRANCH"
+
+          # Apply fix
+          echo "$CODE" > "$FILE_PATH"
+          git add "$FILE_PATH"
+
+          # Check if there are changes
+          if git diff --cached --quiet; then
+            echo "ℹ️ No changes to commit"
+            exit 0
+          fi
+
+          # Commit
+          git config user.name "Auto-Healing Agent"
+          git config user.email "agent@github.com"
+          git commit -m "[auto-heal] fix: ${SUMMARY}"
+
+          # Push
+          git push origin "$BRANCH"
+
+          # Create PR
+          BODY="## 🔧 Auto-Healing: CI/CD Pipeline Fix
+
+          **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
+          **Affected File:** \`${FILE_PATH}\`
+
+          ### Root Cause
+          ${SUMMARY}
+
+          ### Changes Applied
+          ${EXPLANATION}
+
+          ---
+          _This PR was generated automatically by the Auto-Healing Agent.
+          The fix will be validated by the agent-validation workflow._"
+
+          gh pr create \
+            --title "🔧 Auto-Heal: ${SUMMARY}" \
+            --body "$BODY" \
+            --head "$BRANCH" \
+            --base main
+
+          echo "✅ PR created from branch ${BRANCH}"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🤖 Auto-Healing Agent Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Triggered by:** Workflow Run #${{ github.event.workflow_run.id }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Conclusion:** ${{ github.event.workflow_run.conclusion }}" >> "$GITHUB_STEP_SUMMARY"
+          
+          if [[ -n "${{ steps.analyze.outputs.file_path }}" ]]; then
+            echo "- **File analyzed:** \`${{ steps.analyze.outputs.file_path }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Root cause:** ${{ steps.analyze.outputs.summary }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          
+          if [[ -n "${{ steps.fix.outputs.branch }}" ]]; then
+            echo "- **PR branch:** \`${{ steps.fix.outputs.branch }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Status:** ✅ PR created" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- **Status:** ⏭️ No fix applied" >> "$GITHUB_STEP_SUMMARY"
+          fi

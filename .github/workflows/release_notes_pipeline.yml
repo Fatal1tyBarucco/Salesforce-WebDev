@@ -50,18 +50,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@v7
+        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependências de desenvolvimento
-        run: uv sync --extra dev
+        run: uv sync --frozen --extra dev --group dev
 
       - name: Ruff — Linting e formatação
         run: uv run ruff check src/ --output-format=github
@@ -78,21 +78,21 @@ jobs:
     needs: lint
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@v7
+        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependências
-        run: uv sync
+        run: uv sync --frozen
 
       - name: Instalar Playwright browsers
         run: uv run playwright install chromium
@@ -124,6 +124,13 @@ jobs:
           fi
           uv run python -m src.main $ARGS
         working-directory: ${{ env.WORKING_DIR }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          MIMOCODE_API_KEY: ${{ secrets.MIMOCODE_API_KEY }}
 
       - name: Verificar alterações geradas
         id: git_status
@@ -149,7 +156,11 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          git push origin HEAD:${{ github.ref_name }}
+          # Fetch latest remote, then force-with-lease push.
+          # The pipeline is the sole author of releases/ and README.md,
+          # so we can safely overwrite remote if a rebase would conflict.
+          git fetch origin ${{ github.ref_name }}
+          git push --force-with-lease origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release
         if: |
@@ -176,18 +187,13 @@ jobs:
               CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
               RELEASE_ID=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin).get('release_id', 0))")
               
-              # Check if this is the latest release by comparing with existing ones
-              LATEST_EXISTS=$(gh release list --json tagName -q '.[].tagName' | grep -c "v2026-" || true)
-              if [ "$LATEST_EXISTS" -eq 0 ]; then
+              # Check if this is the latest release by comparing release_ids
+              EXISTING_IDS=$(gh release list --json body -q '.[].body' 2>/dev/null | grep -oP 'release_id.*?(\d+)' | grep -oP '\d+' | sort -n || true)
+              MAX_ID=$(echo "$EXISTING_IDS" | tail -1 || echo "0")
+              if [ -z "$MAX_ID" ] || [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
                 IS_LATEST="--latest"
               else
-                # Get highest release_id from existing releases
-                MAX_ID=$(gh release list --json body -q '.[].body' | grep -oP 'release_id.*?(\d+)' | head -1 | grep -oP '\d+' || echo "0")
-                if [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
-                  IS_LATEST="--latest"
-                else
-                  IS_LATEST="--latest=false"
-                fi
+                IS_LATEST="--latest=false"
               fi
               
               NOTES="## 📦 ${RELEASE_NAME}\n\n"

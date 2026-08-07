@@ -1,0 +1,235 @@
+# ──────────────────────────────────────────────────────────────────────
+# Agent Validation Pipeline — GitHub Actions Workflow
+# ──────────────────────────────────────────────────────────────────────
+# Triggered ONLY on Pull Requests from auto-fix/* branches.
+# Validates that the agent's code corrections pass isolated tests
+# with a rigorous 95% coverage threshold.
+# ──────────────────────────────────────────────────────────────────────
+
+name: Agent Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+# Cancel in-progress runs for the same PR to avoid race conditions
+# when the agent makes rapid sequential commits.
+concurrency:
+  group: agent-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+jobs:
+  # ── Gate: Only run for auto-fix branches ──────────────────────────
+  check-branch:
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'auto-fix/')
+    outputs:
+      is_auto_fix: ${{ steps.branch-check.outputs.is_auto_fix }}
+    steps:
+      - name: Verify auto-fix branch prefix
+        id: branch-check
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          if [[ "${BRANCH}" == auto-fix/* ]]; then
+            echo "is_auto_fix=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Branch '${BRANCH}' is an auto-fix branch."
+          else
+            echo "is_auto_fix=false" >> "$GITHUB_OUTPUT"
+            echo "⏭️ Branch '${BRANCH}' is not an auto-fix branch. Skipping."
+          fi
+
+  # ── Discover Changed Python Files ─────────────────────────────────
+  discover-changed-files:
+    runs-on: ubuntu-latest
+    needs: check-branch
+    if: needs.check-branch.outputs.is_auto_fix == 'true'
+    outputs:
+      changed_python_files: ${{ steps.discover.outputs.changed_python_files }}
+      has_changed_files: ${{ steps.discover.outputs.has_changed_files }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed Python files
+        id: discover
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+        with:
+          files: |
+            **/*.py
+          files_ignore: |
+            tests/**
+            .github/**
+
+      - name: Build file matrix
+        id: build-matrix
+        run: |
+          # Collect changed .py source files (exclude tests)
+          CHANGED_FILES="${{ steps.discover.outputs.all_changed_files }}"
+
+          if [[ -z "${CHANGED_FILES}" || "${CHANGED_FILES}" == "" ]]; then
+            echo "has_changed_files=false" >> "$GITHUB_OUTPUT"
+            echo "changed_python_files=[]" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No Python source files changed."
+            exit 0
+          fi
+
+          # Build JSON array of changed files
+          FILE_ARRAY="["
+          FIRST=true
+          for file in ${CHANGED_FILES}; do
+            # Only include .py files that are NOT in tests/
+            if [[ "${file}" == *.py ]] && [[ "${file}" != tests/* ]]; then
+              if [[ "${FIRST}" == "true" ]]; then
+                FIRST=false
+              else
+                FILE_ARRAY="${FILE_ARRAY},"
+              fi
+              FILE_ARRAY="${FILE_ARRAY}\"${file}\""
+            fi
+          done
+          FILE_ARRAY="${FILE_ARRAY}]"
+
+          if [[ "${FILE_ARRAY}" == "[]" ]]; then
+            echo "has_changed_files=false" >> "$GITHUB_OUTPUT"
+            echo "changed_python_files=[]" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No Python source files changed (only test files or non-Python)."
+          else
+            echo "has_changed_files=true" >> "$GITHUB_OUTPUT"
+            echo "changed_python_files=${FILE_ARRAY}" >> "$GITHUB_OUTPUT"
+            echo "✅ Changed Python files: ${FILE_ARRAY}"
+          fi
+
+  # ── Run Isolated Tests ────────────────────────────────────────────
+  run-isolated-tests:
+    runs-on: ubuntu-latest
+    needs: discover-changed-files
+    if: needs.discover-changed-files.outputs.has_changed_files == 'true'
+
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev --extra healing --group dev
+
+      - name: Map source files to test files and run pytest
+        id: run-tests
+        env:
+          CHANGED_FILES_JSON: ${{ needs.discover-changed-files.outputs.changed_python_files }}
+        run: |
+          set -euo pipefail
+
+          echo "📋 Changed files: ${CHANGED_FILES_JSON}"
+
+          # Parse the JSON array of changed files
+          SOURCE_FILES=$(echo "${CHANGED_FILES_JSON}" | python3 -c "
+          import json, sys
+          files = json.load(sys.stdin)
+          for f in files:
+              print(f)
+          ")
+
+          if [[ -z "${SOURCE_FILES}" ]]; then
+            echo "ℹ️ No source files to test. Exiting."
+            exit 0
+          fi
+
+          TEST_FILES=""
+          MISSING_TESTS=""
+          TEST_COUNT=0
+
+          while IFS= read -r source_file; do
+            # Derive the test file path:
+            # src/service.py -> tests/test_service.py
+            # src/auto_healing/service.py -> tests/test_auto_healing_service.py
+            # service.py -> tests/test_service.py
+            RELATIVE_PATH="${source_file#src/}"
+            MODULE_NAME=$(basename "${RELATIVE_PATH}" .py)
+            # Replace / with _ for subpackage test naming
+            SUBPACKAGE_PATH=$(dirname "${RELATIVE_PATH}" | tr '/' '_')
+            if [[ "${SUBPACKAGE_PATH}" == "." ]]; then
+              TEST_FILE="tests/test_${MODULE_NAME}.py"
+            else
+              TEST_FILE="tests/test_${SUBPACKAGE_PATH}_${MODULE_NAME}.py"
+            fi
+
+            if [[ -f "${TEST_FILE}" ]]; then
+              if [[ -n "${TEST_FILES}" ]]; then
+                TEST_FILES="${TEST_FILES} "
+              fi
+              TEST_FILES="${TEST_FILES}${TEST_FILE}"
+              TEST_COUNT=$((TEST_COUNT + 1))
+              echo "✅ Found test: ${TEST_FILE} (for ${source_file})"
+            else
+              MISSING_TESTS="${MISSING_TESTS}${source_file}\n"
+              echo "⚠️ No test file found for ${source_file} (expected: ${TEST_FILE})"
+            fi
+          done <<< "${SOURCE_FILES}"
+
+          if [[ -z "${TEST_FILES}" ]]; then
+            echo "::error::No test files found for any changed source files."
+            echo ""
+            echo "Changed source files requiring tests:"
+            echo -e "${MISSING_TESTS}"
+            echo ""
+            echo "Each changed source file must have a corresponding test file."
+            echo "Expected pattern: tests/test_<subpackage>_<module_name>.py"
+            exit 1
+          fi
+
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🧪 Running isolated tests for ${TEST_COUNT} file(s)..."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          # Run pytest with rigorous coverage threshold
+          uv run pytest \
+            ${TEST_FILES} \
+            --tb=short \
+            --strict-markers \
+            --cov=src \
+            --cov-report=term-missing \
+            --cov-fail-under=95 \
+            -q
+
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ All tests passed with ≥95% coverage!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: Annotate test failure
+        if: failure() && steps.run-tests.outcome == 'failure'
+        run: |
+          echo "::error::Agent correction failed isolated tests."
+          echo ""
+          echo "The auto-healing agent's code correction did not pass"
+          echo "the isolated test suite with ≥95% coverage."
+          echo ""
+          echo "This PR will NOT be merged until the agent produces"
+          echo "a passing correction or the circuit breaker triggers."

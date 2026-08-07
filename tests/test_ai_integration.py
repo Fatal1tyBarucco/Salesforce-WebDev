@@ -68,7 +68,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         assert summary.overall_trend == "crescimento"
 
         summary_report = asyncio.run(generate_ai_summary_report("summer_26", "winter_26"))
-        assert "Resumo Inteligente" in summary_report
+        assert "Destaques" in summary_report
 
         # Feature 2: Predictive Impact Scoring
         r1_meta = {

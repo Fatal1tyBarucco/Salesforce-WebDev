@@ -140,11 +140,12 @@ A hierarquia de exceções em `src/exceptions.py` (11 classes: `PipelineError`, 
 
 | Campo | Descrição |
 |-------|-----------|
-| `executive_summary` | 3-5 frases com visão geral da release |
+| `executive_summary` | Resumo completo (até 5.000 caracteres) com escopo, inovações e direcionamento estratégico |
 | `business_impact` | Parágrafo com valor concreto e exemplos reais |
 | `strategic_themes` | Lista de temas (AI-First, Security, Developer Experience) |
 | `top_categories` | Top 5 categorias com destaque e percentual |
 | `migration_notes` | Considerações para administradores |
+| `category_summaries` | Resumo AI por categoria (até 1.000 caracteres cada) |
 
 **Método `to_markdown()`** renderiza como documento Markdown completo.
 
@@ -228,3 +229,52 @@ Downgrade de Python 3.14 (alpha) para `>=3.12,<3.14` (estável).
 | **Cobertura total** | **95%+** |
 | **Testes E2E** | Pipeline, API, EventBus, Cache, Auth |
 | **Testes AI** | Feature enricher, release summarizer, fallback |
+
+---
+
+## Fase 3 — Resumos AI e Cache de Sub-Agentes
+
+### Resumos por Categoria (AI)
+
+Cada categoria dentro de uma release recebe resumo AI próprio, gerado por LLM.
+
+| Aspecto | Implementação |
+|---------|---------------|
+| **Tamanho** | Até 1.000 caracteres por categoria |
+| **Conteúdo** | Features mais impactantes, tendências, relevância para o negócio |
+| **Integração** | Campo `category_summaries` no `ReleaseSummary` |
+| **Exibição** | Cada `<details>` de categoria no README inclui o resumo AI |
+
+### Cache de Resumos com Sub-Agentes
+
+Sistema de cache que evita re-chamadas ao LLM para resumos já gerados.
+
+| Aspecto | Implementação |
+|---------|---------------|
+| **Arquivo** | `.summary_cache.json` por release |
+| **Conteúdo** | `executive_summary` + `category_summaries` |
+| **Invalidação** | Manual (exclusão do arquivo) |
+| **Integração** | `ReleaseSummarizer.summarize()` verifica cache antes de chamar LLM |
+| **Geração** | Sub-agentes dedicados (1 por release) geram resumos em paralelo |
+
+### README Bilingue Reorganizado
+
+Reestruturação dos READMEs pt_BR e en_US.
+
+| Aspecto | Implementação |
+|---------|---------------|
+| **Posição** | Seção de Releases movida para logo abaixo do banner |
+| **Resumos** | Executivo completo (até 5.000 chars) visível imediatamente |
+| **Categorias** | `<details>` expandível com resumo AI por categoria |
+| **Automação** | `_update_single_readme()` preserva posição ao regenerar |
+
+### GitHub Pages Sincronizado
+
+Documentação online atualizada automaticamente.
+
+| Aspecto | Implementação |
+|---------|---------------|
+| **Triggers** | `releases/**`, `README.md`, `README.en.md`, `mkdocs.yml` |
+| **docs/index.md** | Seção de Releases no topo com tabela e links |
+| **Nav** | Seção "Internos" + "V4 (Atual)" adicionadas ao mkdocs |
+| **Workflow** | `documentation-build.yml` reage a mudanças relevantes |

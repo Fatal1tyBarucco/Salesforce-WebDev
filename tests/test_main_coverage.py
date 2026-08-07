@@ -915,6 +915,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
             side_effect=LLMError("AI failed"),
         ),
         patch("src.health.set_pipeline_status") as mock_status,
+        patch("src.orchestrator.set_pipeline_status") as mock_status2,
         patch("src.main.logger"),
     ):
         from src.main import run_pipeline
@@ -929,7 +930,11 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
         ):
             await run_pipeline()
 
-    mock_status.assert_any_call("completed_with_errors")
+    # Check either mock was called with completed_with_errors
+    all_calls = mock_status.call_args_list + mock_status2.call_args_list
+    assert any(
+        c == (("completed_with_errors",),) for c in all_calls
+    ), f"Expected 'completed_with_errors' but got: {all_calls}"
 
 
 # ============================================================
@@ -939,7 +944,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
-    """Test en_US README where heading is at end of file (next_heading == -1)."""
+    """Test en_US README where heading is at end of file — should skip to preserve content."""
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -962,7 +967,7 @@ async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
         (tmp_path / "README.md").write_text(
             "# Title\n\n" + RELEASE_SECTION_HEADING + "\n", encoding="utf-8"
         )
-        # en_US README: heading at end, no "\n## " after it → next_heading == -1
+        # en_US README: heading at end, no "\n## " after it → should skip
         (tmp_path / "README.en.md").write_text(
             "# Title\n\n" + RELEASE_SECTION_HEADING + "\n", encoding="utf-8"
         )
@@ -976,5 +981,6 @@ async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
     finally:
         os.chdir(original_dir)
 
+    # Content should be preserved (not overwritten) since there's no next heading
     updated_en = (tmp_path / "README.en.md").read_text(encoding="utf-8")
-    assert "Summer '26" in updated_en
+    assert "Summer '26" not in updated_en  # skipped, original preserved

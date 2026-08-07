@@ -1,70 +1,101 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/data-analysis.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/data-analysis.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Data Analysis
 
-> **58 features**
+> **84 features**
 
 Os aprimoramentos do Analytics incluem recursos novos e atualizados para o Tableau Next, relatórios e painéis do Lightning, relatórios e painéis do Data 360, CRM Analytics, aplicativos inteligentes e Tableau.
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Tableau Next** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Próximos recursos do Tableau lançados por mês** | ✅ | ❌ | ❌ | ❌ | |
-| **Acelere a criação de Next Ativo do Tableau com modelos de mercado** | ✅ | ❌ | ❌ | ❌ | |
-| **Configuração e administração** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Obtenha visibilidade das interações com o usuário com a Próxima auditoria do Tableau (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Início e espaços de trabalho** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Carregar dados em um espaço de trabalho do Tableau Next usando o Google Drive (beta)** | ✅ | ❌ | ❌ | ❌ | |
-| **Realizar várias tarefas durante a ingestão de dados com a nova gaveta de ingestão de dados** | ✅ | ❌ | ❌ | ❌ | |
-| **Personalizar o Tableau Next Files com edição centralizada** | ✅ | ❌ | ❌ | ❌ | |
-| **Clonar ativos e dependências referenciados em um próximo espaço de trabalho do Tableau** | ✅ | ❌ | ❌ | ❌ | |
-| **Localize e crie ativos diretamente na próxima página inicial do Tableau** | ✅ | ❌ | ❌ | ❌ | |
-| **Analisar objetos do Data Lake no Tableau Next** | ✅ | ❌ | ❌ | ❌ | |
-| **Visualização e painéis** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Fazer comparações mais granulares com linhas de referência** | ✅ | ❌ | ❌ | ❌ | |
-| **Agregar dimensões como atributos no Tableau Next** | ✅ | ❌ | ❌ | ❌ | |
-| **O painel de sugestões do Tableau Next agora é Mostrar-me** | ✅ | ❌ | ❌ | ❌ | |
-| **Otimizar o carregamento do Next Panel do Tableau com modos de dados configuráveis** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplificar a análise interfuncional usando filtragem de vários modelos** | ✅ | ❌ | ❌ | ❌ | |
-| **Reestruturar layouts de painel do Tableau Next com seleção de vários widgets** | ✅ | ❌ | ❌ | ❌ | |
-| **Formatar painéis mais rapidamente com o estilo de widget em massa** | ✅ | ❌ | ❌ | ❌ | |
-| **Compartilhamento e integração** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Criar modelos de aplicativo usando seu próximo espaço de trabalho do Tableau (beta)** | ✅ | ❌ | ❌ | ❌ | |
-| **Exploração e ação** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Planeje suas próximas etapas com previsões de métrica no Tableau Next** | ✅ | ❌ | ❌ | ❌ | |
-| **Comparar diferentes períodos nas próximas métricas do Tableau** | ❌ | ✅ | ❌ | ❌ | |
-| **Próximo desenvolvimento do Tableau** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Acelere o Next Custom Development do Tableau com a estrutura de modelos de aplicativo** | ✅ | ❌ | ❌ | ❌ | |
-| **Próximos destaques do Tableau** | ✅ | ❌ | ❌ | ❌ | |
-| **Relatórios e painéis** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Garanta a consistência da identidade visual em seus relatórios e painéis com paletas de cores da marca** | ❌ | ❌ | ✅ | ❌ | |
-| **Integre componentes da Web Lightning personalizados em painéis para visualizações de dados interativas (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Expanda os recursos de geração de relatórios com mais fórmulas no nível da linha** | ✅ | ❌ | ❌ | ❌ | |
-| **Proteger exportações do Excel desabilitando fórmulas** | ❌ | ❌ | ✅ | ❌ | |
-| **Relatórios e painéis do Data 360..** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Analisar tendências de dados com histórico de objeto de Insight calculado (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Realizar drill downs mais rápidos com hierarquias de dimensões (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Obtenha percepções financeiras precisas com relatórios de moeda em relatórios do Data 360 (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **CRM Analytics** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Experiência e visualizações do Analytics** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Integrar widgets de dados ativos do Data 360 em sites do Experience Cloud** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhore a responsividade do painel com reutilização de resultados para consultas ao vivo do Data 360** | ❌ | ❌ | ✅ | ❌ | |
-| **Aumente o desempenho da consulta e a eficiência de dados com semijunções e antijunções (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Filtrar painéis com diversos valores de texto simultaneamente** | ❌ | ❌ | ✅ | ❌ | |
-| **Publicar layouts de painel grandes com impressão em largura total** | ❌ | ❌ | ✅ | ❌ | |
-| **Gerenciar a visibilidade total da coluna em sua tabela comparativa** | ❌ | ❌ | ✅ | ❌ | |
-| **Exportar painéis do CRM Analytics como documentos com tamanhos de página personalizados (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Assinar widgets de painel em sites do Experience Cloud (beta)** | ❌ | ❌ | ✅ | ❌ | |
-| **Integração de dados** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Aumente o desempenho e a confiabilidade com o Inspetor de receita do CRM Analytics** | ✅ | ❌ | ❌ | ❌ | |
-| **Exportar agendas de receita para seu calendário externo para fácil rastreamento** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplifique o backup de receita com upload e download diretos no Gerenciador de dados** | ✅ | ❌ | ❌ | ❌ | |
-| **Simplifique sua preparação de dados escrevendo em várias saídas do Data 360 em uma única receita** | ✅ | ❌ | ❌ | ❌ | |
-| **Atualize para a Segurança do OAuth para suas conexões externas do Salesforce** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhore o desempenho da receita de dados de instantâneo com ações de inserção e inserção e exclusão otimizadas (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Melhore o desempenho de saída de gravação no Data 360 com ações otimizadas de adicionar, inserir e inserir e excluir (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Exportar seus dados do CRM Analytics para o Azure Data Lake (disponível ao público em geral)** | ✅ | ❌ | ❌ | ❌ | |
-| **Tableau** | ✅ | ❌ | ❌ | ❌ | |
-| **Aprimoramentos de acessibilidade no Analytics** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_features_released_by_month.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_marketplace.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_agentforce.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_agent_tableau_enhanced_experience.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_agent_model_selection.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_setup_enable.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_auditing.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_workspaces.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_google_connector_beta.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_ingestion_drawer.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_central_edit.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_salesforce_connections.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_excel_refresh_interpreter.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_google_search_refresh.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_clone_ref.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_addhome.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_explore.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_data_tranform_builder.htm&language=pt_BR&release=262&type=5) |
+
+### Semânticas
+
+| Feature | Users | Admins | Config | Contact | Docs |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_c360_calibration.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_sm_semantic_modeler.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_override_semantic_definitions_in_composed_semantic_models.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_create_insights.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_visualization_group_tables.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_kpi_radials.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_radial_charts.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_geocoding_point_map.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_viz_include_exclude.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_viz_csv_download.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_visualization_refline_enhanced.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_visualization_attribute_dimension.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_visualization_showme_panel.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_data_mode.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_sdm_filter.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_multi_select_widget.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_bulk_widget_styling.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_text_metrics.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_parameter_update.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_lightning_mobile.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_nav_widget.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_dashboard_summary_widget.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_share_embed.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_build_app_template.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_manage_apps_and_templates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_everywhere.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_forecast.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_secondary_comparison.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_slack_collaboration_enabled.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_mcp_slack.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_development.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_atf_dev_guide_announcement.htm&language=pt_BR&release=262&type=5) |
+| **Required: Update the Tableau Next Integration SDK to v2.0** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_embedding_sdk_v2.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_last_highlights.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_reports_dashboards.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_custom_org_themes.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_embed_lwc_in_dashboards_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_increase_row_level_formulas.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_disable_formulas_excel_export.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_dc_reports_dashboards.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data360_reports_cio_history_reporting.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data360_reports_dimension_hierarchy.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data360_reports_currency_support.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_analytics_cloud.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_app_building.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_embed_widget_partner_site.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_result_reuse_data360_live_queries.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_dashboard_semi_anti_join_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_dashboard_multi_text_filter.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_dashboard_full_width_print.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_dashboard_column_totals.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_analytics_recycle_bin.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_dashboard_document_download.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_subscriptions_community_users.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_data.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_multiple_wdc_output.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_salesforce_external_oauth.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_optimized_wdc_operations_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_azure_data_lake_output_connection_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tableau.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_accessibility.htm&language=pt_BR&release=262&type=5) |
 
 ## 🎓 Related Trailhead Modules
 

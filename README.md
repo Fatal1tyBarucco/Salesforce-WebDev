@@ -22,126 +22,6 @@
 
 ---
 
-## 🌟 O Que Este Projeto Faz
-
-A cada trimestre, a Salesforce lança centenas de novas funcionalidades espalhadas por dezenas de categorias. **Acompanhar manualmente é inviável.**
-
-Este repositório automatiza todo o ciclo:
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│   🌐 Salesforce Help ──▶ 🤖 Scraper ──▶ 🧠 AI ──▶ 📦 Markdown     │
-│        (SPA)              (Playwright)   (LLM)    (Estruturado)     │
-│                                                                     │
-│                           ──▶ 📧 Email ──▶ 💬 Slack ──▶ 🐙 GitHub  │
-│                              (Digest)     (Webhook)    (Issues)     │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### ✨ Capacidades
-
-| Capacidade | Descrição |
-|:-----------|:----------|
-| 🔍 **Detecção Automática** | Detecta novas releases comparando conteúdo com a versão anterior |
-| 🎭 **Scraping SPA** | Playwright renderiza JavaScript completo do portal Salesforce Help |
-| 🧠 **Classificação AI** | Classifica features por impacto (Alto/Médio/Baixo) e tipo via LLM |
-| 📝 **Enriquecimento AI** | Descrições profissionais e análise de impacto por feature via LLM |
-| 📋 **Resumos Executivos** | Sumários completos com impacto no negócio, temas estratégicos e migração |
-| 📊 **Relatórios Inteligentes** | Changelog, regressões, diff, qualidade — tudo gerado por AI |
-| 🔄 **Deduplicação** | Content-hash evita reprocessar conteúdo inalterado |
-| 📧 **Notificações** | Email, Slack e Discord com filtros por perfil de interesse |
-| 🐙 **GitHub Integration** | Issues automáticas, PRs com triage, badges dinâmicos |
-| 🌐 **REST + GraphQL API** | Acesso programático com autenticação via API Key |
-| 📈 **Dashboard Interativo** | HTML com busca, comparação, heatmap e exportação CSV/JSON |
-| 🏥 **Health Monitoring** | Endpoints `/health`, `/ready`, `/metrics` (Prometheus) |
-| 🔒 **Autenticação API** | API Key middleware (`X-API-Key` / `Bearer`) para endpoints protegidos |
-
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -155,11 +35,24 @@ Este repositório automatiza todo o ciclo:
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** A release Summer '26 representa uma expansão significativa do ecossistema Salesforce com **1434 novos recursos** distribuídos em **22 categorias**. As áreas com maior volume de inovação são Setores, S...
+> 📊 **Resumo Executivo:** A release Summer '26 do Salesforce representa um marco significativo na evolução da plataforma, com um total de 1.434 novos recursos distribuídos em 22 categorias. Esta release consolida a inteligência artificial como eixo central da estratégia Salesforce, com o Agentforce se expandindo transversalmente por praticamente todas as áreas da plataforma — desde vendas e serviço até setores verticais e desenvolvimento.
+
+Destaques principais incluem a nova geração do Tableau Next, com integração profunda ao Data 360 e capacidades avançadas de análise em tempo real, incluindo incorporação de Lightning Web Components em dashboards e suporte a previsões de métricas nativas. O Flow Builder recebeu 118 recursos na categoria Automação, incluindo integração direta com Agentforce, suporte a linguagem natural para atualização de fluxos de tela e orquestração de fluxos como recurso padrão.
+
+O Data 360 expandiu significativamente com 72 recursos, incluindo novas capacidades de ingestão do Databricks, Microsoft Fabric OneLake e AWS Glue Data Catalog, além de modelos preditivos com novo runtime padrão e análise de sentimento em tempo real. A categoria Desenvolvimento trouxe 127 recursos com foco em Lightning Web Components API v67.0, Agentforce DX, MCP Servers e o novo Salesforce MultiFramework para aplicativos React.
+
+Setores verticais lidera em volume com 309 recursos, abrangendo automotivo, seguros, saúde, educação, manufatura, mídia, energia e setor público. O Gerenciamento de Receita avançou com 97 recursos incluindo novas capacidades de billing, pagamentos automatizados e orquestração dinâmica. A categoria Serviço trouxe 196 recursos com foco em centrais de contato Agentforce, IT Service Management e autoatendimento aprimorado.
+
+Segurança, identidade e privacidade consolidou 58 recursos com melhorias em Shield Platform Encryption, detecção de dados sensíveis e o novo Security Center com Agentforce. Marketing avançou com 64 recursos incluindo Marketing Cloud Next, inteligência de marketing e gerenciamento de fidelidade. A integração com Slack, MuleSoft e o aplicativo móvel também receberam atualizações relevantes.
+
+A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, onde Agentforce não é apenas um produto isolado mas uma camada de inteligência que permeia toda a experiência do cliente, desde o primeiro contato até o fidelização e suporte pós-venda.
 
 
 <details>
 <summary><b>📄 Documentação legal (6 recursos)</b></summary>
+
+
+> A categoria Documentação legal reúne 6 recursos referentes à estrutura documental da release Summer '26. Inclui informações sobre como e quando os recursos ficam disponíveis, a localização da Ajuda do Salesforce, documentação técnica e notas da versão. Esta categoria serve como referência para administradores e usuários que precisam entender os ciclos de disponibilidade dos recursos, destacando que algumas funcionalidades são ativadas imediatamente após o release, enquanto outras requerem ação direta do administrador.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
 
@@ -169,13 +62,19 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Salesforce geral (36 recursos)</b></summary>
 
+
+> Com 36 recursos, a categoria Salesforce geral abrange melhorias transversais à plataforma. Destaques incluem rotação mais frequente de certificados, preparação para IPv6, atualização de certificados mTLS e validação de domínios. O Chatter agora é desativado por padrão em novas organizações. Salesforce Foundations trouxe pontuação de pessoas para priorização de leads e rastreamento de web. O aplicativo Arquivar recebeu novas configurações e status de atividade. Melhorias de acessibilidade foram implementadas para zoom superior a 200%, seletores de data, popovers e listas de tarefas do Lightning.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Agentforce (37 recursos)</b></summary>
+<summary><b>📄 Agentforce (1 recursos)</b></summary>
+
+
+> A categoria Agentforce apresenta 1 recurso nesta release, focado em capacidades de voz (Voice feature). O Agentforce continua sua expansão como camada de inteligência artificial transversal, com integrações profundas aparecendo em diversas outras categorias como Automação, Serviço, Field Service, Setores e Vendas. Os módulos Trailhead recomendados incluem Agentforce Basics, Build an Agent with Agentforce e Agentforce for Developers, cobrindo desde conceitos fundamentais até implementação avançada.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
 
@@ -185,6 +84,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Análise de dados (58 recursos)</b></summary>
 
+
+> Com 58 recursos, a categoria Análise de dados apresenta inovações profundas lideradas pelo Tableau Next. Destaques incluem integração com Data 360 para análise de objetos do Data Lake, modos de dados configuráveis para otimização de performance, filtragem em múltiplos modelos de dados, previsões de métricas com séries temporais e o novo framework de modelos de aplicativo. O CRM Analytics recebeu melhorias em semijunções e antijunções SAQL, paletas de cores de marca para relatórios, incorporação de LWC em dashboards e exportação para Azure Data Lake. A segurança foi reforçada com OAuth para conexões externas e proteção de exportações Excel.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
 
 </details>
@@ -192,6 +94,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Automação (118 recursos)</b></summary>
+
+
+> A categoria Automação é a segunda maior da release com 118 recursos, centrada no Flow Builder. Destaques incluem integração direta com Agentforce para criação de agentes, atualização de fluxos com linguagem natural (beta), operadores de data em lógica de decisão, orquestração de fluxos como recurso padrão e suporte a MuleSoft para fluxo com conectores de terceiros. O Marketing Cloud do Fluxo permite personalização de mensagens com dados integrados. O Mecanismo de regras de negócios ganhou controle de versão de tabelas de decisão e escalabilidade aprimorada. O Serviço de contexto e o Mecanismo de processamento de dados expandem as capacidades de transformação de dados em escala.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
 
@@ -201,6 +106,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 OmniStudio (9 recursos)</b></summary>
 
+
+> Com 9 recursos, a categoria OmniStudio inclui controle de versão do Data Mapper para consistência de implementação, alternância entre designers padrão e gerenciado, migração para runtime padrão via Assistente de migração e o OmniStudio MCP (beta) para acelerar desenvolvimento de FlexCards. Melhorias de acessibilidade foram implementadas e ações do FlexCard agora podem ser abertas em novas janelas. O recurso de chamar fluxos iniciados automaticamente em FlexCards está em piloto.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
 
 </details>
@@ -208,6 +116,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Personalização (33 recursos)</b></summary>
+
+
+> A categoria Personalização reúne 33 recursos abrangendo AgentExchange com exploração de soluções MCP, Serviços externos com suporte a enumerações e arquivos binários, Globalização com suporte a novos fusos horários e traduções para catalão e basco. A Configuração com Agentforce está agora em disponibilidade geral para simplificar tarefas administrativas. O Compartilhamento ganhou opções de hierarquia de papéis para filas e atualização mais rápida de padrões organizacionais. Salesforce Connect suporta credenciais nomeadas entre organizações.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
 
@@ -217,6 +128,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Data 360 (72 recursos)</b></summary>
 
+
+> Com 72 recursos, a categoria Data 360 expande significativamente as capacidades de dados unificados. Novos conectores incluem Databricks (GA), Microsoft Fabric OneLake (beta), AWS Glue Data Catalog e acesso em tempo real sem pipeline. O gráfico de dados ganhou limites maiores, streaming para atualizações rápidas e histórico de atualização. Modelos de IA agora incluem agrupamento, séries temporais, análise de sentimento e classificação de tópico. A extensão de código permite transformações personalizadas e o Vibes do Agentforce facilita criação com linguagem natural. Ativações suportam Amazon S3, Meta, Snapchat e plataformas de parceiros.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
 
 </details>
@@ -224,6 +138,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
+
+
+> A maior categoria com 127 recursos, Desenvolvimento cobre LWC API v67.0 com melhorias de performance, visualização de componentes no VS Code, gerentes de estado e suporte RTL. Lightning Out 2.0 agora suporta componentes Aura. Microfrontendas permitem integração de apps web externos. Apex ganhou strings multilinhas, operações de banco em modo de usuário por padrão e remoção de WITH SECURITY_ENFORCED. Agentforce DX inclui servidor MCP e o novo Vibes IDE. React Apps com MultiFramework estão em GA. APIs ganharam suporte a JWT para SOAP, consultas SQL do Apex e GraphQL aprimorado.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
 
@@ -233,6 +150,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Experience Cloud (14 recursos)</b></summary>
 
+
+> Com 14 recursos, a categoria Experience Cloud foca em sites Aura e LWR com experiências de autoatendimento assistido por IA, suporte a Chatter em novas organizações e verificação de malware em arquivos. Fluxos de tela ganharam tabelas de dados com registros relacionados, substituições de estilo e imagens de recurso estático. O Experience Builder recebeu grupos de botões de opção empilhados e suporte a upload de arquivos maiores. Segurança foi aprimorada com permissão para envio de emails por todos os usuários do site.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
 
 </details>
@@ -240,6 +160,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Field Service (48 recursos)</b></summary>
+
+
+> A categoria Field Service apresenta 48 recursos com foco em Agentforce para agendamento autônomo, incluindo criação de agentes no novo Agentforce Builder, alcance por email e WhatsApp e Employee Agent para gestão de compromissos. O novo console de agendamento transforma a experiência de despacho. Insights móveis (beta) impulsionam eficiência operacional. Captura de dados ganhou fluxos pré-preenchidos com repetidores e personalização de estilo. Mapas GIS nativos melhoram precisão de local. O Assistente remoto visual suporta sessões seguras multi-app via Omni-Channel.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
 
@@ -249,6 +172,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Hyperforce (3 recursos)</b></summary>
 
+
+> Com 3 recursos, a categoria Hyperforce expande o acesso ao Salesforce em mais regiões geográficas, adiciona novos produtos e recursos na Defesa do Government Cloud e aprimora a continuidade avançada entre regiões com objetivos de recuperação mais rápidos. Esta infraestrutura global continua sendo fundamental para a escalabilidade e resiliência da plataforma.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
 
 </details>
@@ -256,6 +182,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Setores (309 recursos)</b></summary>
+
+
+> A maior categoria da release com 309 recursos, Setores abrange verticals completos. Automotive inclui Agentforce para gestão de garantia, finanças automotivas e validação de documentos com IA. Educação trouxe agentes de recrutamento, planejamento financeiro e pesquisa de cursos. Serviços Financeiros inclui banking, digital lending e hierarquias flexíveis. Saúde cobriu autorização prévia, gerenciamento de cuidados e Home Health. Seguros abrange administração de apólices, reclamações e corretagem. Life Sciences inclui planejamento de engajamento e inteligência de conteúdo. Manufacturing, mídia, energia, setor público e sem fins lucrativos também receberam atualizações significativas.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
 
@@ -265,6 +194,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Marketing (64 recursos)</b></summary>
 
+
+> Com 64 recursos, a categoria Marketing apresenta o Marketing Cloud Next com criação de público, conteúdo e campanhas. Account Engagement simplifica gerenciamento de consentimento e sincronização de campanhas. Marketing Cloud Engagement organiza jornadas e otimiza WhatsApp com rastreamento de anúncio. Inteligência de marketing unifica dados para visibilidade completa com Agentforce. Personalização do Salesforce inclui campanhas e gráfico de perfil. Gerenciamento de fidelidade ganhou moedas baseadas em atividade, Google Wallet e painéis Tableau Next. Promoções globais e marketing de indicação completam a categoria.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
 
 </details>
@@ -272,6 +204,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 MuleSoft (8 recursos)</b></summary>
+
+
+> Com 8 recursos, a categoria MuleSoft foca no Catálogo de API para Salesforce com mapeamento de agentes e modelos de prompts para ferramentas do servidor MCP. Servidores MCP do MuleSoft podem ser trazidos ao catálogo de API (GA) e descobertos manualmente. APIs de consulta nomeadas são visualizadas no catálogo com ações ativáveis. A Inteligência de integração do MuleSoft aprimora a conectividade entre sistemas.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
 
@@ -281,13 +216,19 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
 
+
+> A categoria Aplicativo móvel reúne 17 recursos incluindo personalização da página inicial (beta), transcrição de IA móvel para reuniões presenciais e a nova interface Liquid Glass. O login por email é agora padrão e a opção Login para administrador garante acesso seguro. Mobile Publisher suporta renomeação e arquivamento de projetos. Agentforce Voice e React Native integram IA ao aplicativo móvel, com personalização via tipos do Lightning.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Partner Cloud (1 recursos)</b></summary>
+<summary><b>📄 Partner Cloud (100 recursos)</b></summary>
+
+
+> Com 100 recursos, a categoria Partner Cloud consolida funcionalidades de Revenue Cloud para parceiros, incluindo catálogo de produtos com variações, precificação com tabelas de decisão CSV, configurador de produto com restrições de rampa, gerenciamento de transações com clonagem de cotações e Advanced Approvals com Slack. O Orquestrador de receita dinâmica suporta negócios de vários anos. Faturamento inclui central de liquidações, agendas de marco e reembolsos automatizados. Salesforce Contracts e Geração de documentos completam a oferta.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
 
@@ -297,6 +238,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
 
+
+> Com 97 recursos, Gerenciamento de receita abrange catálogo de produtos com variações e suporte decimal estendido, precificação com tabelas de decisão CSV, configurador com restrições de rampa e transações com editor de linha aprimorado. Advanced Approvals integra Slack e Fluxo. O Orquestrador dinâmica suporta ativos de cumprimento com conhecimento em tempo. Faturamento inclui extratos de conta, central de liquidações, pontuação de risco preditiva e agendas diárias. Pagamentos suportam agrupamento de faturas, reembolsos automatizados e links de Pagar agora. Agentforce auxilia em cobranças e consultas.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
 
 </details>
@@ -304,6 +248,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Vendas (58 recursos)</b></summary>
+
+
+> Com 58 recursos, a categoria Vendas destaca agentes de IA para engajamento com disponibilidade de calendário de grupo, transferência de agente e qualificação de contatos. Gerenciamento de vendas inclui resumos gerados por IA e controle de campos autônomos. O aplicativo Agentforce Sales em Gemini (beta) permite gestão direta no Google. Einstein Conversation Insights move dados para a plataforma nativa com suporte a Gong. Planejamento de vendas moderniza interface de territórios com metas de moeda e quantidade. Captura de atividades do Einstein e integração com Outlook recebem atualizações significativas.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
@@ -313,6 +260,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
 
+
+> Com apenas 2 recursos, esta categoria oferece colaboração habilitada pelo Slack em novas organizações do Salesforce e acesso a canais do Salesforce no painel do Slack. Estas integrações continuam fortalecendo a ponte entre comunicação em tempo real e dados do CRM.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
 
 </details>
@@ -321,13 +271,19 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
 
+
+> Com 58 recursos, esta categoria abrange aprimoramentos de segurança com rotação de certificados e preparação para IPv6. Backup e recuperação incluem dados na Índia (GA), backups sob demanda e cancelamento de backups. Gerenciamento de identidade cobre alterações de login, ACR no histórico, descontinuação do OAuth password flow e SAML aprimorado. Salesforce Shield expande detecção de dados com fragmentos confidenciais, campos criptografados e verificações recorrentes. O Security Center com Agentforce (beta) inclui triagem de anomalia, linhas do tempo de incidente e planos de remediação.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Serviço (198 recursos)</b></summary>
+<summary><b>📄 Serviço (196 recursos)</b></summary>
+
+
+> Com 196 recursos, a maior categoria funcional foca em Centrais de contato Agentforce com roteamento de último representante, chamadas automatizadas e SLA-based. IT Service Management inclui gerenciamento de ativos de hardware, conformidade de TI e CMDB com descoberta de software macOS. Agentes de IA cobrem RH, email e autoatendimento. Gerenciamento de caso inclui mesclagem de duplicatas e descrições em rich text. Omni-Channel ganhou agendamento de itens e roteamento baseado em data. Experience Cloud recebeu Concierge, blocos dinâmicos e análise de autoatendimento. Integração com Microsoft Teams e IT Service do Agentforce completam a oferta.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
@@ -339,11 +295,14 @@ Este repositório automatiza todo o ciclo:
 
 <summary><h3>🌸 Spring '26</h3></summary>
 
-> 📊 **Resumo Executivo:** A release Spring '26 representa uma expansão significativa do ecossistema Salesforce com **1438 novos recursos** distribuídos em **21 categorias**. As áreas com maior volume de inovação são Setores, A...
+> 📊 **Resumo Executivo:** A release Salesforce Spring '26 apresenta um impressionante conjunto de 1.438 novos recursos e aprimoramentos distribuídos por 21 categorias, consolidando a plataforma como referência em inovação para CRM e automação de negócios. O destaque central desta release é a evolução do Agentforce, que agora conta com o Agentforce Builder disponível ao público em geral, permitindo a criação de agentes de IA mais complexos e sofisticados. A categoria Serviço lidera em volume com 167 recursos, transformando o Service Cloud no Serviço Agentforce, com novas capacidades de central de contato, voz, messaging e gerenciamento de serviço de TI. O Aplicativo Móvel acompanha com 187 recursos, garantindo que as equipes possam operar com plena funcionalidade em dispositivos móveis. A Automação oferece 151 recursos incluindo avanços significativos no Flow Builder, com geração de fluxos por IA agora disponível ao público em geral, orquestração de fluxos aprimorada e novas capacidades de processamento em lote de prompts. Os Setores trazem o maior volume de inovações setoriais com 194 recursos, abrangendo desde automotivo e finanças até saúde e serviços públicos. O Gerenciamento de Receita apresenta 131 recursos para otimização de CPQ e billing. Em Vendas, com 85 recursos, o Sales Cloud se transforma em Agentforce Sales, introduzindo geração de leads autônoma, qualificação por IA e nutrição de leads automatizada. A plataforma também avança em Segurança, Identidade e Privacidade com 61 recursos, incluindo novas políticas de aplicativos conectados, login sem senha com chaves de acesso e aprimoramentos no Salesforce Shield. A Análise de Dados com 54 recursos e o Data 360 com 53 recursos expandem as capacidades de insights e gestão de dados. O Desenvolvimento com 97 recursos oferece novas ferramentas para desenvolvedores, incluindo tipos personalizados do Lightning para Agentforce. Com 72 recursos, o Marketing aprimora campanhas e engajamento. Experience Cloud (21 recursos), Personalização (18 recursos), Field Service (41 recursos), MuleSoft (8 recursos), OmniStudio (10 recursos), Hyperforce (5 recursos), Partner Cloud (4 recursos) e Documentação Legal (6 recursos) completam o panorama desta release abrangente. A Spring '26 representa um marco na estratégia da Salesforce de integrar IA generativa e agentes autônomos em todas as camadas da plataforma, capacitando organizações de todos os tamanhos a automatizar processos, aumentar a produtividade e oferecer experiências personalizadas em escala.
 
 
 <details>
 <summary><b>📄 Documentação legal (6 recursos)</b></summary>
+
+
+> A categoria Documentação Legal da release Spring '26 contém 6 recursos dedicados a atualizações de termos, políticas e conformidade legal da plataforma Salesforce. Estes recursos garantem que as organizações estejam alinhadas com as mais recentes exigências regulatórias e mudanças contratuais, incluindo atualizações de termos de serviço, políticas de privacidade e documentação de conformidade. É essencial que administradores e equipes jurídicas revisem esses recursos para manter a conformidade organizacional.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/documentacao_legal.md](./releases/spring_26/pt_BR/documentacao_legal.md)
 
@@ -353,6 +312,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Salesforce geral (38 recursos)</b></summary>
 
+
+> A categoria Salesforce Geral reúne 38 recursos que abrangem mudanças transversais na plataforma Salesforce. Incluem-se aprimoramentos gerais na experiência do usuário, atualizações de infraestrutura e melhorias que afetam múltiplos produtos e nuvens. Recursos como mudanças na interface do Lightning Experience, atualizações de API e aprimoramentos de desempenho estão incluídos, proporcionando uma base mais sólida para todas as implementações Salesforce.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/salesforce_geral.md](./releases/spring_26/pt_BR/salesforce_geral.md)
 
 </details>
@@ -360,6 +322,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Agentforce (35 recursos)</b></summary>
+
+
+> O Agentforce recebe 35 recursos na Spring '26, com destaque para a disponibilidade geral do Agentforce Builder. Principais novidades incluem: ação de conversão de áudio em texto, melhoria de pesquisa web com domínios permitidos, visualização de tela aprimorada (beta) para criação mais rápida de agentes complexos, conexão com Chat v2 aprimorado, criação de agentes de funcionários, métricas RAG para avaliação de desempenho de IA, encaminhamento de chamadas de voz via SIP, otimização de agentes com reprodução de sessão de Voice, e suporte a modelos como NVIDIA Nemotron 3 Nano 30B (beta). A categoria também inclui a evolução do Prompt Builder com processamento em lote aprimorado e suporte a modelos antropicados.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/agentforce.md](./releases/spring_26/pt_BR/agentforce.md)
 
@@ -369,6 +334,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Análise de dados (54 recursos)</b></summary>
 
+
+> A Análise de Dados conta com 54 recursos na Spring '26, expandindo significativamente as capacidades de business intelligence e insights da plataforma. Os recursos abrangem aprimoramentos em relatórios, dashboards e ferramentas analíticas que permitem às organizações extrair insights mais profundos de seus dados. Incluem-se melhorias em visualização de dados, integração com fontes externas e capacidades de análise preditiva, capacitando equipes a tomar decisões baseadas em dados com maior agilidade e precisão.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/analise_de_dados.md](./releases/spring_26/pt_BR/analise_de_dados.md)
 
 </details>
@@ -376,6 +344,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Automação (151 recursos)</b></summary>
+
+
+> A Automação é uma das categorias mais robustas com 151 recursos. O Flow Builder recebeu aprimoramentos significativos, incluindo geração de fluxos por IA agora disponível ao público em geral, evolução iterativa de fluxos com Agentforce e interface simplificada com elementos de ramificação recolhíveis. Destaques incluem: tabelas de dados com classificação e edição inline, painéis Kanban em fluxos de tela (beta), visualização nativa de arquivos, integração com Marketing Cloud para automação de emails, fluxos acionados por segmento com agendamento aprimorado, experiências de caminho com análise comparativa, processos de aprovação de fluxo com novas capacidades de depuração e orquestração de fluxos no aplicativo Automação Lightning.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/automacao.md](./releases/spring_26/pt_BR/automacao.md)
 
@@ -385,6 +356,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Personalização (18 recursos)</b></summary>
 
+
+> A categoria Personalização oferece 18 recursos focados em adaptar a plataforma Salesforce às necessidades específicas de cada organização. Os recursos permitem maior flexibilidade na configuração de layouts, campos, processos e experiências do usuário, garantindo que cada implementação possa ser moldada para atender aos requisitos de negócio únicos. Incluem-se aprimoramentos em flexipages, páginas de registro e componentes personalizáveis do Lightning.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/personalizacao.md](./releases/spring_26/pt_BR/personalizacao.md)
 
 </details>
@@ -392,6 +366,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Data 360 (53 recursos)</b></summary>
+
+
+> O Data 360 apresenta 53 recursos que expandem as capacidades de gestão e integração de dados da plataforma. Os recursos incluem aprimoramentos na conectividade entre fontes de dados, qualidade de dados, governança e capacidades de processamento em tempo real. Destaques incluem fluxos do Data 360 com suporte a licenças específicas e limites de taxa maiores, fluxos de transmissão assíncronos para notificações em massa e rastreamento aprimorado de dados em tempo real com gráficos personalizados.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/data_360.md](./releases/spring_26/pt_BR/data_360.md)
 
@@ -401,6 +378,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Desenvolvimento (97 recursos)</b></summary>
 
+
+> A categoria Desenvolvimento reúne 97 recursos para desenvolvedores Salesforce. Destaca-se a nova ferramenta Lightning Types MCP (Visualização do desenvolvedor) para acelerar a criação de tipos personalizados do Lightning para Agentforce. Os recursos abrangem aprimoramentos no Apex, APIs, ferramentas de depuração, testes e implantação, além de novas capacidades de extensão e integração. Desenvolvedores podem esperar melhorias significativas na produtividade e nas capacidades de personalização programática da plataforma.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/desenvolvimento.md](./releases/spring_26/pt_BR/desenvolvimento.md)
 
 </details>
@@ -408,6 +388,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Experience Cloud (21 recursos)</b></summary>
+
+
+> O Experience Cloud conta com 21 recursos na Spring '26, focados em aprimorar a criação e gestão de portais, sites e comunidades digitais. Os recursos incluem melhorias na experiência do usuário, personalização de temas e templates, aprimoramentos de desempenho e novas capacidades de engajamento, permitindo às organizações criar experiências digitais mais ricas e interativas para clientes, parceiros e funcionários.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/experience_cloud.md](./releases/spring_26/pt_BR/experience_cloud.md)
 
@@ -417,6 +400,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Field Service (41 recursos)</b></summary>
 
+
+> O Field Service recebe 41 recursos que aprimoram a gestão de serviços de campo. Os recursos incluem melhorias no agendamento e otimização de despacho, capacidades mobile aprimoradas para técnicos de campo, integração com IoT para manutenção preditiva e aprimoramentos na gestão de inventário de peças. A categoria também inclui novas capacidades de assistência por IA para diagnóstico e resolução de problemas em campo.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/field_service.md](./releases/spring_26/pt_BR/field_service.md)
 
 </details>
@@ -424,6 +410,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+
+> A Hyperforce apresenta 5 recursos focados na infraestrutura de nuvem de próxima geração da Salesforce. Os recursos incluem aprimoramentos na escalabilidade, desempenho e disponibilidade da plataforma, permitindo que as organizações executem workloads Salesforce em infraestrutura de nuvem pública com maior flexibilidade e eficiência operacional.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/hyperforce.md](./releases/spring_26/pt_BR/hyperforce.md)
 
@@ -433,6 +422,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Setores (194 recursos)</b></summary>
 
+
+> A categoria Setores lidera em volume com 194 recursos, oferecendo soluções especializadas para indústrias específicas. Abrange setores como Automotivo (com Agentforce para Automotive, finanças automotivas e gerenciamento de frotas), Saúde, Serviços Financeiros, Manufatura, Varejo e Serviços Públicos. Destaques incluem Agentforce para setores específicos, gerenciamento de inventário aprimorado, planilhas de horas com otimização de custos, e soluções de venda adicional e cruzada com IA. A categoria garante que organizações de qualquer indústria possam aproveitar capacidades personalizadas e relevantes.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/setores.md](./releases/spring_26/pt_BR/setores.md)
 
 </details>
@@ -440,6 +432,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Aplicativo móvel (187 recursos)</b></summary>
+
+
+> O Aplicativo Móvel é uma das maiores categorias com 187 recursos, garantindo que as equipes possam operar com plena funcionalidade em dispositivos móveis. Os recursos incluem aprimoramentos na experiência do usuário mobile, novas capacidades offline, integração aprimorada com funcionalidades de IA e melhorias de desempenho. A categoria assegura que vendedores, agentes de serviço e gestores possam acessar todas as funcionalidades críticas diretamente de seus dispositivos móveis.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/aplicativo_movel.md](./releases/spring_26/pt_BR/aplicativo_movel.md)
 
@@ -449,6 +444,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Marketing (72 recursos)</b></summary>
 
+
+> O Marketing conta com 72 recursos que aprimoram campanhas, engajamento e automação de marketing. Os recursos incluem integração aprimorada com o Flow Builder para automação de emails, capacidades de segmentação mais sofisticadas, aprimoramentos em jornadas do cliente e novas ferramentas de análise de campanha. A categoria também inclui melhorias na integração entre Marketing Cloud e outras nuvens Salesforce para uma visão unificada do cliente.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/marketing.md](./releases/spring_26/pt_BR/marketing.md)
 
 </details>
@@ -456,6 +454,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 MuleSoft (8 recursos)</b></summary>
+
+
+> O MuleSoft apresenta 8 recursos focados em integração e conectividade. Os recursos aprimoram as capacidades de integração de APIs, automação de fluxos de trabalho entre sistemas e conectividade com aplicações externas, permitindo que as organizações integrem o ecossistema Salesforce com outras plataformas de forma mais eficiente e escalável.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/mulesoft.md](./releases/spring_26/pt_BR/mulesoft.md)
 
@@ -465,6 +466,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 OmniStudio (10 recursos)</b></summary>
 
+
+> O OmniStudio conta com 10 recursos que aprimoram as capacidades de configuração e automação de processos digitais. Os recursos incluem melhorias em flexcards, OmniScripts e DataRaptors, permitindo a criação de experiências digitais mais ricas e processos de negócio mais eficientes sem necessidade de código customizado.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/omnistudio.md](./releases/spring_26/pt_BR/omnistudio.md)
 
 </details>
@@ -472,6 +476,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Partner Cloud (4 recursos)</b></summary>
+
+
+> A Partner Cloud apresenta 4 recursos focados em ecossistemas de parceiros. Os recursos aprimoram as capacidades de gestão de parceiros, compartilhamento de dados e colaboração no ecossistema, facilitando a criação e manutenção de redes de parceiros mais eficientes e integradas.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/partner_cloud.md](./releases/spring_26/pt_BR/partner_cloud.md)
 
@@ -481,6 +488,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Gerenciamento de receita (131 recursos)</b></summary>
 
+
+> O Gerenciamento de Receita oferece 131 recursos para otimização de processos de CPQ (Configure, Price, Quote) e billing. Os recursos incluem aprimoramentos na configuração de produtos, precificação dinâmica, geração de cotações e gestão de faturamento. A categoria também inclui melhorias em reconhecimento de receita, gestão de assinaturas e automação de processos financeiros, capacitando equipes de vendas e financeiras a operar com maior eficiência e precisão.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/gerenciamento_de_receita.md](./releases/spring_26/pt_BR/gerenciamento_de_receita.md)
 
 </details>
@@ -488,6 +498,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Vendas (85 recursos)</b></summary>
+
+
+> A categoria Vendas conta com 85 recursos, com o Sales Cloud se transformando em Agentforce Sales. Destaques incluem: geração de leads de entrada do Agentforce com captura e agendamento autônomo de reuniões, qualificação automatizada por IA, nutrição de leads com configuração guiada e gerenciamento automático de limites. O Agentforce Sales Management promove negócios com sugestões pós-reunião e gestão de pipeline aprimorada. A categoria também inclui Insights de Conversas do Einstein com resumos de chamada generativos, transcrições de fornecedor e suporte a Gong, além do aplicativo Agentforce Sales no ChatGPT (beta).
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/vendas.md](./releases/spring_26/pt_BR/vendas.md)
 
@@ -497,6 +510,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Segurança, identidade e privacidade (61 recursos)</b></summary>
 
+
+> A Segurança, Identidade e Privacidade reúne 61 recursos críticos para proteção de dados e acesso. Destaques incluem: descontinuação de redirecionamentos para nomes de host legados, criação de aplicativos conectados desabilitada por padrão, Backup e Recuperação como aplicativo nativo, configuração de login sem senha com chaves de acesso (beta), alertas de segurança para fluxos OAuth, ativação de dispositivo obrigatória para SSO, e Solicitações de Privacidade com Direito de ser esquecido. A categoria também aprimora o Salesforce Shield com assistentes de configuração e o monitoramento de eventos.
+
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
@@ -504,6 +520,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Serviço (167 recursos)</b></summary>
+
+
+> A categoria Serviço contém 167 recursos, com o Service Cloud se transformando em Serviço Agentforce. Destaques incluem: Salesforce Voice com gerenciamento de números e canais, chamadas de voz do WhatsApp, resposta de voz interativa e gravação de transcrições. A Central de Contato do Agentforce pode ser configurada no Salesforce Go. O messaging recebeu aprimoramentos significativos com créditos de mensagens, verificação de licenças e suporte aprimorado ao WhatsApp unificado com recibos de leitura e indicadores de digitação. O Gerenciamento de Serviço inclui modelos prontos para uso, priorização de problemas e validações de campo. Para TI, destacam-se o portal de autoatendimento remodelado, assistência proativa baseada em prioridade, diagnóstico de causa raiz e integração com Microsoft Teams.
 
 > 📄 Detalhes completos: [./releases/spring_26/pt_BR/servico.md](./releases/spring_26/pt_BR/servico.md)
 
@@ -517,11 +536,26 @@ Este repositório automatiza todo o ciclo:
 
 <summary><h3>❄️ Winter '26</h3></summary>
 
-> 📊 **Resumo Executivo:** A release Winter '26 representa uma expansão significativa do ecossistema Salesforce com **1348 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, P...
+> 📊 **Resumo Executivo:** A release Salesforce Winter '26 representa um marco significativo na evolução da plataforma, com impressionantes 1.348 recursos distribuídos em 19 categorias. O volume massivo de novidades reflete a aceleração estratégica da Salesforce em três pilares fundamentais: inteligência artificial generativa e agentes autônomos, unificação de dados em tempo real e modernização da experiência do desenvolvedor.
+
+O destaque absoluto é o ecossistema Agentforce, que consolida a visão de agentes de IA autônomos com 39 recursos dedicados. A plataforma expande o suporte a modelos de IA — incluindo Claude Sonnet 4.5, OpenAI o3/o4-mini e Amazon Nova na Plataforma Einstein — além de introduzir Agentforce Voice para conversas por voz, Rastreamento de sessão para visibilidade do comportamento do agente e Otimização do Agentforce (beta) para análise de eficácia. A migração do Agentforce (padrão) para agentes de funcionários com fluxo simplificado sinaliza a maturidade do produto para uso empresarial em larga escala.
+
+A categoria Setores domina com 459 recursos, demonstrando o compromisso da Salesforce com soluções verticais. Destacam-se: Life Sciences Cloud para Engajamento do Cliente (GA), Agentforce para Healthcare com correspondência inteligente de provedores, Insurance Cloud com automação de declarações, Education Cloud com metas de carreira do aluno via Agentforce, e Manufacturing Cloud com reabastecimento inteligente de inventário. O Partner Cloud, com 156 recursos, inaugura o gerenciamento completo do ciclo de vida de parceiros com Revenue Cloud, Precificação do Salesforce e Gerenciamento de uso avançado.
+
+Vendas (154 recursos) e Desenvolvimento (101 recursos) completam o topo da escala. Em Vendas, o Agentforce SDR evolui para Nutrição de leads com suporte a Microsoft Exchange, enquanto o Flow Builder recebe automação de decisões com IA generativa e fluxos de transmissão para públicos dinâmicos. Em Desenvolvimento, o SLDS 2 chega como GA com modo escuro (beta), o LWC recebe API v65.0 com Gerenciamento de estado (beta) e Lightning Out 2.0 para experiências externas, além de ferramentas de MCP do LWC para acelerar o desenvolvimento com IA.
+
+Análise de dados (91 recursos) impulsiona a era do Tableau Next com semânticas aprimoradas, Otimização de modelo semântico (beta) e integração profunda com Slack via Agentforce para Analytics. Marketing (87 recursos) avança com Marketing Cloud Next, gerenciamento de fidelidade expandido e promoções globais. Segurança (55 recursos) introduz Detecção de dados expandida, rastreamento de atividade do agente em tempo real e Criptografia de banco de dados GA.
+
+A infraestrutura Hyperforce expande para mais regiões com suporte a AWS Direct Connect e Continuidade avançada entre regiões. O Data Cloud é renomeado para Data 360, consolidando a visão de dados unificados. Field Service (24 recursos) adiciona escala dinâmica e VRA de múltiplos participantes. Personalização (65 recursos) moderniza a experiência administrativa com classificação por várias colunas em listas e segmentação expandida do Data 360. A estratégia de descontinuação é clara: Chat legado, Salesforce para Outlook (dez/2027), Lightning Sync para EWS e Salesforce Functions estão sendo aposentados.
+
+Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de IA empresariais, com dados unificados via Data 360, soluções verticais profundas e uma experiência de desenvolvimento modernizada. A direção estratégica é inequívoca: cada interação de negócio será mediada por agentes inteligentes, cada decisão será informada por dados unificados e cada setor terá soluções nativas específicas.
 
 
 <details>
 <summary><b>📄 Documentação legal (11 recursos)</b></summary>
+
+
+> Com 11 recursos, esta categoria foca em informações estruturais da release. Inclui atualizações sobre navegadores compatíveis para Lightning Experience, Salesforce Classic e CRM Analytics. Documenta como e quando os recursos ficam disponíveis, com impacto imediato para alguns e ação de administrador para outros. As mudanças na documentação visam facilitar a localização de informações sobre compatibilidade e disponibilidade de recursos.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/documentacao_legal.md](./releases/winter_26/pt_BR/documentacao_legal.md)
 
@@ -531,6 +565,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Salesforce geral (32 recursos)</b></summary>
 
+
+> Com 32 recursos, as melhorias gerais incluem assistentes de IA com acesso seguro a dados (beta), novo domínio de configuração e preparação para IPv6. A CDN do Lightning usa CloudFront para todas as organizações. Avisos sugeridos podem ser agendados para exibição em momentos relevantes. O Salesforce Foundations facilita a ativação de produtos na configuração. O Salesforce Scheduler ganha Agentforce com conversas turno a turno, referência a casos e agendamento de grupo. Pipelines de dados do Salesforce suportam exportação para Snowflake via VPC e OAuth para Databricks. O aplicativo Arquivar permite arquivamento de dados declarativo.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/salesforce_geral.md](./releases/winter_26/pt_BR/salesforce_geral.md)
 
 </details>
@@ -538,6 +575,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Análise de dados (91 recursos)</b></summary>
+
+
+> Com 91 recursos, a análise de dados é revolucionada pelo Tableau Next. A Semântica do Tableau recebe Otimização de modelo semântico (beta) e Gerador de descrição semântica de IA (beta). Novas visualizações incluem codificação de tamanho, linhas de referência e formatação condicional. O Criador de modelos (beta) permite compartilhar percepções configuráveis. A integração com Slack evolui com Agentforce para Analytics no Slack para exploração conversacional de métricas. Relatórios do Lightning recebem linhas de referência em gráficos, enquanto CRM Analytics ganha semijunções/antijunções (beta) e suporte OAuth para Databricks. O Comércio inclui modelo unificado de lojas e pesquisa de SKU parcial.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/analise_de_dados.md](./releases/winter_26/pt_BR/analise_de_dados.md)
 
@@ -547,6 +587,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Personalização (65 recursos)</b></summary>
 
+
+> Com 65 recursos, a personalização moderniza a experiência administrativa. Modos de exibição de listas ganham classificação por várias colunas (GA) e pesquisa antecipada. O Data Cloud (agora Data 360) expande com segmentação e ativação em todas as organizações, novos conjuntos de permissões padrão e ingestão de vídeos YouTube e conteúdo GitHub. A Semântica do Tableau recebe cardinalidade definida para melhor precisão. O Lightning App Builder suporta páginas de registro do Flow e componentes Avonni. Serviços externos obtêm limites maiores e suporte a arquivos binários. O Inspetor DX adiciona adesão e confirmações para gerenciamento de mudanças.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/personalizacao.md](./releases/winter_26/pt_BR/personalizacao.md)
 
 </details>
@@ -554,6 +597,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Desenvolvimento (101 recursos)</b></summary>
+
+
+> Com 101 recursos, o desenvolvimento recebe modernização profunda. O SLDS 2 chega como GA com modo escuro (beta) e Linter para migração. O LWC recebe API v65.0, Gerenciamento de estado (beta), ferramentas de MCP (beta) e Lightning Out 2.0 para experiências externas. O Apex ganha suporte a modificadores de acesso em métodos abstratos, ApexDoc padronizado e exposição de métodos AuraEnabled como ações do agente (beta). DevOps Center recebe ferramentas MCP para resolução de conflitos. Agentforce DX e o Servidor Salesforce DX MCP permitem uso de linguagem natural para tarefas. A captura de alteração de dados expande para mais objetos com campos de fórmula personalizados.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md](./releases/winter_26/pt_BR/desenvolvimento.md)
 
@@ -563,6 +609,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Agentforce (39 recursos)</b></summary>
 
+
+> Com 39 recursos, o Agentforce é o centro da estratégia Winter '26. Destacam-se: Agentforce Voice para conversas por voz com agentes de serviço, Rastreamento de sessão para visibilidade comportamental, Otimização do Agentforce (beta) para análise de eficácia e lista de permissões de URL confiável para segurança. A Plataforma Einstein expande suporte a modelos com Claude Sonnet 4.5, OpenAI o3/o4-mini e Amazon Nova (todos beta). O Agentforce Analytics habilitado pelo Tableau Next (beta) oferece percepções dinâmicas. A migração simplificada do Agentforce (padrão) para agentes de funcionários e a escala de conversas complexas para representantes consolidam a maturidade da plataforma para uso empresarial.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/agentforce.md](./releases/winter_26/pt_BR/agentforce.md)
 
 </details>
@@ -570,6 +619,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Experience Cloud (8 recursos)</b></summary>
+
+
+> Com 8 recursos, o Experience Cloud foca na transição para LWR aprimorado com recursos mais recentes do Salesforce Flow. Destaca-se o Desenvolvedor local para criação rápida de componentes LWC em visualização em tempo real (beta). Componentes predefinidos do Avonni aceleram a criação de sites. A atualização de URLs Force.com legados é obrigatória, com aviso de sessão prestes a terminar para visitantes. Os aplicativos Mobile Publisher recebem melhorias de UX e segurança. A mudança para certificado de domínio único na CDN do Salesforce é uma atualização de versão importante.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/experience_cloud.md](./releases/winter_26/pt_BR/experience_cloud.md)
 
@@ -579,6 +631,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Field Service (24 recursos)</b></summary>
 
+
+> Com 24 recursos, o Field Service avança em agendamento e operações. A escala dinâmica (beta) otimiza conjuntos de grandes dados, enquanto o mecanismo de agendamento ganha maior resiliência para trabalho complexo. O Serviço de ativo proativo habilitado pelo Tableau oferece percepções mais profundas. O VRA (Assistente remoto visual) evolui com sessões de múltiplos participantes e marcação ativa como favorita. A captura de dados recebe variáveis globais, modelos de fluxo e Voice to Form (beta). O Voice para edição de registro permite atualização gratuita de registros. O roteamento preditivo de ponto a ponto utiliza dados de mapa atualizados.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/field_service.md](./releases/winter_26/pt_BR/field_service.md)
 
 </details>
@@ -586,6 +641,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Hyperforce (5 recursos)</b></summary>
+
+
+> Com 5 recursos, o Hyperforce expande a presença global com Data Cloud, Marketing Cloud, Plataforma e Tableau Cloud disponíveis em mais regiões. Produtos chegam ao Government Cloud Plus. O AWS Direct Connect (DX) oferece conectividade direta para organizações Hyperforce. O Salesforce Shield habilita Criptografia de banco de dados (GA) para criptografia completa da organização. A Recuperação de desastres fora da região é renomeada para Continuidade avançada entre regiões, refletindo capacidades expandidas de resiliência empresarial.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/hyperforce.md](./releases/winter_26/pt_BR/hyperforce.md)
 
@@ -595,6 +653,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Setores (459 recursos)</b></summary>
 
+
+> Com 459 recursos, as nuvens de indústrias dominam a release. Automotive Cloud recebe Agentforce com otimização de revendedor e finanças automotivas. Consumer Goods Cloud unifica dados com Data Cloud One (GA). Education Cloud traz metas de carreira do aluno e recrutamento (beta). Financial Services Cloud inclui resumos de reunião com IA e empréstimo digital para Índia. Health Cloud oferece correspondência inteligente de provedores e processamento de documentos. Insurance Cloud automatiza declarações com regras de fluxo de trabalho. Life Sciences Cloud chega como GA com gerenciamento de conta e planejamento de engajamento. Manufacturing Cloud adiciona reabastecimento inteligente. Media Cloud otimiza inventário de publicidade com agendas de receita. Net Zero Cloud simplifica relatórios CSRD. Nonprofit Cloud gerencia voluntários com Agentforce (beta). Setor público personaliza recomendações de trabalho com Agentforce.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/setores.md](./releases/winter_26/pt_BR/setores.md)
 
 </details>
@@ -602,6 +663,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Marketing (87 recursos)</b></summary>
+
+
+> Com 87 recursos, o Marketing Cloud avança significativamente. O Marketing Cloud Next traz mensagens de aplicativo móvel, Agentforce para criação e análise de campanha, e páginas de destino personalizáveis. O Account Engagement obtém percepções de formulários de terceiros e listas dinâmicas com Data Cloud One. A Inteligência de marketing recebe otimização de mídia paga via Agentforce, pausa de Google Ads de baixo desempenho e novos conectores de API. O Gerenciamento de fidelidade expande com Starter simplificado, promoções globais com avaliação/execução e gerenciamento de pontos com novos modelos de DPE. O Marketing de indicação alcança redes expandidas com promoções direcionadas B2C e B2B.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/marketing.md](./releases/winter_26/pt_BR/marketing.md)
 
@@ -611,6 +675,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 MuleSoft (4 recursos)</b></summary>
 
+
+> Com 4 recursos, o MuleSoft foca no Catálogo da API para Salesforce com autenticação avançada (Básico, JWT, OAuth 2.0) e seleção de conexões de API por ação no Fluxo. O empacotamento de entidades do catálogo suporta pacotes gerenciados de primeira e segunda geração, facilitando a governança de APIs em ambientes empresariais complexos e integrando-se ao ecossistema Flow Builder.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/mulesoft.md](./releases/winter_26/pt_BR/mulesoft.md)
 
 </details>
@@ -618,6 +685,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Aplicativo móvel (7 recursos)</b></summary>
+
+
+> Com 7 recursos, o aplicativo Salesforce móvel evolui com login simplificado sem nome de usuário e IA conversacional para usuários móveis. O Mobile Publisher ganha segurança aprimorada com aplicativos cliente externos para empacotamento e distribuição. O Mobile SDK 13.1 adiciona WebSockets no lado do cliente, iOS URLRequest e suporte a Android 16, além de login por domínio de boas-vindas do Salesforce para aplicativos internos. Os requisitos do aplicativo móvel foram atualizados para refletir as novas capacidades da plataforma.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/aplicativo_movel.md](./releases/winter_26/pt_BR/aplicativo_movel.md)
 
@@ -627,6 +697,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 OmniStudio (8 recursos)</b></summary>
 
+
+> Com 8 recursos, o OmniStudio expande para sites LWR do Experience Cloud com FlexCards e OmniScripts (beta). O número automático global Omni cria sistemas de numeração exclusivos para necessidades específicas. Componentes Flexcard, Omniscript e PubSub Lightning ficam disponíveis diretamente na Biblioteca de componentes do Salesforce para LWC personalizados. O desempenho de tempo de execução é aprimorado com nova configuração. Acessibilidade e remoção do OmniOut no tempo de execução padrão completam as atualizações.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/omnistudio.md](./releases/winter_26/pt_BR/omnistudio.md)
 
 </details>
@@ -634,6 +707,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Partner Cloud (156 recursos)</b></summary>
+
+
+> Com 156 recursos, o Partner Cloud inaugura o gerenciamento completo do ciclo de vida de parceiros. Agentforce para parceiros gerencia casos de suporte via conversas guiadas e recomenda programas de enablement. O Revenue Cloud inclui Precificação do Salesforce com políticas baseadas em CPI, Gerenciamento de taxa com descontos de compromisso em níveis e Product Configurator com Constraint Modeling Language (CML). O Gerenciamento de transações avança com Modelo avançado de cotações e negócios pontuais para grupos. A venda de uso recebe modelos de compromisso e negócios de rampa flexível. O Gerenciamento de uso monetariza consumo de recursos classificados por token. O faturamento ganha assistente de IA e numeração sequencial de faturas.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/partner_cloud.md](./releases/winter_26/pt_BR/partner_cloud.md)
 
@@ -643,6 +719,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Vendas (154 recursos)</b></summary>
 
+
+> Com 154 recursos, o Sales Cloud é transformado por agentes de IA. O Agentforce SDR evolui para Nutrição de leads com suporte a Microsoft Exchange e configuração guiada. A Geração de lead de entrada captura automaticamente leads e agenda reuniões (GA). O Gerenciamento de vendas da Agentforce automatiza tarefas e mantém higiene do pipeline. O Coach de vendas do Agentforce orienta equipes globais em idioma preferencial. Insights de conversas do Einstein ganham pesquisa em chamadas e tópicos de pergunta em sinais de vendas. Previsões do Salesforce suportam divisões de item de linha e datas de serviço. O Flow Builder recebe IA generativa para decisões, fluxos de transmissão e acionadores de arquivo (GA). Processos de aprovação de fluxo e orquestração ganham depuração no Flow Builder.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md](./releases/winter_26/pt_BR/vendas.md)
 
 </details>
@@ -650,6 +729,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Integrações do Salesforce para Slack (1 recursos)</b></summary>
+
+
+> Com 1 recurso, a integração foca na simplificação da criação de canais do Salesforce no Slack. Este aprimoramento permite que usuários se conectem mais facilmente com clientes, rastreiem progresso e colaborem diretamente no Slack, reforçando a estratégia de workplace unificado da Salesforce após a aquisição do Slack.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md)
 
@@ -659,6 +741,9 @@ Este repositório automatiza todo o ciclo:
 <details>
 <summary><b>📄 Segurança, identidade e privacidade (55 recursos)</b></summary>
 
+
+> Com 55 recursos, a segurança é reforçada significativamente. A Detecção de dados expande com 100 objetos e 200 campos adicionais, tipos de dados personalizáveis e integração com o aplicativo Shield. O Monitoramento de evento adiciona objetos de log para rastreamento de atividade do agente e eventos em tempo real. A Trilha de auditoria de campo permite políticas de retenção declarativas. A Criptografia de banco de dados chega ao GA. Credenciais de aplicativo cliente externo ganham preparação e rotação. O Agentforce para Segurança cria agentes de segurança com snapshot de atividade do usuário. A Central de segurança monitora métricas do Agentforce, ataques de injeção de prompt e versões do agente.
+
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
@@ -666,6 +751,9 @@ Este repositório automatiza todo o ciclo:
 
 <details>
 <summary><b>📄 Serviço (41 recursos)</b></summary>
+
+
+> Com 41 recursos, o Service Cloud expande para TI com Agentforce IT (GA). O Gerenciamento de serviços de TI inclui: incidentes com captura de detalhes e conversão de emails, problemas com análise de causa raiz, mudanças com cálculo automático de risco, e versões com visão holística do ciclo de vida. O CMDB recebe itens de configuração com tipos/atributos personalizados e importação CSV. A Descoberta acelera detecção de ativos com varredura sem agente e Gerenciador de credenciais. O autoatendimento reduz carga com Centro do agente para funcionários e catálogo centralizado de TI.
 
 > 📄 Detalhes completos: [./releases/winter_26/pt_BR/servico.md](./releases/winter_26/pt_BR/servico.md)
 

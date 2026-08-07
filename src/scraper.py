@@ -20,6 +20,7 @@ from types import TracebackType
 from typing import Optional, cast
 
 from playwright.async_api import async_playwright, Browser, Page, Playwright
+from playwright._impl._errors import TimeoutError as PlaywrightTimeout
 
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .cache_manager import CacheManager
@@ -36,8 +37,8 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
         status_code: HTTP status code as int, str, or None.
 
     Returns:
-        ``True`` when *status_code* equals 429; ``False`` otherwise
-        (including ``None`` or non-numeric values).
+        True when *status_code* equals 429; False otherwise
+        (including None or non-numeric values).
     """
     if status_code is None:
         return False
@@ -131,14 +132,14 @@ class SalesforceReleaseScraper:
 
         Args:
             url: The page URL to fetch.
-            page: Optional existing Playwright ``Page`` to reuse.
+            page: Optional existing Playwright Page to reuse.
             expand_toc: Whether to expand table-of-contents/navigation sections
-                before extraction. Set to ``False`` to skip TOC expansion
+                before extraction. Set to False to skip TOC expansion
                 (typically faster, but may return less complete content).
 
         Returns:
             The rendered HTML as a string when a valid response is obtained.
-            Returns ``None`` if all retry attempts fail or only insufficient
+            Returns None if all retry attempts fail or only insufficient
             content is retrieved.
         """
         logger.info("Fetching URL: %s", url)
@@ -164,7 +165,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(html_content or ""),
                 )
-            except (ScraperError, BrowserError, OSError, TimeoutError) as e:
+            except (ScraperError, BrowserError, OSError, TimeoutError, PlaywrightTimeout) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
 
@@ -187,12 +188,12 @@ class SalesforceReleaseScraper:
                 page (and browser when needed) is created for this request.
             expand_toc: Whether to expand table-of-contents/accordion content before
                 extraction.
-            return_text: When ``False`` (default), return rendered HTML content.
-                When ``True``, return extracted visible text content instead.
+            return_text: When False (default), return rendered HTML content.
+                When True, return extracted visible text content instead.
 
         Returns:
-            The fetched content as a string (HTML or text based on ``return_text``),
-            or ``None`` if fetching fails.
+            The fetched content as a string (HTML or text based on return_text),
+            or None if fetching fails.
         """
         is_standalone = page is None
 
@@ -233,7 +234,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, Exception) as _wait_err:
+        except (TimeoutError, PlaywrightTimeout, Exception):
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -267,11 +268,11 @@ class SalesforceReleaseScraper:
                     await node.click()
                     await page.wait_for_timeout(300)
                     expanded_count += 1
-                except (TimeoutError, OSError) as e:
+                except (TimeoutError, PlaywrightTimeout, OSError) as e:
                     logger.debug("Falha ao expandir nó de ToC: %s", e)
             if expanded_count > 0:
                 logger.info("Expanded %d collapsed ToC nodes", expanded_count)
-        except (ScraperError, TimeoutError, OSError) as e:
+        except (ScraperError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.debug("ToC expansion skipped: %s", e)
 
     async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
@@ -283,7 +284,7 @@ class SalesforceReleaseScraper:
 
         Returns:
             Optional[str]: ToC HTML when found; otherwise full page HTML when extraction
-            succeeds but no ToC container is matched; ``None`` when page creation, navigation,
+            succeeds but no ToC container is matched; None when page creation, navigation,
             or extraction raises an exception.
         """
         logger.info("Extracting ToC HTML from: %s", url)
@@ -305,7 +306,7 @@ class SalesforceReleaseScraper:
 
             assert page is not None
             return await self._extract_toc_from_page(url, page)
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.error("ToC extraction failed: %s", e)
             return None
         finally:
@@ -364,8 +365,6 @@ class SalesforceReleaseScraper:
 
         if self._circuit_breaker.is_open:
             logger.warning("Circuit breaker open — returning stale cache if available for %s", url)
-            # The current CacheManager.get already handles TTL, so we'd need a 'get_stale'
-            # but for now we just return None or rely on the user wanting fresh data.
             return None
 
         for attempt in range(1, MAX_RETRY_ATTEMPTS + 1):
@@ -385,7 +384,7 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(text or ""),
                 )
-            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -439,7 +438,7 @@ class SalesforceReleaseScraper:
 
                 logger.warning("Attempt %d: no features found in HTML", attempt)
 
-            except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -467,6 +466,19 @@ class SalesforceReleaseScraper:
             List of dicts with 'name' and 'docs_url' keys.
         """
         from bs4 import BeautifulSoup
+        from urllib.parse import urlparse
+
+        def _is_allowed_salesforce_href(href: str) -> bool:
+            """Return True for relative links or absolute links to salesforce.com domains."""
+            if href.startswith("/"):
+                return True
+            parsed = urlparse(href)
+            if parsed.scheme not in {"http", "https"}:
+                return False
+            host = parsed.hostname
+            if not host:
+                return False
+            return host == "salesforce.com" or host.endswith(".salesforce.com")
 
         features: list[dict[str, str]] = []
         soup = BeautifulSoup(html, "lxml")
@@ -488,7 +500,7 @@ class SalesforceReleaseScraper:
             docs_url = ""
             if link:
                 href = link.get("href", "")
-                if isinstance(href, str) and ("salesforce.com" in href or href.startswith("/")):
+                if isinstance(href, str) and _is_allowed_salesforce_href(href):
                     docs_url = (
                         href if href.startswith("http") else f"https://help.salesforce.com{href}"
                     )
@@ -507,8 +519,10 @@ class SalesforceReleaseScraper:
                     continue
 
                 href = link.get("href", "")
-                if isinstance(href, str) and (
-                    "release-notes" in href or "help.salesforce.com" in href
+                if (
+                    isinstance(href, str)
+                    and "release-notes" in href
+                    and _is_allowed_salesforce_href(href)
                 ):
                     docs_url = (
                         href if href.startswith("http") else f"https://help.salesforce.com{href}"
@@ -607,7 +621,7 @@ class SalesforceReleaseScraper:
 
             try:
                 await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-            except (TimeoutError, Exception) as _pdf_btn_err:
+            except (TimeoutError, PlaywrightTimeout, Exception):
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:
@@ -632,7 +646,13 @@ class SalesforceReleaseScraper:
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
 
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (
+            ScraperError,
+            BrowserError,
+            TimeoutError,
+            PlaywrightTimeout,
+            OSError,
+        ) as e:
             logger.warning("PDF button download failed: %s", e)
             return False
 
@@ -649,6 +669,12 @@ class SalesforceReleaseScraper:
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False
-        except (ScraperError, BrowserError, TimeoutError, OSError) as e:
+        except (
+            ScraperError,
+            BrowserError,
+            TimeoutError,
+            PlaywrightTimeout,
+            OSError,
+        ) as e:
             logger.warning("PDF download failed: %s", e)
             return False

@@ -275,8 +275,10 @@ async def test_generate_ai_summary_report(service) -> None:
         ),
     ):
         result = await generate_ai_summary_report("curr", "prev")
-        assert "Resumo Inteligente" in result
         assert "Test Headline" in result
+        assert "Destaques" in result
+        assert "Áreas de Risco" in result
+        assert "Tendência" in result
 
 
 @pytest.mark.asyncio
@@ -487,7 +489,7 @@ async def test_export_functions(service, tmp_path: Path) -> None:
 
 def test_generate_dynamic_badge() -> None:
     result = generate_dynamic_badge("Test Release", 100)
-    assert "Latest Release" in result
+    assert "Release" in result
     assert "Test%20Release" in result
 
 

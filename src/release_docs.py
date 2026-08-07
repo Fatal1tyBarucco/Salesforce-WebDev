@@ -540,11 +540,13 @@ async def _build_release_block(
 
         summary = await summarizer.summarize(slug)
         summary_text = ""
+        cat_summaries: dict[str, str] = {}
         if summary:
             if lang == "pt_BR":
-                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:200]}...\n"
+                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:5000]}\n"
             else:
-                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:200]}...\n"
+                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:5000]}\n"
+            cat_summaries = summary.category_summaries
 
         # Build category details
         cat_lines: list[str] = []
@@ -563,10 +565,16 @@ async def _build_release_block(
                 count_label = "recursos"
                 details_label = "Detalhes completos"
 
+            cat_summary_text = ""
+            if cat_name in cat_summaries:
+                cat_summary_text = f"\n> {cat_summaries[cat_name][:1000]}\n"
+
             cat_lines.append("\n<details>")
             cat_lines.append(
                 f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
             )
+            if cat_summary_text:
+                cat_lines.append(cat_summary_text)
             cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
             cat_lines.append("</details>\n")
 
@@ -636,9 +644,15 @@ async def _update_single_readme(
         return
 
     heading_idx = original.index(heading)
+    # Safety: only replace content AFTER the releases heading, never before it.
+    # Content before this heading (e.g., Guia Completo, project description) is preserved.
     next_heading = original.find("\n## ", heading_idx + len(heading))
     if next_heading == -1:
-        next_heading = len(original)
+        logger.warning(
+            "README %s: nenhum heading '## ' encontrado após releases — skip para preservar conteúdo",
+            readme_path.name,
+        )
+        return
     new_block = await _build_release_block(metas, lang, summarizer)
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")

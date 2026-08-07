@@ -1,19 +1,28 @@
 """AI-powered feature classifier.
 
 Automatically classifies release features by impact level and type using a resilient LLM service.
+
+Refactored (Phase 1): uses structured prompts with security analyst persona,
+Pydantic-validated outputs, and business context with justification.
 """
 
 from __future__ import annotations
 
 import asyncio
-
-
+import json
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+from .ai.prompts.classification import (
+    build_classification_system_prompt,
+    parse_classification_response,
+)
 from .config import RELEASES_DIR
 from .llm_service import LLMService
+
+logger = logging.getLogger(__name__)
 
 
 class ImpactLevel(Enum):
@@ -48,6 +57,9 @@ class ClassifiedFeature:
     feature_type: FeatureType
     confidence: float
     keywords_matched: list[str] = field(default_factory=list)
+    audience: str = ""  # "usuários", "admins", "ambos"
+    priority: str = ""  # "crítica", "importante", "opcional"
+    justification: str = ""  # 1-sentence justification
 
 
 @dataclass
@@ -70,38 +82,56 @@ class FeatureClassifier:
     async def classify_text(self, text: str) -> ClassifiedFeature:
         """Classify a single feature text using the LLM.
 
+        Uses structured prompts with security analyst persona and
+        validates output with Pydantic before returning.
+
         Args:
             text: The feature description text.
 
         Returns:
-            ClassifiedFeature with impact, type, and confidence.
+            ClassifiedFeature with impact, type, confidence, and justification.
         """
         categories = [
             "ImpactLevel: high, medium, low",
             "FeatureType: security, performance, bug_fix, new_feature, improvement, deprecation, breaking_change, integration, ui_ux, other",
         ]
 
-        system_prompt = (
-            "You are a Salesforce expert. Classify the feature description into an ImpactLevel "
-            "and a FeatureType. Return a JSON object with 'impact' (high/medium/low), "
-            "'type' (one of the FeatureTypes), and 'confidence' (0.0-1.0)."
-        )
+        system_prompt = build_classification_system_prompt()
 
         result = await self._llm.classify_text(text, categories, system_prompt=system_prompt)
 
-        # Default values in case of LLM failure
-        impact_val = (
-            result.get("ImpactLevel", {}).get("value", "low") if isinstance(result, dict) else "low"
-        )
-        type_val = (
-            result.get("FeatureType", {}).get("value", "other")
-            if isinstance(result, dict)
-            else "other"
-        )
-        confidence = result.get("confidence", 0.2) if isinstance(result, dict) else 0.2
+        # Try to parse with Pydantic validation first
+        justification = ""
+        audience = ""
+        priority = ""
+
+        if isinstance(result, dict):
+            # Extract raw response for Pydantic validation
+            raw_response = json.dumps(result)
+            validated = parse_classification_response(raw_response)
+            if validated:
+                impact_val = validated.impact
+                type_val = validated.type
+                confidence = 0.85
+                justification = validated.justification
+                audience = validated.audience
+                priority = validated.priority
+            else:
+                # Fallback to legacy parsing
+                impact_val = result.get("ImpactLevel", {}).get("value", "low")
+                type_val = result.get("FeatureType", {}).get("value", "other")
+                confidence = result.get("confidence", 0.2)
+        else:
+            impact_val = "low"
+            type_val = "other"
+            confidence = 0.2
+
+        # Map Portuguese impact values to English for enum
+        impact_map_pt = {"alto": "high", "médio": "medium", "baixo": "low"}
+        impact_en = impact_map_pt.get(impact_val, impact_val)
 
         try:
-            impact = ImpactLevel(impact_val)
+            impact = ImpactLevel(impact_en)
         except ValueError:
             impact = ImpactLevel.LOW
 
@@ -116,6 +146,9 @@ class FeatureClassifier:
             feature_type=ftype,
             confidence=float(confidence),
             keywords_matched=[],
+            audience=audience,
+            priority=priority,
+            justification=justification,
         )
 
     async def classify_release(
