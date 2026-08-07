@@ -68,6 +68,11 @@ filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]
 
+[tool.coverage.run]
+omit = [
+    "src/auto_healing/*",
+]
+
 [dependency-groups]
 dev = [
     "pytest-asyncio>=1.4.0",
