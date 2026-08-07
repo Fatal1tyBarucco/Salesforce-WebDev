@@ -1,12 +1,12 @@
-# ──────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────[...]
 # Auto-Healing Agent — GitHub Actions (Serverless)
-# ──────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────[...]
 # Triggered automatically when Python Quality fails on main.
 # No webhook server needed — runs entirely on GitHub Actions.
 #
 # Required secret:
 #   GOOGLE_API_KEY — Gemini API key for LLM analysis
-# ──────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────[...]
 
 name: Auto-Healing Agent
 
@@ -99,25 +99,23 @@ jobs:
 
           client = genai.Client(api_key=api_key)
 
-          prompt = f"""You are an expert DevOps engineer. Analyze this CI/CD failure.
-
-Respond with ONLY a valid JSON object (no markdown fences):
-{{
-    "root_cause_summary": "one paragraph summary",
-    "affected_file_path": "relative/path/to/file.py",
-    "corrected_code": "full corrected file content",
-    "explanation": "what was changed and why"
-}}
-
-Rules:
-- corrected_code must be the COMPLETE file, not a diff
-- Ensure corrected_code is valid Python
-- Preserve all existing functionality
-
-Failed Workflow Log:
-```
-{log_text[:25000]}
-```"""
+          prompt = (
+              "You are an expert DevOps engineer. Analyze this CI/CD failure.\n\n"
+              "Respond with ONLY a valid JSON object (no markdown fences):\n"
+              "{\n"
+              '    "root_cause_summary": "one paragraph summary",\n'
+              '    "affected_file_path": "relative/path/to/file.py",\n'
+              '    "corrected_code": "full corrected file content",\n'
+              '    "explanation": "what was changed and why"\n'
+              "}\n\n"
+              "Rules:\n"
+              "- corrected_code must be the COMPLETE file, not a diff\n"
+              "- Ensure corrected_code is valid Python\n"
+              "- Preserve all existing functionality\n\n"
+              "Failed Workflow Log:\n```\n"
+              + log_text[:25000]
+              + "\n```"
+          )
 
           try:
               response = client.models.generate_content(
