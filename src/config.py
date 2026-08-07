@@ -240,3 +240,4 @@ class TopicNode:
         """Slug usado como nome do arquivo .md para este tópico."""
         return self.slug
 x=1;y=2;z=x+y
+x=1;y=2;z=x+y
