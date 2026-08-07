@@ -11,10 +11,6 @@
 name: Auto-Healing Agent
 
 on:
-  workflow_run:
-    workflows: ["Python Quality"]
-    types:
-      - completed
   workflow_dispatch:
 
 permissions:
