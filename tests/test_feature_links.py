@@ -330,6 +330,20 @@ class TestFormatEntryTableDocsUrl:
         )
         result = _format_entry_table(entry, docs_url="https://param-url.com")
         # A URL do entry deve estar presente (formato Markdown [🔗](url))
-        assert "https://entry-url.com" in result
+        start = result.find("](")
+        end = result.find(")", start + 2)
+        assert start != -1 and end != -1
+        extracted_url = result[start + 2 : end]
+        parsed_extracted = urlparse(extracted_url)
+        parsed_expected = urlparse("https://entry-url.com")
+        assert (
+            parsed_extracted.scheme,
+            parsed_extracted.netloc,
+            parsed_extracted.path,
+        ) == (
+            parsed_expected.scheme,
+            parsed_expected.netloc,
+            parsed_expected.path,
+        )
         # Garante que a URL do parâmetro não está presente
         assert "param-url.com" not in result
