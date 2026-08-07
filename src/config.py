@@ -239,3 +239,4 @@ class TopicNode:
     def topic_file_slug(self) -> str:
         """Slug usado como nome do arquivo .md para este tópico."""
         return self.slug
+x=1;y=2;z=x+y
