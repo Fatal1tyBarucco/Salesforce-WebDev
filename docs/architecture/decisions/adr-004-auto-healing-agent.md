@@ -147,8 +147,8 @@ omit = ["src/auto_healing/*"]
 
 ## Referências
 
-- [Documentação do Auto-Healing Agent](../auto-healing/index.md)
-- [Arquitetura Detalhada](../auto-healing/architecture/deep-dive.md)
-- [Runbook de Operação](../auto-healing/runbooks/auto-healing-agent.md)
+- [Documentação do Auto-Healing Agent](../../auto-healing/index.md)
+- [Arquitetura Detalhada](../../auto-healing/architecture/deep-dive.md)
+- [Runbook de Operação](../../auto-healing/runbooks/auto-healing-agent.md)
 - [GitHub Webhook Documentation](https://docs.github.com/en/webhooks)
 - [LangChain Documentation](https://python.langchain.com/)
