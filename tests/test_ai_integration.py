@@ -106,11 +106,18 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         assert "Triage Automatizado" in triage_report
 
         # Feature 4: Content Deduplication
+        # First run primes deduplication/cache state for this release.
         result1 = asyncio.run(analyze_content_changes("summer_26"))
         assert len(result1.new_files) > 0
+        assert len(result1.unchanged_files) == 0, (
+            "First analysis is expected to initialize cache/state; unchanged_files should be empty."
+        )
 
+        # Second run should reuse the state created above and classify files as unchanged.
         result2 = asyncio.run(analyze_content_changes("summer_26"))
-        assert len(result2.unchanged_files) > 0
+        assert len(result2.unchanged_files) > 0, (
+            "Second analysis should detect unchanged files from cached/previous state."
+        )
 
         dedup_report = asyncio.run(generate_deduplication_report("summer_26"))
         assert "Deduplicação de Conteúdo" in dedup_report
