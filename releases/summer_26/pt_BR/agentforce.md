@@ -12,7 +12,7 @@
 - [Agentforce Basics](https://trailhead.salesforce.com/content/learn/modules/agentforce-basics) — 1 hr 30 mins | 300 pts
 - [Build an Agent with Agentforce](https://trailhead.salesforce.com/content/learn/projects/build-an-agent-with-agentforce) — 1 hr 30 mins | 500 pts
 - [Agentforce for Developers](https://trailhead.salesforce.com/content/learn/modules/agentforce-for-developers) — 2 hrs | 400 pts
-
+| **Observabilidade do Agentforce: Análise de agente refinada e acionadores personalizados (beta)** | ❌ | ✅ | ❌ | ❌ | |
 ## 📚 Recursos
 
 - [📄 Release in a Box PDF](./release-in-a-box.pdf)
