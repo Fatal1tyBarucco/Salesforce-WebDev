@@ -661,7 +661,7 @@ class SalesforceReleaseScraper:
         logger.info("Downloading PDF: %s -> %s", url, dest)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            response = await asyncio.to_thread(urllib.request.urlopen, req, 30)
+            response = await asyncio.to_thread(urllib.request.urlopen, req, timeout=30)
             data = response.read()
             dest.write_bytes(data)
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:

@@ -220,6 +220,11 @@ async def generate_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )
 
+    if validated is None:
+        return _generate_legacy_ai_summary(
+            comparison, regressions, current_metrics, previous_metrics
+        )
+
     return AISummary(
         headline=validated.headline,
         highlights=validated.highlights,

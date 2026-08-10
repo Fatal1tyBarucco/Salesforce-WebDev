@@ -11,7 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
-class EnrichmentFeatureOutput(BaseModel):
+class EnrichmentFeatureOutput(BaseModel):  # type: ignore[misc]
     """Validated output for a single enriched feature."""
 
     name: str = Field(..., min_length=1, description="Exact feature name as provided")
@@ -31,7 +31,7 @@ class EnrichmentFeatureOutput(BaseModel):
     code_example: str = Field(default="", description="Optional code/configuration example")
 
 
-class EnrichmentOutput(BaseModel):
+class EnrichmentOutput(BaseModel):  # type: ignore[misc]
     """Validated output for category enrichment from LLM."""
 
     introduction: str = Field(
@@ -44,7 +44,7 @@ class EnrichmentOutput(BaseModel):
     )
 
 
-class ClassificationOutput(BaseModel):
+class ClassificationOutput(BaseModel):  # type: ignore[misc]
     """Validated output for feature classification from LLM."""
 
     type: Literal[
@@ -72,7 +72,7 @@ class ClassificationOutput(BaseModel):
     )
 
 
-class ReportOutput(BaseModel):
+class ReportOutput(BaseModel):  # type: ignore[misc]
     """Validated output for AI-generated reports."""
 
     headline: str = Field(
@@ -94,7 +94,7 @@ class ReportOutput(BaseModel):
     )
 
 
-class ImpactPredictionOutput(BaseModel):
+class ImpactPredictionOutput(BaseModel):  # type: ignore[misc]
     """Validated output for impact predictions."""
 
     categories: list[str] = Field(..., description="Categories with highest predicted impact")

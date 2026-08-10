@@ -41,7 +41,7 @@ class HealingOutcome(str, Enum):
 # ── Webhook Payload Schemas ─────────────────────────────────────────
 
 
-class WorkflowRunPayload(BaseModel):
+class WorkflowRunPayload(BaseModel):  # type: ignore[misc]
     """Schema for the ``workflow_run`` section of a GitHub webhook."""
 
     id: int = Field(description="Unique identifier for the workflow run")
@@ -56,7 +56,7 @@ class WorkflowRunPayload(BaseModel):
     repository: dict[str, Any] = Field(default_factory=dict, description="Repository metadata")
 
 
-class WebhookPayload(BaseModel):
+class WebhookPayload(BaseModel):  # type: ignore[misc]
     """Top-level schema for a GitHub webhook payload."""
 
     action: str = Field(default="", description="Webhook action type")
@@ -68,7 +68,7 @@ class WebhookPayload(BaseModel):
 # ── LLM Analysis Schemas ───────────────────────────────────────────
 
 
-class RootCauseAnalysis(BaseModel):
+class RootCauseAnalysis(BaseModel):  # type: ignore[misc]
     """Structured output from the LLM root cause analysis."""
 
     root_cause_summary: str = Field(
@@ -85,7 +85,7 @@ class RootCauseAnalysis(BaseModel):
     )
 
 
-class IncrementalCorrection(BaseModel):
+class IncrementalCorrection(BaseModel):  # type: ignore[misc]
     """Structured output from the LLM for subsequent fix attempts."""
 
     corrected_code: str = Field(default="", description="Incrementally corrected file content")
