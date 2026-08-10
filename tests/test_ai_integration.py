@@ -132,7 +132,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         assert len(comparison.new_categories) > 0
 
         regressions = asyncio.run(detect_regressions("summer_26", "winter_26"))
-        assert len(regressions) >= 0
+        assert isinstance(regressions, list)
 
         metrics = asyncio.run(calculate_quality_metrics("summer_26"))
         assert metrics is not None
