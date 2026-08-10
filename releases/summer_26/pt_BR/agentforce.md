@@ -12,9 +12,31 @@
 - [Agentforce Basics](https://trailhead.salesforce.com/content/learn/modules/agentforce-basics) — 1 hr 30 mins | 300 pts
 - [Build an Agent with Agentforce](https://trailhead.salesforce.com/content/learn/projects/build-an-agent-with-agentforce) — 1 hr 30 mins | 500 pts
 - [Agentforce for Developers](https://trailhead.salesforce.com/content/learn/modules/agentforce-for-developers) — 2 hrs | 400 pts
-
+| **Observabilidade do Agentforce: Análise de agente refinada e acionadores personalizados (beta)** | ❌ | ✅ | ❌ | ❌ | |
 ## 📚 Recursos
 
 - [📄 Release in a Box PDF](./release-in-a-box.pdf)
 - [🔗 Feature Impact Page](https://help.salesforce.com/s/articleView?id=release-notes.rn_feature_impact.htm&release=260&type=5&language=pt_BR)
 - [📋 Release Notes](https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=260&type=5&language=pt_BR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+| **Use o Gemini 2.5 Flash na Plataforma Einstein** | ❌ | ✅ | ❌ | ❌ | |
