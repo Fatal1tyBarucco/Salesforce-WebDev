@@ -67,23 +67,21 @@ def mock_llm_class(llm_service):
         yield llm_service
 
 
-@pytest.mark.asyncio
-async def test_load_release_meta_existing(tmp_path: Path) -> None:
+def test_load_release_meta_existing(tmp_path: Path) -> None:
     meta = {"name": "Test", "slug": "test", "release_id": 100, "categories": []}
     release_dir = tmp_path / "test"
     release_dir.mkdir()
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
-        result = await load_release_meta("test")
+        result = load_release_meta("test")
         assert result is not None
         assert result["name"] == "Test"
 
 
-@pytest.mark.asyncio
-async def test_load_release_meta_missing() -> None:
+def test_load_release_meta_missing() -> None:
     with patch("src.config.RELEASES_DIR", "/nonexistent"):
-        result = await load_release_meta("missing")
+        result = load_release_meta("missing")
         assert result is None
 
 
@@ -528,12 +526,11 @@ async def test_module_load_all_release_metas():
         assert len(result) == 1
 
 
-@pytest.mark.asyncio
-async def test_module_load_content_cache(tmp_path):
+def test_module_load_content_cache(tmp_path):
     """Module-level _load_content_cache delegates to service."""
     from src.ai_automation import _load_content_cache
 
-    result = await _load_content_cache(tmp_path / "nope.json")
+    result = _load_content_cache(tmp_path / "nope.json")
     assert isinstance(result, dict)
 
 
