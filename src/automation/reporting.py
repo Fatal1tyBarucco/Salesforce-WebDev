@@ -214,30 +214,19 @@ async def generate_ai_summary(
         )
 
     # Try Pydantic validation first
-    validated = parse_report_response(result_text)
-    except (ValueError, IndexError):
-        return AISummary(
-            headline=validated.headline,
-            highlights=validated.highlights,
-            risk_areas=validated.risk_areas,
-            overall_trend=validated.trend,
-        )
-
-    # Fallback to legacy JSON parsing
     try:
-        start_idx = result_text.find("{")
-        end_idx = result_text.rfind("}") + 1
-        data = json.loads(result_text[start_idx:end_idx])
-        return AISummary(
-            headline=data.get("headline", "Resumo da Release"),
-            highlights=data.get("highlights", []),
-            risk_areas=data.get("risk_areas", []),
-            overall_trend=data.get("overall_trend", "indeterminado"),
-        )
+        validated = parse_report_response(result_text)
     except (ValueError, IndexError):
         return _generate_legacy_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )
+
+    return AISummary(
+        headline=validated.headline,
+        highlights=validated.highlights,
+        risk_areas=validated.risk_areas,
+        overall_trend=validated.trend,
+    )
 
 
 def _generate_legacy_ai_summary(
