@@ -5,7 +5,7 @@ description = "Pipeline ETL para extração, classificação e versionamento das
 requires-python = ">=3.14,<3.15"
 dependencies = [
     "beautifulsoup4>=4.12.0,<5",
-    "lxml>=5.0.0,<7",
+    "lxml[html_clean]>=5.0.0,<7",
     "playwright>=1.40.0,<2",
     "openai>=1.50.0",
     "google-genai>=1.0.0",
