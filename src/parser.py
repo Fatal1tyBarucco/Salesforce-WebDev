@@ -392,13 +392,13 @@ AVAILABILITY_KEYWORDS: frozenset[str] = frozenset({"Yes"})
 
 class FeatureImpactEntry:
     __slots__ = (
-        "name",
-        "available_users",
         "available_admins",
-        "requires_config",
-        "contact_sf",
+        "available_users",
         "confidence",
+        "contact_sf",
         "docs_url",
+        "name",
+        "requires_config",
     )
 
     def __init__(
@@ -421,7 +421,7 @@ class FeatureImpactEntry:
 
 
 class FeatureImpactCategory:
-    __slots__ = ("name", "description", "entries", "subcategories")
+    __slots__ = ("description", "entries", "name", "subcategories")
 
     def __init__(self, name: str, description: str = "") -> None:
         self.name = name
@@ -593,10 +593,7 @@ class FeatureImpactParser:
             return False
         if self._parse_feature_line(line) is not None:
             return False
-        if len(line) > 5 and len(line) < 80:
-            if cat.entries or cat.subcategories:
-                return True
-        return False
+        return bool(len(line) > 5 and len(line) < 80 and (cat.entries or cat.subcategories))
 
     def _parse_feature_line(self, line: str, docs_url: str = "") -> FeatureImpactEntry | None:
         if not line or len(line) < 5:
@@ -631,7 +628,7 @@ class FeatureImpactParser:
         return FeatureImpactEntry(
             name=name,
             available_users=avail_users,
-            available_admins=avail_admins,  # noqa: F821
+            available_admins=avail_admins,
             requires_config=requires_config,
             contact_sf=contact_sf,
             confidence=confidence,

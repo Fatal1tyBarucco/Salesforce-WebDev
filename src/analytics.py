@@ -10,6 +10,7 @@ from __future__ import annotations
 import html
 import json
 from dataclasses import dataclass
+from datetime import UTC
 from pathlib import Path
 from typing import Any
 
@@ -66,7 +67,7 @@ def load_all_metas() -> list[dict[str, Any]]:
 
 def _parse_generated_at(meta: dict[str, Any]) -> float:
     """Extract epoch timestamp from generated_at field."""
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     ts = meta.get("generated_at", "")
     if not ts:
@@ -74,7 +75,7 @@ def _parse_generated_at(meta: dict[str, Any]) -> float:
     try:
         dt = datetime.fromisoformat(ts)
         if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
+            dt = dt.replace(tzinfo=UTC)
         return dt.timestamp()
     except (ValueError, TypeError):
         return 0.0

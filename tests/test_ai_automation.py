@@ -1,47 +1,48 @@
 """Tests for AI automation module."""
 
 import json
-import pytest
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from src.ai_automation import (
     AIAutomationService,
+    AISummary,
+    DeduplicationResult,
+    FilteredNotification,
+    ImpactPrediction,
     LLMService,
-    load_release_meta,
+    TriageResult,
+    UserProfile,
+    analyze_content_changes,
+    calculate_category_impact_scores,
+    calculate_quality_metrics,
     compare_releases,
     detect_regressions,
-    calculate_quality_metrics,
-    generate_changelog,
-    generate_regression_report,
-    generate_diff_report,
-    generate_quality_report,
+    export_all_releases,
+    export_release_csv,
+    export_release_json,
+    filter_features_for_profile,
     generate_ai_summary,
     generate_ai_summary_report,
-    AISummary,
-    calculate_category_impact_scores,
-    predict_next_release_impact,
-    generate_impact_prediction_report,
-    ImpactPrediction,
-    triage_release,
-    generate_triage_report,
-    TriageResult,
-    analyze_content_changes,
-    get_content_hash,
-    is_content_unchanged,
+    generate_changelog,
     generate_deduplication_report,
-    DeduplicationResult,
-    filter_features_for_profile,
+    generate_diff_report,
+    generate_dynamic_badge,
     generate_filtered_notification,
     generate_filtered_notification_report,
-    UserProfile,
-    FilteredNotification,
-    generate_dynamic_badge,
+    generate_impact_prediction_report,
+    generate_quality_report,
+    generate_regression_report,
+    generate_triage_report,
+    get_content_hash,
     get_latest_release_badge,
-    export_release_json,
-    export_release_csv,
-    export_all_releases,
+    is_content_unchanged,
+    load_release_meta,
+    predict_next_release_impact,
+    triage_release,
 )
 
 

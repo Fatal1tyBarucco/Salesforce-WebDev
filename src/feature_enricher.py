@@ -333,7 +333,7 @@ class FeatureEnricher:
             stripped = line.strip()
 
             # Detect table start
-            if stripped.startswith("| Recurso") or stripped.startswith("| Feature"):
+            if stripped.startswith(("| Recurso", "| Feature")):
                 in_table = True
                 continue
 

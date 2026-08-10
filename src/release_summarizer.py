@@ -360,7 +360,7 @@ class ReleaseSummarizer:
         for line in content.split("\n"):
             stripped = line.strip()
 
-            if stripped.startswith("| Recurso") or stripped.startswith("| Feature"):
+            if stripped.startswith(("| Recurso", "| Feature")):
                 in_table = True
                 continue
 
@@ -415,8 +415,10 @@ class ReleaseSummarizer:
         lines = [
             f"# 📋 Resumo Executivo — {summary.release_name}",
             "",
-            f"> **{summary.total_features} recursos** em **{summary.total_categories} categorias** "
-            f"| Confiança: {summary.confidence:.0%}",
+            (
+                f"> **{summary.total_features} recursos** em **{summary.total_categories} categorias** "
+                f"| Confiança: {summary.confidence:.0%}"
+            ),
             "",
             "---",
             "",

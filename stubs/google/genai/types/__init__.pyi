@@ -4,8 +4,6 @@ Covers the subset used in this project:
   - GenerateContentConfig
 """
 
-from __future__ import annotations
-
 class GenerateContentConfig:
     """Configuration for content generation."""
 

@@ -6,7 +6,7 @@ and visual Markdown generators for stakeholder-ready reports.
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from ..ai.generators.markdown import MarkdownGenerator
 from ..ai.prompts.reporting import (
@@ -21,9 +21,11 @@ from ..ai.prompts.validation import ReportOutput
 from .models import AISummary, QualityMetrics, Regression, ReleaseComparison
 
 
-def _get_releases_dir():
+def _get_releases_dir():  # type: ignore[no-untyped-def]
     from pathlib import Path
+
     from ..config import RELEASES_DIR
+
     return Path(RELEASES_DIR)
 
 
@@ -35,7 +37,7 @@ async def generate_changelog(
 
     Uses CTO persona with structured prompts and Pydantic validation.
     """
-    releases_dir = _get_releases_dir()
+    releases_dir = _get_releases_dir()  # type: ignore[no-untyped-call]
     if not releases_dir.exists():
         return "# Changelog\n\nNo releases found.\n"
 
@@ -187,8 +189,8 @@ async def generate_ai_summary(
     llm: Any,
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> AISummary:
     """Generate an intelligent natural language summary of release differences.
 
@@ -229,8 +231,8 @@ async def generate_ai_summary(
 def _generate_legacy_ai_summary(
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> AISummary:
     """Legacy heuristic-based summary generation for fallback."""
     total_changes = (
@@ -279,8 +281,8 @@ async def generate_ai_summary_report(
     llm: Any,
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> str:
     """Generate a formatted AI summary report in Markdown.
 

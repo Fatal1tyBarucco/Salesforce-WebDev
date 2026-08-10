@@ -102,7 +102,7 @@ def parse_code_response(response: str, feature_name: str, language: str) -> Code
     title = feature_name
     for line in code.split("\n")[:3]:
         stripped = line.strip()
-        if stripped.startswith("//") or stripped.startswith("/**") or stripped.startswith("<!--"):
+        if stripped.startswith(("//", "/**", "<!--")):
             title = stripped.lstrip("/ *<!-").strip()
             break
 

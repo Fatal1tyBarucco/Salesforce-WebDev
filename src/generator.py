@@ -16,7 +16,7 @@ Estrutura gerada:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from string import Template
 
@@ -84,7 +84,7 @@ class MarkdownGenerator:
         """
         release_dir: Path = self._ensure_release_dir(release.slug)
         generated_files: list[Path] = []
-        generated_at: str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M")
+        generated_at: str = datetime.now(tz=UTC).strftime("%Y-%m-%d %H:%M")
 
         for node in topic_nodes:
             lines: list[str] = self._build_topic_lines(node, release.name)

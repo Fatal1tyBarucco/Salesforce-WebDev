@@ -3,9 +3,9 @@
 import json
 from io import BytesIO
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
-from unittest.mock import MagicMock, patch
 
 from src.health import (
     HealthHandler,
@@ -271,7 +271,7 @@ class TestNewHealthFeatures:
 
     def test_inc_metric_prometheus_mirror(self) -> None:
         """inc_metric mirrors to prometheus counters when available."""
-        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+        from src.health import _PROMETHEUS_AVAILABLE, _health_state
 
         if not _PROMETHEUS_AVAILABLE:
             pytest.skip("prometheus_client not installed")
@@ -284,7 +284,7 @@ class TestNewHealthFeatures:
 
     def test_set_pipeline_status_prometheus(self) -> None:
         """set_pipeline_status mirrors to prometheus when available."""
-        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+        from src.health import _PROMETHEUS_AVAILABLE, _health_state
 
         if not _PROMETHEUS_AVAILABLE:
             pytest.skip("prometheus_client not installed")
@@ -294,7 +294,7 @@ class TestNewHealthFeatures:
 
     def test_record_run_duration_prometheus(self) -> None:
         """record_run_duration mirrors to prometheus histogram when available."""
-        from src.health import _health_state, _PROMETHEUS_AVAILABLE
+        from src.health import _PROMETHEUS_AVAILABLE, _health_state
 
         if not _PROMETHEUS_AVAILABLE:
             pytest.skip("prometheus_client not installed")

@@ -243,7 +243,7 @@ class TestLLMServiceCoverage:
             assert len(providers) == 6
 
     def test_select_providers_by_tier_cheap(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [
             LLMProvider(name="openai", api_key="k"),
@@ -256,7 +256,7 @@ class TestLLMServiceCoverage:
         assert result[0].name == "google"
 
     def test_select_providers_by_tier_premium(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [
             LLMProvider(name="openai", api_key="k"),
@@ -268,7 +268,7 @@ class TestLLMServiceCoverage:
         assert result[0].name == "google"
 
     def test_select_providers_by_tier_standard(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="openai", api_key="k")]
         svc = LLMService.__new__(LLMService)
@@ -284,8 +284,8 @@ class TestLLMServiceCoverage:
         assert svc._select_providers_by_tier("cheap") == []
 
     def test_is_provider_available(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         from src.circuit_breaker import CircuitBreaker
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k")
         svc = LLMService.__new__(LLMService)
@@ -293,8 +293,8 @@ class TestLLMServiceCoverage:
         assert svc._is_provider_available(p) is True
 
     def test_record_success_and_failure(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         from src.circuit_breaker import CircuitBreaker
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k")
         svc = LLMService.__new__(LLMService)
@@ -303,7 +303,7 @@ class TestLLMServiceCoverage:
         svc._record_failure(p)
 
     def test_get_or_create_client_openai(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k", provider_type="openai")
         svc = LLMService.__new__(LLMService)
@@ -315,7 +315,7 @@ class TestLLMServiceCoverage:
             assert client is client2
 
     def test_get_or_create_client_google(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k", provider_type="google")
         svc = LLMService.__new__(LLMService)
@@ -332,7 +332,7 @@ class TestLLMServiceCoverage:
                 LLMService()
 
     def test_llm_service_init_with_providers(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -340,7 +340,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_classify_text_success(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -352,7 +352,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_classify_text_invalid_json(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -362,7 +362,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_classify_text_none_response(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -372,7 +372,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_classify_text_custom_system_prompt(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -382,7 +382,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_batch_single_prompt(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -392,7 +392,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_batch_multiple_prompts(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -402,7 +402,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_batch_fallback_to_individual(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -413,7 +413,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_batch_partial_json(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -423,8 +423,8 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_with_cache_hit(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         from src.cache_manager import CacheManager
+        from src.llm_service import LLMProvider, LLMService
 
         cache = MagicMock(spec=CacheManager)
         cache.get.return_value = "cached response"
@@ -435,8 +435,8 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_with_cache_set(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         from src.cache_manager import CacheManager
+        from src.llm_service import LLMProvider, LLMService
 
         cache = MagicMock(spec=CacheManager)
         cache.get.return_value = None
@@ -451,7 +451,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_all_providers_fail(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -463,7 +463,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_provider_unavailable(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -473,8 +473,9 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_rate_limit_error(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         import openai
+
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -490,8 +491,9 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_auth_error(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         import openai
+
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -507,7 +509,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_timeout_error(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -561,8 +563,9 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_api_connection_error(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         import openai
+
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -574,8 +577,9 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_generate_text_internal_server_error(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
         import openai
+
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -591,7 +595,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_call_google_provider(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="google", api_key="k", provider_type="google", model="gemini-test")
         svc = LLMService.__new__(LLMService)
@@ -609,7 +613,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_call_openai_provider_empty_choices(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k", provider_type="openai")
         svc = LLMService.__new__(LLMService)
@@ -627,7 +631,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_call_openai_provider_string_response(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         p = LLMProvider(name="test", api_key="k", provider_type="openai")
         svc = LLMService.__new__(LLMService)
@@ -643,7 +647,7 @@ class TestLLMServiceCoverage:
 
     @pytest.mark.asyncio
     async def test_aenter_aexit(self) -> None:
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         providers = [LLMProvider(name="test", api_key="k")]
         svc = LLMService(providers=providers)
@@ -713,8 +717,8 @@ class TestHealthCoverage:
     def test_module_level_functions(self) -> None:
         from src.health import (
             inc_metric,
-            set_pipeline_status,
             record_run_duration,
+            set_pipeline_status,
             set_release_feature_count,
         )
 
@@ -724,7 +728,7 @@ class TestHealthCoverage:
         set_release_feature_count("test", 5)
 
     def test_get_health_data(self, tmp_path: Path) -> None:
-        from src.health import _get_health_data, HealthState
+        from src.health import HealthState, _get_health_data
 
         state = HealthState()
         with patch("src.health.RELEASES_DIR", str(tmp_path)):
@@ -734,7 +738,7 @@ class TestHealthCoverage:
         assert data["pipeline_status"] == "idle"
 
     def test_get_health_data_with_releases(self, tmp_path: Path) -> None:
-        from src.health import _get_health_data, HealthState
+        from src.health import HealthState, _get_health_data
 
         d = tmp_path / "summer_26"
         d.mkdir()
@@ -748,7 +752,7 @@ class TestHealthCoverage:
         assert data["total_features"] == 42
 
     def test_get_health_data_corrupt_meta(self, tmp_path: Path) -> None:
-        from src.health import _get_health_data, HealthState
+        from src.health import HealthState, _get_health_data
 
         d = tmp_path / "summer_26"
         d.mkdir()
@@ -999,8 +1003,8 @@ class TestOrchestratorCoverage:
 
     @pytest.mark.asyncio
     async def test_run_ai_reports_error(self) -> None:
-        from src.orchestrator import PipelineOrchestrator, PipelineResult
         from src.exceptions import LLMError
+        from src.orchestrator import PipelineOrchestrator, PipelineResult
 
         config = MagicMock()
         config.event_bus = MagicMock()
@@ -1076,7 +1080,7 @@ class TestLoggerCoverage:
         setup_logging(json_format=False)
 
     def test_new_correlation_id(self) -> None:
-        from src.logger import new_correlation_id, get_correlation_id
+        from src.logger import get_correlation_id, new_correlation_id
 
         cid = new_correlation_id()
         assert isinstance(cid, str)

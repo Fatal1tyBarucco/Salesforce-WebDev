@@ -1,7 +1,8 @@
 import sys
 import types
-import pytest
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 # Ensure google.genai is available as a mock before any test imports
 if "google" not in sys.modules:

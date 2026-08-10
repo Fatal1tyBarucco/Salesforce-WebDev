@@ -32,7 +32,7 @@ from pathlib import Path
 from threading import Thread
 from typing import Any
 
-from .config import RELEASES_DIR, KNOWN_RELEASES
+from .config import KNOWN_RELEASES, RELEASES_DIR
 from .models import ErrorResponse, ReleaseResponse
 
 logger = logging.getLogger(__name__)
@@ -395,7 +395,7 @@ def _parse_category_features(slug: str, category_name: str) -> list[dict[str, An
 
     for line in content.split("\n"):
         line = line.strip()
-        if not line or line.startswith("#") or line.startswith("|"):
+        if not line or line.startswith(("#", "|")):
             continue
         # Bullet point format: * **Feature name** — _Availability_
         bullet_match = re.match(r"^\*\s+\*\*(.+?)\*\*\s*(?:—\s*_(.+)_)?$", line)

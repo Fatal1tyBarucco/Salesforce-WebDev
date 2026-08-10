@@ -4,8 +4,6 @@ Covers the subset used in this project:
   - Client (sync + async model access)
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from . import types as types

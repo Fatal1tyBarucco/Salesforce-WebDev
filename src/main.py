@@ -11,62 +11,58 @@ Strategy:
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
 import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-if TYPE_CHECKING:
-    pass
-
+from .cache_manager import CacheManager
 from .config import (
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .events import EventBus, get_event_bus
+from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
-from .translator import TranslatorService
-from .logger import setup_logging
 from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
+from .llm_service import LLMService
+from .logger import setup_logging
 from .parser import (
     FeatureImpactParser,
 )
-from .scraper import SalesforceReleaseScraper
-from .exceptions import GitHubError, LLMError, NotificationError
-from .llm_service import LLMService
-from .events import EventBus, get_event_bus
-from .cache_manager import CacheManager
-
 from .release_docs import (  # noqa: F401
-    RELEASE_SECTION_HEADING,
-    RELEASE_SEASONS,
+    RELEASE_BADGE_MARKER,
     RELEASE_BASE_ID,
     RELEASE_BASE_YEAR,
     RELEASE_ID_STEP,
+    RELEASE_SEASONS,
+    RELEASE_SECTION_HEADING,
     TRANSLITERATE_MAP,
-    _find_existing_releases,
+    _build_release_block,
     _build_release_name,
     _build_release_slug,
+    _build_resource_footer,
+    _check,
+    _find_existing_releases,
+    _format_entry,
+    _format_entry_table,
     _format_impact_report,
     _format_notification_digest,
-    _slugify_category,
-    RELEASE_BADGE_MARKER,
-    _update_badge,
-    _build_resource_footer,
-    _generate_release_files,
     _generate_category_summary,
-    _check,
-    _format_entry_table,
-    _format_entry,
+    _generate_release_files,
+    _get_release_emoji,
+    _slugify_category,
+    _update_badge,
     _update_readme_single,
     _update_release_history,
-    _get_release_emoji,
-    _build_release_block,
     _update_single_readme,
     update_readme_all,
 )
+from .scraper import SalesforceReleaseScraper
+from .translator import TranslatorService
 
 # Salesforce release naming/numbering scheme assumptions.
 # Update these constants if Salesforce changes release cadence or ID progression.
@@ -215,8 +211,8 @@ async def generate_ai_reports_async(
         return
     try:
         from .ai_automation import AIAutomationService
-        from .issue_triage import IssueTriager
         from .impact_analyzer import ImpactAnalyzer
+        from .issue_triage import IssueTriager
         from .smart_notifications import SmartNotificationEngine
 
         ai_service = AIAutomationService()

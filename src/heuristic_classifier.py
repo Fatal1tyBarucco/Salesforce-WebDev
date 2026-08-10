@@ -66,12 +66,11 @@ class HeuristicFeatureClassifier:
         best_confidence = 0.0
 
         for pattern, impact, feature_type, confidence in _KEYWORD_RULES:
-            if re.search(pattern, text):
-                if confidence > best_confidence:
-                    best_confidence = confidence
-                    best_match = HeuristicClassification(
-                        impact=impact, type=feature_type, confidence=confidence
-                    )
+            if re.search(pattern, text) and confidence > best_confidence:
+                best_confidence = confidence
+                best_match = HeuristicClassification(
+                    impact=impact, type=feature_type, confidence=confidence
+                )
 
         if best_match:
             return {

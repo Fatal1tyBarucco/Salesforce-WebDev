@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import subprocess
 from dataclasses import dataclass, field
+from datetime import UTC
 
 logger = logging.getLogger(__name__)
 
@@ -277,9 +278,9 @@ def submit_changes(
         target_branch: Branch to push to and create PR against.
             Use 'develop' for staging, 'main' for direct PR.
     """
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d-%H%M")
+    timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d-%H%M")
     branch_name = f"release-notes/{release_slug or 'auto'}-{timestamp}"
 
     if not create_branch(branch_name):

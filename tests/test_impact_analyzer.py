@@ -4,8 +4,8 @@ import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-from src.impact_analyzer import ImpactAnalyzer
 from src.feature_classifier import FeatureType, ImpactLevel
+from src.impact_analyzer import ImpactAnalyzer
 
 
 def test_analyze_returns_report(tmp_path: Path) -> None:

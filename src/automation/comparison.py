@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Optional
+from typing import Any
 
-from .models import QualityMetrics, ReleaseComparison, Regression
+from .models import QualityMetrics, Regression, ReleaseComparison
 
 
 async def compare_releases(
@@ -62,14 +62,14 @@ async def detect_regressions(
     previous_cats = {c["name"]: c["count"] for c in previous.get("categories", [])}
 
     regressions = []
-    for name in current_cats:
-        if name in previous_cats and current_cats[name] < previous_cats[name]:
+    for name, curr_count in current_cats.items():
+        if name in previous_cats and curr_count < previous_cats[name]:
             regressions.append(
                 Regression(
                     category=name,
                     previous_count=previous_cats[name],
-                    current_count=current_cats[name],
-                    change=current_cats[name] - previous_cats[name],
+                    current_count=curr_count,
+                    change=curr_count - previous_cats[name],
                 )
             )
 
@@ -79,7 +79,7 @@ async def detect_regressions(
 async def calculate_quality_metrics(
     load_meta_fn: Any,
     slug: str,
-) -> Optional[QualityMetrics]:
+) -> QualityMetrics | None:
     """Calculate quality metrics for a release."""
     meta = load_meta_fn(slug)
     if not meta:

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
@@ -131,7 +131,7 @@ class HealthState:
     def set_pipeline_status(self, status: str) -> None:
         """Update the pipeline status."""
         self._last_run_status = status
-        self._last_run_time = datetime.now(tz=timezone.utc).isoformat()
+        self._last_run_time = datetime.now(tz=UTC).isoformat()
         if status == "completed":
             self.inc_metric("pipeline_runs_total")
             if _PROMETHEUS_AVAILABLE:

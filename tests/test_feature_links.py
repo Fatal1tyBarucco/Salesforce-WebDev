@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlparse
 from unittest.mock import patch
+from urllib.parse import urlparse
 
 import pytest
 

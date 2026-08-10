@@ -6,14 +6,15 @@ import inspect
 import logging
 import os
 import time
-from typing import Any, Optional
 from dataclasses import dataclass, field
+from typing import Any, Self
 
 import openai
 from google import genai
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-from .circuit_breaker import CircuitBreaker
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+
 from .cache_manager import CacheManager
+from .circuit_breaker import CircuitBreaker
 
 
 @dataclass
@@ -71,15 +72,17 @@ class LLMService:
     When one fails, moves to the next after circuit breaker cooldown.
     """
 
+    _DEFAULT_CB_CONFIG = CircuitBreakerConfig()
+
     def __init__(
         self,
-        config: CircuitBreakerConfig = CircuitBreakerConfig(),
+        config: CircuitBreakerConfig | None = None,
         client: Any = None,
         providers: list[LLMProvider] | None = None,
         cache: CacheManager | None = None,
         rate_limiter: RateLimiter | None = None,
     ) -> None:
-        self._config = config
+        self._config = config or self._DEFAULT_CB_CONFIG
         self._logger = logging.getLogger(__name__)
         self._provider_states: dict[str, CircuitBreaker] = {}
         self._providers: list[LLMProvider] = []
@@ -103,7 +106,7 @@ class LLMService:
 
         for p in self._providers:
             self._provider_states[p.name] = CircuitBreaker(
-                threshold=config.threshold, cooldown=config.cooldown
+                threshold=self._config.threshold, cooldown=self._config.cooldown
             )
 
         self._client = client
@@ -114,7 +117,7 @@ class LLMService:
         combined = f"{system_prompt}\x00{user_prompt}"
         return hashlib.sha256(combined.encode("utf-8")).hexdigest()
 
-    async def __aenter__(self) -> "LLMService":
+    async def __aenter__(self) -> Self:
         """Enter async context — pre-warm clients for all providers."""
         for provider in self._providers:
             self._get_or_create_client(provider)
@@ -124,7 +127,7 @@ class LLMService:
         self,
         exc_type: type[BaseException] | None,
         exc_val: BaseException | None,
-        exc_tb: Any,
+        exc_tb: object,
     ) -> None:
         """Exit async context — close all cached clients."""
         for name, client in self._clients.items():
@@ -324,7 +327,7 @@ class LLMService:
 
     async def generate_text(
         self, user_prompt: str, system_prompt: str = "You are a helpful assistant."
-    ) -> Optional[str]:
+    ) -> str | None:
         """Generate text with automatic fallback across providers.
 
         Tries each provider in order. If one fails, moves to the next.
@@ -338,7 +341,7 @@ class LLMService:
         user_prompt: str,
         system_prompt: str = "You are a helpful assistant.",
         tier: str = "standard",
-    ) -> Optional[str]:
+    ) -> str | None:
         """Generate text with cost-aware provider selection.
 
         Tiers:
@@ -392,7 +395,7 @@ class LLMService:
                 self._logger.error("Provider '%s' connection/server error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
-            except (TimeoutError, asyncio.TimeoutError) as e:
+            except TimeoutError as e:
                 self._logger.error("Provider '%s' timeout: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
@@ -458,7 +461,7 @@ class LLMService:
         return ordered
 
     async def classify_text(
-        self, text: str, categories: list[str], system_prompt: Optional[str] = None
+        self, text: str, categories: list[str], system_prompt: str | None = None
     ) -> dict[str, Any]:
         """Classify text into provided categories using the LLM."""
         if system_prompt is None:
@@ -491,7 +494,7 @@ class LLMService:
         prompts: list[str],
         system_prompt: str = "You are a helpful assistant.",
         batch_size: int = 10,
-    ) -> list[Optional[str]]:
+    ) -> list[str | None]:
         """Generate text for multiple prompts, batching them into single LLM calls.
 
         Combines up to ``batch_size`` prompts into a single request to reduce
@@ -506,7 +509,7 @@ class LLMService:
         Returns:
             List of responses aligned with the input prompts.
         """
-        results: list[Optional[str]] = [None] * len(prompts)
+        results: list[str | None] = [None] * len(prompts)
 
         for start in range(0, len(prompts), batch_size):
             chunk = prompts[start : start + batch_size]

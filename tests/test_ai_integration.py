@@ -6,23 +6,23 @@ from pathlib import Path
 from unittest.mock import patch
 
 from src.ai_automation import (
+    analyze_content_changes,
+    calculate_category_impact_scores,
+    calculate_quality_metrics,
+    compare_releases,
+    detect_regressions,
     generate_ai_summary,
     generate_ai_summary_report,
-    calculate_category_impact_scores,
-    predict_next_release_impact,
-    generate_impact_prediction_report,
-    triage_release,
-    generate_triage_report,
-    analyze_content_changes,
+    generate_changelog,
     generate_deduplication_report,
     generate_filtered_notification,
     generate_filtered_notification_report,
-    compare_releases,
-    detect_regressions,
-    calculate_quality_metrics,
-    generate_changelog,
-    generate_regression_report,
+    generate_impact_prediction_report,
     generate_quality_report,
+    generate_regression_report,
+    generate_triage_report,
+    predict_next_release_impact,
+    triage_release,
 )
 
 
@@ -108,16 +108,16 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         # Feature 4: Content Deduplication
         # First run primes deduplication/cache state for this release.
         result1 = asyncio.run(analyze_content_changes("summer_26"))
-        assert len(result1.unchanged_files) == 0, (
-            "First analysis is expected to initialize cache/state; unchanged_files should be empty."
-        )
+        assert (
+            len(result1.unchanged_files) == 0
+        ), "First analysis is expected to initialize cache/state; unchanged_files should be empty."
         assert len(result1.new_files) > 0
 
         # Second run should reuse the state created above and classify files as unchanged.
         result2 = asyncio.run(analyze_content_changes("summer_26"))
-        assert len(result2.unchanged_files) > 0, (
-            "Second analysis should detect unchanged files from cached/previous state."
-        )
+        assert (
+            len(result2.unchanged_files) > 0
+        ), "Second analysis should detect unchanged files from cached/previous state."
 
         dedup_report = asyncio.run(generate_deduplication_report("summer_26"))
         assert "Deduplicação de Conteúdo" in dedup_report

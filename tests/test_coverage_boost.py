@@ -37,8 +37,8 @@ class TestScraperCoverage:
     @pytest.mark.asyncio
     async def test_fetch_page_raw_text_cached(self, tmp_path: Path) -> None:
         """fetch_page_raw_text returns cached content when available."""
-        from src.scraper import SalesforceReleaseScraper
         from src.cache_manager import CacheManager
+        from src.scraper import SalesforceReleaseScraper
 
         scraper = SalesforceReleaseScraper()
         # Replace the scraper's cache with our test cache
@@ -172,8 +172,8 @@ class TestReleaseDocsCoverage:
 
     def test_build_resource_footer(self, tmp_path: Path) -> None:
         """_build_resource_footer generates markdown links."""
-        from src.release_docs import _build_resource_footer
         from src.config import BILINGUAL_TEMPLATES
+        from src.release_docs import _build_resource_footer
 
         release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
         templates = BILINGUAL_TEMPLATES.get("pt_BR", BILINGUAL_TEMPLATES["en_US"])
@@ -415,7 +415,7 @@ class TestLLMServiceCoverage:
     @pytest.mark.asyncio
     async def test_generate_text_all_providers_fail(self) -> None:
         """generate_text returns None when all providers fail."""
-        from src.llm_service import LLMService, LLMProvider, CircuitBreakerConfig
+        from src.llm_service import CircuitBreakerConfig, LLMProvider, LLMService
 
         provider = LLMProvider(name="test", api_key="test", provider_type="openai")
         config = CircuitBreakerConfig(threshold=1, cooldown=999)
@@ -428,7 +428,7 @@ class TestLLMServiceCoverage:
     @pytest.mark.asyncio
     async def test_classify_text_success(self) -> None:
         """classify_text parses JSON from LLM response."""
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         provider = LLMProvider(name="test", api_key="test", provider_type="openai")
         service = LLMService(providers=[provider])
@@ -441,7 +441,7 @@ class TestLLMServiceCoverage:
     @pytest.mark.asyncio
     async def test_classify_text_invalid_json(self) -> None:
         """classify_text handles invalid JSON."""
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         provider = LLMProvider(name="test", api_key="test", provider_type="openai")
         service = LLMService(providers=[provider])
@@ -453,7 +453,7 @@ class TestLLMServiceCoverage:
     @pytest.mark.asyncio
     async def test_classify_text_none_response(self) -> None:
         """classify_text handles None response."""
-        from src.llm_service import LLMService, LLMProvider
+        from src.llm_service import LLMProvider, LLMService
 
         provider = LLMProvider(name="test", api_key="test", provider_type="openai")
         service = LLMService(providers=[provider])
@@ -571,8 +571,8 @@ class TestReportingCoverage:
     @pytest.mark.asyncio
     async def test_ai_summary_report_no_highlights_no_risks(self) -> None:
         """generate_ai_summary_report handles empty highlights and risks."""
-        from src.automation.reporting import generate_ai_summary_report
         from src.automation.models import ReleaseComparison
+        from src.automation.reporting import generate_ai_summary_report
 
         mock_llm = AsyncMock()
         mock_llm.generate_text.return_value = None  # Force fallback
@@ -591,8 +591,8 @@ class TestReportingCoverage:
     @pytest.mark.asyncio
     async def test_ai_summary_with_removed_categories(self) -> None:
         """_generate_legacy_ai_summary handles removed categories."""
+        from src.automation.models import Regression, ReleaseComparison
         from src.automation.reporting import _generate_legacy_ai_summary
-        from src.automation.models import ReleaseComparison, Regression
 
         comp = ReleaseComparison(
             current_name="New",
@@ -663,6 +663,7 @@ class TestCacheManagerAdvanced:
     def test_load_content_cache(self, tmp_path: Path) -> None:
         """load_content_cache loads from JSON file."""
         import json
+
         from src.cache_manager import CacheManager
 
         cache = CacheManager(cache_dir=tmp_path, ttl_seconds=3600)

@@ -7,7 +7,6 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from typing import Optional
 
 from .llm_service import LLMService
 
@@ -17,7 +16,7 @@ class TranslatorService:
 
     CACHE_TTL_SECONDS: int = 7 * 24 * 60 * 60  # 7 days
 
-    def __init__(self, cache_dir: str = "cache", llm: Optional[LLMService] = None) -> None:
+    def __init__(self, cache_dir: str = "cache", llm: LLMService | None = None) -> None:
         self._cache_dir = Path(cache_dir)
         self._cache_dir.mkdir(parents=True, exist_ok=True)
         self._llm = llm or LLMService()
@@ -43,7 +42,7 @@ class TranslatorService:
         raw = f"{source}:{target}:{text}"
         return hashlib.sha256(raw.encode()).hexdigest()
 
-    def _get_cached(self, key: str) -> Optional[str]:
+    def _get_cached(self, key: str) -> str | None:
         if key in self._cache:
             entry = self._cache[key]
             ts = entry.get("timestamp", 0)

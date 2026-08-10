@@ -9,7 +9,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from urllib.parse import urlparse
 
 import openai
-
 import pytest
 
 # ── exceptions.py ──────────────────────────────────────────────────
@@ -20,17 +19,17 @@ class TestExceptionHierarchy:
 
     def test_exceptions_importable(self) -> None:
         from src.exceptions import (
-            PipelineError,
-            ScraperError,
             BrowserError,
-            RateLimitError,
-            ParserError,
-            LLMError,
-            LLMProviderExhausted,
             ConfigError,
             ExportError,
-            NotificationError,
             GitHubError,
+            LLMError,
+            LLMProviderExhausted,
+            NotificationError,
+            ParserError,
+            PipelineError,
+            RateLimitError,
+            ScraperError,
         )
 
         # All should be Exception subclasses
@@ -57,7 +56,7 @@ class TestExceptionHierarchy:
         assert isinstance(e2, PipelineError)
 
     def test_exceptions_catch_hierarchy(self) -> None:
-        from src.exceptions import BrowserError, ScraperError, PipelineError
+        from src.exceptions import BrowserError, PipelineError, ScraperError
 
         with pytest.raises(PipelineError):
             raise BrowserError("browser died")
@@ -133,7 +132,7 @@ class TestContentEdgeCases:
         assert result == {}
 
     def test_save_and_load_roundtrip(self, tmp_path: Path) -> None:
-        from src.automation.content import save_content_cache, load_content_cache
+        from src.automation.content import load_content_cache, save_content_cache
         from src.automation.models import ContentHash
 
         cache_path = tmp_path / "cache.json"
@@ -258,8 +257,8 @@ class TestReportingEdgeCases:
 
     @pytest.mark.asyncio
     async def test_generate_diff_report_no_meta(self) -> None:
-        from src.automation.reporting import generate_diff_report
         from src.automation.models import ReleaseComparison
+        from src.automation.reporting import generate_diff_report
 
         comparison = ReleaseComparison(
             current_name="Summer '26",
@@ -283,8 +282,8 @@ class TestReportingEdgeCases:
 
     @pytest.mark.asyncio
     async def test_generate_regression_report_no_regressions(self) -> None:
-        from src.automation.reporting import generate_regression_report
         from src.automation.models import ReleaseComparison
+        from src.automation.reporting import generate_regression_report
 
         comparison = ReleaseComparison(
             current_name="Summer '26",
@@ -392,7 +391,7 @@ class TestLLMServiceResilience:
     """Test LLM service timeout and retry behavior."""
 
     def _make_service(self, providers: list | None = None) -> Any:
-        from src.llm_service import LLMService, LLMProvider, CircuitBreakerConfig
+        from src.llm_service import CircuitBreakerConfig, LLMProvider, LLMService
 
         if providers is None:
             providers = [

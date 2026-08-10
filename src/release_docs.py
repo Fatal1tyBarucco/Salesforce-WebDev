@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -22,10 +22,10 @@ from .config import (
     ReleaseInfo,
 )
 from .feature_enricher import CategoryEnrichment
-from .i18n import generate_toggle_html
 from .generator import MarkdownGenerator
-from .translator import TranslatorService
+from .i18n import generate_toggle_html
 from .parser import FeatureImpactCategory, FeatureImpactEntry
+from .translator import TranslatorService
 
 if TYPE_CHECKING:
     from .impact_analyzer import ImpactReport
@@ -450,7 +450,7 @@ def _update_readme_single(
         "version": version,
         "total_features": total_features,
         "avg_confidence": round(avg_confidence, 3),
-        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "generated_at": datetime.now(tz=UTC).isoformat(),
         "categories": cat_list,
     }
 
@@ -473,7 +473,7 @@ def _update_release_history(release: ReleaseInfo, total_features: int, category_
         "release_id": release.release_id,
         "total_features": total_features,
         "category_count": category_count,
-        "processed_at": datetime.now(tz=timezone.utc).isoformat(),
+        "processed_at": datetime.now(tz=UTC).isoformat(),
     }
 
     existing_idx = next((i for i, h in enumerate(history) if h.get("slug") == release.slug), -1)

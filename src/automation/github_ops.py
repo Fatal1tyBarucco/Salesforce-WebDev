@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import subprocess
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 from ..exceptions import GitHubError
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def create_github_issue(
     release_name: str, total_features: int, categories: int
-) -> Optional[str]:
+) -> str | None:
     """Create a GitHub Issue for a new release detection."""
     body = f"""## Nova Release Detectada: {release_name}
 

@@ -13,18 +13,17 @@ import asyncio
 import logging
 import random
 import time
-
 import urllib.request
 from pathlib import Path
 from types import TracebackType
-from typing import Optional, cast
+from typing import ClassVar, Self, cast
 
-from playwright.async_api import async_playwright, Browser, Page, Playwright
 from playwright._impl._errors import TimeoutError as PlaywrightTimeout
+from playwright.async_api import Browser, Page, Playwright, async_playwright
 
-from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .cache_manager import CacheManager
 from .circuit_breaker import CircuitBreaker
+from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .exceptions import BrowserError, ScraperError
 
 logger = logging.getLogger(__name__)
@@ -93,7 +92,7 @@ class SalesforceReleaseScraper:
     """Fetches fully rendered HTML from Salesforce Help release notes URLs."""
 
     # Selectors to try, ordered by likelihood
-    CONTENT_SELECTORS: list[str] = [
+    CONTENT_SELECTORS: ClassVar[list[str]] = [
         "article",
         "#articleViewContent",
         ".release-notes-content",
@@ -103,22 +102,22 @@ class SalesforceReleaseScraper:
     ]
 
     def __init__(self) -> None:
-        self._playwright: Optional[Playwright] = None
-        self._browser: Optional[Browser] = None
+        self._playwright: Playwright | None = None
+        self._browser: Browser | None = None
         self._rate_limiter = RateLimiter()
         self._circuit_breaker = CircuitBreaker()
         self._cache = CacheManager(cache_dir=Path("cache"))
 
-    async def __aenter__(self) -> "SalesforceReleaseScraper":
+    async def __aenter__(self) -> Self:
         self._playwright = await async_playwright().start()
         self._browser = await self._playwright.chromium.launch(headless=True)
         return self
 
     async def __aexit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         if self._browser:
             await self._browser.close()
@@ -126,8 +125,8 @@ class SalesforceReleaseScraper:
             await self._playwright.stop()
 
     async def fetch_page(
-        self, url: str, page: Optional[Page] = None, *, expand_toc: bool = True
-    ) -> Optional[str]:
+        self, url: str, page: Page | None = None, *, expand_toc: bool = True
+    ) -> str | None:
         """Fetch fully rendered HTML content for a Salesforce Help URL.
 
         Args:
@@ -175,11 +174,11 @@ class SalesforceReleaseScraper:
     async def _fetch_with_playwright(
         self,
         url: str,
-        page: Optional[Page] = None,
+        page: Page | None = None,
         *,
         expand_toc: bool = True,
         return_text: bool = False,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Core Playwright fetch logic with resilient wait strategy.
 
         Args:
@@ -275,7 +274,7 @@ class SalesforceReleaseScraper:
         except (ScraperError, TimeoutError, PlaywrightTimeout, OSError) as e:
             logger.debug("ToC expansion skipped: %s", e)
 
-    async def extract_toc_html(self, url: str, page: Optional[Page] = None) -> Optional[str]:
+    async def extract_toc_html(self, url: str, page: Page | None = None) -> str | None:
         """Extract just the ToC HTML from a release notes page.
 
         Loads the page and returns the HTML of the navigation tree container.
@@ -313,7 +312,7 @@ class SalesforceReleaseScraper:
             if is_standalone and page is not None and self._browser:
                 await page.close()
 
-    async def _extract_toc_from_page(self, url: str, page: Page) -> Optional[str]:
+    async def _extract_toc_from_page(self, url: str, page: Page) -> str | None:
         """Navigate to URL and extract the ToC container HTML.
 
         Uses safe element access patterns — checks for None after query_selector
@@ -350,7 +349,7 @@ class SalesforceReleaseScraper:
         logger.warning("No ToC container found, returning full page HTML")
         return str(await page.content())
 
-    async def fetch_page_raw_text(self, url: str) -> Optional[str]:
+    async def fetch_page_raw_text(self, url: str) -> str | None:
         """Fetch page and return inner_text of body (for feature impact page).
 
         Uses CacheManager for TTL-based caching.
@@ -465,8 +464,9 @@ class SalesforceReleaseScraper:
         Returns:
             List of dicts with 'name' and 'docs_url' keys.
         """
-        from bs4 import BeautifulSoup
         from urllib.parse import urlparse
+
+        from bs4 import BeautifulSoup
 
         def _is_allowed_salesforce_href(href: str) -> bool:
             """Return True for relative links or absolute links to salesforce.com domains."""
@@ -559,7 +559,7 @@ class SalesforceReleaseScraper:
         self,
         urls: list[str],
         max_concurrent: int = 5,
-    ) -> list[Optional[str]]:
+    ) -> list[str | None]:
         """Fetch raw text from multiple URLs concurrently with rate limiting.
 
         Args:
@@ -571,7 +571,7 @@ class SalesforceReleaseScraper:
         """
         semaphore = asyncio.Semaphore(max_concurrent)
 
-        async def _fetch_one(url: str) -> Optional[str]:
+        async def _fetch_one(url: str) -> str | None:
             async with semaphore:
                 await self._rate_limiter.acquire()
                 return await self.fetch_page_raw_text(url)

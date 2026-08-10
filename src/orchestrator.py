@@ -73,9 +73,8 @@ class PipelineOrchestrator:
         assert impact_parser is not None
         assert generator is not None
 
-        if translator is None or llm is None:
-            if not self._config.dry_run:
-                logger.warning("LLM or translator not available — AI features disabled")
+        if (translator is None or llm is None) and not self._config.dry_run:
+            logger.warning("LLM or translator not available — AI features disabled")
 
         if self._config.dry_run:
             logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")

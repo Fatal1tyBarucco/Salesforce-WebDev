@@ -204,7 +204,7 @@ class FeatureClassifier:
         for line in content.split("\n"):
             line = line.strip()
             # Bullet points
-            if line.startswith("- ") or line.startswith("* "):
+            if line.startswith(("- ", "* ")):
                 text = line[2:].strip()
                 if len(text) > 5:
                     features.append(text)

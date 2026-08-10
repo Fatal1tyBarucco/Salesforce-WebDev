@@ -5,12 +5,11 @@ generates personalized digests, and supports multiple delivery channels.
 """
 
 from __future__ import annotations
-from typing import Any
-
 
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 from .config import RELEASES_DIR
 from .feature_classifier import FeatureClassifier
@@ -277,7 +276,7 @@ class SmartNotificationEngine:
         features: list[str] = []
         for line in content.split("\n"):
             line = line.strip()
-            if line.startswith("- ") or line.startswith("* "):
+            if line.startswith(("- ", "* ")):
                 text = line[2:].strip()
                 if len(text) > 10:
                     features.append(text)

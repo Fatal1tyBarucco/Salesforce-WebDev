@@ -7,10 +7,10 @@ based on content analysis and keyword matching.
 from __future__ import annotations
 
 import json
-from typing import Any
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 from .llm_service import LLMService
 

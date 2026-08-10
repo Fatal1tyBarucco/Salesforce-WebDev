@@ -1,11 +1,12 @@
 from bs4 import BeautifulSoup, Tag
+
+from src.config import TopicNode
 from src.parser import (
-    ReleaseNotesParser,
     FeatureImpactCategory,
     FeatureImpactEntry,
     FeatureImpactParser,
+    ReleaseNotesParser,
 )
-from src.config import TopicNode
 
 
 def test_extract_topic_tree_basic() -> None:

@@ -15,8 +15,8 @@ from src.feature_enricher import (
 )
 from src.release_summarizer import (
     CategoryHighlight,
-    ReleaseSummary,
     ReleaseSummarizer,
+    ReleaseSummary,
 )
 
 # ---------------------------------------------------------------------------

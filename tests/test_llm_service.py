@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from src.llm_service import LLMService, CircuitBreakerConfig, LLMProvider
+from src.llm_service import CircuitBreakerConfig, LLMProvider, LLMService
 
 
 @pytest.fixture

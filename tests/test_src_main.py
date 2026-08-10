@@ -1,15 +1,16 @@
-from unittest.mock import MagicMock, patch, AsyncMock
 import asyncio
 import sys
+from unittest.mock import AsyncMock, MagicMock, patch
+
+from src.config import ReleaseInfo
 from src.main import (
-    main,
-    _generate_release_files,
+    _find_existing_releases,
     _format_entry,
     _format_entry_table,
-    _find_existing_releases,
+    _generate_release_files,
     _slugify_category,
+    main,
 )
-from src.config import ReleaseInfo
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 
@@ -45,9 +46,10 @@ def test_format_entry_no_flags() -> None:
 
 
 def test_generate_release_files() -> None:
-    from src.parser import FeatureImpactParser
-    from pathlib import Path
     import tempfile
+    from pathlib import Path
+
+    from src.parser import FeatureImpactParser
 
     parser = FeatureImpactParser()
     sample_text = (
