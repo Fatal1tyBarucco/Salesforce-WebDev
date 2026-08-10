@@ -357,18 +357,20 @@ async def test_triage_release_low_risk(service) -> None:
     def mock_load(slug: str) -> Any:
         return meta
 
-    with patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load):
-        with patch.object(
+    with (
+        patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load),
+        patch.object(
             AIAutomationService, "calculate_quality_metrics", AsyncMock(return_value=None)
-        ):
-            with patch.object(
-                AIAutomationService,
-                "predict_next_release_impact",
-                AsyncMock(return_value=ImpactPrediction([], [], [], "baixo", "test")),
-            ):
-                result = await triage_release("test")
-                assert isinstance(result, TriageResult)
-                assert result.risk_level in ["mínimo", "baixo", "moderado", "alto"]
+        ),
+        patch.object(
+            AIAutomationService,
+            "predict_next_release_impact",
+            AsyncMock(return_value=ImpactPrediction([], [], [], "baixo", "test")),
+        ),
+    ):
+        result = await triage_release("test")
+        assert isinstance(result, TriageResult)
+        assert result.risk_level in ["mínimo", "baixo", "moderado", "alto"]
 
 
 @pytest.mark.asyncio

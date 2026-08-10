@@ -327,9 +327,11 @@ class TestLLMServiceCoverage:
     def test_llm_service_init_no_providers_raises(self) -> None:
         from src.llm_service import LLMService
 
-        with patch.dict("os.environ", {}, clear=True):
-            with pytest.raises(ValueError, match="No LLM providers configured"):
-                LLMService()
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            pytest.raises(ValueError, match="No LLM providers configured"),
+        ):
+            LLMService()
 
     def test_llm_service_init_with_providers(self) -> None:
         from src.llm_service import LLMProvider, LLMService

@@ -142,7 +142,7 @@ def parse_enrichment_response(response: str) -> EnrichmentOutput | None:
         logger.warning("Enrichment response is not valid JSON: %s", e)
         logger.debug("Raw response (first 500 chars): %s", response[:500])
         return None
-    except Exception as e:
+    except (ValueError, KeyError, TypeError) as e:
         logger.warning("Enrichment response validation failed: %s", e)
         if data and isinstance(data, dict):
             logger.debug("Parsed data keys: %s", list(data.keys()))

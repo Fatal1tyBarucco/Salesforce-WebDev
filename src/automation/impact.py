@@ -165,7 +165,7 @@ async def predict_next_release_impact(
                 if validated:
                     # Enrich summary with LLM insights
                     summary = f"{summary}\n\n💡 **Insights**: {validated.recommendation}"
-        except Exception:
+        except (ValueError, KeyError, TypeError):
             pass  # Fall back to heuristic summary
 
     return ImpactPrediction(

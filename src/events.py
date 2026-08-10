@@ -132,7 +132,7 @@ class EventBus:
             try:
                 await handler(event)
                 invoked += 1
-            except Exception as exc:
+            except (RuntimeError, ValueError, OSError, TypeError) as exc:
                 logger.error(
                     "[EVENT] Handler %s for '%s' failed: %s",
                     handler.__name__,

@@ -225,9 +225,11 @@ class TestMainCoverage:
         scraper = AsyncMock()
         known = [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")]
 
-        with patch("src.main._find_existing_releases", return_value=set()):
-            with patch("src.main.KNOWN_RELEASES", known):
-                result = await detect_new_release(scraper)
+        with (
+            patch("src.main._find_existing_releases", return_value=set()),
+            patch("src.main.KNOWN_RELEASES", known),
+        ):
+            result = await detect_new_release(scraper)
         assert result is not None
         assert result.slug == "summer_26"
 
@@ -239,9 +241,11 @@ class TestMainCoverage:
         scraper = AsyncMock()
         known = [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")]
 
-        with patch("src.main._find_existing_releases", return_value={"summer_26"}):
-            with patch("src.main.KNOWN_RELEASES", known):
-                result = await detect_new_release(scraper)
+        with (
+            patch("src.main._find_existing_releases", return_value={"summer_26"}),
+            patch("src.main.KNOWN_RELEASES", known),
+        ):
+            result = await detect_new_release(scraper)
         assert result is None
 
     @pytest.mark.asyncio
@@ -773,9 +777,11 @@ class TestScraperRetryCoverage:
                 return "<html><body>Empty</body></html>"
             return '<table><tr><td><a href="https://help.salesforce.com/s/articleView?id=test">Feature</a></td></tr></table>'
 
-        with patch.object(scraper, "_ensure_browser", return_value=True):
-            with patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch):
-                result = await scraper.fetch_features_with_links("http://example.com")
+        with (
+            patch.object(scraper, "_ensure_browser", return_value=True),
+            patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch),
+        ):
+            result = await scraper.fetch_features_with_links("http://example.com")
 
         assert len(result) == 1
         assert call_count >= 3
@@ -793,8 +799,10 @@ class TestScraperRetryCoverage:
         async def mock_fetch(url: str, return_text: bool = False):
             raise TimeoutError("Browser timeout")
 
-        with patch.object(scraper, "_ensure_browser", side_effect=mock_ensure):
-            with patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch):
-                result = await scraper.fetch_features_with_links("http://example.com")
+        with (
+            patch.object(scraper, "_ensure_browser", side_effect=mock_ensure),
+            patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch),
+        ):
+            result = await scraper.fetch_features_with_links("http://example.com")
 
         assert result == []

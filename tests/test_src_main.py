@@ -66,16 +66,19 @@ def test_generate_release_files() -> None:
     generator = MagicMock()
     translator = MagicMock()
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("src.main.RELEASES_DIR", tmpdir), patch("src.release_docs.RELEASES_DIR", tmpdir):
-            asyncio.run(_generate_release_files(release, categories, generator, translator))
+    with (
+        tempfile.TemporaryDirectory() as tmpdir,
+        patch("src.main.RELEASES_DIR", tmpdir),
+        patch("src.release_docs.RELEASES_DIR", tmpdir),
+    ):
+        asyncio.run(_generate_release_files(release, categories, generator, translator))
 
-            release_dir = Path(tmpdir) / "test_release"
-            assert release_dir.exists()
-            md_files = list(release_dir.rglob("*.md"))
-            assert len(md_files) >= 1
-            content = md_files[0].read_text()
-            assert "Feature One" in content
+        release_dir = Path(tmpdir) / "test_release"
+        assert release_dir.exists()
+        md_files = list(release_dir.rglob("*.md"))
+        assert len(md_files) >= 1
+        content = md_files[0].read_text()
+        assert "Feature One" in content
 
 
 @patch("src.main.setup_logging")

@@ -115,10 +115,12 @@ class TestLoadFeatures:
         d.mkdir()
         (d / "cat.md").write_text("## Cat\n\n- **Good Feature Here**\n")
 
-        with patch("src.dashboard.RELEASES_DIR", str(tmp_path)):
-            with patch("pathlib.Path.read_text", side_effect=OSError("perm")):
-                features = _load_features("test_release")
-                assert features == []
+        with (
+            patch("src.dashboard.RELEASES_DIR", str(tmp_path)),
+            patch("pathlib.Path.read_text", side_effect=OSError("perm")),
+        ):
+            features = _load_features("test_release")
+            assert features == []
 
     def test_skips_headers_and_tables(self, tmp_path: Path) -> None:
         """Skips lines starting with #, |, or empty lines."""

@@ -122,7 +122,7 @@ def parse_classification_response(response: str) -> ClassificationOutput | None:
     except json.JSONDecodeError as e:
         logger.warning("Classification response is not valid JSON: %s", e)
         return None
-    except Exception as e:
+    except (ValueError, KeyError, TypeError) as e:
         logger.warning("Classification response validation failed: %s", e)
         if data and isinstance(data, dict):
             logger.debug("Parsed data keys: %s", list(data.keys()))

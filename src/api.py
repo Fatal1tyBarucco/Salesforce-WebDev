@@ -506,7 +506,7 @@ class APIHandler(BaseHTTPRequestHandler):
         if path == "/releases":
             try:
                 validated = [ReleaseResponse.model_validate(m).model_dump() for m in metas]
-            except Exception:
+            except (ValueError, KeyError, TypeError):
                 validated = metas
             self._respond(200, {"releases": validated})
 
@@ -518,7 +518,7 @@ class APIHandler(BaseHTTPRequestHandler):
                 return
             try:
                 self._respond(200, ReleaseResponse.model_validate(meta).model_dump())
-            except Exception:
+            except (ValueError, KeyError, TypeError):
                 self._respond(200, meta)
 
         elif path.startswith("/releases/") and path.count("/") == 4:

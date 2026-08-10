@@ -171,5 +171,5 @@ def parse_report_response(response: str) -> ReportOutput | None:
 
         data = json.loads(clean)
         return ReportOutput.model_validate(data)
-    except Exception:
+    except (ValueError, KeyError, TypeError):
         return None

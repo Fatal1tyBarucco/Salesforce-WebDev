@@ -6,6 +6,7 @@ based on content analysis and keyword matching.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import subprocess
 from dataclasses import dataclass
@@ -161,25 +162,23 @@ class IssueTriager:
             return None
 
         try:
-            result = subprocess.run(
-                [
-                    "gh",
-                    "issue",
-                    "view",
-                    str(issue_number),
-                    "--repo",
-                    self._repo,
-                    "--json",
-                    "title,body,labels",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=10,
+            proc = await asyncio.create_subprocess_exec(
+                "gh",
+                "issue",
+                "view",
+                str(issue_number),
+                "--repo",
+                self._repo,
+                "--json",
+                "title,body,labels",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
             )
-            if result.returncode != 0:
+            stdout, _stderr = await asyncio.wait_for(proc.communicate(), timeout=10)
+            if proc.returncode != 0:
                 return None
 
-            data = json.loads(result.stdout)
+            data = json.loads(stdout.decode())
             title = data.get("title", "")
             body = data.get("body", "")
             labels = [label.get("name", "") for label in data.get("labels", [])]
@@ -219,6 +218,7 @@ class IssueTriager:
                     ],
                     capture_output=True,
                     timeout=10,
+                    check=False,
                 )
 
             # Add comment with reasoning
@@ -247,6 +247,7 @@ class IssueTriager:
                 ],
                 capture_output=True,
                 timeout=10,
+                check=False,
             )
 
             return True

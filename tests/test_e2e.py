@@ -140,25 +140,25 @@ class TestPipelineE2E:
         translator = AsyncMock()
         translator.translate.return_value = "Translated"
 
-        with patch("src.main.RELEASES_DIR", str(releases_dir)):
-            with patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen:
-                mock_gen.return_value = None
-                with (
-                    patch("src.main._update_readme_single"),
-                    patch(
-                        "src.feature_enricher.FeatureEnricher.enrich_release",
-                        new_callable=AsyncMock,
-                        return_value={},
-                    ),
-                ):
-                    result = await process_single_release(
-                        release=sample_release,
-                        scraper=scraper,
-                        impact_parser=impact_parser,
-                        generator=generator,
-                        translator=translator,
-                        dry_run=False,
-                    )
+        with (
+            patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen,
+            patch("src.main._update_readme_single"),
+            patch(
+                "src.feature_enricher.FeatureEnricher.enrich_release",
+                new_callable=AsyncMock,
+                return_value={},
+            ),
+        ):
+            mock_gen.return_value = None
+            result = await process_single_release(
+                release=sample_release,
+                scraper=scraper,
+                impact_parser=impact_parser,
+                generator=generator,
+                translator=translator,
+                dry_run=False,
+            )
 
         assert result is True
 

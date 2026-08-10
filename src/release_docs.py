@@ -163,11 +163,10 @@ def _update_badge(releases_to_process: list[ReleaseInfo]) -> None:
         meta_path = d / ".meta.json"
         if meta_path.exists():
             data = _json.loads(meta_path.read_text(encoding="utf-8"))
-            if data.get("categories"):
-                if latest_meta is None or data.get("release_id", 0) > latest_meta.get(
-                    "release_id", 0
-                ):
-                    latest_meta = data
+            if data.get("categories") and (
+                latest_meta is None or data.get("release_id", 0) > latest_meta.get("release_id", 0)
+            ):
+                latest_meta = data
 
     if not latest_meta:
         return

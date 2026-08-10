@@ -50,6 +50,7 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
             capture_output=True,
             text=True,
             timeout=30,
+            check=False,
         )
 
     try:

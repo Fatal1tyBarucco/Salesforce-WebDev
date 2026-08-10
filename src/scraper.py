@@ -233,7 +233,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, PlaywrightTimeout, Exception):
+        except (TimeoutError, PlaywrightTimeout):
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -621,7 +621,7 @@ class SalesforceReleaseScraper:
 
             try:
                 await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-            except (TimeoutError, PlaywrightTimeout, Exception):
+            except (TimeoutError, PlaywrightTimeout):
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:
@@ -661,7 +661,7 @@ class SalesforceReleaseScraper:
         logger.info("Downloading PDF: %s -> %s", url, dest)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            response = urllib.request.urlopen(req, timeout=30)
+            response = await asyncio.to_thread(urllib.request.urlopen, req, 30)
             data = response.read()
             dest.write_bytes(data)
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
