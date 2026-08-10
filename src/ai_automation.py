@@ -79,7 +79,7 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-async def load_release_meta(slug: str) -> Optional[dict[str, Any]]:
+def load_release_meta(slug: str) -> Optional[dict[str, Any]]:
     return AIAutomationService().load_release_meta(slug)
 
 
@@ -160,14 +160,14 @@ async def create_github_issue(
 async def create_release_issue(
     release_name: str, total_features: int, categories: int
 ) -> Optional[str]:
-    return await AIAutomationService().create_github_issue(release_name, total_features, categories)
+    return await create_github_issue(release_name, total_features, categories)
 
 
 async def _load_all_release_metas() -> list[dict[str, Any]]:
     return await AIAutomationService()._load_all_release_metas()
 
 
-async def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
+def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
     return AIAutomationService()._load_content_cache(cache_path)
 
 
