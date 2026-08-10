@@ -132,7 +132,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
 
         filter_report = asyncio.run(generate_filtered_notification_report("summer_26", "admin"))
         assert "Notificação Filtrada" in filter_report
-
+        assert isinstance(regressions, list)
         # Cross-feature verification
         comparison = asyncio.run(compare_releases("summer_26", "winter_26"))
         assert comparison.current_name == "Summer '26"
