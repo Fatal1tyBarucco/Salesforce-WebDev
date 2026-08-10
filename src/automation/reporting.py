@@ -6,7 +6,6 @@ and visual Markdown generators for stakeholder-ready reports.
 
 from __future__ import annotations
 
-import json
 from typing import Any, Optional
 
 from ..ai.generators.markdown import MarkdownGenerator
