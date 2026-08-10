@@ -65,7 +65,7 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         # Feature 1: AI Summary
         summary = asyncio.run(generate_ai_summary("summer_26", "winter_26"))
         assert summary.headline is not None
-        assert summary.overall_trend in {"crescimento", "estável", "queda", "indeterminado"}
+        assert summary.overall_trend in {"crescimento", "estável", "declínio"}
 
         summary_report = asyncio.run(generate_ai_summary_report("summer_26", "winter_26"))
         assert "Destaques" in summary_report

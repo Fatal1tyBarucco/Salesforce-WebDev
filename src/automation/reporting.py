@@ -21,11 +21,9 @@ from ..ai.prompts.validation import ReportOutput
 from .models import AISummary, QualityMetrics, Regression, ReleaseComparison
 
 
-def _get_releases_dir() -> "Path":  # type: ignore[name-defined]  # type: ignore[override]  # noqa: F821
+def _get_releases_dir():
     from pathlib import Path
-
     from ..config import RELEASES_DIR
-
     return Path(RELEASES_DIR)
 
 
