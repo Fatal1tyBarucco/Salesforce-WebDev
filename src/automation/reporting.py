@@ -215,7 +215,7 @@ async def generate_ai_summary(
 
     # Try Pydantic validation first
     validated = parse_report_response(result_text)
-    if validated:
+    except (ValueError, IndexError):
         return AISummary(
             headline=validated.headline,
             highlights=validated.highlights,
