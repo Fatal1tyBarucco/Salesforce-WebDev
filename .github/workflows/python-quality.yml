@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v7
 
       - name: Setup uv
         uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v7
 
       - name: Setup uv
         uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
