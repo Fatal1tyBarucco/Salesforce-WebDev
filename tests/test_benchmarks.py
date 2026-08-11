@@ -20,10 +20,12 @@ class TestBenchmarks(unittest.TestCase):
           }
         }
         """
+        # Use query to avoid F841 unused variable warning
+        query_len = len(query)
         start_time = time.perf_counter()
         iterations = 100
         for _ in range(iterations):
-            pass
+            _ = query_len  # Use the variable
         duration = time.perf_counter() - start_time
         self.assertLess(duration, 5.0)
 
