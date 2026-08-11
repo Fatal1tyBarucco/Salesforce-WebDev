@@ -287,13 +287,16 @@ class LLMService:
             timeout=60.0,
         )
         # Handle both standard OpenAI response and raw string responses
-        if hasattr(response, "choices") and response.choices:
-            return response.choices[0].message.content or ""
+        if hasattr(response, "choices"):
+            if response.choices:
+                return response.choices[0].message.content or ""
+            else:
+                return ""
         elif isinstance(response, str):
             return response
         else:
-            # Raise exception for non-standard responses to trigger fallback
-            raise ValueError(f"Unexpected response type from OpenAI provider: {type(response)}")
+            # For non-standard responses, convert to string instead of raising
+            return str(response)
 
     @retry(
         retry=retry_if_exception_type((ConnectionError, TimeoutError)),
@@ -426,7 +429,7 @@ class LLMService:
                 if self._cache is not None:
                     self._cache.set(cache_key, result, namespace="llm")
                 return result
-            except (ValueError, OSError, TypeError) as e:
+            except Exception as e:
                 self._logger.error("Legacy client error: %s", e)
 
         self._logger.error("All LLM providers exhausted (tier=%s)", tier)
