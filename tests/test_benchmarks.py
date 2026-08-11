@@ -1,6 +1,7 @@
 import time
 import unittest
 
+
 class TestBenchmarks(unittest.TestCase):
     def test_benchmark_graphql_parser(self) -> None:
         """Benchmark recursive descent GraphQL parser performance."""
@@ -47,6 +48,6 @@ class TestBenchmarks(unittest.TestCase):
         duration = time.perf_counter() - start_time
         self.assertLess(duration, 3.0)
 
+
 if __name__ == "__main__":
     unittest.main()
-
