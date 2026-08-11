@@ -291,7 +291,9 @@ class LLMService:
             return response.choices[0].message.content or ""
         elif isinstance(response, str):
             return response
-        return ""
+        else:
+            # Raise exception for non-standard responses to trigger fallback
+            raise ValueError(f"Unexpected response type from OpenAI provider: {type(response)}")
 
     @retry(
         retry=retry_if_exception_type((ConnectionError, TimeoutError)),
@@ -401,6 +403,11 @@ class LLMService:
                 continue
             except (ValueError, OSError, TypeError) as e:
                 self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except Exception as e:
+                # Catch-all for any other exceptions (including mocked ones in tests)
+                self._logger.error("Provider '%s' error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
 
