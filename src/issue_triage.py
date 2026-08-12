@@ -71,6 +71,11 @@ class IssueTriager:
         self._repo = repo
         self._llm = llm or LLMService()
 
+    @property
+    def repo(self) -> str | None:
+        """Return the repository."""
+        return self._repo
+
     async def triage_issue(
         self,
         title: str,
@@ -187,7 +192,7 @@ class IssueTriager:
             triage.issue_number = issue_number
             return triage
 
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
+        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError, asyncio.TimeoutError, Exception):
             return None
 
     def apply_triage(self, result: TriageResult) -> bool:
