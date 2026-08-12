@@ -255,6 +255,6 @@ class SalesforceAnalyzer:
                 apex_classes=apex_classes,
             )
 
-        except (OSError, ValueError, KeyError, TypeError) as e:
+        except Exception as e:
             logger.error("Failed to fetch metadata from org: %s", e)
             return OrgMetadata()
