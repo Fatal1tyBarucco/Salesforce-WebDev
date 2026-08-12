@@ -233,7 +233,8 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, PlaywrightTimeout):
+        except (TimeoutError, PlaywrightTimeout, Exception):
+            # Fallback: proceed without waiting for selector
             await page.wait_for_timeout(5000)
 
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
