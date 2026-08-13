@@ -43,7 +43,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.14"
+          python-version: "3.13"
 
       - name: Install dependencies
         run: pip install google-genai pydantic
@@ -216,8 +216,8 @@ jobs:
           ${EXPLANATION}
 
           ---
-          _This PR was generated automatically by the Auto-Healing Agent.
-          The fix will be validated by the agent-validation workflow._"
+          _This PR was generated automatically by the Auto-Healing Agent._
+          _The fix will be validated by the agent-validation workflow._"
 
           gh pr create \
             --title "🔧 Auto-Heal: ${SUMMARY}" \

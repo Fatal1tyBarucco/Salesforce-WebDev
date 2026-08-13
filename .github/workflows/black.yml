@@ -18,11 +18,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.14"
+          python-version: "3.13"
       - name: Install Black and Ruff
         run: pip install black ruff
       - name: Run Black Formatting
-        run: black --target-version py314 .
+        run: black --target-version py313 .
       - name: Run Ruff Linting with Auto-Fix
         run: ruff check --fix .
       - name: Commit & Push Changes
