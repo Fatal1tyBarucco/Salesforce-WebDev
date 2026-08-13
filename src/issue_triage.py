@@ -192,7 +192,13 @@ class IssueTriager:
             triage.issue_number = issue_number
             return triage
 
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError, asyncio.TimeoutError, Exception):
+        except (
+            subprocess.TimeoutExpired,
+            json.JSONDecodeError,
+            FileNotFoundError,
+            asyncio.TimeoutError,
+            Exception,
+        ):
             return None
 
     def apply_triage(self, result: TriageResult) -> bool:

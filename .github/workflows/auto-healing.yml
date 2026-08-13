@@ -11,14 +11,17 @@
 name: Auto-Healing Agent
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Python Quality"]
+    types:
+      - completed
 
 permissions:
   contents: write
   pull-requests: write
 
 concurrency:
-  group: auto-healing-${{ github.event.workflow_run.id }}
+  group: auto-healing-${{ github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: true
 
 jobs:
