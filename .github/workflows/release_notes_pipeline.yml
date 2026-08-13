@@ -15,6 +15,7 @@ name: 🚀 Salesforce Release Notes Pipeline
 permissions:
   contents: write
   issues: write
+  pages: write
 
 on:
   schedule:
@@ -40,7 +41,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PYTHON_VERSION: "3.14"
+  PYTHON_VERSION: "3.13"
   WORKING_DIR: "."
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
@@ -61,7 +62,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependências de desenvolvimento
-        run: uv sync --frozen --extra dev --group dev
+        run: uv sync --frozen --extra dev
 
       - name: Ruff — Linting e formatação
         run: uv run ruff check src/ --output-format=github
@@ -71,7 +72,7 @@ jobs:
 
       - name: Pytest — Testes automatizados
         run: uv run pytest tests/ -q --tb=short
-      
+
   extract:
     name: 📥 Extração e Geração de Artefatos
     runs-on: ubuntu-latest
@@ -96,6 +97,9 @@ jobs:
 
       - name: Instalar Playwright browsers
         run: uv run playwright install chromium
+
+      - name: Instalar GitHub CLI
+        run: sudo apt-get install -y gh
 
       - name: Configurar identidade do bot para commits
         run: |
@@ -136,7 +140,7 @@ jobs:
         id: git_status
         if: steps.params.outputs.dry_run == 'false'
         run: |
-          if [ -n "$(git status --porcelain releases/ README.md)" ]; then
+          if [ -n "$(git status --porcelain releases/ README.md README.en.md)" ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -153,13 +157,10 @@ jobs:
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
+          git pull origin ${{ github.ref_name }}
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          # Fetch latest remote, then force-with-lease push.
-          # The pipeline is the sole author of releases/ and README.md,
-          # so we can safely overwrite remote if a rebase would conflict.
-          git fetch origin ${{ github.ref_name }}
           git push --force-with-lease origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release
@@ -172,7 +173,6 @@ jobs:
         run: |
           SLUG="${{ steps.params.outputs.release_slug }}"
           RELEASE_DIR="releases/${SLUG}"
-          # Extract year and season from slug (e.g., summer_26 -> v2026-summer)
           YEAR="20$(echo ${SLUG} | grep -oP '\d+$')"
           SEASON=$(echo ${SLUG} | sed 's/_[0-9]*$//')
           TAG_NAME="v${YEAR}-${SEASON}"
@@ -187,7 +187,6 @@ jobs:
               CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
               RELEASE_ID=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin).get('release_id', 0))")
               
-              # Check if this is the latest release by comparing release_ids
               EXISTING_IDS=$(gh release list --json body -q '.[].body' 2>/dev/null | grep -oP 'release_id.*?(\d+)' | grep -oP '\d+' | sort -n || true)
               MAX_ID=$(echo "$EXISTING_IDS" | tail -1 || echo "0")
               if [ -z "$MAX_ID" ] || [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
