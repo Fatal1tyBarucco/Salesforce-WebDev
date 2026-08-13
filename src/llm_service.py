@@ -287,11 +287,16 @@ class LLMService:
             timeout=60.0,
         )
         # Handle both standard OpenAI response and raw string responses
+        if response is None:
+            raise ValueError("LLM provider returned empty response")
         if hasattr(response, "choices"):
             if response.choices:
-                return response.choices[0].message.content or ""
+                content: str = response.choices[0].message.content or ""
+                if not content:
+                    raise ValueError("LLM provider returned empty content")
+                return content
             else:
-                return ""
+                raise ValueError("LLM provider returned empty choices")
         elif isinstance(response, str):
             return response
         else:
