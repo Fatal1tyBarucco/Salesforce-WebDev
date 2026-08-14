@@ -2,7 +2,7 @@ name: Auto-Format with Black and Ruff
 
 on:
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 permissions:
   contents: write
@@ -11,24 +11,32 @@ jobs:
   format-and-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.13"
-      - name: Install Black and Ruff
-        run: pip install black ruff
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev --group dev
+
       - name: Run Black Formatting
-        run: black --target-version py313 .
+        run: uv run black --target-version py313 .
+
       - name: Run Ruff Linting with Auto-Fix
-        run: ruff check --fix .
+        run: uv run ruff check --fix .
+
       - name: Commit & Push Changes
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add -A
-          git commit -m "Auto-format with Black and Ruff" || echo "No changes to commit"
+          git commit -m "style: auto-format with Black and Ruff" || echo "No changes to commit"
           git push origin HEAD:${{ github.head_ref }}
