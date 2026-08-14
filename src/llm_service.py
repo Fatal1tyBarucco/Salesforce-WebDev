@@ -296,7 +296,7 @@ class LLMService:
                     raise ValueError("LLM provider returned empty content")
                 return content
             else:
-                raise ValueError("LLM provider returned empty choices")
+                return ""
         elif isinstance(response, str):
             return response
         else:

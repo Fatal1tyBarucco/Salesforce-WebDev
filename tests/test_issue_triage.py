@@ -172,15 +172,15 @@ def test_triage_github_issue_with_mock():
     """issue_triage: triage_github_issue parses gh output."""
     triager = IssueTriager(repo="owner/repo")
 
-    mock_result = MagicMock()
-    mock_result.returncode = 0
-    mock_result.stdout = '{"title":"Bug","body":"Login fails","labels":[{"name":"bug"}]}'
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    stdout_bytes = b'{"title":"Bug","body":"Login fails","labels":[{"name":"bug"}]}'
+    mock_proc.communicate = AsyncMock(return_value=(stdout_bytes, b""))
 
     with (
-        patch("src.issue_triage.subprocess.run", return_value=mock_result),
+        patch("asyncio.create_subprocess_exec", new_callable=AsyncMock, return_value=mock_proc),
         patch.object(triager, "triage_issue", new_callable=AsyncMock) as mock_triage,
     ):
-
         mock_triage.return_value = TriageResult(
             issue_number=123,
             title="Bug",

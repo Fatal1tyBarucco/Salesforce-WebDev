@@ -77,12 +77,9 @@ def test_load_cache_invalid_json(tmp_path: Path) -> None:
 def test_load_cache_os_error(tmp_path: Path) -> None:
     cache_file = tmp_path / ".translation_cache.json"
     cache_file.write_text('{"key": "value"}')
-    cache_file.chmod(0o000)
-    try:
+    with patch("pathlib.Path.read_text", side_effect=OSError("Permission denied")):
         service = TranslatorService(cache_dir=str(tmp_path))
         assert service._cache == {}
-    finally:
-        cache_file.chmod(0o644)
 
 
 def test_cache_expiration(tmp_path: Path) -> None:
