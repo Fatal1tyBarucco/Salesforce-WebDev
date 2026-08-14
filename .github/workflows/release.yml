@@ -140,24 +140,54 @@ jobs:
             for category_file, summary in summaries.items():
                 # Extract category name from file name (e.g., documentacao_legal.md -> Documentação Legal)
                 category_name = category_file.replace('_', ' ').title()
-                # Create markdown link
-                link = f'- [📄 {category_name}](./releases/{os.path.basename(\"$RELEASE_DIR\")}/pt_BR/{category_file}.md)'
+                # Extract count from meta.json
+                count = 0
+                try:
+                    with open('$META_FILE', 'r') as mf:
+                        meta = json.load(mf)
+                        for cat in meta.get('categories', []):
+                            if cat.get('name').lower().replace(' ', '_') == category_file:
+                                count = cat.get('count', 0)
+                                break
+                except:
+                    pass
+                # Create markdown link with count
+                link = f'- [📄 {category_name} ({count} recursos)](./releases/{os.path.basename(\"$RELEASE_DIR\")}/pt_BR/{category_file}.md)'
                 categories.append(link)
             
             print('\\n'.join(categories))
+            ")
+            
+            # Generate highlights from summaries
+            HIGHLIGHTS=$(python3 -c "
+            import json
+            with open('$SUMMARY_CACHE', 'r') as f:
+                data = json.load(f)
+            
+            summaries = data.get('summaries', {})
+            highlights = []
+            for category_file, summary in summaries.items():
+                # Extract first sentence as highlight
+                highlight = summary.split('.')[0] + '.' if '.' in summary else summary
+                highlights.append(f'- **{category_file.replace(\"_\", \" \").title()}**: {highlight}')
+            
+            print('\\n'.join(highlights[:5]))  # Top 5 highlights
             ")
           else
             # Fallback to basic summary
             EXECUTIVE_SUMMARY="Release ${SLUG} traz ${FEATURES} novos recursos distribuídos em ${CATEGORY_COUNT} categorias."
             CATEGORY_NOTES=""
+            HIGHLIGHTS=""
           fi
           
           # Escape newlines for GitHub Actions
           EXECUTIVE_SUMMARY_ESCAPED=$(echo "$EXECUTIVE_SUMMARY" | sed ':a;N;$!ba;s/\n/\\n/g')
           CATEGORY_NOTES_ESCAPED=$(echo "$CATEGORY_NOTES" | sed ':a;N;$!ba;s/\n/\\n/g')
+          HIGHLIGHTS_ESCAPED=$(echo "$HIGHLIGHTS" | sed ':a;N;$!ba;s/\n/\\n/g')
           
           echo "executive_summary=$EXECUTIVE_SUMMARY_ESCAPED" >> $GITHUB_OUTPUT
           echo "category_notes=$CATEGORY_NOTES_ESCAPED" >> $GITHUB_OUTPUT
+          echo "highlights=$HIGHLIGHTS_ESCAPED" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         if: |
@@ -177,10 +207,18 @@ jobs:
           EXISTING_IDS="${{ steps.get_existing_releases.outputs.existing_ids }}"
           EXECUTIVE_SUMMARY="${{ steps.generate_notes.outputs.executive_summary }}"
           CATEGORY_NOTES="${{ steps.generate_notes.outputs.category_notes }}"
+          HIGHLIGHTS="${{ steps.generate_notes.outputs.highlights }}"
 
           NL=$'\n'
           NOTES="## 📦 ${NAME}${NL}${NL}"
           NOTES+="${EXECUTIVE_SUMMARY}${NL}${NL}"
+          
+          # Add highlights if available
+          if [ -n "$HIGHLIGHTS" ]; then
+            NOTES+="### 🌟 Destaques${NL}${NL}"
+            NOTES+="${HIGHLIGHTS}${NL}${NL}"
+          fi
+          
           NOTES+="### 📊 Estatísticas${NL}"
           NOTES+="| Métrica | Valor |${NL}"
           NOTES+="| --- | --- |${NL}"
