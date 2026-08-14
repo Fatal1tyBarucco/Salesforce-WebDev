@@ -6,11 +6,13 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - "src/**"
+      - "!src/auto_healing/**"
       - "releases/**"
       - "README.md"
       - "README.en.md"
-      - "src/release_docs.py"
-      - "src/release_summarizer.py"
+      - "CHANGELOG.md"
+      - "pyproject.toml"
   workflow_dispatch:
 
 permissions:

@@ -78,10 +78,10 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
         - ReleaseInfo for the latest known release when the repo has no release artifacts yet.
         - ReleaseInfo for the next release when its page content differs from the current release.
         - None when no new release should be processed, including when:
-          * all known releases already exist in the repo,
-          * the next release slug already exists,
-          * page fetch/comparison fails,
-          * compared content indicates the next release is not yet available.
+            * all known releases already exist in the repo,
+            * the next release slug already exists,
+            * page fetch/comparison fails,
+            * compared content indicates the next release is not yet available.
     """
     existing_slugs = _find_existing_releases()
     known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)

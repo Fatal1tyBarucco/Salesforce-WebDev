@@ -26,6 +26,8 @@ healing = [
 docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.5.0,<10",
+    "mkdocstrings[python]>=0.27.0,<1",
+    "black>=24.0.0,<27",
 ]
 observability = [
     "prometheus-client>=0.20.0,<1",
