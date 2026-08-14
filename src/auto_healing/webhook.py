@@ -239,9 +239,7 @@ async def handle_workflow_run_webhook(request: Request) -> JSONResponse:
     return JSONResponse(
         content={
             "outcome": HealingOutcome.SKIPPED.value,
-            "reason": (
-                f"Branch '{head_branch}' is not the primary branch " "or an auto-fix branch."
-            ),
+            "reason": (f"Branch '{head_branch}' is not the primary branch or an auto-fix branch."),
         },
         status_code=200,
     )
@@ -343,9 +341,7 @@ async def _handle_primary_branch_failure(
         file_path=analysis.affected_file_path,
         corrected_code=analysis.corrected_code,
         commit_message=f"fix: {analysis.root_cause_summary[:72]}",
-        pull_request_title=(
-            f"🔧 Auto-Heal: {workflow_name} — " f"{analysis.root_cause_summary[:60]}"
-        ),
+        pull_request_title=(f"🔧 Auto-Heal: {workflow_name} — {analysis.root_cause_summary[:60]}"),
         pull_request_body=_build_pull_request_body(
             analysis=analysis,
             workflow_name=workflow_name,

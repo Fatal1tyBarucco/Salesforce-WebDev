@@ -930,9 +930,9 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
 
     # Check either mock was called with completed_with_errors
     all_calls = mock_status.call_args_list + mock_status2.call_args_list
-    assert any(
-        c == (("completed_with_errors",),) for c in all_calls
-    ), f"Expected 'completed_with_errors' but got: {all_calls}"
+    assert any(c == (("completed_with_errors",),) for c in all_calls), (
+        f"Expected 'completed_with_errors' but got: {all_calls}"
+    )
 
 
 # ============================================================

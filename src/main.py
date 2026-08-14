@@ -454,10 +454,10 @@ async def process_single_release(
             locale=locale,
             enrichments=enrichments,
         )
-    
+
     # Generate summary cache for professional release notes
     await generate_summary_cache(release, categories, llm)
-    
+
     _update_readme_single(release, categories)
     return True
 

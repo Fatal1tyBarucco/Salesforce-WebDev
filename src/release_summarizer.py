@@ -267,7 +267,9 @@ class ReleaseSummarizer:
         trend = (
             "expansão significativa"
             if total > 1000
-            else "atualização substancial" if total > 500 else "atualização focada"
+            else "atualização substancial"
+            if total > 500
+            else "atualização focada"
         )
 
         executive_summary = (

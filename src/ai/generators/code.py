@@ -68,7 +68,7 @@ def build_code_generation_prompt(
 **Feature:** {feature_name}
 **Description:** {feature_description}
 **Language:** {language}
-{f'**Context:** {context}' if context else ''}
+{f"**Context:** {context}" if context else ""}
 
 Requirements:
 - Include a clear title/comment at the top

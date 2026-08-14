@@ -18,6 +18,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import ClassVar, Self, cast
 
+from playwright._impl._errors import Error as PlaywrightError
 from playwright._impl._errors import TimeoutError as PlaywrightTimeout
 from playwright.async_api import Browser, Page, Playwright, async_playwright
 
@@ -233,7 +234,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, PlaywrightTimeout, Exception):
+        except (TimeoutError, PlaywrightTimeout, PlaywrightError):
             # Fallback: proceed without waiting for selector
             await page.wait_for_timeout(5000)
 

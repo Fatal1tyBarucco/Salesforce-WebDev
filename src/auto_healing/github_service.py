@@ -543,7 +543,7 @@ class GitHubService:
             repository.update_file(
                 path=file_path,
                 message=(
-                    f"{AGENT_COMMIT_MESSAGE_PREFIX} " f"incremental fix attempt #{attempt_number}"
+                    f"{AGENT_COMMIT_MESSAGE_PREFIX} incremental fix attempt #{attempt_number}"
                 ),
                 content=corrected_code,
                 sha=content_file.sha,

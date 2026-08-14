@@ -107,8 +107,7 @@ class IssueTriager:
         )
 
         user_prompt = (
-            f"Categories: {categories}\nPriorities: {priorities}\n\n"
-            f"Issue content:\n{combined_text}"
+            f"Categories: {categories}\nPriorities: {priorities}\n\nIssue content:\n{combined_text}"
         )
 
         llm_result = await self._llm.generate_text(user_prompt, system_prompt)
@@ -196,8 +195,10 @@ class IssueTriager:
             subprocess.TimeoutExpired,
             json.JSONDecodeError,
             FileNotFoundError,
-            asyncio.TimeoutError,
-            Exception,
+            TimeoutError,
+            OSError,
+            KeyError,
+            TypeError,
         ):
             return None
 

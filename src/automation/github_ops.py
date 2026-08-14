@@ -26,7 +26,7 @@ async def create_github_issue(
 A automação detectou uma nova release do Salesforce e processou os dados automaticamente.
 
 ### Arquivos Gerados
-- `releases/{release_name.lower().replace(' ', '_').replace("'", "")}/` — Diretório da release
+- `releases/{release_name.lower().replace(" ", "_").replace("'", "")}/` — Diretório da release
 - `CHANGELOG.md` — Changelog atualizado
 - `QUALITY_REPORT.md` — Relatório de qualidade
 

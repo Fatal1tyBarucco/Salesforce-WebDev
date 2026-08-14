@@ -413,8 +413,8 @@ class LLMService:
                 self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
-            except Exception as e:
-                # Catch-all for any other exceptions (including mocked ones in tests)
+            except (openai.OpenAIError, RuntimeError) as e:
+                # Catch remaining OpenAI errors and runtime failures
                 self._logger.error("Provider '%s' error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
@@ -434,7 +434,7 @@ class LLMService:
                 if self._cache is not None:
                     self._cache.set(cache_key, result, namespace="llm")
                 return result
-            except Exception as e:
+            except (openai.OpenAIError, OSError, RuntimeError) as e:
                 self._logger.error("Legacy client error: %s", e)
 
         self._logger.error("All LLM providers exhausted (tier=%s)", tier)
