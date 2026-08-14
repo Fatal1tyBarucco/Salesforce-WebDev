@@ -129,17 +129,18 @@ stateDiagram-v2
 
 ```python
 class WebhookPayload(BaseModel):
-    action: str                    # Deve ser "completed"
+    action: str  # Deve ser "completed"
     workflow_run: WorkflowRunPayload | None
 
+
 class WorkflowRunPayload(BaseModel):
-    id: int                        # ID único do workflow run
-    name: str                      # Nome do workflow
-    head_branch: str               # Branch que falhou
-    head_sha: str                  # Commit SHA
-    conclusion: str | None         # Deve ser "failure"
-    html_url: str                  # URL no GitHub
-    repository: dict[str, Any]     # Metadados do repositório
+    id: int  # ID único do workflow run
+    name: str  # Nome do workflow
+    head_branch: str  # Branch que falhou
+    head_sha: str  # Commit SHA
+    conclusion: str | None  # Deve ser "failure"
+    html_url: str  # URL no GitHub
+    repository: dict[str, Any]  # Metadados do repositório
 ```
 
 ### Roteamento
@@ -310,6 +311,7 @@ class WorkflowConclusion(str, Enum):
     CANCELLED = "cancelled"
     # ...
 
+
 class HealingOutcome(str, Enum):
     PULL_REQUEST_CREATED = "pull_request_created"
     INCREMENTAL_FIX_COMMITTED = "incremental_fix_committed"
@@ -326,6 +328,7 @@ class RootCauseAnalysis(BaseModel):
     affected_file_path: str
     corrected_code: str
     explanation: str
+
 
 class IncrementalCorrection(BaseModel):
     corrected_code: str

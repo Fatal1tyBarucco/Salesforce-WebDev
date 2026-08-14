@@ -206,7 +206,7 @@ async def _process_release_analytics(
 
 async def generate_summary_cache(
     release: ReleaseInfo,
-    categories: list[dict[str, Any]],
+    categories: list[Any],
     llm: LLMService | None = None,
 ) -> None:
     """Generate .summary_cache.json using the ReleaseSummarizer.
@@ -227,7 +227,7 @@ async def generate_summary_cache(
             summary = await summarizer.summarize(release.slug)
 
             if summary:
-                summary_cache = {
+                summary_cache: dict[str, Any] = {
                     "executive_summary": summary.executive_summary,
                     "category_summaries": summary.category_summaries,
                     "business_impact": summary.business_impact,
@@ -247,29 +247,35 @@ async def generate_summary_cache(
 
     # Fallback: Generate basic summaries from categories metadata
     try:
-        basic_summaries = {}
+        basic_summaries: dict[str, str] = {}
+        total = 0
         for category in categories:
-            category_name = category.get("name", "")
-            count = category.get("count", 0)
+            # Support both dict and FeatureImpactCategory
+            if isinstance(category, dict):
+                category_name = category.get("name", "")
+                count = category.get("count", 0)
+            else:
+                category_name = getattr(category, "name", "")
+                count = getattr(category, "total_features", 0)
+            total += count
             basic_summaries[category_name] = (
                 f"A categoria {category_name} reúne {count} recursos referentes a "
                 f"{category_name.lower()}. Esta categoria abrange melhorias e "
                 f"novas funcionalidades para {category_name.lower()}."
             )
-
-        total = sum(c.get("count", 0) for c in categories)
         executive_summary = (
             f"A release {release.name} representa uma atualização significativa "
             f"do ecossistema Salesforce, com {total} novos recursos "
             f"distribuídos em {len(categories)} categorias."
         )
 
-        summary_cache = {
+        fallback_cache: dict[str, Any] = {
             "executive_summary": executive_summary,
             "category_summaries": basic_summaries,
             "generated_at": str(Path.cwd()),
             "fallback": True,
         }
+        summary_cache = fallback_cache
 
         summary_cache_path.write_text(
             json.dumps(summary_cache, indent=2, ensure_ascii=False),

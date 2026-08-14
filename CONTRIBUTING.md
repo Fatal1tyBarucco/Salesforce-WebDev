@@ -123,13 +123,16 @@ tests/
 import pytest
 from src.meu_modulo import MinhaClasse
 
+
 @pytest.fixture
 def minha_fixture():
     return MinhaClasse()
 
+
 def test_funcionalidade(minha_fixture):
     resultado = minha_fixture.metodo()
     assert resultado == "esperado"
+
 
 @pytest.mark.asyncio
 async def test_async():
@@ -154,6 +157,7 @@ def test_com_mock(mock_llm_service):
 # ✅ Correto
 def calcular_total(items: list[dict[str, int]]) -> int:
     return sum(item["count"] for item in items)
+
 
 # ❌ Errado
 def calcular_total(items):

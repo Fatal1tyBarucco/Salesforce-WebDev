@@ -13,14 +13,15 @@ O método `_generate_openapi_spec()` em `src/api.py` tinha **209 linhas** de esp
 def _generate_openapi_spec() -> dict[str, Any]:
     return {
         "openapi": "3.0.3",
-        "info": { ... },
-        "paths": { ... },  # 209 linhas
+        "info": {...},
+        "paths": {...},  # 209 linhas
     }
 ```
 
 **Depois:**
 ```python
 _OPENAPI_SPEC_PATH = Path(__file__).parent / "openapi_spec.json"
+
 
 def _generate_openapi_spec() -> dict[str, Any]:
     return json.loads(_OPENAPI_SPEC_PATH.read_text(encoding="utf-8"))
