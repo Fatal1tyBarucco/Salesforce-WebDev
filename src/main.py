@@ -209,60 +209,68 @@ async def generate_summary_cache(
     categories: list[dict[str, Any]],
     llm: LLMService | None = None,
 ) -> None:
-    """Generate .summary_cache.json with AI or fallback to basic summaries."""
+    """Generate .summary_cache.json using the ReleaseSummarizer.
+
+    Uses the existing ReleaseSummarizer (LLM-powered) to generate
+    professional executive summaries and per-category breakdowns.
+    Falls back to metadata-based summaries when LLM is unavailable.
+    """
     release_dir = Path(RELEASES_DIR) / release.slug
     summary_cache_path = release_dir / ".summary_cache.json"
-    
-    # Try to generate AI summaries if LLM is available
+
+    # Try AI-powered summarization via ReleaseSummarizer
     if llm is not None:
         try:
-            from .ai_summarizer import AIReleaseSummarizer
-            
-            summarizer = AIReleaseSummarizer(llm=llm)
-            executive_summary = await summarizer.generate_executive_summary(release.slug, release.name)
-            category_summaries = await summarizer.generate_category_summaries(release.slug, categories)
-            
-            summary_cache = {
-                "executive_summary": executive_summary,
-                "summaries": category_summaries,
-                "generated_at": str(Path(".").resolve()),
-            }
-            
-            summary_cache_path.write_text(
-                json.dumps(summary_cache, indent=2, ensure_ascii=False),
-                encoding="utf-8",
-            )
-            logger.info("AI-generated summary cache saved to %s", summary_cache_path)
-            return
-        except (LLMError, OSError) as e:
+            from .release_summarizer import ReleaseSummarizer
+
+            summarizer = ReleaseSummarizer(base_dir=str(RELEASES_DIR), llm=llm)
+            summary = await summarizer.summarize(release.slug)
+
+            if summary:
+                summary_cache = {
+                    "executive_summary": summary.executive_summary,
+                    "category_summaries": summary.category_summaries,
+                    "business_impact": summary.business_impact,
+                    "strategic_themes": summary.strategic_themes,
+                    "migration_notes": summary.migration_notes,
+                    "generated_at": str(Path(".").resolve()),
+                }
+
+                summary_cache_path.write_text(
+                    json.dumps(summary_cache, indent=2, ensure_ascii=False),
+                    encoding="utf-8",
+                )
+                logger.info("AI-generated summary cache saved to %s", summary_cache_path)
+                return
+        except (LLMError, OSError, ImportError) as e:
             logger.warning("AI summary generation failed: %s", e)
-    
-    # Fallback: Generate basic summaries from categories
+
+    # Fallback: Generate basic summaries from categories metadata
     try:
         basic_summaries = {}
         for category in categories:
             category_name = category.get("name", "")
             count = category.get("count", 0)
-            basic_summaries[f"{_slugify_category(category_name)}"] = (
+            basic_summaries[category_name] = (
                 f"A categoria {category_name} reúne {count} recursos referentes a "
                 f"{category_name.lower()}. Esta categoria abrange melhorias e "
                 f"novas funcionalidades para {category_name.lower()}."
             )
-        
+
+        total = sum(c.get("count", 0) for c in categories)
         executive_summary = (
-            f"A release {release.name} representa um marco significativo na evolução "
-            f"da plataforma Salesforce, com um total de {sum(c.get('count', 0) for c in categories)} "
-            f"novos recursos distribuídos em {len(categories)} categorias. "
-            f"Esta release consolida a inteligência artificial como eixo central da estratégia Salesforce."
+            f"A release {release.name} representa uma atualização significativa "
+            f"do ecossistema Salesforce, com {total} novos recursos "
+            f"distribuídos em {len(categories)} categorias."
         )
-        
+
         summary_cache = {
             "executive_summary": executive_summary,
-            "summaries": basic_summaries,
+            "category_summaries": basic_summaries,
             "generated_at": str(Path(".").resolve()),
-            "fallback": True,  # Indicates this was a fallback, not AI-generated
+            "fallback": True,
         }
-        
+
         summary_cache_path.write_text(
             json.dumps(summary_cache, indent=2, ensure_ascii=False),
             encoding="utf-8",
