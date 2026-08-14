@@ -233,7 +233,7 @@ async def generate_summary_cache(
                     "business_impact": summary.business_impact,
                     "strategic_themes": summary.strategic_themes,
                     "migration_notes": summary.migration_notes,
-                    "generated_at": str(Path(".").resolve()),
+                    "generated_at": str(Path.cwd()),
                 }
 
                 summary_cache_path.write_text(
@@ -267,7 +267,7 @@ async def generate_summary_cache(
         summary_cache = {
             "executive_summary": executive_summary,
             "category_summaries": basic_summaries,
-            "generated_at": str(Path(".").resolve()),
+            "generated_at": str(Path.cwd()),
             "fallback": True,
         }
 
@@ -276,7 +276,7 @@ async def generate_summary_cache(
             encoding="utf-8",
         )
         logger.info("Fallback summary cache saved to %s", summary_cache_path)
-    except Exception as e:
+    except (OSError, TypeError, ValueError) as e:
         logger.error("Failed to generate fallback summary cache: %s", e)
 
 

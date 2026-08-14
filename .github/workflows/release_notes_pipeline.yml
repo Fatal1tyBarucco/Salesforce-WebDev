@@ -214,8 +214,9 @@ jobs:
               slugs_to_process = [release_slug]
           else:
               slugs_to_process = sorted([
-                  d.name for d in glob.Path('releases/*')
-                  if d.is_dir() and os.path.exists(os.path.join(d, '.meta.json'))
+                  d for d in os.listdir('releases')
+                  if os.path.isdir(os.path.join('releases', d))
+                  and os.path.exists(os.path.join('releases', d, '.meta.json'))
               ])
 
           for slug in slugs_to_process:
