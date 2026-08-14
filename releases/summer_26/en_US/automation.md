@@ -104,7 +104,7 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_tooling_api_changes.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_batch_management_changed_objects.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_business_rules_engine_intro.htm&language=pt_BR&release=262&type=5) |
-| **Enhance Control and Compliance with Decision Table Version Control** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_csv_decision_table_versions.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_csv_decision_table_versions.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_guardrails.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_decision_explainer_tracks_executions_against_context_record.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bre_local_list_variables_with_context_expression_set.htm&language=pt_BR&release=262&type=5) |

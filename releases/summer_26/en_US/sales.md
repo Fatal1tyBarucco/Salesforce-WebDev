@@ -45,7 +45,7 @@ O Sales Cloud agora é Agentforce Sales. Você pode ver referências ao Sales Cl
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_hvs_updated_engagement_data.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_hvs_performance_dashboard_retirement.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_pipeline_inspection.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_pipeline_inspection_activity_heatmap.htm&language=pt_BR&release=262&type=5) |
+| **Quickly Measure Relationship Health in Pipeline Inspection** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_pipeline_inspection_activity_heatmap.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_pipeline_inspection_contact_insights.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_customized_sales_methodologies.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sales_pipeline_inspection_deal_alerts.htm&language=pt_BR&release=262&type=5) |
