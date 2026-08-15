@@ -811,7 +811,7 @@ class TestSalesforceAnalyzerExtended:
         from src.ai.integrations.salesforce import SalesforceAnalyzer
 
         mock_sf = MagicMock()
-        mock_sf.query.side_effect = Exception("connection failed")
+        mock_sf.query.side_effect = lambda *args, **kwargs: Exception("connection failed")
         analyzer = SalesforceAnalyzer(sf_connection=mock_sf)
         result = await analyzer._fetch_metadata_from_org()
         assert result.custom_objects == []
