@@ -1,13 +1,13 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../pt_BR/partner_cloud.md" style="text-decoration:none;font-weight:bold;">🇧🇷 Português</a> &nbsp;|&nbsp; <a href="../en_US/partner_cloud.md" style="text-decoration:none;">🇺🇸 English</a></div>
 ## Partner Cloud
 
-> **1 recursos**
+> **2 recursos**
 
-Acelere o crescimento dos negócios expandindo a conectividade do parceiro e avançando a transparência de dados por meio do compartilhamento e sincronização de registros seguros. Proporcione experiências de cliente consistentes usando conteúdo de marketing em conformidade com a marca diretamente em sites do Experience Cloud.
+Categoria **Partner Cloud** com 1 recursos nesta release.
 
-| Recurso | Usuários | Admins | Config | Contato | Docs |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Configurar emails com marca combinada para parceiros no Salesforce Go** | ❌ | ❌ | ✅ | ❌ | |
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Configurar emails com marca combinada para parceiros no Salesforce Go** — _config_ | Recurso 'Configurar emails com marca combinada para parceiros no Salesforce Go' disponível na release. Disponibilidade: … | 🟢 baixo |
 
 ## 🎓 Módulos Trailhead Relacionados
 

@@ -3,16 +3,16 @@
 
 > **6 recursos**
 
-Notas de versão anteriores
+Categoria **Documentação legal** com 6 recursos nesta release.
 
-| Recurso | Usuários | Admins | Config | Contato | Docs |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Você está aqui:** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **AJUDA DO SALESFORCE** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **DOCUMENTAÇÃO** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **NOTAS DA VERSÃO DO SALESFORCE** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Como e quando os recursos ficam disponíveis?** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
-| **Alguns recursos afetam todos os usuários imediatamente após a ativação da versão. Considere a possibilidade de comunicar essas alterações com antecedência aos usuários para que eles estejam preparados. Outros recursos requerem ação direta de um administrador para que os usuários possam se beneficiar da nova funcionalidade.** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Você está aqui:** | Recurso 'Você está aqui:' disponível na release. | 🟢 baixo |
+| **AJUDA DO SALESFORCE** | Recurso 'AJUDA DO SALESFORCE' disponível na release. | 🟢 baixo |
+| **DOCUMENTAÇÃO** | Recurso 'DOCUMENTAÇÃO' disponível na release. | 🟢 baixo |
+| **NOTAS DA VERSÃO DO SALESFORCE** | Recurso 'NOTAS DA VERSÃO DO SALESFORCE' disponível na release. | 🟢 baixo |
+| **Como e quando os recursos ficam disponíveis?** | Recurso 'Como e quando os recursos ficam disponíveis?' disponível na release. | 🟢 baixo |
+| **Alguns recursos afetam todos os usuários imediatamente após a ativação da versão. Considere a possibilidade de comunicar essas alterações com antecedência aos usuários para que eles estejam preparados. Outros recursos requerem ação direta de um administrador para que os usuários possam se beneficiar da nova funcionalidade.** | Recurso 'Alguns recursos afetam todos os usuários imediatamente após a ativação da versão. Considere a possibilidade de … | 🟢 baixo |
 
 ## 🎓 Módulos Trailhead Relacionados
 
