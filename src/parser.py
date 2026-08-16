@@ -479,14 +479,13 @@ class FeatureImpactParser:
             if self._is_section_header(line):
                 existing = next((c for c in categories if c.name == line), None)
                 if existing:
-                    total_existing = len(existing.entries) + sum(
-                        len(e) for e in existing.subcategories.values()
-                    )
-                    if total_existing > 5:
-                        current_cat = None
-                        i += 1
-                        continue
-                    categories.remove(existing)
+                    # Merge duplicate section: resume the existing category so that
+                    # features following the repeated header are appended to it
+                    # instead of being lost or orphaned.
+                    current_cat = existing
+                    current_sub = ""
+                    i += 1
+                    continue
                 current_cat = FeatureImpactCategory(name=line)
                 categories.append(current_cat)
                 current_sub = ""
