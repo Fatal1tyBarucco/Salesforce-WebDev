@@ -883,8 +883,8 @@ def test_feature_impact_parser_subcategory() -> None:
     assert len(cats[0].entries) >= 1
 
 
-def test_feature_impact_parser_duplicate_header_skips() -> None:
-    """Duplicate section header with >5 entries is skipped."""
+def test_feature_impact_parser_duplicate_header_merges() -> None:
+    """Duplicate section header merges features into the existing category."""
     p = FeatureImpactParser()
     lines = ["Salesforce geral", "This is a long description for the section"]
     for i in range(10):
@@ -893,13 +893,13 @@ def test_feature_impact_parser_duplicate_header_skips() -> None:
     lines.append("Extra Feature\tYes")
     text = "\n".join(lines)
     cats = p.parse_text(text)
-    # The second "Salesforce geral" should be skipped
+    # The second "Salesforce geral" should merge: all features retained
     assert len(cats) == 1
-    assert len(cats[0].entries) == 10
+    assert len(cats[0].entries) == 11
 
 
-def test_feature_impact_parser_duplicate_header_removes() -> None:
-    """Duplicate section header with <=5 entries replaces existing."""
+def test_feature_impact_parser_duplicate_header_merges_small() -> None:
+    """Duplicate section header with few entries merges instead of discarding."""
     p = FeatureImpactParser()
     text = (
         "Salesforce geral\n"
@@ -910,8 +910,11 @@ def test_feature_impact_parser_duplicate_header_removes() -> None:
         "New Feature\tYes\n"
     )
     cats = p.parse_text(text)
-    # Should have one category with the second set
+    # Should have one category with features from both blocks merged
     assert len(cats) == 1
+    # Both feature entries are retained (the second long description is
+    # treated as a feature entry since description is only captured once).
+    assert len(cats[0].entries) >= 2
 
 
 def test_feature_impact_parser_parse_stats() -> None:
