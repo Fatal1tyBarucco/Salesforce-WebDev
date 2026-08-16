@@ -3,19 +3,19 @@
 
 > **9 features**
 
-Categoria **OmniStudio** com 9 recursos nesta release.
+Retomar OmniScripts entre usuários com salvamento aprimorado para mais tarde	Yes
 
-| Feature | Descrição | Impacto |
-| :--- | :--- | :---: |
-| **Otimizar a consistência da implementação com controle de versão do Data Mapper — _usuários_** | Recurso 'Otimizar a consistência da implementação com controle de versão do Data Mapper — _usuários_' disponível na rele… | 🟢 baixo |
-| **Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização — _usuários_** | Recurso 'Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização — _usuários_' … | 🟡 médio |
-| **Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio — _usuários_** | Recurso 'Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio — _usuários_… | 🟢 baixo |
-| **Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta) — _contato_** | Recurso 'Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta) — _contato_' disponível na release. | 🟡 médio |
-| **Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto) — _contato_** | Recurso 'Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto) — _contato_' disponível na release. | 🟢 baixo |
-| **Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce — _usuários_** | Recurso 'Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce — _usuários_' disponível… | 🟢 baixo |
-| **Abrir ações do FlexCard em uma nova janela ou guia do navegador — _usuários_** | Recurso 'Abrir ações do FlexCard em uma nova janela ou guia do navegador — _usuários_' disponível na release. | 🟡 médio |
-| **Aprimoramentos de acessibilidade no OmniStudio** | Recurso 'Aprimoramentos de acessibilidade no OmniStudio' disponível na release. | 🟢 baixo |
-| **Versões secundárias do OmniStudio — _contato_** | Recurso 'Versões secundárias do OmniStudio — _contato_' disponível na release. | 🟢 baixo |
+| Feature | Users | Admins | Config | Contact | Docs |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Not Found** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Related Trailhead Modules
 

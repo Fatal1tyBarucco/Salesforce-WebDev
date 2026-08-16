@@ -1,14 +1,13 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/partner-cloud.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/partner-cloud.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Partner Cloud
 
-> **2 features**
+> **1 features**
 
 Acelere o crescimento dos negócios expandindo a conectividade do parceiro e avançando a transparência de dados por meio do compartilhamento e sincronização de registros seguros. Proporcione experiências de cliente consistentes usando conteúdo de marketing em conformidade com a marca diretamente em sites do Experience Cloud.
 
 | Feature | Users | Admins | Config | Contact | Docs |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_pc_co_branded_emails_for_partners_on_go.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_pc_partner_deal_reg_psa.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ❌ | ✅ | ❌ | |
 
 ## 🎓 Related Trailhead Modules
 

@@ -169,6 +169,7 @@ jobs:
           steps.git_status.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
           python3 << 'PYEOF'
           import json, os, re, subprocess, glob
@@ -309,8 +310,6 @@ jobs:
                   print(f'  ❌ Failed: {r.stderr.strip()}')
 
           PYEOF
-        env:
-          RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
 
       - name: Gerar sumário do pipeline
         if: always()

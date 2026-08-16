@@ -18,14 +18,118 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 
 | Technology / Tool | Description | Pipeline Status |
 | :--- | :--- | :---: |
-| 🐍 **Python 3.12+** | Ambiente de execução principal | `Conforme` |
+| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |
 | 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |
-| 🧪 **Pytest** | Suíte de testes unitários automatizados | `700+ testes` |
+| 🧪 **Pytest** | Suíte de testes unitários automatizados | `450+ testes` |
 | 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
 | ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |
 | 📦 **uv** | Gerenciamento de dependências com lock file determinístico | `Ativo` |
 
 ---
+
+## 📖 Overview
+
+Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart LR
+    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
+    B -->|DOM Parsing| C[parser.py]
+    C -->|Feature Impact| D[generator.py]
+    D -->|Markdown| E[releases/]
+    D -->|Update| F[README.md]
+    E -->|Jekyll| G[GitHub Pages]
+    F -->|Jekyll| G
+
+    B -->|Retry + Circuit Breaker| H{Resilience Layer}
+    H -->|Cache Hit| I[cache/]
+    H -->|Cache Miss| A
+```
+
+**Princípios de Design:**
+* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
+* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
+* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
+
+## ⚙️ Pré-requisitos e Instalação
+
+Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
+
+```bash
+# Instale o uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone e instale
+git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
+cd Salesforce-WebDev
+uv sync
+
+# Instale browsers do Playwright
+uv run playwright install chromium
+```
+
+## 🚀 Uso e Execução
+
+```bash
+# Executar pipeline completo
+uv run python -m src.main
+
+# Executar release específica
+uv run python -m src.main --release summer_26
+
+# Dry run (sem escrever arquivos)
+uv run python -m src.main --dry-run
+```
+
+## 🛡️ Governança e Resiliência
+
+| Componente | Configuração | Description |
+| :--- | :--- | :--- |
+| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
+| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
+| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
+| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
+
+## 🧪 Testes e Qualidade
+
+```bash
+# Executar testes
+uv run pytest tests/
+
+# Com cobertura
+uv run pytest tests/ --cov=src --cov-report=term-missing
+
+# Quality gate (ordem CI)
+uv run ruff check src/
+uv run black --check src/
+uv run mypy src/
+```
+
+**Meta:** Cobertura >99%, zero erros de tipo, zero warnings de lint.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -44,24 +148,11 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 
 ### ☀️ Summer '26
 
-> 📊 **Executive Summary:** A release Summer '26 do Salesforce representa um marco significativo na evolução da plataforma, com um total de 1.434 novos recursos distribuídos em 22 categorias. Esta release consolida a inteligência artificial como eixo central da estratégia Salesforce, com o Agentforce se expandindo transversalmente por praticamente todas as áreas da plataforma — desde vendas e serviço até setores verticais e desenvolvimento.
-
-Destaques principais incluem a nova geração do Tableau Next, com integração profunda ao Data 360 e capacidades avançadas de análise em tempo real, incluindo incorporação de Lightning Web Components em dashboards e suporte a previsões de métricas nativas. O Flow Builder recebeu 118 recursos na categoria Automação, incluindo integração direta com Agentforce, suporte a linguagem natural para atualização de fluxos de tela e orquestração de fluxos como recurso padrão.
-
-O Data 360 expandiu significativamente com 72 recursos, incluindo novas capacidades de ingestão do Databricks, Microsoft Fabric OneLake e AWS Glue Data Catalog, além de modelos preditivos com novo runtime padrão e análise de sentimento em tempo real. A categoria Desenvolvimento trouxe 127 recursos com foco em Lightning Web Components API v67.0, Agentforce DX, MCP Servers e o novo Salesforce MultiFramework para aplicativos React.
-
-Setores verticais lidera em volume com 309 recursos, abrangendo automotivo, seguros, saúde, educação, manufatura, mídia, energia e setor público. O Gerenciamento de Receita avançou com 97 recursos incluindo novas capacidades de billing, pagamentos automatizados e orquestração dinâmica. A categoria Serviço trouxe 196 recursos com foco em centrais de contato Agentforce, IT Service Management e autoatendimento aprimorado.
-
-Segurança, identidade e privacidade consolidou 58 recursos com melhorias em Shield Platform Encryption, detecção de dados sensíveis e o novo Security Center com Agentforce. Marketing avançou com 64 recursos incluindo Marketing Cloud Next, inteligência de marketing e gerenciamento de fidelidade. A integração com Slack, MuleSoft e o aplicativo móvel também receberam atualizações relevantes.
-
-A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, onde Agentforce não é apenas um produto isolado mas uma camada de inteligência que permeia toda a experiência do cliente, desde o primeiro contato até o fidelização e suporte pós-venda.
+> 📊 **Executive Summary:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.
 
 
 <details>
 <summary><b>📄 Legal Documentation (6 features)</b></summary>
-
-
-> A categoria Documentação legal reúne 6 recursos referentes à estrutura documental da release Summer '26. Inclui informações sobre como e quando os recursos ficam disponíveis, a localização da Ajuda do Salesforce, documentação técnica e notas da versão. Esta categoria serve como referência para administradores e usuários que precisam entender os ciclos de disponibilidade dos recursos, destacando que algumas funcionalidades são ativadas imediatamente após o release, enquanto outras requerem ação direta do administrador.
 
 > 📄 Full details: [./releases/summer_26/en_US/documentacao_legal.md](./releases/summer_26/en_US/documentacao_legal.md)
 
@@ -71,19 +162,13 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Salesforce General (36 features)</b></summary>
 
-
-> Com 36 recursos, a categoria Salesforce geral abrange melhorias transversais à plataforma. Destaques incluem rotação mais frequente de certificados, preparação para IPv6, atualização de certificados mTLS e validação de domínios. O Chatter agora é desativado por padrão em novas organizações. Salesforce Foundations trouxe pontuação de pessoas para priorização de leads e rastreamento de web. O aplicativo Arquivar recebeu novas configurações e status de atividade. Melhorias de acessibilidade foram implementadas para zoom superior a 200%, seletores de data, popovers e listas de tarefas do Lightning.
-
 > 📄 Full details: [./releases/summer_26/en_US/salesforce_geral.md](./releases/summer_26/en_US/salesforce_geral.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Agentforce (1 features)</b></summary>
-
-
-> A categoria Agentforce apresenta 1 recurso nesta release, focado em capacidades de voz (Voice feature). O Agentforce continua sua expansão como camada de inteligência artificial transversal, com integrações profundas aparecendo em diversas outras categorias como Automação, Serviço, Field Service, Setores e Vendas. Os módulos Trailhead recomendados incluem Agentforce Basics, Build an Agent with Agentforce e Agentforce for Developers, cobrindo desde conceitos fundamentais até implementação avançada.
+<summary><b>📄 Agentforce (37 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
 
@@ -93,9 +178,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Data Analysis (58 features)</b></summary>
 
-
-> Com 58 recursos, a categoria Análise de dados apresenta inovações profundas lideradas pelo Tableau Next. Destaques incluem integração com Data 360 para análise de objetos do Data Lake, modos de dados configuráveis para otimização de performance, filtragem em múltiplos modelos de dados, previsões de métricas com séries temporais e o novo framework de modelos de aplicativo. O CRM Analytics recebeu melhorias em semijunções e antijunções SAQL, paletas de cores de marca para relatórios, incorporação de LWC em dashboards e exportação para Azure Data Lake. A segurança foi reforçada com OAuth para conexões externas e proteção de exportações Excel.
-
 > 📄 Full details: [./releases/summer_26/en_US/analise_de_dados.md](./releases/summer_26/en_US/analise_de_dados.md)
 
 </details>
@@ -103,9 +185,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Automation (118 features)</b></summary>
-
-
-> A categoria Automação é a segunda maior da release com 118 recursos, centrada no Flow Builder. Destaques incluem integração direta com Agentforce para criação de agentes, atualização de fluxos com linguagem natural (beta), operadores de data em lógica de decisão, orquestração de fluxos como recurso padrão e suporte a MuleSoft para fluxo com conectores de terceiros. O Marketing Cloud do Fluxo permite personalização de mensagens com dados integrados. O Mecanismo de regras de negócios ganhou controle de versão de tabelas de decisão e escalabilidade aprimorada. O Serviço de contexto e o Mecanismo de processamento de dados expandem as capacidades de transformação de dados em escala.
 
 > 📄 Full details: [./releases/summer_26/en_US/automacao.md](./releases/summer_26/en_US/automacao.md)
 
@@ -115,9 +194,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 OmniStudio (9 features)</b></summary>
 
-
-> Com 9 recursos, a categoria OmniStudio inclui controle de versão do Data Mapper para consistência de implementação, alternância entre designers padrão e gerenciado, migração para runtime padrão via Assistente de migração e o OmniStudio MCP (beta) para acelerar desenvolvimento de FlexCards. Melhorias de acessibilidade foram implementadas e ações do FlexCard agora podem ser abertas em novas janelas. O recurso de chamar fluxos iniciados automaticamente em FlexCards está em piloto.
-
 > 📄 Full details: [./releases/summer_26/en_US/omnistudio.md](./releases/summer_26/en_US/omnistudio.md)
 
 </details>
@@ -125,9 +201,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Customization (33 features)</b></summary>
-
-
-> A categoria Personalização reúne 33 recursos abrangendo AgentExchange com exploração de soluções MCP, Serviços externos com suporte a enumerações e arquivos binários, Globalização com suporte a novos fusos horários e traduções para catalão e basco. A Configuração com Agentforce está agora em disponibilidade geral para simplificar tarefas administrativas. O Compartilhamento ganhou opções de hierarquia de papéis para filas e atualização mais rápida de padrões organizacionais. Salesforce Connect suporta credenciais nomeadas entre organizações.
 
 > 📄 Full details: [./releases/summer_26/en_US/personalizacao.md](./releases/summer_26/en_US/personalizacao.md)
 
@@ -137,9 +210,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Data 360 (72 features)</b></summary>
 
-
-> Com 72 recursos, a categoria Data 360 expande significativamente as capacidades de dados unificados. Novos conectores incluem Databricks (GA), Microsoft Fabric OneLake (beta), AWS Glue Data Catalog e acesso em tempo real sem pipeline. O gráfico de dados ganhou limites maiores, streaming para atualizações rápidas e histórico de atualização. Modelos de IA agora incluem agrupamento, séries temporais, análise de sentimento e classificação de tópico. A extensão de código permite transformações personalizadas e o Vibes do Agentforce facilita criação com linguagem natural. Ativações suportam Amazon S3, Meta, Snapchat e plataformas de parceiros.
-
 > 📄 Full details: [./releases/summer_26/en_US/data_360.md](./releases/summer_26/en_US/data_360.md)
 
 </details>
@@ -147,9 +217,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Development (127 features)</b></summary>
-
-
-> A maior categoria com 127 recursos, Desenvolvimento cobre LWC API v67.0 com melhorias de performance, visualização de componentes no VS Code, gerentes de estado e suporte RTL. Lightning Out 2.0 agora suporta componentes Aura. Microfrontendas permitem integração de apps web externos. Apex ganhou strings multilinhas, operações de banco em modo de usuário por padrão e remoção de WITH SECURITY_ENFORCED. Agentforce DX inclui servidor MCP e o novo Vibes IDE. React Apps com MultiFramework estão em GA. APIs ganharam suporte a JWT para SOAP, consultas SQL do Apex e GraphQL aprimorado.
 
 > 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
 
@@ -159,9 +226,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Experience Cloud (14 features)</b></summary>
 
-
-> Com 14 recursos, a categoria Experience Cloud foca em sites Aura e LWR com experiências de autoatendimento assistido por IA, suporte a Chatter em novas organizações e verificação de malware em arquivos. Fluxos de tela ganharam tabelas de dados com registros relacionados, substituições de estilo e imagens de recurso estático. O Experience Builder recebeu grupos de botões de opção empilhados e suporte a upload de arquivos maiores. Segurança foi aprimorada com permissão para envio de emails por todos os usuários do site.
-
 > 📄 Full details: [./releases/summer_26/en_US/experience_cloud.md](./releases/summer_26/en_US/experience_cloud.md)
 
 </details>
@@ -169,9 +233,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Field Service (48 features)</b></summary>
-
-
-> A categoria Field Service apresenta 48 recursos com foco em Agentforce para agendamento autônomo, incluindo criação de agentes no novo Agentforce Builder, alcance por email e WhatsApp e Employee Agent para gestão de compromissos. O novo console de agendamento transforma a experiência de despacho. Insights móveis (beta) impulsionam eficiência operacional. Captura de dados ganhou fluxos pré-preenchidos com repetidores e personalização de estilo. Mapas GIS nativos melhoram precisão de local. O Assistente remoto visual suporta sessões seguras multi-app via Omni-Channel.
 
 > 📄 Full details: [./releases/summer_26/en_US/field_service.md](./releases/summer_26/en_US/field_service.md)
 
@@ -181,9 +242,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Hyperforce (3 features)</b></summary>
 
-
-> Com 3 recursos, a categoria Hyperforce expande o acesso ao Salesforce em mais regiões geográficas, adiciona novos produtos e recursos na Defesa do Government Cloud e aprimora a continuidade avançada entre regiões com objetivos de recuperação mais rápidos. Esta infraestrutura global continua sendo fundamental para a escalabilidade e resiliência da plataforma.
-
 > 📄 Full details: [./releases/summer_26/en_US/hyperforce.md](./releases/summer_26/en_US/hyperforce.md)
 
 </details>
@@ -191,9 +249,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Industries (309 features)</b></summary>
-
-
-> A maior categoria da release com 309 recursos, Setores abrange verticals completos. Automotive inclui Agentforce para gestão de garantia, finanças automotivas e validação de documentos com IA. Educação trouxe agentes de recrutamento, planejamento financeiro e pesquisa de cursos. Serviços Financeiros inclui banking, digital lending e hierarquias flexíveis. Saúde cobriu autorização prévia, gerenciamento de cuidados e Home Health. Seguros abrange administração de apólices, reclamações e corretagem. Life Sciences inclui planejamento de engajamento e inteligência de conteúdo. Manufacturing, mídia, energia, setor público e sem fins lucrativos também receberam atualizações significativas.
 
 > 📄 Full details: [./releases/summer_26/en_US/setores.md](./releases/summer_26/en_US/setores.md)
 
@@ -203,9 +258,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Marketing (64 features)</b></summary>
 
-
-> Com 64 recursos, a categoria Marketing apresenta o Marketing Cloud Next com criação de público, conteúdo e campanhas. Account Engagement simplifica gerenciamento de consentimento e sincronização de campanhas. Marketing Cloud Engagement organiza jornadas e otimiza WhatsApp com rastreamento de anúncio. Inteligência de marketing unifica dados para visibilidade completa com Agentforce. Personalização do Salesforce inclui campanhas e gráfico de perfil. Gerenciamento de fidelidade ganhou moedas baseadas em atividade, Google Wallet e painéis Tableau Next. Promoções globais e marketing de indicação completam a categoria.
-
 > 📄 Full details: [./releases/summer_26/en_US/marketing.md](./releases/summer_26/en_US/marketing.md)
 
 </details>
@@ -213,9 +265,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 MuleSoft (8 features)</b></summary>
-
-
-> Com 8 recursos, a categoria MuleSoft foca no Catálogo de API para Salesforce com mapeamento de agentes e modelos de prompts para ferramentas do servidor MCP. Servidores MCP do MuleSoft podem ser trazidos ao catálogo de API (GA) e descobertos manualmente. APIs de consulta nomeadas são visualizadas no catálogo com ações ativáveis. A Inteligência de integração do MuleSoft aprimora a conectividade entre sistemas.
 
 > 📄 Full details: [./releases/summer_26/en_US/mulesoft.md](./releases/summer_26/en_US/mulesoft.md)
 
@@ -225,19 +274,13 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Mobile App (17 features)</b></summary>
 
-
-> A categoria Aplicativo móvel reúne 17 recursos incluindo personalização da página inicial (beta), transcrição de IA móvel para reuniões presenciais e a nova interface Liquid Glass. O login por email é agora padrão e a opção Login para administrador garante acesso seguro. Mobile Publisher suporta renomeação e arquivamento de projetos. Agentforce Voice e React Native integram IA ao aplicativo móvel, com personalização via tipos do Lightning.
-
 > 📄 Full details: [./releases/summer_26/en_US/aplicativo_movel.md](./releases/summer_26/en_US/aplicativo_movel.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Partner Cloud (100 features)</b></summary>
-
-
-> Com 100 recursos, a categoria Partner Cloud consolida funcionalidades de Revenue Cloud para parceiros, incluindo catálogo de produtos com variações, precificação com tabelas de decisão CSV, configurador de produto com restrições de rampa, gerenciamento de transações com clonagem de cotações e Advanced Approvals com Slack. O Orquestrador de receita dinâmica suporta negócios de vários anos. Faturamento inclui central de liquidações, agendas de marco e reembolsos automatizados. Salesforce Contracts e Geração de documentos completam a oferta.
+<summary><b>📄 Partner Cloud (1 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/partner_cloud.md](./releases/summer_26/en_US/partner_cloud.md)
 
@@ -247,9 +290,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Revenue Management (97 features)</b></summary>
 
-
-> Com 97 recursos, Gerenciamento de receita abrange catálogo de produtos com variações e suporte decimal estendido, precificação com tabelas de decisão CSV, configurador com restrições de rampa e transações com editor de linha aprimorado. Advanced Approvals integra Slack e Fluxo. O Orquestrador dinâmica suporta ativos de cumprimento com conhecimento em tempo. Faturamento inclui extratos de conta, central de liquidações, pontuação de risco preditiva e agendas diárias. Pagamentos suportam agrupamento de faturas, reembolsos automatizados e links de Pagar agora. Agentforce auxilia em cobranças e consultas.
-
 > 📄 Full details: [./releases/summer_26/en_US/gerenciamento_de_receita.md](./releases/summer_26/en_US/gerenciamento_de_receita.md)
 
 </details>
@@ -257,9 +297,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 <details>
 <summary><b>📄 Sales (58 features)</b></summary>
-
-
-> Com 58 recursos, a categoria Vendas destaca agentes de IA para engajamento com disponibilidade de calendário de grupo, transferência de agente e qualificação de contatos. Gerenciamento de vendas inclui resumos gerados por IA e controle de campos autônomos. O aplicativo Agentforce Sales em Gemini (beta) permite gestão direta no Google. Einstein Conversation Insights move dados para a plataforma nativa com suporte a Gong. Planejamento de vendas moderniza interface de territórios com metas de moeda e quantidade. Captura de atividades do Einstein e integração com Outlook recebem atualizações significativas.
 
 > 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
 
@@ -269,9 +306,6 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Salesforce Slack Integrations (2 features)</b></summary>
 
-
-> Com apenas 2 recursos, esta categoria oferece colaboração habilitada pelo Slack em novas organizações do Salesforce e acesso a canais do Salesforce no painel do Slack. Estas integrações continuam fortalecendo a ponte entre comunicação em tempo real e dados do CRM.
-
 > 📄 Full details: [./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md)
 
 </details>
@@ -280,19 +314,13 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 <details>
 <summary><b>📄 Security, Identity & Privacy (58 features)</b></summary>
 
-
-> Com 58 recursos, esta categoria abrange aprimoramentos de segurança com rotação de certificados e preparação para IPv6. Backup e recuperação incluem dados na Índia (GA), backups sob demanda e cancelamento de backups. Gerenciamento de identidade cobre alterações de login, ACR no histórico, descontinuação do OAuth password flow e SAML aprimorado. Salesforce Shield expande detecção de dados com fragmentos confidenciais, campos criptografados e verificações recorrentes. O Security Center com Agentforce (beta) inclui triagem de anomalia, linhas do tempo de incidente e planos de remediação.
-
 > 📄 Full details: [./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md](./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Service (196 features)</b></summary>
-
-
-> Com 196 recursos, a maior categoria funcional foca em Centrais de contato Agentforce com roteamento de último representante, chamadas automatizadas e SLA-based. IT Service Management inclui gerenciamento de ativos de hardware, conformidade de TI e CMDB com descoberta de software macOS. Agentes de IA cobrem RH, email e autoatendimento. Gerenciamento de caso inclui mesclagem de duplicatas e descrições em rich text. Omni-Channel ganhou agendamento de itens e roteamento baseado em data. Experience Cloud recebeu Concierge, blocos dinâmicos e análise de autoatendimento. Integração com Microsoft Teams e IT Service do Agentforce completam a oferta.
+<summary><b>📄 Service (198 features)</b></summary>
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
 
@@ -771,246 +799,6 @@ Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de I
 </details>
 
 
-## 📖 Overview
-
-Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart LR
-    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
-    B -->|DOM Parsing| C[parser.py]
-    C -->|Feature Impact| D[generator.py]
-    D -->|Markdown| E[releases/]
-    D -->|Update| F[README.md]
-    E -->|Jekyll| G[GitHub Pages]
-    F -->|Jekyll| G
-
-    B -->|Retry + Circuit Breaker| H{Resilience Layer}
-    H -->|Cache Hit| I[cache/]
-    H -->|Cache Miss| A
-```
-
-**Princípios de Design:**
-* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
-* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
-* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
-
-## ⚙️ Pré-requisitos e Instalação
-
-Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
-
-```bash
-# Instale o uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone e instale
-git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
-cd Salesforce-WebDev
-uv sync
-
-# Instale browsers do Playwright
-uv run playwright install chromium
-
-# Instale hooks de pré-commit (ruff, black, mypy, pytest)
-uv run pre-commit install
-uv run pre-commit install --hook-type pre-push
-```
-
-## 🚀 Uso e Execução
-
-```bash
-# Executar pipeline completo
-uv run python -m src.main
-
-# Executar release específica
-uv run python -m src.main --release summer_26
-
-# Dry run (sem escrever arquivos)
-uv run python -m src.main --dry-run
-```
-
-## 🛡️ Governança e Resiliência
-
-| Componente | Configuração | Description |
-| :--- | :--- | :--- |
-| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
-| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
-| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
-| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
-
-## 🧪 Testes e Qualidade
-
-```bash
-# Executar testes
-uv run pytest tests/
-
-# Com cobertura
-uv run pytest tests/ --cov=src --cov-report=term-missing
-
-# Quality gate (ordem CI)
-uv run ruff check src/
-uv run black --check src/
-uv run mypy src/
-```
-
-**Meta:** Cobertura ≥95%, zero erros de tipo, zero warnings de lint.
-
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## 🛠️ Stack Tecnológico
 
 | Ferramenta | Uso no Projeto |
@@ -1018,7 +806,7 @@ uv run mypy src/
 | **GitHub Actions** | CI/CD: lint, typecheck, extração, deploy automático |
 | **uv** | Gerenciamento de dependências com lock file determinístico |
 | **Playwright** | Scraper headless para páginas SPA do Salesforce Help |
-| **Python 3.12+** | Linguagem principal com type hints completos |
+| **Python 3.14** | Linguagem principal com type hints completos |
 | **BeautifulSoup** | Parser HTML para extração de dados estruturados |
 | **Markdown** | Formato de saída para documentação técnica |
 | **MkDocs** | Portal técnico publicado no GitHub Pages |
@@ -1030,22 +818,18 @@ uv run mypy src/
 | Módulo | Responsabilidade |
 | :--- | :--- |
 | `src/main.py` | Orquestrador: detectar releases, extrair, parse, gerar, atualizar README |
-| `src/orchestrator.py` | Pipeline orchestrator com DI |
 | `src/scraper.py` | Playwright headless, circuit breaker, rate limiter, cache, download PDF |
 | `src/parser.py` | Extração de hierarquia ToC + tabela Feature Impact |
-| `src/llm_service.py` | Multi-provider LLM (OpenAI/Gemini/OpenCode/MiMoCode), fallback chain, rate limiting |
-| `src/feature_enricher.py` | Enriquecimento AI: descrições, impacto, audiência por feature |
-| `src/release_summarizer.py` | Resumos executivos com impacto no negócio e temas estratégicos |
-| `src/release_docs.py` | Geração de documentação enriquecida por release |
 | `src/generator.py` | Gera arquivos `.md` por categoria |
 | `src/ai_automation.py` | Comparação entre releases, detecção de regressões, quality metrics |
-| `src/events.py` | EventBus pub/sub assíncrono para desacoplamento |
-| `src/models.py` | Modelos Pydantic para validação de dados |
-| `src/api.py` | REST API + GraphQL + Autenticação (API Key) + OpenAPI |
+| `src/analytics.py` | Dashboard HTML com gráficos SVG |
+| `src/api.py` | REST API para acesso programático |
 | `src/notifications.py` | Email digest, Slack/Discord webhooks |
 | `src/dashboard.py` | Dashboard interativo com JS |
+| `src/workflow.py` | PR-based workflow com triage |
+| `src/salesforce.py` | Trailhead linking, org limits, sandbox readiness |
 | `src/health.py` | Health check (`/health`, `/ready`), Prometheus metrics (`/metrics`) |
-| `src/logger.py` | Logging estruturado com Sentry integration |
+| `src/logger.py` | Logging estruturado com correlation IDs |
 
 ---
 
@@ -1059,7 +843,7 @@ uv run mypy src/
    uv run ruff check src/
    uv run black --check src/
    uv run mypy src/
-   uv run pytest tests/ --cov=src --cov-fail-under=95
+   uv run pytest tests/ --cov=src --cov-fail-under=99
    ```
 5. Faça o commit: `git commit -m 'feat: descrição da alteração'`
 6. Envie: `git push origin feature/minha-feature`
