@@ -2,7 +2,7 @@
   "name": "Summer '26",
   "slug": "summer_26",
   "release_id": 262,
-  "total_features": 1434,
+  "total_features": 1373,
   "avg_confidence": 0.65,
   "generated_at": "2026-06-26T22:38:22.049705+00:00",
   "categories": [
@@ -16,7 +16,7 @@
     },
     {
       "name": "Agentforce",
-      "count": 1
+      "count": 37
     },
     {
       "name": "Análise de dados",
@@ -72,7 +72,7 @@
     },
     {
       "name": "Partner Cloud",
-      "count": 100
+      "count": 1
     },
     {
       "name": "Gerenciamento de receita",
@@ -92,7 +92,7 @@
     },
     {
       "name": "Serviço",
-      "count": 196
+      "count": 198
     }
   ]
 }
