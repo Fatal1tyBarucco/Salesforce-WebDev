@@ -3,13 +3,13 @@
 
 > **3 recursos**
 
-Categoria **Hyperforce** com 3 recursos nesta release.
+A Continuidade Trans-Região Advanced do Salesforce agora está disponível na UE, com tempos de recuperação mais rápidos em todas as regiões disponíveis. O Salesforce B2C Commerce está disponível no Hyperforce nos EUA. Vários produtos estão disponíveis recentemente para o Government Cloud Defense.
 
-| Recurso | Descrição | Impacto |
-| :--- | :--- | :---: |
-| **Acessar o Salesforce em mais regiões com o Hyperforce** — _config_ | Recurso 'Acessar o Salesforce em mais regiões com o Hyperforce' disponível na release. Disponibilidade: config. | 🟢 baixo |
-| **Novos produtos e recursos disponíveis na Defesa do Government Cloud** — _config_ | Recurso 'Novos produtos e recursos disponíveis na Defesa do Government Cloud' disponível na release. Disponibilidade: co… | 🟢 baixo |
-| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos** — _contato_ | Recurso 'A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos' disponível na release. Dis… | 🟢 baixo |
+| Recurso | Usuários | Admins | Config | Contato | Docs |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Acessar o Salesforce em mais regiões com o Hyperforce** | ❌ | ❌ | ✅ | ❌ | |
+| **Novos produtos e recursos disponíveis na Defesa do Government Cloud** | ❌ | ❌ | ✅ | ❌ | |
+| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Módulos Trailhead Relacionados
 
