@@ -418,6 +418,10 @@ class LLMService:
                 self._logger.error("Provider '%s' error: %s", provider.name, e)
                 self._record_failure(provider)
                 continue
+            except Exception as e:  # noqa: BLE001 - catch-all fallback to advance provider chain
+                self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
 
         # Legacy single-client fallback
         if self._client:
@@ -435,6 +439,8 @@ class LLMService:
                     self._cache.set(cache_key, result, namespace="llm")
                 return result
             except (openai.OpenAIError, OSError, RuntimeError) as e:
+                self._logger.error("Legacy client error: %s", e)
+            except Exception as e:  # noqa: BLE001 - catch-all for legacy client fallback
                 self._logger.error("Legacy client error: %s", e)
 
         self._logger.error("All LLM providers exhausted (tier=%s)", tier)
