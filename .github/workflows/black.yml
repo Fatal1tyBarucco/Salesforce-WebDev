@@ -5,16 +5,13 @@ on:
     branches: [main, master]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   format-and-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -33,10 +30,3 @@ jobs:
       - name: Run Ruff Linting with Auto-Fix
         run: uv run ruff check --fix .
 
-      - name: Commit & Push Changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add -A
-          git commit -m "style: auto-format with Black and Ruff" || echo "No changes to commit"
-          git push origin HEAD:${{ github.head_ref }}
