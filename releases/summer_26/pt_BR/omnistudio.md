@@ -3,19 +3,19 @@
 
 > **9 recursos**
 
-Categoria **OmniStudio** com 9 recursos nesta release.
+Retomar OmniScripts entre usuários com salvamento aprimorado para mais tarde	Yes
 
-| Recurso | Descrição | Impacto |
-| :--- | :--- | :---: |
-| **Otimizar a consistência da implementação com controle de versão do Data Mapper** — _usuários_ | Recurso 'Otimizar a consistência da implementação com controle de versão do Data Mapper' disponível na release. Disponib… | 🟢 baixo |
-| **Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização** — _usuários_ | Recurso 'Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização' disponível na… | 🟡 médio |
-| **Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio** — _usuários_ | Recurso 'Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio' disponível … | 🟢 baixo |
-| **Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta)** — _contato_ | Recurso 'Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta)' disponível na release. Disponibilidade: cont… | 🟡 médio |
-| **Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto)** — _contato_ | Recurso 'Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto)' disponível na release. Disponibili… | 🟢 baixo |
-| **Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce** — _usuários_ | Recurso 'Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce' disponível na release. … | 🟢 baixo |
-| **Abrir ações do FlexCard em uma nova janela ou guia do navegador** — _usuários_ | Recurso 'Abrir ações do FlexCard em uma nova janela ou guia do navegador' disponível na release. Disponibilidade: usuári… | 🟡 médio |
-| **Aprimoramentos de acessibilidade no OmniStudio** | Recurso 'Aprimoramentos de acessibilidade no OmniStudio' disponível na release. | 🟢 baixo |
-| **Versões secundárias do OmniStudio** — _contato_ | Recurso 'Versões secundárias do OmniStudio' disponível na release. Disponibilidade: contato. | 🟢 baixo |
+| Recurso | Usuários | Admins | Config | Contato | Docs |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Otimizar a consistência da implementação com controle de versão do Data Mapper** | ✅ | ❌ | ❌ | ❌ | |
+| **Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização** | ✅ | ❌ | ❌ | ❌ | |
+| **Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio** | ✅ | ❌ | ❌ | ❌ | |
+| **Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta)** | ❌ | ❌ | ❌ | ✅ | |
+| **Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto)** | ❌ | ❌ | ❌ | ✅ | |
+| **Obter orientação acionável para mensagens de erro do OmniStudio na Ajuda do Salesforce** | ✅ | ❌ | ❌ | ❌ | |
+| **Abrir ações do FlexCard em uma nova janela ou guia do navegador** | ✅ | ❌ | ❌ | ❌ | |
+| **Aprimoramentos de acessibilidade no OmniStudio** ⚠️ | ❌ | ❌ | ❌ | ❌ | |
+| **Versões secundárias do OmniStudio** | ❌ | ❌ | ❌ | ✅ | |
 
 ## 🎓 Módulos Trailhead Relacionados
 
