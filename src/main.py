@@ -227,21 +227,43 @@ async def generate_summary_cache(
             summary = await summarizer.summarize(release.slug)
 
             if summary:
-                summary_cache: dict[str, Any] = {
-                    "executive_summary": summary.executive_summary,
-                    "category_summaries": summary.category_summaries,
-                    "business_impact": summary.business_impact,
-                    "strategic_themes": summary.strategic_themes,
-                    "migration_notes": summary.migration_notes,
-                    "generated_at": str(Path.cwd()),
-                }
+                # Validate AI summary before writing to cache
+                exec_text = summary.executive_summary
+                total = summary.total_features
+                ai_is_valid = True
 
-                summary_cache_path.write_text(
-                    json.dumps(summary_cache, indent=2, ensure_ascii=False),
-                    encoding="utf-8",
-                )
-                logger.info("AI-generated summary cache saved to %s", summary_cache_path)
-                return
+                if total > 0 and "0 novos recursos" in exec_text:
+                    logger.warning(
+                        "AI summary validation failed: says '0 recursos' but meta has %d. "
+                        "Skipping AI cache, will use fallback.", total,
+                    )
+                    ai_is_valid = False
+
+                if len(summary.category_summaries) == 0 and total > 0:
+                    logger.warning(
+                        "AI summary validation failed: no category_summaries for %d features. "
+                        "Skipping AI cache, will use fallback.", total,
+                    )
+                    ai_is_valid = False
+
+                if ai_is_valid:
+                    summary_cache: dict[str, Any] = {
+                        "executive_summary": summary.executive_summary,
+                        "category_summaries": summary.category_summaries,
+                        "business_impact": summary.business_impact,
+                        "strategic_themes": summary.strategic_themes,
+                        "migration_notes": summary.migration_notes,
+                        "generated_at": str(Path.cwd()),
+                    }
+
+                    summary_cache_path.write_text(
+                        json.dumps(summary_cache, indent=2, ensure_ascii=False),
+                        encoding="utf-8",
+                    )
+                    logger.info("AI-generated summary cache saved to %s", summary_cache_path)
+                    return
+                else:
+                    logger.info("AI summary invalid, falling through to fallback")
         except (LLMError, OSError, ImportError) as e:
             logger.warning("AI summary generation failed: %s", e)
 

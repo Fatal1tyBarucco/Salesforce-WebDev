@@ -164,6 +164,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Documentação legal (6 recursos)</b></summary>
 
+
+> A categoria Documentação Legal da release Summer '26 contém 6 recursos dedicados a atualizações de termos, políticas e conformidade legal da plataforma Salesforce.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
 
 </details>
@@ -171,6 +174,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Salesforce geral (36 recursos)</b></summary>
+
+
+> A Salesforce Geral reúne 36 recursos com mudanças transversais. Destacam-se rotação de certificados, validação de domínio aprimorada, atualização de certificados mTLS e preparação para IPv6.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
 
@@ -180,6 +186,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Agentforce (37 recursos)</b></summary>
 
+
+> O Agentforce recebe 37 recursos com destaque para transcrição mais nítida e voz mais natural para Agentforce Voice, suporte a 24 idiomas (beta), observabilidade com análise de agente refinada (beta), interoperabilidade com MCP, e Políticas Agentforce para proteger conexões com APIs externas.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
 
 </details>
@@ -187,6 +196,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Análise de dados (58 recursos)</b></summary>
+
+
+> A Análise de Dados conta com 58 recursos. O Tableau Next recebe modelos de mercado, auditoria do Tableau (beta) para visibilidade de interações com o usuário, e recursos lançados por mês.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
 
@@ -196,6 +208,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Automação (118 recursos)</b></summary>
 
+
+> A Automação recebe 118 recursos com criação de agentes Agentforce diretamente no Flow Builder, lote para fluxos agendados, caminhos de falha recolhíveis, e localização simplificada de recursos no elemento de instruções de prompt.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
 
 </details>
@@ -203,6 +218,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 OmniStudio (9 recursos)</b></summary>
+
+
+> O OmniStudio oferece 9 recursos com controle de versão do Data Mapper, assistente de migração para tempo de execução padrão, e OmniStudio MCP (beta) para FlexCards.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
 
@@ -212,6 +230,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Personalização (33 recursos)</b></summary>
 
+
+> A Personalização oferece 33 recursos com exploração de servidores MCP no AgentExchange, adição de servidores MCP do registro Agentforce, e página de detalhes aprimorada para ativos do agente.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
 
 </details>
@@ -219,6 +240,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Data 360 (72 recursos)</b></summary>
+
+
+> O Data 360 apresenta 72 recursos com ingestão de dados do Databricks (GA), migração de metadados de governança de sandbox para produção, e orientação no aplicativo (beta).
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
 
@@ -228,6 +252,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
 
+
+> A Desenvolvimento reúne 127 recursos com LWC API v67.0, gerenciamento de estado para componentes (GA), visualização de componente no navegador e VS Code (GA), e hot reload aprimorado.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
 
 </details>
@@ -235,6 +262,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Experience Cloud (14 recursos)</b></summary>
+
+
+> O Experience Cloud conta com 14 recursos com verificação de malware em Salesforce Files (GA), arquivos de até 10 GB, e autoatendimento assistido por IA em sites Aura e LWR.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
 
@@ -244,6 +274,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Field Service (48 recursos)</b></summary>
 
+
+> O Field Service recebe 48 recursos com agentes de agendamento no novo Agentforce Builder, agendamento autônomo expandido para clientes potenciais, e alcance do agente para email.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
 
 </details>
@@ -251,6 +284,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Hyperforce (3 recursos)</b></summary>
+
+
+> A Hyperforce apresenta 3 recursos com acesso ao Salesforce em mais regiões, novos recursos na Defesa do Government Cloud, e continuidade avançada entre regiões.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
 
@@ -260,6 +296,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Setores (309 recursos)</b></summary>
 
+
+> A Setores domina com 309 recursos com gerenciamento de ciclo de vida de ativo, otimização de planilhas de horas, edição de planilhas via Agentforce, e entradas automáticas do cronograma ocioso.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
 
 </details>
@@ -267,6 +306,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Marketing (64 recursos)</b></summary>
+
+
+> O Marketing conta com 64 recursos via Marketing Cloud Next com criação de público, design de conteúdo, gerenciamento de campanhas, e alinhamento marketing-vendas.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
 
@@ -276,6 +318,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 MuleSoft (8 recursos)</b></summary>
 
+
+> O MuleSoft apresenta 8 recursos com servidores MCP no catálogo de API (GA), mapeamento de agentes para ferramentas MCP, e inteligência de integração.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
 
 </details>
@@ -283,6 +328,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
+
+
+> O Aplicativo Móvel evolui com 17 recursos com Transcrição de IA móvel, interface Liquid Glass, login por email, e personalização da página inicial (beta).
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
 
@@ -292,6 +340,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Partner Cloud (1 recursos)</b></summary>
 
+
+> O Partner Cloud oferece 1 recurso para configurar emails com marca combinada para parceiros no Salesforce Go.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
 
 </details>
@@ -299,6 +350,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
+
+
+> O Gerenciamento de Receita expande para 97 recursos com Orquestração Dunning, Descoberta baseada em regra, suporte decimal estendido, e variações de produto.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
 
@@ -308,6 +362,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Vendas (58 recursos)</b></summary>
 
+
+> Vendas consolida o Sales Cloud como Agentforce Sales com 58 recursos com calendário de grupo, transferência de agente, qualificação com Agentforce, e percepções de atividade do agente.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
@@ -315,6 +372,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
+
+
+> As Integrações para Slack oferecem 2 recursos com colaboração em novas organizações e canais do Salesforce no painel do Slack.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
 
@@ -324,6 +384,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
 
+
+> Segurança, Identidade e Privacidade reúne 58 recursos com backup e recuperação nativos (incluindo sob demanda na Índia), contato de incidente, e conteúdo de segurança unificado.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
@@ -331,6 +394,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Serviço (198 recursos)</b></summary>
+
+
+> O Serviço contém 198 recursos com Centro de Conexão do Agentforce, transferência de conversas Voice para representantes, retornos de chamada agendados, e portabilidade de número do Voice.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
