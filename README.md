@@ -152,7 +152,13 @@ uv run mypy src/
 
 ### ☀️ Summer '26
 
-> 📊 **Resumo Executivo:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.
+> 📊 **Resumo Executivo:** A release Summer '26 representa uma expansão significativa do ecossistema Salesforce, com 1.373 novos recursos distribuídos em 22 categorias — consolidando a plataforma como referência em CRM inteligente, automação empresarial e agentes de IA nativos.
+>
+> **Setores** lidera em volume com 309 recursos, demonstrando o compromisso da Salesforce com soluções verticais profundas para indústrias como automotivo, saúde, serviços financeiros, manufatura e varejo. **Serviço** acompanha com 198 recursos, transformando o Service Cloud em uma plataforma de atendimento mediada por agentes de IA com avanços significativos em voz, messaging e gerenciamento de serviço de TI. **Desenvolvimento** oferece 127 recursos para modernizar a experiência do desenvolvedor, incluindo novas capacidades no Lightning Web Components e ferramentas de depuração aprimoradas.
+>
+> O **Agentforce** continua sendo o eixo central da estratégia Salesforce, expandindo-se transversalmente por praticamente todas as áreas da plataforma. A **Automação** recebe 118 recursos com avanços significativos no Flow Builder, incluindo integração direta com Agentforce e orquestração de fluxos aprimorada. O **Gerenciamento de Receita** oferece 97 recursos para otimização de CPQ e billing.
+>
+> A **Data 360** consolida a visão de dados unificados com 72 recursos, enquanto o **Marketing** avança com 64 recursos para campanhas e engajamento. **Vendas** e **Segurança, Identidade e Privacidade** mantêm ritmo consistente de inovação com 58 recursos cada. A release Summer '26 sinaliza a maturidade da plataforma de agentes de IA empresariais da Salesforce, com dados unificados via Data 360, soluções verticais aprofundadas e uma experiência de desenvolvimento modernizada.
 
 
 <details>

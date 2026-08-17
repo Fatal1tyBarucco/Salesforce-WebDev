@@ -151,7 +151,13 @@ uv run mypy src/
 
 ### ☀️ Summer '26
 
-> 📊 **Executive Summary:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.
+> 📊 **Executive Summary:** The Summer '26 release represents a significant expansion of the Salesforce ecosystem, with 1,373 new features distributed across 22 categories — consolidating the platform as a reference in intelligent CRM, enterprise automation, and native AI agents.
+>
+> **Industries** leads in volume with 309 features, demonstrating Salesforce's commitment to deep vertical solutions for industries such as automotive, healthcare, financial services, manufacturing, and retail. **Service** follows with 198 features, transforming the Service Cloud into an AI agent-driven service platform with significant advances in voice, messaging, and IT service management. **Development** offers 127 features to modernize the developer experience, including new capabilities in Lightning Web Components and enhanced debugging tools.
+>
+> **Agentforce** continues to be the central axis of Salesforce's strategy, expanding transversally across virtually every area of the platform. **Automation** receives 118 features with significant advances in Flow Builder, including direct integration with Agentforce and enhanced flow orchestration. **Revenue Management** offers 97 features for CPQ and billing optimization.
+>
+> **Data 360** consolidates the unified data vision with 72 features, while **Marketing** advances with 64 features for campaigns and engagement. **Sales** and **Security, Identity & Privacy** maintain a consistent pace of innovation with 58 features each. The Summer '26 release signals the maturity of Salesforce's enterprise AI agent platform, with unified data via Data 360, deepened vertical solutions, and a modernized developer experience.
 
 
 <details>
