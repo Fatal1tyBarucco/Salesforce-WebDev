@@ -177,6 +177,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Legal Documentation (6 features)</b></summary>
 
+
+> The Legal Documentation category in Summer '26 contains 6 resources dedicated to terms updates, policies, and legal compliance of the Salesforce platform. These resources ensure that organizations are aligned with the latest regulatory requirements and contractual changes. It is essential that administrators and legal teams review these resources to maintain organizational compliance.
+
 > 📄 Full details: [./releases/summer_26/en_US/documentacao_legal.md](./releases/summer_26/en_US/documentacao_legal.md)
 
 </details>
@@ -184,6 +187,8 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Salesforce General (36 features)</b></summary>
+
+> The General Salesforce category brings together 36 resources covering cross-cutting changes to the Salesforce platform. Highlights include more frequent certificate rotation, enhanced domain information validation, mTLS certificate updates, and IPv6 preparation. These resources provide a more solid and secure foundation for all Salesforce implementations.
 
 > 📄 Full details: [./releases/summer_26/en_US/salesforce_geral.md](./releases/summer_26/en_US/salesforce_geral.md)
 
@@ -193,6 +198,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Agentforce (37 features)</b></summary>
 
+
+> Agentforce receives 37 resources in Summer '26, establishing itself as the central axis of Salesforce's strategy. Highlights include: clearer transcription and more natural voice for Agentforce Voice, expanded support for 24 languages (beta), insights into generative AI consumption, observability with refined agent analysis and custom drill-downs (beta), agent interoperability with MCP, and Agentforce Policies to protect connections with external APIs and MCP servers. The category also includes agent creation in the new Agentforce Builder and subagent editing in the asset library.
+
 > 📄 Full details: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
 
 </details>
@@ -200,6 +208,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Data Analysis (58 features)</b></summary>
+
+
+> Data Analysis includes 58 resources in Summer '26, expanding the platform's business intelligence capabilities. Tableau Next receives new features including marketplace templates to accelerate asset creation, Tableau Audit (beta) for user interaction visibility, and monthly feature releases for continuous tracking. The category also includes configuration and administration enhancements for Tableau.
 
 > 📄 Full details: [./releases/summer_26/en_US/analise_de_dados.md](./releases/summer_26/en_US/analise_de_dados.md)
 
@@ -209,6 +220,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Automation (118 features)</b></summary>
 
+
+> Automation receives 118 resources in Summer '26 with significant advances in Flow Builder. Highlights include: creating and using Agentforce agents directly in Flow Builder, batch for scheduled flows to improve performance, collapsible failure paths to focus on the main flow, simplified resource location in the prompt instructions element, and automatic email template reference correction after environment deployment. Agentforce Supply Chain is also enabled for supply chain process automation.
+
 > 📄 Full details: [./releases/summer_26/en_US/automacao.md](./releases/summer_26/en_US/automacao.md)
 
 </details>
@@ -216,6 +230,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 OmniStudio (9 features)</b></summary>
+
+
+> OmniStudio offers 9 resources in Summer '26. Highlights include Data Mapper version control to optimize implementation consistency, switching between standard and managed package designers and runtimes in the same organization, and the OmniStudio migration assistant to standard runtime. The category also includes OmniStudio MCP (beta) for accelerating FlexCard development and auto-started flow invocation in OmniStudio FlexCards (pilot).
 
 > 📄 Full details: [./releases/summer_26/en_US/omnistudio.md](./releases/summer_26/en_US/omnistudio.md)
 
@@ -225,6 +242,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Customization (33 features)</b></summary>
 
+
+> Customization offers 33 resources focused on adapting the Salesforce platform to each organization's specific needs. Highlights include exploring solutions with MCP servers in AgentExchange, adding MCP servers from the Agentforce registry via an integrated AgentExchange experience, and enhanced asset details page for rapid agent asset evaluation. Resources allow greater flexibility in layout, field, and process configuration.
+
 > 📄 Full details: [./releases/summer_26/en_US/personalizacao.md](./releases/summer_26/en_US/personalizacao.md)
 
 </details>
@@ -232,6 +252,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Data 360 (72 features)</b></summary>
+
+
+> Data 360 presents 72 resources in Summer '26, consolidating the platform's unified data vision. Highlights include structured data ingestion from Databricks (GA), governance metadata migration from sandbox to production, in-app guidance to expand platform knowledge (beta), and automatic permission enablement for copy field enhancements. The category also includes troubleshooting ingestion errors with problematic record DLOs.
 
 > 📄 Full details: [./releases/summer_26/en_US/data_360.md](./releases/summer_26/en_US/data_360.md)
 
@@ -241,6 +264,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Development (127 features)</b></summary>
 
+
+> Development brings together 127 resources for Salesforce developers. The LWC API v67.0 stands out with state management for components (GA), individual component preview in the browser and VS Code (GA), and the local developer as the active preview. Hot module reload receives significant performance improvements. The category also includes group detail elements with Attribute name and simplified data interactions.
+
 > 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
 
 </details>
@@ -248,6 +274,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Experience Cloud (14 features)</b></summary>
+
+
+> Experience Cloud includes 14 resources in Summer '26. Highlights include malware scanning in Salesforce Files (GA), support for files up to 10 GB, AI-assisted self-service experiences in Aura and LWR sites, and Chatter activation in new organizations. The category also includes viewing and linking related records in screen flow data tables and screen flow customization with style overrides.
 
 > 📄 Full details: [./releases/summer_26/en_US/experience_cloud.md](./releases/summer_26/en_US/experience_cloud.md)
 
@@ -257,6 +286,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Field Service (48 features)</b></summary>
 
+
+> Field Service receives 48 resources in Summer '26. Highlights include creating Field Service scheduling agents in the new Agentforce Builder, expanding autonomous scheduling to leads, and extending the scheduling agent's reach to email. The category also includes monthly release notes, desktop and mobile patches, and enhancements to Agentforce for Field Service.
+
 > 📄 Full details: [./releases/summer_26/en_US/field_service.md](./releases/summer_26/en_US/field_service.md)
 
 </details>
@@ -264,6 +296,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Hyperforce (3 features)</b></summary>
+
+
+> Hyperforce presents 3 resources in Summer '26 focused on cloud infrastructure. Highlights include accessing Salesforce in more regions with Hyperforce, new products and features available in Government Cloud Defense, and advanced cross-region continuity achieving faster recovery objectives.
 
 > 📄 Full details: [./releases/summer_26/en_US/hyperforce.md](./releases/summer_26/en_US/hyperforce.md)
 
@@ -273,6 +308,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Industries (309 features)</b></summary>
 
+
+> Industries dominates with 309 resources in Summer '26, offering specialized solutions for specific industries. Highlights include asset lifecycle management with simplified configuration, timesheet and labor cost optimization, editing and deleting timesheets using Agentforce, managing field team schedule timesheets, creating multiple timesheets for date ranges, and automatic idle schedule entries. The category spans from automotive and finance to healthcare and public services.
+
 > 📄 Full details: [./releases/summer_26/en_US/setores.md](./releases/summer_26/en_US/setores.md)
 
 </details>
@@ -280,6 +318,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Marketing (64 features)</b></summary>
+
+
+> Marketing includes 64 resources in Summer '26 via Marketing Cloud Next. Highlights include audience creation and expansion, easy content design, effective campaign management, and alignment between marketing and sales teams. The category also includes advanced communication services, marketing engagement visualization in opportunity records, and DLT templates for SMS messaging in India.
 
 > 📄 Full details: [./releases/summer_26/en_US/marketing.md](./releases/summer_26/en_US/marketing.md)
 
@@ -289,6 +330,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 MuleSoft (8 features)</b></summary>
 
+
+> MuleSoft presents 8 resources in Summer '26 with a focus on integration and MCP. Highlights include the API Catalog for Salesforce with MuleSoft MCP servers (GA), mapping agents and prompt templates to MCP server tools, annotations on MCP tools, and manually discovered MCP servers in the API catalog. The category also includes MuleSoft integration intelligence and named query API visualization in the catalog.
+
 > 📄 Full details: [./releases/summer_26/en_US/mulesoft.md](./releases/summer_26/en_US/mulesoft.md)
 
 </details>
@@ -296,6 +340,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Mobile App (17 features)</b></summary>
+
+
+> The Mobile App evolves with 17 resources in Summer '26. Highlights include Mobile AI Transcription for enhancing in-person meetings, updated Liquid Glass UI in the Salesforce mobile app, default email login, home page personalization (beta), and completing tasks directly from personalized phone notifications (GA).
 
 > 📄 Full details: [./releases/summer_26/en_US/aplicativo_movel.md](./releases/summer_26/en_US/aplicativo_movel.md)
 
@@ -305,6 +352,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Partner Cloud (1 features)</b></summary>
 
+
+> Partner Cloud offers 1 resource in Summer '26, focused on configuring co-branded emails for partners in Salesforce Go, facilitating integrated communication across the ecosystem.
+
 > 📄 Full details: [./releases/summer_26/en_US/partner_cloud.md](./releases/summer_26/en_US/partner_cloud.md)
 
 </details>
@@ -312,6 +362,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Revenue Management (97 features)</b></summary>
+
+
+> Revenue Management expands to 97 resources in Summer '26 as Agentforce Revenue Management. Highlights include the Dunning Orchestration Solution to simplify revenue collection, Rule-Based Discovery for faster transaction creation, extended decimal support for accurate pricing, product variations to expand offerings, and consistent ramp selection during product discovery and configuration.
 
 > 📄 Full details: [./releases/summer_26/en_US/gerenciamento_de_receita.md](./releases/summer_26/en_US/gerenciamento_de_receita.md)
 
@@ -321,6 +374,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Sales (58 features)</b></summary>
 
+
+> Sales consolidates the Sales Cloud as Agentforce Sales with 58 resources in Summer '26. Highlights include: group calendar to increase lead conversion, quick behavior changes for lead nurturing and inbound lead generation agents, lead engagement continuity with agent transfer, personal contact and account qualification with Agentforce, more detailed and actionable insights on lead nurturing agent activity, and enhanced sales management.
+
 > 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
 
 </details>
@@ -328,6 +384,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Salesforce Slack Integrations (2 features)</b></summary>
+
+
+> Salesforce Slack Integrations offer 2 resources in Summer '26. Highlights include Slack-enabled collaboration in new Salesforce organizations and accessing Salesforce channels in the Slack dashboard, reinforcing the unified workplace strategy.
 
 > 📄 Full details: [./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md)
 
@@ -337,6 +396,8 @@ uv run mypy src/
 <details>
 <summary><b>📄 Security, Identity & Privacy (58 features)</b></summary>
 
+> Security, Identity and Privacy brings together 58 resources in Summer '26. Highlights include native backup and recovery (including on-demand in India, GA), review of new and upcoming security requirements, automatic email updates to avoid interruptions, security contact for incident alerts, unified admin security content in one place, and AI-driven insights for compliance with standard regulations.
+
 > 📄 Full details: [./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md](./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md)
 
 </details>
@@ -344,6 +405,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Service (198 features)</b></summary>
+
+
+> Service contains 198 resources in Summer '26, with the Service Cloud transforming with the Agentforce Connection Center. Highlights include transferring Agentforce agent conversations from Salesforce Voice to service representatives in contact centers, improving representative experience by avoiding calls before they're ready, flexible scheduled callbacks, headset call management, easy Voice number portability for business continuity, and viewing callback requests before dialing.
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
 

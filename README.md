@@ -178,6 +178,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Documentação legal (6 recursos)</b></summary>
 
+
+> A categoria Documentação Legal da release Summer '26 contém 6 recursos dedicados a atualizações de termos, políticas e conformidade legal da plataforma Salesforce. Estes recursos garantem que as organizações estejam alinhadas com as mais recentes exigências regulatórias e mudanças contratuais. É essencial que administradores e equipes jurídicas revisem esses recursos para manter a conformidade organizacional.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
 
 </details>
@@ -185,6 +188,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Salesforce geral (36 recursos)</b></summary>
+
+
+> A categoria Salesforce Geral reúne 36 recursos que abrangem mudanças transversais na plataforma Salesforce. Destacam-se a rotação de certificados com maior frequência, validação de informações de domínio aprimorada, atualização de certificados mTLS e preparação para IPv6. Esses recursos proporcionam uma base mais sólida e segura para todas as implementações Salesforce.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
 
@@ -194,6 +200,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Agentforce (37 recursos)</b></summary>
 
+
+> O Agentforce recebe 37 recursos na Summer '26, consolidando-se como o eixo central da estratégia Salesforce. Destacam-se: transcrição mais nítida e voz mais natural para Agentforce Voice, suporte expandido a 24 idiomas (beta), percepções sobre consumo de IA generativa, observabilidade com análise de agente refinada e paincionadores personalizados (beta), interoperabilidade do agente com MCP, e Políticas Agentforce para proteger conexões com APIs externas e servidores MCP. A categoria também inclui a criação de agentes no novo Agentforce Builder e edição de subagentes na biblioteca de ativos.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
 
 </details>
@@ -201,6 +210,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Análise de dados (58 recursos)</b></summary>
+
+
+> A Análise de Dados conta com 58 recursos na Summer '26, expandindo as capacidades de business intelligence da plataforma. O Tableau Next recebe novos recursos incluindo modelos de mercado para acelerar a criação de ativos, auditoria do Tableau (beta) para visibilidade de interações com o usuário, e recursos lançados por mês para acompanhamento contínuo. A categoria também inclui aprimoramentos em configuração e administração do Tableau.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
 
@@ -210,6 +222,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Automação (118 recursos)</b></summary>
 
+
+> A Automação recebe 118 recursos na Summer '26 com avanços significativos no Flow Builder. Destaques incluem: criação e uso de agentes Agentforce diretamente no Flow Builder, lote para fluxos agendados para melhorar o desempenho, caminhos de falha recolhíveis para focar no fluxo principal, localização simplificada de recursos no elemento de instruções de prompt, e correção automática de referências de modelo de email após implementação em ambientes. A Agentforce Supply Chain também é habilitada para automação de processos da cadeia de abastecimento.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
 
 </details>
@@ -217,6 +232,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 OmniStudio (9 recursos)</b></summary>
+
+
+> O OmniStudio oferece 9 recursos na Summer '26. Destacam-se o controle de versão do Data Mapper para otimizar a consistência da implementação, alternância entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização, e o assistente de migração para o tempo de execução padrão do OmniStudio. A categoria também inclui o OmniStudio MCP (beta) para acelerar o desenvolvimento de FlexCards e chamada de fluxos iniciados automaticamente em FlexCards (piloto).
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
 
@@ -226,6 +244,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Personalização (33 recursos)</b></summary>
 
+
+> A Personalização oferece 33 recursos focados em adaptar a plataforma Salesforce às necessidades específicas de cada organização. Destacam-se a exploração de soluções com servidores MCP no AgentExchange, adição de servidores MCP do registro Agentforce via experiência integrada, e página de detalhes aprimorada para avaliar ativos do agente rapidamente. Os recursos permitem maior flexibilidade na configuração de layouts, campos e processos.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
 
 </details>
@@ -233,6 +254,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Data 360 (72 recursos)</b></summary>
+
+
+> O Data 360 apresenta 72 recursos na Summer '26, consolidando a visão de dados unificados da plataforma. Destacam-se a ingestão de dados estruturados do Databricks (disponível ao público em geral), migração de metadados de governança de sandbox para produção, orientação no aplicativo para expandir o conhecimento da plataforma (beta), e habilitação automática de permissões para aprimoramentos de campo de cópia. A categoria também inclui resolução de erros de ingestão com DLOs de registros problemáticos.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
 
@@ -242,6 +266,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
 
+
+> A Desenvolvimento reúne 127 recursos para desenvolvedores Salesforce. Destaca-se a API v67.0 do LWC com gerenciamento de estado para componentes (disponível ao público em geral), visualização de componente individual no navegador e no VS Code (GA), e o desenvolvedor local como visualização ativa. O hot reload de módulos recebe melhorias significativas de desempenho. A categoria também inclui elementos de detalhes do grupo com nome Atributo e simplificação de interações de dados.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
 
 </details>
@@ -249,6 +276,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Experience Cloud (14 recursos)</b></summary>
+
+
+> O Experience Cloud conta com 14 recursos na Summer '26. Destacam-se a verificação de malware em Salesforce Files (disponível ao público em geral), suporte a arquivos de até 10 GB, experiências de autoatendimento assistido por IA em sites do Aura e LWR, e ativação do Chatter em novas organizações. A categoria também inclui visualização e vinculação de registros relacionados em tabelas de dados de fluxo de tela e personalização de fluxos com substituições de estilo.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
 
@@ -258,6 +288,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Field Service (48 recursos)</b></summary>
 
+
+> O Field Service recebe 48 recursos na Summer '26. Destacam-se a criação de agentes de agendamento no novo Agentforce Builder, expansão do agendamento autônomo para clientes potenciais, e extensão do alcance do agente de agendamento para email. A categoria inclui também notas de versão mensal, patches do desktop e móveis, e aprimoramentos no Agentforce para Field Service.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
 
 </details>
@@ -265,6 +298,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Hyperforce (3 recursos)</b></summary>
+
+
+> A Hyperforce apresenta 3 recursos na Summer '26 focados na infraestrutura de nuvem. Destacam-se o acesso ao Salesforce em mais regiões com o Hyperforce, novos produtos e recursos disponíveis na Defesa do Government Cloud, e a continuidade avançada entre regiões que alcança objetivos de recuperação mais rápidos.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
 
@@ -274,6 +310,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Setores (309 recursos)</b></summary>
 
+
+> A Setores domina com 309 recursos na Summer '26, oferecendo soluções especializadas para indústrias específicas. Destacam-se o gerenciamento de ciclo de vida do ativo com configuração simplificada, otimização de planilhas de horas e custos trabalhistas, edição e exclusão de planilhas usando o Agentforce, gerenciamento de planilhas de horários da equipe no campo, criação de múltiplas planilhas para intervalos de datas, e entradas automáticas do cronograma ocioso. A categoria abrange desde automotivo e finanças até saúde e serviços públicos.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
 
 </details>
@@ -281,6 +320,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Marketing (64 recursos)</b></summary>
+
+
+> O Marketing conta com 64 recursos na Summer '26 via Marketing Cloud Next. Destacam-se a criação e expansão de público, design de conteúdo facilitado, gerenciamento de campanhas efetivas, e alinhamento entre equipes de marketing e vendas. A categoria inclui também serviços de comunicação avançados, visualização de engajamento em registros de oportunidade, e modelos de DLT para mensagens SMS na Índia.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
 
@@ -290,6 +332,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 MuleSoft (8 recursos)</b></summary>
 
+
+> O MuleSoft apresenta 8 recursos na Summer '26 com foco em integração e MCP. Destacam-se o catálogo de API para Salesforce com servidores MCP do MuleSoft (disponível ao público em geral), mapeamento de agentes e modelos de prompts para ferramentas do servidor MCP, anotações em ferramentas MCP, e descoberta de servidores MCP registrados manualmente. A categoria também inclui inteligência de integração do MuleSoft e visualização de APIs de consulta nomeadas no catálogo.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
 
 </details>
@@ -297,6 +342,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
+
+
+> O Aplicativo Móvel evolui com 17 recursos na Summer '26. Destacam-se a Transcrição de IA móvel para aprimorar reuniões presenciais, interface atualizada com Liquid Glass no aplicativo Salesforce móvel, login por email por padrão, personalização da página inicial (beta), e conclusão de tarefas diretamente de notificações telefônicas personalizadas (GA).
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
 
@@ -306,6 +354,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Partner Cloud (1 recursos)</b></summary>
 
+
+> O Partner Cloud oferece 1 recurso na Summer '26, focado na configuração de emails com marca combinada para parceiros no Salesforce Go, facilitando a comunicação integrada no ecossistema.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
 
 </details>
@@ -313,6 +364,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
+
+
+> O Gerenciamento de Receita expande para 97 recursos na Summer '26 como Agentforce Revenue Management. Destacam-se a Solução de Orquestração Dunning para simplificar a coleta de receita, Descoberta baseada em regra para criar transações mais rapidamente, suporte decimal estendido para precificação precisa, variações de produto para expandir ofertas, e seleção de rampa consistente durante a descoberta e configuração do produto.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
 
@@ -322,6 +376,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Vendas (58 recursos)</b></summary>
 
+
+> Vendas consolida o Sales Cloud como Agentforce Sales com 58 recursos na Summer '26. Destaques incluem: calendário de grupo para aumentar conversão de clientes potenciais, alteração rápida do comportamento do agente de fomento de lead e geração de lead de entrada, continuidade de engajamento de lead com transferência de agente, qualificação de contatos e contas pessoais com Agentforce, percepções mais detalhadas sobre atividade do agente, e gerenciamento de vendas aprimorado.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
@@ -329,6 +386,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
+
+
+> As Integrações do Salesforce para Slack oferecem 2 recursos na Summer '26. Destaca-se a colaboração habilitada pelo Slack em novas organizações do Salesforce e acesso a canais do Salesforce no painel do Slack, reforçando a estratégia de workplace unificado.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
 
@@ -338,6 +398,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
 
+
+> A Segurança, Identidade e Privacidade reúne 58 recursos na Summer '26. Destacam-se backup e recuperação nativos (incluindo sob demanda na Índia, GA), revisão de requisitos de segurança novos e futuros, atualizações automáticas de email para evitar interrupções, contato de segurança para alertas de incidente, conteúdo de segurança do administrador unificado em um só lugar, e percepções conduzidas por IA para conformidade com normas padrão.
+
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
@@ -345,6 +408,9 @@ uv run mypy src/
 
 <details>
 <summary><b>📄 Serviço (198 recursos)</b></summary>
+
+
+> O Serviço contém 198 recursos na Summer '26, com o Service Cloud transformando-se com o Centro de Conexão do Agentforce. Destacam-se a transferência de conversas do agente Agentforce do Salesforce Voice para representantes de serviço nas centrais de contato, melhoria da experiência do representante evitando chamadas antes que estejam prontos, retornos de chamada agendados flexíveis, gerenciamento de chamadas de voz com fone de ouvido, portabilidade de número do Voice fácil para continuidade dos negócios, e visualização de solicitação de retorno antes de discar.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
