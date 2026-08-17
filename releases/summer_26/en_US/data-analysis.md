@@ -65,7 +65,7 @@ Os aprimoramentos do Analytics incluem recursos novos e atualizados para o Table
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_atf_dev_guide_announcement.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_embedding_sdk_v2.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tua_last_highlights.htm&language=pt_BR&release=262&type=5) |
-| **Reports and Dashboards** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_reports_dashboards.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_reports_dashboards.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_custom_org_themes.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_embed_lwc_in_dashboards_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_rd_increase_row_level_formulas.htm&language=pt_BR&release=262&type=5) |
@@ -87,11 +87,11 @@ Os aprimoramentos do Analytics incluem recursos novos e atualizados para o Table
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_subscriptions_community_users.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_data.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
-| **Export revenue schedules to your external calendar for easy tracking** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
-| **Simplify recipe backup with direct upload and download in Data Manager** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_multiple_wdc_output.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_salesforce_external_oauth.htm&language=pt_BR&release=262&type=5) |
-| **Improve snapshot data recipe performance with optimized insert and insert and delete actions (generally available)** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_optimized_wdc_operations_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_azure_data_lake_output_connection_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_tableau.htm&language=pt_BR&release=262&type=5) |

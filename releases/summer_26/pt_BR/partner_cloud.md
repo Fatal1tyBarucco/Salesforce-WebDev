@@ -7,7 +7,7 @@ Categoria **Partner Cloud** com 1 recursos nesta release.
 
 | Recurso | Descrição | Impacto |
 | :--- | :--- | :---: |
-| **Configurar emails com marca combinada para parceiros no Salesforce Go** — _config_ | Recurso 'Configurar emails com marca combinada para parceiros no Salesforce Go' disponível na release. Disponibilidade: … | 🟢 baixo |
+| **Configurar emails com marca combinada para parceiros no Salesforce Go — _config_** | Recurso 'Configurar emails com marca combinada para parceiros no Salesforce Go — _config_' disponível na release. | 🟢 baixo |
 
 ## 🎓 Módulos Trailhead Relacionados
 

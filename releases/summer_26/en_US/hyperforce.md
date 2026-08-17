@@ -7,9 +7,9 @@ Categoria **Hyperforce** com 3 recursos nesta release.
 
 | Feature | Descrição | Impacto |
 | :--- | :--- | :---: |
-| **Acessar o Salesforce em mais regiões com o Hyperforce** — _config_ | Recurso 'Acessar o Salesforce em mais regiões com o Hyperforce' disponível na release. Disponibilidade: config. | 🟢 baixo |
-| **Novos produtos e recursos disponíveis na Defesa do Government Cloud** — _config_ | Recurso 'Novos produtos e recursos disponíveis na Defesa do Government Cloud' disponível na release. Disponibilidade: co… | 🟢 baixo |
-| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos** — _contato_ | Recurso 'A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos' disponível na release. Dis… | 🟢 baixo |
+| **Acessar o Salesforce em mais regiões com o Hyperforce — _config_** | Recurso 'Acessar o Salesforce em mais regiões com o Hyperforce — _config_' disponível na release. | 🟢 baixo |
+| **Novos produtos e recursos disponíveis na Defesa do Government Cloud — _config_** | Recurso 'Novos produtos e recursos disponíveis na Defesa do Government Cloud — _config_' disponível na release. | 🟢 baixo |
+| **A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos — _contato_** | Recurso 'A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos — _contato_' disponível na … | 🟢 baixo |
 
 ## 🎓 Related Trailhead Modules
 

@@ -43,8 +43,8 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_citizen_users_view_flow_usage.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_data_360.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_activation_triggered_flow_updates.htm&language=pt_BR&release=262&type=5) |
-| **Use Wait Elements and Flow Tests with Broadcast Flow Enhancements** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_broadcast_flow_updates.htm&language=pt_BR&release=262&type=5) |
-| **Use Unlimited MuleSoft Connectors in Segment-Triggered, Activation-Triggered, and Broadcast Flows** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_unlimited_connectors.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_broadcast_flow_updates.htm&language=pt_BR&release=262&type=5) |
+| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_builder_unlimited_connectors.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_show_toast_message.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_actions_open_a_page.htm&language=pt_BR&release=262&type=5) |
