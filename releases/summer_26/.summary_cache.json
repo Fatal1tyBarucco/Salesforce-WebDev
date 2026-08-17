@@ -1,36 +1,8 @@
 {
-  "executive_summary": "A release Summer '26 representa uma expansão significativa do ecossistema Salesforce, com 1373 novos recursos distribuídos em 22 categorias — consolidando a plataforma como referência em CRM inteligente, automação empresarial e agentes de IA nativos.\n\nA categoria Setores lidera em volume com 309 recursos, demonstrando o compromisso da Salesforce com soluções verticais profundas. Serviço acompanha com 198 recursos, transformando o Service Cloud com o Centro de Conexão do Agentforce. Desenvolvimento oferece 127 recursos com avanços no LWC API v67.0. A Automação recebe 118 recursos com integração direta do Agentforce no Flow Builder. O Gerenciamento de Receita expande para 97 recursos com a Solução de Orquestração Dunning. Data 360 consolida a visão de dados unificados com 72 recursos. Marketing avança com 64 recursos via Marketing Cloud Next. Vendas consolida o Sales Cloud como Agentforce Sales com 58 recursos. Segurança, Identidade e Privacidade oferece 58 recursos com backup e recuperação nativos.",
+  "executive_summary": "A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.",
   "category_summaries": {
-    "Documentação legal": "A categoria Documentação Legal da release Summer '26 contém 6 recursos dedicados a atualizações de termos, políticas e conformidade legal da plataforma Salesforce.",
-    "Salesforce geral": "A Salesforce Geral reúne 36 recursos com mudanças transversais. Destacam-se rotação de certificados, validação de domínio aprimorada, atualização de certificados mTLS e preparação para IPv6.",
-    "Agentforce": "O Agentforce recebe 37 recursos com destaque para transcrição mais nítida e voz mais natural para Agentforce Voice, suporte a 24 idiomas (beta), observabilidade com análise de agente refinada (beta), interoperabilidade com MCP, e Políticas Agentforce para proteger conexões com APIs externas.",
-    "Análise de dados": "A Análise de Dados conta com 58 recursos. O Tableau Next recebe modelos de mercado, auditoria do Tableau (beta) para visibilidade de interações com o usuário, e recursos lançados por mês.",
-    "Automação": "A Automação recebe 118 recursos com criação de agentes Agentforce diretamente no Flow Builder, lote para fluxos agendados, caminhos de falha recolhíveis, e localização simplificada de recursos no elemento de instruções de prompt.",
-    "OmniStudio": "O OmniStudio oferece 9 recursos com controle de versão do Data Mapper, assistente de migração para tempo de execução padrão, e OmniStudio MCP (beta) para FlexCards.",
-    "Personalização": "A Personalização oferece 33 recursos com exploração de servidores MCP no AgentExchange, adição de servidores MCP do registro Agentforce, e página de detalhes aprimorada para ativos do agente.",
-    "Data 360": "O Data 360 apresenta 72 recursos com ingestão de dados do Databricks (GA), migração de metadados de governança de sandbox para produção, e orientação no aplicativo (beta).",
-    "Desenvolvimento": "A Desenvolvimento reúne 127 recursos com LWC API v67.0, gerenciamento de estado para componentes (GA), visualização de componente no navegador e VS Code (GA), e hot reload aprimorado.",
-    "Experience Cloud": "O Experience Cloud conta com 14 recursos com verificação de malware em Salesforce Files (GA), arquivos de até 10 GB, e autoatendimento assistido por IA em sites Aura e LWR.",
-    "Field Service": "O Field Service recebe 48 recursos com agentes de agendamento no novo Agentforce Builder, agendamento autônomo expandido para clientes potenciais, e alcance do agente para email.",
-    "Hyperforce": "A Hyperforce apresenta 3 recursos com acesso ao Salesforce em mais regiões, novos recursos na Defesa do Government Cloud, e continuidade avançada entre regiões.",
-    "Setores": "A Setores domina com 309 recursos com gerenciamento de ciclo de vida de ativo, otimização de planilhas de horas, edição de planilhas via Agentforce, e entradas automáticas do cronograma ocioso.",
-    "Marketing": "O Marketing conta com 64 recursos via Marketing Cloud Next com criação de público, design de conteúdo, gerenciamento de campanhas, e alinhamento marketing-vendas.",
-    "MuleSoft": "O MuleSoft apresenta 8 recursos com servidores MCP no catálogo de API (GA), mapeamento de agentes para ferramentas MCP, e inteligência de integração.",
-    "Aplicativo móvel": "O Aplicativo Móvel evolui com 17 recursos com Transcrição de IA móvel, interface Liquid Glass, login por email, e personalização da página inicial (beta).",
-    "Partner Cloud": "O Partner Cloud oferece 1 recurso para configurar emails com marca combinada para parceiros no Salesforce Go.",
-    "Gerenciamento de receita": "O Gerenciamento de Receita expande para 97 recursos com Orquestração Dunning, Descoberta baseada em regra, suporte decimal estendido, e variações de produto.",
-    "Vendas": "Vendas consolida o Sales Cloud como Agentforce Sales com 58 recursos com calendário de grupo, transferência de agente, qualificação com Agentforce, e percepções de atividade do agente.",
-    "Integrações do Salesforce para Slack": "As Integrações para Slack oferecem 2 recursos com colaboração em novas organizações e canais do Salesforce no painel do Slack.",
-    "Segurança, identidade e privacidade": "Segurança, Identidade e Privacidade reúne 58 recursos com backup e recuperação nativos (incluindo sob demanda na Índia), contato de incidente, e conteúdo de segurança unificado.",
-    "Serviço": "O Serviço contém 198 recursos com Centro de Conexão do Agentforce, transferência de conversas Voice para representantes, retornos de chamada agendados, e portabilidade de número do Voice."
+    "Test Cat": "A categoria Test Cat reúne 0 recursos referentes a test cat. Esta categoria abrange melhorias e novas funcionalidades para test cat."
   },
-  "business_impact": "Para as empresas, a Summer '26 entrega valor com agentes de IA autônomos via Agentforce, soluções verticais em Setores e Serviço, dados unificados via Data 360, e desenvolvimento modernizado com LWC v67.0.",
-  "strategic_themes": [
-    "AI-First & Agentforce",
-    "Vertical Solutions",
-    "Service Transformation",
-    "Data Unification",
-    "Developer Experience"
-  ],
-  "migration_notes": "Administradores devem revisar atualizações de documentação legal e mudanças em segurança. Recursos beta podem ter alterações antes do GA."
+  "generated_at": "/home/runner/work/Salesforce-WebDev/Salesforce-WebDev",
+  "fallback": true
 }

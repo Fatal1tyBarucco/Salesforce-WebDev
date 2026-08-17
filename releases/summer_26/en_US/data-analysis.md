@@ -87,7 +87,7 @@ Os aprimoramentos do Analytics incluem recursos novos e atualizados para o Table
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_subscriptions_community_users.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_data.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
+| **Export revenue schedules to your external calendar for easy tracking** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_multiple_wdc_output.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_bi_integrate_salesforce_external_oauth.htm&language=pt_BR&release=262&type=5) |
