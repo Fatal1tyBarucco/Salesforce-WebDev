@@ -94,7 +94,8 @@ class ReleaseSummarizer:
                     logger.warning(
                         "Cache validation failed for %s: executive_summary says '0 recursos' "
                         "but meta has %d features. Discarding cache.",
-                        release_slug, total,
+                        release_slug,
+                        total,
                     )
                     cache_is_valid = False
 
@@ -107,7 +108,9 @@ class ReleaseSummarizer:
                         logger.warning(
                             "Cache validation failed for %s: no category name overlap "
                             "(cache has %s, meta has %d real categories). Discarding cache.",
-                            release_slug, list(cache_cat_names)[:3], cat_count,
+                            release_slug,
+                            list(cache_cat_names)[:3],
+                            cat_count,
                         )
                         cache_is_valid = False
 
@@ -116,7 +119,9 @@ class ReleaseSummarizer:
                     logger.warning(
                         "Cache validation failed for %s: executive_summary too short "
                         "(%d chars) for %d features. Discarding cache.",
-                        release_slug, len(exec_text), total,
+                        release_slug,
+                        len(exec_text),
+                        total,
                     )
                     cache_is_valid = False
 

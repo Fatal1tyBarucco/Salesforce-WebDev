@@ -235,14 +235,16 @@ async def generate_summary_cache(
                 if total > 0 and "0 novos recursos" in exec_text:
                     logger.warning(
                         "AI summary validation failed: says '0 recursos' but meta has %d. "
-                        "Skipping AI cache, will use fallback.", total,
+                        "Skipping AI cache, will use fallback.",
+                        total,
                     )
                     ai_is_valid = False
 
                 if len(summary.category_summaries) == 0 and total > 0:
                     logger.warning(
                         "AI summary validation failed: no category_summaries for %d features. "
-                        "Skipping AI cache, will use fallback.", total,
+                        "Skipping AI cache, will use fallback.",
+                        total,
                     )
                     ai_is_valid = False
 
