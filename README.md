@@ -274,402 +274,16 @@ A release Summer '26 posiciona o Salesforce como uma plataforma de IA-first, ond
 
 > Com 58 recursos, esta categoria abrange aprimoramentos de segurança com rotação de certificados e preparação para IPv6. Backup e recuperação incluem dados na Índia (GA), backups sob demanda e cancelamento de backups. Gerenciamento de identidade cobre alterações de login, ACR no histórico, descontinuação do OAuth password flow e SAML aprimorado. Salesforce Shield expande detecção de dados com fragmentos confidenciais, campos criptografados e verificações recorrentes. O Security Center com Agentforce (beta) inclui triagem de anomalia, linhas do tempo de incidente e planos de remediação.
 
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade![Python](https://img.shields.io/badge/Python-3.14-blue.svg?logo=python&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-Headless_SPA-green.svg?logo=playwright&logoColor=white)
-![Mypy](https://img.shields.io/badge/Mypy-Strict_Mode-blue.svg)
-![Ruff](https://img.shields.io/badge/Ruff-Linter-black.svg)
-![uv](https://img.shields.io/badge/uv-Package_Manager-blue.svg)
-
-| Tecnologia / Ferramenta | Descrição | Status no Pipeline |
-| :--- | :--- | :---: |
-| 🐍 **Python 3.14** | Ambiente de execução principal | `Conforme` |
-| 🎭 **Playwright** | Scraper Headless para aplicações SPA do Salesforce Help | `Ativo` |
-| 🧪 **Pytest** | Suíte de testes unitários automatizados | `450+ testes` |
-| 🔍 **Mypy** | Verificação estática de tipos com modo estrito | `Strict` |
-| ⚡ **Ruff & Black** | Linter e formatação estrita de código (line-length = 100) | `Conforme` |
-| 📦 **uv** | Gerenciamento de dependências com lock file determinístico | `Ativo` |
-
----
-
-## 📖 Visão Geral
-
-Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
-
-## 🏗️ Arquitetura do Sistema
-
-```mermaid
-flowchart LR
-    A[Salesforce Help] -->|Playwright SPA| B[scraper.py]
-    B -->|DOM Parsing| C[parser.py]
-    C -->|Feature Impact| D[generator.py]
-    D -->|Markdown| E[releases/]
-    D -->|Update| F[README.md]
-    E -->|Jekyll| G[GitHub Pages]
-    F -->|Jekyll| G
-
-    B -->|Retry + Circuit Breaker| H{Resilience Layer}
-    H -->|Cache Hit| I[cache/]
-    H -->|Cache Miss| A
-```
-
-**Princípios de Design:**
-* **Separação de Conceitos (SoC):** Camadas isoladas para rede (`scraper.py`), parsing (`parser.py`), geração (`generator.py`)
-* **I/O Não Bloqueante:** `asyncio` + Playwright async para processamento paralelo
-* **Resiliência:** Circuit Breaker + Token-bucket rate limiter + Exponential backoff com jitter
-
-## ⚙️ Pré-requisitos e Instalação
-
-Este projeto utiliza `uv` para gerenciamento determinístico de dependências.
-
-```bash
-# Instale o uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone e instale
-git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
-cd Salesforce-WebDev
-uv sync
-
-# Instale browsers do Playwright
-uv run playwright install chromium
-```
-
-## 🚀 Uso e Execução
-
-```bash
-# Executar pipeline completo
-uv run python -m src.main
-
-# Executar release específica
-uv run python -m src.main --release summer_26
-
-# Dry run (sem escrever arquivos)
-uv run python -m src.main --dry-run
-```
-
-## 🛡️ Governança e Resiliência
-
-| Componente | Configuração | Descrição |
-| :--- | :--- | :--- |
-| **Rate Limiter** | 2 req/s, token-bucket | Evita throttling do Salesforce |
-| **Circuit Breaker** | 3 falhas → cooldown 60s | Para requisições após falhas consecutivas |
-| **Cache TTL** | 24 horas | Previne refetch de conteúdo não alterado |
-| **Exponential Backoff** | Base 2s + jitter | Retry inteligente com anti-thundering-herd |
-
-## 🧪 Testes e Qualidade
-
-```bash
-# Executar testes
-uv run pytest tests/
-
-# Com cobertura
-uv run pytest tests/ --cov=src --cov-report=term-missing
-
-# Quality gate (ordem CI)
-uv run ruff check src/
-uv run black --check src/
-uv run mypy src/
-```
-
-**Meta:** Cobertura >99%, zero erros de tipo, zero warnings de lint.
-
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 📋 Releases Disponíveis
-
-<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
-
-### ☀️ Summer '26
-
-> 📊 **Resumo Executivo:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 1373 novos recursos distribuídos em 22 categorias.
-
-
-<details>
-<summary><b>📄 Documentação legal (6 recursos)</b></summary>
-
-
-> A categoria Documentação legal reúne 6 recursos referentes a documentação legal. Esta categoria abrange melhorias e novas funcionalidades para documentação legal.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/documentacao_legal.md](./releases/summer_26/pt_BR/documentacao_legal.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Salesforce geral (36 recursos)</b></summary>
-
-
-> A categoria Salesforce geral reúne 36 recursos referentes a salesforce geral. Esta categoria abrange melhorias e novas funcionalidades para salesforce geral.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/salesforce_geral.md](./releases/summer_26/pt_BR/salesforce_geral.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Agentforce (37 recursos)</b></summary>
-
-
-> A categoria Agentforce reúne 37 recursos referentes a agentforce. Esta categoria abrange melhorias e novas funcionalidades para agentforce.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/agentforce.md](./releases/summer_26/pt_BR/agentforce.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Análise de dados (58 recursos)</b></summary>
-
-
-> A categoria Análise de dados reúne 58 recursos referentes a análise de dados. Esta categoria abrange melhorias e novas funcionalidades para análise de dados.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/analise_de_dados.md](./releases/summer_26/pt_BR/analise_de_dados.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Automação (118 recursos)</b></summary>
-
-
-> A categoria Automação reúne 118 recursos referentes a automação. Esta categoria abrange melhorias e novas funcionalidades para automação.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/automacao.md](./releases/summer_26/pt_BR/automacao.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 OmniStudio (9 recursos)</b></summary>
-
-
-> A categoria OmniStudio reúne 9 recursos referentes a omnistudio. Esta categoria abrange melhorias e novas funcionalidades para omnistudio.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/omnistudio.md](./releases/summer_26/pt_BR/omnistudio.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Personalização (33 recursos)</b></summary>
-
-
-> A categoria Personalização reúne 33 recursos referentes a personalização. Esta categoria abrange melhorias e novas funcionalidades para personalização.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/personalizacao.md](./releases/summer_26/pt_BR/personalizacao.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Data 360 (72 recursos)</b></summary>
-
-
-> A categoria Data 360 reúne 72 recursos referentes a data 360. Esta categoria abrange melhorias e novas funcionalidades para data 360.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/data_360.md](./releases/summer_26/pt_BR/data_360.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Desenvolvimento (127 recursos)</b></summary>
-
-
-> A categoria Desenvolvimento reúne 127 recursos referentes a desenvolvimento. Esta categoria abrange melhorias e novas funcionalidades para desenvolvimento.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Experience Cloud (14 recursos)</b></summary>
-
-
-> A categoria Experience Cloud reúne 14 recursos referentes a experience cloud. Esta categoria abrange melhorias e novas funcionalidades para experience cloud.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/experience_cloud.md](./releases/summer_26/pt_BR/experience_cloud.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Field Service (48 recursos)</b></summary>
-
-
-> A categoria Field Service reúne 48 recursos referentes a field service. Esta categoria abrange melhorias e novas funcionalidades para field service.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/field_service.md](./releases/summer_26/pt_BR/field_service.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Hyperforce (3 recursos)</b></summary>
-
-
-> A categoria Hyperforce reúne 3 recursos referentes a hyperforce. Esta categoria abrange melhorias e novas funcionalidades para hyperforce.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/hyperforce.md](./releases/summer_26/pt_BR/hyperforce.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Setores (309 recursos)</b></summary>
-
-
-> A categoria Setores reúne 309 recursos referentes a setores. Esta categoria abrange melhorias e novas funcionalidades para setores.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/setores.md](./releases/summer_26/pt_BR/setores.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Marketing (64 recursos)</b></summary>
-
-
-> A categoria Marketing reúne 64 recursos referentes a marketing. Esta categoria abrange melhorias e novas funcionalidades para marketing.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/marketing.md](./releases/summer_26/pt_BR/marketing.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 MuleSoft (8 recursos)</b></summary>
-
-
-> A categoria MuleSoft reúne 8 recursos referentes a mulesoft. Esta categoria abrange melhorias e novas funcionalidades para mulesoft.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/mulesoft.md](./releases/summer_26/pt_BR/mulesoft.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Aplicativo móvel (17 recursos)</b></summary>
-
-
-> A categoria Aplicativo móvel reúne 17 recursos referentes a aplicativo móvel. Esta categoria abrange melhorias e novas funcionalidades para aplicativo móvel.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/aplicativo_movel.md](./releases/summer_26/pt_BR/aplicativo_movel.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Partner Cloud (1 recursos)</b></summary>
-
-
-> A categoria Partner Cloud reúne 1 recursos referentes a partner cloud. Esta categoria abrange melhorias e novas funcionalidades para partner cloud.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/partner_cloud.md](./releases/summer_26/pt_BR/partner_cloud.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Gerenciamento de receita (97 recursos)</b></summary>
-
-
-> A categoria Gerenciamento de receita reúne 97 recursos referentes a gerenciamento de receita. Esta categoria abrange melhorias e novas funcionalidades para gerenciamento de receita.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/gerenciamento_de_receita.md](./releases/summer_26/pt_BR/gerenciamento_de_receita.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Vendas (58 recursos)</b></summary>
-
-
-> A categoria Vendas reúne 58 recursos referentes a vendas. Esta categoria abrange melhorias e novas funcionalidades para vendas.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Integrações do Salesforce para Slack (2 recursos)</b></summary>
-
-
-> A categoria Integrações do Salesforce para Slack reúne 2 recursos referentes a integrações do salesforce para slack. Esta categoria abrange melhorias e novas funcionalidades para integrações do salesforce para slack.
-
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md](./releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md)
-
-</details>
-
-
-<details>
-<summary><b>📄 Segurança, identidade e privacidade (58 recursos)</b></summary>
-
-
-> A categoria Segurança, identidade e privacidade reúne 58 recursos referentes a segurança, identidade e privacidade. Esta categoria abrange melhorias e novas funcionalidades para segurança, identidade e privacidade.
-
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md](./releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md)
 
 </details>
 
 
 <details>
-<summary><b>📄 Serviço (198 recursos)</b></summary>
+<summary><b>📄 Serviço (196 recursos)</b></summary>
 
 
-> A categoria Serviço reúne 198 recursos referentes a serviço. Esta categoria abrange melhorias e novas funcionalidades para serviço.
+> Com 196 recursos, a maior categoria funcional foca em Centrais de contato Agentforce com roteamento de último representante, chamadas automatizadas e SLA-based. IT Service Management inclui gerenciamento de ativos de hardware, conformidade de TI e CMDB com descoberta de software macOS. Agentes de IA cobrem RH, email e autoatendimento. Gerenciamento de caso inclui mesclagem de duplicatas e descrições em rich text. Omni-Channel ganhou agendamento de itens e roteamento baseado em data. Experience Cloud recebeu Concierge, blocos dinâmicos e análise de autoatendimento. Integração com Microsoft Teams e IT Service do Agentforce completam a oferta.
 
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/servico.md](./releases/summer_26/pt_BR/servico.md)
 
@@ -1148,54 +762,430 @@ Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de I
 </details>
 
 
-## 🛠️ Stack Tecnológico
+## 🏗️ Como Funciona
 
-| Ferramenta | Uso no Projeto |
-| :--- | :--- |
-| **GitHub Actions** | CI/CD: lint, typecheck, extração, deploy automático |
-| **uv** | Gerenciamento de dependências com lock file determinístico |
-| **Playwright** | Scraper headless para páginas SPA do Salesforce Help |
-| **Python 3.14** | Linguagem principal com type hints completos |
-| **BeautifulSoup** | Parser HTML para extração de dados estruturados |
-| **Markdown** | Formato de saída para documentação técnica |
-| **MkDocs** | Portal técnico publicado no GitHub Pages |
-| **stdlib HTTP** | REST API e health check server (zero dependências externas) |
-| **gh CLI** | PR workflow e GitHub integration |
+### Fluxo do Pipeline
 
-### Módulos do Pipeline
+```mermaid
+flowchart TB
+    subgraph DETECT["🔍 1. DETECÇÃO"]
+        A[Salesforce Help] -->|Comparar conteúdo| B{Nova release?}
+        B -->|Não| C[Atualizar README]
+        B -->|Sim| D[Identificar release]
+    end
 
-| Módulo | Responsabilidade |
-| :--- | :--- |
-| `src/main.py` | Orquestrador: detectar releases, extrair, parse, gerar, atualizar README |
-| `src/scraper.py` | Playwright headless, circuit breaker, rate limiter, cache, download PDF |
-| `src/parser.py` | Extração de hierarquia ToC + tabela Feature Impact |
-| `src/generator.py` | Gera arquivos `.md` por categoria |
-| `src/ai_automation.py` | Comparação entre releases, detecção de regressões, quality metrics |
-| `src/analytics.py` | Dashboard HTML com gráficos SVG |
-| `src/api.py` | REST API para acesso programático |
-| `src/notifications.py` | Email digest, Slack/Discord webhooks |
-| `src/dashboard.py` | Dashboard interativo com JS |
-| `src/workflow.py` | PR-based workflow com triage |
-| `src/salesforce.py` | Trailhead linking, org limits, sandbox readiness |
-| `src/health.py` | Health check (`/health`, `/ready`), Prometheus metrics (`/metrics`) |
-| `src/logger.py` | Logging estruturado com correlation IDs |
+    subgraph SCRAPE["🎭 2. SCRAPING"]
+        D --> E[Playwright Chromium]
+        E -->|SPA JavaScript| F[Feature Impact HTML]
+        E -->|Download| G[PDF Release-in-a-Box]
+        F --> H[Rate Limiter + Circuit Breaker]
+        H --> I[Cache content-hash]
+    end
+
+    subgraph PARSE["📋 3. PARSING"]
+        I --> J[FeatureImpactParser]
+        J -->|Extrair tabelas| K[Categorias + Features]
+        J -->|Hierarquia| L[Árvore de tópicos]
+    end
+
+    subgraph GENERATE["📦 4. GERAÇÃO"]
+        K --> M[MarkdownGenerator]
+        L --> M
+        M -->|pt_BR| N[releases/slug/pt_BR/*.md]
+        M -->|en_US| O[releases/slug/en_US/*.md]
+        M --> P[.meta.json]
+        M --> Q[README.md]
+    end
+
+    subgraph AI["🧠 5. ANÁLISE AI"]
+        P --> R[LLM Service]
+        R -->|OpenAI / Gemini| S[Classificação de impacto]
+        R --> T[Changelog inteligente]
+        R --> U[Relatório de regressões]
+        R --> V[Diff entre releases]
+        R --> W[Resumo executivo]
+    end
+
+    subgraph NOTIFY["📤 6. DISTRIBUIÇÃO"]
+        S --> X[GitHub Issues]
+        T --> Y[Email Digest]
+        U --> Z[Slack / Discord]
+        V --> AA[CHANGELOG.md]
+        W --> AB[QUALITY_REPORT.md]
+    end
+
+    style DETECT fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style SCRAPE fill:#E3F2FD,stroke:#2196F3,color:#000
+    style PARSE fill:#FFF3E0,stroke:#FF9800,color:#000
+    style GENERATE fill:#F3E5F5,stroke:#9C27B0,color:#000
+    style AI fill:#FCE4EC,stroke:#E91E63,color:#000
+    style NOTIFY fill:#E0F7FA,stroke:#00BCD4,color:#000
+```
+
+### Arquitetura em Camadas
+
+```mermaid
+flowchart LR
+    subgraph ENTRADA["🌐 Entrada"]
+        SF[Salesforce Help<br/>SPA JavaScript]
+        TH[Trailhead<br/>Módulos]
+    end
+
+    subgraph PIPELINE["⚙️ Pipeline"]
+        SCRAPER[🎭 Scraper<br/>Playwright]
+        PARSER[📋 Parser<br/>HTML/MD]
+        LLM[🧠 LLM<br/>OpenAI/Gemini]
+        GEN[📦 Generator<br/>Markdown]
+    end
+
+    subgraph RESILIENCIA["🛡️ Resiliência"]
+        CB[⚡ Circuit Breaker]
+        RL[🚦 Rate Limiter]
+        CACHE[💾 Cache Manager]
+        RETRY[🔄 Retry + Backoff]
+    end
+
+    subgraph SAIDA["📤 Saída"]
+        MD[📄 Markdown]
+        API[🌐 REST/GraphQL]
+        NOTIF[📧 Email/Slack]
+        GH[🐙 GitHub]
+        DASH[📊 Dashboard]
+    end
+
+    SF --> SCRAPER
+    TH --> GEN
+    SCRAPER --> PARSER
+    PARSER --> LLM
+    LLM --> GEN
+
+    SCRAPER --- CB
+    SCRAPER --- RL
+    SCRAPER --- CACHE
+    SCRAPER --- RETRY
+
+    GEN --> MD
+    GEN --> API
+    GEN --> NOTIF
+    GEN --> GH
+    GEN --> DASH
+
+    style ENTRADA fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style PIPELINE fill:#E3F2FD,stroke:#2196F3,color:#000
+    style RESILIENCIA fill:#FFF3E0,stroke:#FF9800,color:#000
+    style SAIDA fill:#F3E5F5,stroke:#9C27B0,color:#000
+```
 
 ---
 
-## 🤝 Como Contribuir
+## ⚡ Quick Start
 
-1. Faça o **Fork** do projeto
-2. Crie uma nova branch: `git checkout -b feature/minha-feature`
+### Pré-requisitos
+
+| Requisito | Versão | Instalação |
+|:----------|:-------|:-----------|
+| Python | 3.12+ | [python.org](https://www.python.org/) |
+| uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| Playwright | Chromium | `uv run playwright install chromium` |
+
+### Instalação
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
+cd Salesforce-WebDev
+
+# 2. Instale dependências
+uv sync --extra dev
+
+# 3. Instale o navegador Playwright
+uv run playwright install chromium
+
+# 4. Instale os hooks de pré-commit (ruff, black, mypy, pytest)
+uv run pre-commit install
+uv run pre-commit install --hook-type pre-push
+
+# 5. Configure as chaves LLM (pelo menos uma)
+export OPENAI_API_KEY="sk-..."    # ou
+export GOOGLE_API_KEY="AIza..."   # ou
+export OPENCODE_API_KEY="..."     # ou
+export MIMOCODE_API_KEY="..."
+```
+
+### Execução
+
+```bash
+# Pipeline completo
+uv run python src/main.py
+
+# Release específica
+uv run python src/main.py --release summer_26
+
+# Dry run (sem escrever arquivos)
+uv run python src/main.py --dry-run
+
+# Iniciar API server
+uv run python -c "from src.api import start_api_server; start_api_server()"
+
+# Iniciar health server
+uv run python -c "from src.health import start_health_server; start_health_server()"
+```
+
+---
+
+## 🛡️ Resiliência
+
+O pipeline foi projetado para operar de forma autônoma e resiliente:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Fechado: Início
+
+    Fechado --> Fechado: ✅ Sucesso
+    Fechado --> Aberto: ❌ 3 falhas consecutivas
+
+    Aberto --> Aberto: 🚫 Rejeita requests
+    Aberto --> MeioAberto: ⏱️ Cooldown 60s
+
+    MeioAberto --> Fechado: ✅ Probe sucesso
+    MeioAberto --> Aberto: ❌ Probe falha
+
+    state Fechado {
+        [*] --> Normal
+        Normal --> Normal: Operação normal
+    }
+
+    state Aberto {
+        [*] --> Cooldown
+        Cooldown --> Cooldown: Aguardando
+    }
+```
+
+| Componente | Configuração | Comportamento |
+|:-----------|:-------------|:--------------|
+| ⚡ **Circuit Breaker** | 3 falhas → 60s cooldown | Para após falhas consecutivas, retoma automaticamente |
+| 🚦 **Rate Limiter** | Token-bucket, 2 req/s | Respeita limites do Salesforce |
+| 🔄 **Retry** | 5 tentativas, backoff exponencial | `2^n` segundos + jitter aleatório |
+| 💾 **Cache TTL** | 24h (metadata), 30d (content-hash) | Evita refetch de conteúdo inalterado |
+| ⏱️ **Timeout** | 30s (HTTP), 60s (LLM) | Nunca fica preso indefinidamente |
+
+---
+
+## 🧪 Qualidade de Código
+
+```bash
+# Quality gate completa (mesma do CI)
+uv run ruff check src/          # Linter
+uv run black --check src/       # Formatter
+uv run mypy src/                # Type checker (strict)
+uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
+```
+
+| Ferramenta | Configuração | Status |
+|:-----------|:-------------|:------:|
+| 🐍 **Python** | 3.12-3.13, type hints completos | ✅ |
+| 🔍 **Mypy** | `strict = true` | ✅ |
+| ⚡ **Ruff** | `line-length = 100` | ✅ |
+| 🖤 **Black** | `target-version = py313` | ✅ |
+| 🧪 **Pytest** | 95%+ cobertura | ✅ |
+| 📦 **uv** | Lock file determinístico | ✅ |
+
+---
+
+## 🤖 Automação AI
+
+O pipeline utiliza LLM (OpenAI, Google Gemini, OpenCode, MiMoCode) para gerar conteúdo inteligente:
+
+### Enriquecimento de Features (`feature_enricher.py`)
+
+Cada feature das release notes recebe automaticamente:
+- **Descrição profissional** com contexto de negócio
+- **Classificação de impacto**: 🔴 Alto / 🟡 Médio / 🟢 Baixo
+- **Audiência identificada**: Usuários / Admins / Ambos
+
+```markdown
+| Recurso | Descrição | Impacto |
+| :--- | :--- | :---: |
+| **Voice Feature** | Permite interação por voz com Agentforce, reduzindo ~40% do tempo em tarefas repetitivas. | 🔴 alto |
+```
+
+### Resumos Executivos (`release_summarizer.py`)
+
+Cada release recebe um resumo completo com:
+- **Visão Geral**: 3-5 frases com escopo e foco principal
+- **Impacto para o Negócio**: valor concreto com exemplos reais
+- **Temas Estratégicos**: AI-First, Security, Developer Experience, etc.
+- **Top 5 Categorias**: com destaque e percentual
+- **Notas de Migração**: considerações para administradores
+
+### Introduções por Categoria
+
+Cada arquivo de categoria inclui:
+- Parágrafo introdutório AI sobre o tema e mudanças mais importantes
+- Linha de impacto: `🔴 5 alto | 🟡 12 médio | 🟢 3 baixo`
+
+### Cadeia de Fallback
+
+```
+OpenAI → Google Gemini → OpenCode → MiMoCode → Classificação Heurística
+```
+
+Quando nenhum LLM está disponível, o sistema usa classificação por keywords como fallback.
+
+---
+
+## 🌐 API
+
+O projeto expõe uma API REST + GraphQL standalone (zero dependências externas):
+
+### Autenticação
+
+Quando a variável de ambiente `API_KEY` está definida, todos os endpoints (exceto `/health`, `/ready`, `/metrics`, `/openapi.json`) requerem autenticação:
+
+```bash
+# Via header X-API-Key
+curl -H "X-API-Key: *** http://localhost:8081/releases
+
+# Via Authorization Bearer
+curl -H "Authorization: Bearer *** http://localhost:8081/releases
+```
+
+### REST
+
+```bash
+# Listar todas as releases
+curl http://localhost:8081/releases
+
+# Detalhes de uma release
+curl http://localhost:8081/releases/summer_26
+
+# Features de uma categoria
+curl http://localhost:8081/releases/summer_26/categories/agentforce
+
+# Comparar duas releases
+curl http://localhost:8081/diff/summer_26/spring_26
+```
+
+### GraphQL
+
+```bash
+# Query flexível
+curl -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ releases { name totalFeatures categories { name count } } }"}'
+```
+
+### Health & Metrics
+
+```bash
+# Health check
+curl http://localhost:8080/health
+
+# Readiness probe
+curl http://localhost:8080/ready
+
+# Prometheus metrics (prometheus-client quando instalado)
+curl http://localhost:8080/metrics
+```
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+Salesforce-WebDev/
+│
+├── 📂 src/                          # Código fonte
+│   ├── main.py                      # 🎯 Orquestrador principal + DI
+│   ├── orchestrator.py              # 🔄 Pipeline orchestrator
+│   ├── scraper.py                   # 🎭 Playwright + Circuit Breaker
+│   ├── parser.py                    # 📋 Parser HTML/Markdown
+│   ├── llm_service.py               # 🧠 Multi-provider LLM + Rate Limiting
+│   ├── feature_enricher.py          # 📝 Enriquecimento AI por feature
+│   ├── release_summarizer.py        # 📋 Resumos executivos por release
+│   ├── release_docs.py              # 📄 Geração de documentação por release
+│   ├── generator.py                 # 📦 Geração Markdown
+│   ├── config.py                    # ⚙️ Configuração central
+│   ├── exceptions.py                # ⚠️ Hierarquia de exceções
+│   ├── circuit_breaker.py           # ⚡ Circuit Breaker unificado
+│   ├── cache_manager.py             # 💾 Cache TTL + content-hash
+│   ├── health.py                    # 🏥 Health checks + Prometheus metrics
+│   ├── api.py                       # 🌐 REST + GraphQL + Auth + OpenAPI
+│   ├── events.py                    # 📡 EventBus pub/sub assíncrono
+│   ├── models.py                    # 📐 Modelos Pydantic
+│   ├── notifications.py             # 📧 Email/Slack/Discord
+│   ├── salesforce.py                # 🔗 Trailhead integration
+│   ├── feature_classifier.py        # 🏷️ Classificação via LLM
+│   ├── heuristic_classifier.py      # 🏷️ Classificação heurística (fallback)
+│   ├── impact_analyzer.py           # 📊 Análise de impacto
+│   ├── issue_triage.py              # 🐙 Triage automático
+│   ├── logger.py                    # 📝 Logging JSON + Sentry
+│   ├── translator.py                # 🌍 Tradução via LLM
+│   ├── dashboard.py                 # 📈 Dashboard HTML interativo
+│   ├── dashboard_template.html      # 🎨 Template do dashboard
+│   ├── nl_search.py                 # 🔍 Busca semântica
+│   ├── i18n.py                      # 🌐 Internacionalização
+│   └── automation/                  # 🤖 Pacote de automação AI
+│       ├── service.py               #    Facade principal
+│       ├── reporting.py             #    Relatórios AI (changelog, diff, resumos)
+│       ├── comparison.py            #    Comparação entre releases
+│       ├── impact.py                #    Scores de impacto + predição
+│       ├── content.py               #    Deduplicação + content-hash
+│       ├── export.py                #    Exportação JSON/CSV
+│       ├── github_ops.py            #    GitHub Issues
+│       ├── notifications.py         #    Notificações filtradas
+│       ├── models.py                #    Dataclasses
+│       └── badge.py                 #    Badges dinâmicos
+│
+├── 📂 releases/                     # 📄 Artefatos Markdown versionados
+│   ├── summer_26/                   #    v2.1.0
+│   ├── spring_26/                   #    v2.0.0
+│   └── winter_26/                   #    v2.2.0
+│
+├── 📂 tests/                        # 🧪 Testes pytest (95%+ cobertura)
+├── 📂 docs/                         # 📚 Documentação MkDocs
+├── 📂 k8s/                          # ☸️ Manifestos Kubernetes
+├── 📂 stubs/                        # 📝 Type stubs (tenacity, google-genai)
+├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
+│
+├── mkdocs.yml                       # 📖 Config MkDocs
+├── pyproject.toml                   # 📦 Config do projeto (Python >=3.12,<3.14)
+├── uv.lock                          # 🔒 Lock file
+├── Dockerfile                       # 🐳 Multi-stage build
+└── .pre-commit-config.yaml          # 🪝 Pre-commit hooks
+```
+
+---
+
+## 🤝 Contribuição
+
+```mermaid
+flowchart LR
+    A[Fork] --> B[Branch]
+    B --> C[Code]
+    C --> D[Quality Gate]
+    D --> E[PR]
+    E --> F[Review]
+    F --> G[Merge]
+
+    style A fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style B fill:#E3F2FD,stroke:#2196F3,color:#000
+    style C fill:#FFF3E0,stroke:#FF9800,color:#000
+    style D fill:#FCE4EC,stroke:#E91E63,color:#000
+    style E fill:#F3E5F5,stroke:#9C27B0,color:#000
+    style F fill:#E0F7FA,stroke:#00BCD4,color:#000
+    style G fill:#E8F5E9,stroke:#4CAF50,color:#000
+```
+
+1. **Fork** o repositório
+2. Crie uma branch: `git checkout -b feature/minha-feature`
 3. Instale dependências: `uv sync --extra dev`
-4. Execute a quality gate:
+4. Execute a quality gate completa:
    ```bash
-   uv run ruff check src/
-   uv run black --check src/
-   uv run mypy src/
-   uv run pytest tests/ --cov=src --cov-fail-under=99
+   uv run ruff check src/ && uv run black --check src/ && uv run mypy src/ && uv run pytest --cov=src --cov-fail-under=95
    ```
-5. Faça o commit: `git commit -m 'feat: descrição da alteração'`
-6. Envie: `git push origin feature/minha-feature`
+5. Commit: `git commit -m 'feat: descrição da alteração'`
+6. Push: `git push origin feature/minha-feature`
 7. Abra um **Pull Request**
 
 ---
@@ -1203,3 +1193,13 @@ Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de I
 ## 📄 Licença
 
 Este projeto é mantido para fins educacionais e de referência técnica.
+
+---
+
+<div align="center">
+
+**Feito com ☕ e código Python**
+
+[⬆ Voltar ao topo](#-salesforce-release-notes-intelligence)
+
+</div>
