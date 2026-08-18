@@ -1,8 +1,29 @@
 {
-  "executive_summary": "A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.",
+  "executive_summary": "A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 1373 novos recursos distribuídos em 22 categorias.",
   "category_summaries": {
-    "Test Cat": "A categoria Test Cat reúne 0 recursos referentes a test cat. Esta categoria abrange melhorias e novas funcionalidades para test cat."
+    "Documentação legal": "A categoria Documentação legal reúne 6 recursos referentes a documentação legal. Esta categoria abrange melhorias e novas funcionalidades para documentação legal.",
+    "Salesforce geral": "A categoria Salesforce geral reúne 36 recursos referentes a salesforce geral. Esta categoria abrange melhorias e novas funcionalidades para salesforce geral.",
+    "Agentforce": "A categoria Agentforce reúne 37 recursos referentes a agentforce. Esta categoria abrange melhorias e novas funcionalidades para agentforce.",
+    "Análise de dados": "A categoria Análise de dados reúne 58 recursos referentes a análise de dados. Esta categoria abrange melhorias e novas funcionalidades para análise de dados.",
+    "Automação": "A categoria Automação reúne 118 recursos referentes a automação. Esta categoria abrange melhorias e novas funcionalidades para automação.",
+    "OmniStudio": "A categoria OmniStudio reúne 9 recursos referentes a omnistudio. Esta categoria abrange melhorias e novas funcionalidades para omnistudio.",
+    "Personalização": "A categoria Personalização reúne 33 recursos referentes a personalização. Esta categoria abrange melhorias e novas funcionalidades para personalização.",
+    "Data 360": "A categoria Data 360 reúne 72 recursos referentes a data 360. Esta categoria abrange melhorias e novas funcionalidades para data 360.",
+    "Desenvolvimento": "A categoria Desenvolvimento reúne 127 recursos referentes a desenvolvimento. Esta categoria abrange melhorias e novas funcionalidades para desenvolvimento.",
+    "Experience Cloud": "A categoria Experience Cloud reúne 14 recursos referentes a experience cloud. Esta categoria abrange melhorias e novas funcionalidades para experience cloud.",
+    "Field Service": "A categoria Field Service reúne 48 recursos referentes a field service. Esta categoria abrange melhorias e novas funcionalidades para field service.",
+    "Hyperforce": "A categoria Hyperforce reúne 3 recursos referentes a hyperforce. Esta categoria abrange melhorias e novas funcionalidades para hyperforce.",
+    "Setores": "A categoria Setores reúne 309 recursos referentes a setores. Esta categoria abrange melhorias e novas funcionalidades para setores.",
+    "Marketing": "A categoria Marketing reúne 64 recursos referentes a marketing. Esta categoria abrange melhorias e novas funcionalidades para marketing.",
+    "MuleSoft": "A categoria MuleSoft reúne 8 recursos referentes a mulesoft. Esta categoria abrange melhorias e novas funcionalidades para mulesoft.",
+    "Aplicativo móvel": "A categoria Aplicativo móvel reúne 17 recursos referentes a aplicativo móvel. Esta categoria abrange melhorias e novas funcionalidades para aplicativo móvel.",
+    "Partner Cloud": "A categoria Partner Cloud reúne 1 recursos referentes a partner cloud. Esta categoria abrange melhorias e novas funcionalidades para partner cloud.",
+    "Gerenciamento de receita": "A categoria Gerenciamento de receita reúne 97 recursos referentes a gerenciamento de receita. Esta categoria abrange melhorias e novas funcionalidades para gerenciamento de receita.",
+    "Vendas": "A categoria Vendas reúne 58 recursos referentes a vendas. Esta categoria abrange melhorias e novas funcionalidades para vendas.",
+    "Integrações do Salesforce para Slack": "A categoria Integrações do Salesforce para Slack reúne 2 recursos referentes a integrações do salesforce para slack. Esta categoria abrange melhorias e novas funcionalidades para integrações do salesforce para slack.",
+    "Segurança, identidade e privacidade": "A categoria Segurança, identidade e privacidade reúne 58 recursos referentes a segurança, identidade e privacidade. Esta categoria abrange melhorias e novas funcionalidades para segurança, identidade e privacidade.",
+    "Serviço": "A categoria Serviço reúne 198 recursos referentes a serviço. Esta categoria abrange melhorias e novas funcionalidades para serviço."
   },
-  "generated_at": "/home/runner/work/Salesforce-WebDev/Salesforce-WebDev",
+  "generated_at": "/home/work/.openclaw/workspace/Salesforce-WebDev",
   "fallback": true
 }
