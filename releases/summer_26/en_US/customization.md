@@ -45,8 +45,8 @@ Permissões de modo de exibição de lista mais granulares permitem que os usuá
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_queues_hierarchies.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_owd_parallel.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_all_restricted_users_group.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_apex_recalc_ru.htm&language=pt_BR&release=262&type=5) |
+| **Expand access for Unified Employee license users** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_all_restricted_users_group.htm&language=pt_BR&release=262&type=5) |
+| **Update Apex Code and Flows to Change Sharing Recalculation Behavior (Release Update)** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_sharing_apex_recalc_ru.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_customization_general.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_improved_support_for_custom_fields_on_standard_entities.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_listviews_share_private.htm&language=pt_BR&release=262&type=5) |
