@@ -57,7 +57,13 @@ class ReleaseSummarizer:
 
     def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._llm = llm or LLMService()
+        if llm is not None:
+            self._llm = llm
+        else:
+            try:
+                self._llm = LLMService()
+            except ValueError:
+                self._llm = None  # type: ignore[assignment]
 
     async def summarize(self, release_slug: str) -> ReleaseSummary | None:
         """Generate a comprehensive summary for a release.
@@ -225,7 +231,7 @@ class ReleaseSummarizer:
             f"Content by category:\n\n{full_content}"
         )
 
-        result = await self._llm.generate_text(user_prompt, system_prompt)
+        result = await self._llm.generate_text(user_prompt, system_prompt) if self._llm else None
 
         if result:
             parsed = self._parse_llm_response(result, release_slug, release_name, meta)

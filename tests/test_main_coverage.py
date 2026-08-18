@@ -650,7 +650,8 @@ async def testupdate_readme_all_english_with_heading(tmp_path: Path) -> None:
 
     mock_summarizer = MagicMock()
     mock_summary = MagicMock()
-    mock_summary.summary_text = "Executive summary text here"
+    mock_summary.executive_summary = "Executive summary text here"
+    mock_summary.category_summaries = {"Admin": "Admin category summary"}
     mock_summarizer.summarize = AsyncMock(return_value=mock_summary)
 
     original_dir = Path.cwd()
