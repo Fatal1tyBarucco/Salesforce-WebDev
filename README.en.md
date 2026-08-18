@@ -151,20 +151,29 @@ uv run mypy src/
 
 
 
+
+
+
+
+
+
+
+
+
 ## 📋 Releases Disponíveis
 
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 
 ### ☀️ Summer '26
 
-> 📊 **Executive Summary:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 0 novos recursos distribuídos em 1 categorias.
+> 📊 **Executive Summary:** A release Summer '26 representa uma atualização significativa do ecossistema Salesforce, com 1373 novos recursos distribuídos em 22 categorias.
 
 
 <details>
 <summary><b>📄 Legal Documentation (6 features)</b></summary>
 
 
-> The Legal Documentation category contains 6 resources dedicated to terms updates, policies, and legal compliance of the Salesforce platform.
+> A categoria Documentação legal reúne 6 recursos referentes a documentação legal. Esta categoria abrange melhorias e novas funcionalidades para documentação legal.
 
 > 📄 Full details: [./releases/summer_26/en_US/documentacao_legal.md](./releases/summer_26/en_US/documentacao_legal.md)
 
@@ -175,7 +184,7 @@ uv run mypy src/
 <summary><b>📄 Salesforce General (36 features)</b></summary>
 
 
-> General Salesforce brings together 36 resources with cross-cutting platform changes. Highlights include certificate rotation, enhanced domain validation, mTLS certificate updates, and IPv6 preparation.
+> A categoria Salesforce geral reúne 36 recursos referentes a salesforce geral. Esta categoria abrange melhorias e novas funcionalidades para salesforce geral.
 
 > 📄 Full details: [./releases/summer_26/en_US/salesforce_geral.md](./releases/summer_26/en_US/salesforce_geral.md)
 
@@ -186,7 +195,7 @@ uv run mypy src/
 <summary><b>📄 Agentforce (37 features)</b></summary>
 
 
-> Agentforce receives 37 resources with highlights including clearer transcription and more natural voice for Agentforce Voice, expanded support for 24 languages (beta), agent observability with refined analysis (beta), MCP interoperability, and Agentforce Policies for protecting external API connections.
+> A categoria Agentforce reúne 37 recursos referentes a agentforce. Esta categoria abrange melhorias e novas funcionalidades para agentforce.
 
 > 📄 Full details: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
 
@@ -197,7 +206,7 @@ uv run mypy src/
 <summary><b>📄 Data Analysis (58 features)</b></summary>
 
 
-> Data Analysis includes 58 resources. Tableau Next receives marketplace templates, Tableau Audit (beta) for user interaction visibility, and monthly feature releases.
+> A categoria Análise de dados reúne 58 recursos referentes a análise de dados. Esta categoria abrange melhorias e novas funcionalidades para análise de dados.
 
 > 📄 Full details: [./releases/summer_26/en_US/analise_de_dados.md](./releases/summer_26/en_US/analise_de_dados.md)
 
@@ -208,7 +217,7 @@ uv run mypy src/
 <summary><b>📄 Automation (118 features)</b></summary>
 
 
-> Automation receives 118 resources with Agentforce agent creation directly in Flow Builder, batch for scheduled flows, collapsible failure paths, and simplified resource location in prompt instructions.
+> A categoria Automação reúne 118 recursos referentes a automação. Esta categoria abrange melhorias e novas funcionalidades para automação.
 
 > 📄 Full details: [./releases/summer_26/en_US/automacao.md](./releases/summer_26/en_US/automacao.md)
 
@@ -219,7 +228,7 @@ uv run mypy src/
 <summary><b>📄 OmniStudio (9 features)</b></summary>
 
 
-> OmniStudio offers 9 resources with Data Mapper version control, migration assistant to standard runtime, and OmniStudio MCP (beta) for FlexCards.
+> A categoria OmniStudio reúne 9 recursos referentes a omnistudio. Esta categoria abrange melhorias e novas funcionalidades para omnistudio.
 
 > 📄 Full details: [./releases/summer_26/en_US/omnistudio.md](./releases/summer_26/en_US/omnistudio.md)
 
@@ -230,7 +239,7 @@ uv run mypy src/
 <summary><b>📄 Customization (33 features)</b></summary>
 
 
-> Customization offers 33 resources with MCP server exploration in AgentExchange, Agentforce registry MCP server integration, and enhanced asset details page for agent assets.
+> A categoria Personalização reúne 33 recursos referentes a personalização. Esta categoria abrange melhorias e novas funcionalidades para personalização.
 
 > 📄 Full details: [./releases/summer_26/en_US/personalizacao.md](./releases/summer_26/en_US/personalizacao.md)
 
@@ -241,7 +250,7 @@ uv run mypy src/
 <summary><b>📄 Data 360 (72 features)</b></summary>
 
 
-> Data 360 presents 72 resources with Databricks data ingestion (GA), governance metadata migration from sandbox to production, and in-app guidance (beta).
+> A categoria Data 360 reúne 72 recursos referentes a data 360. Esta categoria abrange melhorias e novas funcionalidades para data 360.
 
 > 📄 Full details: [./releases/summer_26/en_US/data_360.md](./releases/summer_26/en_US/data_360.md)
 
@@ -252,7 +261,7 @@ uv run mypy src/
 <summary><b>📄 Development (127 features)</b></summary>
 
 
-> Development brings together 127 resources with LWC API v67.0, state management for components (GA), individual component preview in browser and VS Code (GA), and enhanced hot reload.
+> A categoria Desenvolvimento reúne 127 recursos referentes a desenvolvimento. Esta categoria abrange melhorias e novas funcionalidades para desenvolvimento.
 
 > 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
 
@@ -263,7 +272,7 @@ uv run mypy src/
 <summary><b>📄 Experience Cloud (14 features)</b></summary>
 
 
-> Experience Cloud includes 14 resources with malware scanning in Salesforce Files (GA), files up to 10 GB, and AI-assisted self-service in Aura and LWR sites.
+> A categoria Experience Cloud reúne 14 recursos referentes a experience cloud. Esta categoria abrange melhorias e novas funcionalidades para experience cloud.
 
 > 📄 Full details: [./releases/summer_26/en_US/experience_cloud.md](./releases/summer_26/en_US/experience_cloud.md)
 
@@ -274,7 +283,7 @@ uv run mypy src/
 <summary><b>📄 Field Service (48 features)</b></summary>
 
 
-> Field Service receives 48 resources with scheduling agents in the new Agentforce Builder, autonomous scheduling expanded to leads, and agent reach extended to email.
+> A categoria Field Service reúne 48 recursos referentes a field service. Esta categoria abrange melhorias e novas funcionalidades para field service.
 
 > 📄 Full details: [./releases/summer_26/en_US/field_service.md](./releases/summer_26/en_US/field_service.md)
 
@@ -285,7 +294,7 @@ uv run mypy src/
 <summary><b>📄 Hyperforce (3 features)</b></summary>
 
 
-> Hyperforce presents 3 resources with Salesforce access in more regions, new Government Cloud Defense features, and advanced cross-region continuity.
+> A categoria Hyperforce reúne 3 recursos referentes a hyperforce. Esta categoria abrange melhorias e novas funcionalidades para hyperforce.
 
 > 📄 Full details: [./releases/summer_26/en_US/hyperforce.md](./releases/summer_26/en_US/hyperforce.md)
 
@@ -296,7 +305,7 @@ uv run mypy src/
 <summary><b>📄 Industries (309 features)</b></summary>
 
 
-> Industries dominates with 309 resources with asset lifecycle management, timesheet optimization, Agentforce timesheet editing, and automatic idle schedule entries.
+> A categoria Setores reúne 309 recursos referentes a setores. Esta categoria abrange melhorias e novas funcionalidades para setores.
 
 > 📄 Full details: [./releases/summer_26/en_US/setores.md](./releases/summer_26/en_US/setores.md)
 
@@ -307,7 +316,7 @@ uv run mypy src/
 <summary><b>📄 Marketing (64 features)</b></summary>
 
 
-> Marketing includes 64 resources via Marketing Cloud Next with audience creation, content design, campaign management, and marketing-sales alignment.
+> A categoria Marketing reúne 64 recursos referentes a marketing. Esta categoria abrange melhorias e novas funcionalidades para marketing.
 
 > 📄 Full details: [./releases/summer_26/en_US/marketing.md](./releases/summer_26/en_US/marketing.md)
 
@@ -318,7 +327,7 @@ uv run mypy src/
 <summary><b>📄 MuleSoft (8 features)</b></summary>
 
 
-> MuleSoft presents 8 resources with MCP servers in the API catalog (GA), agent-to-MCP tool mapping, and MuleSoft integration intelligence.
+> A categoria MuleSoft reúne 8 recursos referentes a mulesoft. Esta categoria abrange melhorias e novas funcionalidades para mulesoft.
 
 > 📄 Full details: [./releases/summer_26/en_US/mulesoft.md](./releases/summer_26/en_US/mulesoft.md)
 
@@ -329,7 +338,7 @@ uv run mypy src/
 <summary><b>📄 Mobile App (17 features)</b></summary>
 
 
-> The Mobile App evolves with 17 resources with Mobile AI Transcription, Liquid Glass UI, default email login, and home page personalization (beta).
+> A categoria Aplicativo móvel reúne 17 recursos referentes a aplicativo móvel. Esta categoria abrange melhorias e novas funcionalidades para aplicativo móvel.
 
 > 📄 Full details: [./releases/summer_26/en_US/aplicativo_movel.md](./releases/summer_26/en_US/aplicativo_movel.md)
 
@@ -340,7 +349,7 @@ uv run mypy src/
 <summary><b>📄 Partner Cloud (1 features)</b></summary>
 
 
-> Partner Cloud offers 1 resource for configuring co-branded partner emails in Salesforce Go.
+> A categoria Partner Cloud reúne 1 recursos referentes a partner cloud. Esta categoria abrange melhorias e novas funcionalidades para partner cloud.
 
 > 📄 Full details: [./releases/summer_26/en_US/partner_cloud.md](./releases/summer_26/en_US/partner_cloud.md)
 
@@ -351,7 +360,7 @@ uv run mypy src/
 <summary><b>📄 Revenue Management (97 features)</b></summary>
 
 
-> Revenue Management expands to 97 resources with Dunning Orchestration, Rule-Based Discovery, extended decimal support, and product variations.
+> A categoria Gerenciamento de receita reúne 97 recursos referentes a gerenciamento de receita. Esta categoria abrange melhorias e novas funcionalidades para gerenciamento de receita.
 
 > 📄 Full details: [./releases/summer_26/en_US/gerenciamento_de_receita.md](./releases/summer_26/en_US/gerenciamento_de_receita.md)
 
@@ -362,7 +371,7 @@ uv run mypy src/
 <summary><b>📄 Sales (58 features)</b></summary>
 
 
-> Sales consolidates Sales Cloud as Agentforce Sales with 58 resources including group calendar, agent transfer, Agentforce qualification, and lead nurturing agent activity insights.
+> A categoria Vendas reúne 58 recursos referentes a vendas. Esta categoria abrange melhorias e novas funcionalidades para vendas.
 
 > 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
 
@@ -373,7 +382,7 @@ uv run mypy src/
 <summary><b>📄 Salesforce Slack Integrations (2 features)</b></summary>
 
 
-> Salesforce Slack Integrations offer 2 resources with collaboration in new organizations and Salesforce channels in the Slack dashboard.
+> A categoria Integrações do Salesforce para Slack reúne 2 recursos referentes a integrações do salesforce para slack. Esta categoria abrange melhorias e novas funcionalidades para integrações do salesforce para slack.
 
 > 📄 Full details: [./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md)
 
@@ -384,7 +393,7 @@ uv run mypy src/
 <summary><b>📄 Security, Identity & Privacy (58 features)</b></summary>
 
 
-> Security, Identity & Privacy brings together 58 resources with native backup and recovery (including on-demand in India), incident alert security contact, and unified admin security content.
+> A categoria Segurança, identidade e privacidade reúne 58 recursos referentes a segurança, identidade e privacidade. Esta categoria abrange melhorias e novas funcionalidades para segurança, identidade e privacidade.
 
 > 📄 Full details: [./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md](./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md)
 
@@ -395,7 +404,7 @@ uv run mypy src/
 <summary><b>📄 Service (198 features)</b></summary>
 
 
-> Service contains 198 resources with Agentforce Connection Center, Voice-to-representative conversation transfer, flexible scheduled callbacks, and Voice number portability.
+> A categoria Serviço reúne 198 recursos referentes a serviço. Esta categoria abrange melhorias e novas funcionalidades para serviço.
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
 

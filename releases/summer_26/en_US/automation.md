@@ -37,8 +37,8 @@ Crie fluxos de trabalho inteligentes com o Flow Builder e o Flow Orchestration. 
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_exit_rules_events.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_additional_conditions_re_entry.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_enhanced_engagement_signals.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_element_analytics_date_range.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_path_experiment_outcome_metrics.htm&language=pt_BR&release=262&type=5) |
+| **Filter Element Analytics by Date Range** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_element_analytics_date_range.htm&language=pt_BR&release=262&type=5) |
+| **View Path Outcome Metrics for Path Experiment** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_path_experiment_outcome_metrics.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_send_log_data.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_marketing_cloud_citizen_users_view_flow_usage.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_automate_flow_data_360.htm&language=pt_BR&release=262&type=5) |

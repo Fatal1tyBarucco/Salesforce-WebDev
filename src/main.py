@@ -204,6 +204,76 @@ async def _process_release_analytics(
         logger.warning("Notification digest failed: %s", e)
 
 
+def _load_meta_for_release(release_slug: str) -> dict[str, Any]:
+    """Load .meta.json for a release as the source of truth."""
+    meta_path = Path(RELEASES_DIR) / release_slug / ".meta.json"
+    if meta_path.exists():
+        try:
+            result: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
+            return result
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning("Could not read .meta.json for %s: %s", release_slug, e)
+    return {}
+
+
+def _validate_summary_cache(
+    cache: dict[str, Any],
+    meta: dict[str, Any],
+    release_slug: str,
+) -> bool:
+    """Validate summary cache against .meta.json.
+
+    Returns True if cache is valid, False if it should be discarded.
+    """
+    meta_total = meta.get("total_features", 0)
+    meta_cats = meta.get("categories", [])
+    meta_cat_count = len(meta_cats)
+
+    exec_text = cache.get("executive_summary", "")
+    cache_cats = cache.get("category_summaries", {})
+    cache_cat_count = len(cache_cats)
+
+    # Check 1: executive_summary says 0 features but meta has data
+    if meta_total > 0 and "0 novos recursos" in exec_text:
+        logger.warning(
+            "Cache validation failed for %s: says '0 recursos' but meta has %d",
+            release_slug,
+            meta_total,
+        )
+        return False
+
+    # Check 2: no category summaries for a release that has categories
+    if meta_cat_count > 0 and cache_cat_count == 0:
+        logger.warning(
+            "Cache validation failed for %s: 0 category_summaries but meta has %d categories",
+            release_slug,
+            meta_cat_count,
+        )
+        return False
+
+    # Check 3: category count mismatch (cache has far fewer than meta)
+    if meta_cat_count > 0 and cache_cat_count < meta_cat_count // 2:
+        logger.warning(
+            "Cache validation failed for %s: only %d/%d category summaries",
+            release_slug,
+            cache_cat_count,
+            meta_cat_count,
+        )
+        return False
+
+    # Check 4: executive_summary suspiciously short for large releases
+    if len(exec_text) < 100 and meta_total > 100:
+        logger.warning(
+            "Cache validation failed for %s: summary too short (%d chars) for %d features",
+            release_slug,
+            len(exec_text),
+            meta_total,
+        )
+        return False
+
+    return True
+
+
 async def generate_summary_cache(
     release: ReleaseInfo,
     categories: list[Any],
@@ -214,9 +284,11 @@ async def generate_summary_cache(
     Uses the existing ReleaseSummarizer (LLM-powered) to generate
     professional executive summaries and per-category breakdowns.
     Falls back to metadata-based summaries when LLM is unavailable.
+    Always validates against .meta.json as the source of truth.
     """
     release_dir = Path(RELEASES_DIR) / release.slug
     summary_cache_path = release_dir / ".summary_cache.json"
+    meta = _load_meta_for_release(release.slug)
 
     # Try AI-powered summarization via ReleaseSummarizer
     if llm is not None:
@@ -227,70 +299,67 @@ async def generate_summary_cache(
             summary = await summarizer.summarize(release.slug)
 
             if summary:
-                # Validate AI summary before writing to cache
-                exec_text = summary.executive_summary
-                total = summary.total_features
-                ai_is_valid = True
+                ai_cache: dict[str, Any] = {
+                    "executive_summary": summary.executive_summary,
+                    "category_summaries": summary.category_summaries,
+                    "business_impact": summary.business_impact,
+                    "strategic_themes": summary.strategic_themes,
+                    "migration_notes": summary.migration_notes,
+                    "generated_at": str(Path.cwd()),
+                }
 
-                if total > 0 and "0 novos recursos" in exec_text:
-                    logger.warning(
-                        "AI summary validation failed: says '0 recursos' but meta has %d. "
-                        "Skipping AI cache, will use fallback.",
-                        total,
-                    )
-                    ai_is_valid = False
-
-                if len(summary.category_summaries) == 0 and total > 0:
-                    logger.warning(
-                        "AI summary validation failed: no category_summaries for %d features. "
-                        "Skipping AI cache, will use fallback.",
-                        total,
-                    )
-                    ai_is_valid = False
-
-                if ai_is_valid:
-                    summary_cache: dict[str, Any] = {
-                        "executive_summary": summary.executive_summary,
-                        "category_summaries": summary.category_summaries,
-                        "business_impact": summary.business_impact,
-                        "strategic_themes": summary.strategic_themes,
-                        "migration_notes": summary.migration_notes,
-                        "generated_at": str(Path.cwd()),
-                    }
-
+                if _validate_summary_cache(ai_cache, meta, release.slug):
                     summary_cache_path.write_text(
-                        json.dumps(summary_cache, indent=2, ensure_ascii=False),
+                        json.dumps(ai_cache, indent=2, ensure_ascii=False),
                         encoding="utf-8",
                     )
                     logger.info("AI-generated summary cache saved to %s", summary_cache_path)
                     return
                 else:
-                    logger.info("AI summary invalid, falling through to fallback")
+                    logger.info("AI summary invalid against meta, falling through to fallback")
         except (LLMError, OSError, ImportError) as e:
             logger.warning("AI summary generation failed: %s", e)
 
-    # Fallback: Generate basic summaries from categories metadata
+    # Fallback: Generate summaries using .meta.json as source of truth
     try:
+        meta_cats = meta.get("categories", [])
+        meta_total = meta.get("total_features", 0)
+
+        # Use meta categories if available, otherwise fall back to in-memory categories
+        if meta_cats:
+            cat_source = meta_cats
+            cat_total = meta_total
+        elif categories:
+            cat_source = categories
+            cat_total = 0
+        else:
+            logger.error("No categories available (meta or memory) for %s", release.slug)
+            return
+
         basic_summaries: dict[str, str] = {}
-        total = 0
-        for category in categories:
-            # Support both dict and FeatureImpactCategory
+        computed_total = 0
+        for category in cat_source:
             if isinstance(category, dict):
                 category_name = category.get("name", "")
                 count = category.get("count", 0)
             else:
                 category_name = getattr(category, "name", "")
                 count = getattr(category, "total_features", 0)
-            total += count
+            computed_total += count
             basic_summaries[category_name] = (
                 f"A categoria {category_name} reúne {count} recursos referentes a "
                 f"{category_name.lower()}. Esta categoria abrange melhorias e "
                 f"novas funcionalidades para {category_name.lower()}."
             )
+
+        # Use meta total if available (most reliable), otherwise computed
+        total = cat_total if cat_total > 0 else computed_total
+        cat_count = len(cat_source)
+
         executive_summary = (
             f"A release {release.name} representa uma atualização significativa "
             f"do ecossistema Salesforce, com {total} novos recursos "
-            f"distribuídos em {len(categories)} categorias."
+            f"distribuídos em {cat_count} categorias."
         )
 
         fallback_cache: dict[str, Any] = {
@@ -299,13 +368,15 @@ async def generate_summary_cache(
             "generated_at": str(Path.cwd()),
             "fallback": True,
         }
-        summary_cache = fallback_cache
 
-        summary_cache_path.write_text(
-            json.dumps(summary_cache, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        logger.info("Fallback summary cache saved to %s", summary_cache_path)
+        if _validate_summary_cache(fallback_cache, meta, release.slug):
+            summary_cache_path.write_text(
+                json.dumps(fallback_cache, indent=2, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            logger.info("Fallback summary cache saved to %s", summary_cache_path)
+        else:
+            logger.error("Fallback summary also invalid for %s — not writing cache", release.slug)
     except (OSError, TypeError, ValueError) as e:
         logger.error("Failed to generate fallback summary cache: %s", e)
 

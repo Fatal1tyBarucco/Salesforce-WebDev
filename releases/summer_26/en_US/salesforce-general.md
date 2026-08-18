@@ -51,9 +51,9 @@ Atualizações de versão
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_people_scoring.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ✅ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_web_tracking.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ❌ | ❌ | ✅ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_general_foundations_invoices.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_data_pipelines.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
-| **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
+| **Salesforce Data Pipelines** ⚠️ | ❌ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_salesforce_data_pipelines.htm&language=pt_BR&release=262&type=5) |
+| **Increase Performance and Reliability with the Salesforce Data Pipelines Recipe Inspector** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_inspector.htm&language=pt_BR&release=262&type=5) |
+| **Export revenue schedules to your external calendar for easy tracking** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_schedule_export.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_recipe_upload_download.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_optimized_upsert_delete_ga.htm&language=pt_BR&release=262&type=5) |
 | **Not Found** | ✅ | ❌ | ❌ | ❌ | [🔗](https://help.salesforce.com/s/articleView?id=release-notes.rn_data_pipelines_integrate_azure_data_lake_output_connection_ga.htm&language=pt_BR&release=262&type=5) |

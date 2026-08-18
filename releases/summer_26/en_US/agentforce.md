@@ -1,13 +1,13 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../en_US/agentforce.md" style="text-decoration:none;font-weight:bold;">🇺🇸 English</a> &nbsp;|&nbsp; <a href="../pt_BR/agentforce.md" style="text-decoration:none;">🇧🇷 Português</a></div>
 ## Agentforce
 
-> **68 features** | 🔴 1 alto impacto | 🟡 0 médio | 🟢 0 baixo
+> **68 features**
 
-A categoria Agentforce na release Summer '26 traz avanços significativos na automação autônoma orientada por inteligência artificial, expandindo as capacidades de interação multimodal da plataforma. O foco principal destas atualizações é capacitar agentes virtuais a executarem tarefas complexas com maior autonomia, naturalidade e precisão contextual. Com isso, as empresas podem dimensionar suas operações de atendimento e vendas mantendo alto padrão de personalização e eficiência.
+Categoria **Agentforce** com 1 recursos nesta release.
 
 | Feature | Descrição | Impacto |
 | :--- | :--- | :---: |
-| **Voice feature** — _usuários, admins_ | Permite que os agentes autônomos do Agentforce interajam diretamente por voz em tempo real, processando linguagem natura… | 🔴 alto |
+| **Voice feature** — _usuários, admins_ | Recurso 'Voice feature' disponível na release. Disponibilidade: usuários, admins. | 🟢 baixo |
 
 ## 🎓 Related Trailhead Modules
 
