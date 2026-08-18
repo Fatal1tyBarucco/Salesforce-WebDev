@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -79,7 +79,7 @@ jobs:
     needs: lint
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -135,6 +135,49 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           MIMOCODE_API_KEY: ${{ secrets.MIMOCODE_API_KEY }}
+
+      - name: Validar caches de resumo contra meta.json
+        if: steps.params.outputs.dry_run == 'false'
+        run: |
+          echo "🔍 Validating summary caches against .meta.json..."
+          ERRORS=0
+          for meta_file in releases/*/.meta.json; do
+            [ -f "$meta_file" ] || continue
+            dir=$(dirname "$meta_file")
+            slug=$(basename "$dir")
+            cache_file="$dir/.summary_cache.json"
+
+            if [ ! -f "$cache_file" ]; then
+              echo "⚠️  $slug: no .summary_cache.json found"
+              continue
+            fi
+
+            # Extract meta total_features
+            meta_total=$(python3 -c "import json; print(json.load(open('$meta_file')).get('total_features', 0))")
+            cache_exec=$(python3 -c "import json; print(json.load(open('$cache_file')).get('executive_summary', ''))")
+            cache_cat_count=$(python3 -c "import json; print(len(json.load(open('$cache_file')).get('category_summaries', {})))")
+
+            echo "📋 $slug: meta=$meta_total features, cache_cats=$cache_cat_count"
+
+            # Check: cache says 0 features but meta has data
+            if [ "$meta_total" -gt 0 ] && echo "$cache_exec" | grep -q '0 novos recursos'; then
+              echo "❌ $slug: cache says '0 recursos' but meta has $meta_total"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Check: no category summaries for release with categories
+            meta_cat_count=$(python3 -c "import json; print(len(json.load(open('$meta_file')).get('categories', [])))")
+            if [ "$meta_cat_count" -gt 0 ] && [ "$cache_cat_count" -eq 0 ]; then
+              echo "❌ $slug: 0 category_summaries but meta has $meta_cat_count categories"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "❌ Found $ERRORS invalid cache(s). Pipeline will still commit other changes."
+          else
+            echo "✅ All summary caches are valid"
+          fi
 
       - name: Verificar alterações geradas
         id: git_status

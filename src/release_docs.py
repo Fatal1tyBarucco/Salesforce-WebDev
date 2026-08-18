@@ -401,12 +401,6 @@ def _update_readme_single(
 
     import json
 
-    if meta_path.exists():
-        existing = json.loads(meta_path.read_text(encoding="utf-8"))
-        if existing.get("categories"):
-            logger.debug("Skipping .meta.json write for %s (already has data)", release.slug)
-            return
-
     total_features = 0
     total_confidence = 0.0
     cat_list: list[dict[str, object]] = []
@@ -541,11 +535,37 @@ async def _build_release_block(
         summary_text = ""
         cat_summaries: dict[str, str] = {}
         if summary:
-            if lang == "pt_BR":
-                summary_text = f"> 📊 **Resumo Executivo:** {summary.executive_summary[:5000]}\n"
-            else:
-                summary_text = f"> 📊 **Executive Summary:** {summary.executive_summary[:5000]}\n"
-            cat_summaries = summary.category_summaries
+            # Validate summary against meta to avoid showing bad data
+            meta_total = meta.get("total_features", 0)
+            meta_cat_count = len(meta.get("categories", []))
+            summary_is_valid = True
+
+            if meta_total > 0 and "0 novos recursos" in summary.executive_summary:
+                logger.warning(
+                    "README: summary for %s says '0 recursos' but meta has %d — using fallback",
+                    slug,
+                    meta_total,
+                )
+                summary_is_valid = False
+
+            if meta_cat_count > 0 and len(summary.category_summaries) == 0:
+                logger.warning(
+                    "README: summary for %s has 0 category_summaries but meta has %d — using fallback",
+                    slug,
+                    meta_cat_count,
+                )
+                summary_is_valid = False
+
+            if summary_is_valid:
+                if lang == "pt_BR":
+                    summary_text = (
+                        f"> 📊 **Resumo Executivo:** {summary.executive_summary[:5000]}\n"
+                    )
+                else:
+                    summary_text = (
+                        f"> 📊 **Executive Summary:** {summary.executive_summary[:5000]}\n"
+                    )
+                cat_summaries = summary.category_summaries
 
         # Build category details
         cat_lines: list[str] = []
@@ -566,7 +586,17 @@ async def _build_release_block(
 
             cat_summary_text = ""
             if cat_name in cat_summaries:
-                cat_summary_text = f"\n> {cat_summaries[cat_name][:1000]}\n"
+                raw_summary = cat_summaries[cat_name]
+                # Validate: don't show summary that says 1 feature when meta says more
+                cat_meta_count = count  # from meta.categories[].count
+                if cat_meta_count > 5 and "1 novos recursos" in raw_summary:
+                    logger.warning(
+                        "README: skipping invalid cat summary for %s (says 1 but meta has %d)",
+                        cat_name,
+                        cat_meta_count,
+                    )
+                else:
+                    cat_summary_text = f"\n> {raw_summary[:1000]}\n"
 
             cat_lines.append("\n<details>")
             cat_lines.append(
