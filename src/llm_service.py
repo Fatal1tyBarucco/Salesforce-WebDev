@@ -16,6 +16,9 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_ex
 from .cache_manager import CacheManager
 from .circuit_breaker import CircuitBreaker
 
+# Type alias for Pydantic BaseModel classes (used as response_schema)
+PydanticModel = type  # BaseModel metaclass
+
 
 @dataclass
 class RateLimiter:
@@ -325,7 +328,60 @@ class LLMService:
             ),
             timeout=60.0,
         )
-        return response.text or ""
+        # Defensive null check — safety filters may return empty response
+        if response is None:
+            self._logger.warning("Google provider returned None response")
+            return ""
+        if response.text is None:
+            self._logger.warning(
+                "Google provider returned None text (possibly blocked by safety filters)"
+            )
+            return ""
+        return response.text
+
+    @retry(
+        retry=retry_if_exception_type((ConnectionError, TimeoutError)),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
+    async def _call_google_provider_structured(
+        self,
+        provider: LLMProvider,
+        system_prompt: str,
+        user_prompt: str,
+        response_schema: PydanticModel,
+    ) -> str:
+        """Call Google Gemini with native structured output (response_schema).
+
+        Uses Pydantic model as response_schema so the API returns JSON
+        that conforms to the schema natively, eliminating manual parsing.
+        """
+        client = self._get_or_create_client(provider)
+        response = await asyncio.wait_for(
+            client.aio.models.generate_content(
+                model=provider.model,
+                contents=user_prompt,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    response_mime_type="application/json",
+                    response_schema=response_schema,
+                    temperature=0.1,
+                ),
+            ),
+            timeout=60.0,
+        )
+        # Defensive null check — safety filters may return empty response
+        if response is None:
+            self._logger.warning("Google structured provider returned None response")
+            return ""
+        if response.text is None:
+            self._logger.warning(
+                "Google structured provider returned None text "
+                "(possibly blocked by safety filters)"
+            )
+            return ""
+        return response.text
 
     async def _call_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
@@ -345,6 +401,110 @@ class LLMService:
         when a CacheManager was provided at construction time.
         """
         return await self.generate_text_with_tier(user_prompt, system_prompt, tier="standard")
+
+    async def generate_structured(
+        self,
+        user_prompt: str,
+        response_schema: PydanticModel,
+        system_prompt: str = "You are a helpful assistant.",
+    ) -> str | None:
+        """Generate structured output using native response_schema.
+
+        For Google providers: passes the Pydantic model as response_schema
+        so the API returns JSON conforming to the schema natively.
+        For other providers: falls back to regular generation + manual
+        JSON parsing with Pydantic validation.
+
+        Args:
+            user_prompt: The user prompt.
+            response_schema: A Pydantic BaseModel class to use as the
+                structured output schema.
+            system_prompt: System prompt.
+
+        Returns:
+            JSON string conforming to the schema, or None on failure.
+        """
+        # Cache lookup
+        cache_key = self._prompt_hash(system_prompt, user_prompt)
+        if self._cache is not None:
+            cached = self._cache.get(cache_key, namespace="llm_structured")
+            if cached is not None:
+                self._logger.debug("Structured LLM cache hit for key=%s", cache_key[:12])
+                return str(cached)
+
+        await self._rate_limiter.acquire()
+
+        for provider in self._providers:
+            if not self._is_provider_available(provider):
+                continue
+
+            try:
+                result: str
+                if provider.provider_type == "google":
+                    result = await self._call_google_provider_structured(
+                        provider, system_prompt, user_prompt, response_schema
+                    )
+                else:
+                    # For non-Google providers, add schema hint to prompt
+                    # and validate the response
+                    schema_hint = response_schema.model_json_schema()
+                    enhanced_prompt = (
+                        f"{user_prompt}\n\n"
+                        f"Respond with valid JSON matching this schema:\n"
+                        f"{schema_hint}"
+                    )
+                    result = await self._call_provider(
+                        provider, system_prompt, enhanced_prompt
+                    )
+                    # Validate with Pydantic
+                    if result:
+                        try:
+                            parsed = response_schema.model_validate_json(result)
+                            result = parsed.model_dump_json()
+                        except (ValueError, TypeError) as ve:
+                            self._logger.warning(
+                                "Provider '%s' structured output validation failed: %s",
+                                provider.name, ve,
+                            )
+                            self._record_failure(provider)
+                            continue
+
+                self._record_success(provider)
+                if self._cache is not None and result:
+                    self._cache.set(cache_key, result, namespace="llm_structured")
+                return result
+
+            except openai.RateLimitError as e:
+                self._logger.warning("Provider '%s' rate limited: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except openai.AuthenticationError as e:
+                self._logger.warning("Provider '%s' auth error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (openai.APIConnectionError, openai.InternalServerError) as e:
+                self._logger.error("Provider '%s' connection/server error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except TimeoutError as e:
+                self._logger.error("Provider '%s' timeout: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (ValueError, OSError, TypeError) as e:
+                self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except (openai.OpenAIError, RuntimeError) as e:
+                self._logger.error("Provider '%s' error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+            except Exception as e:  # noqa: BLE001
+                self._logger.error("Provider '%s' unexpected error: %s", provider.name, e)
+                self._record_failure(provider)
+                continue
+
+        self._logger.error("All LLM providers exhausted for structured output")
+        return None
 
     async def generate_text_with_tier(
         self,
@@ -509,6 +669,47 @@ class LLMService:
         except (ValueError, IndexError) as e:
             self._logger.error("Failed to parse LLM classification JSON: %s", e)
             return {"error": "Invalid JSON response"}
+
+    async def classify_text_structured(
+        self,
+        text: str,
+        categories: list[str],
+        response_schema: PydanticModel,
+        system_prompt: str | None = None,
+    ) -> Any | None:
+        """Classify text using native structured output (response_schema).
+
+        Uses the Google GenAI response_schema feature to get type-safe
+        JSON output validated by Pydantic, eliminating manual parsing.
+
+        Args:
+            text: The text to classify.
+            categories: List of category names.
+            response_schema: A Pydantic BaseModel class for structured output.
+            system_prompt: Optional system prompt override.
+
+        Returns:
+            Validated Pydantic model instance, or None on failure.
+        """
+        if system_prompt is None:
+            system_prompt = (
+                "You are a professional classifier. Analyze the text and return a JSON object "
+                "matching the provided schema."
+            )
+
+        user_prompt = f"Categories: {categories}\n\nText: {text}"
+        result = await self.generate_structured(
+            user_prompt, response_schema, system_prompt
+        )
+
+        if not result:
+            return None
+
+        try:
+            return response_schema.model_validate_json(result)
+        except (ValueError, TypeError) as e:
+            self._logger.error("Failed to validate structured classification: %s", e)
+            return None
 
     async def generate_batch(
         self,
