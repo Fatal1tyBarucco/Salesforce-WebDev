@@ -60,10 +60,14 @@ jobs:
           RUN_ID="${{ github.event.workflow_run.id }}"
           echo "📥 Downloading logs for run ${RUN_ID}..."
 
-          # Download logs via GitHub CLI
-          if ! gh api "repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs" \
-            --output logs.zip 2>&1; then
-            echo "❌ Failed to download logs (API error or insufficient permissions)"
+          # Download logs via GitHub API (curl is more reliable than gh api for binary)
+          HTTP_CODE=$(curl -sL -o logs.zip -w "%{http_code}" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs")
+
+          if [[ "$HTTP_CODE" != "200" ]]; then
+            echo "❌ Failed to download logs (HTTP $HTTP_CODE)"
             echo "log_lines=0" >> "$GITHUB_OUTPUT"
             exit 0
           fi
