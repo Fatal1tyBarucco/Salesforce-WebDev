@@ -11,13 +11,14 @@ from typing import Any, Self
 
 import openai
 from google import genai
+from pydantic import BaseModel
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from .cache_manager import CacheManager
 from .circuit_breaker import CircuitBreaker
 
 # Type alias for Pydantic BaseModel classes (used as response_schema)
-PydanticModel = type  # BaseModel metaclass
+PydanticModel = type[BaseModel]
 
 
 @dataclass
@@ -337,7 +338,7 @@ class LLMService:
                 "Google provider returned None text (possibly blocked by safety filters)"
             )
             return ""
-        return response.text
+        return str(response.text)
 
     @retry(
         retry=retry_if_exception_type((ConnectionError, TimeoutError)),
@@ -364,8 +365,8 @@ class LLMService:
                 contents=user_prompt,
                 config=genai.types.GenerateContentConfig(
                     system_instruction=system_prompt,
-                    response_mime_type="application/json",
-                    response_schema=response_schema,
+                    response_mime_type="application/json",  # type: ignore[call-arg]
+                    response_schema=response_schema,  # type: ignore[call-arg]
                     temperature=0.1,
                 ),
             ),
@@ -381,7 +382,7 @@ class LLMService:
                 "(possibly blocked by safety filters)"
             )
             return ""
-        return response.text
+        return str(response.text)
 
     async def _call_provider(
         self, provider: LLMProvider, system_prompt: str, user_prompt: str
@@ -453,9 +454,7 @@ class LLMService:
                         f"Respond with valid JSON matching this schema:\n"
                         f"{schema_hint}"
                     )
-                    result = await self._call_provider(
-                        provider, system_prompt, enhanced_prompt
-                    )
+                    result = await self._call_provider(provider, system_prompt, enhanced_prompt)
                     # Validate with Pydantic
                     if result:
                         try:
@@ -464,7 +463,8 @@ class LLMService:
                         except (ValueError, TypeError) as ve:
                             self._logger.warning(
                                 "Provider '%s' structured output validation failed: %s",
-                                provider.name, ve,
+                                provider.name,
+                                ve,
                             )
                             self._record_failure(provider)
                             continue
@@ -698,9 +698,7 @@ class LLMService:
             )
 
         user_prompt = f"Categories: {categories}\n\nText: {text}"
-        result = await self.generate_structured(
-            user_prompt, response_schema, system_prompt
-        )
+        result = await self.generate_structured(user_prompt, response_schema, system_prompt)
 
         if not result:
             return None
