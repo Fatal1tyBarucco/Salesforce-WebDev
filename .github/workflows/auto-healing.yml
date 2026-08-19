@@ -19,6 +19,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: read
 
 concurrency:
   group: auto-healing-${{ github.event.workflow_run.id || github.run_id }}
@@ -60,29 +61,44 @@ jobs:
           echo "📥 Downloading logs for run ${RUN_ID}..."
 
           # Download logs via GitHub CLI
-          gh api "repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs" \
-            --output logs.zip 2>/dev/null || true
-
-          if [[ -f logs.zip ]]; then
-            mkdir -p logs_extracted
-            unzip -o logs.zip -d logs_extracted 2>/dev/null || true
-            
-            # Concatenate all log files
-            LOG_TEXT=""
-            for f in logs_extracted/**/*.txt; do
-              if [[ -f "$f" ]]; then
-                LOG_TEXT="${LOG_TEXT}$(cat "$f")\n"
-              fi
-            done
-            
-            # Save to file (truncate if too long)
-            echo -e "$LOG_TEXT" | head -c 30000 > /tmp/failure_log.txt
-            echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
-            echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
-          else
-            echo "⚠️ Could not download logs"
+          if ! gh api "repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs" \
+            --output logs.zip 2>&1; then
+            echo "❌ Failed to download logs (API error or insufficient permissions)"
             echo "log_lines=0" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          if [[ ! -f logs.zip ]] || [[ ! -s logs.zip ]]; then
+            echo "⚠️ Log archive is empty or missing"
+            echo "log_lines=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mkdir -p logs_extracted
+          if ! unzip -o logs.zip -d logs_extracted 2>&1; then
+            echo "❌ Failed to extract log archive"
+            echo "log_lines=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Concatenate all log files
+          LOG_TEXT=""
+          for f in logs_extracted/**/*.txt; do
+            if [[ -f "$f" ]]; then
+              LOG_TEXT="${LOG_TEXT}$(cat "$f")\n"
+            fi
+          done
+
+          if [[ -z "$LOG_TEXT" ]]; then
+            echo "⚠️ No log content found in archive"
+            echo "log_lines=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Save to file (truncate if too long)
+          echo -e "$LOG_TEXT" | head -c 30000 > /tmp/failure_log.txt
+          echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
+          echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
 
       - name: Analyze failure with Gemini
         id: analyze
