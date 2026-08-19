@@ -249,7 +249,7 @@ jobs:
             --base main
 
           echo "✅ PR created from branch ${BRANCH}"
-          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+          if [ -n "$GITHUB_OUTPUT" ]; then echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"; fi
 
       - name: Summary
         if: always()
