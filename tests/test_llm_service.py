@@ -1,6 +1,7 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import openai
 import pytest
 
 from src.llm_service import CircuitBreakerConfig, LLMProvider, LLMService
@@ -249,3 +250,433 @@ def test_call_openai_provider_non_standard_response():
         MockOpenAI.return_value.chat.completions.create = AsyncMock(return_value=WeirdResponse())
         result = asyncio.run(service._call_openai_provider(provider, "System", "User"))
         assert isinstance(result, str)
+
+
+def test_call_google_provider_structured():
+    """_call_google_provider_structured uses response_schema and returns JSON."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+        value: int
+
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_response = MagicMock()
+    mock_response.text = '{"name": "test", "value": 42}'
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(
+            service._call_google_provider_structured(
+                provider, "System", "User", TestSchema
+            )
+        )
+        assert result == '{"name": "test", "value": 42}'
+
+
+def test_call_google_provider_structured_none_response():
+    """_call_google_provider_structured returns '' when response is None."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=None)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(
+            service._call_google_provider_structured(
+                provider, "System", "User", TestSchema
+            )
+        )
+        assert result == ""
+
+
+def test_call_google_provider_structured_none_text():
+    """_call_google_provider_structured returns '' when response.text is None."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_response = MagicMock()
+    mock_response.text = None
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(
+            service._call_google_provider_structured(
+                provider, "System", "User", TestSchema
+            )
+        )
+        assert result == ""
+
+
+def test_generate_structured_google_provider():
+    """generate_structured uses Google provider's structured output."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+        value: int
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.return_value = '{"name": "test", "value": 42}'
+        result = asyncio.run(
+            service.generate_structured("User prompt", TestSchema, "System")
+        )
+        assert result == '{"name": "test", "value": 42}'
+        mock_structured.assert_called_once()
+
+
+def test_generate_structured_openai_provider():
+    """generate_structured falls back to schema hint for OpenAI providers."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+        value: int
+
+    provider = LLMProvider(name="openai", api_key="key", provider_type="openai")
+    service = LLMService(providers=[provider])
+
+    with patch.object(service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        mock_call.return_value = '{"name": "test", "value": 42}'
+        result = asyncio.run(
+            service.generate_structured("User prompt", TestSchema, "System")
+        )
+        assert result is not None
+        # Verify the enhanced prompt includes schema hint
+        call_args = mock_call.call_args
+        assert "schema" in call_args[0][2].lower() or "json" in call_args[0][2].lower()
+
+
+def test_generate_structured_openai_validation_failure():
+    """generate_structured retries when Pydantic validation fails for OpenAI."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+        value: int
+
+    provider = LLMProvider(name="openai", api_key="key", provider_type="openai")
+    service = LLMService(providers=[provider])
+
+    with patch.object(service, "_call_provider", new_callable=AsyncMock) as mock_call:
+        # First call returns invalid JSON, should fail validation
+        mock_call.return_value = "not valid json"
+        result = asyncio.run(
+            service.generate_structured("User prompt", TestSchema, "System")
+        )
+        # Should return None since validation failed
+        assert result is None
+
+
+def test_generate_structured_cache_hit():
+    """generate_structured returns cached result on cache hit."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    cache = MagicMock()
+    cache.get.return_value = '{"name": "cached"}'
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider], cache=cache)
+
+    result = asyncio.run(
+        service.generate_structured("User prompt", TestSchema, "System")
+    )
+    assert result == '{"name": "cached"}'
+
+
+def test_generate_structured_all_providers_fail():
+    """generate_structured returns None when all providers fail."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=1, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = Exception("Provider failed")
+        result = asyncio.run(
+            service.generate_structured("User prompt", TestSchema, "System")
+        )
+        assert result is None
+
+
+def test_classify_text_structured_success():
+    """classify_text_structured returns validated Pydantic model."""
+    from pydantic import BaseModel
+
+    class TestOutput(BaseModel):
+        category: str
+        confidence: float
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    with patch.object(service, "generate_structured", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"category": "security", "confidence": 0.95}'
+        result = asyncio.run(
+            service.classify_text_structured(
+                "test text", ["security"], TestOutput
+            )
+        )
+        assert result is not None
+        assert result.category == "security"
+        assert result.confidence == 0.95
+
+
+def test_classify_text_structured_none_result():
+    """classify_text_structured returns None when generate_structured fails."""
+    from pydantic import BaseModel
+
+    class TestOutput(BaseModel):
+        category: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    with patch.object(service, "generate_structured", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = None
+        result = asyncio.run(
+            service.classify_text_structured(
+                "test text", ["security"], TestOutput
+            )
+        )
+        assert result is None
+
+
+def test_classify_text_structured_invalid_json():
+    """classify_text_structured returns None on invalid JSON."""
+    from pydantic import BaseModel
+
+    class TestOutput(BaseModel):
+        category: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    with patch.object(service, "generate_structured", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = "not json"
+        result = asyncio.run(
+            service.classify_text_structured(
+                "test text", ["security"], TestOutput
+            )
+        )
+        assert result is None
+
+
+def test_call_google_provider_none_response():
+    """_call_google_provider returns '' when response is None."""
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=None)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(service._call_google_provider(provider, "System", "User"))
+        assert result == ""
+
+
+def test_call_google_provider_none_text():
+    """_call_google_provider returns '' when response.text is None."""
+    provider = LLMProvider(name="test", api_key="key", provider_type="google")
+    service = LLMService(providers=[provider])
+
+    mock_response = MagicMock()
+    mock_response.text = None
+
+    mock_client = MagicMock()
+    mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
+
+    mock_genai = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_genai.types.GenerateContentConfig = MagicMock()
+
+    with patch("src.llm_service.genai", mock_genai):
+        result = asyncio.run(service._call_google_provider(provider, "System", "User"))
+        assert result == ""
+
+
+def test_generate_structured_rate_limit_error():
+    """generate_structured handles RateLimitError and moves to next provider."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    providers = [
+        LLMProvider(name="google", api_key="key1", provider_type="google"),
+        LLMProvider(name="google2", api_key="key2", provider_type="google"),
+    ]
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=providers)
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = [
+            openai.RateLimitError(
+                message="Rate limit",
+                response=MagicMock(status_code=429),
+                body=None,
+            ),
+            '{"name": "success"}',
+        ]
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result == '{"name": "success"}'
+
+
+def test_generate_structured_auth_error():
+    """generate_structured handles AuthenticationError."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = openai.AuthenticationError(
+            message="Auth failed",
+            response=MagicMock(status_code=401),
+            body=None,
+        )
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result is None
+
+
+def test_generate_structured_connection_error():
+    """generate_structured handles APIConnectionError."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = openai.APIConnectionError(request=MagicMock())
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result is None
+
+
+def test_generate_structured_timeout_error():
+    """generate_structured handles TimeoutError."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = TimeoutError("Request timed out")
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result is None
+
+
+def test_generate_structured_value_error():
+    """generate_structured handles ValueError."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = ValueError("Invalid value")
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result is None
+
+
+def test_generate_structured_generic_exception():
+    """generate_structured handles generic Exception."""
+    from pydantic import BaseModel
+
+    class TestSchema(BaseModel):
+        name: str
+
+    provider = LLMProvider(name="google", api_key="key", provider_type="google")
+    config = CircuitBreakerConfig(threshold=10, cooldown=0.1)
+    service = LLMService(config=config, providers=[provider])
+
+    with patch.object(
+        service, "_call_google_provider_structured", new_callable=AsyncMock
+    ) as mock_structured:
+        mock_structured.side_effect = RuntimeError("Unexpected error")
+        result = asyncio.run(
+            service.generate_structured("prompt", TestSchema, "system")
+        )
+        assert result is None
