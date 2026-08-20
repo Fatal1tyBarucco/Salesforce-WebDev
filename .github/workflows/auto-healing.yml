@@ -132,58 +132,31 @@ jobs:
           client = genai.Client(api_key=api_key)
 
           prompt = (
-              "Here are the files in the repository:
-"
+              "Here are the files in the repository:\n"
               + repo_context
-              + "
-
-"
-              "You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure log and identify the EXACT file that needs correction.
-
-"
-              "CRITICAL INSTRUCTIONS:
-"
-              "1. READ the failure log carefully to find the SPECIFIC file path that has the error.
-"
-              "2. Look for patterns like: 'error in <file>', 'File "<file>\", line', 'would reformat <file>', 'error: <file>:<line>'
-"
-              "3. The affected_file_path MUST match a file path that appears in the failure log.
-"
-              "4. Do NOT guess or hallucinate a file path - it must come from the log.
-"
-              "5. If the log shows 'tests/test_llm_service.py' has black formatting issues, fix THAT file.
-
-"
-              "Respond with ONLY a valid JSON object (no markdown fences):
-"
-              "{
-"
-              '    "root_cause_summary": "one paragraph summary",
-'
-              '    "affected_file_path": "relative/path/to/file.py",
-'
-              '    "corrected_code": "full corrected file content",
-'
-              '    "explanation": "what was changed and why"
-'
-              "}
-
-"
-              "Rules:
-"
-              "- corrected_code must be the COMPLETE file, not a diff
-"
-              "- Ensure corrected_code is valid Python
-"
-              "- Preserve all existing functionality
-
-"
-              "Failed Workflow Log:
-```
-"
+              + "\n\n"
+              "You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure log and identify the EXACT file that needs correction.\n"
+              "CRITICAL INSTRUCTIONS:\n"
+              "1. READ the failure log carefully to find the SPECIFIC file path that has the error.\n"
+              "2. Look for patterns like: 'error in <file>', 'File \"<file>\"', line', 'would reformat <file>', 'error: <file>:<line>'\n"
+              "3. The affected_file_path MUST match a file path that appears in the failure log.\n"
+              "4. Do NOT guess or hallucinate a file path - it must come from the log.\n"
+              "5. If the log shows 'tests/test_llm_service.py' has black formatting issues, fix THAT file.\n"
+              "Respond with ONLY a valid JSON object (no markdown fences):\n"
+              "{\n"
+              '    "root_cause_summary": "one paragraph summary",\n'
+              '    "affected_file_path": "relative/path/to/file.py",\n'
+              '    "corrected_code": "full corrected file content",\n'
+              '    "explanation": "what was changed and why"\n'
+              "}\n"
+              "Rules:\n"
+              "- corrected_code must be the COMPLETE file, not a diff\n"
+              "- Ensure corrected_code is valid Python\n"
+              "- Preserve all existing functionality\n"
+              "Failed Workflow Log:\n"
+              "```\n"
               + log_text[:25000]
-              + "
-```"
+              + "\n```"
           )
 
           try:
