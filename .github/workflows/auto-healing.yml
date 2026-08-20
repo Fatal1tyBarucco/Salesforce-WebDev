@@ -164,7 +164,7 @@ jobs:
                   exit(0)
               if not result.get("affected_file_path"):
                   print("❌ No affected_file_path in response")
-                  exit(0)
+                  exit(1)
               
               # Save outputs
               with open("/tmp/analysis.json", "w") as f:
