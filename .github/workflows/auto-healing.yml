@@ -129,9 +129,7 @@ jobs:
 
           prompt = (
               "Here are the files in the repository:
-```
 " + repo_context + "
-```
 
 "You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure and identify the file that needs correction.
 "
