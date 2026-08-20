@@ -50,7 +50,10 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
-        run: uv sync --frozen --extra healing --group dev
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libxml2-dev libxslt1-dev
+          uv sync --frozen --extra dev --extra healing --group dev
 
       - name: Download failure logs
         id: logs
@@ -142,17 +145,22 @@ jobs:
               "3. The affected_file_path MUST match a file path that appears in the failure log.\n"
               "4. Do NOT guess or hallucinate a file path - it must come from the log.\n"
               "5. If the failure lists BOTH a source module and its test (e.g. src/llm_service.py and tests/test_llm_service.py), fix the SOURCE module, not the test.\n"
+              "6. Fix EVERY file that appears in the failure log with an error (ruff, black, mypy, or pytest). Do NOT fix only one of them - all error files must be corrected in the SAME response.\n"
               "Respond with ONLY a valid JSON object (no markdown fences):\n"
               "{\n"
               '    "root_cause_summary": "one paragraph summary",\n'
-              '    "affected_file_path": "relative/path/to/file.py",\n'
-              '    "corrected_code": "full corrected file content",\n'
-              '    "explanation": "what was changed and why"\n'
+              '    "explanation": "what was changed and why",\n'
+              '    "files": [\n'
+              '        {"affected_file_path": "relative/path/to/file.py", "corrected_code": "full corrected file content"}\n'
+              "    ]\n"
               "}\n"
               "Rules:\n"
-              "- corrected_code must be the COMPLETE file, not a diff\n"
+              "- files MUST contain EVERY file reported with errors in the failure log (ruff, black, mypy, or pytest). Fix them ALL.\n"
+              "- corrected_code for each file must be the COMPLETE file, not a diff\n"
               "- Ensure corrected_code is valid Python\n"
               "- Preserve all existing functionality\n"
+              "- corrected_code MUST pass the project's Python Quality gate: ruff lint clean, black formatting clean, mypy strict typing (no new type errors), and existing pytest tests still pass\n"
+              "- Do NOT introduce new lint errors, formatting issues, type errors, or failing tests\n"
               "Failed Workflow Log:\n"
               "```\n"
               + log_text[:25000]
@@ -174,36 +182,61 @@ jobs:
 
               result = json.loads(raw)
 
-              # Validate required fields
-              if not result.get("corrected_code"):
-                  print("❌ No corrected_code in response")
-                  exit(0)
-              if not result.get("affected_file_path"):
-                  print("❌ No affected_file_path in response")
-                  exit(1)
+              root_cause = result.get("root_cause_summary", "") or ""
+              explanation = result.get("explanation", "") or ""
 
-              # Prefer the application source module over its test counterpart
-              affected = result.get("affected_file_path", "")
-              if affected.startswith("tests/") and affected.endswith(".py"):
-                  src_name = os.path.basename(affected)
-                  if src_name.startswith("test_"):
-                      src_name = src_name[len("test_"):]
-                  candidate = os.path.join("src", src_name)
-                  if os.path.exists(candidate):
-                      print(f"Remapping test file {affected} -> source {candidate}")
-                      result["affected_file_path"] = candidate
+              # Accept the new `files` array, or fall back to the legacy
+              # single-file form for backward compatibility.
+              raw_files = result.get("files")
+              if not isinstance(raw_files, list) or not raw_files:
+                  single_path = result.get("affected_file_path")
+                  single_code = result.get("corrected_code")
+                  if single_path and single_code:
+                      raw_files = [{"affected_file_path": single_path, "corrected_code": single_code}]
+                  else:
+                      raw_files = []
+
+              if not raw_files:
+                  print("❌ No files to fix in response")
+                  exit(0)
+
+              # Validate each entry and prefer the source module over its test
+              files = []
+              for entry in raw_files:
+                  path = entry.get("affected_file_path", "")
+                  code = entry.get("corrected_code", "")
+                  if not path or not code:
+                      print(f"⚠️ Skipping invalid entry (missing path or code): {entry}")
+                      continue
+                  if path.startswith("tests/") and path.endswith(".py"):
+                      src_name = os.path.basename(path)
+                      if src_name.startswith("test_"):
+                          src_name = src_name[len("test_"):]
+                      candidate = os.path.join("src", src_name)
+                      if os.path.exists(candidate):
+                          print(f"Remapping test file {path} -> source {candidate}")
+                          path = candidate
+                  files.append({"affected_file_path": path, "corrected_code": code})
+
+              if not files:
+                  print("❌ No valid files with corrected_code in response")
+                  exit(0)
 
               # Save outputs
               with open("/tmp/analysis.json", "w") as f:
-                  json.dump(result, f)
+                  json.dump({"root_cause_summary": root_cause, "explanation": explanation, "files": files}, f)
 
               # Write outputs for GitHub Actions
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write(f"file_path={result['affected_file_path']}\n")
-                  f.write(f"summary={result['root_cause_summary'][:200]}\n")
+                  f.write(f"file_path={files[0]['affected_file_path']}\n")
+                  f.write(f"file_count={len(files)}\n")
+                  f.write(f"summary={root_cause[:200]}\n")
 
-              print(f"✅ Analysis complete: {result['affected_file_path']}")
-              print(f"   Root cause: {result['root_cause_summary'][:100]}...")
+              print(f"✅ Analysis complete: {len(files)} file(s) to fix")
+              for fobj in files:
+                  print(f"   - {fobj['affected_file_path']}")
+              if root_cause:
+                  print(f"   Root cause: {root_cause[:100]}...")
 
           except json.JSONDecodeError as e:
               print(f"❌ Failed to parse LLM response as JSON: {e}")
@@ -219,25 +252,63 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Read analysis
-          FILE_PATH=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['affected_file_path'])")
-          SUMMARY=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['root_cause_summary'][:72])")
-          CODE=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['corrected_code'])")
-          EXPLANATION=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d['explanation'])")
+          SUMMARY=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print((d.get('root_cause_summary') or '')[:72])")
+          EXPLANATION=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d.get('explanation') or '')")
+          FILE_COUNT=$(uv run python3 -c "import json; print(len(json.load(open('/tmp/analysis.json')).get('files', [])))")
+          FILES_LIST=$(uv run python3 -c "import json; print(', '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))")
           RUN_ID="${{ github.event.workflow_run.id }}"
-
-          # Check if file exists
-          if [[ ! -f "$FILE_PATH" ]]; then
-            echo "❌ File not found: $FILE_PATH"
-            exit 0
-          fi
 
           # Create branch
           BRANCH="auto-fix/${RUN_ID}"
           git checkout -b "$BRANCH"
 
-          # Apply fix
-          echo "$CODE" > "$FILE_PATH"
-          git add "$FILE_PATH"
+          # Apply EVERY corrected file listed in the analysis. All error files
+          # reported by Python Quality are fixed together in the same PR.
+          echo "📝 Applying fixes to all ${FILE_COUNT} file(s) reported with errors..."
+          uv run python3 -c "import json,os; [ (os.makedirs(os.path.dirname(e['affected_file_path']) or '.', exist_ok=True), open(e['affected_file_path'],'w').write(e['corrected_code'])) for e in json.load(open('/tmp/analysis.json')).get('files', []) ]"
+
+          # ── Enforce code quality on every changed file so Python Quality passes ──
+          # Deterministically reformat and auto-fix each file so the most common
+          # failure modes (black formatting and ruff lint) can never re-trigger the
+          # pipeline after the PR is merged.
+          echo "🛠️  Enforcing code quality on all changed files..."
+          uv run python3 -c "import json,subprocess; [ [subprocess.run(['uv','run','black',e['affected_file_path']],check=False), subprocess.run(['uv','run','ruff','check','--fix',e['affected_file_path']],check=False), subprocess.run(['uv','run','ruff','format',e['affected_file_path']],check=False)] for e in json.load(open('/tmp/analysis.json')).get('files', []) ]"
+
+          # Stage only the files we intentionally changed
+          for f in $(uv run python3 -c "import json; print(' '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))"); do
+            git add "$f"
+          done
+
+          # ── Verification gate: guarantee Python Quality passes ──
+          # Replicate the exact Python Quality checks (ruff, black, mypy, pytest) on
+          # the whole repository. If any check fails, abort the PR so we never open a
+          # change that re-breaks the pipeline (which would cause an infinite
+          # auto-heal loop). This guarantees Python Quality runs without errors after
+          # the refactor.
+          echo "🔍 Verifying Python Quality before opening PR..."
+          set +e
+          QUALITY_OK=1
+
+          uv run ruff check . --output-format=full
+          if [ $? -ne 0 ]; then echo "❌ ruff failed"; QUALITY_OK=0; fi
+
+          uv run black --check .
+          if [ $? -ne 0 ]; then echo "❌ black failed"; QUALITY_OK=0; fi
+
+          uv run mypy src/ --ignore-missing-imports --pretty 2>&1 | tail -30
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then echo "❌ mypy failed"; QUALITY_OK=0; fi
+
+          uv run pytest tests/ --cov=src --cov-fail-under=95 -q 2>&1 | tail -40
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then echo "❌ pytest failed"; QUALITY_OK=0; fi
+
+          set -e
+          if [ "$QUALITY_OK" -ne 1 ]; then
+            echo "❌ Python Quality did NOT pass after applying the fixes."
+            echo "   Aborting PR to avoid an auto-heal failure loop."
+            echo "   Inspect the logs above and fix the change manually if needed."
+            exit 0
+          fi
+          echo "✅ Python Quality verified — all checks green."
 
           # Check if there are changes
           if git diff --cached --quiet; then
@@ -257,7 +328,7 @@ jobs:
           BODY="## 🔧 Auto-Healing: CI/CD Pipeline Fix
 
           **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
-          **Affected File:** \`${FILE_PATH}\`
+          **Affected Files (${FILE_COUNT}):** \`${FILES_LIST}\`
 
           ### Root Cause
           ${SUMMARY}
