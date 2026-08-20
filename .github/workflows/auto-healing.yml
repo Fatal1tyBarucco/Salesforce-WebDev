@@ -128,11 +128,10 @@ jobs:
           client = genai.Client(api_key=api_key)
 
           prompt = (
-              "Here are the files in the repository:
-" + repo_context + "
-
-"You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure and identify the file that needs correction.
-"
+              "Here are the files in the repository:\n"
+              + repo_context
+              + "\n\n"
+              "You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure and identify the file that needs correction.\n\n"
               "Respond with ONLY a valid JSON object (no markdown fences):\n"
               "{\n"
               '    "root_cause_summary": "one paragraph summary",\n'
@@ -154,16 +153,16 @@ jobs:
                   model="gemini-3.6-flash",
                   contents=prompt,
               )
-              
+
               raw = response.text.strip()
               # Clean markdown fences
               import re
               raw = re.sub(r"^```(?:json)?\s*\n?", "", raw, flags=re.MULTILINE)
               raw = re.sub(r"\n?```\s*$", "", raw, flags=re.MULTILINE)
               raw = raw.strip()
-              
+
               result = json.loads(raw)
-              
+
               # Validate required fields
               if not result.get("corrected_code"):
                   print("❌ No corrected_code in response")
@@ -171,19 +170,19 @@ jobs:
               if not result.get("affected_file_path"):
                   print("❌ No affected_file_path in response")
                   exit(1)
-              
+
               # Save outputs
               with open("/tmp/analysis.json", "w") as f:
                   json.dump(result, f)
-              
+
               # Write outputs for GitHub Actions
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
                   f.write(f"file_path={result['affected_file_path']}\n")
                   f.write(f"summary={result['root_cause_summary'][:200]}\n")
-              
+
               print(f"✅ Analysis complete: {result['affected_file_path']}")
               print(f"   Root cause: {result['root_cause_summary'][:100]}...")
-              
+
           except json.JSONDecodeError as e:
               print(f"❌ Failed to parse LLM response as JSON: {e}")
               print(f"   Raw response: {raw[:500]}")
