@@ -104,6 +104,10 @@ jobs:
           echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
           echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
 
+          # Generate repository file list for LLM context
+          find . -type f -not -path './.git/*' | head -100 > /tmp/repo_files.txt
+          echo "✅ Repository file list generated ($(wc -l < /tmp/repo_files.txt) files)"
+
       - name: Analyze failure with Gemini
         id: analyze
         if: steps.logs.outputs.log_lines != '0'
