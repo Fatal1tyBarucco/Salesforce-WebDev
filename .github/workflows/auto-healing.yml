@@ -120,13 +120,21 @@ jobs:
               print("❌ GOOGLE_API_KEY not set")
               exit(0)
 
+          with open("/tmp/repo_files.txt") as f:
+              repo_context = f.read().strip() or "No files found in repository."
           with open("/tmp/failure_log.txt") as f:
               log_text = f.read()
 
           client = genai.Client(api_key=api_key)
 
           prompt = (
-              "You are an expert DevOps engineer. Analyze this CI/CD failure.\n\n"
+              "Here are the files in the repository:
+```
+" + repo_context + "
+```
+
+"You are an expert DevOps engineer and Python developer. Analyze a CI/CD failure and identify the file that needs correction.
+"
               "Respond with ONLY a valid JSON object (no markdown fences):\n"
               "{\n"
               '    "root_cause_summary": "one paragraph summary",\n'
