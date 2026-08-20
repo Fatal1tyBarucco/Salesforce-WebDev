@@ -1,4 +1,4 @@
-"""Logging configuration and utilities for Salesforce WebDev."""
+"""Logging configuration and utility functions."""
 
 import logging
 import os
@@ -7,39 +7,48 @@ from typing import Optional
 
 
 def setup_logger(
-    name: str = "salesforce_webdev",
+    name: Optional[str] = None,
     level: Optional[int] = None,
-    log_file: Optional[str] = None,
 ) -> logging.Logger:
-    """Set up and configure a logger instance."""
-    if level is None:
-        log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
-        level = getattr(logging, log_level_str, logging.INFO)
+    """Configure and return a logger instance.
 
-    logger = logging.getLogger(name)
+    Args:
+        name: Name of the logger. Defaults to 'app'.
+        level: Logging level. Defaults to INFO or environment variable LOG_LEVEL.
+
+    Returns:
+        logging.Logger: Configured logger instance.
+    """
+    logger_name = name or "app"
+    logger = logging.getLogger(logger_name)
+
+    if level is None:
+        env_level = os.getenv("LOG_LEVEL", "INFO").upper()
+        level = getattr(logging, env_level, logging.INFO)
+
     logger.setLevel(level)
 
     if not logger.handlers:
+        handler = logging.StreamHandler(sys.stdout)
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
-
-        stream_handler = logging.StreamHandler(sys.stdout)
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
-
-        if log_file:
-            file_handler = logging.FileHandler(log_file)
-            file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
     return logger
 
 
-def get_logger(name: str = "salesforce_webdev") -> logging.Logger:
-    """Get an existing logger or create a new one with default settings."""
-    logger = logging.getLogger(name)
-    if not logger.handlers:
-        return setup_logger(name)
-    return logger
+def get_logger(name: Optional[str] = None) -> logging.Logger:
+    """Get a logger instance with default setup.
+
+    Args:
+        name: Name of the logger.
+
+    Returns:
+        logging.Logger: Logger instance.
+    """
+    return setup_logger(name=name)
+
+
+logger = get_logger("app")
