@@ -141,7 +141,7 @@ jobs:
               "2. Look for patterns like: 'error in <file>', 'File \"<file>\"', line', 'would reformat <file>', 'error: <file>:<line>'\n"
               "3. The affected_file_path MUST match a file path that appears in the failure log.\n"
               "4. Do NOT guess or hallucinate a file path - it must come from the log.\n"
-              "5. If the log shows 'tests/test_llm_service.py' has black formatting issues, fix THAT file.\n"
+              "5. If the failure lists BOTH a source module and its test (e.g. src/llm_service.py and tests/test_llm_service.py), fix the SOURCE module, not the test.\n"
               "Respond with ONLY a valid JSON object (no markdown fences):\n"
               "{\n"
               '    "root_cause_summary": "one paragraph summary",\n'
@@ -181,6 +181,17 @@ jobs:
               if not result.get("affected_file_path"):
                   print("❌ No affected_file_path in response")
                   exit(1)
+
+              # Prefer the application source module over its test counterpart
+              affected = result.get("affected_file_path", "")
+              if affected.startswith("tests/") and affected.endswith(".py"):
+                  src_name = os.path.basename(affected)
+                  if src_name.startswith("test_"):
+                      src_name = src_name[len("test_"):]
+                  candidate = os.path.join("src", src_name)
+                  if os.path.exists(candidate):
+                      print(f"Remapping test file {affected} -> source {candidate}")
+                      result["affected_file_path"] = candidate
 
               # Save outputs
               with open("/tmp/analysis.json", "w") as f:
