@@ -102,8 +102,11 @@ jobs:
             exit 0
           fi
 
-          # Save to file (truncate if too long)
-          echo -e "$LOG_TEXT" | head -c 30000 > /tmp/failure_log.txt
+          # Save to file (truncate if too long). Note: the failing-file
+          # extraction no longer depends on this truncated log (it re-runs the
+          # quality checks locally), but we still keep a generous window for
+          # LLM context.
+          echo -e "$LOG_TEXT" | head -c 300000 > /tmp/failure_log.txt
           echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
           echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
 
@@ -111,193 +114,115 @@ jobs:
           find . -type f -not -path './.git/*' | head -100 > /tmp/repo_files.txt
           echo "✅ Repository file list generated ($(wc -l < /tmp/repo_files.txt) files)"
 
-      - name: Analyze failure with Gemini
+      - name: Extract failing files
         id: analyze
         if: steps.logs.outputs.log_lines != '0'
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
           uv run python3 << 'PYEOF'
           import json
           import os
-          from google import genai
-
-          api_key = os.environ.get("GOOGLE_API_KEY", "")
-          if not api_key:
-              print("❌ GOOGLE_API_KEY not set")
-              exit(0)
+          import re
+          import subprocess
 
           with open("/tmp/repo_files.txt") as f:
               repo_context = f.read().strip() or "No files found in repository."
-          with open("/tmp/failure_log.txt") as f:
-              log_text = f.read()
+          try:
+              with open("/tmp/failure_log.txt") as f:
+                  log_text = f.read()
+          except FileNotFoundError:
+              log_text = ""
 
-          # ── Deterministically extract the failing files from the log ──
-          # We never trust the LLM to GUESS the file paths. Instead we parse the
-          # known Python Quality error patterns (black, ruff, mypy, pytest) so the
-          # exact files that need correction are always targeted. This prevents
-          # the agent from "fixing" the wrong file (e.g. pyproject.toml).
-          import re
-
-          def _normalize(path):
-              # Strip any CI working-directory prefix, e.g.
-              # /home/runner/work/Salesforce-WebDev/Salesforce-WebDev/src/x.py
-              # -> src/x.py
-              idx = path.find("Salesforce-WebDev/")
-              if idx != -1:
-                  path = path[idx + len("Salesforce-WebDev/"):]
+          def _rel(path):
+              # Normalize a tool-reported path to a repo-relative path. Tools may
+              # report absolute paths (black) or paths prefixed with the CI
+              # working directory; both must resolve to e.g. "src/x.py".
+              path = path.strip()
+              if os.path.isabs(path):
+                  try:
+                      path = os.path.relpath(path, os.getcwd())
+                  except ValueError:
+                      pass
+              else:
+                  idx = path.find("Salesforce-WebDev/")
+                  if idx != -1:
+                      path = path[idx + len("Salesforce-WebDev/"):]
               return path
 
-          extracted_files = {}
-          for m in re.finditer(r"would reformat\s+(\S+\.py)", log_text):
-              extracted_files.setdefault(_normalize(m.group(1)), set())
-          for m in re.finditer(r"(?m)(\S+?\.py):\d+:\d+:\s", log_text):
-              extracted_files.setdefault(_normalize(m.group(1)), set())
-          for m in re.finditer(r"(?m)(\S+?\.py):\d+:\s+(?:error|warning):", log_text):
-              extracted_files.setdefault(_normalize(m.group(1)), set())
-          for m in re.finditer(r"(?m)(?:FAILED\s+)?((?:tests|src)/\S+?\.py)", log_text):
-              extracted_files.setdefault(_normalize(m.group(1)), set())
+          def _run(cmd):
+              try:
+                  p = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+                  return p.stdout + "\n" + p.stderr
+              except Exception:
+                  return ""
 
-          # Keep only files that actually exist in the repository
-          extracted_files = {
-              p: errs for p, errs in extracted_files.items() if os.path.exists(p)
-          }
+          # ── Authoritative extraction: re-run the SAME quality checks locally ──
+          # so we capture EVERY failing file. The previous approach parsed a
+          # truncated remote log and therefore missed the whole mypy section, so
+          # only 2 of 10 files were ever fixed (and the single file the LLM did
+          # touch was rewritten with a self-import that broke the build).
+          ruff_out = _run(["uv", "run", "ruff", "check", ".", "--output-format=concise"])
+          black_out = _run(["uv", "run", "black", "--check", ".", "2>&1"])
+          mypy_out = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
 
-          # Capture the specific error lines for each extracted file so the LLM
-          # knows exactly what to fix in each one.
-          for p in extracted_files:
-              for line in log_text.splitlines():
+          extracted = {}
+          for m in re.finditer(r"(?m)^(\S+\.py):\d+:\d+", ruff_out):
+              extracted.setdefault(_rel(m.group(1)), set())
+          for m in re.finditer(r"would reformat (\S+\.py)", black_out):
+              extracted.setdefault(_rel(m.group(1)), set())
+          for m in re.finditer(r"(?m)^(\S+\.py):\d+:\s+(?:error|warning):", mypy_out):
+              extracted.setdefault(_rel(m.group(1)), set())
+
+          # Fallback to the downloaded log if local checks produced nothing.
+          if not extracted:
+              for m in re.finditer(r"would reformat\s+(\S+\.py)", log_text):
+                  extracted.setdefault(_rel(m.group(1)), set())
+              for m in re.finditer(r"(?m)(\S+?\.py):\d+:\s+(?:error|warning):", log_text):
+                  extracted.setdefault(_rel(m.group(1)), set())
+              for m in re.finditer(r"(?m)(?:FAILED\s+)?((?:tests|src)/\S+?\.py)", log_text):
+                  extracted.setdefault(_rel(m.group(1)), set())
+
+          extracted = {p: e for p, e in extracted.items() if os.path.exists(p)}
+
+          # Capture the specific error lines per file so the LLM knows exactly
+          # what to fix in each one.
+          for p in extracted:
+              for line in (log_text + "\n" + ruff_out + "\n" + black_out + "\n" + mypy_out).splitlines():
                   if line.strip().startswith(p + ":") or ("would reformat" in line and p in line):
-                      extracted_files[p].add(line.strip())
+                      extracted[p].add(line.strip())
 
           files_block = ""
-          if extracted_files:
+          if extracted:
               files_block = (
-                  "FAILING FILES IDENTIFIED IN THE LOG (you MUST return "
-                  "corrected_code for EVERY one of these files, and ONLY these):\n"
+                  "FAILING FILES (deterministically extracted by re-running the "
+                  "quality checks; you MUST return corrected_code for EVERY one of "
+                  "these files, and ONLY these):\n"
               )
-              for p, errs in extracted_files.items():
+              for p in sorted(extracted):
                   files_block += f"- {p}\n"
-                  for e in list(errs)[:10]:
+                  for e in sorted(extracted[p])[:12]:
                       files_block += f"    {e}\n"
-              print("🔎 Failing files extracted from log:")
-              for p in extracted_files:
+              print("Failing files (local extraction):")
+              for p in sorted(extracted):
                   print(f"   - {p}")
           else:
-              print("⚠️ No failing files extracted from log; relying on LLM guess.")
+              print("No failing files extracted.")
 
-          client = genai.Client(api_key=api_key)
+          with open("/tmp/analyze_context.json", "w") as f:
+              json.dump({
+                  "repo_context": repo_context,
+                  "log_text": log_text,
+                  "files_block": files_block,
+                  "failing_files": sorted(extracted),
+              }, f)
 
-          prompt = (
-              "Here are the files in the repository:\n"
-              + repo_context
-              + "\n\n"
-              + files_block
-              + "\n"
-              "You are an expert DevOps engineer and Python developer. Fix the CI/CD failure described in the log.\n"
-              "CRITICAL INSTRUCTIONS:\n"
-              "1. The section 'FAILING FILES IDENTIFIED IN THE LOG' above lists the EXACT files that have errors. You MUST return corrected_code for EVERY one of them, and ONLY those.\n"
-              "2. Do NOT guess or hallucinate file paths. Fix precisely the files listed above.\n"
-              "3. If a listed file is a test (tests/...) whose error is only caused by the corresponding source module, ALSO fix the source module (e.g. fix src/llm_service.py when tests/test_llm_service.py is listed), but always include the listed file itself.\n"
-              "4. Each corrected_code must be the COMPLETE, valid Python file, not a diff. Preserve all existing functionality.\n"
-              "5. Make the corrected code pass the project's Python Quality gate: ruff lint clean, black formatting clean, mypy strict typing (no new type errors), and existing pytest tests still pass. Do NOT introduce new errors.\n"
-              "Respond with ONLY a valid JSON object (no markdown fences):\n"
-              "{\n"
-              '    "root_cause_summary": "one paragraph summary",\n'
-              '    "explanation": "what was changed and why",\n'
-              '    "files": [\n'
-              '        {"affected_file_path": "relative/path/to/file.py", "corrected_code": "full corrected file content"}\n'
-              "    ]\n"
-              "}\n"
-              "Rules:\n"
-              "- The 'files' array MUST contain one entry per file listed in 'FAILING FILES IDENTIFIED IN THE LOG' above (and any required source module for a listed test). No other files.\n"
-              "- corrected_code for each file must be the COMPLETE file, not a diff\n"
-              "- Ensure corrected_code is valid Python\n"
-              "- Preserve all existing functionality\n"
-              "- corrected_code MUST pass the project's Python Quality gate: ruff lint clean, black formatting clean, mypy strict typing (no new type errors), and existing pytest tests still pass\n"
-              "- Do NOT introduce new lint errors, formatting issues, type errors, or failing tests\n"
-              "Failed Workflow Log:\n"
-              "```\n"
-              + log_text[:25000]
-              + "\n```"
-          )
-
-          try:
-              response = client.models.generate_content(
-                  model="gemini-3.6-flash",
-                  contents=prompt,
-              )
-
-              raw = response.text.strip()
-              # Clean markdown fences
-              import re
-              raw = re.sub(r"^```(?:json)?\s*\n?", "", raw, flags=re.MULTILINE)
-              raw = re.sub(r"\n?```\s*$", "", raw, flags=re.MULTILINE)
-              raw = raw.strip()
-
-              result = json.loads(raw)
-
-              root_cause = result.get("root_cause_summary", "") or ""
-              explanation = result.get("explanation", "") or ""
-
-              # Accept the new `files` array, or fall back to the legacy
-              # single-file form for backward compatibility.
-              raw_files = result.get("files")
-              if not isinstance(raw_files, list) or not raw_files:
-                  single_path = result.get("affected_file_path")
-                  single_code = result.get("corrected_code")
-                  if single_path and single_code:
-                      raw_files = [{"affected_file_path": single_path, "corrected_code": single_code}]
-                  else:
-                      raw_files = []
-
-              if not raw_files:
-                  print("❌ No files to fix in response")
-                  exit(0)
-
-              # Validate each entry and prefer the source module over its test
-              files = []
-              for entry in raw_files:
-                  path = entry.get("affected_file_path", "")
-                  code = entry.get("corrected_code", "")
-                  if not path or not code:
-                      print(f"⚠️ Skipping invalid entry (missing path or code): {entry}")
-                      continue
-                  if path.startswith("tests/") and path.endswith(".py"):
-                      src_name = os.path.basename(path)
-                      if src_name.startswith("test_"):
-                          src_name = src_name[len("test_"):]
-                      candidate = os.path.join("src", src_name)
-                      if os.path.exists(candidate):
-                          print(f"Remapping test file {path} -> source {candidate}")
-                          path = candidate
-                  files.append({"affected_file_path": path, "corrected_code": code})
-
-              if not files:
-                  print("❌ No valid files with corrected_code in response")
-                  exit(0)
-
-              # Save outputs
-              with open("/tmp/analysis.json", "w") as f:
-                  json.dump({"root_cause_summary": root_cause, "explanation": explanation, "files": files}, f)
-
-              # Write outputs for GitHub Actions
-              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                  f.write(f"file_path={files[0]['affected_file_path']}\n")
-                  f.write(f"file_count={len(files)}\n")
-                  f.write(f"summary={root_cause[:200]}\n")
-
-              print(f"✅ Analysis complete: {len(files)} file(s) to fix")
-              for fobj in files:
-                  print(f"   - {fobj['affected_file_path']}")
-              if root_cause:
-                  print(f"   Root cause: {root_cause[:100]}...")
-
-          except json.JSONDecodeError as e:
-              print(f"❌ Failed to parse LLM response as JSON: {e}")
-              print(f"   Raw response: {raw[:500]}")
-          except Exception as e:
-              print(f"❌ LLM analysis failed: {e}")
+          with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+              if extracted:
+                  f.write(f"file_path={sorted(extracted)[0]}\n")
+                  f.write(f"file_count={len(extracted)}\n")
+              else:
+                  f.write("file_path=\n")
+                  f.write("file_count=0\n")
+              f.write(f"summary=Extracted {len(extracted)} failing file(s)\n")
           PYEOF
 
       - name: Apply fix and create PR
@@ -305,84 +230,229 @@ jobs:
         if: steps.analyze.outputs.file_path != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
-          # Read analysis
-          SUMMARY=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print((d.get('root_cause_summary') or '')[:72])")
-          EXPLANATION=$(uv run python3 -c "import json; d=json.load(open('/tmp/analysis.json')); print(d.get('explanation') or '')")
-          FILE_COUNT=$(uv run python3 -c "import json; print(len(json.load(open('/tmp/analysis.json')).get('files', [])))")
-          FILES_LIST=$(uv run python3 -c "import json; print(', '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))")
+          uv run python3 << 'PYEOF'
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+
+          MAX_ATTEMPTS = 3
+
+          def _run(cmd):
+              try:
+                  p = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+                  return p.returncode, p.stdout + "\n" + p.stderr
+              except Exception as e:
+                  return 1, str(e)
+
+          with open("/tmp/analyze_context.json") as f:
+              ctx = json.load(f)
+          repo_context = ctx["repo_context"]
+          log_text = ctx["log_text"]
+          files_block = ctx["files_block"]
+
+          api_key = os.environ.get("GOOGLE_API_KEY", "")
+          if not api_key:
+              print("GOOGLE_API_KEY not set; cannot analyze.")
+              sys.exit(0)
+
+          from google import genai
+          client = genai.Client(api_key=api_key)
+
+          def build_prompt(feedback=""):
+              prompt = (
+                  "Here are the files in the repository:\n" + repo_context + "\n\n"
+                  + files_block + "\n"
+                  "You are an expert Python developer. Fix the CI/CD failure.\n"
+                  "CRITICAL INSTRUCTIONS:\n"
+                  "1. The 'FAILING FILES' list above is the EXACT set of files with errors. "
+                  "Return corrected_code for EVERY one of them, and ONLY those.\n"
+                  "2. Do NOT guess or hallucinate file paths. Fix precisely the listed files.\n"
+                  "3. Return the COMPLETE, valid file content for each, not a diff. "
+                  "Preserve ALL existing imports, public classes, functions and behaviour. "
+                  "NEVER add an import that references the module itself "
+                  "(e.g. 'from src.llm_service import ...' inside src/llm_service.py) "
+                  "because that creates a circular import. Only change what is necessary "
+                  "to fix the listed errors.\n"
+                  "4. Make the corrected code pass the project's quality gate: ruff lint "
+                  "clean, black formatting clean, mypy strict typing (no new type errors), "
+                  "and existing pytest tests still import and pass. Do NOT introduce new errors.\n"
+                  "Respond with ONLY a valid JSON object (no markdown fences):\n"
+                  "{\n"
+                  '    "root_cause_summary": "one paragraph summary",\n'
+                  '    "explanation": "what was changed and why",\n'
+                  '    "files": [\n'
+                  '        {"affected_file_path": "relative/path/to/file.py", "corrected_code": "full corrected file content"}\n'
+                  "    ]\n"
+                  "}\n"
+                  "Rules:\n"
+                  "- The 'files' array MUST contain one entry per file listed above. No other files.\n"
+                  "- corrected_code must be the COMPLETE file, not a diff.\n"
+                  "- Ensure corrected_code is valid Python and importable.\n"
+                  "- Preserve all existing functionality.\n"
+              )
+              if feedback:
+                  prompt += (
+                      "\nYour previous attempt FAILED the verification gate with these "
+                      "errors. Fix them and return the corrected files again:\n"
+                      "```\n" + feedback[:8000] + "\n```\n"
+                  )
+              prompt += "Failed Workflow Log:\n```\n" + log_text[:15000] + "\n```"
+              return prompt
+
+          def parse_llm(raw):
+              raw = re.sub(r"^```(?:json)?\s*\n?", "", raw, flags=re.MULTILINE)
+              raw = re.sub(r"\n?```\s*$", "", raw, flags=re.MULTILINE).strip()
+              result = json.loads(raw)
+              files = result.get("files")
+              if not isinstance(files, list) or not files:
+                  single = result.get("affected_file_path")
+                  code = result.get("corrected_code")
+                  files = [{"affected_file_path": single, "corrected_code": code}] if single and code else []
+              out = []
+              for e in files:
+                  path = e.get("affected_file_path", "")
+                  code = e.get("corrected_code", "")
+                  if not path or not code:
+                      continue
+                  if path.startswith("tests/") and path.endswith(".py"):
+                      name = os.path.basename(path)
+                      if name.startswith("test_"):
+                          name = name[len("test_"):]
+                      cand = os.path.join("src", name)
+                      if os.path.exists(cand):
+                          path = cand
+                  out.append({"affected_file_path": path, "corrected_code": code})
+              return result.get("root_cause_summary", ""), result.get("explanation", ""), out
+
+          def validate(files):
+              for e in files:
+                  try:
+                      compile(e["corrected_code"], e["affected_file_path"], "exec")
+                  except SyntaxError as ex:
+                      return False, f"SyntaxError in {e['affected_file_path']}: {ex}"
+                  # Guard against the self-import mistake that previously broke the build.
+                  mod = os.path.splitext(os.path.basename(e["affected_file_path"]))[0]
+                  if re.search(rf"(from\s+[\w.]*{re.escape(mod)}\s+import|import\s+[\w.]*{re.escape(mod)}\b)", e["corrected_code"]):
+                      return False, f"Self-import detected in {e['affected_file_path']}"
+              return True, ""
+
+          def apply_and_gate(files):
+              for e in files:
+                  p = e["affected_file_path"]
+                  os.makedirs(os.path.dirname(p) or ".", exist_ok=True)
+                  with open(p, "w") as fh:
+                      fh.write(e["corrected_code"])
+              paths = [e["affected_file_path"] for e in files]
+              for p in paths:
+                  _run(["uv", "run", "black", p])
+                  _run(["uv", "run", "ruff", "check", "--fix", p])
+                  _run(["uv", "run", "ruff", "format", p])
+              errors = []
+              for p in paths:
+                  rc, out = _run(["uv", "run", "ruff", "check", p, "--output-format=full"])
+                  if rc != 0:
+                      errors.append("RUFF " + p + ":\n" + out[-1500:])
+                  rc, out = _run(["uv", "run", "black", "--check", p])
+                  if rc != 0:
+                      errors.append("BLACK " + p + ":\n" + out[-800:])
+                  rc, out = _run(["uv", "run", "mypy", p, "--ignore-missing-imports", "--pretty"])
+                  if rc != 0:
+                      errors.append("MYPY " + p + ":\n" + out[-1500:])
+              rc, out = _run(["uv", "run", "pytest", "tests/", "-q"])
+              if rc != 0:
+                  errors.append("PYTEST:\n" + out[-3000:])
+              return (len(errors) == 0), "\n".join(errors)
+
+          passed = False
+          result_files = []
+          summary = ""
+          explanation = ""
+          last_errors = ""
+          for attempt in range(1, MAX_ATTEMPTS + 1):
+              print(f"--- LLM attempt {attempt}/{MAX_ATTEMPTS} ---")
+              try:
+                  resp = client.models.generate_content(model="gemini-3.6-flash", contents=build_prompt(last_errors))
+                  raw = resp.text or ""
+              except Exception as e:
+                  print(f"LLM call failed: {e}")
+                  last_errors = f"LLM call failed: {e}"
+                  continue
+              try:
+                  summary, explanation, result_files = parse_llm(raw)
+              except Exception as e:
+                  print(f"Failed to parse LLM response: {e}")
+                  last_errors = f"Invalid JSON response: {e}\n{raw[:1000]}"
+                  continue
+              if not result_files:
+                  print("No files returned by LLM.")
+                  last_errors = "No files with corrected_code were returned."
+                  continue
+              ok, verr = validate(result_files)
+              if not ok:
+                  print("Validation failed: " + verr)
+                  last_errors = verr
+                  continue
+              passed, gerr = apply_and_gate(result_files)
+              if passed:
+                  print("Verification gate passed.")
+                  break
+              print("Verification gate failed; feeding errors back to LLM.")
+              last_errors = gerr
+
+          if not result_files or not passed:
+              print("Auto-heal could not produce a passing fix after retries. Aborting PR.")
+              with open("/tmp/apply_result.json", "w") as f:
+                  json.dump({"success": False}, f)
+              sys.exit(0)
+
+          with open("/tmp/analysis.json", "w") as f:
+              json.dump({"root_cause_summary": summary, "explanation": explanation, "files": result_files}, f)
+          with open("/tmp/apply_result.json", "w") as f:
+              json.dump({"success": True, "summary": summary[:72], "explanation": explanation,
+                         "files": [e["affected_file_path"] for e in result_files]}, f)
+          print(f"Fix ready: {len(result_files)} file(s).")
+          for e in result_files:
+              print(f"   - {e['affected_file_path']}")
+          PYEOF
+
+          if [ ! -f /tmp/apply_result.json ]; then
+            echo "No apply result; skipping."
+            exit 0
+          fi
+          SUCCESS=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('success'))")
+          if [ "$SUCCESS" != "True" ]; then
+            echo "Auto-heal did not produce a passing fix; no PR created."
+            exit 0
+          fi
+
+          SUMMARY=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('summary',''))")
+          EXPLANATION=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('explanation',''))")
+          FILES_LIST=$(uv run python3 -c "import json; print(', '.join(json.load(open('/tmp/apply_result.json')).get('files', [])))")
+          FILE_COUNT=$(uv run python3 -c "import json; print(len(json.load(open('/tmp/apply_result.json')).get('files', [])))")
           RUN_ID="${{ github.event.workflow_run.id }}"
 
-          # Create branch
           BRANCH="auto-fix/${RUN_ID}"
           git checkout -b "$BRANCH"
 
-          # Apply EVERY corrected file listed in the analysis. All error files
-          # reported by Python Quality are fixed together in the same PR.
-          echo "📝 Applying fixes to all ${FILE_COUNT} file(s) reported with errors..."
-          uv run python3 -c "import json,os; [ (os.makedirs(os.path.dirname(e['affected_file_path']) or '.', exist_ok=True), open(e['affected_file_path'],'w').write(e['corrected_code'])) for e in json.load(open('/tmp/analysis.json')).get('files', []) ]"
-
-          # ── Enforce code quality on every changed file so Python Quality passes ──
-          # Deterministically reformat and auto-fix each file so the most common
-          # failure modes (black formatting and ruff lint) can never re-trigger the
-          # pipeline after the PR is merged.
-          echo "🛠️  Enforcing code quality on all changed files..."
-          uv run python3 -c "import json,subprocess; [ [subprocess.run(['uv','run','black',e['affected_file_path']],check=False), subprocess.run(['uv','run','ruff','check','--fix',e['affected_file_path']],check=False), subprocess.run(['uv','run','ruff','format',e['affected_file_path']],check=False)] for e in json.load(open('/tmp/analysis.json')).get('files', []) ]"
-
-          # Stage only the files we intentionally changed
           for f in $(uv run python3 -c "import json; print(' '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))"); do
             git add "$f"
           done
 
-          # ── Verification gate: guarantee Python Quality passes for the refactor ──
-          # Replicate the Python Quality checks (ruff, black, mypy) on the EXACT
-          # files we changed, plus run the full test suite. If any check fails, abort
-          # the PR so we never open a change that re-breaks the pipeline. This
-          # guarantees Python Quality runs without errors after the refactor, without
-          # deadlocking on unrelated pre-existing failures elsewhere in the repo.
-          echo "🔍 Verifying Python Quality before opening PR..."
-          set +e
-          QUALITY_OK=1
-
-          for f in $(uv run python3 -c "import json; print(' '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))"); do
-            uv run ruff check "$f" --output-format=full
-            if [ $? -ne 0 ]; then echo "❌ ruff failed on $f"; QUALITY_OK=0; fi
-
-            uv run black --check "$f"
-            if [ $? -ne 0 ]; then echo "❌ black failed on $f"; QUALITY_OK=0; fi
-
-            uv run mypy "$f" --ignore-missing-imports --pretty 2>&1 | tail -20
-            if [ ${PIPESTATUS[0]} -ne 0 ]; then echo "❌ mypy failed on $f"; QUALITY_OK=0; fi
-          done
-
-          echo "🧪 Running full test suite..."
-          uv run pytest tests/ -q 2>&1 | tail -40
-          if [ ${PIPESTATUS[0]} -ne 0 ]; then echo "❌ pytest failed"; QUALITY_OK=0; fi
-
-          set -e
-          if [ "$QUALITY_OK" -ne 1 ]; then
-            echo "❌ Python Quality did NOT pass after applying the fixes."
-            echo "   Aborting PR to avoid an auto-heal failure loop."
-            echo "   Inspect the logs above and fix the change manually if needed."
-            exit 0
-          fi
-          echo "✅ Python Quality verified — all checks green."
-
-          # Check if there are changes
           if git diff --cached --quiet; then
-            echo "ℹ️ No changes to commit"
+            echo "No changes to commit"
             exit 0
           fi
 
-          # Commit
           git config user.name "Auto-Healing Agent"
           git config user.email "agent@github.com"
           git commit -m "[auto-heal] fix: ${SUMMARY}"
 
-          # Push
           git push origin "$BRANCH"
 
-          # Create PR
           BODY="## 🔧 Auto-Healing: CI/CD Pipeline Fix
 
           **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
@@ -404,7 +474,7 @@ jobs:
             --head "$BRANCH" \
             --base main
 
-          echo "✅ PR created from branch ${BRANCH}"
+          echo "PR created from branch ${BRANCH}"
           if [ -n "$GITHUB_OUTPUT" ]; then echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"; fi
 
       - name: Summary
