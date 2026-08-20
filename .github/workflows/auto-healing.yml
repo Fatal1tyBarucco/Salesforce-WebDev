@@ -8,7 +8,7 @@
 #   GOOGLE_API_KEY — Gemini API key for LLM analysis (primary)
 #   OPENCODE_API_KEY — OpenCode API key (fallback LLM: hy3-free) used when Gemini fails
 # Optional repo vars (override defaults):
-#   OPENCODE_BASE_URL — OpenCode OpenAI-compatible base URL (default https://api.opencode.ai/v1)
+#   OPENCODE_BASE_URL — OpenCode OpenAI-compatible base URL (default https://opencode.ai/console/zen/v1)
 #   OPENCODE_MODEL — OpenCode model id (default hy3-free)
 # ─────────────────────────────────────────────────────────────────[...]
 
@@ -386,26 +386,47 @@ jobs:
                   raise ValueError("Empty response from Gemini")
               except Exception as e:
                   print(f"Gemini LLM call failed ({e}); falling back to OpenCode.")
-              # Fallback: OpenCode (OpenAI-compatible)
+              # Fallback: OpenCode Zen (OpenAI-compatible /v1/chat/completions).
+              # Endpoint: https://opencode.ai/console/zen/v1  (model id e.g. hy3-free)
               oc_key = os.environ.get("OPENCODE_API_KEY", "")
               if not oc_key:
                   raise RuntimeError("Gemini failed and OPENCODE_API_KEY is not set for fallback.")
+              import json as _json
+              import urllib.request as _urllib
+              oc_base = (os.environ.get("OPENCODE_BASE_URL")
+                         or "https://opencode.ai/console/zen/v1").rstrip("/")
+              oc_model = os.environ.get("OPENCODE_MODEL") or "hy3-free"
+              url = oc_base + "/chat/completions"
+              payload = _json.dumps({
+                  "model": oc_model,
+                  "messages": [{"role": "user", "content": prompt}],
+                  "temperature": 0.2,
+                  "stream": False,
+              }).encode()
+              req = _urllib.Request(url, data=payload, method="POST", headers={
+                  "Content-Type": "application/json",
+                  "Authorization": f"Bearer {oc_key}",
+                  "Accept": "application/json",
+                  # Browser-like UA to satisfy Cloudflare's basic integrity check.
+                  "User-Agent": (
+                      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+                  ),
+              })
               try:
-                  from openai import OpenAI
-                  oc_base = os.environ.get("OPENCODE_BASE_URL", "https://api.opencode.ai/v1")
-                  oc_model = os.environ.get("OPENCODE_MODEL", "hy3-free")
-                  oc = OpenAI(api_key=oc_key, base_url=oc_base)
-                  oc_resp = oc.chat.completions.create(
-                      model=oc_model,
-                      messages=[{"role": "user", "content": prompt}],
-                  )
-                  oc_text = oc_resp.choices[0].message.content or ""
+                  with _urllib.urlopen(req, timeout=180) as r:
+                      data = _json.loads(r.read().decode())
+                  oc_text = (data.get("choices", [{}])[0]
+                             .get("message", {}).get("content") or "")
                   if not oc_text:
                       raise ValueError("Empty response from OpenCode fallback")
                   print(f"OpenCode fallback ({oc_model}) succeeded.")
                   return oc_text
+              except _urllib.HTTPError as e:
+                  detail = e.read().decode()[:500]
+                  raise RuntimeError(f"OpenCode fallback HTTP {e.code}: {detail}")
               except Exception as e:
-                  raise RuntimeError(f"OpenCode fallback also failed: {e}")
+                  raise RuntimeError(f"OpenCode fallback failed: {e}")
 
           passed = False
           result_files = []
