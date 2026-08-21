@@ -172,7 +172,9 @@ for filepath in sorted(test_file_contents):
     content = test_file_contents[filepath]
     if len(content) > 8000:
         content = content[:8000] + "\n... (truncated)"
-    test_context += f"\n### {filepath} (test file — for reference only)\n```python\n{content}\n```\n"
+    test_context += (
+        f"\n### {filepath} (test file — for reference only)\n```python\n{content}\n```\n"
+    )
 
 prompt = (
     "Fix the following Python files to pass ALL quality checks "
@@ -205,7 +207,10 @@ prompt = (
 )
 
 if test_context:
-    prompt += "\nTEST FILES (for reference — understand expected API, do NOT modify these):\n" + test_context
+    prompt += (
+        "\nTEST FILES (for reference — understand expected API, do NOT modify these):\n"
+        + test_context
+    )
 
 
 def call_llm(prompt):
