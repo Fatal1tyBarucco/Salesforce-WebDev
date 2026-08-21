@@ -80,10 +80,39 @@ jobs:
         run: uv run python3 .github/scripts/llm_fallback.py
 
       # ───────────────────────────────────────────────────────────
-      # STEP 3: Create PR if any fixes were applied
+      # STEP 3: Post-fix verification — ensure quality gates pass
+      # ───────────────────────────────────────────────────────────
+      - name: Post-fix verification
+        id: verify
+        run: |
+          echo "Running final verification..."
+          RUFF_OK=true
+          BLACK_OK=true
+          MYPY_OK=true
+          PYTEST_OK=true
+
+          uv run ruff check . || RUFF_OK=false
+          uv run black --check . || BLACK_OK=false
+          uv run mypy src/ --ignore-missing-imports || MYPY_OK=false
+          uv run pytest tests/ -q --tb=short || PYTEST_OK=false
+
+          echo "ruff=$RUFF_OK" >> "$GITHUB_OUTPUT"
+          echo "black=$BLACK_OK" >> "$GITHUB_OUTPUT"
+          echo "mypy=$MYPY_OK" >> "$GITHUB_OUTPUT"
+          echo "pytest=$PYTEST_OK" >> "$GITHUB_OUTPUT"
+
+          if [ "$RUFF_OK" = "true" ] && [ "$BLACK_OK" = "true" ] && [ "$MYPY_OK" = "true" ] && [ "$PYTEST_OK" = "true" ]; then
+            echo "all_pass=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "all_pass=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ───────────────────────────────────────────────────────────
+      # STEP 4: Create PR only if fixes improved the situation
       # ───────────────────────────────────────────────────────────
       - name: Create PR
         id: pr
+        if: steps.verify.outputs.all_pass == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -111,11 +140,7 @@ jobs:
           git config user.name "Auto-Healing Agent"
           git config user.email "agent@github.com"
 
-          if [ "$DET_PASS" = "true" ]; then
-            MSG="[auto-heal] fix: deterministic repair (${DET_COUNT} fixes, all gates pass)"
-          else
-            MSG="[auto-heal] fix: deterministic + LLM repair"
-          fi
+          MSG="[auto-heal] fix: deterministic + LLM repair"
 
           git commit -m "$MSG"
           git push origin "$BRANCH"
@@ -146,12 +171,12 @@ jobs:
           ## 🔧 Auto-Healing: CI/CD Pipeline Fix
 
           **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
-          **Strategy:** $([ "$DET_PASS" = "true" ] && echo "Deterministic repair" || echo "Deterministic + LLM fallback")
+          **Strategy:** Deterministic + LLM fallback
 
           ### Fixes Applied
           ${FIXES_LIST}
 
-          ### Verification
+          ### Verification (all gates pass)
           ${GATES_TABLE}
 
           ---
@@ -174,6 +199,7 @@ jobs:
         run: |
           DET_COUNT="${{ steps.deterministic.outputs.fixes_count }}"
           DET_PASS="${{ steps.deterministic.outputs.all_pass }}"
+          VERIFY_PASS="${{ steps.verify.outputs.all_pass }}"
           PR_CREATED="${{ steps.pr.outputs.pr_created }}"
 
           {
@@ -186,17 +212,27 @@ jobs:
             echo "- Fixes applied: ${DET_COUNT}"
             echo "- All gates pass: ${DET_PASS}"
             echo ""
+            echo "### Post-Fix Verification"
+            echo "- Ruff: ${{ steps.verify.outputs.ruff }}"
+            echo "- Black: ${{ steps.verify.outputs.black }}"
+            echo "- Mypy: ${{ steps.verify.outputs.mypy }}"
+            echo "- Pytest: ${{ steps.verify.outputs.pytest }}"
+            echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$DET_PASS" != "true" ] && [ -f /tmp/llm_result.json ]; then
             LLM_SUCCESS=$(uv run python3 -c "import json; print(json.load(open('/tmp/llm_result.json')).get('success'))" 2>/dev/null || echo "unknown")
+            LLM_FIXED=$(uv run python3 -c "import json; print(json.load(open('/tmp/llm_result.json')).get('files_fixed', 0))" 2>/dev/null || echo "0")
             echo "### LLM Fallback" >> "$GITHUB_STEP_SUMMARY"
-            echo "- LLM result: ${LLM_SUCCESS}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Success: ${LLM_SUCCESS}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Files fixed: ${LLM_FIXED}" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          if [ "$PR_CREATED" = "true" ]; then
+          if [ "$VERIFY_PASS" = "true" ] && [ "$PR_CREATED" = "true" ]; then
             echo "- **Status:** ✅ PR created (\`${{ steps.pr.outputs.branch }}\`)" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$VERIFY_PASS" = "true" ]; then
+            echo "- **Status:** ✅ All gates pass (no PR needed)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "- **Status:** ⏭️ No PR created" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Status:** ❌ Could not fix all errors — manual intervention needed" >> "$GITHUB_STEP_SUMMARY"
           fi
