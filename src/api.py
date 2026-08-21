@@ -178,13 +178,14 @@ def _resolve_release_dir(slug: str) -> Path | None:
     try:
         release_dir = (base_dir / canonical_slug).resolve(strict=True)
         release_dir.relative_to(base_dir)
+        trusted_release_dir = release_dir
     except ValueError:
         return None
     except Exception:
         return None
-    if not release_dir.is_dir():
+    if not trusted_release_dir.is_dir():
         return None
-    return release_dir
+    return trusted_release_dir
 
 
 def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
