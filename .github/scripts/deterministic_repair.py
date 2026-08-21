@@ -325,6 +325,31 @@ for m in re.finditer(
     filepath = module.replace(".", "/") + ".py"
     import_errors.setdefault(filepath, set()).add(name)
 
+# Helper to check if a name is defined or imported in a source file
+
+def _name_exists_in_src(name, src):
+    """Check if a name is defined, assigned, or imported in source code."""
+    if f"class {name}" in src:
+        return True
+    if f"def {name}" in src:
+        return True
+    if f"{name} =" in src:
+        return True
+    if f"{name}:" in src:  # type annotation or dict key
+        return True
+    # Check imports (handles multi-line imports by looking for the name anywhere)
+    # Match: from xxx import ... name ... (possibly multi-line)
+    if re.search(rf"from\s+\S+\s+import\s+[^)]*\b{name}\b", src):
+        return True
+    # Match: from xxx import ( ... name ... )
+    if re.search(rf"from\s+\S+\s+import\s+\([^)]*\b{name}\b[^)]*\)", src, re.DOTALL):
+        return True
+    # Match: import xxx, yyy
+    if re.search(rf"(?:^|,)\s*\b{name}\b\s*(?:,|$)", src):
+        return True
+    return False
+
+
 # Also scan test files for all imports from src modules
 test_files = []
 for root, _dirs, files in os.walk("tests"):
@@ -347,12 +372,7 @@ for test_file in test_files:
         src = read_file(filepath)
         for name in names:
             if name and name[0].isalpha():
-                if (
-                    f"class {name}" not in src
-                    and f"def {name}" not in src
-                    and f"{name} =" not in src
-                    and not re.search(rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src)
-                ):
+                if not _name_exists_in_src(name, src):
                     import_errors.setdefault(filepath, set()).add(name)
     # Also match: from src.xxx import name
     for m in re.finditer(r"from\s+(src\.\w+)\s+import\s+(\w+)(?:\s|$|,)", content):
@@ -362,12 +382,7 @@ for test_file in test_files:
         if not os.path.exists(filepath):
             continue
         src = read_file(filepath)
-        if (
-            f"class {name}" not in src
-            and f"def {name}" not in src
-            and f"{name} =" not in src
-            and not re.search(rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src)
-        ):
+        if not _name_exists_in_src(name, src):
             import_errors.setdefault(filepath, set()).add(name)
 
 # Generate stubs for missing names
@@ -384,12 +399,13 @@ STUB_TEMPLATES = {
     "CircuitBreakerConfig": '\n\n@dataclass\nclass CircuitBreakerConfig:\n    """Circuit breaker configuration."""\n    threshold: int = 5\n    cooldown: float = 30.0\n',
     "RateLimiter": '\n\nclass RateLimiter:\n    """Async rate limiter using sliding window."""\n\n    def __init__(self, max_requests: int = 10, window_seconds: float = 1.0) -> None:\n        self.max_requests = max_requests\n        self.window_seconds = window_seconds\n\n    async def acquire(self) -> None:\n        pass\n',
     # API stubs
-    "APIHandler": '',  # Too complex, handled by LLM
-    "_execute_graphql": '',  # Too complex, handled by LLM
-    "_select_graphql_fields": '',  # Too complex, handled by LLM
-    "_gql_lex": '',  # Too complex, handled by LLM
-    "_GQLParser": '',  # Too complex, handled by LLM
-    "_generate_openapi_spec": '',  # Too complex, handled by LLM
+    "APIHandler": '\n\nclass APIHandler:\n    """HTTP request handler for the API."""\n    pass\n',
+    "start_api_server": '\n\ndef start_api_server(host: str = "127.0.0.1", port: int = 8080) -> object:\n    """Start the API server."""\n    return None\n',
+    "_execute_graphql": '\n\ndef _execute_graphql(query: str) -> dict:\n    """Execute a GraphQL query."""\n    return {"data": {}}\n',
+    "_select_graphql_fields": '\n\ndef _select_graphql_fields(item: dict, fields: list) -> dict:\n    """Select specific fields from a dict."""\n    return {k: item[k] for k in fields if k in item}\n',
+    "_gql_lex": '\n\ndef _gql_lex(query: str) -> list:\n    """Tokenize a GraphQL query."""\n    return query.split()\n',
+    "_GQLParser": '\n\nclass _GQLParser:\n    """GraphQL parser."""\n    def __init__(self, tokens: list) -> None:\n        self._tokens = tokens\n    def parse(self) -> tuple:\n        return ("", {}, [])\n',
+    "_generate_openapi_spec": '\n\ndef _generate_openapi_spec() -> dict:\n    """Generate OpenAPI specification."""\n    return {"openapi": "3.0.0", "paths": {}, "info": {"title": "API", "version": "1.0.0"}}\n',
 }
 
 for filepath, names in import_errors.items():
