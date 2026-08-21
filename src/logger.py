@@ -1,5 +1,8 @@
 """Logging configuration and utilities for Salesforce WebDev."""
 
+import uuid
+
+
 import logging
 import os
 import sys
@@ -43,3 +46,8 @@ def get_logger(name: str = "salesforce_webdev") -> logging.Logger:
     if not logger.handlers:
         return setup_logger(name)
     return logger
+
+
+def new_correlation_id() -> str:
+    """Generate a new correlation ID for request tracing."""
+    return str(uuid.uuid4())

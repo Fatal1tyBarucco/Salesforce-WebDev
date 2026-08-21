@@ -31,7 +31,7 @@ from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
 from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
 from .llm_service import LLMService
-from .logger import setup_logging
+from .logger import setup_logger
 from .parser import (
     FeatureImpactParser,
 )
@@ -635,7 +635,7 @@ class PipelineConfig:
             self.event_bus = get_event_bus()
         if self.llm is None:
             try:
-                self.llm = LLMService(cache=self.cache)
+                self.llm = LLMService()
             except ValueError:
                 # No API keys configured — llm stays None (dry-run, CI, etc.)
                 self.llm = None
@@ -651,7 +651,7 @@ class PipelineConfig:
 
 async def run_pipeline(config: PipelineConfig | None = None) -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
-    setup_logging()
+    setup_logger()
 
     if config is None:
         release_filter, dry_run = _parse_args()

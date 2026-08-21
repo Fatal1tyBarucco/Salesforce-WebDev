@@ -2,7 +2,7 @@
 
 import os
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
@@ -24,9 +24,7 @@ class LLMService:
             model_name: Name of the model to use.
             provider: Provider name ('openai' or 'gemini').
         """
-        self.api_key = (
-            api_key or os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
-        )
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
         self.model_name = model_name
         self.provider = provider.lower()
 
@@ -95,7 +93,7 @@ class LLMService:
             from openai import OpenAI
 
             client = OpenAI(api_key=self.api_key)
-            messages: List[Dict[str, str]] = []
+            messages: list[dict[str, Any]] = []
 
             if system_instruction:
                 messages.append({"role": "system", "content": system_instruction})
@@ -104,7 +102,7 @@ class LLMService:
 
             response = client.chat.completions.create(
                 model=self.model_name,
-                messages=messages,
+                messages=messages,  # type: ignore[arg-type]
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
@@ -126,12 +124,8 @@ class LLMService:
         try:
             from google import genai
 
-            client = genai.Client(api_key=self.api_key)
-            full_prompt = (
-                f"{system_instruction}\n\n{prompt}"
-                if system_instruction
-                else prompt
-            )
+            client = genai.Client(api_key=self.api_key or "")
+            full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
 
             response = client.models.generate_content(
                 model=self.model_name,
@@ -142,6 +136,36 @@ class LLMService:
         except ImportError:
             logger.warning("Google GenAI package not available, returning mock response.")
             return f"[Mock Gemini Response] Prompt: {prompt[:50]}..."
+
+    async def generate_text(
+        self,
+        prompt: str,
+        system_instruction: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: Optional[int] = 1000,
+    ) -> str:
+        """Alias for generate_completion (async-compatible wrapper)."""
+        return self.generate_completion(
+            prompt=prompt,
+            system_instruction=system_instruction,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+
+    async def classify_text(
+        self,
+        text: str,
+        categories: Optional[List[str]] = None,
+        system_prompt: Optional[str] = None,
+    ) -> str:
+        """Alias for generate_completion for classification tasks."""
+        prompt = text
+        if categories:
+            prompt = "Classify into: " + ", ".join(categories) + "\n\n" + text
+        return self.generate_completion(
+            prompt=prompt,
+            system_instruction=system_prompt,
+        )
 
     def summarize(self, text: str, max_length: int = 200) -> str:
         """Summarize given text content using LLM.
