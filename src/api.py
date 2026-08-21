@@ -23,7 +23,7 @@ app = FastAPI(
 API_KEY_ENV_VAR = "API_SECRET_KEY"
 DEFAULT_API_KEY = "default-dev-key"
 _API_KEY = os.getenv("API_KEY", "")
-_SLUG_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+_SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 class TriageRequest(BaseModel):
