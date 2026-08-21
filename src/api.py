@@ -146,13 +146,16 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     except Exception:
         return None
     try:
-        resolved_meta_path = (base_dir / slug / ".meta.json").resolve(strict=False)
+        candidate = base_dir / slug / ".meta.json"
+        resolved_meta_path = candidate.resolve(strict=True)
         resolved_meta_path.relative_to(base_dir)
+        if resolved_meta_path.name != ".meta.json" or resolved_meta_path.parent.name != slug:
+            return None
     except ValueError:
         return None
     except Exception:
         return None
-    if not resolved_meta_path.exists():
+    if not resolved_meta_path.is_file():
         return None
     try:
         return json.loads(resolved_meta_path.read_text(encoding="utf-8"))
