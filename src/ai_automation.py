@@ -10,8 +10,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from .automation import (
-    AIAutomationService,
+from .automation.badge import generate_dynamic_badge, get_latest_release_badge
+from .automation.models import (
     AISummary,
     CategoryImpactScore,
     ContentHash,
@@ -24,7 +24,7 @@ from .automation import (
     TriageResult,
     UserProfile,
 )
-from .automation.badge import generate_dynamic_badge, get_latest_release_badge
+from .automation.service import AIAutomationService
 from .config import RELEASES_DIR
 from .llm_service import LLMService
 
