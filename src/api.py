@@ -141,14 +141,18 @@ def _validate_slug(slug: str) -> bool:
 def _find_meta(slug: str) -> dict[str, Any] | None:
     if not _validate_slug(slug):
         return None
-    canonical_slug = slug.strip()
+    requested_slug = slug.strip()
+    if not requested_slug:
+        return None
+    from .config import KNOWN_RELEASES
+
+    trusted_slugs = {r.slug: r.slug for r in KNOWN_RELEASES}
+    for m in _load_all_metas():
+        meta_slug = m.get("slug")
+        if isinstance(meta_slug, str) and _SLUG_RE.fullmatch(meta_slug):
+            trusted_slugs[meta_slug] = meta_slug
+    canonical_slug = trusted_slugs.get(requested_slug)
     if not canonical_slug:
-        return None
-    if canonical_slug in {".", ".."} or "/" in canonical_slug or "\\" in canonical_slug:
-        return None
-    if Path(canonical_slug).name != canonical_slug:
-        return None
-    if not _SLUG_RE.fullmatch(canonical_slug):
         return None
     from .config import KNOWN_RELEASES
 
