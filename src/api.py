@@ -141,11 +141,21 @@ def _validate_slug(slug: str) -> bool:
 def _find_meta(slug: str) -> dict[str, Any] | None:
     if not _validate_slug(slug):
         return None
-    release_dir = _resolve_release_dir(slug)
-    if release_dir is None:
+    canonical_slug = slug.strip()
+    if not canonical_slug:
+        return None
+    if canonical_slug in {".", ".."} or "/" in canonical_slug or "\\" in canonical_slug:
+        return None
+    if Path(canonical_slug).name != canonical_slug:
+        return None
+    if not _SLUG_RE.fullmatch(canonical_slug):
         return None
     try:
-        resolved_release_dir = release_dir.resolve(strict=True)
+        base_dir = Path(RELEASES_DIR).resolve(strict=True)
+        resolved_release_dir = (base_dir / canonical_slug).resolve(strict=True)
+        resolved_release_dir.relative_to(base_dir)
+        if not resolved_release_dir.is_dir():
+            return None
         resolved_meta_path = (resolved_release_dir / ".meta.json").resolve(strict=True)
         if resolved_meta_path.parent != resolved_release_dir or resolved_meta_path.name != ".meta.json":
             return None
