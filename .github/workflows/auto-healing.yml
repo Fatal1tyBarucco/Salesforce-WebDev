@@ -1,16 +1,16 @@
-# ─────────────────────────────────────────────────────────────────[...]
+# ─────────────────────────────────────────────────────────────────
 # Auto-Healing Agent — GitHub Actions (Serverless)
-# ─────────────────────────────────────────────────────────────────[...]
+# ─────────────────────────────────────────────────────────────────
 # Triggered automatically when Python Quality fails on main.
-# No webhook server needed — runs entirely on GitHub Actions.
+# Strategy: deterministic repair first (known patterns), then LLM fallback.
 #
 # Required secrets:
-#   GOOGLE_API_KEY — Gemini API key for LLM analysis (primary)
-#   OPENCODE_API_KEY — OpenCode API key (fallback LLM: hy3-free) used when Gemini fails
-# Optional repo vars (override defaults):
-#   OPENCODE_BASE_URL — OpenCode OpenAI-compatible base URL (default https://opencode.ai/console/zen/v1)
+#   GOOGLE_API_KEY — Gemini API key for LLM analysis (fallback)
+#   OPENCODE_API_KEY — OpenCode API key (second fallback)
+# Optional repo vars:
+#   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/console/zen/v1)
 #   OPENCODE_MODEL — OpenCode model id (default hy3-free)
-# ─────────────────────────────────────────────────────────────────[...]
+# ─────────────────────────────────────────────────────────────────
 
 name: Auto-Healing Agent
 
@@ -32,7 +32,6 @@ concurrency:
 jobs:
   heal:
     runs-on: ubuntu-latest
-    # Only run when the workflow failed on the main branch
     if: >
       github.event.workflow_run.conclusion == 'failure' &&
       github.event.workflow_run.head_branch == 'main' &&
@@ -59,500 +58,145 @@ jobs:
           sudo apt-get install -y -qq libxml2-dev libxslt1-dev
           uv sync --frozen --extra dev --extra healing --group dev
 
-      - name: Download failure logs
-        id: logs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RUN_ID="${{ github.event.workflow_run.id }}"
-          echo "📥 Downloading logs for run ${RUN_ID}..."
+      # ───────────────────────────────────────────────────────────
+      # STEP 1: Deterministic repair — fix known error patterns
+      # ───────────────────────────────────────────────────────────
+      - name: Deterministic repair
+        id: deterministic
+        run: uv run python3 .github/scripts/deterministic_repair.py
 
-          # Download logs via GitHub API (curl is more reliable than gh api for binary)
-          HTTP_CODE=$(curl -sL -o logs.zip -w "%{http_code}" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${RUN_ID}/logs")
-
-          if [[ "$HTTP_CODE" != "200" ]]; then
-            echo "❌ Failed to download logs (HTTP $HTTP_CODE)"
-            echo "log_lines=0" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          if [[ ! -f logs.zip ]] || [[ ! -s logs.zip ]]; then
-            echo "⚠️ Log archive is empty or missing"
-            echo "log_lines=0" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          mkdir -p logs_extracted
-          if ! unzip -o logs.zip -d logs_extracted 2>&1; then
-            echo "❌ Failed to extract log archive"
-            echo "log_lines=0" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Concatenate all log files
-          LOG_TEXT=""
-          for f in logs_extracted/**/*.txt; do
-            if [[ -f "$f" ]]; then
-              LOG_TEXT="${LOG_TEXT}$(cat "$f")\n"
-            fi
-          done
-
-          if [[ -z "$LOG_TEXT" ]]; then
-            echo "⚠️ No log content found in archive"
-            echo "log_lines=0" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Save to file (truncate if too long). Note: the failing-file
-          # extraction no longer depends on this truncated log (it re-runs the
-          # quality checks locally), but we still keep a generous window for
-          # LLM context.
-          echo -e "$LOG_TEXT" | head -c 300000 > /tmp/failure_log.txt
-          echo "log_lines=$(wc -l < /tmp/failure_log.txt)" >> "$GITHUB_OUTPUT"
-          echo "✅ Logs downloaded ($(wc -l < /tmp/failure_log.txt) lines)"
-
-          # Generate repository file list for LLM context
-          find . -type f -not -path './.git/*' | head -100 > /tmp/repo_files.txt
-          echo "✅ Repository file list generated ($(wc -l < /tmp/repo_files.txt) files)"
-
-      - name: Extract failing files
-        id: analyze
-        if: steps.logs.outputs.log_lines != '0'
-        run: |
-          uv run python3 << 'PYEOF'
-          import json
-          import os
-          import re
-          import subprocess
-
-          with open("/tmp/repo_files.txt") as f:
-              repo_context = f.read().strip() or "No files found in repository."
-          try:
-              with open("/tmp/failure_log.txt") as f:
-                  log_text = f.read()
-          except FileNotFoundError:
-              log_text = ""
-
-          def _rel(path):
-              # Normalize a tool-reported path to a repo-relative path. Tools may
-              # report absolute paths (black) or paths prefixed with the CI
-              # working directory; both must resolve to e.g. "src/x.py".
-              path = path.strip()
-              if os.path.isabs(path):
-                  try:
-                      path = os.path.relpath(path, os.getcwd())
-                  except ValueError:
-                      pass
-              else:
-                  idx = path.find("Salesforce-WebDev/")
-                  if idx != -1:
-                      path = path[idx + len("Salesforce-WebDev/"):]
-              return path
-
-          def _run(cmd):
-              try:
-                  p = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
-                  return p.stdout + "\n" + p.stderr
-              except Exception:
-                  return ""
-
-          # ── Authoritative extraction: re-run the SAME quality checks locally ──
-          # so we capture EVERY failing file. The previous approach parsed a
-          # truncated remote log and therefore missed the whole mypy section, so
-          # only 2 of 10 files were ever fixed (and the single file the LLM did
-          # touch was rewritten with a self-import that broke the build).
-          ruff_out = _run(["uv", "run", "ruff", "check", ".", "--output-format=concise"])
-          black_out = _run(["uv", "run", "black", "--check", ".", "2>&1"])
-          mypy_out = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
-
-          extracted = {}
-          for m in re.finditer(r"(?m)^(\S+\.py):\d+:\d+", ruff_out):
-              extracted.setdefault(_rel(m.group(1)), set())
-          for m in re.finditer(r"would reformat (\S+\.py)", black_out):
-              extracted.setdefault(_rel(m.group(1)), set())
-          for m in re.finditer(r"(?m)^(\S+\.py):\d+:\s+(?:error|warning):", mypy_out):
-              extracted.setdefault(_rel(m.group(1)), set())
-
-          # Fallback to the downloaded log if local checks produced nothing.
-          if not extracted:
-              for m in re.finditer(r"would reformat\s+(\S+\.py)", log_text):
-                  extracted.setdefault(_rel(m.group(1)), set())
-              for m in re.finditer(r"(?m)(\S+?\.py):\d+:\s+(?:error|warning):", log_text):
-                  extracted.setdefault(_rel(m.group(1)), set())
-              for m in re.finditer(r"(?m)(?:FAILED\s+)?((?:tests|src)/\S+?\.py)", log_text):
-                  extracted.setdefault(_rel(m.group(1)), set())
-
-          extracted = {p: e for p, e in extracted.items() if os.path.exists(p)}
-
-          # Capture the specific error lines per file so the LLM knows exactly
-          # what to fix in each one.
-          for p in extracted:
-              for line in (log_text + "\n" + ruff_out + "\n" + black_out + "\n" + mypy_out).splitlines():
-                  if line.strip().startswith(p + ":") or ("would reformat" in line and p in line):
-                      extracted[p].add(line.strip())
-
-          files_block = ""
-          if extracted:
-              files_block = (
-                  "FAILING FILES (deterministically extracted by re-running the "
-                  "quality checks; you MUST return corrected_code for EVERY one of "
-                  "these files, and ONLY these):\n"
-              )
-              for p in sorted(extracted):
-                  files_block += f"- {p}\n"
-                  for e in sorted(extracted[p])[:12]:
-                      files_block += f"    {e}\n"
-              print("Failing files (local extraction):")
-              for p in sorted(extracted):
-                  print(f"   - {p}")
-          else:
-              print("No failing files extracted.")
-
-          with open("/tmp/analyze_context.json", "w") as f:
-              json.dump({
-                  "repo_context": repo_context,
-                  "log_text": log_text,
-                  "files_block": files_block,
-                  "failing_files": sorted(extracted),
-              }, f)
-
-          with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-              if extracted:
-                  f.write(f"file_path={sorted(extracted)[0]}\n")
-                  f.write(f"file_count={len(extracted)}\n")
-              else:
-                  f.write("file_path=\n")
-                  f.write("file_count=0\n")
-              f.write(f"summary=Extracted {len(extracted)} failing file(s)\n")
-          PYEOF
-
-      - name: Apply fix and create PR
-        id: fix
-        if: steps.analyze.outputs.file_path != ''
+      # ───────────────────────────────────────────────────────────
+      # STEP 2: LLM fallback — only if deterministic didn't fully fix
+      # ───────────────────────────────────────────────────────────
+      - name: LLM fallback repair
+        id: llm_fix
+        if: steps.deterministic.outputs.all_pass != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           OPENCODE_BASE_URL: ${{ vars.OPENCODE_BASE_URL }}
           OPENCODE_MODEL: ${{ vars.OPENCODE_MODEL }}
+        run: uv run python3 .github/scripts/llm_fallback.py
+
+      # ───────────────────────────────────────────────────────────
+      # STEP 3: Create PR if any fixes were applied
+      # ───────────────────────────────────────────────────────────
+      - name: Create PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          uv run python3 << 'PYEOF'
-          import json
-          import os
-          import re
-          import subprocess
-          import sys
-
-          MAX_ATTEMPTS = 3
-
-          def _run(cmd):
-              try:
-                  p = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
-                  return p.returncode, p.stdout + "\n" + p.stderr
-              except Exception as e:
-                  return 1, str(e)
-
-          with open("/tmp/analyze_context.json") as f:
-              ctx = json.load(f)
-          repo_context = ctx["repo_context"]
-          log_text = ctx["log_text"]
-          files_block = ctx["files_block"]
-
-          api_key = os.environ.get("GOOGLE_API_KEY", "")
-          if not api_key:
-              print("GOOGLE_API_KEY not set; cannot analyze.")
-              sys.exit(0)
-
-          from google import genai
-          client = genai.Client(api_key=api_key)
-
-          def build_prompt(feedback=""):
-              prompt = (
-                  "Here are the files in the repository:\n" + repo_context + "\n\n"
-                  + files_block + "\n"
-                  "You are an expert Python developer. Fix the CI/CD failure.\n"
-                  "CRITICAL INSTRUCTIONS:\n"
-                  "1. The 'FAILING FILES' list above is the EXACT set of files with errors. "
-                  "Return corrected_code for EVERY one of them, and ONLY those.\n"
-                  "2. Do NOT guess or hallucinate file paths. Fix precisely the listed files.\n"
-                  "3. Return the COMPLETE, valid file content for each, not a diff. "
-                  "Preserve ALL existing imports, public classes, functions and behaviour. "
-                  "NEVER add an import that references the module itself "
-                  "(e.g. 'from src.llm_service import ...' inside src/llm_service.py) "
-                  "because that creates a circular import. Only change what is necessary "
-                  "to fix the listed errors.\n"
-                  "4. Make the corrected code pass the project's quality gate: ruff lint "
-                  "clean, black formatting clean, mypy strict typing (no new type errors), "
-                  "and existing pytest tests still import and pass. Do NOT introduce new errors.\n"
-                  "Respond with ONLY a valid JSON object (no markdown fences):\n"
-                  "{\n"
-                  '    "root_cause_summary": "one paragraph summary",\n'
-                  '    "explanation": "what was changed and why",\n'
-                  '    "files": [\n'
-                  '        {"affected_file_path": "relative/path/to/file.py", "corrected_code": "full corrected file content"}\n'
-                  "    ]\n"
-                  "}\n"
-                  "Rules:\n"
-                  "- The 'files' array MUST contain one entry per file listed above. No other files.\n"
-                  "- corrected_code must be the COMPLETE file, not a diff.\n"
-                  "- Ensure corrected_code is valid Python and importable.\n"
-                  "- Preserve all existing functionality.\n"
-              )
-              if feedback:
-                  prompt += (
-                      "\nYour previous attempt FAILED the verification gate with these "
-                      "errors. Fix them and return the corrected files again:\n"
-                      "```\n" + feedback[:8000] + "\n```\n"
-                  )
-              prompt += "Failed Workflow Log:\n```\n" + log_text[:15000] + "\n```"
-              return prompt
-
-          def parse_llm(raw):
-              raw = re.sub(r"^```(?:json)?\s*\n?", "", raw, flags=re.MULTILINE)
-              raw = re.sub(r"\n?```\s*$", "", raw, flags=re.MULTILINE).strip()
-              result = json.loads(raw)
-              files = result.get("files")
-              if not isinstance(files, list) or not files:
-                  single = result.get("affected_file_path")
-                  code = result.get("corrected_code")
-                  files = [{"affected_file_path": single, "corrected_code": code}] if single and code else []
-              out = []
-              for e in files:
-                  path = e.get("affected_file_path", "")
-                  code = e.get("corrected_code", "")
-                  if not path or not code:
-                      continue
-                  if path.startswith("tests/") and path.endswith(".py"):
-                      name = os.path.basename(path)
-                      if name.startswith("test_"):
-                          name = name[len("test_"):]
-                      cand = os.path.join("src", name)
-                      if os.path.exists(cand):
-                          path = cand
-                  out.append({"affected_file_path": path, "corrected_code": code})
-              return result.get("root_cause_summary", ""), result.get("explanation", ""), out
-
-          def validate(files):
-              for e in files:
-                  try:
-                      compile(e["corrected_code"], e["affected_file_path"], "exec")
-                  except SyntaxError as ex:
-                      return False, f"SyntaxError in {e['affected_file_path']}: {ex}"
-                  # Guard against the self-import mistake that previously broke the build.
-                  mod = os.path.splitext(os.path.basename(e["affected_file_path"]))[0]
-                  if re.search(rf"(from\s+[\w.]*{re.escape(mod)}\s+import|import\s+[\w.]*{re.escape(mod)}\b)", e["corrected_code"]):
-                      return False, f"Self-import detected in {e['affected_file_path']}"
-              return True, ""
-
-          def apply_and_gate(files):
-              for e in files:
-                  p = e["affected_file_path"]
-                  os.makedirs(os.path.dirname(p) or ".", exist_ok=True)
-                  with open(p, "w") as fh:
-                      fh.write(e["corrected_code"])
-              paths = [e["affected_file_path"] for e in files]
-              for p in paths:
-                  _run(["uv", "run", "black", p])
-                  _run(["uv", "run", "ruff", "check", "--fix", p])
-                  _run(["uv", "run", "ruff", "format", p])
-              errors = []
-              for p in paths:
-                  rc, out = _run(["uv", "run", "ruff", "check", p, "--output-format=full"])
-                  if rc != 0:
-                      errors.append("RUFF " + p + ":\n" + out[-1500:])
-                  rc, out = _run(["uv", "run", "black", "--check", p])
-                  if rc != 0:
-                      errors.append("BLACK " + p + ":\n" + out[-800:])
-                  rc, out = _run(["uv", "run", "mypy", p, "--ignore-missing-imports", "--pretty"])
-                  if rc != 0:
-                      errors.append("MYPY " + p + ":\n" + out[-1500:])
-              rc, out = _run(["uv", "run", "pytest", "tests/", "-q"])
-              if rc != 0:
-                  errors.append("PYTEST:\n" + out[-3000:])
-              return (len(errors) == 0), "\n".join(errors)
-
-          def call_llm(prompt):
-              """Call the primary LLM (Gemini). On any failure, fall back to OpenCode
-              (hy3-free) via the OpenAI-compatible SDK using OPENCODE_API_KEY."""
-              # Primary: Google Gemini
-              try:
-                  resp = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
-                  text = getattr(resp, "text", None) or ""
-                  if text:
-                      return text
-                  raise ValueError("Empty response from Gemini")
-              except Exception as e:
-                  print(f"Gemini LLM call failed ({e}); falling back to OpenCode.")
-              # Fallback: OpenCode Zen (OpenAI-compatible /v1/chat/completions).
-              # Endpoint: https://opencode.ai/console/zen/v1  (model id e.g. hy3-free)
-              oc_key = os.environ.get("OPENCODE_API_KEY", "")
-              if not oc_key:
-                  raise RuntimeError("Gemini failed and OPENCODE_API_KEY is not set for fallback.")
-              import json as _json
-              import urllib.request as _urllib
-              oc_base = (os.environ.get("OPENCODE_BASE_URL")
-                         or "https://opencode.ai/console/zen/v1").rstrip("/")
-              oc_model = os.environ.get("OPENCODE_MODEL") or "hy3-free"
-              url = oc_base + "/chat/completions"
-              payload = _json.dumps({
-                  "model": oc_model,
-                  "messages": [{"role": "user", "content": prompt}],
-                  "temperature": 0.2,
-                  "stream": False,
-              }).encode()
-              req = _urllib.Request(url, data=payload, method="POST", headers={
-                  "Content-Type": "application/json",
-                  "Authorization": f"Bearer {oc_key}",
-                  "Accept": "application/json",
-                  # Browser-like UA to satisfy Cloudflare's basic integrity check.
-                  "User-Agent": (
-                      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-                  ),
-              })
-              try:
-                  with _urllib.urlopen(req, timeout=180) as r:
-                      data = _json.loads(r.read().decode())
-                  oc_text = (data.get("choices", [{}])[0]
-                             .get("message", {}).get("content") or "")
-                  if not oc_text:
-                      raise ValueError("Empty response from OpenCode fallback")
-                  print(f"OpenCode fallback ({oc_model}) succeeded.")
-                  return oc_text
-              except _urllib.HTTPError as e:
-                  detail = e.read().decode()[:500]
-                  raise RuntimeError(f"OpenCode fallback HTTP {e.code}: {detail}")
-              except Exception as e:
-                  raise RuntimeError(f"OpenCode fallback failed: {e}")
-
-          passed = False
-          result_files = []
-          summary = ""
-          explanation = ""
-          last_errors = ""
-          for attempt in range(1, MAX_ATTEMPTS + 1):
-              print(f"--- LLM attempt {attempt}/{MAX_ATTEMPTS} ---")
-              try:
-                  raw = call_llm(build_prompt(last_errors))
-              except Exception as e:
-                  print(f"LLM call failed: {e}")
-                  last_errors = f"LLM call failed: {e}"
-                  continue
-              try:
-                  summary, explanation, result_files = parse_llm(raw)
-              except Exception as e:
-                  print(f"Failed to parse LLM response: {e}")
-                  last_errors = f"Invalid JSON response: {e}\n{raw[:1000]}"
-                  continue
-              if not result_files:
-                  print("No files returned by LLM.")
-                  last_errors = "No files with corrected_code were returned."
-                  continue
-              ok, verr = validate(result_files)
-              if not ok:
-                  print("Validation failed: " + verr)
-                  last_errors = verr
-                  continue
-              passed, gerr = apply_and_gate(result_files)
-              if passed:
-                  print("Verification gate passed.")
-                  break
-              print("Verification gate failed; feeding errors back to LLM.")
-              last_errors = gerr
-
-          if not result_files or not passed:
-              print("Auto-heal could not produce a passing fix after retries. Aborting PR.")
-              with open("/tmp/apply_result.json", "w") as f:
-                  json.dump({"success": False}, f)
-              sys.exit(0)
-
-          with open("/tmp/analysis.json", "w") as f:
-              json.dump({"root_cause_summary": summary, "explanation": explanation, "files": result_files}, f)
-          with open("/tmp/apply_result.json", "w") as f:
-              json.dump({"success": True, "summary": summary[:72], "explanation": explanation,
-                         "files": [e["affected_file_path"] for e in result_files]}, f)
-          print(f"Fix ready: {len(result_files)} file(s).")
-          for e in result_files:
-              print(f"   - {e['affected_file_path']}")
-          PYEOF
-
-          if [ ! -f /tmp/apply_result.json ]; then
-            echo "No apply result; skipping."
-            exit 0
-          fi
-          SUCCESS=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('success'))")
-          if [ "$SUCCESS" != "True" ]; then
-            echo "Auto-heal did not produce a passing fix; no PR created."
+          # Check if there are changes to commit
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to commit."
+            echo "pr_created=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          SUMMARY=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('summary',''))")
-          EXPLANATION=$(uv run python3 -c "import json; print(json.load(open('/tmp/apply_result.json')).get('explanation',''))")
-          FILES_LIST=$(uv run python3 -c "import json; print(', '.join(json.load(open('/tmp/apply_result.json')).get('files', [])))")
-          FILE_COUNT=$(uv run python3 -c "import json; print(len(json.load(open('/tmp/apply_result.json')).get('files', [])))")
           RUN_ID="${{ github.event.workflow_run.id }}"
-
           BRANCH="auto-fix/${RUN_ID}"
-          git checkout -b "$BRANCH"
+          DET_COUNT="${{ steps.deterministic.outputs.fixes_count }}"
+          DET_PASS="${{ steps.deterministic.outputs.all_pass }}"
 
-          for f in $(uv run python3 -c "import json; print(' '.join(e['affected_file_path'] for e in json.load(open('/tmp/analysis.json')).get('files', [])))"); do
-            git add "$f"
-          done
+          git checkout -b "$BRANCH"
+          git add -A
 
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No staged changes."
+            echo "pr_created=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           git config user.name "Auto-Healing Agent"
           git config user.email "agent@github.com"
-          git commit -m "[auto-heal] fix: ${SUMMARY}"
 
+          if [ "$DET_PASS" = "true" ]; then
+            MSG="[auto-heal] fix: deterministic repair (${DET_COUNT} fixes, all gates pass)"
+          else
+            MSG="[auto-heal] fix: deterministic + LLM repair"
+          fi
+
+          git commit -m "$MSG"
           git push origin "$BRANCH"
 
-          BODY="## 🔧 Auto-Healing: CI/CD Pipeline Fix
+          # Build PR body
+          FIXES_LIST=""
+          if [ -f /tmp/deterministic_result.json ]; then
+            FIXES_LIST=$(uv run python3 -c "
+          import json
+          d = json.load(open('/tmp/deterministic_result.json'))
+          for f in d.get('fixes_applied', []):
+              print(f'- \`{f}\`')
+          " 2>/dev/null || echo "")
+          fi
+
+          GATES_TABLE=""
+          if [ -f /tmp/deterministic_result.json ]; then
+            GATES_TABLE=$(uv run python3 -c "
+          import json
+          d = json.load(open('/tmp/deterministic_result.json'))
+          for gate, ok in d.get('gate_results', {}).items():
+              icon = '✅' if ok else '❌'
+              print(f'- {icon} {gate}')
+          " 2>/dev/null || echo "")
+          fi
+
+          BODY=$(cat <<EOF
+          ## 🔧 Auto-Healing: CI/CD Pipeline Fix
 
           **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
-          **Affected Files (${FILE_COUNT}):** \`${FILES_LIST}\`
+          **Strategy:** $([ "$DET_PASS" = "true" ] && echo "Deterministic repair" || echo "Deterministic + LLM fallback")
 
-          ### Root Cause
-          ${SUMMARY}
+          ### Fixes Applied
+          ${FIXES_LIST}
 
-          ### Changes Applied
-          ${EXPLANATION}
+          ### Verification
+          ${GATES_TABLE}
 
           ---
           _This PR was generated automatically by the Auto-Healing Agent._
-          _The fix will be validated by the agent-validation workflow._"
+          EOF
+          )
 
           gh pr create \
-            --title "🔧 Auto-Heal: ${SUMMARY}" \
+            --title "🔧 Auto-Heal: ${MSG}" \
             --body "$BODY" \
             --head "$BRANCH" \
             --base main
 
-          echo "PR created from branch ${BRANCH}"
-          if [ -n "$GITHUB_OUTPUT" ]; then echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"; fi
+          echo "pr_created=true" >> "$GITHUB_OUTPUT"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "✅ PR created from branch ${BRANCH}"
 
       - name: Summary
         if: always()
         run: |
-          echo "## 🤖 Auto-Healing Agent Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Triggered by:** Workflow Run #${{ github.event.workflow_run.id }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Conclusion:** ${{ github.event.workflow_run.conclusion }}" >> "$GITHUB_STEP_SUMMARY"
-          
-          if [[ -n "${{ steps.analyze.outputs.file_path }}" ]]; then
-            echo "- **File analyzed:** \`${{ steps.analyze.outputs.file_path }}\`" >> "$GITHUB_STEP_SUMMARY"
-            echo "- **Root cause:** ${{ steps.analyze.outputs.summary }}" >> "$GITHUB_STEP_SUMMARY"
+          DET_COUNT="${{ steps.deterministic.outputs.fixes_count }}"
+          DET_PASS="${{ steps.deterministic.outputs.all_pass }}"
+          PR_CREATED="${{ steps.pr.outputs.pr_created }}"
+
+          {
+            echo "## 🤖 Auto-Healing Agent Summary"
+            echo ""
+            echo "- **Triggered by:** Workflow Run #${{ github.event.workflow_run.id }}"
+            echo "- **Conclusion:** ${{ github.event.workflow_run.conclusion }}"
+            echo ""
+            echo "### Deterministic Repair"
+            echo "- Fixes applied: ${DET_COUNT}"
+            echo "- All gates pass: ${DET_PASS}"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$DET_PASS" != "true" ] && [ -f /tmp/llm_result.json ]; then
+            LLM_SUCCESS=$(uv run python3 -c "import json; print(json.load(open('/tmp/llm_result.json')).get('success'))" 2>/dev/null || echo "unknown")
+            echo "### LLM Fallback" >> "$GITHUB_STEP_SUMMARY"
+            echo "- LLM result: ${LLM_SUCCESS}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
           fi
-          
-          if [[ -n "${{ steps.fix.outputs.branch }}" ]]; then
-            echo "- **PR branch:** \`${{ steps.fix.outputs.branch }}\`" >> "$GITHUB_STEP_SUMMARY"
-            echo "- **Status:** ✅ PR created" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$PR_CREATED" = "true" ]; then
+            echo "- **Status:** ✅ PR created (\`${{ steps.pr.outputs.branch }}\`)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "- **Status:** ⏭️ No fix applied" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Status:** ⏭️ No PR created" >> "$GITHUB_STEP_SUMMARY"
           fi
