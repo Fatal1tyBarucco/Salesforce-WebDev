@@ -221,7 +221,7 @@ def call_llm(prompt):
             from google import genai
 
             client = genai.Client(api_key=api_key)
-            resp = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+            resp = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
             text = getattr(resp, "text", None) or ""
             if text:
                 return text
