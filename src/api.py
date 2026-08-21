@@ -173,18 +173,24 @@ def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     canonical_slug = slug.strip()
     if not canonical_slug:
         return []
+    if canonical_slug in {".", ".."} or "/" in canonical_slug or "\\" in canonical_slug:
+        return []
     if Path(canonical_slug).name != canonical_slug:
         return []
     if not _SLUG_RE.fullmatch(canonical_slug):
         return []
+    safe_slug = canonical_slug
     try:
         base_dir = Path(RELEASES_DIR).resolve(strict=True)
     except Exception:
         return []
-    release_dir = (base_dir / canonical_slug).resolve()
     try:
+        candidate_dir = base_dir / safe_slug
+        release_dir = candidate_dir.resolve(strict=True)
         release_dir.relative_to(base_dir)
     except ValueError:
+        return []
+    except Exception:
         return []
     if not release_dir.is_dir():
         return []
