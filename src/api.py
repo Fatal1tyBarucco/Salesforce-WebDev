@@ -141,22 +141,14 @@ def _validate_slug(slug: str) -> bool:
 def _find_meta(slug: str) -> dict[str, Any] | None:
     if not _validate_slug(slug):
         return None
-    # Enforce slug as a single safe path segment.
-    if slug in {".", ".."} or "/" in slug or "\\" in slug:
-        return None
-    safe_slug = slug
-    try:
-        base_dir = Path(RELEASES_DIR).resolve(strict=True)
-    except Exception:
+    release_dir = _resolve_release_dir(slug)
+    if release_dir is None:
         return None
     try:
-        candidate = base_dir / safe_slug / ".meta.json"
-        resolved_meta_path = candidate.resolve(strict=True)
-        resolved_meta_path.relative_to(base_dir)
-        if resolved_meta_path.name != ".meta.json" or resolved_meta_path.parent.name != safe_slug:
+        resolved_release_dir = release_dir.resolve(strict=True)
+        resolved_meta_path = (resolved_release_dir / ".meta.json").resolve(strict=True)
+        if resolved_meta_path.parent != resolved_release_dir or resolved_meta_path.name != ".meta.json":
             return None
-    except ValueError:
-        return None
     except Exception:
         return None
     if not resolved_meta_path.is_file():
