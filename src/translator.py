@@ -78,7 +78,7 @@ class TranslatorService:
             return text
 
         self._set_cached(key, result)
-        return result
+        return str(result)
 
     async def translate_batch(self, features: list[str], source: str, target: str) -> list[str]:
         """Translate multiple features in parallel."""
