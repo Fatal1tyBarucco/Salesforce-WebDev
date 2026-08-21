@@ -20,28 +20,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 from string import Template
 
+from .ai.generators.badges import release_meta_badges
 from .config import RELEASES_DIR, ReleaseInfo, TopicNode
 
-try:
-    from .automation.badge import generate_release_header_badges as release_meta_badges
-except ImportError:
-    try:
-        from .ai.generators.badges import release_meta_badges
-    except ImportError:
-
-        def release_meta_badges(
-            release_name: str, total_features: int = 0, category_count: int = 0
-        ) -> str:
-            return f"![Release](https://img.shields.io/badge/Release-{release_name.replace(' ', '%20')}-blue)"
-
-
 logger: logging.Logger = logging.getLogger(__name__)
-
-__all__ = [
-    "MARKDOWN_HEADER_TEMPLATE",
-    "NO_CONTENT_MESSAGE",
-    "MarkdownGenerator",
-]
 
 # ---------------------------------------------------------------------------
 # Constante de template

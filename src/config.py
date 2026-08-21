@@ -10,31 +10,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Final
 
-__all__ = [
-    "PT_BR_PARAM",
-    "EN_PARAM",
-    "LANGUAGE_PARAMS",
-    "BASE_URL",
-    "FEATURE_IMPACT_URL",
-    "PDF_URL_TEMPLATE",
-    "REQUEST_TIMEOUT_SECONDS",
-    "MAX_RETRY_ATTEMPTS",
-    "RETRY_BASE_DELAY_SECONDS",
-    "MAX_CONCURRENT_PAGES",
-    "ARTICLE_FETCH_TIMEOUT_SECONDS",
-    "RELEASES_DIR",
-    "USER_AGENT",
-    "EXCLUDED_NODE_SLUGS",
-    "ENGLISH_CATEGORY_SLUGS",
-    "ENGLISH_CATEGORY_NAMES",
-    "BILINGUAL_TEMPLATES",
-    "ReleaseInfo",
-    "KNOWN_RELEASES",
-    "build_release_info",
-    "_id_to_season",
-    "TopicNode",
-]
-
 # ---------------------------------------------------------------------------
 # Constantes Globais
 # ---------------------------------------------------------------------------

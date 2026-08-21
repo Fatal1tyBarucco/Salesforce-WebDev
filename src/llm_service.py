@@ -1,66 +1,11 @@
 """LLM Service module for interacting with OpenAI and Google Gemini models."""
 
-from __future__ import annotations
-
-import asyncio
-import hashlib
-import logging
 import os
-import time
-from dataclasses import dataclass
+import logging
 from typing import Any, List, Optional
-
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
-
-__all__ = [
-    "LLMService",
-    "LLMProvider",
-    "RateLimiter",
-    "CircuitBreakerConfig",
-]
-
-
-@dataclass
-class LLMProvider:
-    """Configuration for an LLM provider."""
-
-    name: str
-    api_key: str
-    base_url: str = "https://api.openai.com/v1"
-    model: str = "gpt-4o"
-    provider_type: str = "openai"
-
-
-@dataclass
-class CircuitBreakerConfig:
-    """Circuit breaker configuration."""
-
-    threshold: int = 5
-    cooldown: float = 30.0
-
-
-class RateLimiter:
-    """Async rate limiter using sliding window."""
-
-    def __init__(self, max_requests: int = 10, window_seconds: float = 1.0) -> None:
-        self.max_requests = max_requests
-        self.window_seconds = window_seconds
-        self.timestamps: list[float] = []
-        self._lock = asyncio.Lock()
-
-    async def acquire(self) -> None:
-        async with self._lock:
-            now = time.monotonic()
-            self.timestamps = [t for t in self.timestamps if now - t < self.window_seconds]
-            if len(self.timestamps) >= self.max_requests:
-                sleep_time = self.window_seconds - (now - self.timestamps[0])
-                if sleep_time > 0:
-                    await asyncio.sleep(sleep_time)
-                now = time.monotonic()
-                self.timestamps = [t for t in self.timestamps if now - t < self.window_seconds]
-            self.timestamps.append(now)
 
 
 class LLMService:
@@ -83,11 +28,6 @@ class LLMService:
         self.model_name = model_name
         self.provider = provider.lower()
 
-    @staticmethod
-    def _prompt_hash(system_instruction: Optional[str], prompt: str) -> str:
-        combined = f"{system_instruction or ''}::{prompt}"
-        return hashlib.sha256(combined.encode("utf-8")).hexdigest()
-
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
@@ -100,7 +40,17 @@ class LLMService:
         temperature: float = 0.7,
         max_tokens: Optional[int] = 1000,
     ) -> str:
-        """Generate text completion using the configured LLM provider."""
+        """Generate text completion using the configured LLM provider.
+
+        Args:
+            prompt: The input user prompt.
+            system_instruction: Optional system prompt to guide behavior.
+            temperature: Sampling temperature for output generation.
+            max_tokens: Maximum number of tokens to generate.
+
+        Returns:
+            The generated string response from the model.
+        """
         if not prompt or not prompt.strip():
             raise ValueError("Prompt cannot be empty.")
 
@@ -218,16 +168,16 @@ class LLMService:
         )
 
     def summarize(self, text: str, max_length: int = 200) -> str:
-        """Summarize given text content using LLM."""
+        """Summarize given text content using LLM.
+
+        Args:
+            text: The text content to summarize.
+            max_length: Target word/token length for summary.
+
+        Returns:
+            Summarized string output.
+        """
         system_prompt = (
             f"You are a concise summarizer. Summarize the text in under {max_length} words."
         )
         return self.generate_completion(prompt=text, system_instruction=system_prompt)
-
-    async def summarize_release_notes(self, notes: str) -> str:
-        """Summarize release notes async."""
-        return self.summarize(notes)
-
-    async def enrich_feature(self, feature: dict[str, Any]) -> dict[str, Any]:
-        """Enrich feature information via LLM."""
-        return {"enriched": True, "details": "Enriched feature", **feature}
