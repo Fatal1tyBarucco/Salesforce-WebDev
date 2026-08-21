@@ -157,7 +157,12 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
 def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     if not _validate_slug(slug):
         return []
-    release_dir = Path(RELEASES_DIR) / slug
+    base_dir = Path(RELEASES_DIR).resolve()
+    release_dir = (base_dir / slug).resolve()
+    try:
+        release_dir.relative_to(base_dir)
+    except ValueError:
+        return []
     if not release_dir.is_dir():
         return []
     features: list[dict[str, Any]] = []
