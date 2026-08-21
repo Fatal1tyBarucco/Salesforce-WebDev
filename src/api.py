@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -22,6 +23,7 @@ app = FastAPI(
 API_KEY_ENV_VAR = "API_SECRET_KEY"
 DEFAULT_API_KEY = "default-dev-key"
 _API_KEY = os.getenv("API_KEY", "")
+_SLUG_RE = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 class TriageRequest(BaseModel):
@@ -125,7 +127,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
 
 
 def _validate_slug(slug: str) -> bool:
-    if not slug or "/" in slug or "\\" in slug:
+    if not slug or not _SLUG_RE.fullmatch(slug):
         return False
     from .config import KNOWN_RELEASES
 
