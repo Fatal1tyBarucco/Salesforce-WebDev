@@ -1,4 +1,9 @@
-"""LLM fallback repair — used when deterministic repair can't fix all errors."""
+"""LLM fallback repair — used when deterministic repair can't fix all errors.
+
+Handles:
+- Remaining mypy/ruff/black errors after deterministic repair
+- Pytest import errors (missing classes/functions in source modules)
+"""
 
 import json
 import os
@@ -17,13 +22,18 @@ def _run(cmd):
         return 1, str(e)
 
 
+def read_file(path):
+    with open(path) as f:
+        return f.read()
+
+
 # ── Gather remaining errors ──
 _, mypy_out = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
 _, ruff_out = _run(["uv", "run", "ruff", "check", ".", "--output-format=concise"])
 _, black_out = _run(["uv", "run", "black", "--check", "."])
 _, pytest_out = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=short"])
 
-# Collect failing files with their specific errors
+# ── Collect failing files from mypy/ruff/black ──
 failing = {}
 for m in re.finditer(r"(?m)^(\S+\.py):\d+:\s+error:\s+(.+?)\s+\[(\S+)\]", mypy_out):
     f = m.group(1)
@@ -34,7 +44,84 @@ for m in re.finditer(r"(?m)^(\S+\.py):\d+:\d+:\s+\S+", ruff_out):
 for m in re.finditer(r"would reformat (\S+\.py)", black_out):
     failing.setdefault(m.group(1), []).append("black: needs reformatting")
 
-if not failing:
+# ── Collect pytest import errors ──
+# Parse: ImportError: cannot import name 'X' from 'src.y' (path)
+pytest_import_errors = {}  # source_module -> set of missing names
+for m in re.finditer(
+    r"ImportError: cannot import name '(\w+)' from '(\S+?)'",
+    pytest_out,
+):
+    name = m.group(1)
+    module = m.group(2)
+    pytest_import_errors.setdefault(module, set()).add(name)
+
+# For each missing name, find which test file imports it
+test_import_context = {}  # (module, name) -> list of test files
+for m in re.finditer(
+    r"(tests/\S+\.py):\d+:\s+in <module>\s*\n.*\n.*from (\S+) import",
+    pytest_out,
+):
+    test_file = m.group(1)
+    module = m.group(2)
+    # Find which names this test file imports from this module
+    if os.path.exists(test_file):
+        try:
+            test_src = read_file(test_file)
+        except FileNotFoundError:
+            continue
+        for name in pytest_import_errors.get(module, set()):
+            if re.search(rf"\b{name}\b", test_src):
+                test_import_context.setdefault(module, set()).add(name)
+
+# Also scan test files directly for imports from src modules
+test_files = []
+for root, _dirs, files in os.walk("tests"):
+    for fname in files:
+        if fname.startswith("test_") and fname.endswith(".py"):
+            test_files.append(os.path.join(root, fname))
+
+for test_file in test_files:
+    try:
+        content = read_file(test_file)
+    except FileNotFoundError:
+        continue
+    # Match: from src.xxx import (name1, name2, ...)
+    for m in re.finditer(r"from\s+(src\.\w+)\s+import\s+\(([^)]+)\)", content, re.DOTALL):
+        module = m.group(1)
+        names = [n.strip().split(" as ")[0].strip() for n in m.group(2).split(",")]
+        for name in names:
+            if name and name[0].isalpha():
+                test_import_context.setdefault(module, set()).add(name)
+    # Also match: from src.xxx import name
+    for m in re.finditer(r"from\s+(src\.\w+)\s+import\s+(\w+)(?:\s|$|,)", content):
+        test_import_context.setdefault(m.group(1), set()).add(m.group(2))
+
+# Check which names are actually missing from source modules
+missing_stubs = {}  # source_file -> set of missing names
+for module, names in test_import_context.items():
+    filepath = module.replace(".", "/") + ".py"
+    if not os.path.exists(filepath):
+        continue
+    try:
+        src = read_file(filepath)
+    except FileNotFoundError:
+        continue
+    for name in names:
+        if (
+            f"class {name}" not in src
+            and f"def {name}" not in src
+            and f"{name} =" not in src
+            and not re.search(rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src)
+        ):
+            missing_stubs.setdefault(filepath, set()).add(name)
+
+# Add missing stubs info to failing files
+for filepath, names in missing_stubs.items():
+    for name in sorted(names):
+        failing.setdefault(filepath, []).append(f"pytest: missing '{name}' (imported by tests)")
+
+# ── Check if there's anything to fix ──
+if not failing and not missing_stubs:
     print("No remaining errors detected.")
     with open("/tmp/llm_result.json", "w") as f:
         json.dump({"success": False, "reason": "no_errors"}, f)
@@ -50,14 +137,27 @@ if not api_key and not oc_key:
         json.dump({"success": False, "reason": "no_api_keys"}, f)
     sys.exit(0)
 
-# Read the source files that need fixing
+# ── Read source files that need fixing ──
 file_contents = {}
 for filepath in failing:
     if os.path.exists(filepath):
-        with open(filepath) as fh:
-            file_contents[filepath] = fh.read()
+        try:
+            file_contents[filepath] = read_file(filepath)
+        except FileNotFoundError:
+            pass
 
-# Build a focused prompt — only the specific files with errors
+# Also read test files that have import errors (for context)
+test_file_contents = {}
+for module in test_import_context:
+    for test_file in test_files:
+        try:
+            content = read_file(test_file)
+        except FileNotFoundError:
+            continue
+        if module in content:
+            test_file_contents[test_file] = content
+
+# ── Build prompt ──
 files_section = ""
 for filepath in sorted(failing):
     errors_desc = "\n".join(f"  - {e}" for e in failing[filepath])
@@ -66,21 +166,33 @@ for filepath in sorted(failing):
         content = content[:15000] + "\n... (truncated)"
     files_section += f"\n### {filepath}\nErrors:\n{errors_desc}\n```python\n{content}\n```\n"
 
+# Add test files as context (read-only, for understanding what's expected)
+test_context = ""
+for filepath in sorted(test_file_contents):
+    content = test_file_contents[filepath]
+    if len(content) > 8000:
+        content = content[:8000] + "\n... (truncated)"
+    test_context += f"\n### {filepath} (test file — for reference only)\n```python\n{content}\n```\n"
+
 prompt = (
     "Fix the following Python files to pass ALL quality checks "
     "(ruff, black, mypy, pytest).\n\n"
     "RULES:\n"
     "1. Return ONLY a valid JSON object, no markdown fences, no explanation text outside JSON.\n"
-    "2. For each file, return the COMPLETE corrected file content.\n"
+    "2. For each file listed under 'FILES TO FIX', return the COMPLETE corrected file content.\n"
     "3. Preserve ALL existing functionality, classes, functions, and imports.\n"
     "4. Do NOT add self-imports (e.g. importing from the same module).\n"
     "5. For mypy errors: add proper type annotations, fix attribute access, add missing methods.\n"
     "6. For missing methods like generate_text/classify_text: add them as async wrappers "
     "around generate_completion.\n"
-    "7. For missing functions like new_correlation_id: add them to the appropriate module.\n"
+    "7. For missing functions/classes referenced by tests: add them to the appropriate source "
+    "module. Read the test files (marked 'for reference only') to understand the expected "
+    "API (method signatures, return types, behavior).\n"
     "8. For wrong import names (setup_logging vs setup_logger): fix the import.\n"
     "9. For wrong argument names (cache=): remove or fix the argument.\n"
-    "10. Ensure all code is valid Python 3.13.\n\n"
+    "10. Ensure all code is valid Python 3.13.\n"
+    "11. When adding stubs for missing classes/functions, implement them with real logic "
+    "when the test expectations are clear. Use minimal stubs only when behavior is ambiguous.\n\n"
     "JSON format:\n"
     "{\n"
     '    "root_cause_summary": "brief summary",\n'
@@ -91,6 +203,9 @@ prompt = (
     "}\n\n"
     "FILES TO FIX:\n" + files_section
 )
+
+if test_context:
+    prompt += "\nTEST FILES (for reference — understand expected API, do NOT modify these):\n" + test_context
 
 
 def call_llm(prompt):
@@ -185,12 +300,12 @@ def apply_and_verify(files):
         with open(path, "w") as fh:
             fh.write(entry["corrected_code"])
 
-    # Format
-    _run(["uv", "run", "black", "."])
+    # Format (ruff first, black last for final say)
     _run(["uv", "run", "ruff", "check", ".", "--fix"])
     _run(["uv", "run", "ruff", "format", "."])
+    _run(["uv", "run", "black", "."])
 
-    # Verify ALL gates (not per-file for mypy — cross-file checking matters)
+    # Verify ALL gates
     errors = []
     rc, out = _run(["uv", "run", "ruff", "check", "."])
     if rc != 0:
