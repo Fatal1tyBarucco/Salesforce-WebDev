@@ -175,17 +175,24 @@ def _resolve_release_dir(slug: str) -> Path | None:
         base_dir = Path(RELEASES_DIR).resolve(strict=True)
     except Exception:
         return None
-    try:
-        release_dir = (base_dir / canonical_slug).resolve(strict=True)
-        release_dir.relative_to(base_dir)
-        trusted_release_dir = release_dir
-    except ValueError:
-        return None
-    except Exception:
-        return None
-    if not trusted_release_dir.is_dir():
-        return None
-    return trusted_release_dir
+    for meta in _load_all_metas():
+        meta_slug = str(meta.get("slug", "")).strip()
+        if meta_slug != canonical_slug:
+            continue
+        release_dir_value = meta.get("release_dir")
+        if not isinstance(release_dir_value, str) or not release_dir_value.strip():
+            return None
+        try:
+            trusted_release_dir = Path(release_dir_value).resolve(strict=True)
+            trusted_release_dir.relative_to(base_dir)
+        except ValueError:
+            return None
+        except Exception:
+            return None
+        if not trusted_release_dir.is_dir():
+            return None
+        return trusted_release_dir
+    return None
 
 
 def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
