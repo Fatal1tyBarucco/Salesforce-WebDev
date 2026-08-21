@@ -167,32 +167,37 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
         return None
 
 
-def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
+def _resolve_release_dir(slug: str) -> Path | None:
     if not _validate_slug(slug):
-        return []
+        return None
     canonical_slug = slug.strip()
     if not canonical_slug:
-        return []
+        return None
     if canonical_slug in {".", ".."} or "/" in canonical_slug or "\\" in canonical_slug:
-        return []
+        return None
     if Path(canonical_slug).name != canonical_slug:
-        return []
+        return None
     if not _SLUG_RE.fullmatch(canonical_slug):
-        return []
-    safe_slug = canonical_slug
+        return None
     try:
         base_dir = Path(RELEASES_DIR).resolve(strict=True)
     except Exception:
-        return []
+        return None
     try:
-        candidate_dir = base_dir / safe_slug
-        release_dir = candidate_dir.resolve(strict=True)
+        release_dir = (base_dir / canonical_slug).resolve(strict=True)
         release_dir.relative_to(base_dir)
     except ValueError:
-        return []
+        return None
     except Exception:
-        return []
+        return None
     if not release_dir.is_dir():
+        return None
+    return release_dir
+
+
+def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
+    release_dir = _resolve_release_dir(slug)
+    if release_dir is None:
         return []
     features: list[dict[str, Any]] = []
     try:
