@@ -321,6 +321,20 @@ class APIHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"detail": "Unauthorized"}).encode("utf-8"))
         return False
 
+    def _parse_slug_segment(self, value: str) -> str | None:
+        canonical_slug = value.strip()
+        if not canonical_slug:
+            return None
+        if not _validate_slug(canonical_slug):
+            return None
+        if canonical_slug in {".", ".."} or "/" in canonical_slug or "\\" in canonical_slug:
+            return None
+        if Path(canonical_slug).name != canonical_slug:
+            return None
+        if not _SLUG_RE.fullmatch(canonical_slug):
+            return None
+        return canonical_slug
+
     def do_GET(self) -> None:
         if not self._check_auth():
             return
@@ -336,7 +350,12 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path.startswith("/releases/"):
             parts = [p for p in path.split("/") if p]
             if len(parts) == 2:
-                slug = parts[1]
+                slug = self._parse_slug_segment(parts[1])
+                if not slug:
+                    self._send_response_data(
+                        404, "application/json", json.dumps({"detail": "Not found"}).encode()
+                    )
+                    return
                 meta = _find_meta(slug)
                 if meta:
                     self._send_json(meta)
@@ -345,7 +364,13 @@ class APIHandler(BaseHTTPRequestHandler):
                         404, "application/json", json.dumps({"detail": "Not found"}).encode()
                     )
             elif len(parts) == 4 and parts[2] == "categories":
-                slug, cat = parts[1], parts[3]
+                slug = self._parse_slug_segment(parts[1])
+                if not slug:
+                    self._send_response_data(
+                        404, "application/json", json.dumps({"detail": "Not found"}).encode()
+                    )
+                    return
+                cat = parts[3]
                 features = _parse_category_features(slug, cat)
                 self._send_json(features)
             else:
