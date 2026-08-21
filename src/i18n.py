@@ -2,13 +2,6 @@
 
 from __future__ import annotations
 
-__all__ = [
-    "LOCALIZATION_MAP",
-    "detect_locale",
-    "get_user_locale",
-    "generate_toggle_html",
-]
-
 LOCALIZATION_MAP: dict[str, dict[str, str]] = {
     "pt_BR": {
         "resources": "Recursos",
