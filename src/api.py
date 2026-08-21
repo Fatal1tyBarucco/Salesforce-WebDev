@@ -139,11 +139,17 @@ def _validate_slug(slug: str) -> bool:
 def _find_meta(slug: str) -> dict[str, Any] | None:
     if not _validate_slug(slug):
         return None
+    base_dir = Path(RELEASES_DIR).resolve()
     meta_path = Path(RELEASES_DIR) / slug / ".meta.json"
-    if not meta_path.exists():
+    try:
+        resolved_meta_path = meta_path.resolve()
+        resolved_meta_path.relative_to(base_dir)
+    except Exception:
+        return None
+    if not resolved_meta_path.exists():
         return None
     try:
-        return json.loads(meta_path.read_text(encoding="utf-8"))
+        return json.loads(resolved_meta_path.read_text(encoding="utf-8"))
     except Exception:
         return None
 
