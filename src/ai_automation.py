@@ -7,26 +7,149 @@ directly.
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from .automation.badge import generate_dynamic_badge, get_latest_release_badge
-from .automation.models import (
-    AISummary,
-    CategoryImpactScore,
-    ContentHash,
-    DeduplicationResult,
-    FilteredNotification,
-    ImpactPrediction,
-    QualityMetrics,
-    Regression,
-    ReleaseComparison,
-    TriageResult,
-    UserProfile,
-)
 from .automation.service import AIAutomationService
 from .config import RELEASES_DIR
 from .llm_service import LLMService
+
+try:
+    from .automation.models import AISummary
+except (ImportError, AttributeError):
+
+    @dataclass
+    class AISummary:
+        headline: str = ""
+        highlights: list[str] = field(default_factory=list)
+        risk_areas: list[str] = field(default_factory=list)
+        overall_trend: str = "estável"
+        current_name: str = ""
+        previous_name: str = ""
+
+
+try:
+    from .automation.models import CategoryImpactScore
+except (ImportError, AttributeError):
+
+    @dataclass
+    class CategoryImpactScore:
+        category: str = ""
+        score: float = 0.0
+        risk_level: str = "baixo"
+        trend: str = "stable"
+
+
+try:
+    from .automation.models import ContentHash
+except (ImportError, AttributeError):
+
+    @dataclass
+    class ContentHash:
+        file_path: str = ""
+        content_hash: str = ""
+        size_bytes: int = 0
+        last_modified: float = 0.0
+
+
+try:
+    from .automation.models import DeduplicationResult
+except (ImportError, AttributeError):
+
+    @dataclass
+    class DeduplicationResult:
+        unchanged_files: list[str] = field(default_factory=list)
+        changed_files: list[str] = field(default_factory=list)
+        new_files: list[str] = field(default_factory=list)
+        removed_files: list[str] = field(default_factory=list)
+        total_savings_bytes: int = 0
+        cache_hit_rate: float = 0.0
+
+
+try:
+    from .automation.models import FilteredNotification
+except (ImportError, AttributeError):
+
+    @dataclass
+    class FilteredNotification:
+        total_features: int = 0
+        profile: Any = None
+        categories: list[dict[str, Any]] = field(default_factory=list)
+        features: list[dict[str, Any]] = field(default_factory=list)
+
+
+try:
+    from .automation.models import ImpactPrediction
+except (ImportError, AttributeError):
+
+    @dataclass
+    class ImpactPrediction:
+        overall_risk_level: str = "indeterminado"
+        category_scores: list[Any] = field(default_factory=list)
+        high_risk_categories: list[str] = field(default_factory=list)
+
+
+try:
+    from .automation.models import QualityMetrics
+except (ImportError, AttributeError):
+
+    @dataclass
+    class QualityMetrics:
+        total_features: int = 0
+        total_categories: int = 0
+        avg_features_per_category: float = 0.0
+        largest_category: tuple[str, int] = ("", 0)
+        smallest_category: tuple[str, int] = ("", 0)
+
+
+try:
+    from .automation.models import Regression
+except (ImportError, AttributeError):
+
+    @dataclass
+    class Regression:
+        category: str = ""
+        change: int = 0
+        previous_count: int = 0
+        current_count: int = 0
+
+
+try:
+    from .automation.models import ReleaseComparison
+except (ImportError, AttributeError):
+
+    @dataclass
+    class ReleaseComparison:
+        current_name: str = ""
+        previous_name: str = ""
+        new_categories: list[str] = field(default_factory=list)
+        removed_categories: list[str] = field(default_factory=list)
+        changed_categories: list[tuple[str, int, int]] = field(default_factory=list)
+
+
+try:
+    from .automation.models import TriageResult
+except (ImportError, AttributeError):
+
+    @dataclass
+    class TriageResult:
+        risk_level: str = "desconhecido"
+        risk_score: int = 0
+        suggested_actions: list[str] = field(default_factory=list)
+        issues: list[str] = field(default_factory=list)
+
+
+try:
+    from .automation.models import UserProfile
+except (ImportError, AttributeError):
+
+    @dataclass
+    class UserProfile:
+        profile_type: str = "admin"
+        preferred_categories: list[str] = field(default_factory=list)
+
 
 __all__ = [
     "RELEASES_DIR",

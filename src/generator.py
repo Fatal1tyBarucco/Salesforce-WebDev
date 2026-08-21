@@ -26,13 +26,13 @@ try:
     from .automation.badge import generate_release_header_badges as release_meta_badges
 except ImportError:
     try:
-        from .ai.generators.badges import release_meta_badges
+        from .ai.generators.badges import release_meta_badges  # type: ignore[no-redef]
     except ImportError:
 
-        def release_meta_badges(
-            release_name: str, total_features: int = 0, category_count: int = 0
-        ) -> str:
-            return f"![Release](https://img.shields.io/badge/Release-{release_name.replace(' ', '%20')}-blue)"
+        def release_meta_badges(slug: str) -> str:  # type: ignore[misc]
+            return (
+                f"![Release](https://img.shields.io/badge/Release-{slug.replace(' ', '%20')}-blue)"
+            )
 
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -237,9 +237,5 @@ class MarkdownGenerator:
         Returns:
             String Markdown com cabeçalho e badges.
         """
-        badges = release_meta_badges(
-            release_name=release.name,
-            total_features=total_features,
-            category_count=category_count,
-        )
+        badges = release_meta_badges(release.slug)
         return f"# {release.name}\n\n{badges}\n\n---\n\n"

@@ -113,14 +113,15 @@ def _load_all_metas() -> list[dict[str, Any]]:
     if not releases_path.exists() or not releases_path.is_dir():
         return []
 
-    metas = []
+    metas: list[dict[str, Any]] = []
     for d in releases_path.iterdir():
         if d.is_dir():
             meta_file = d / ".meta.json"
             if meta_file.exists():
                 try:
                     meta = json.loads(meta_file.read_text(encoding="utf-8"))
-                    metas.append(meta)
+                    if isinstance(meta, dict):
+                        metas.append(meta)
                 except Exception:
                     continue
     return metas
@@ -166,14 +167,20 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
         if not resolved_release_dir.is_dir():
             return None
         resolved_meta_path = (resolved_release_dir / ".meta.json").resolve(strict=True)
-        if resolved_meta_path.parent != resolved_release_dir or resolved_meta_path.name != ".meta.json":
+        if (
+            resolved_meta_path.parent != resolved_release_dir
+            or resolved_meta_path.name != ".meta.json"
+        ):
             return None
     except Exception:
         return None
     if not resolved_meta_path.is_file():
         return None
     try:
-        return json.loads(resolved_meta_path.read_text(encoding="utf-8"))
+        data = json.loads(resolved_meta_path.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return data
+        return None
     except Exception:
         return None
 
@@ -437,10 +444,8 @@ class APIHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def log_message(self, format: str, *args: Any) -> None:
-        pass
 
-
-def start_api_server(host: str = "127.0.0.1", port: int = 8080) -> HTTPServer:
+def start_api_server(host: str = "127.0.0.1", port: int = 8000) -> HTTPServer:
+    """Start and return internal API HTTP server instance."""
     server = HTTPServer((host, port), APIHandler)
     return server

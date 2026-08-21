@@ -23,6 +23,7 @@ from .config import (
     KNOWN_RELEASES,
     RELEASES_DIR,
     ReleaseInfo,
+    TopicNode,
 )
 from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
@@ -51,7 +52,6 @@ from .release_docs import (  # noqa: F401
     _format_impact_report,
     _format_notification_digest,
     _generate_category_summary,
-    _generate_release_files,
     _get_release_emoji,
     _slugify_category,
     _update_badge,
@@ -64,6 +64,27 @@ from .scraper import SalesforceReleaseScraper
 from .translator import TranslatorService
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "RELEASE_SECTION_HEADING",
+    "_check",
+    "_find_existing_releases",
+    "_format_entry",
+    "_format_entry_table",
+    "_format_impact_report",
+    "_format_notification_digest",
+    "_generate_category_summary",
+    "_generate_release_files",
+    "_slugify_category",
+    "detect_new_release",
+    "enrich_meta_with_classification",
+    "generate_ai_reports_async",
+    "generate_summary_cache",
+    "main",
+    "process_single_release",
+    "run_pipeline",
+    "update_readme_all",
+]
 
 
 async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo | None:
@@ -376,11 +397,108 @@ async def generate_ai_reports_async(
         for release in releases_to_process:
             await _process_release_triage(ai_service, triager, release)
             await _process_release_analytics(analyzer, engine, release)
-            _update_badge(release.slug)
+            _update_badge([release])
     except ImportError as e:
         logger.warning("AI modules unavailable for report generation: %s", e)
     except Exception as e:
         logger.warning("Failed to generate AI reports: %s", e)
+
+
+async def _generate_release_files(
+    release: ReleaseInfo,
+    categories: list[Any],
+    generator: MarkdownGenerator,
+    translator: TranslatorService | None = None,
+    locale: str = "pt_BR",
+) -> list[Path]:
+    """Generate Markdown artifact files for a release and update .meta.json."""
+    release_dir = Path(RELEASES_DIR) / release.slug
+    release_dir.mkdir(parents=True, exist_ok=True)
+
+    topic_nodes: list[TopicNode] = []
+    total_features = 0
+    meta_categories: list[dict[str, Any]] = []
+
+    for cat in categories:
+        if isinstance(cat, dict):
+            cat_name = cat.get("name", "")
+            features = cat.get("features", [])
+        else:
+            cat_name = getattr(cat, "name", "")
+            features = getattr(cat, "entries", getattr(cat, "features", []))
+
+        cat_slug = _slugify_category(cat_name)
+        cat_count = len(features)
+        total_features += cat_count
+        meta_categories.append({"name": cat_name, "count": cat_count})
+
+        articles = []
+        for feat in features:
+            if isinstance(feat, dict):
+                fname = feat.get("name", "")
+                furl = feat.get("docs_url", feat.get("url", ""))
+                fsummary = feat.get("summary", "")
+            else:
+                fname = getattr(feat, "name", "")
+                furl = getattr(feat, "docs_url", getattr(feat, "url", ""))
+                fsummary = getattr(feat, "summary", "")
+            if fname:
+                articles.append({"title": fname, "url": furl, "summary": fsummary})
+
+        node = TopicNode(
+            slug=cat_slug,
+            display_name=cat_name,
+            level=2,
+            url="",
+            children=[],
+            articles=articles,
+        )
+        topic_nodes.append(node)
+
+    source_url = FEATURE_IMPACT_URL.format(release_id=release.release_id)
+    generated_files = generator.generate(release, topic_nodes, source_url)
+
+    for fpath in generated_files:
+        try:
+            content = fpath.read_text(encoding="utf-8")
+            file_slug = fpath.stem
+            toggle = generate_toggle_html(locale, file_slug, release.slug)
+            if toggle not in content:
+                fpath.write_text(f"{toggle}\n\n{content}", encoding="utf-8")
+        except OSError:
+            pass
+
+    meta = {
+        "name": release.name,
+        "slug": release.slug,
+        "release_id": release.release_id,
+        "total_features": total_features,
+        "categories": meta_categories,
+    }
+    meta_path = release_dir / ".meta.json"
+    meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    return generated_files
+
+
+async def enrich_meta_with_classification(
+    release: ReleaseInfo, classifier: Any = None
+) -> dict[str, Any]:
+    """Enrich .meta.json with feature classification data."""
+    meta_path = Path(RELEASES_DIR) / release.slug / ".meta.json"
+    if not meta_path.exists():
+        return {}
+    try:
+        meta: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
+        if classifier is not None:
+            classification = await classifier.classify_release(release.slug)
+            if classification:
+                meta["classification"] = classification
+                meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+        return meta
+    except Exception as e:
+        logger.warning("Failed to enrich meta for %s: %s", release.slug, e)
+        return {}
 
 
 async def process_single_release(
@@ -408,7 +526,7 @@ async def process_single_release(
         return False
 
     await _generate_release_files(release, categories, generator, translator)
-    _update_readme_single(release.slug)
+    _update_readme_single(release, categories)
 
     try:
         from .feature_enricher import FeatureEnricher
@@ -434,30 +552,26 @@ async def run_pipeline(
         generator = MarkdownGenerator()
         translator = TranslatorService()
 
-        releases_to_process: list[ReleaseInfo] = []
-
+        target_releases: list[ReleaseInfo] = []
         if release_filter:
-            matched = [r for r in KNOWN_RELEASES if r.slug == release_filter]
-            if matched:
-                releases_to_process = matched
+            found = [r for r in KNOWN_RELEASES if r.slug == release_filter]
+            if found:
+                target_releases = found
             else:
-                logger.error("Release slug '%s' not found in KNOWN_RELEASES", release_filter)
+                logger.error("Release filter '%s' did not match any known release", release_filter)
                 return
         else:
-            new_rel = await detect_new_release(scraper)
-            if new_rel:
-                releases_to_process = [new_rel]
-            else:
-                existing = _find_existing_releases()
-                unprocessed = [r for r in KNOWN_RELEASES if r.slug not in existing]
-                if unprocessed:
-                    releases_to_process = unprocessed
-                else:
-                    logger.info("All known releases have already been processed.")
-                    return
+            new_release = await detect_new_release(scraper)
+            if new_release:
+                target_releases = [new_release]
+
+        if not target_releases:
+            logger.info("No new releases to process.")
+            await update_readme_all()
+            return
 
         processed: list[ReleaseInfo] = []
-        for rel in releases_to_process:
+        for rel in target_releases:
             success = await process_single_release(
                 release=rel,
                 scraper=scraper,
@@ -475,16 +589,18 @@ async def run_pipeline(
 
 
 def _parse_args() -> tuple[str | None, bool]:
-    parser = argparse.ArgumentParser(description="Salesforce Release Notes Scraper")
-    parser.add_argument("--release", type=str, help="Release slug to process (e.g., summer_26)")
+    """Parse CLI arguments."""
+    parser = argparse.ArgumentParser(description="Salesforce Release Notes Pipeline")
     parser.add_argument(
-        "--dry-run", action="store_true", help="Perform a dry run without writing files"
+        "--release", type=str, default=None, help="Specific release slug to process"
     )
-    args, _ = parser.parse_known_args()
+    parser.add_argument("--dry-run", action="store_true", help="Run without writing files")
+    args = parser.parse_args()
     return args.release, args.dry_run
 
 
 def main() -> None:
+    """CLI entrypoint."""
     release_filter, dry_run = _parse_args()
     asyncio.run(run_pipeline(release_filter=release_filter, dry_run=dry_run))
 
