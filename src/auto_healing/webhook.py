@@ -117,7 +117,7 @@ app = FastAPI(
 # ── Health Check ────────────────────────────────────────────────────
 
 
-@app.get("/health")
+@app.get("/health")  # type: ignore[untyped-decorator]
 async def health_check() -> JSONResponse:
     """Health check endpoint for container orchestration.
 
@@ -136,7 +136,7 @@ async def health_check() -> JSONResponse:
 # ── Webhook Endpoint ────────────────────────────────────────────────
 
 
-@app.post("/webhook/workflow-run")
+@app.post("/webhook/workflow-run")  # type: ignore[untyped-decorator]
 async def handle_workflow_run_webhook(request: Request) -> JSONResponse:
     """Receive and process GitHub workflow_run webhook events.
 
@@ -239,9 +239,7 @@ async def handle_workflow_run_webhook(request: Request) -> JSONResponse:
     return JSONResponse(
         content={
             "outcome": HealingOutcome.SKIPPED.value,
-            "reason": (
-                f"Branch '{head_branch}' is not the primary branch " "or an auto-fix branch."
-            ),
+            "reason": (f"Branch '{head_branch}' is not the primary branch or an auto-fix branch."),
         },
         status_code=200,
     )
@@ -343,9 +341,7 @@ async def _handle_primary_branch_failure(
         file_path=analysis.affected_file_path,
         corrected_code=analysis.corrected_code,
         commit_message=f"fix: {analysis.root_cause_summary[:72]}",
-        pull_request_title=(
-            f"🔧 Auto-Heal: {workflow_name} — " f"{analysis.root_cause_summary[:60]}"
-        ),
+        pull_request_title=(f"🔧 Auto-Heal: {workflow_name} — {analysis.root_cause_summary[:60]}"),
         pull_request_body=_build_pull_request_body(
             analysis=analysis,
             workflow_name=workflow_name,
@@ -649,7 +645,7 @@ def _find_pull_request_for_branch(
         pull_requests = repository.get_pulls(state="open", head=branch_name)
         for pull_request in pull_requests:
             if pull_request.head and pull_request.head.ref == branch_name:
-                return pull_request.number
+                return pull_request.number  # type: ignore[no-any-return]
     except (GithubException, AttributeError, TypeError) as error:
         logger.error(
             "Failed to search for PRs on branch '%s': %s",
@@ -688,7 +684,7 @@ def _determine_file_path_from_pr(
         files = pull_request.get_files()
         for file in files:
             if file.filename and file.filename.endswith(".py"):
-                return file.filename
+                return file.filename  # type: ignore[no-any-return]
     except (GithubException, AttributeError, TypeError) as error:
         logger.error(
             "Failed to get files for PR #%d: %s",

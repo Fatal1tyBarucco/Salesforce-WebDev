@@ -112,10 +112,10 @@ def test_search_ranks_by_relevance(tmp_path: Path) -> None:
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
     (release_dir / "agentforce.md").write_text(
-        "# Agentforce\n\n## Agentforce Features\n\n" "- Agent capability for customer service\n"
+        "# Agentforce\n\n## Agentforce Features\n\n- Agent capability for customer service\n"
     )
     (release_dir / "security.md").write_text(
-        "# Security\n\n## Security Features\n\n" "- Security patch for authentication\n"
+        "# Security\n\n## Security Features\n\n- Security patch for authentication\n"
     )
 
     engine = NLSearchEngine(base_dir=str(tmp_path))

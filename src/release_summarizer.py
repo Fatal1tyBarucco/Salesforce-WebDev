@@ -57,7 +57,13 @@ class ReleaseSummarizer:
 
     def __init__(self, base_dir: str = RELEASES_DIR, llm: LLMService | None = None) -> None:
         self._base_dir = Path(base_dir)
-        self._llm = llm or LLMService()
+        if llm is not None:
+            self._llm = llm
+        else:
+            try:
+                self._llm = LLMService()
+            except ValueError:
+                self._llm = None  # type: ignore[assignment]
 
     async def summarize(self, release_slug: str) -> ReleaseSummary | None:
         """Generate a comprehensive summary for a release.
@@ -82,20 +88,64 @@ class ReleaseSummarizer:
                 meta = self._load_meta(release_dir)
                 total = meta.get("total_features", 0)
                 cats = meta.get("categories", [])
-                logger.info("Using cached summary for %s", release_slug)
-                return ReleaseSummary(
-                    release_slug=release_slug,
-                    release_name=meta.get("name", release_slug),
-                    total_features=total,
-                    total_categories=len(cats),
-                    executive_summary=cache.get("executive_summary", ""),
-                    business_impact=cache.get("business_impact", ""),
-                    strategic_themes=cache.get("strategic_themes", []),
-                    top_categories=[],
-                    migration_notes=cache.get("migration_notes", ""),
-                    category_summaries=cache.get("category_summaries", {}),
-                    confidence=0.95,
-                )
+                cat_count = len(cats)
+
+                # Validate cache against metadata to detect corrupted caches
+                exec_text = cache.get("executive_summary", "")
+                cache_cats = cache.get("category_summaries", {})
+                cache_is_valid = True
+
+                # Check 1: executive_summary mentions "0 recursos" but meta has real data
+                if total > 0 and "0 novos recursos" in exec_text:
+                    logger.warning(
+                        "Cache validation failed for %s: executive_summary says '0 recursos' "
+                        "but meta has %d features. Discarding cache.",
+                        release_slug,
+                        total,
+                    )
+                    cache_is_valid = False
+
+                # Check 2: category_summaries has placeholder names like "Test Cat"
+                if cache_cats:
+                    real_cat_names = {c.get("name", "") for c in cats}
+                    cache_cat_names = set(cache_cats.keys())
+                    overlap = real_cat_names & cache_cat_names
+                    if len(overlap) == 0 and len(real_cat_names) > 0:
+                        logger.warning(
+                            "Cache validation failed for %s: no category name overlap "
+                            "(cache has %s, meta has %d real categories). Discarding cache.",
+                            release_slug,
+                            list(cache_cat_names)[:3],
+                            cat_count,
+                        )
+                        cache_is_valid = False
+
+                # Check 3: executive_summary is suspiciously short
+                if len(exec_text) < 100 and total > 100:
+                    logger.warning(
+                        "Cache validation failed for %s: executive_summary too short "
+                        "(%d chars) for %d features. Discarding cache.",
+                        release_slug,
+                        len(exec_text),
+                        total,
+                    )
+                    cache_is_valid = False
+
+                if cache_is_valid:
+                    logger.info("Using cached summary for %s", release_slug)
+                    return ReleaseSummary(
+                        release_slug=release_slug,
+                        release_name=meta.get("name", release_slug),
+                        total_features=total,
+                        total_categories=cat_count,
+                        executive_summary=exec_text,
+                        business_impact=cache.get("business_impact", ""),
+                        strategic_themes=cache.get("strategic_themes", []),
+                        top_categories=[],
+                        migration_notes=cache.get("migration_notes", ""),
+                        category_summaries=cache_cats,
+                        confidence=0.95,
+                    )
             except (ValueError, KeyError, OSError) as e:
                 logger.warning("Failed to read summary cache for %s: %s", release_slug, e)
 
@@ -181,7 +231,7 @@ class ReleaseSummarizer:
             f"Content by category:\n\n{full_content}"
         )
 
-        result = await self._llm.generate_text(user_prompt, system_prompt)
+        result = await self._llm.generate_text(user_prompt, system_prompt) if self._llm else None
 
         if result:
             parsed = self._parse_llm_response(result, release_slug, release_name, meta)
@@ -360,7 +410,7 @@ class ReleaseSummarizer:
         for line in content.split("\n"):
             stripped = line.strip()
 
-            if stripped.startswith("| Recurso") or stripped.startswith("| Feature"):
+            if stripped.startswith(("| Recurso", "| Feature")):
                 in_table = True
                 continue
 
@@ -415,8 +465,10 @@ class ReleaseSummarizer:
         lines = [
             f"# 📋 Resumo Executivo — {summary.release_name}",
             "",
-            f"> **{summary.total_features} recursos** em **{summary.total_categories} categorias** "
-            f"| Confiança: {summary.confidence:.0%}",
+            (
+                f"> **{summary.total_features} recursos** em **{summary.total_categories} categorias** "
+                f"| Confiança: {summary.confidence:.0%}"
+            ),
             "",
             "---",
             "",

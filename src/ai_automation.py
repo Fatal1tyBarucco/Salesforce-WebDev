@@ -8,9 +8,9 @@ directly.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
-from .automation import (  # noqa: F401
+from .automation import (
     AIAutomationService,
     AISummary,
     CategoryImpactScore,
@@ -24,11 +24,12 @@ from .automation import (  # noqa: F401
     TriageResult,
     UserProfile,
 )
-from .automation.badge import generate_dynamic_badge, get_latest_release_badge  # noqa: F401
-from .config import RELEASES_DIR  # noqa: F401
-from .llm_service import LLMService  # noqa: F401
+from .automation.badge import generate_dynamic_badge, get_latest_release_badge
+from .config import RELEASES_DIR
+from .llm_service import LLMService
 
 __all__ = [
+    "RELEASES_DIR",
     "AIAutomationService",
     "AISummary",
     "CategoryImpactScore",
@@ -38,7 +39,6 @@ __all__ = [
     "ImpactPrediction",
     "LLMService",
     "QualityMetrics",
-    "RELEASES_DIR",
     "Regression",
     "ReleaseComparison",
     "TriageResult",
@@ -79,7 +79,7 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-async def load_release_meta(slug: str) -> Optional[dict[str, Any]]:
+def load_release_meta(slug: str) -> dict[str, Any] | None:
     return AIAutomationService().load_release_meta(slug)
 
 
@@ -91,7 +91,7 @@ async def detect_regressions(current_slug: str, previous_slug: str) -> list[Regr
     return await AIAutomationService().detect_regressions(current_slug, previous_slug)
 
 
-async def calculate_quality_metrics(slug: str) -> Optional[QualityMetrics]:
+async def calculate_quality_metrics(slug: str) -> QualityMetrics | None:
     return await AIAutomationService().calculate_quality_metrics(slug)
 
 
@@ -143,7 +143,7 @@ async def analyze_content_changes(release_slug: str) -> DeduplicationResult:
     return await AIAutomationService().analyze_content_changes(release_slug)
 
 
-async def get_content_hash(file_path: str) -> Optional[str]:
+async def get_content_hash(file_path: str) -> str | None:
     return await AIAutomationService().get_content_hash(file_path)
 
 
@@ -153,21 +153,21 @@ async def is_content_unchanged(file_path: str, expected_hash: str) -> bool:
 
 async def create_github_issue(
     release_name: str, total_features: int, categories: int
-) -> Optional[str]:
+) -> str | None:
     return await AIAutomationService().create_github_issue(release_name, total_features, categories)
 
 
 async def create_release_issue(
     release_name: str, total_features: int, categories: int
-) -> Optional[str]:
-    return await AIAutomationService().create_github_issue(release_name, total_features, categories)
+) -> str | None:
+    return await create_github_issue(release_name, total_features, categories)
 
 
 async def _load_all_release_metas() -> list[dict[str, Any]]:
     return await AIAutomationService()._load_all_release_metas()
 
 
-async def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
+def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
     return AIAutomationService()._load_content_cache(cache_path)
 
 

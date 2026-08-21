@@ -4,8 +4,8 @@ import subprocess
 from unittest.mock import patch
 
 from src.workflow import (
-    PRResult,
     ChangeAnalysis,
+    PRResult,
     _run_gh,
     analyze_changes,
     commit_and_push,

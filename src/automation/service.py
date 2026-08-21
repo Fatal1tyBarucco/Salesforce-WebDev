@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from ..llm_service import LLMService
 from . import (
@@ -47,11 +47,11 @@ class AIAutomationService:
 
     USER_PROFILES = notifications.USER_PROFILES
 
-    def __init__(self, llm: Optional[LLMService] = None) -> None:
+    def __init__(self, llm: LLMService | None = None) -> None:
         self._llm = llm or LLMService()
 
     @staticmethod
-    def load_release_meta(slug: str) -> Optional[dict[str, Any]]:
+    def load_release_meta(slug: str) -> dict[str, Any] | None:
         """Load .meta.json for a release."""
         import json
         from pathlib import Path
@@ -75,7 +75,7 @@ class AIAutomationService:
             self.load_release_meta, current_slug, previous_slug
         )
 
-    async def calculate_quality_metrics(self, slug: str) -> Optional[QualityMetrics]:
+    async def calculate_quality_metrics(self, slug: str) -> QualityMetrics | None:
         return await comparison.calculate_quality_metrics(self.load_release_meta, slug)
 
     async def generate_quality_report(self) -> str:
@@ -149,7 +149,7 @@ class AIAutomationService:
     def _save_content_cache(self, cache_path: Any, cache: dict[str, ContentHash]) -> None:
         content.save_content_cache(cache_path, cache)
 
-    async def get_content_hash(self, file_path: str) -> Optional[str]:
+    async def get_content_hash(self, file_path: str) -> str | None:
         return await content.get_content_hash(file_path)
 
     async def is_content_unchanged(self, file_path: str, expected_hash: str) -> bool:
@@ -192,7 +192,7 @@ class AIAutomationService:
 
     async def create_github_issue(
         self, release_name: str, total_features: int, categories: int
-    ) -> Optional[str]:
+    ) -> str | None:
         return await github_ops.create_github_issue(release_name, total_features, categories)
 
     # ---- Badge ----

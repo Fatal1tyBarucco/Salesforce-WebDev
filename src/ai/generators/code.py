@@ -68,7 +68,7 @@ def build_code_generation_prompt(
 **Feature:** {feature_name}
 **Description:** {feature_description}
 **Language:** {language}
-{f'**Context:** {context}' if context else ''}
+{f"**Context:** {context}" if context else ""}
 
 Requirements:
 - Include a clear title/comment at the top
@@ -102,7 +102,7 @@ def parse_code_response(response: str, feature_name: str, language: str) -> Code
     title = feature_name
     for line in code.split("\n")[:3]:
         stripped = line.strip()
-        if stripped.startswith("//") or stripped.startswith("/**") or stripped.startswith("<!--"):
+        if stripped.startswith(("//", "/**", "<!--")):
             title = stripped.lstrip("/ *<!-").strip()
             break
 

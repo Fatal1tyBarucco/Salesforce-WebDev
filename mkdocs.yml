@@ -33,6 +33,19 @@ theme:
 
 plugins:
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            merge_init_into_class: true
+            separate_signature: true
+            show_signature_annotations: true
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -46,6 +59,8 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: true
+  - pymdownx.snippets:
+      base_path: ["."]
 
 extra:
   social:
@@ -92,6 +107,16 @@ nav:
     - V2: roadmap/v2.md
     - V3: roadmap/v3.md
     - V4 (Atual): roadmap/v4.md
+  - Changelog: changelog.md
+  - API Reference:
+    - Pipeline Principal: api/main.md
+    - Scraper: api/scraper.md
+    - Parser: api/parser.md
+    - LLM Service: api/llm_service.md
+    - Classifier: api/feature_classifier.md
+    - Translator: api/translator.md
+    - Notifications: api/notifications.md
+    - Cache Manager: api/cache_manager.md
   - Internos:
     - Diretiva do Agente: internal/AGENT_DIRECTIVE.md
     - Análise: internal/ANALYSIS.md

@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import subprocess
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 from ..exceptions import GitHubError
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def create_github_issue(
     release_name: str, total_features: int, categories: int
-) -> Optional[str]:
+) -> str | None:
     """Create a GitHub Issue for a new release detection."""
     body = f"""## Nova Release Detectada: {release_name}
 
@@ -26,7 +26,7 @@ async def create_github_issue(
 A automação detectou uma nova release do Salesforce e processou os dados automaticamente.
 
 ### Arquivos Gerados
-- `releases/{release_name.lower().replace(' ', '_').replace("'", "")}/` — Diretório da release
+- `releases/{release_name.lower().replace(" ", "_").replace("'", "")}/` — Diretório da release
 - `CHANGELOG.md` — Changelog atualizado
 - `QUALITY_REPORT.md` — Relatório de qualidade
 
@@ -50,6 +50,7 @@ A automação detectou uma nova release do Salesforce e processou os dados autom
             capture_output=True,
             text=True,
             timeout=30,
+            check=False,
         )
 
     try:

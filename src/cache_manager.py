@@ -37,7 +37,7 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,7 @@ class CacheManager:
             return ns_dir / f"{key_hash}.json"
         return self._cache_dir / f"{key_hash}.json"
 
-    def set(self, key: str, data: Any, ttl: Optional[int] = None, namespace: str = "") -> None:
+    def set(self, key: str, data: Any, ttl: int | None = None, namespace: str = "") -> None:
         """Store data in the cache.
 
         Args:
@@ -117,7 +117,7 @@ class CacheManager:
         path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         self._stats.sets += 1
 
-    def get(self, key: str, namespace: str = "") -> Optional[Any]:
+    def get(self, key: str, namespace: str = "") -> Any | None:
         """Retrieve data from the cache.
 
         Args:
@@ -225,7 +225,7 @@ class CacheManager:
         """
         return hashlib.md5(file_path.read_bytes()).hexdigest()
 
-    def get_content_hash(self, file_path: Path) -> Optional[str]:
+    def get_content_hash(self, file_path: Path) -> str | None:
         """Get the MD5 hash of a file's content.
 
         Args:

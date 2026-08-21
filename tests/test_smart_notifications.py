@@ -5,11 +5,11 @@ from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 from src.smart_notifications import (
+    DeliveryChannel,
+    Notification,
+    NotificationPriority,
     SmartNotificationEngine,
     UserPreferences,
-    NotificationPriority,
-    Notification,
-    DeliveryChannel,
 )
 
 

@@ -137,7 +137,7 @@ def test_summarizer_extracts_h2_category(tmp_path: Path) -> None:
     release_dir = tmp_path / "h2category" / "pt_BR"
     release_dir.mkdir(parents=True)
     (release_dir / "features.md").write_text(
-        "## Agentforce Features\n\n" "| Recurso | Usuários |\n| :--- | :---: |\n| **F1** | ✅ |\n"
+        "## Agentforce Features\n\n| Recurso | Usuários |\n| :--- | :---: |\n| **F1** | ✅ |\n"
     )
 
     summarizer = ReleaseSummarizer(base_dir=str(tmp_path))

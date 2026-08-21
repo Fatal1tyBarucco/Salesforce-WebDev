@@ -137,12 +137,12 @@ def parse_enrichment_response(response: str) -> EnrichmentOutput | None:
             clean = re.sub(r"\s*```$", "", clean)
 
         data = json.loads(clean)
-        return EnrichmentOutput.model_validate(data)
+        return EnrichmentOutput.model_validate(data)  # type: ignore[no-any-return]
     except json.JSONDecodeError as e:
         logger.warning("Enrichment response is not valid JSON: %s", e)
         logger.debug("Raw response (first 500 chars): %s", response[:500])
         return None
-    except Exception as e:
+    except (ValueError, KeyError, TypeError) as e:
         logger.warning("Enrichment response validation failed: %s", e)
         if data and isinstance(data, dict):
             logger.debug("Parsed data keys: %s", list(data.keys()))

@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 if TYPE_CHECKING:
     import pytest
 
-from src.i18n import detect_locale, get_user_locale, generate_toggle_html, LOCALIZATION_MAP
+from src.i18n import LOCALIZATION_MAP, detect_locale, generate_toggle_html, get_user_locale
 
 
 def test_detect_locale_pt_br() -> None:
@@ -66,10 +66,10 @@ def test_localization_map_has_required_keys() -> None:
 
 
 def test_toggle_in_generated_file(tmp_path: Path) -> None:
-    from src.main import _generate_release_files
     from src.config import ReleaseInfo
-    from src.parser import FeatureImpactCategory, FeatureImpactEntry
     from src.generator import MarkdownGenerator
+    from src.main import _generate_release_files
+    from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
     release = ReleaseInfo(name="Summer '26", release_id=260, slug="summer_26")
     cat = FeatureImpactCategory(name="Agentforce")
@@ -96,9 +96,10 @@ def test_toggle_in_generated_file(tmp_path: Path) -> None:
     assert "English" in content
 
 
-def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: "pytest.MonkeyPatch") -> None:
+def test_bilingual_readme_toggle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     import json
     from unittest.mock import patch
+
     from src.main import update_readme_all
 
     readme_path = tmp_path / "README.md"

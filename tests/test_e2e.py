@@ -12,9 +12,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from src.cache_manager import CacheManager
 from src.config import ReleaseInfo
 from src.events import EventBus
-from src.cache_manager import CacheManager
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -140,23 +140,25 @@ class TestPipelineE2E:
         translator = AsyncMock()
         translator.translate.return_value = "Translated"
 
-        with patch("src.main.RELEASES_DIR", str(releases_dir)):
-            with patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen:
-                mock_gen.return_value = None
-                with patch("src.main._update_readme_single"):
-                    with patch(
-                        "src.feature_enricher.FeatureEnricher.enrich_release",
-                        new_callable=AsyncMock,
-                        return_value={},
-                    ):
-                        result = await process_single_release(
-                            release=sample_release,
-                            scraper=scraper,
-                            impact_parser=impact_parser,
-                            generator=generator,
-                            translator=translator,
-                            dry_run=False,
-                        )
+        with (
+            patch("src.main.RELEASES_DIR", str(releases_dir)),
+            patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen,
+            patch("src.main._update_readme_single"),
+            patch(
+                "src.feature_enricher.FeatureEnricher.enrich_release",
+                new_callable=AsyncMock,
+                return_value={},
+            ),
+        ):
+            mock_gen.return_value = None
+            result = await process_single_release(
+                release=sample_release,
+                scraper=scraper,
+                impact_parser=impact_parser,
+                generator=generator,
+                translator=translator,
+                dry_run=False,
+            )
 
         assert result is True
 
@@ -200,8 +202,9 @@ class TestAPIE2E:
 
     def test_graphql_releases_with_real_files(self, tmp_path: Path) -> None:
         """GraphQL query against actual .meta.json files."""
-        from src.api import _execute_graphql
         from unittest.mock import patch as p
+
+        from src.api import _execute_graphql
 
         for slug, rid in [("spring_26", 260), ("summer_26", 262)]:
             d = tmp_path / slug
@@ -229,8 +232,9 @@ class TestAPIE2E:
 
     def test_graphql_diff_e2e(self, tmp_path: Path) -> None:
         """GraphQL diff query end-to-end."""
-        from src.api import _execute_graphql
         from unittest.mock import patch as p
+
+        from src.api import _execute_graphql
 
         for slug, rid, total in [("spring_26", 260, 80), ("summer_26", 262, 100)]:
             d = tmp_path / slug

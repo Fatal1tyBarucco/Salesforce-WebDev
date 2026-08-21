@@ -7,8 +7,6 @@ Covers the subset of tenacity APIs used in this project:
   - retry_if_exception_type
 """
 
-from __future__ import annotations
-
 from collections.abc import Callable
 from typing import Any, TypeVar
 
@@ -67,10 +65,10 @@ class wait_exponential(wait_base):
 
     def __init__(
         self,
-        multiplier: float | int = 1,
-        min: float | int = 0,
-        max: float | int = 120,
-        exp_base: float | int = 2,
+        multiplier: float = 1,
+        min: float = 0,
+        max: float = 120,
+        exp_base: float = 2,
     ) -> None: ...
 
 def retry(
@@ -80,4 +78,3 @@ def retry(
     reraise: bool = ...,
 ) -> Callable[[_F], _F]:
     """Decorator that retries a function on failure."""
-    ...

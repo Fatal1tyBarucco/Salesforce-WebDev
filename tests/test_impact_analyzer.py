@@ -4,8 +4,8 @@ import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-from src.impact_analyzer import ImpactAnalyzer
 from src.feature_classifier import FeatureType, ImpactLevel
+from src.impact_analyzer import ImpactAnalyzer
 
 
 def test_analyze_returns_report(tmp_path: Path) -> None:
@@ -28,7 +28,6 @@ def test_analyze_returns_report(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         classify_results = [
             AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH),
             AsyncMock(feature_type=FeatureType.PERFORMANCE, impact=ImpactLevel.MEDIUM),
@@ -80,7 +79,6 @@ def test_analyze_calculates_risk_score(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
         )
@@ -113,7 +111,6 @@ def test_analyze_generates_migration_actions(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
         )
@@ -130,7 +127,7 @@ def test_analyze_executive_summary(tmp_path: Path) -> None:
     release_dir = tmp_path / "summary"
     release_dir.mkdir()
     (release_dir / "features.md").write_text(
-        "# Features\n\n" "- Important feature with long description\n"
+        "# Features\n\n- Important feature with long description\n"
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
@@ -141,7 +138,6 @@ def test_analyze_executive_summary(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.NEW_FEATURE, impact=ImpactLevel.LOW
         )
@@ -191,7 +187,6 @@ def test_analyze_classifies_areas(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         classify_results = [
             AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH),
             AsyncMock(feature_type=FeatureType.SECURITY, impact=ImpactLevel.MEDIUM),
@@ -237,7 +232,6 @@ def test_analyze_risk_score_ranges(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
         )
@@ -256,7 +250,7 @@ def test_analyze_migration_actions_empty(tmp_path: Path) -> None:
     release_dir = tmp_path / "no_migration"
     release_dir.mkdir()
     (release_dir / "features.md").write_text(
-        "# Features\n\n" "- Bug fix for login\n" "- Improvement for dashboard\n"
+        "# Features\n\n- Bug fix for login\n- Improvement for dashboard\n"
     )
 
     analyzer = ImpactAnalyzer(base_dir=str(tmp_path))
@@ -267,7 +261,6 @@ def test_analyze_migration_actions_empty(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.BUG_FIX, impact=ImpactLevel.LOW
         )
@@ -295,7 +288,6 @@ def test_analyze_skips_dotfiles(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.SECURITY, impact=ImpactLevel.HIGH
         )
@@ -329,7 +321,6 @@ def test_analyze_table_features(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.SECURITY, impact=ImpactLevel.MEDIUM
         )
@@ -370,7 +361,6 @@ def test_analyze_critical_risk_level(tmp_path: Path) -> None:
         ) as mock_classify,
         patch.object(analyzer._llm, "generate_text", new_callable=AsyncMock) as mock_generate,
     ):
-
         mock_classify.return_value = AsyncMock(
             feature_type=FeatureType.BREAKING_CHANGE, impact=ImpactLevel.HIGH
         )

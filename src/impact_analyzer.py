@@ -5,13 +5,12 @@ generates impact reports, and suggests migration actions using a resilient LLM s
 """
 
 from __future__ import annotations
-from typing import Any
 
 import asyncio
 import logging
-
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from .config import RELEASES_DIR
 from .feature_classifier import FeatureClassifier, FeatureType, ImpactLevel
@@ -190,7 +189,7 @@ class ImpactAnalyzer:
         features: list[str] = []
         for line in content.split("\n"):
             line = line.strip()
-            if line.startswith("- ") or line.startswith("* "):
+            if line.startswith(("- ", "* ")):
                 text = line[2:].strip()
                 if len(text) > 5:
                     features.append(text)

@@ -177,7 +177,7 @@ class TestMarkdownGenerator:
 
     def test_enrichment_summary(self) -> None:
         from src.ai.generators.markdown import MarkdownGenerator
-        from src.ai.prompts.validation import EnrichmentOutput, EnrichmentFeatureOutput
+        from src.ai.prompts.validation import EnrichmentFeatureOutput, EnrichmentOutput
 
         enrichment = EnrichmentOutput(
             introduction="Test introduction for enrichment summary",
@@ -303,7 +303,7 @@ class TestCodeGenerator:
     def test_build_code_generation_prompt_with_context(self) -> None:
         from src.ai.generators.code import build_code_generation_prompt
 
-        sys_prompt, user_prompt = build_code_generation_prompt(
+        _sys_prompt, user_prompt = build_code_generation_prompt(
             "Feature A", "Description A", "lwc", context="API 60.0"
         )
         assert "API 60.0" in user_prompt
@@ -398,7 +398,7 @@ class TestCodeGenerator:
         assert result == ""
 
     def test_generate_code_section_with_snippets(self) -> None:
-        from src.ai.generators.code import generate_code_section, CodeSnippet
+        from src.ai.generators.code import CodeSnippet, generate_code_section
 
         snippets = [
             CodeSnippet(
@@ -558,7 +558,7 @@ class TestSalesforceAnalyzer:
 
     @pytest.mark.asyncio
     async def test_load_metadata_cached(self) -> None:
-        from src.ai.integrations.salesforce import SalesforceAnalyzer, OrgMetadata
+        from src.ai.integrations.salesforce import OrgMetadata, SalesforceAnalyzer
 
         analyzer = SalesforceAnalyzer()
         analyzer._metadata = OrgMetadata(custom_objects=["Cached__c"])
@@ -811,7 +811,7 @@ class TestSalesforceAnalyzerExtended:
         from src.ai.integrations.salesforce import SalesforceAnalyzer
 
         mock_sf = MagicMock()
-        mock_sf.query.side_effect = Exception("connection failed")
+        mock_sf.query.side_effect = lambda *args, **kwargs: Exception("connection failed")
         analyzer = SalesforceAnalyzer(sf_connection=mock_sf)
         result = await analyzer._fetch_metadata_from_org()
         assert result.custom_objects == []

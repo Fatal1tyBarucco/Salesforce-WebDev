@@ -6,8 +6,7 @@ and visual Markdown generators for stakeholder-ready reports.
 
 from __future__ import annotations
 
-import json
-from typing import Any, Optional
+from typing import Any
 
 from ..ai.generators.markdown import MarkdownGenerator
 from ..ai.prompts.reporting import (
@@ -22,7 +21,7 @@ from ..ai.prompts.validation import ReportOutput
 from .models import AISummary, QualityMetrics, Regression, ReleaseComparison
 
 
-def _get_releases_dir() -> "Path":  # type: ignore[name-defined]  # type: ignore[override]  # noqa: F821
+def _get_releases_dir():  # type: ignore[no-untyped-def]
     from pathlib import Path
 
     from ..config import RELEASES_DIR
@@ -38,7 +37,7 @@ async def generate_changelog(
 
     Uses CTO persona with structured prompts and Pydantic validation.
     """
-    releases_dir = _get_releases_dir()
+    releases_dir = _get_releases_dir()  # type: ignore[no-untyped-call]
     if not releases_dir.exists():
         return "# Changelog\n\nNo releases found.\n"
 
@@ -190,8 +189,8 @@ async def generate_ai_summary(
     llm: Any,
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> AISummary:
     """Generate an intelligent natural language summary of release differences.
 
@@ -214,37 +213,31 @@ async def generate_ai_summary(
         )
 
     # Try Pydantic validation first
-    validated = parse_report_response(result_text)
-    if validated:
-        return AISummary(
-            headline=validated.headline,
-            highlights=validated.highlights,
-            risk_areas=validated.risk_areas,
-            overall_trend=validated.trend,
-        )
-
-    # Fallback to legacy JSON parsing
     try:
-        start_idx = result_text.find("{")
-        end_idx = result_text.rfind("}") + 1
-        data = json.loads(result_text[start_idx:end_idx])
-        return AISummary(
-            headline=data.get("headline", "Resumo da Release"),
-            highlights=data.get("highlights", []),
-            risk_areas=data.get("risk_areas", []),
-            overall_trend=data.get("overall_trend", "indeterminado"),
-        )
+        validated = parse_report_response(result_text)
     except (ValueError, IndexError):
         return _generate_legacy_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )
 
+    if validated is None:
+        return _generate_legacy_ai_summary(
+            comparison, regressions, current_metrics, previous_metrics
+        )
+
+    return AISummary(
+        headline=validated.headline,
+        highlights=validated.highlights,
+        risk_areas=validated.risk_areas,
+        overall_trend=validated.trend,
+    )
+
 
 def _generate_legacy_ai_summary(
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> AISummary:
     """Legacy heuristic-based summary generation for fallback."""
     total_changes = (
@@ -293,8 +286,8 @@ async def generate_ai_summary_report(
     llm: Any,
     comparison: ReleaseComparison,
     regressions: list[Regression],
-    current_metrics: Optional[QualityMetrics],
-    previous_metrics: Optional[QualityMetrics],
+    current_metrics: QualityMetrics | None,
+    previous_metrics: QualityMetrics | None,
 ) -> str:
     """Generate a formatted AI summary report in Markdown.
 

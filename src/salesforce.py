@@ -10,13 +10,13 @@ since the Trailhead public API is no longer available.
 from __future__ import annotations
 
 import functools
-
 import json
 import logging
-from .exceptions import ConfigError
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from .exceptions import ConfigError
 
 logger = logging.getLogger(__name__)
 

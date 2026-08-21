@@ -15,6 +15,7 @@ name: 🚀 Salesforce Release Notes Pipeline
 permissions:
   contents: write
   issues: write
+  pages: write
 
 on:
   schedule:
@@ -50,13 +51,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -71,23 +72,23 @@ jobs:
 
       - name: Pytest — Testes automatizados
         run: uv run pytest tests/ -q --tb=short
-      
+
   extract:
     name: 📥 Extração e Geração de Artefatos
     runs-on: ubuntu-latest
     needs: lint
     steps:
       - name: Checkout do repositório
-        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -96,6 +97,9 @@ jobs:
 
       - name: Instalar Playwright browsers
         run: uv run playwright install chromium
+
+      - name: Instalar GitHub CLI
+        run: sudo apt-get install -y gh
 
       - name: Configurar identidade do bot para commits
         run: |
@@ -132,11 +136,54 @@ jobs:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           MIMOCODE_API_KEY: ${{ secrets.MIMOCODE_API_KEY }}
 
+      - name: Validar caches de resumo contra meta.json
+        if: steps.params.outputs.dry_run == 'false'
+        run: |
+          echo "🔍 Validating summary caches against .meta.json..."
+          ERRORS=0
+          for meta_file in releases/*/.meta.json; do
+            [ -f "$meta_file" ] || continue
+            dir=$(dirname "$meta_file")
+            slug=$(basename "$dir")
+            cache_file="$dir/.summary_cache.json"
+
+            if [ ! -f "$cache_file" ]; then
+              echo "⚠️  $slug: no .summary_cache.json found"
+              continue
+            fi
+
+            # Extract meta total_features
+            meta_total=$(python3 -c "import json; print(json.load(open('$meta_file')).get('total_features', 0))")
+            cache_exec=$(python3 -c "import json; print(json.load(open('$cache_file')).get('executive_summary', ''))")
+            cache_cat_count=$(python3 -c "import json; print(len(json.load(open('$cache_file')).get('category_summaries', {})))")
+
+            echo "📋 $slug: meta=$meta_total features, cache_cats=$cache_cat_count"
+
+            # Check: cache says 0 features but meta has data
+            if [ "$meta_total" -gt 0 ] && echo "$cache_exec" | grep -q '0 novos recursos'; then
+              echo "❌ $slug: cache says '0 recursos' but meta has $meta_total"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Check: no category summaries for release with categories
+            meta_cat_count=$(python3 -c "import json; print(len(json.load(open('$meta_file')).get('categories', [])))")
+            if [ "$meta_cat_count" -gt 0 ] && [ "$cache_cat_count" -eq 0 ]; then
+              echo "❌ $slug: 0 category_summaries but meta has $meta_cat_count categories"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "❌ Found $ERRORS invalid cache(s). Pipeline will still commit other changes."
+          else
+            echo "✅ All summary caches are valid"
+          fi
+
       - name: Verificar alterações geradas
         id: git_status
         if: steps.params.outputs.dry_run == 'false'
         run: |
-          if [ -n "$(git status --porcelain releases/ README.md)" ]; then
+          if [ -n "$(git status --porcelain releases/ README.md README.en.md)" ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -153,62 +200,159 @@ jobs:
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
+          git pull origin ${{ github.ref_name }}
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          # Fetch latest remote, then force-with-lease push.
-          # The pipeline is the sole author of releases/ and README.md,
-          # so we can safely overwrite remote if a rebase would conflict.
-          git fetch origin ${{ github.ref_name }}
           git push --force-with-lease origin HEAD:${{ github.ref_name }}
 
       - name: Criar GitHub Release
         if: |
           steps.params.outputs.dry_run == 'false' &&
-          steps.git_status.outputs.has_changes == 'true' &&
-          steps.params.outputs.release_slug != ''
+          steps.git_status.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
-          SLUG="${{ steps.params.outputs.release_slug }}"
-          RELEASE_DIR="releases/${SLUG}"
-          # Extract year and season from slug (e.g., summer_26 -> v2026-summer)
-          YEAR="20$(echo ${SLUG} | grep -oP '\d+$')"
-          SEASON=$(echo ${SLUG} | sed 's/_[0-9]*$//')
-          TAG_NAME="v${YEAR}-${SEASON}"
-          
-          if [ -d "$RELEASE_DIR" ] && [ -f "${RELEASE_DIR}/.meta.json" ]; then
-            if gh release view "${TAG_NAME}" > /dev/null 2>&1; then
-              echo "Release ${TAG_NAME} already exists, skipping"
-            else
-              META=$(cat "${RELEASE_DIR}/.meta.json")
-              RELEASE_NAME=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin)['name'])")
-              TOTAL=$(echo "$META" | python3 -c "import sys, json; print(sum(c['count'] for c in json.load(sys.stdin).get('categories', [])))")
-              CATEGORIES=$(echo "$META" | python3 -c "import sys, json; print(len(json.load(sys.stdin).get('categories', [])))")
-              RELEASE_ID=$(echo "$META" | python3 -c "import sys, json; print(json.load(sys.stdin).get('release_id', 0))")
-              
-              # Check if this is the latest release by comparing release_ids
-              EXISTING_IDS=$(gh release list --json body -q '.[].body' 2>/dev/null | grep -oP 'release_id.*?(\d+)' | grep -oP '\d+' | sort -n || true)
-              MAX_ID=$(echo "$EXISTING_IDS" | tail -1 || echo "0")
-              if [ -z "$MAX_ID" ] || [ "$RELEASE_ID" -gt "$MAX_ID" ]; then
-                IS_LATEST="--latest"
-              else
-                IS_LATEST="--latest=false"
-              fi
-              
-              NOTES="## 📦 ${RELEASE_NAME}\n\n"
-              NOTES+="- **${TOTAL}** recursos em **${CATEGORIES}** categorias\n"
-              NOTES+="- 🇧🇷 [Documentação pt_BR](./releases/${SLUG}/pt_BR/)\n"
-              NOTES+="- 🇺🇸 [Documentation en_US](./releases/${SLUG}/en_US/)\n"
-              
-              gh release create "${TAG_NAME}" \
-                --title "${RELEASE_NAME}" \
-                --notes "$(echo -e "$NOTES")" \
-                ${IS_LATEST}
-              
-              echo "GitHub Release created: ${TAG_NAME}"
-            fi
-          fi
+          python3 << 'PYEOF'
+          import json, os, re, subprocess, glob
+
+          TRANSLITERATE_MAP = {
+              'ç': 'c', 'ã': 'a', 'õ': 'o', 'á': 'a', 'é': 'e',
+              'í': 'i', 'ó': 'o', 'ú': 'u', 'ê': 'e', 'ô': 'o', 'à': 'a',
+          }
+
+          def slugify(name):
+              lower = name.lower()
+              for old, new in TRANSLITERATE_MAP.items():
+                  lower = lower.replace(old, new)
+              return re.sub(r'[^a-z0-9]+', '_', lower).strip('_')
+
+          def load_cache(release_dir):
+              cache_path = os.path.join(release_dir, '.summary_cache.json')
+              if not os.path.exists(cache_path):
+                  return None
+              with open(cache_path) as f:
+                  data = json.load(f)
+              if 'summaries' not in data and 'category_summaries' in data:
+                  data['summaries'] = data['category_summaries']
+              return data
+
+          # Get existing releases
+          result = subprocess.run(
+              ['gh', 'release', 'list', '--json', 'tagName,body'],
+              capture_output=True, text=True
+          )
+          existing_tags = set()
+          existing_ids = set()
+          if result.returncode == 0:
+              for rel in json.loads(result.stdout):
+                  existing_tags.add(rel.get('tagName', ''))
+                  match = re.search(r'release_id.*?(\d+)', rel.get('body', ''))
+                  if match:
+                      existing_ids.add(int(match.group(1)))
+
+          # Process ALL releases, not just the filtered one
+          release_slug = os.environ.get('RELEASE_SLUG', '')
+          if release_slug:
+              slugs_to_process = [release_slug]
+          else:
+              slugs_to_process = sorted([
+                  d for d in os.listdir('releases')
+                  if os.path.isdir(os.path.join('releases', d))
+                  and os.path.exists(os.path.join('releases', d, '.meta.json'))
+              ])
+
+          for slug in slugs_to_process:
+              release_dir = f'releases/{slug}'
+              meta_path = os.path.join(release_dir, '.meta.json')
+              if not os.path.exists(meta_path):
+                  continue
+
+              with open(meta_path) as f:
+                  meta = json.load(f)
+
+              name = meta.get('name', slug)
+              release_id = meta.get('release_id', 0)
+              total = meta.get('total_features', sum(c.get('count', 0) for c in meta.get('categories', [])))
+              cats_count = len(meta.get('categories', []))
+
+              year_short = ''.join(filter(str.isdigit, slug.split('_')[-1]))
+              season = slug.rsplit('_', 1)[0]
+              tag = f'v20{year_short}-{season}'
+
+              if tag in existing_tags:
+                  print(f'⏭️  Skip {tag}: already exists')
+                  continue
+
+              # Load AI-generated summaries
+              cache = load_cache(release_dir)
+
+              if cache and cache.get('executive_summary'):
+                  exec_summary = cache['executive_summary']
+              else:
+                  exec_summary = f'A release {name} traz {total} novos recursos em {cats_count} categorias.'
+
+              # Build highlights
+              highlights = []
+              if cache:
+                  summaries = cache.get('summaries', {})
+                  for cat_name, summary in list(summaries.items())[:5]:
+                      if isinstance(summary, str) and summary.strip():
+                          first = summary.split('.')[0] + '.' if '.' in summary else summary[:200]
+                          highlights.append(f'- **{cat_name}**: {first}')
+
+              # Build category links
+              cat_links = []
+              for cat in meta.get('categories', []):
+                  cat_name = cat.get('name', '')
+                  count = cat.get('count', 0)
+                  if count > 0:
+                      cat_slug = slugify(cat_name)
+                      cat_links.append(
+                          f'- [📄 {cat_name} ({count} recursos)](./releases/{slug}/pt_BR/{cat_slug}.md)'
+                      )
+
+              # Build professional release notes
+              nl = '\n'
+              notes = f'## 📦 {name}{nl}{nl}'
+              notes += f'{exec_summary}{nl}{nl}'
+
+              if highlights:
+                  notes += f'### 🌟 Destaques{nl}{nl}'
+                  notes += f'{nl.join(highlights)}{nl}{nl}'
+
+              notes += f'### 📊 Estatísticas{nl}'
+              notes += f'| Métrica | Valor |{nl}'
+              notes += f'| --- | --- |{nl}'
+              notes += f'| Recursos | **{total}** |{nl}'
+              notes += f'| Categorias | **{cats_count}** |{nl}{nl}'
+
+              if cat_links:
+                  notes += f'### 📄 Categorias{nl}{nl}'
+                  notes += f'{nl.join(cat_links)}{nl}{nl}'
+
+              notes += f'### 🔗 Links{nl}'
+              notes += f'- [🇧🇷 Documentação pt_BR](./releases/{slug}/pt_BR/){nl}'
+              notes += f'- [🇺🇸 Documentation en_US](./releases/{slug}/en_US/){nl}'
+              notes += f'- [📚 Documentação Completa](./releases/{slug}/){nl}{nl}'
+              notes += f'---{nl}'
+              notes += f'*Gerado automaticamente pelo Salesforce Release Notes Pipeline*'
+
+              max_existing = max(existing_ids) if existing_ids else 0
+              cmd = ['gh', 'release', 'create', tag, '--title', name, '--notes', notes]
+              if release_id > max_existing:
+                  cmd.append('--latest')
+
+              print(f'📦 Creating release: {tag} ({name})')
+              r = subprocess.run(cmd, capture_output=True, text=True)
+              if r.returncode == 0:
+                  print(f'  ✅ Created: {tag}')
+                  existing_tags.add(tag)
+              else:
+                  print(f'  ❌ Failed: {r.stderr.strip()}')
+
+          PYEOF
 
       - name: Gerar sumário do pipeline
         if: always()

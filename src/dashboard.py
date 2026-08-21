@@ -62,7 +62,7 @@ def _load_features(slug: str) -> list[dict[str, str]]:
             if line.startswith("## "):
                 category = line[3:].strip()
                 continue
-            if not line or line.startswith("#") or line.startswith("|"):
+            if not line or line.startswith(("#", "|")):
                 continue
 
             bullet_match = re.match(r"^\*\s+\*\*(.+?)\*\*\s*(?:—\s*_(.+)_)?$", line)

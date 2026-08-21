@@ -118,11 +118,11 @@ def parse_classification_response(response: str) -> ClassificationOutput | None:
             clean = re.sub(r"\s*```$", "", clean)
 
         data = json.loads(clean)
-        return ClassificationOutput.model_validate(data)
+        return ClassificationOutput.model_validate(data)  # type: ignore[no-any-return]
     except json.JSONDecodeError as e:
         logger.warning("Classification response is not valid JSON: %s", e)
         return None
-    except Exception as e:
+    except (ValueError, KeyError, TypeError) as e:
         logger.warning("Classification response validation failed: %s", e)
         if data and isinstance(data, dict):
             logger.debug("Parsed data keys: %s", list(data.keys()))

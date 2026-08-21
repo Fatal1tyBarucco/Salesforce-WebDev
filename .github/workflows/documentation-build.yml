@@ -6,11 +6,13 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - "src/**"
+      - "!src/auto_healing/**"
       - "releases/**"
       - "README.md"
       - "README.en.md"
-      - "src/release_docs.py"
-      - "src/release_summarizer.py"
+      - "CHANGELOG.md"
+      - "pyproject.toml"
   workflow_dispatch:
 
 permissions:
@@ -27,13 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@696e4e1bf2f38a7ac027afc72ca9d963427412ae # v7
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
       - name: Setup Python
-        uses: actions/setup-python@8549b9f8f590ad24eab7482f36f6e1e24d34597b # v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.13"
 

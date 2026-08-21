@@ -21,6 +21,7 @@ from .notifications import USER_PROFILES
 from .service import AIAutomationService
 
 __all__ = [
+    "USER_PROFILES",
     "AIAutomationService",
     "AISummary",
     "CategoryImpactScore",
@@ -33,5 +34,4 @@ __all__ = [
     "ReleaseComparison",
     "TriageResult",
     "UserProfile",
-    "USER_PROFILES",
 ]

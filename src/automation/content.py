@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Optional
 
 from ..cache_manager import CacheManager
 from .models import ContentHash, DeduplicationResult
@@ -142,7 +141,7 @@ async def analyze_content_changes(release_slug: str) -> DeduplicationResult:
     )
 
 
-async def get_content_hash(file_path: str) -> Optional[str]:
+async def get_content_hash(file_path: str) -> str | None:
     """Get the MD5 hash of a file's content.
 
     Args:

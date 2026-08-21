@@ -1,47 +1,48 @@
 """Tests for AI automation module."""
 
 import json
-import pytest
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from src.ai_automation import (
     AIAutomationService,
+    AISummary,
+    DeduplicationResult,
+    FilteredNotification,
+    ImpactPrediction,
     LLMService,
-    load_release_meta,
+    TriageResult,
+    UserProfile,
+    analyze_content_changes,
+    calculate_category_impact_scores,
+    calculate_quality_metrics,
     compare_releases,
     detect_regressions,
-    calculate_quality_metrics,
-    generate_changelog,
-    generate_regression_report,
-    generate_diff_report,
-    generate_quality_report,
+    export_all_releases,
+    export_release_csv,
+    export_release_json,
+    filter_features_for_profile,
     generate_ai_summary,
     generate_ai_summary_report,
-    AISummary,
-    calculate_category_impact_scores,
-    predict_next_release_impact,
-    generate_impact_prediction_report,
-    ImpactPrediction,
-    triage_release,
-    generate_triage_report,
-    TriageResult,
-    analyze_content_changes,
-    get_content_hash,
-    is_content_unchanged,
+    generate_changelog,
     generate_deduplication_report,
-    DeduplicationResult,
-    filter_features_for_profile,
+    generate_diff_report,
+    generate_dynamic_badge,
     generate_filtered_notification,
     generate_filtered_notification_report,
-    UserProfile,
-    FilteredNotification,
-    generate_dynamic_badge,
+    generate_impact_prediction_report,
+    generate_quality_report,
+    generate_regression_report,
+    generate_triage_report,
+    get_content_hash,
     get_latest_release_badge,
-    export_release_json,
-    export_release_csv,
-    export_all_releases,
+    is_content_unchanged,
+    load_release_meta,
+    predict_next_release_impact,
+    triage_release,
 )
 
 
@@ -66,23 +67,21 @@ def mock_llm_class(llm_service):
         yield llm_service
 
 
-@pytest.mark.asyncio
-async def test_load_release_meta_existing(tmp_path: Path) -> None:
+def test_load_release_meta_existing(tmp_path: Path) -> None:
     meta = {"name": "Test", "slug": "test", "release_id": 100, "categories": []}
     release_dir = tmp_path / "test"
     release_dir.mkdir()
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
-        result = await load_release_meta("test")
+        result = load_release_meta("test")
         assert result is not None
         assert result["name"] == "Test"
 
 
-@pytest.mark.asyncio
-async def test_load_release_meta_missing() -> None:
+def test_load_release_meta_missing() -> None:
     with patch("src.config.RELEASES_DIR", "/nonexistent"):
-        result = await load_release_meta("missing")
+        result = load_release_meta("missing")
         assert result is None
 
 
@@ -356,18 +355,20 @@ async def test_triage_release_low_risk(service) -> None:
     def mock_load(slug: str) -> Any:
         return meta
 
-    with patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load):
-        with patch.object(
+    with (
+        patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load),
+        patch.object(
             AIAutomationService, "calculate_quality_metrics", AsyncMock(return_value=None)
-        ):
-            with patch.object(
-                AIAutomationService,
-                "predict_next_release_impact",
-                AsyncMock(return_value=ImpactPrediction([], [], [], "baixo", "test")),
-            ):
-                result = await triage_release("test")
-                assert isinstance(result, TriageResult)
-                assert result.risk_level in ["mínimo", "baixo", "moderado", "alto"]
+        ),
+        patch.object(
+            AIAutomationService,
+            "predict_next_release_impact",
+            AsyncMock(return_value=ImpactPrediction([], [], [], "baixo", "test")),
+        ),
+    ):
+        result = await triage_release("test")
+        assert isinstance(result, TriageResult)
+        assert result.risk_level in ["mínimo", "baixo", "moderado", "alto"]
 
 
 @pytest.mark.asyncio
@@ -525,12 +526,11 @@ async def test_module_load_all_release_metas():
         assert len(result) == 1
 
 
-@pytest.mark.asyncio
-async def test_module_load_content_cache(tmp_path):
+def test_module_load_content_cache(tmp_path):
     """Module-level _load_content_cache delegates to service."""
     from src.ai_automation import _load_content_cache
 
-    result = await _load_content_cache(tmp_path / "nope.json")
+    result = _load_content_cache(tmp_path / "nope.json")
     assert isinstance(result, dict)
 
 

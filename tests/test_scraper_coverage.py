@@ -113,7 +113,7 @@ class TestScraperAsyncMethods:
 
     def test_fetch_page_raw_text_cached(self) -> None:
         """fetch_page_raw_text returns cached content."""
-        from src.scraper import SalesforceReleaseScraper, MIN_RAW_TEXT_LENGTH
+        from src.scraper import MIN_RAW_TEXT_LENGTH, SalesforceReleaseScraper
 
         scraper = SalesforceReleaseScraper.__new__(SalesforceReleaseScraper)
         scraper._cache = MagicMock()

@@ -99,11 +99,13 @@ def test_fetch_page_raw_text_uses_jittered_delay() -> None:
     if cache_file.exists():
         cache_file.unlink()
 
-    with patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock:
-        with patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True):
-            with patch("src.scraper.asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
-                mock.return_value = "x" * 10  # below MIN_RAW_TEXT_LENGTH
-                asyncio.run(scraper.fetch_page_raw_text(url))
+    with (
+        patch.object(scraper, "_fetch_with_playwright", new_callable=AsyncMock) as mock,
+        patch.object(scraper, "_ensure_browser", new_callable=AsyncMock, return_value=True),
+        patch("src.scraper.asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+    ):
+        mock.return_value = "x" * 10  # below MIN_RAW_TEXT_LENGTH
+        asyncio.run(scraper.fetch_page_raw_text(url))
     mock_sleep.assert_called()
     delay_arg = mock_sleep.call_args[0][0]
     assert delay_arg >= RETRY_BASE_DELAY_SECONDS * 2

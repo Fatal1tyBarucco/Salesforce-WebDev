@@ -30,8 +30,9 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass, field
-from typing import Any, Callable, Coroutine
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +132,7 @@ class EventBus:
             try:
                 await handler(event)
                 invoked += 1
-            except Exception as exc:
+            except (RuntimeError, ValueError, OSError, TypeError) as exc:
                 logger.error(
                     "[EVENT] Handler %s for '%s' failed: %s",
                     handler.__name__,

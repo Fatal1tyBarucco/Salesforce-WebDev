@@ -6,11 +6,12 @@ based on content analysis and keyword matching.
 
 from __future__ import annotations
 
+import asyncio
 import json
-from typing import Any
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 from .llm_service import LLMService
 
@@ -70,6 +71,11 @@ class IssueTriager:
         self._repo = repo
         self._llm = llm or LLMService()
 
+    @property
+    def repo(self) -> str | None:
+        """Return the repository."""
+        return self._repo
+
     async def triage_issue(
         self,
         title: str,
@@ -101,8 +107,7 @@ class IssueTriager:
         )
 
         user_prompt = (
-            f"Categories: {categories}\nPriorities: {priorities}\n\n"
-            f"Issue content:\n{combined_text}"
+            f"Categories: {categories}\nPriorities: {priorities}\n\nIssue content:\n{combined_text}"
         )
 
         llm_result = await self._llm.generate_text(user_prompt, system_prompt)
@@ -161,25 +166,23 @@ class IssueTriager:
             return None
 
         try:
-            result = subprocess.run(
-                [
-                    "gh",
-                    "issue",
-                    "view",
-                    str(issue_number),
-                    "--repo",
-                    self._repo,
-                    "--json",
-                    "title,body,labels",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=10,
+            proc = await asyncio.create_subprocess_exec(
+                "gh",
+                "issue",
+                "view",
+                str(issue_number),
+                "--repo",
+                self._repo,
+                "--json",
+                "title,body,labels",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
             )
-            if result.returncode != 0:
+            stdout, _stderr = await asyncio.wait_for(proc.communicate(), timeout=10)
+            if proc.returncode != 0:
                 return None
 
-            data = json.loads(result.stdout)
+            data = json.loads(stdout.decode())
             title = data.get("title", "")
             body = data.get("body", "")
             labels = [label.get("name", "") for label in data.get("labels", [])]
@@ -188,7 +191,15 @@ class IssueTriager:
             triage.issue_number = issue_number
             return triage
 
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
+        except (
+            subprocess.TimeoutExpired,
+            json.JSONDecodeError,
+            FileNotFoundError,
+            TimeoutError,
+            OSError,
+            KeyError,
+            TypeError,
+        ):
             return None
 
     def apply_triage(self, result: TriageResult) -> bool:
@@ -219,6 +230,7 @@ class IssueTriager:
                     ],
                     capture_output=True,
                     timeout=10,
+                    check=False,
                 )
 
             # Add comment with reasoning
@@ -247,6 +259,7 @@ class IssueTriager:
                 ],
                 capture_output=True,
                 timeout=10,
+                check=False,
             )
 
             return True

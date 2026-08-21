@@ -152,9 +152,11 @@ class TestParseCategoryFeatures:
         d = tmp_path / "summer_26"
         d.mkdir()
         (d / "sec.md").write_text("## Security\n\n* **Feature**\n")
-        with patch("src.api.RELEASES_DIR", str(tmp_path)):
-            with patch("pathlib.Path.read_text", side_effect=OSError("perm")):
-                assert _parse_category_features("summer_26", "Security") == []
+        with (
+            patch("src.api.RELEASES_DIR", str(tmp_path)),
+            patch("pathlib.Path.read_text", side_effect=OSError("perm")),
+        ):
+            assert _parse_category_features("summer_26", "Security") == []
 
     def test_os_error_on_content_read(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"

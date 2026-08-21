@@ -1,9 +1,9 @@
 <div style="padding:8px 12px;margin-bottom:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-family:system-ui,sans-serif;font-size:14px;"><strong>Idioma:</strong> <a href="../pt_BR/servico.md" style="text-decoration:none;font-weight:bold;">🇧🇷 Português</a> &nbsp;|&nbsp; <a href="../en_US/servico.md" style="text-decoration:none;">🇺🇸 English</a></div>
 ## Serviço
 
-> **224 recursos** | 🔴 1 alto impacto | 🟡 16 médio | 🟢 179 baixo
+> **224 recursos** | 🔴 1 alto impacto | 🟡 16 médio | 🟢 181 baixo
 
-Categoria **Serviço** com 196 recursos nesta release.
+Categoria **Serviço** com 198 recursos nesta release.
 
 | Recurso | Descrição | Impacto |
 | :--- | :--- | :---: |
@@ -89,7 +89,7 @@ Categoria **Serviço** com 196 recursos nesta release.
 | **Calcular pontuações de risco de solicitação de alteração de TI de modo consistente — _config_** | Recurso 'Calcular pontuações de risco de solicitação de alteração de TI de modo consistente — _config_' disponível na re… | 🟢 baixo |
 | **Gerenciar mais operações de TI e negócios com modelos do Catálogo de serviços — _admins_** | Recurso 'Gerenciar mais operações de TI e negócios com modelos do Catálogo de serviços — _admins_' disponível na release… | 🟢 baixo |
 | **Conectar conversas de email a incidentes com encadeamento avançado — _admins_** | Recurso 'Conectar conversas de email a incidentes com encadeamento avançado — _admins_' disponível na release. | 🟢 baixo |
-| **Configurar o comportamento do campo para uma criação de registro mais eficiente — _admins_** | Recurso 'Configurar o comportamento do campo para uma criação de registro mais eficiente — _admins_' disponível na relea… | 🟢 baixo |
+| **Configurar o comportamento do campo para uma criação de.. registro mais eficiente — _admins_** | Recurso 'Configurar o comportamento do campo para uma criação de.. registro mais eficiente — _admins_' disponível na rel… | 🟢 baixo |
 | **Criar incidentes para outros sem sair do seu fluxo de trabalho — _admins_** | Recurso 'Criar incidentes para outros sem sair do seu fluxo de trabalho — _admins_' disponível na release. | 🟢 baixo |
 | **Melhore a precisão dos relatórios com dados de incidente e alteração capturados automaticamente — _admins_** | Recurso 'Melhore a precisão dos relatórios com dados de incidente e alteração capturados automaticamente — _admins_' dis… | 🟢 baixo |
 | **Automatizar fluxos de trabalho do Catálogo de serviços com novos conectores externos — _admins_** | Recurso 'Automatizar fluxos de trabalho do Catálogo de serviços com novos conectores externos — _admins_' disponível na … | 🟢 baixo |
@@ -203,6 +203,8 @@ Categoria **Serviço** com 196 recursos nesta release.
 | **© Copyright 2026, Salesforce.com Inc. Todos os direitos reservados. Várias marcas comerciais dos respectivos proprietários.** | Recurso '© Copyright 2026, Salesforce.com Inc. Todos os direitos reservados. Várias marcas comerciais dos respectivos pr… | 🟢 baixo |
 | **Salesforce Brasil, Av. Jornalista Roberto Marinho, 85 - 14º andar - Cidade Monções, São Paulo - SP, 04575-000 Brasil** | Recurso 'Salesforce Brasil, Av. Jornalista Roberto Marinho, 85 - 14º andar - Cidade Monções, São Paulo - SP, 04575-000 B… | 🟢 baixo |
 | **Salesforce Help** | Recurso 'Salesforce Help' disponível na release. | 🟢 baixo |
+| **Utilizamos cookies para tornar suas interações com nosso website mais relevantes. Eles nos ajudam a entender melhor como nossos websites são utilizados, para podermos adaptar o conteúdo para você. Para obter mais informações sobre os diferentes cookies que estamos utilizando, leia a Declaração de privacidade. Para alterar suas preferências e configurações de cookies, consulte o Gerenciador de consentimento de cookies.** | Recurso 'Utilizamos cookies para tornar suas interações com nosso website mais relevantes. Eles nos ajudam a entender me… | 🟢 baixo |
+| **ACEITAR TODOS OS COOKIES** | Recurso 'ACEITAR TODOS OS COOKIES' disponível na release. | 🟢 baixo |
 
 ### Messaging
 

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlparse
 from unittest.mock import patch
+from urllib.parse import urlparse
 
 import pytest
 
@@ -193,9 +193,11 @@ class TestFetchFeaturesWithLinks:
         """
 
         scraper = SalesforceReleaseScraper()
-        with patch.object(scraper, "_ensure_browser", return_value=True):
-            with patch.object(scraper, "_fetch_with_playwright", return_value=html):
-                result = await scraper.fetch_features_with_links("http://example.com")
+        with (
+            patch.object(scraper, "_ensure_browser", return_value=True),
+            patch.object(scraper, "_fetch_with_playwright", return_value=html),
+        ):
+            result = await scraper.fetch_features_with_links("http://example.com")
 
         assert len(result) == 1
         assert result[0]["name"] == "Test Feature"
@@ -206,9 +208,11 @@ class TestFetchFeaturesWithLinks:
         from src.scraper import SalesforceReleaseScraper
 
         scraper = SalesforceReleaseScraper()
-        with patch.object(scraper, "_ensure_browser", return_value=True):
-            with patch.object(scraper, "_fetch_with_playwright", return_value=""):
-                result = await scraper.fetch_features_with_links("http://example.com")
+        with (
+            patch.object(scraper, "_ensure_browser", return_value=True),
+            patch.object(scraper, "_fetch_with_playwright", return_value=""),
+        ):
+            result = await scraper.fetch_features_with_links("http://example.com")
 
         assert result == []
 

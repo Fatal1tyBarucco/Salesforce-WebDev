@@ -1,10 +1,10 @@
 """Tests for src/salesforce.py — 100% coverage."""
 
-from src.exceptions import ConfigError
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+from src.exceptions import ConfigError
 from src.salesforce import (
     FeatureReadiness,
     OrgLimits,
@@ -267,11 +267,13 @@ class TestTrailheadCache:
             assert json.loads(p.read_text()) == {"A": ["url1"]}
 
     def test_save_os_error(self, tmp_path: Path) -> None:
-        with patch(
-            "src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "nonexistent" / "cache.json")
+        with (
+            patch(
+                "src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "nonexistent" / "cache.json")
+            ),
+            patch("pathlib.Path.mkdir", side_effect=OSError("perm")),
         ):
-            with patch("pathlib.Path.mkdir", side_effect=OSError("perm")):
-                _save_trailhead_cache({"A": ["url1"]})  # Should not raise
+            _save_trailhead_cache({"A": ["url1"]})  # Should not raise
 
 
 class TestDetectNewTrailheadContent:
@@ -317,16 +319,18 @@ class TestGenerateTrailheadUpdateReport:
 
 class TestTrailheadMappingService:
     def test_config_not_found(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         svc = TrailheadMappingService(config_path=tmp_path / "nope.json")
         with pytest.raises(ConfigError, match="not found"):
             _ = svc.categories
 
     def test_invalid_json(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "bad.json"
         p.write_text("not json{")
@@ -335,8 +339,9 @@ class TestTrailheadMappingService:
             _ = svc.categories
 
     def test_not_dict(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "list.json"
         p.write_text(json.dumps([1, 2, 3]))
@@ -345,8 +350,9 @@ class TestTrailheadMappingService:
             _ = svc.categories
 
     def test_category_not_list(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": "not a list"}))
@@ -355,8 +361,9 @@ class TestTrailheadMappingService:
             _ = svc.categories
 
     def test_entry_not_dict(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": ["not a dict"]}))
@@ -365,8 +372,9 @@ class TestTrailheadMappingService:
             _ = svc.categories
 
     def test_missing_title(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": [{"url": "http://x"}]}))
@@ -375,8 +383,9 @@ class TestTrailheadMappingService:
             _ = svc.categories
 
     def test_missing_url(self, tmp_path: Path) -> None:
-        from src.salesforce import TrailheadMappingService
         import pytest
+
+        from src.salesforce import TrailheadMappingService
 
         p = tmp_path / "config.json"
         p.write_text(json.dumps({"A": [{"title": "T"}]}))

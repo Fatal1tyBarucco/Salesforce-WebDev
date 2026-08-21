@@ -235,8 +235,10 @@ class TrailheadIntegration:
 
         lines = [
             "## 🎓 Módulos Trailhead Recomendados\n",
-            "Para aproveitar ao máximo as novidades desta release, "
-            "confira os seguintes módulos no Trailhead:\n",
+            (
+                "Para aproveitar ao máximo as novidades desta release, "
+                "confira os seguintes módulos no Trailhead:\n"
+            ),
         ]
 
         for suggestion in suggestions:

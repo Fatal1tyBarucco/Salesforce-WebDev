@@ -35,7 +35,7 @@ Categoria **Segurança, identidade e privacidade** com 58 recursos nesta release
 | **Verificação de integridade de segurança** | Recurso 'Verificação de integridade de segurança' disponível na release. | 🟢 baixo |
 | **Novos sinais para pontuações de verificação de integridade — _admins_** | Recurso 'Novos sinais para pontuações de verificação de integridade — _admins_' disponível na release. | 🟢 baixo |
 | **Notificações semanais por padrão — _admins_** | Recurso 'Notificações semanais por padrão — _admins_' disponível na release. | 🟢 baixo |
-| **..Salesforce Shield** | Recurso '..Salesforce Shield' disponível na release. | 🟢 baixo |
+| **Salesforce Shield** | Recurso 'Salesforce Shield' disponível na release. | 🟢 baixo |
 | **Detecção de dados** | Recurso 'Detecção de dados' disponível na release. | 🟢 baixo |
 | **Visualizar e exportar fragmentos de dados confidenciais nos resultados da varredura de detecção de dados** | Recurso 'Visualizar e exportar fragmentos de dados confidenciais nos resultados da varredura de detecção de dados' dispo… | 🟢 baixo |
 | **Ler campos criptografados para dados confidenciais na Detecção de dados** | Recurso 'Ler campos criptografados para dados confidenciais na Detecção de dados' disponível na release. | 🟢 baixo |

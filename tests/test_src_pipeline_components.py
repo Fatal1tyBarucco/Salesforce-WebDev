@@ -1,6 +1,7 @@
 import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
+
 from src.config import ReleaseInfo, TopicNode
 from src.generator import MarkdownGenerator
 from src.scraper import SalesforceReleaseScraper
@@ -502,7 +503,7 @@ def test_markdown_header_template_safe_substitute_missing_vars() -> None:
     from src.generator import MARKDOWN_HEADER_TEMPLATE
 
     result = MARKDOWN_HEADER_TEMPLATE.safe_substitute({})
-    assert "Safe" not in result or True
+    assert True
     assert "${topic_name}" in result
     assert "${release_name}" in result
     assert "${generated_at}" in result

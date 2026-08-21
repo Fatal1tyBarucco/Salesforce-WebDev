@@ -3,9 +3,9 @@
 import json
 from pathlib import Path
 
-from src.exceptions import ConfigError
 import pytest
 
+from src.exceptions import ConfigError
 from src.salesforce import (
     TRAILHEAD_BASE_URL,
     TrailheadMappingService,

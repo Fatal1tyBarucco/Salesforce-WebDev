@@ -26,7 +26,7 @@ def test_english_category_slugs_values_are_kebab_case() -> None:
 
 
 def test_english_category_names_are_title_case() -> None:
-    for pt_name, en_name in ENGLISH_CATEGORY_NAMES.items():
+    for en_name in ENGLISH_CATEGORY_NAMES.values():
         assert en_name[0].isupper(), f"Name '{en_name}' must start with uppercase"
 
 

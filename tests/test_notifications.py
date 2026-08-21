@@ -267,9 +267,11 @@ class TestUnsubscribe:
             assert "new@test.com" in _load_unsubscribed()
 
     def test_os_error(self, tmp_path: Path) -> None:
-        with patch("src.notifications.NOTIFICATIONS_DIR", str(tmp_path)):
-            with patch("pathlib.Path.write_text", side_effect=OSError("perm")):
-                assert unsubscribe("fail@test.com") is False
+        with (
+            patch("src.notifications.NOTIFICATIONS_DIR", str(tmp_path)),
+            patch("pathlib.Path.write_text", side_effect=OSError("perm")),
+        ):
+            assert unsubscribe("fail@test.com") is False
 
 
 class TestIsSubscribed:
@@ -286,11 +288,13 @@ class TestIsSubscribed:
 class TestSendNotifications:
     def test_loads_default_profiles(self) -> None:
         digest = make_digest()
-        with patch("src.notifications.build_digest", return_value=digest):
-            with patch("src.notifications._load_profiles", return_value=[]):
-                with patch("src.notifications._load_unsubscribed", return_value=set()):
-                    results = send_notifications("s")
-                    assert results == []
+        with (
+            patch("src.notifications.build_digest", return_value=digest),
+            patch("src.notifications._load_profiles", return_value=[]),
+            patch("src.notifications._load_unsubscribed", return_value=set()),
+        ):
+            results = send_notifications("s")
+            assert results == []
 
     def test_no_digest(self, tmp_path: Path) -> None:
         with patch("src.notifications.build_digest", return_value=None):
@@ -299,39 +303,41 @@ class TestSendNotifications:
     def test_disabled_profile_skipped(self) -> None:
         digest = make_digest()
         profile = make_profile(enabled=False)
-        with patch("src.notifications.build_digest", return_value=digest):
-            with patch("src.notifications._load_unsubscribed", return_value=set()):
-                assert send_notifications("s", profiles=[profile]) == []
+        with (
+            patch("src.notifications.build_digest", return_value=digest),
+            patch("src.notifications._load_unsubscribed", return_value=set()),
+        ):
+            assert send_notifications("s", profiles=[profile]) == []
 
     def test_category_filter_no_match(self) -> None:
         digest = make_digest()
         profile = make_profile(categories=["NonExistent"])
-        with patch("src.notifications.build_digest", return_value=digest):
-            with patch("src.notifications._load_unsubscribed", return_value=set()):
-                assert send_notifications("s", profiles=[profile]) == []
+        with (
+            patch("src.notifications.build_digest", return_value=digest),
+            patch("src.notifications._load_unsubscribed", return_value=set()),
+        ):
+            assert send_notifications("s", profiles=[profile]) == []
 
     def test_unsubscribed_email_skipped(self) -> None:
         digest = make_digest()
         profile = make_profile()
-        with patch("src.notifications.build_digest", return_value=digest):
-            with patch("src.notifications._load_unsubscribed", return_value={"test@example.com"}):
-                assert send_notifications("s", profiles=[profile]) == []
+        with (
+            patch("src.notifications.build_digest", return_value=digest),
+            patch("src.notifications._load_unsubscribed", return_value={"test@example.com"}),
+        ):
+            assert send_notifications("s", profiles=[profile]) == []
 
     def test_sends_email_slack_discord(self) -> None:
         digest = make_digest()
         profile = make_profile(slack_webhook="https://s", discord_webhook="https://d")
-        with patch("src.notifications.build_digest", return_value=digest):
-            with patch("src.notifications._load_unsubscribed", return_value=set()):
-                with patch(
-                    "src.notifications.send_email", return_value=NotificationResult("email", True)
-                ):
-                    with patch(
-                        "src.notifications.send_slack",
-                        return_value=NotificationResult("slack", True),
-                    ):
-                        with patch(
-                            "src.notifications.send_discord",
-                            return_value=NotificationResult("discord", True),
-                        ):
-                            results = send_notifications("s", profiles=[profile])
-                            assert len(results) == 3
+        with (
+            patch("src.notifications.build_digest", return_value=digest),
+            patch("src.notifications._load_unsubscribed", return_value=set()),
+            patch("src.notifications.send_email", return_value=NotificationResult("email", True)),
+            patch("src.notifications.send_slack", return_value=NotificationResult("slack", True)),
+            patch(
+                "src.notifications.send_discord", return_value=NotificationResult("discord", True)
+            ),
+        ):
+            results = send_notifications("s", profiles=[profile])
+            assert len(results) == 3

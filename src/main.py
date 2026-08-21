@@ -6,67 +6,65 @@ Strategy:
   3. Deep-scrape each article for summaries (pt-BR)
   4. Generate Markdown artifacts per topic
   5. Update README organized chronologically (newest on top)
+  6. Generate summary cache for AI-generated content
 """
 
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+import json
 import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-if TYPE_CHECKING:
-    pass
-
+from .cache_manager import CacheManager
 from .config import (
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .events import EventBus, get_event_bus
+from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
-from .translator import TranslatorService
-from .logger import setup_logging
 from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
+from .llm_service import LLMService
+from .logger import setup_logger
 from .parser import (
     FeatureImpactParser,
 )
-from .scraper import SalesforceReleaseScraper
-from .exceptions import GitHubError, LLMError, NotificationError
-from .llm_service import LLMService
-from .events import EventBus, get_event_bus
-from .cache_manager import CacheManager
-
 from .release_docs import (  # noqa: F401
-    RELEASE_SECTION_HEADING,
-    RELEASE_SEASONS,
+    RELEASE_BADGE_MARKER,
     RELEASE_BASE_ID,
     RELEASE_BASE_YEAR,
     RELEASE_ID_STEP,
+    RELEASE_SEASONS,
+    RELEASE_SECTION_HEADING,
     TRANSLITERATE_MAP,
-    _find_existing_releases,
+    _build_release_block,
     _build_release_name,
     _build_release_slug,
+    _build_resource_footer,
+    _check,
+    _find_existing_releases,
+    _format_entry,
+    _format_entry_table,
     _format_impact_report,
     _format_notification_digest,
-    _slugify_category,
-    RELEASE_BADGE_MARKER,
-    _update_badge,
-    _build_resource_footer,
-    _generate_release_files,
     _generate_category_summary,
-    _check,
-    _format_entry_table,
-    _format_entry,
+    _generate_release_files,
+    _get_release_emoji,
+    _slugify_category,
+    _update_badge,
     _update_readme_single,
     _update_release_history,
-    _get_release_emoji,
-    _build_release_block,
     _update_single_readme,
     update_readme_all,
 )
+from .scraper import SalesforceReleaseScraper
+from .translator import TranslatorService
 
 # Salesforce release naming/numbering scheme assumptions.
 # Update these constants if Salesforce changes release cadence or ID progression.
@@ -82,10 +80,10 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
         - ReleaseInfo for the latest known release when the repo has no release artifacts yet.
         - ReleaseInfo for the next release when its page content differs from the current release.
         - None when no new release should be processed, including when:
-          * all known releases already exist in the repo,
-          * the next release slug already exists,
-          * page fetch/comparison fails,
-          * compared content indicates the next release is not yet available.
+            * all known releases already exist in the repo,
+            * the next release slug already exists,
+            * page fetch/comparison fails,
+            * compared content indicates the next release is not yet available.
     """
     existing_slugs = _find_existing_releases()
     known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
@@ -206,6 +204,183 @@ async def _process_release_analytics(
         logger.warning("Notification digest failed: %s", e)
 
 
+def _load_meta_for_release(release_slug: str) -> dict[str, Any]:
+    """Load .meta.json for a release as the source of truth."""
+    meta_path = Path(RELEASES_DIR) / release_slug / ".meta.json"
+    if meta_path.exists():
+        try:
+            result: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
+            return result
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning("Could not read .meta.json for %s: %s", release_slug, e)
+    return {}
+
+
+def _validate_summary_cache(
+    cache: dict[str, Any],
+    meta: dict[str, Any],
+    release_slug: str,
+) -> bool:
+    """Validate summary cache against .meta.json.
+
+    Returns True if cache is valid, False if it should be discarded.
+    """
+    meta_total = meta.get("total_features", 0)
+    meta_cats = meta.get("categories", [])
+    meta_cat_count = len(meta_cats)
+
+    exec_text = cache.get("executive_summary", "")
+    cache_cats = cache.get("category_summaries", {})
+    cache_cat_count = len(cache_cats)
+
+    # Check 1: executive_summary says 0 features but meta has data
+    if meta_total > 0 and "0 novos recursos" in exec_text:
+        logger.warning(
+            "Cache validation failed for %s: says '0 recursos' but meta has %d",
+            release_slug,
+            meta_total,
+        )
+        return False
+
+    # Check 2: no category summaries for a release that has categories
+    if meta_cat_count > 0 and cache_cat_count == 0:
+        logger.warning(
+            "Cache validation failed for %s: 0 category_summaries but meta has %d categories",
+            release_slug,
+            meta_cat_count,
+        )
+        return False
+
+    # Check 3: category count mismatch (cache has far fewer than meta)
+    if meta_cat_count > 0 and cache_cat_count < meta_cat_count // 2:
+        logger.warning(
+            "Cache validation failed for %s: only %d/%d category summaries",
+            release_slug,
+            cache_cat_count,
+            meta_cat_count,
+        )
+        return False
+
+    # Check 4: executive_summary suspiciously short for large releases
+    if len(exec_text) < 100 and meta_total > 100:
+        logger.warning(
+            "Cache validation failed for %s: summary too short (%d chars) for %d features",
+            release_slug,
+            len(exec_text),
+            meta_total,
+        )
+        return False
+
+    return True
+
+
+async def generate_summary_cache(
+    release: ReleaseInfo,
+    categories: list[Any],
+    llm: LLMService | None = None,
+) -> None:
+    """Generate .summary_cache.json using the ReleaseSummarizer.
+
+    Uses the existing ReleaseSummarizer (LLM-powered) to generate
+    professional executive summaries and per-category breakdowns.
+    Falls back to metadata-based summaries when LLM is unavailable.
+    Always validates against .meta.json as the source of truth.
+    """
+    release_dir = Path(RELEASES_DIR) / release.slug
+    summary_cache_path = release_dir / ".summary_cache.json"
+    meta = _load_meta_for_release(release.slug)
+
+    # Try AI-powered summarization via ReleaseSummarizer
+    if llm is not None:
+        try:
+            from .release_summarizer import ReleaseSummarizer
+
+            summarizer = ReleaseSummarizer(base_dir=str(RELEASES_DIR), llm=llm)
+            summary = await summarizer.summarize(release.slug)
+
+            if summary:
+                ai_cache: dict[str, Any] = {
+                    "executive_summary": summary.executive_summary,
+                    "category_summaries": summary.category_summaries,
+                    "business_impact": summary.business_impact,
+                    "strategic_themes": summary.strategic_themes,
+                    "migration_notes": summary.migration_notes,
+                    "generated_at": str(Path.cwd()),
+                }
+
+                if _validate_summary_cache(ai_cache, meta, release.slug):
+                    summary_cache_path.write_text(
+                        json.dumps(ai_cache, indent=2, ensure_ascii=False),
+                        encoding="utf-8",
+                    )
+                    logger.info("AI-generated summary cache saved to %s", summary_cache_path)
+                    return
+                else:
+                    logger.info("AI summary invalid against meta, falling through to fallback")
+        except (LLMError, OSError, ImportError) as e:
+            logger.warning("AI summary generation failed: %s", e)
+
+    # Fallback: Generate summaries using .meta.json as source of truth
+    try:
+        meta_cats = meta.get("categories", [])
+        meta_total = meta.get("total_features", 0)
+
+        # Use meta categories if available, otherwise fall back to in-memory categories
+        if meta_cats:
+            cat_source = meta_cats
+            cat_total = meta_total
+        elif categories:
+            cat_source = categories
+            cat_total = 0
+        else:
+            logger.error("No categories available (meta or memory) for %s", release.slug)
+            return
+
+        basic_summaries: dict[str, str] = {}
+        computed_total = 0
+        for category in cat_source:
+            if isinstance(category, dict):
+                category_name = category.get("name", "")
+                count = category.get("count", 0)
+            else:
+                category_name = getattr(category, "name", "")
+                count = getattr(category, "total_features", 0)
+            computed_total += count
+            basic_summaries[category_name] = (
+                f"A categoria {category_name} reúne {count} recursos referentes a "
+                f"{category_name.lower()}. Esta categoria abrange melhorias e "
+                f"novas funcionalidades para {category_name.lower()}."
+            )
+
+        # Use meta total if available (most reliable), otherwise computed
+        total = cat_total if cat_total > 0 else computed_total
+        cat_count = len(cat_source)
+
+        executive_summary = (
+            f"A release {release.name} representa uma atualização significativa "
+            f"do ecossistema Salesforce, com {total} novos recursos "
+            f"distribuídos em {cat_count} categorias."
+        )
+
+        fallback_cache: dict[str, Any] = {
+            "executive_summary": executive_summary,
+            "category_summaries": basic_summaries,
+            "generated_at": str(Path.cwd()),
+            "fallback": True,
+        }
+
+        if _validate_summary_cache(fallback_cache, meta, release.slug):
+            summary_cache_path.write_text(
+                json.dumps(fallback_cache, indent=2, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            logger.info("Fallback summary cache saved to %s", summary_cache_path)
+        else:
+            logger.error("Fallback summary also invalid for %s — not writing cache", release.slug)
+    except (OSError, TypeError, ValueError) as e:
+        logger.error("Failed to generate fallback summary cache: %s", e)
+
+
 async def generate_ai_reports_async(
     releases_to_process: list[ReleaseInfo],
     llm: LLMService | None = None,
@@ -215,8 +390,8 @@ async def generate_ai_reports_async(
         return
     try:
         from .ai_automation import AIAutomationService
-        from .issue_triage import IssueTriager
         from .impact_analyzer import ImpactAnalyzer
+        from .issue_triage import IssueTriager
         from .smart_notifications import SmartNotificationEngine
 
         ai_service = AIAutomationService()
@@ -315,6 +490,7 @@ async def process_single_release(
     generator: MarkdownGenerator,
     translator: TranslatorService,
     dry_run: bool,
+    llm: LLMService | None = None,
 ) -> bool:
     """Process a single release: fetch, parse, generate files.
 
@@ -379,6 +555,10 @@ async def process_single_release(
             locale=locale,
             enrichments=enrichments,
         )
+
+    # Generate summary cache for professional release notes
+    await generate_summary_cache(release, categories, llm)
+
     _update_readme_single(release, categories)
     return True
 
@@ -455,7 +635,7 @@ class PipelineConfig:
             self.event_bus = get_event_bus()
         if self.llm is None:
             try:
-                self.llm = LLMService(cache=self.cache)
+                self.llm = LLMService()
             except ValueError:
                 # No API keys configured — llm stays None (dry-run, CI, etc.)
                 self.llm = None
@@ -471,7 +651,7 @@ class PipelineConfig:
 
 async def run_pipeline(config: PipelineConfig | None = None) -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
-    setup_logging()
+    setup_logger()
 
     if config is None:
         release_filter, dry_run = _parse_args()

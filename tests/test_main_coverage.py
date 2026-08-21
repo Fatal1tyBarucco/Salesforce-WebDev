@@ -8,13 +8,13 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from src.exceptions import LLMError, NotificationError
 
 from src.config import KNOWN_RELEASES, ReleaseInfo
+from src.exceptions import LLMError, NotificationError
 from src.main import (
     RELEASE_SECTION_HEADING,
-    generate_ai_reports_async,
     _generate_release_files,
+    generate_ai_reports_async,
     update_readme_all,
 )
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
@@ -49,9 +49,7 @@ def _ai_modules(
     digest_result: Any = None,
 ) -> dict[str, MagicMock]:
     mock_triager = MagicMock()
-    mock_triager.triage_issue = AsyncMock(
-        side_effect=triage_side_effect if triage_side_effect is None else triage_side_effect
-    )
+    mock_triager.triage_issue = AsyncMock(side_effect=triage_side_effect)
 
     mock_analyzer = MagicMock()
     mock_analyzer.analyze = AsyncMock(return_value=impact_result)
@@ -652,7 +650,8 @@ async def testupdate_readme_all_english_with_heading(tmp_path: Path) -> None:
 
     mock_summarizer = MagicMock()
     mock_summary = MagicMock()
-    mock_summary.summary_text = "Executive summary text here"
+    mock_summary.executive_summary = "Executive summary text here"
+    mock_summary.category_summaries = {"Admin": "Admin category summary"}
     mock_summarizer.summarize = AsyncMock(return_value=mock_summary)
 
     original_dir = Path.cwd()
