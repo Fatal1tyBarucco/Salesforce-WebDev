@@ -150,9 +150,14 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
         return None
     if not _SLUG_RE.fullmatch(canonical_slug):
         return None
+    from .config import KNOWN_RELEASES
+
+    safe_slug = next((r.slug for r in KNOWN_RELEASES if r.slug == canonical_slug), None)
+    if not safe_slug:
+        return None
     try:
         base_dir = Path(RELEASES_DIR).resolve(strict=True)
-        resolved_release_dir = (base_dir / canonical_slug).resolve(strict=True)
+        resolved_release_dir = (base_dir / safe_slug).resolve(strict=True)
         resolved_release_dir.relative_to(base_dir)
         if not resolved_release_dir.is_dir():
             return None
