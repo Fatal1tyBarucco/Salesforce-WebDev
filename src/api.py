@@ -163,8 +163,11 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
 def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     if not _validate_slug(slug):
         return []
+    safe_slug = Path(slug).name
+    if safe_slug != slug:
+        return []
     base_dir = Path(RELEASES_DIR).resolve()
-    release_dir = (base_dir / slug).resolve()
+    release_dir = (base_dir / safe_slug).resolve()
     try:
         release_dir.relative_to(base_dir)
     except ValueError:
