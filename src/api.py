@@ -169,6 +169,8 @@ def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     safe_slug = Path(slug).name
     if safe_slug != slug:
         return []
+    if not _SLUG_RE.fullmatch(safe_slug):
+        return []
     base_dir = Path(RELEASES_DIR).resolve()
     release_dir = (base_dir / safe_slug).resolve()
     try:
