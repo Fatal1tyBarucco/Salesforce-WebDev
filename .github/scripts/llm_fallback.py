@@ -16,9 +16,27 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 MAX_ATTEMPTS = 3
 MAX_FILE_ATTEMPTS = 2
+
+# Wall-clock budget. Without it, file-by-file repair (each attempt costing up
+# to 2 OpenCode models x 180s plus gate re-runs) blew past the workflow step's
+# timeout, killing ALL progress including already-applied fixes.
+# REPAIR_DEADLINE_EPOCH lets the workflow share one deadline across all
+# iterations; otherwise the script gives itself 20 minutes.
+_START = time.time()
+_DEADLINE = int(os.environ.get("REPAIR_DEADLINE_EPOCH") or 0) or int(_START + 20 * 60)
+
+
+def budget_exceeded():
+    """True when the repair wall-clock budget has been exhausted."""
+    return time.time() >= _DEADLINE
+
+
+def budget_left():
+    return _DEADLINE - time.time()
 
 
 def _run(cmd):
@@ -415,6 +433,9 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
     test_context = get_test_context(filepath)
 
     for attempt in range(1, MAX_FILE_ATTEMPTS + 1):
+        if budget_exceeded():
+            print(f"  ⏰ Time budget exhausted — skipping {filepath}")
+            return False
         print(f"\n  --- {filepath} attempt {attempt}/{MAX_FILE_ATTEMPTS} ---")
 
         if is_import_fix and missing_names:
@@ -531,22 +552,31 @@ for filepath in all_failing:
 # Fix import files first (simpler, more likely to succeed)
 fixed_count = 0
 failed_files = []
+fixed_set = set()
 
 for filepath in import_files:
+    if budget_exceeded():
+        print(f"\n⏰ Time budget exhausted ({budget_left():.0f}s left) — stopping LLM repair.")
+        break
     missing_names = errors["pytest_imports"][filepath]
     print(f"\n📦 Fixing imports in {filepath}: {', '.join(missing_names)}")
     if fix_single_file(
         filepath, all_failing[filepath], is_import_fix=True, missing_names=missing_names
     ):
         fixed_count += 1
+        fixed_set.add(filepath)
     else:
         failed_files.append(filepath)
 
 # Then fix remaining source files
 for filepath in source_files:
+    if budget_exceeded():
+        print(f"\n⏰ Time budget exhausted ({budget_left():.0f}s left) — stopping LLM repair.")
+        break
     print(f"\n🔧 Fixing {filepath}: {len(all_failing[filepath])} errors")
     if fix_single_file(filepath, all_failing[filepath]):
         fixed_count += 1
+        fixed_set.add(filepath)
     else:
         failed_files.append(filepath)
 
@@ -564,16 +594,10 @@ elif fixed_count > 0:
 else:
     print("❌ LLM could not produce any passing fix.")
 
-# Gather final error state for report
-final_errors = gather_errors()
-final_failing_files = list(
-    set(
-        list(final_errors["mypy"].keys())
-        + list(final_errors["ruff"].keys())
-        + list(final_errors["black"].keys())
-        + list(final_errors["pytest_imports"].keys())
-    )
-)
+# Gather final error state for report. Reuse the pre-repair error map plus
+# the files the LLM could not fix; a second full gate sweep here cost several
+# minutes of the step budget for one cosmetic number.
+final_failing_files = sorted(set(failed_files) | {f for f in all_failing if f not in fixed_set})
 
 with open("/tmp/llm_result.json", "w") as f:
     json.dump(

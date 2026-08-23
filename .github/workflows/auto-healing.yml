@@ -115,8 +115,16 @@ jobs:
         run: |
           set -uo pipefail
           source .github/scripts/progress.sh
+          # Shared wall-clock deadline for ALL repair iterations (scripts read
+          # this and stop gracefully instead of being killed mid-flight, which
+          # would discard every fix already applied).
+          export REPAIR_DEADLINE_EPOCH=$(( $(date +%s) + 25 * 60 ))
           FINAL_PASS=false
           for i in $(seq 1 "${MAX_REPAIR_ITERS}"); do
+            if [ "$(date +%s)" -ge "${REPAIR_DEADLINE_EPOCH}" ]; then
+              echo "::warning::Repair time budget exhausted — stopping iterations."
+              break
+            fi
             echo "::group::Iteration $i/${MAX_REPAIR_ITERS}"
 
             stage "$i" "$MAX_REPAIR_ITERS" "Reparo determinístico" -- uv run python3 .github/scripts/deterministic_repair.py
