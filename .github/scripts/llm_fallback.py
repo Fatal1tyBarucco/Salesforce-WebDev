@@ -268,7 +268,7 @@ def build_import_fix_prompt(filepath, missing_names, test_context):
 
 # Per-call cap. Free OpenCode models regularly stall past 180s; every wasted
 # minute of a hung call eats the shared repair deadline, so fail fast.
-_LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 75)
+_LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 60)
 
 # Circuit breaker. In run 32619290201 the same dead providers were retried
 # for every file/attempt (x-preview-f-free kept returning 503, Gemini's free
@@ -281,7 +281,19 @@ _PROVIDER_DISABLED = set()
 
 def _opencode_models():
     primary = os.environ.get("OPENCODE_MODEL") or "x-preview-f-free"
-    return [primary] if os.environ.get("OPENCODE_MODEL") else [primary, "hy3-free"]
+    if os.environ.get("OPENCODE_MODEL"):
+        return [primary]
+    # Free-model pool. Individual free models go down regularly (503 upstream
+    # one day, multi-minute stalls the next), so instead of depending on two,
+    # sweep the remaining free Zen models before giving up on OpenCode.
+    return [
+        primary,
+        "hy3-free",
+        "glm-5-free",
+        "deepseek-v4-flash-free",
+        "kimi-k2.5-free",
+        "minimax-m2.5-free",
+    ]
 
 
 def _provider_enabled(key):
@@ -377,7 +389,10 @@ def _call_opencode(prompt):
             _mark_failure(key, f"HTTP {he.code}", disable=he.code in (429, 503))
         except Exception as e:
             last_error = e
-            _mark_failure(key, e)
+            # Timeouts are expensive (full cap burned) and rarely one-off —
+            # a model that stalls once usually stalls all run. Disable now.
+            timed_out = isinstance(e, TimeoutError) or "timed out" in str(e)
+            _mark_failure(key, e, disable=timed_out)
 
     raise last_error or RuntimeError("OpenCode returned no usable response")
 

@@ -13,7 +13,9 @@
 #   GOOGLE_API_KEY — Gemini API key for LLM analysis (last fallback)
 # Optional repo vars:
 #   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/zen/v1)
-#   OPENCODE_MODEL — overrides the primary OpenCode model (default x-preview-f-free, fallback hy3-free)
+#   OPENCODE_MODEL — overrides the primary OpenCode model; without it a pool
+#                    of free Zen models is swept (Ox Alpha Free → Hy3 Free →
+#                    GLM-5 → DeepSeek V4 Flash → Kimi K2.5 → MiniMax M2.5)
 #
 # Hard limits (see timeout-minutes below) guarantee this workflow can
 # NEVER run for hours on end: a single hung tool/LLM call is killed and
