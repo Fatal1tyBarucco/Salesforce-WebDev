@@ -286,7 +286,7 @@ def call_llm(prompt):
             import urllib.request
 
             oc_base = (
-                os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/console/zen/v1"
+                os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1"
             ).rstrip("/")
             oc_model = os.environ.get("OPENCODE_MODEL") or "hy3-free"
             url = oc_base + "/chat/completions"

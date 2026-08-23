@@ -10,7 +10,7 @@
 #   GOOGLE_API_KEY — Gemini API key for LLM analysis (fallback)
 #   OPENCODE_API_KEY — OpenCode API key (second fallback)
 # Optional repo vars:
-#   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/console/zen/v1)
+#   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/zen/v1)
 #   OPENCODE_MODEL — OpenCode model id (default hy3-free)
 #
 # Hard limits (see timeout-minutes below) guarantee this workflow can
