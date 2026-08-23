@@ -266,17 +266,71 @@ def build_import_fix_prompt(filepath, missing_names, test_context):
     return prompt
 
 
+# Per-call cap. Free OpenCode models regularly stall past 180s; every wasted
+# minute of a hung call eats the shared repair deadline, so fail fast.
+_LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 75)
+
+# Circuit breaker. In run 32619290201 the same dead providers were retried
+# for every file/attempt (x-preview-f-free kept returning 503, Gemini's free
+# tier was quota-exhausted), burning the whole budget on known-dead paths.
+# After N consecutive failures a provider is skipped for the rest of the run.
+_FAILURE_THRESHOLD = 2
+_PROVIDER_FAILURES = {}
+_PROVIDER_DISABLED = set()
+
+
+def _opencode_models():
+    primary = os.environ.get("OPENCODE_MODEL") or "x-preview-f-free"
+    return [primary] if os.environ.get("OPENCODE_MODEL") else [primary, "hy3-free"]
+
+
+def _provider_enabled(key):
+    return key not in _PROVIDER_DISABLED
+
+
+def _mark_failure(key, err, disable=False):
+    if disable:
+        _PROVIDER_DISABLED.add(key)
+        print(f"  ⛔ Provider '{key}' disabled for the rest of this run: {err}")
+        return
+    _PROVIDER_FAILURES[key] = _PROVIDER_FAILURES.get(key, 0) + 1
+    if _PROVIDER_FAILURES[key] >= _FAILURE_THRESHOLD:
+        _PROVIDER_DISABLED.add(key)
+        print(
+            f"  ⛔ Provider '{key}' disabled for the rest of this run after "
+            f"{_PROVIDER_FAILURES[key]} consecutive failures (last: {err})"
+        )
+    else:
+        print(f"  {key} failed ({_PROVIDER_FAILURES[key]}/{_FAILURE_THRESHOLD}): {err}")
+
+
+def _mark_success(key):
+    _PROVIDER_FAILURES.pop(key, None)
+
+
+def has_provider():
+    """True when at least one LLM provider is still usable."""
+    if os.environ.get("OPENCODE_API_KEY") and any(
+        _provider_enabled(f"opencode:{m}") for m in _opencode_models()
+    ):
+        return True
+    if os.environ.get("GOOGLE_API_KEY") and _provider_enabled("gemini"):
+        return True
+    return False
+
+
 def _call_opencode(prompt):
     """Try OpenCode models in fallback order: Ox Alpha Free, then Hy3 Free."""
     import urllib.error
     import urllib.request
 
     oc_base = (os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1").rstrip("/")
-    primary = os.environ.get("OPENCODE_MODEL") or "x-preview-f-free"
-    models = [primary] if os.environ.get("OPENCODE_MODEL") else [primary, "hy3-free"]
     last_error = None
 
-    for oc_model in models:
+    for oc_model in _opencode_models():
+        key = f"opencode:{oc_model}"
+        if not _provider_enabled(key):
+            continue
         url = oc_base + "/chat/completions"
         payload = json.dumps(
             {
@@ -298,16 +352,17 @@ def _call_opencode(prompt):
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=180) as r:
+            with urllib.request.urlopen(req, timeout=_LLM_CALL_TIMEOUT_S) as r:
                 data = json.loads(r.read().decode())
             text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
             if text:
+                _mark_success(key)
                 return text
             last_error = RuntimeError(f"empty response from {oc_model}")
+            _mark_failure(key, last_error)
         except urllib.error.HTTPError as he:
-            # Surface the real server response so a wrong endpoint/path
-            # (e.g. HTTP 405 Method Not Allowed) is diagnosable instead
-            # of just printing "failed".
+            # Surface the real server response so endpoint/quota problems are
+            # diagnosable instead of just printing "failed".
             body = ""
             try:
                 body = he.read().decode(errors="replace")
@@ -315,13 +370,14 @@ def _call_opencode(prompt):
                 pass
             print(
                 f"  OpenCode HTTP {he.code} {he.reason} on POST {url} (model={oc_model})\n"
-                f"  Allowed methods: {he.headers.get('Allow', 'n/a')}\n"
-                f"  Response body: {body[:1000]}"
+                f"  Response body: {body[:500]}"
             )
             last_error = he
+            # 503 upstream / 429 quota won't recover within this run.
+            _mark_failure(key, f"HTTP {he.code}", disable=he.code in (429, 503))
         except Exception as e:
-            print(f"  OpenCode model {oc_model} failed: {e}")
             last_error = e
+            _mark_failure(key, e)
 
     raise last_error or RuntimeError("OpenCode returned no usable response")
 
@@ -332,20 +388,16 @@ def _call_gemini(prompt):
 
     client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY", ""))
 
-    # CRITICAL: the Gemini SDK call has no built-in timeout. A stalled
-    # stream/hang would block the whole workflow until the job limit
-    # (this is what caused the multi-hour runs). Run it on a worker
-    # thread and cap it at 180s so we always make progress.
     def _gen():
         return client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
         future = ex.submit(_gen)
         try:
-            resp = future.result(timeout=180)
+            resp = future.result(timeout=120)
         except concurrent.futures.TimeoutError:
             future.cancel()
-            raise RuntimeError("Gemini call timed out after 180s")
+            raise RuntimeError("Gemini call timed out after 120s")
 
     text = getattr(resp, "text", None) or ""
     if not text:
@@ -358,17 +410,25 @@ def call_llm(prompt):
     oc_key = os.environ.get("OPENCODE_API_KEY", "")
     api_key = os.environ.get("GOOGLE_API_KEY", "")
 
-    if oc_key:
+    if not has_provider():
+        raise RuntimeError("All LLM providers are unavailable or disabled for this run")
+
+    if oc_key and any(_provider_enabled(f"opencode:{m}") for m in _opencode_models()):
         try:
             return _call_opencode(prompt)
         except Exception as e:
             print(f"  OpenCode failed: {e}")
 
-    if api_key:
+    if api_key and _provider_enabled("gemini"):
         try:
             return _call_gemini(prompt)
         except Exception as e:
-            print(f"  Gemini failed: {e}")
+            msg = str(e)
+            if "429" in msg and "RESOURCE_EXHAUSTED" in msg:
+                # Daily quota exhausted — retrying is pointless today.
+                _mark_failure("gemini", "quota exhausted (429)", disable=True)
+            else:
+                _mark_failure("gemini", e)
 
     raise RuntimeError("All LLM providers failed")
 
@@ -452,6 +512,9 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
             raw = call_llm(prompt)
         except Exception as e:
             print(f"  LLM call failed: {e}")
+            if not has_provider():
+                print("  ⛔ No LLM provider left — aborting repair of remaining files.")
+                return False
             continue
 
         try:
@@ -534,6 +597,15 @@ if not api_key and not oc_key:
         json.dump({"success": False, "reason": "no_api_keys"}, f)
     sys.exit(0)
 
+if not has_provider():
+    print(
+        "❌ All LLM providers failed or were disabled (quota/availability). "
+        "Semantic fixes are impossible right now — deterministic fixes from this run are kept."
+    )
+    with open("/tmp/llm_result.json", "w") as f:
+        json.dump({"success": False, "reason": "no_provider_available"}, f)
+    sys.exit(0)
+
 print(f"\n{'=' * 60}")
 print(f"LLM Fallback: {len(all_failing)} files to fix")
 print(f"{'=' * 60}")
@@ -558,6 +630,9 @@ for filepath in import_files:
     if budget_exceeded():
         print(f"\n⏰ Time budget exhausted ({budget_left():.0f}s left) — stopping LLM repair.")
         break
+    if not has_provider():
+        print("\n⛔ All LLM providers disabled — stopping LLM repair.")
+        break
     missing_names = errors["pytest_imports"][filepath]
     print(f"\n📦 Fixing imports in {filepath}: {', '.join(missing_names)}")
     if fix_single_file(
@@ -572,6 +647,9 @@ for filepath in import_files:
 for filepath in source_files:
     if budget_exceeded():
         print(f"\n⏰ Time budget exhausted ({budget_left():.0f}s left) — stopping LLM repair.")
+        break
+    if not has_provider():
+        print("\n⛔ All LLM providers disabled — stopping LLM repair.")
         break
     print(f"\n🔧 Fixing {filepath}: {len(all_failing[filepath])} errors")
     if fix_single_file(filepath, all_failing[filepath]):

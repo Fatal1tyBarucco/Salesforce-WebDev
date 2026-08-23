@@ -112,6 +112,7 @@ jobs:
           OPENCODE_MODEL: ${{ vars.OPENCODE_MODEL }}
           LLM_AVAILABLE: ${{ steps.detect.outputs.llm_available }}
           MAX_REPAIR_ITERS: "4"
+          PYTHONUNBUFFERED: "1"
         run: |
           set -uo pipefail
           source .github/scripts/progress.sh
