@@ -13,7 +13,6 @@ import json
 import os
 import re
 import subprocess
-import sys
 
 
 def _run(cmd):
@@ -57,7 +56,7 @@ if "would reformat" in black_out:
 # ── FIX 2: Ruff auto-fix ──
 if ruff_out.strip() and "All checks passed" not in ruff_out:
     print("\n🔧 Fix: Ruff auto-fix...")
-    _run(["uv", "run", "ruff", "check", ".", "--fix"])
+    _run(["uv", "run", "ruff", "check", ".", "--fix", "--unsafe-fixes"])
     _run(["uv", "run", "ruff", "format", "."])
     fixes_applied.append("ruff-autofix")
 
@@ -327,6 +326,7 @@ for m in re.finditer(
 
 # Helper to check if a name is defined or imported in a source file
 
+
 def _name_exists_in_src(name, src):
     """Check if a name is defined, assigned, or imported in source code."""
     if f"class {name}" in src:
@@ -371,7 +371,8 @@ for test_file in test_files:
             continue
         src = read_file(filepath)
         for name in names:
-            if name and name[0].isalpha():
+            # Allow both public and private (underscore-prefixed) names.
+            if name and (name[0].isalpha() or name[0] == "_"):
                 if not _name_exists_in_src(name, src):
                     import_errors.setdefault(filepath, set()).add(name)
     # Also match: from src.xxx import name
@@ -401,11 +402,11 @@ STUB_TEMPLATES = {
     # API stubs
     "APIHandler": '\n\nclass APIHandler:\n    """HTTP request handler for the API."""\n    pass\n',
     "start_api_server": '\n\ndef start_api_server(host: str = "127.0.0.1", port: int = 8080) -> object:\n    """Start the API server."""\n    return None\n',
-    "_execute_graphql": '\n\ndef _execute_graphql(query: str) -> dict:\n    """Execute a GraphQL query."""\n    return {"data": {}}\n',
-    "_select_graphql_fields": '\n\ndef _select_graphql_fields(item: dict, fields: list) -> dict:\n    """Select specific fields from a dict."""\n    return {k: item[k] for k in fields if k in item}\n',
-    "_gql_lex": '\n\ndef _gql_lex(query: str) -> list:\n    """Tokenize a GraphQL query."""\n    return query.split()\n',
-    "_GQLParser": '\n\nclass _GQLParser:\n    """GraphQL parser."""\n    def __init__(self, tokens: list) -> None:\n        self._tokens = tokens\n    def parse(self) -> tuple:\n        return ("", {}, [])\n',
-    "_generate_openapi_spec": '\n\ndef _generate_openapi_spec() -> dict:\n    """Generate OpenAPI specification."""\n    return {"openapi": "3.0.0", "paths": {}, "info": {"title": "API", "version": "1.0.0"}}\n',
+    "_execute_graphql": '\n\ndef _execute_graphql(query: str) -> dict[str, object]:\n    """Execute a GraphQL query."""\n    return {"data": {}}\n',
+    "_select_graphql_fields": '\n\ndef _select_graphql_fields(item: dict[str, object], fields: list[str]) -> dict[str, object]:\n    """Select specific fields from a dict."""\n    return {k: item[k] for k in fields if k in item}\n',
+    "_gql_lex": '\n\ndef _gql_lex(query: str) -> list[str]:\n    """Tokenize a GraphQL query."""\n    return query.split()\n',
+    "_GQLParser": '\n\nclass _GQLParser:\n    """GraphQL parser."""\n    def __init__(self, tokens: list[str]) -> None:\n        self._tokens = tokens\n    def parse(self) -> tuple[object, object, object]:\n        return ("", {}, [])\n',
+    "_generate_openapi_spec": '\n\ndef _generate_openapi_spec() -> dict[str, object]:\n    """Generate OpenAPI specification."""\n    return {"openapi": "3.0.0", "paths": {}, "info": {"title": "API", "version": "1.0.0"}}\n',
 }
 
 for filepath, names in import_errors.items():
@@ -416,18 +417,33 @@ for filepath, names in import_errors.items():
 
     for name in sorted(names):
         # Skip if already present
-        if (
-            f"class {name}" in src
-            or f"def {name}" in src
-            or f"{name} =" in src
-        ):
+        if f"class {name}" in src or f"def {name}" in src or f"{name} =" in src:
             continue
 
         # Check if we have a stub template
         stub = STUB_TEMPLATES.get(name, "")
         if not stub:
-            print(f"  ⚠️  No stub template for {name} in {filepath} (LLM fallback needed)")
-            continue
+            # No curated template: emit a permissive generic stub so the
+            # import resolves (collection passes). The LLM fallback then
+            # replaces it with a real implementation using the test context.
+            if name and name[0].isupper():
+                stub = (
+                    f"\n\nclass {name}:\n"
+                    f'    """Auto-generated stub (real implementation added by LLM fallback)."""\n\n'
+                    f"    def __init__(self, *args: object, **kwargs: object) -> None:\n"
+                    f"        pass\n\n"
+                    f"    def __getattr__(self, _name: str) -> object:\n"
+                    f"        return None\n"
+                )
+            else:
+                stub = (
+                    f"\n\ndef {name}(*args: object, **kwargs: object) -> object:\n"
+                    f'    """Auto-generated stub (real implementation added by LLM fallback)."""\n'
+                    f"    ...\n"
+                )
+            print(
+                f"  ⚠️  No template for {name}; added generic stub in {filepath} (LLM fallback will implement)"
+            )
 
         # Add dataclass import if needed
         if name in ("LLMProvider", "CircuitBreakerConfig"):
@@ -452,7 +468,7 @@ for filepath, names in import_errors.items():
 # ── Run black/ruff again after fixes ──
 if fixes_applied:
     print("\n🔧 Post-fix formatting pass...")
-    _run(["uv", "run", "ruff", "check", ".", "--fix"])
+    _run(["uv", "run", "ruff", "check", ".", "--fix", "--unsafe-fixes"])
     _run(["uv", "run", "ruff", "format", "."])
     _run(["uv", "run", "black", "."])
 

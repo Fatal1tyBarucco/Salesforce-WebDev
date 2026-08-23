@@ -10,6 +10,7 @@ Handles:
 - Complex patterns that require LLM understanding
 """
 
+import concurrent.futures
 import json
 import os
 import re
@@ -71,6 +72,26 @@ def gather_errors():
         filepath = module.replace(".", "/") + ".py"
         pytest_import_errors.setdefault(filepath, set()).add(name)
 
+    # Collect runtime test FAILURES (not just collection errors) and map each
+    # failing test module to the source modules it imports, so the LLM is asked
+    # to implement the real behavior that makes those tests pass.
+    pytest_failing = {}
+    failing_test_files = set()
+    for m in re.finditer(r"FAILED\s+(tests/[^\s:]+)", pytest_out):
+        failing_test_files.add(m.group(1))
+    for m in re.finditer(r"(?m)^tests/[^\s:]+\s+(FAILED|ERROR)", pytest_out):
+        failing_test_files.add(m.group(0).split()[0])
+    for tf in failing_test_files:
+        try:
+            content = read_file(tf)
+        except FileNotFoundError:
+            continue
+        for m in re.finditer(r"from\s+(src\.\w+)\s+import", content):
+            module = m.group(1)
+            filepath = module.replace(".", "/") + ".py"
+            if os.path.exists(filepath):
+                pytest_failing.setdefault(filepath, []).append(f"pytest: tests failing in {tf}")
+
     # Also scan test files for missing imports
     test_files = []
     for root, _dirs, files in os.walk("tests"):
@@ -100,7 +121,9 @@ def gather_errors():
                         f"class {name}" not in src
                         and f"def {name}" not in src
                         and f"{name} =" not in src
-                        and not re.search(rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src)
+                        and not re.search(
+                            rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src
+                        )
                     ):
                         pytest_import_errors.setdefault(filepath, set()).add(name)
         # Match: from src.xxx import name
@@ -118,7 +141,9 @@ def gather_errors():
                 f"class {name}" not in src
                 and f"def {name}" not in src
                 and f"{name} =" not in src
-                and not re.search(rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src)
+                and not re.search(
+                    rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src
+                )
             ):
                 pytest_import_errors.setdefault(filepath, set()).add(name)
 
@@ -127,6 +152,7 @@ def gather_errors():
         "ruff": ruff_failing,
         "black": black_failing,
         "pytest_imports": pytest_import_errors,
+        "pytest_failing": pytest_failing,
         "raw": {"mypy": mypy_out, "ruff": ruff_out, "black": black_out, "pytest": pytest_out},
     }
 
@@ -204,8 +230,7 @@ def build_import_fix_prompt(filepath, missing_names, test_context):
 
     if test_context:
         prompt += (
-            "TEST FILES (reference — understand expected signatures/behavior):\n"
-            f"{test_context}\n\n"
+            f"TEST FILES (reference — understand expected signatures/behavior):\n{test_context}\n\n"
         )
 
     prompt += (
@@ -233,7 +258,22 @@ def call_llm(prompt):
             from google import genai
 
             client = genai.Client(api_key=api_key)
-            resp = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
+
+            # CRITICAL: the Gemini SDK call has no built-in timeout. A stalled
+            # stream/hang would block the whole workflow until the job limit
+            # (this is what caused the multi-hour runs). Run it on a worker
+            # thread and cap it at 180s so we always make progress.
+            def _gen():
+                return client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+                future = ex.submit(_gen)
+                try:
+                    resp = future.result(timeout=180)
+                except concurrent.futures.TimeoutError:
+                    future.cancel()
+                    raise RuntimeError("Gemini call timed out after 180s")
+
             text = getattr(resp, "text", None) or ""
             if text:
                 return text
@@ -373,7 +413,7 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
             continue
 
         # Backup original
-        original = read_file(filepath) if os.path.exists(filepath) else ""
+        read_file(filepath) if os.path.exists(filepath) else ""
 
         # Write the fix
         os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
@@ -388,8 +428,7 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
         # Check if this specific file still has errors
         _, mypy_out = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
         file_errors = [
-            line for line in mypy_out.splitlines()
-            if filepath in line and "error:" in line
+            line for line in mypy_out.splitlines() if filepath in line and "error:" in line
         ]
 
         if not file_errors:
@@ -418,6 +457,11 @@ for filepath, names in errors["pytest_imports"].items():
     for name in sorted(names):
         all_failing.setdefault(filepath, []).append(f"pytest: missing '{name}'")
 
+# Add modules with failing tests (need real implementations)
+for filepath, reasons in errors.get("pytest_failing", {}).items():
+    for reason in reasons:
+        all_failing.setdefault(filepath, []).append(reason)
+
 if not all_failing:
     print("No remaining errors detected.")
     with open("/tmp/llm_result.json", "w") as f:
@@ -433,9 +477,9 @@ if not api_key and not oc_key:
         json.dump({"success": False, "reason": "no_api_keys"}, f)
     sys.exit(0)
 
-print(f"\n{'='*60}")
+print(f"\n{'=' * 60}")
 print(f"LLM Fallback: {len(all_failing)} files to fix")
-print(f"{'='*60}")
+print(f"{'=' * 60}")
 
 # Sort files by priority: source files first, then by error count
 # Files with import errors get special handling
@@ -455,7 +499,9 @@ failed_files = []
 for filepath in import_files:
     missing_names = errors["pytest_imports"][filepath]
     print(f"\n📦 Fixing imports in {filepath}: {', '.join(missing_names)}")
-    if fix_single_file(filepath, all_failing[filepath], is_import_fix=True, missing_names=missing_names):
+    if fix_single_file(
+        filepath, all_failing[filepath], is_import_fix=True, missing_names=missing_names
+    ):
         fixed_count += 1
     else:
         failed_files.append(filepath)
@@ -469,7 +515,7 @@ for filepath in source_files:
         failed_files.append(filepath)
 
 # Final verification
-print(f"\n{'='*60}")
+print(f"\n{'=' * 60}")
 print("Final verification...")
 passed = format_and_verify()
 
@@ -484,12 +530,14 @@ else:
 
 # Gather final error state for report
 final_errors = gather_errors()
-final_failing_files = list(set(
-    list(final_errors["mypy"].keys())
-    + list(final_errors["ruff"].keys())
-    + list(final_errors["black"].keys())
-    + list(final_errors["pytest_imports"].keys())
-))
+final_failing_files = list(
+    set(
+        list(final_errors["mypy"].keys())
+        + list(final_errors["ruff"].keys())
+        + list(final_errors["black"].keys())
+        + list(final_errors["pytest_imports"].keys())
+    )
+)
 
 with open("/tmp/llm_result.json", "w") as f:
     json.dump(

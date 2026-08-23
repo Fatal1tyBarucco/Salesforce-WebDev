@@ -2,7 +2,9 @@
 # Auto-Healing Agent — GitHub Actions (Serverless)
 # ─────────────────────────────────────────────────────────────────
 # Triggered automatically when Python Quality fails on main.
-# Strategy: deterministic repair first (known patterns), then LLM fallback.
+# Strategy: bounded iterative repair — deterministic (known patterns)
+#           first, then LLM fallback for semantic fixes — repeated
+#           until all quality gates pass or the attempt budget runs out.
 #
 # Required secrets:
 #   GOOGLE_API_KEY — Gemini API key for LLM analysis (fallback)
@@ -10,6 +12,10 @@
 # Optional repo vars:
 #   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/console/zen/v1)
 #   OPENCODE_MODEL — OpenCode model id (default hy3-free)
+#
+# Hard limits (see timeout-minutes below) guarantee this workflow can
+# NEVER run for hours on end: a single hung tool/LLM call is killed and
+# the run terminates with a clear "manual intervention needed" verdict.
 # ─────────────────────────────────────────────────────────────────
 
 name: Auto-Healing Agent
@@ -25,13 +31,19 @@ permissions:
   pull-requests: write
   actions: read
 
+# One auto-healing run per branch; cancel any older in-flight run for the
+# same branch so we never pile up concurrent healers.
 concurrency:
-  group: auto-healing-${{ github.event.workflow_run.id || github.run_id }}
+  group: auto-healing-${{ github.event.workflow_run.head_branch || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   heal:
     runs-on: ubuntu-latest
+    # Absolute ceiling: this job can never exceed 45 minutes. The previous
+    # design had no timeout, so a single hung LLM call (the Gemini SDK call
+    # had no timeout) ran until GitHub's 6-hour limit — that is the "6 hours".
+    timeout-minutes: 45
     if: >
       github.event.workflow_run.conclusion == 'failure' &&
       github.event.workflow_run.head_branch == 'main' &&
@@ -46,6 +58,9 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -53,48 +68,94 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
+        timeout-minutes: 15
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq libxml2-dev libxslt1-dev
           uv sync --frozen --extra dev --extra healing --group dev
 
       # ───────────────────────────────────────────────────────────
-      # STEP 1: Deterministic repair — fix known error patterns
+      # Detect whether an LLM provider is configured. Semantic fixes
+      # (real implementations for failing tests) REQUIRE an LLM; if no
+      # key is present we still apply deterministic fixes and report
+      # clearly instead of hanging or silently producing no PR.
       # ───────────────────────────────────────────────────────────
-      - name: Deterministic repair
-        id: deterministic
-        run: uv run python3 .github/scripts/deterministic_repair.py
+      - name: Detect LLM availability
+        id: detect
+        env:
+          GOOGLE: ${{ secrets.GOOGLE_API_KEY }}
+          OPENCODE: ${{ secrets.OPENCODE_API_KEY }}
+        run: |
+          if [ -n "$GOOGLE" ] || [ -n "$OPENCODE" ]; then
+            echo "llm_available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "llm_available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No LLM API keys configured (GOOGLE_API_KEY / OPENCODE_API_KEY). Deterministic fixes only; semantic fixes require an LLM."
+          fi
 
       # ───────────────────────────────────────────────────────────
-      # STEP 2: LLM fallback — only if deterministic didn't fully fix
+      # Bounded iterative repair loop.
+      # Each iteration: deterministic repair -> (if not green and LLM
+      # available) LLM fallback -> deterministic re-format/import pass.
+      # Stops as soon as all gates pass. The whole step is capped at
+      # 35 minutes so a slow LLM/suite can never blow the 45-min job.
       # ───────────────────────────────────────────────────────────
-      - name: LLM fallback repair
-        id: llm_fix
-        if: steps.deterministic.outputs.all_pass != 'true'
+      - name: Repair (deterministic + LLM, bounded)
+        id: repair
+        timeout-minutes: 35
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           OPENCODE_BASE_URL: ${{ vars.OPENCODE_BASE_URL }}
           OPENCODE_MODEL: ${{ vars.OPENCODE_MODEL }}
-        run: uv run python3 .github/scripts/llm_fallback.py
+          LLM_AVAILABLE: ${{ steps.detect.outputs.llm_available }}
+          MAX_REPAIR_ITERS: "4"
+        run: |
+          set -uo pipefail
+          FINAL_PASS=false
+          for i in $(seq 1 "${MAX_REPAIR_ITERS}"); do
+            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — deterministic repair"
+            uv run python3 .github/scripts/deterministic_repair.py
+            echo "::endgroup::"
+
+            DET=$(python3 -c "import json;print(json.load(open('/tmp/deterministic_result.json')).get('all_pass'))" 2>/dev/null || echo False)
+            if [ "$DET" = "True" ]; then FINAL_PASS=true; break; fi
+
+            if [ "$LLM_AVAILABLE" != "true" ]; then
+              echo "::warning::LLM unavailable — cannot apply semantic fixes. Stopping iterations."
+              break
+            fi
+
+            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — LLM fallback"
+            uv run python3 .github/scripts/llm_fallback.py || echo "llm_fallback exited non-zero"
+            echo "::endgroup::"
+
+            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — re-format / re-import (deterministic)"
+            uv run python3 .github/scripts/deterministic_repair.py
+            echo "::endgroup::"
+            DET2=$(python3 -c "import json;print(json.load(open('/tmp/deterministic_result.json')).get('all_pass'))" 2>/dev/null || echo False)
+            if [ "$DET2" = "True" ]; then FINAL_PASS=true; break; fi
+          done
+          echo "all_pass=${FINAL_PASS}" >> "$GITHUB_OUTPUT"
 
       # ───────────────────────────────────────────────────────────
-      # STEP 3: Post-fix verification — ensure quality gates pass
+      # Post-fix verification — MUST mirror the exact Python Quality
+      # gates (ruff, black, mypy, pytest + 95% coverage) so the PR we
+      # open actually passes Python Quality instead of being rejected.
       # ───────────────────────────────────────────────────────────
       - name: Post-fix verification
         id: verify
+        timeout-minutes: 12
         run: |
-          echo "Running final verification..."
-          RUFF_OK=true
-          BLACK_OK=true
-          MYPY_OK=true
-          PYTEST_OK=true
-
-          uv run ruff check . || RUFF_OK=false
-          uv run black --check . || BLACK_OK=false
-          uv run mypy src/ --ignore-missing-imports || MYPY_OK=false
-          uv run pytest tests/ -q --tb=short || PYTEST_OK=false
+          set +e
+          uv run ruff check . >/dev/null 2>&1 && RUFF_OK=true || RUFF_OK=false
+          uv run black --check . >/dev/null 2>&1 && BLACK_OK=true || BLACK_OK=false
+          uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && MYPY_OK=true || MYPY_OK=false
+          # Mirror Python Quality exactly: tests AND 95% coverage.
+          uv run pytest tests/ -q --tb=short \
+            --cov=src --cov-report=term-missing --cov-fail-under=95 >/dev/null 2>&1 \
+            && PYTEST_OK=true || PYTEST_OK=false
 
           echo "ruff=$RUFF_OK" >> "$GITHUB_OUTPUT"
           echo "black=$BLACK_OK" >> "$GITHUB_OUTPUT"
@@ -108,7 +169,8 @@ jobs:
           fi
 
       # ───────────────────────────────────────────────────────────
-      # STEP 4: Create PR only if fixes improved the situation
+      # Create PR only when verification is fully green AND there are
+      # actual changes to commit.
       # ───────────────────────────────────────────────────────────
       - name: Create PR
         id: pr
@@ -116,7 +178,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Check if there are changes to commit
+          # Nothing to commit?
           if git diff --quiet && git diff --cached --quiet; then
             echo "No changes to commit."
             echo "pr_created=false" >> "$GITHUB_OUTPUT"
@@ -125,8 +187,7 @@ jobs:
 
           RUN_ID="${{ github.event.workflow_run.id }}"
           BRANCH="auto-fix/${RUN_ID}"
-          DET_COUNT="${{ steps.deterministic.outputs.fixes_count }}"
-          DET_PASS="${{ steps.deterministic.outputs.all_pass }}"
+          DET_COUNT=$(python3 -c "import json;print(len(json.load(open('/tmp/deterministic_result.json')).get('fixes_applied', [])))" 2>/dev/null || echo 0)
 
           git checkout -b "$BRANCH"
           git add -A
@@ -140,15 +201,13 @@ jobs:
           git config user.name "Auto-Healing Agent"
           git config user.email "agent@github.com"
 
-          MSG="[auto-heal] fix: deterministic + LLM repair"
-
+          MSG="[auto-heal] fix: quality gates (deterministic + LLM)"
           git commit -m "$MSG"
           git push origin "$BRANCH"
 
-          # Build PR body
           FIXES_LIST=""
           if [ -f /tmp/deterministic_result.json ]; then
-            FIXES_LIST=$(uv run python3 -c "
+            FIXES_LIST=$(python3 -c "
           import json
           d = json.load(open('/tmp/deterministic_result.json'))
           for f in d.get('fixes_applied', []):
@@ -158,7 +217,7 @@ jobs:
 
           GATES_TABLE=""
           if [ -f /tmp/deterministic_result.json ]; then
-            GATES_TABLE=$(uv run python3 -c "
+            GATES_TABLE=$(python3 -c "
           import json
           d = json.load(open('/tmp/deterministic_result.json'))
           for gate, ok in d.get('gate_results', {}).items():
@@ -171,7 +230,7 @@ jobs:
           ## 🔧 Auto-Healing: CI/CD Pipeline Fix
 
           **Failed Workflow Run:** [#${RUN_ID}](https://github.com/${{ github.repository }}/actions/runs/${RUN_ID})
-          **Strategy:** Deterministic + LLM fallback
+          **Strategy:** Deterministic + LLM fallback (bounded iterations)
 
           ### Fixes Applied
           ${FIXES_LIST}
@@ -197,8 +256,6 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          DET_COUNT="${{ steps.deterministic.outputs.fixes_count }}"
-          DET_PASS="${{ steps.deterministic.outputs.all_pass }}"
           VERIFY_PASS="${{ steps.verify.outputs.all_pass }}"
           PR_CREATED="${{ steps.pr.outputs.pr_created }}"
 
@@ -207,32 +264,25 @@ jobs:
             echo ""
             echo "- **Triggered by:** Workflow Run #${{ github.event.workflow_run.id }}"
             echo "- **Conclusion:** ${{ github.event.workflow_run.conclusion }}"
-            echo ""
-            echo "### Deterministic Repair"
-            echo "- Fixes applied: ${DET_COUNT}"
-            echo "- All gates pass: ${DET_PASS}"
+            echo "- **LLM available:** ${{ steps.detect.outputs.llm_available }}"
             echo ""
             echo "### Post-Fix Verification"
             echo "- Ruff: ${{ steps.verify.outputs.ruff }}"
             echo "- Black: ${{ steps.verify.outputs.black }}"
             echo "- Mypy: ${{ steps.verify.outputs.mypy }}"
-            echo "- Pytest: ${{ steps.verify.outputs.pytest }}"
+            echo "- Pytest (+coverage): ${{ steps.verify.outputs.pytest }}"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ "$DET_PASS" != "true" ] && [ -f /tmp/llm_result.json ]; then
-            LLM_SUCCESS=$(uv run python3 -c "import json; print(json.load(open('/tmp/llm_result.json')).get('success'))" 2>/dev/null || echo "unknown")
-            LLM_FIXED=$(uv run python3 -c "import json; print(json.load(open('/tmp/llm_result.json')).get('files_fixed', 0))" 2>/dev/null || echo "0")
-            echo "### LLM Fallback" >> "$GITHUB_STEP_SUMMARY"
-            echo "- Success: ${LLM_SUCCESS}" >> "$GITHUB_STEP_SUMMARY"
-            echo "- Files fixed: ${LLM_FIXED}" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-          fi
 
           if [ "$VERIFY_PASS" = "true" ] && [ "$PR_CREATED" = "true" ]; then
             echo "- **Status:** ✅ PR created (\`${{ steps.pr.outputs.branch }}\`)" >> "$GITHUB_STEP_SUMMARY"
           elif [ "$VERIFY_PASS" = "true" ]; then
-            echo "- **Status:** ✅ All gates pass (no PR needed)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Status:** ✅ All gates pass (no changes required)" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "- **Status:** ❌ Could not fix all errors — manual intervention needed" >> "$GITHUB_STEP_SUMMARY"
+            if [ "${{ steps.detect.outputs.llm_available }}" != "true" ]; then
+              echo "- **Likely cause:** No LLM API key configured. Semantic fixes (real implementations for failing tests) require GOOGLE_API_KEY or OPENCODE_API_KEY." >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo "::error::Auto-Healing could not make all Python Quality gates pass."
+            exit 1
           fi
