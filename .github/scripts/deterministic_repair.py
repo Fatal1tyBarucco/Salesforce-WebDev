@@ -416,8 +416,10 @@ for filepath, names in import_errors.items():
     original = src
 
     for name in sorted(names):
-        # Skip if already present
-        if f"class {name}" in src or f"def {name}" in src or f"{name} =" in src:
+        # Skip if already present — INCLUDING re-exports via import. Appending
+        # a stub over an imported name produces mypy [no-redef] errors and
+        # regresses the static gates, blocking persistence of all progress.
+        if _name_exists_in_src(name, src):
             continue
 
         # Check if we have a stub template

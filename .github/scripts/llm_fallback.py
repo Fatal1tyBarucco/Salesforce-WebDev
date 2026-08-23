@@ -636,8 +636,10 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
             print(f"  Syntax validation failed: {verr}")
             continue
 
-        # Backup original
-        read_file(filepath) if os.path.exists(filepath) else ""
+        # Backup original so a regression can be rolled back. Keeping broken
+        # LLM output poisons the tree: static gates go red and the persist
+        # step refuses to save ANY progress for the next run.
+        backup = read_file(filepath) if os.path.exists(filepath) else None
 
         # Write the fix
         os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
@@ -659,9 +661,16 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
             print(f"  ✅ {filepath} fixed successfully!")
             return True
         else:
-            print(f"  ⚠️  Still {len(file_errors)} errors in {filepath}")
+            print(f"  ⚠️  Still {len(file_errors)} errors in {filepath} — rolling back")
             for e in file_errors[:3]:
                 print(f"    {e.strip()}")
+            if backup is None:
+                os.remove(filepath)
+            else:
+                with open(filepath, "w") as f:
+                    f.write(backup)
+            _run(["uv", "run", "ruff", "format", "."])
+            _run(["uv", "run", "black", "."])
 
     return False
 
