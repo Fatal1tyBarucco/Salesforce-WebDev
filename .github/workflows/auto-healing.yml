@@ -70,12 +70,10 @@ jobs:
       - name: Install dependencies
         timeout-minutes: 15
         run: |
-          source .github/scripts/spinner.sh
+          source .github/scripts/progress.sh
           sudo apt-get update -qq
           sudo apt-get install -y -qq libxml2-dev libxslt1-dev
-          uv sync --frozen --extra dev --extra healing --group dev &
-          spin $! "Instalando dependências…"
-          wait $!
+          stage 1 1 "Instalando dependências" -- uv sync --frozen --extra dev --extra healing --group dev
 
       # ───────────────────────────────────────────────────────────
       # Detect whether an LLM provider is configured. Semantic fixes
@@ -116,34 +114,27 @@ jobs:
           MAX_REPAIR_ITERS: "4"
         run: |
           set -uo pipefail
-          source .github/scripts/spinner.sh
+          source .github/scripts/progress.sh
           FINAL_PASS=false
           for i in $(seq 1 "${MAX_REPAIR_ITERS}"); do
-            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — deterministic repair"
-            uv run python3 .github/scripts/deterministic_repair.py &
-            spin $! "Iteração $i/${MAX_REPAIR_ITERS} — reparo determinístico…"
-            wait $!
-            echo "::endgroup::"
+            echo "::group::Iteration $i/${MAX_REPAIR_ITERS}"
+
+            stage "$i" "$MAX_REPAIR_ITERS" "Reparo determinístico" -- uv run python3 .github/scripts/deterministic_repair.py
 
             DET=$(python3 -c "import json;print(json.load(open('/tmp/deterministic_result.json')).get('all_pass'))" 2>/dev/null || echo False)
-            if [ "$DET" = "True" ]; then FINAL_PASS=true; break; fi
+            if [ "$DET" = "True" ]; then FINAL_PASS=true; echo "::endgroup::"; break; fi
 
             if [ "$LLM_AVAILABLE" != "true" ]; then
               echo "::warning::LLM unavailable — cannot apply semantic fixes. Stopping iterations."
-              break
+              echo "::endgroup::"; break
             fi
 
-            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — LLM fallback"
-            uv run python3 .github/scripts/llm_fallback.py &
-            spin $! "Iteração $i/${MAX_REPAIR_ITERS} — fallback LLM…"
-            wait $!; LLM_RC=$?
+            stage "$i" "$MAX_REPAIR_ITERS" "Fallback LLM" -- uv run python3 .github/scripts/llm_fallback.py
+            LLM_RC=$?
             [ "$LLM_RC" -ne 0 ] && echo "llm_fallback exited non-zero (rc=$LLM_RC)"
-            echo "::endgroup::"
 
-            echo "::group::Iteration $i/${MAX_REPAIR_ITERS} — re-format / re-import (deterministic)"
-            uv run python3 .github/scripts/deterministic_repair.py &
-            spin $! "Iteração $i/${MAX_REPAIR_ITERS} — re-formatação…"
-            wait $!
+            stage "$i" "$MAX_REPAIR_ITERS" "Re-formatação / re-import" -- uv run python3 .github/scripts/deterministic_repair.py
+
             echo "::endgroup::"
             DET2=$(python3 -c "import json;print(json.load(open('/tmp/deterministic_result.json')).get('all_pass'))" 2>/dev/null || echo False)
             if [ "$DET2" = "True" ]; then FINAL_PASS=true; break; fi
@@ -160,21 +151,16 @@ jobs:
         timeout-minutes: 12
         run: |
           set +e
-          source .github/scripts/spinner.sh
-          uv run ruff check . >/dev/null 2>&1 &
-          spin $! "Verificando Ruff…"; wait $!; RC=$?
-          [ "$RC" -eq 0 ] && RUFF_OK=true || RUFF_OK=false
-          uv run black --check . >/dev/null 2>&1 &
-          spin $! "Verificando Black…"; wait $!; RC=$?
-          [ "$RC" -eq 0 ] && BLACK_OK=true || BLACK_OK=false
-          uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 &
-          spin $! "Verificando Mypy…"; wait $!; RC=$?
-          [ "$RC" -eq 0 ] && MYPY_OK=true || MYPY_OK=false
+          source .github/scripts/progress.sh
+          stage 1 4 "Verificando Ruff" -- bash -c 'uv run ruff check . >/dev/null 2>&1'
+          RC=$?; [ "$RC" -eq 0 ] && RUFF_OK=true || RUFF_OK=false
+          stage 2 4 "Verificando Black" -- bash -c 'uv run black --check . >/dev/null 2>&1'
+          RC=$?; [ "$RC" -eq 0 ] && BLACK_OK=true || BLACK_OK=false
+          stage 3 4 "Verificando Mypy" -- bash -c 'uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1'
+          RC=$?; [ "$RC" -eq 0 ] && MYPY_OK=true || MYPY_OK=false
           # Mirror Python Quality exactly: tests AND 95% coverage.
-          uv run pytest tests/ -q --tb=short \
-            --cov=src --cov-report=term-missing --cov-fail-under=95 >/dev/null 2>&1 &
-          spin $! "Executando Pytest + cobertura (≥95%)…"; wait $!; RC=$?
-          [ "$RC" -eq 0 ] && PYTEST_OK=true || PYTEST_OK=false
+          stage 4 4 "Pytest + cobertura (>=95%)" -- bash -c 'uv run pytest tests/ -q --tb=short --cov=src --cov-report=term-missing --cov-fail-under=95 >/dev/null 2>&1'
+          RC=$?; [ "$RC" -eq 0 ] && PYTEST_OK=true || PYTEST_OK=false
 
           echo "ruff=$RUFF_OK" >> "$GITHUB_OUTPUT"
           echo "black=$BLACK_OK" >> "$GITHUB_OUTPUT"
@@ -197,7 +183,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          source .github/scripts/spinner.sh
+          source .github/scripts/progress.sh
           # Nothing to commit?
           if git diff --quiet && git diff --cached --quiet; then
             echo "No changes to commit."
@@ -223,9 +209,7 @@ jobs:
 
           MSG="[auto-heal] fix: quality gates (deterministic + LLM)"
           git commit -m "$MSG"
-          git push origin "$BRANCH" &
-          spin $! "Enviando branch e abrindo PR…"
-          wait $!
+          stage 1 1 "Enviando branch e abrindo PR" -- git push origin "$BRANCH"
 
           FIXES_LIST=""
           if [ -f /tmp/deterministic_result.json ]; then
