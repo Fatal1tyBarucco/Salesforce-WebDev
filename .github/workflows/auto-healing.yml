@@ -9,8 +9,9 @@
 #     from there; a PR is opened only when ALL quality gates pass.
 #
 # Required secrets:
-#   OPENCODE_API_KEY — OpenCode API key (primary: Ox Alpha Free, then Hy3 Free)
-#   GOOGLE_API_KEY — Gemini API key for LLM analysis (last fallback)
+#   OPENCODE_API_KEY — OpenCode API key (primary: free Zen model pool)
+#   OPENROUTER_API_KEY — OpenRouter API key (second: free :model pool)
+#   GOOGLE_API_KEY — Gemini API key for LLM analysis (last fallback; 20 req/day free tier)
 # Optional repo vars:
 #   OPENCODE_BASE_URL — OpenCode base URL (default https://opencode.ai/zen/v1)
 #   OPENCODE_MODEL — overrides the primary OpenCode model; without it a pool
@@ -118,12 +119,13 @@ jobs:
         env:
           GOOGLE: ${{ secrets.GOOGLE_API_KEY }}
           OPENCODE: ${{ secrets.OPENCODE_API_KEY }}
+          OPENROUTER: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          if [ -n "$GOOGLE" ] || [ -n "$OPENCODE" ]; then
+          if [ -n "$GOOGLE" ] || [ -n "$OPENCODE" ] || [ -n "$OPENROUTER" ]; then
             echo "llm_available=true" >> "$GITHUB_OUTPUT"
           else
             echo "llm_available=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::No LLM API keys configured (GOOGLE_API_KEY / OPENCODE_API_KEY). Deterministic fixes only; semantic fixes require an LLM."
+            echo "::warning::No LLM API keys configured (GOOGLE_API_KEY / OPENCODE_API_KEY / OPENROUTER_API_KEY). Deterministic fixes only; semantic fixes require an LLM."
           fi
 
       # ───────────────────────────────────────────────────────────
@@ -140,6 +142,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_BASE_URL: ${{ vars.OPENCODE_BASE_URL }}
           OPENCODE_MODEL: ${{ vars.OPENCODE_MODEL }}
           LLM_AVAILABLE: ${{ steps.detect.outputs.llm_available }}

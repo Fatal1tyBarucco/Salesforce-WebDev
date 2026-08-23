@@ -296,6 +296,22 @@ def _opencode_models():
     ]
 
 
+def _openrouter_models():
+    """Free OpenRouter models, best coding candidates first."""
+    primary = os.environ.get("OPENROUTER_MODEL")
+    pool = [
+        primary,
+        "z-ai/glm-5.2:free",
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "cohere/north-mini-code:free",
+        "poolside/laguna-s-2.1:free",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "thinkingmachines/inkling:free",
+    ]
+    seen = set()
+    return [m for m in pool if m and not (m in seen or seen.add(m))]
+
+
 def _provider_enabled(key):
     return key not in _PROVIDER_DISABLED
 
@@ -326,27 +342,30 @@ def has_provider():
         _provider_enabled(f"opencode:{m}") for m in _opencode_models()
     ):
         return True
+    if os.environ.get("OPENROUTER_API_KEY") and any(
+        _provider_enabled(f"openrouter:{m}") for m in _openrouter_models()
+    ):
+        return True
     if os.environ.get("GOOGLE_API_KEY") and _provider_enabled("gemini"):
         return True
     return False
 
 
-def _call_opencode(prompt):
-    """Try OpenCode models in fallback order: Ox Alpha Free, then Hy3 Free."""
+def _call_chat_completions(prompt, base_url, api_key, models, provider_name):
+    """Generic OpenAI-compatible chat/completions sweep with per-model breaker."""
     import urllib.error
     import urllib.request
 
-    oc_base = (os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1").rstrip("/")
     last_error = None
 
-    for oc_model in _opencode_models():
-        key = f"opencode:{oc_model}"
+    for model in models:
+        key = f"{provider_name}:{model}"
         if not _provider_enabled(key):
             continue
-        url = oc_base + "/chat/completions"
+        url = base_url.rstrip("/") + "/chat/completions"
         payload = json.dumps(
             {
-                "model": oc_model,
+                "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.2,
                 "stream": False,
@@ -358,7 +377,7 @@ def _call_opencode(prompt):
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {os.environ.get('OPENCODE_API_KEY', '')}",
+                "Authorization": f"Bearer {api_key}",
                 "Accept": "application/json",
                 "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0 Safari/537.36",
             },
@@ -370,7 +389,7 @@ def _call_opencode(prompt):
             if text:
                 _mark_success(key)
                 return text
-            last_error = RuntimeError(f"empty response from {oc_model}")
+            last_error = RuntimeError(f"empty response from {model}")
             _mark_failure(key, last_error)
         except urllib.error.HTTPError as he:
             # Surface the real server response so endpoint/quota problems are
@@ -381,12 +400,12 @@ def _call_opencode(prompt):
             except Exception:
                 pass
             print(
-                f"  OpenCode HTTP {he.code} {he.reason} on POST {url} (model={oc_model})\n"
+                f"  {provider_name} HTTP {he.code} {he.reason} on POST {url} (model={model})\n"
                 f"  Response body: {body[:500]}"
             )
             last_error = he
-            # 503 upstream / 429 quota won't recover within this run.
-            _mark_failure(key, f"HTTP {he.code}", disable=he.code in (429, 503))
+            # 401 bad key / 503 upstream / 429 quota won't recover this run.
+            _mark_failure(key, f"HTTP {he.code}", disable=he.code in (401, 429, 503))
         except Exception as e:
             last_error = e
             # Timeouts are expensive (full cap burned) and rarely one-off —
@@ -394,7 +413,30 @@ def _call_opencode(prompt):
             timed_out = isinstance(e, TimeoutError) or "timed out" in str(e)
             _mark_failure(key, e, disable=timed_out)
 
-    raise last_error or RuntimeError("OpenCode returned no usable response")
+    raise last_error or RuntimeError(f"{provider_name} returned no usable response")
+
+
+def _call_opencode(prompt):
+    """Sweep the OpenCode Zen free-model pool."""
+    oc_base = os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1"
+    return _call_chat_completions(
+        prompt,
+        oc_base,
+        os.environ.get("OPENCODE_API_KEY", ""),
+        _opencode_models(),
+        "opencode",
+    )
+
+
+def _call_openrouter(prompt):
+    """Sweep the OpenRouter free-model pool."""
+    return _call_chat_completions(
+        prompt,
+        "https://openrouter.ai/api/v1",
+        os.environ.get("OPENROUTER_API_KEY", ""),
+        _openrouter_models(),
+        "openrouter",
+    )
 
 
 def _call_gemini(prompt):
@@ -421,8 +463,13 @@ def _call_gemini(prompt):
 
 
 def call_llm(prompt):
-    """Call LLM providers in order: Ox Alpha Free (OpenCode), Hy3 Free (OpenCode), Gemini (Google)."""
+    """Call LLM providers in order: OpenCode free pool, OpenRouter free pool, Gemini (Google).
+
+    Gemini goes last on purpose: its free tier allows only 20 requests/day,
+    so it is the scarce reserve used when every free model is down.
+    """
     oc_key = os.environ.get("OPENCODE_API_KEY", "")
+    or_key = os.environ.get("OPENROUTER_API_KEY", "")
     api_key = os.environ.get("GOOGLE_API_KEY", "")
 
     if not has_provider():
@@ -433,6 +480,12 @@ def call_llm(prompt):
             return _call_opencode(prompt)
         except Exception as e:
             print(f"  OpenCode failed: {e}")
+
+    if or_key and any(_provider_enabled(f"openrouter:{m}") for m in _openrouter_models()):
+        try:
+            return _call_openrouter(prompt)
+        except Exception as e:
+            print(f"  OpenRouter failed: {e}")
 
     if api_key and _provider_enabled("gemini"):
         try:
@@ -641,8 +694,9 @@ if not all_failing:
 
 api_key = os.environ.get("GOOGLE_API_KEY", "")
 oc_key = os.environ.get("OPENCODE_API_KEY", "")
+or_key = os.environ.get("OPENROUTER_API_KEY", "")
 
-if not api_key and not oc_key:
+if not api_key and not oc_key and not or_key:
     print("❌ No LLM API keys configured.")
     with open("/tmp/llm_result.json", "w") as f:
         json.dump({"success": False, "reason": "no_api_keys"}, f)
