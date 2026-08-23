@@ -248,90 +248,109 @@ def build_import_fix_prompt(filepath, missing_names, test_context):
     return prompt
 
 
-def call_llm(prompt):
-    """Call Gemini (primary) or OpenCode (fallback)."""
-    api_key = os.environ.get("GOOGLE_API_KEY", "")
-    oc_key = os.environ.get("OPENCODE_API_KEY", "")
+def _call_opencode(prompt):
+    """Try OpenCode models in fallback order: Ox Alpha Free, then Hy3 Free."""
+    import urllib.error
+    import urllib.request
 
-    if api_key:
+    oc_base = (os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1").rstrip("/")
+    primary = os.environ.get("OPENCODE_MODEL") or "x-preview-f-free"
+    models = [primary] if os.environ.get("OPENCODE_MODEL") else [primary, "hy3-free"]
+    last_error = None
+
+    for oc_model in models:
+        url = oc_base + "/chat/completions"
+        payload = json.dumps(
+            {
+                "model": oc_model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.2,
+                "stream": False,
+            }
+        ).encode()
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {os.environ.get('OPENCODE_API_KEY', '')}",
+                "Accept": "application/json",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0 Safari/537.36",
+            },
+        )
         try:
-            from google import genai
-
-            client = genai.Client(api_key=api_key)
-
-            # CRITICAL: the Gemini SDK call has no built-in timeout. A stalled
-            # stream/hang would block the whole workflow until the job limit
-            # (this is what caused the multi-hour runs). Run it on a worker
-            # thread and cap it at 180s so we always make progress.
-            def _gen():
-                return client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
-
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
-                future = ex.submit(_gen)
-                try:
-                    resp = future.result(timeout=180)
-                except concurrent.futures.TimeoutError:
-                    future.cancel()
-                    raise RuntimeError("Gemini call timed out after 180s")
-
-            text = getattr(resp, "text", None) or ""
-            if text:
-                return text
-        except Exception as e:
-            print(f"  Gemini failed: {e}")
-
-    if oc_key:
-        try:
-            import urllib.error
-            import urllib.request
-
-            oc_base = (
-                os.environ.get("OPENCODE_BASE_URL") or "https://opencode.ai/zen/v1"
-            ).rstrip("/")
-            oc_model = os.environ.get("OPENCODE_MODEL") or "hy3-free"
-            url = oc_base + "/chat/completions"
-            payload = json.dumps(
-                {
-                    "model": oc_model,
-                    "messages": [{"role": "user", "content": prompt}],
-                    "temperature": 0.2,
-                    "stream": False,
-                }
-            ).encode()
-            req = urllib.request.Request(
-                url,
-                data=payload,
-                method="POST",
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {oc_key}",
-                    "Accept": "application/json",
-                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0 Safari/537.36",
-                },
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=180) as r:
-                    data = json.loads(r.read().decode())
-            except urllib.error.HTTPError as he:
-                # Surface the real server response so a wrong endpoint/path
-                # (e.g. HTTP 405 Method Not Allowed) is diagnosable instead
-                # of just printing "failed".
-                body = ""
-                try:
-                    body = he.read().decode(errors="replace")
-                except Exception:
-                    pass
-                print(
-                    f"  OpenCode fallback HTTP {he.code} {he.reason} on POST {url}\n"
-                    f"  Allowed methods: {he.headers.get('Allow', 'n/a')}\n"
-                    f"  Response body: {body[:1000]}"
-                )
-                raise
+            with urllib.request.urlopen(req, timeout=180) as r:
+                data = json.loads(r.read().decode())
             text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
             if text:
                 return text
+            last_error = RuntimeError(f"empty response from {oc_model}")
+        except urllib.error.HTTPError as he:
+            # Surface the real server response so a wrong endpoint/path
+            # (e.g. HTTP 405 Method Not Allowed) is diagnosable instead
+            # of just printing "failed".
+            body = ""
+            try:
+                body = he.read().decode(errors="replace")
+            except Exception:
+                pass
+            print(
+                f"  OpenCode HTTP {he.code} {he.reason} on POST {url} (model={oc_model})\n"
+                f"  Allowed methods: {he.headers.get('Allow', 'n/a')}\n"
+                f"  Response body: {body[:1000]}"
+            )
+            last_error = he
         except Exception as e:
-            print(f"  OpenCode fallback failed: {e}")
+            print(f"  OpenCode model {oc_model} failed: {e}")
+            last_error = e
+
+    raise last_error or RuntimeError("OpenCode returned no usable response")
+
+
+def _call_gemini(prompt):
+    """Call Google Gemini with a hard timeout (the SDK has no built-in one)."""
+    from google import genai
+
+    client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY", ""))
+
+    # CRITICAL: the Gemini SDK call has no built-in timeout. A stalled
+    # stream/hang would block the whole workflow until the job limit
+    # (this is what caused the multi-hour runs). Run it on a worker
+    # thread and cap it at 180s so we always make progress.
+    def _gen():
+        return client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+        future = ex.submit(_gen)
+        try:
+            resp = future.result(timeout=180)
+        except concurrent.futures.TimeoutError:
+            future.cancel()
+            raise RuntimeError("Gemini call timed out after 180s")
+
+    text = getattr(resp, "text", None) or ""
+    if not text:
+        raise RuntimeError("Gemini returned an empty response")
+    return text
+
+
+def call_llm(prompt):
+    """Call LLM providers in order: Ox Alpha Free (OpenCode), Hy3 Free (OpenCode), Gemini (Google)."""
+    oc_key = os.environ.get("OPENCODE_API_KEY", "")
+    api_key = os.environ.get("GOOGLE_API_KEY", "")
+
+    if oc_key:
+        try:
+            return _call_opencode(prompt)
+        except Exception as e:
+            print(f"  OpenCode failed: {e}")
+
+    if api_key:
+        try:
+            return _call_gemini(prompt)
+        except Exception as e:
+            print(f"  Gemini failed: {e}")
 
     raise RuntimeError("All LLM providers failed")
 
