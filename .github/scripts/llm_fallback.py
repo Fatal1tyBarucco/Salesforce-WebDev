@@ -488,6 +488,42 @@ def format_and_verify():
 # ── Main: incremental file-by-file repair ──
 
 
+def select_target_test_file(errors):
+    """Pick ONE failing test module as this run's scope.
+
+    Fixing everything at once requires dozens of successful LLM calls, which
+    free providers can't deliver within one run's budget. One test class per
+    run, persisted across runs, converges reliably.
+    """
+    candidates = set()
+    for reasons in errors.get("pytest_failing", {}).values():
+        for reason in reasons:
+            m = re.search(r"tests failing in (\S+)", reason)
+            if m:
+                candidates.add(m.group(1))
+    return sorted(candidates)[0] if candidates else None
+
+
+def scope_to_test_file(all_failing, target_test_file):
+    """Restrict the repair map to source files exercised by the target test."""
+    try:
+        tsrc = read_file(target_test_file)
+    except FileNotFoundError:
+        tsrc = ""
+    related = {
+        m.group(1).replace(".", "/") + ".py"
+        for m in re.finditer(r"(?:from|import)\s+(src\.\w+)", tsrc)
+    }
+    scoped = {}
+    for filepath, errs in all_failing.items():
+        if filepath.startswith("tests/"):
+            continue
+        linked = any(target_test_file in reason for reason in errs)
+        if filepath in related or linked:
+            scoped[filepath] = errs
+    return scoped
+
+
 def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
     """Try to fix a single file using LLM. Returns True if successful."""
     test_context = get_test_context(filepath)
@@ -609,6 +645,26 @@ if not has_provider():
 print(f"\n{'=' * 60}")
 print(f"LLM Fallback: {len(all_failing)} files to fix")
 print(f"{'=' * 60}")
+
+# Scope this run to ONE failing test class. Static gates (ruff/black/mypy)
+# are still repaired deterministically every run; semantic test fixes land
+# incrementally, one class at a time, persisted on the healing branch.
+target_test_file = select_target_test_file(errors)
+if target_test_file:
+    print(f"🎯 Target test class this run: {target_test_file}")
+    all_failing = scope_to_test_file(all_failing, target_test_file)
+    if all_failing:
+        print(f"   Source files in scope: {', '.join(sorted(all_failing))}")
+    else:
+        print("   No source file in scope for this test class — nothing to fix via LLM.")
+else:
+    print("🎯 No failing test class detected — nothing to fix via LLM this run.")
+    all_failing = {}
+
+if not all_failing:
+    with open("/tmp/llm_result.json", "w") as f:
+        json.dump({"success": False, "reason": f"no_scope:{target_test_file}"}, f)
+    sys.exit(0)
 
 # Sort files by priority: source files first, then by error count
 # Files with import errors get special handling
