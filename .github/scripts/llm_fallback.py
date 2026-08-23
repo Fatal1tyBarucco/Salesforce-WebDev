@@ -282,6 +282,7 @@ def call_llm(prompt):
 
     if oc_key:
         try:
+            import urllib.error
             import urllib.request
 
             oc_base = (
@@ -308,8 +309,24 @@ def call_llm(prompt):
                     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0 Safari/537.36",
                 },
             )
-            with urllib.request.urlopen(req, timeout=180) as r:
-                data = json.loads(r.read().decode())
+            try:
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    data = json.loads(r.read().decode())
+            except urllib.error.HTTPError as he:
+                # Surface the real server response so a wrong endpoint/path
+                # (e.g. HTTP 405 Method Not Allowed) is diagnosable instead
+                # of just printing "failed".
+                body = ""
+                try:
+                    body = he.read().decode(errors="replace")
+                except Exception:
+                    pass
+                print(
+                    f"  OpenCode fallback HTTP {he.code} {he.reason} on POST {url}\n"
+                    f"  Allowed methods: {he.headers.get('Allow', 'n/a')}\n"
+                    f"  Response body: {body[:1000]}"
+                )
+                raise
             text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
             if text:
                 return text
