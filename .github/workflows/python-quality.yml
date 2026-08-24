@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: quality-${{ github.ref }}
@@ -211,32 +212,13 @@ jobs:
     name: 📝 Create Issue on Failure
     runs-on: ubuntu-latest
     needs: [ruff, black, mypy, tests]
-    if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure')
     permissions:
       issues: write
       contents: read
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
-        with:
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-
-      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: 📦 Install dependencies
-        run: uv sync --frozen --extra dev --group dev
-
-      - name: 🔧 Install system dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq libxml2-dev libxslt1-dev
 
       - name: Collect failure details
         id: collect
@@ -250,54 +232,53 @@ jobs:
           echo "mypy=$MYPY" >> "$GITHUB_OUTPUT"
           echo "tests=$TESTS" >> "$GITHUB_OUTPUT"
 
-          mkdir -p /tmp/quality-logs
-
-          echo "### Ruff" > /tmp/quality-logs/ruff.log
-          uv run ruff check . --output-format=full > /tmp/quality-logs/ruff.log 2>&1 || true
-          echo "### Black" > /tmp/quality-logs/black.log
-          uv run black --check --diff . > /tmp/quality-logs/black.log 2>&1 || true
-          echo "### Mypy" > /tmp/quality-logs/mypy.log
-          uv run mypy src/ --ignore-missing-imports --pretty > /tmp/quality-logs/mypy.log 2>&1 || true
-          echo "### Pytest" > /tmp/quality-logs/pytest.log
-          uv run pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=95 -v --tb=short 2>&1 | tail -n 300 > /tmp/quality-logs/pytest.log || true
-
-          # Prepare body (truncate to avoid API limits)
+          # Write body to file to avoid GH output quoting issues
+          BODY_FILE="/tmp/issue_body.md"
           {
-            echo "BODY<<EOF"
             echo "## 🐍 Python Quality falhou — \`${{ github.sha }}\`"
             echo ""
             echo "**Branch:** \`${{ github.ref_name }}\` · **Workflow:** [#${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             echo ""
             echo "| Gate | Status |"
             echo "|------|--------|"
-            echo "| 🔍 Ruff | $RUFF |"
-            echo "| 🎨 Black | $BLACK |"
-            echo "| 🔬 Mypy | $MYPY |"
-            echo "| 🧪 Tests & Coverage | $TESTS |"
+            echo "| 🔍 Ruff | \`$RUFF\` |"
+            echo "| 🎨 Black | \`$BLACK\` |"
+            echo "| 🔬 Mypy | \`$MYPY\` |"
+            echo "| 🧪 Tests & Coverage | \`$TESTS\` |"
             echo ""
             echo "### O que deve ser corrigido"
             echo ""
-            if [ "$RUFF" != "success" ]; then echo "- [ ] Corrigir **Ruff** (\`uv run ruff check . --fix\`)"; echo '```'; head -n 80 /tmp/quality-logs/ruff.log; echo '```'; echo ""; fi
-            if [ "$BLACK" != "success" ]; then echo "- [ ] Formatar com **Black** (\`uv run black .\`)"; echo '```'; head -n 80 /tmp/quality-logs/black.log; echo '```'; echo ""; fi
-            if [ "$MYPY" != "success" ]; then echo "- [ ] Corrigir **Mypy** (\`uv run mypy src/\`)"; echo '```'; head -n 120 /tmp/quality-logs/mypy.log; echo '```'; echo ""; fi
-            if [ "$TESTS" != "success" ]; then echo "- [ ] Corrigir **Tests / Coverage ≥95%** (\`uv run pytest --cov=src --cov-fail-under=95\`)"; echo '```'; head -n 200 /tmp/quality-logs/pytest.log; echo '```'; echo ""; fi
+            if [ "$RUFF" = "failure" ]; then echo "- [ ] Corrigir **Ruff** \`uv run ruff check . --fix\`"; echo ""; fi
+            if [ "$BLACK" = "failure" ]; then echo "- [ ] Formatar com **Black** \`uv run black .\`"; echo ""; fi
+            if [ "$MYPY" = "failure" ]; then echo "- [ ] Corrigir **Mypy** \`uv run mypy src/\`"; echo ""; fi
+            if [ "$TESTS" = "failure" ]; then echo "- [ ] Corrigir **Tests / Coverage ≥95%** \`uv run pytest --cov=src --cov-fail-under=95\`"; echo ""; fi
+            echo ""
+            echo "Logs completos em: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo ""
             echo "> Gerado automaticamente por Python Quality em \`$(date -u '+%Y-%m-%d %H:%M UTC')\`. Commit: \`${{ github.sha }}\`"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          } > "$BODY_FILE"
+          echo "body_file=$BODY_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           TITLE="🐍 Python Quality falhou — ${{ github.sha }}"
-          # Evita duplicatas para o mesmo commit: se já existe issue aberta com o SHA, não cria outra
+          BODY_FILE="${{ steps.collect.outputs.body_file }}"
+          # Evita duplicatas para o mesmo commit
           EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
           if [ "${EXISTING:-0}" != "0" ]; then
             echo "Issue já existe para este commit — skipping."
             exit 0
           fi
-          gh issue create --title "$TITLE" --body "${{ steps.collect.outputs.BODY }}" --label "ci,quality"
+          # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+            echo "Issue criada com sucesso."
+          else
+            echo "::warning::Falha ao criar issue com body-file, tentando com --body"
+            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+          fi
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │
