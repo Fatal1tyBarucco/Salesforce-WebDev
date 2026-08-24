@@ -5,6 +5,13 @@ import logging
 from typing import Any, List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+try:
+    import google.genai as _genai_module
+
+    genai = _genai_module
+except ImportError:  # pragma: no cover
+    genai = None  # type: ignore[assignment]
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,6 +69,9 @@ class LLMService:
 
         try:
             if self.provider == "openai":
+                if not self.api_key:
+                    logger.warning("No OpenAI API key configured, returning mock response.")
+                    return f"[Mock OpenAI Response] Prompt: {prompt[:50]}..."
                 return self._generate_openai(
                     prompt=prompt,
                     system_instruction=system_instruction,
@@ -69,6 +79,9 @@ class LLMService:
                     max_tokens=max_tokens,
                 )
             elif self.provider in ("gemini", "google"):
+                if not self.api_key:
+                    logger.warning("No Gemini API key configured, returning mock response.")
+                    return f"[Mock Gemini Response] Prompt: {prompt[:50]}..."
                 return self._generate_gemini(
                     prompt=prompt,
                     system_instruction=system_instruction,
@@ -122,8 +135,8 @@ class LLMService:
     ) -> str:
         """Generate response via Google Gemini API."""
         try:
-            from google import genai
-
+            if genai is None:
+                raise ImportError("google.genai not available")
             client = genai.Client(api_key=self.api_key or "")
             full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
 
@@ -181,3 +194,28 @@ class LLMService:
             f"You are a concise summarizer. Summarize the text in under {max_length} words."
         )
         return self.generate_completion(prompt=text, system_instruction=system_prompt)
+
+    async def summarize_release_notes(self, notes: str, max_length: int = 200) -> str:
+        """Summarize release notes content using the LLM."""
+        return self.summarize(text=notes, max_length=max_length)
+
+    async def enrich_feature(
+        self, feature: dict[str, Any], context: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Enrich a feature dictionary with additional LLM-derived details."""
+        prompt = f"Enrich the following feature:\n{feature}"
+        if context:
+            prompt += f"\n\nContext:\n{context}"
+        details = self.generate_completion(prompt=prompt)
+        enriched = dict(feature)
+        enriched["details"] = details
+        enriched["enriched"] = True
+        return enriched
+
+    async def __aenter__(self) -> "LLMService":
+        """Enter async context."""
+        return self
+
+    async def __aexit__(self, exc_type: object, exc: object, tb: object) -> None:
+        """Exit async context."""
+        return None

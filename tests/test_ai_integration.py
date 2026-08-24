@@ -2,6 +2,9 @@
 
 import asyncio
 import json
+import os
+
+import pytest
 from pathlib import Path
 from unittest.mock import patch
 
@@ -23,6 +26,18 @@ from src.ai_automation import (
     generate_triage_report,
     predict_next_release_impact,
     triage_release,
+)
+
+# The full pipeline calls the live LLM; skip when no provider key is configured
+# (Python Quality runs without LLM secrets).
+pytestmark = pytest.mark.skipif(
+    not (
+        os.getenv("OPENAI_API_KEY")
+        or os.getenv("GEMINI_API_KEY")
+        or os.getenv("OPENROUTER_API_KEY")
+        or os.getenv("OPENCODE_API_KEY")
+    ),
+    reason="Requires a configured LLM API key for full AI pipeline integration",
 )
 
 

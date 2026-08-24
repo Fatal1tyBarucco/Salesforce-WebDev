@@ -31,7 +31,7 @@ from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
 from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
 from .llm_service import LLMService
-from .logger import setup_logger
+from .logger import setup_logging
 from .parser import (
     FeatureImpactParser,
 )
@@ -651,7 +651,7 @@ class PipelineConfig:
 
 async def run_pipeline(config: PipelineConfig | None = None) -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
-    setup_logger()
+    setup_logging()
 
     if config is None:
         release_filter, dry_run = _parse_args()
