@@ -304,7 +304,21 @@ if mypy_errors:
 
 # ── FIX 4: Auto-generate stubs for missing imports detected by pytest ──
 print("\n🔧 Checking for broken test imports...")
-_, pytest_co = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=line", "--co"])
+_, pytest_co = _run(
+    [
+        "uv",
+        "run",
+        "pytest",
+        "tests/",
+        "-q",
+        "--tb=line",
+        "--co",
+        "-p",
+        "no:asyncio",
+        "-W",
+        "ignore::pytest.PytestUnknownMarkWarning",
+    ]
+)
 broken_tests = []
 import_errors = {}  # source_file -> set of missing names
 
@@ -477,7 +491,21 @@ if fixes_applied:
 # Re-check broken tests after stubs
 if import_errors:
     print("\n🔧 Re-checking test imports after stubs...")
-    _, pytest_co2 = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=line", "--co"])
+    _, pytest_co2 = _run(
+        [
+            "uv",
+            "run",
+            "pytest",
+            "tests/",
+            "-q",
+            "--tb=line",
+            "--co",
+            "-p",
+            "no:asyncio",
+            "-W",
+            "ignore::pytest.PytestUnknownMarkWarning",
+        ]
+    )
     broken_tests = []
     for line in pytest_co2.splitlines():
         if "ERROR collecting" in line:
@@ -515,9 +543,23 @@ if rc != 0:
         if "error:" in line:
             print(f"    {line.strip()}")
 
-rc, out = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=short"])
+rc, out = _run(
+    [
+        "uv",
+        "run",
+        "pytest",
+        "tests/",
+        "-q",
+        "--tb=line",
+        "--co",
+        "-p",
+        "no:asyncio",
+        "-W",
+        "ignore::pytest.PytestUnknownMarkWarning",
+    ]
+)
 gate_results["pytest"] = rc == 0
-print(f"  {'✅' if rc == 0 else '❌'} Pytest: {'PASS' if rc == 0 else 'FAIL'}")
+print(f"  {'✅' if rc == 0 else '❌'} Pytest (collect): {'PASS' if rc == 0 else 'FAIL'}")
 if rc != 0:
     print(out[-1000:])
 

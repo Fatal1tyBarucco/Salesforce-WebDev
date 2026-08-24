@@ -60,7 +60,20 @@ def gather_errors():
     _, mypy_out = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
     _, ruff_out = _run(["uv", "run", "ruff", "check", ".", "--output-format=concise"])
     _, black_out = _run(["uv", "run", "black", "--check", "."])
-    _, pytest_out = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=short"])
+    _, pytest_out = _run(
+        [
+            "uv",
+            "run",
+            "pytest",
+            "tests/",
+            "-q",
+            "--tb=short",
+            "-p",
+            "no:asyncio",
+            "-W",
+            "ignore::pytest.PytestUnknownMarkWarning",
+        ]
+    )
 
     # Collect failing files from mypy
     mypy_failing = {}
@@ -539,7 +552,20 @@ def verify_all_gates():
     rc, _ = _run(["uv", "run", "mypy", "src/", "--ignore-missing-imports"])
     if rc != 0:
         return False
-    rc, _ = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=short"])
+    rc, _ = _run(
+        [
+            "uv",
+            "run",
+            "pytest",
+            "tests/",
+            "-q",
+            "--tb=short",
+            "-p",
+            "no:asyncio",
+            "-W",
+            "ignore::pytest.PytestUnknownMarkWarning",
+        ]
+    )
     if rc != 0:
         return False
     return True
@@ -609,7 +635,20 @@ def fix_single_file(filepath, errors, is_import_fix=False, missing_names=None):
 
         if attempt > 1:
             # Add previous error context
-            _, verification_errors = _run(["uv", "run", "pytest", "tests/", "-q", "--tb=short"])
+            _, verification_errors = _run(
+                [
+                    "uv",
+                    "run",
+                    "pytest",
+                    "tests/",
+                    "-q",
+                    "--tb=short",
+                    "-p",
+                    "no:asyncio",
+                    "-W",
+                    "ignore::pytest.PytestUnknownMarkWarning",
+                ]
+            )
             prompt += f"\n\nPREVIOUS ERRORS:\n{verification_errors[:3000]}"
 
         try:
