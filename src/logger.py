@@ -8,13 +8,12 @@ import os
 import sys
 import traceback
 import uuid
-from typing import Optional
 
 
 def setup_logger(
     name: str = "salesforce_webdev",
-    level: Optional[int] = None,
-    log_file: Optional[str] = None,
+    level: int | None = None,
+    log_file: str | None = None,
 ) -> logging.Logger:
     """Set up and configure a logger instance."""
     if level is None:
@@ -101,7 +100,7 @@ class JSONFormatter(logging.Formatter):
 class TextFormatter(logging.Formatter):
     """Text formatter with optional correlation id prefix."""
 
-    def __init__(self, fmt: Optional[str] = None, datefmt: Optional[str] = None) -> None:
+    def __init__(self, fmt: str | None = None, datefmt: str | None = None) -> None:
         super().__init__(
             fmt or "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             datefmt or "%Y-%m-%d %H:%M:%S",
@@ -145,7 +144,7 @@ def setup_logging(
     return root
 
 
-def _setup_sentry(dsn: Optional[str] = None) -> None:
+def _setup_sentry(dsn: str | None = None) -> None:
     """Initialize Sentry if a DSN is configured."""
     if dsn is None:
         dsn = os.getenv("SENTRY_DSN")
@@ -165,4 +164,4 @@ def _setup_sentry(dsn: Optional[str] = None) -> None:
     env = os.getenv("SENTRY_ENVIRONMENT")
     if env:
         init_kwargs["environment"] = env
-    sentry_sdk.init(**init_kwargs)
+    sentry_sdk.init(**init_kwargs)  # type: ignore[arg-type]

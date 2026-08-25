@@ -1,6 +1,7 @@
 """Tests for the LLM service module."""
 
 from unittest.mock import AsyncMock, patch
+
 import pytest
 
 from src.llm_service import LLMService

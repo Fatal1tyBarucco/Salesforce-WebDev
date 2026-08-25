@@ -18,6 +18,21 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from src.ai.generators.badges import (
+    Badge,
+    api_version_badge,
+    category_badge,
+    category_header_badges,
+    feature_count_badge,
+    impact_badge,
+    release_badge,
+    release_meta_badges,
+    status_badge,
+)
+from src.ai.integrations.salesforce import (
+    OrgMetadata,
+    SalesforceAnalyzer,
+)
 from src.api import (
     SearchRequest,
     TriageRequest,
@@ -34,21 +49,6 @@ from src.api import (
     triage_issue,
     verify_api_key,
 )
-from src.ai.generators.badges import (
-    Badge,
-    api_version_badge,
-    category_badge,
-    category_header_badges,
-    feature_count_badge,
-    impact_badge,
-    release_badge,
-    release_meta_badges,
-    status_badge,
-)
-from src.ai.integrations.salesforce import (
-    OrgMetadata,
-    SalesforceAnalyzer,
-)
 from src.automation.comparison import (
     calculate_quality_metrics,
     compare_releases,
@@ -63,8 +63,8 @@ from src.logger import (
     get_correlation_id,
     get_logger,
     new_correlation_id,
-    setup_logging,
     setup_logger,
+    setup_logging,
 )
 from src.models import (
     DiffResponse,
@@ -369,8 +369,9 @@ def test_logger_correlation_and_setup(tmp_path: Path) -> None:
 
 
 async def test_impact_analyzer_heuristic_fallback(tmp_path: Path) -> None:
-    from src.impact_analyzer import ImpactAnalyzer
     from unittest.mock import AsyncMock
+
+    from src.impact_analyzer import ImpactAnalyzer
 
     llm = MagicMock()
     llm.classify_text = AsyncMock(side_effect=RuntimeError("boom"))
@@ -556,7 +557,7 @@ def test_api_helper_functions(tmp_path: Path) -> None:
     spec = _generate_openapi_spec()
     assert spec["openapi"] == "3.0.0"
     assert _select_graphql_fields({"a": 1, "b": 2}, ["a"]) == {"a": 1}
-    assert _gql_lex("{ releases { name } }")  # noqa: B018
+    assert _gql_lex("{ releases { name } }")
 
 
 def test_logger_file_handler(tmp_path: Path) -> None:
@@ -606,14 +607,15 @@ def test_triage_repo_property_cover_77() -> None:
     from src.issue_triage import IssueTriager
 
     t = IssueTriager(repo="org/repo")
-    _ = t.repo  # noqa
+    _ = t.repo
 
 
 @pytest.mark.asyncio
 async def test_triage_issue_empty_llm_cover_116() -> None:
     """Line 116: parsed = {} when llm_result is empty/falsy."""
-    from src.issue_triage import IssueTriager
     from unittest.mock import AsyncMock
+
+    from src.issue_triage import IssueTriager
 
     t = IssueTriager(llm=AsyncMock())
     t._llm.generate_text.return_value = ""
@@ -638,8 +640,9 @@ async def test_triage_github_issue_no_gh_cover_194_203() -> None:
 def test_cache_manager_corrupt_json_hashed_path() -> None:
     """Lines 137-139: json.JSONDecodeError in CacheManager.get() with hashed path."""
     import hashlib
-    from pathlib import Path
     import tempfile
+    from pathlib import Path
+
     from src.cache_manager import CacheManager
 
     tmp_dir = Path(tempfile.mkdtemp())
@@ -672,8 +675,9 @@ async def test_summarizer_init_no_key_cover_65_66() -> None:
 async def test_summarizer_corrupt_cache_path() -> None:
     """Lines 149-150: except (ValueError, KeyError, OSError) reading cache."""
     import json
-    from pathlib import Path
     import tempfile
+    from pathlib import Path
+
     from src.release_summarizer import ReleaseSummarizer
 
     tmp_dir = Path(tempfile.mkdtemp())
@@ -719,9 +723,10 @@ async def test_summarizer_parse_category_summaries_nonstring() -> None:
 # ── AIAutomationService wrapper gaps 121, 144, 150 ──────────────────────
 def test_ai_automation_service_wrappers() -> None:
     """Lines 121, 144, 150: AIAutomationService wrapper methods."""
-    from src.automation.service import AIAutomationService
-    from pathlib import Path
     import tempfile
+    from pathlib import Path
+
+    from src.automation.service import AIAutomationService
 
     svc = AIAutomationService.__new__(AIAutomationService)
     svc._llm = MagicMock()
@@ -753,6 +758,7 @@ async def test_enrich_release_hidden_file() -> None:
     """Line 176: continue for hidden .md files in enrich_release."""
     import tempfile
     from pathlib import Path
+
     from src.feature_enricher import FeatureEnricher
 
     tmp_dir = Path(tempfile.mkdtemp())
@@ -780,6 +786,7 @@ async def test_enrich_release_no_features_table() -> None:
     """Line 186: continue when _extract_features_from_markdown returns []."""
     import tempfile
     from pathlib import Path
+
     from src.feature_enricher import FeatureEnricher
 
     tmp_dir = Path(tempfile.mkdtemp())

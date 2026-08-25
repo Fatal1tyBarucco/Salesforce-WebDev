@@ -176,19 +176,21 @@ if mypy_errors:
                 print(f"  ✅ Fixed messages type in {llm_path}")
 
         # Fix arg-type: api_key str | None vs str
-        if any(
-            e["code"] == "arg-type" and "api_key" in e["message"]
-            for e in mypy_errors
-            if e["file"] == llm_path
+        if (
+            any(
+                e["code"] == "arg-type" and "api_key" in e["message"]
+                for e in mypy_errors
+                if e["file"] == llm_path
+            )
+            and "genai.Client(api_key=self.api_key)" in llm_src
         ):
-            if "genai.Client(api_key=self.api_key)" in llm_src:
-                llm_src = llm_src.replace(
-                    "genai.Client(api_key=self.api_key)",
-                    'genai.Client(api_key=self.api_key or "")',
-                )
-                if llm_src != llm_original:
-                    fixes_applied.append(f"{llm_path}:fix-api-key-type")
-                    print(f"  ✅ Fixed api_key type in {llm_path}")
+            llm_src = llm_src.replace(
+                "genai.Client(api_key=self.api_key)",
+                'genai.Client(api_key=self.api_key or "")',
+            )
+            if llm_src != llm_original:
+                fixes_applied.append(f"{llm_path}:fix-api-key-type")
+                print(f"  ✅ Fixed api_key type in {llm_path}")
 
         if llm_src != llm_original:
             write_file(llm_path, llm_src)
@@ -359,9 +361,7 @@ def _name_exists_in_src(name, src):
     if re.search(rf"from\s+\S+\s+import\s+\([^)]*\b{name}\b[^)]*\)", src, re.DOTALL):
         return True
     # Match: import xxx, yyy
-    if re.search(rf"(?:^|,)\s*\b{name}\b\s*(?:,|$)", src):
-        return True
-    return False
+    return bool(re.search(rf"(?:^|,)\s*\b{name}\b\s*(?:,|$)", src))
 
 
 # Also scan test files for all imports from src modules
@@ -468,7 +468,7 @@ for filepath, names in import_errors.items():
                 lines = src.splitlines(keepends=True)
                 last_import_idx = 0
                 for idx, line in enumerate(lines):
-                    if line.startswith("import ") or line.startswith("from "):
+                    if line.startswith(("import ", "from ")):
                         last_import_idx = idx
                 lines.insert(last_import_idx + 1, "from dataclasses import dataclass\n")
                 src = "".join(lines)

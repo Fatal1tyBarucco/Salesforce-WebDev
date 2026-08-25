@@ -147,16 +147,19 @@ def gather_errors():
             except FileNotFoundError:
                 continue
             for name in names:
-                if name and name[0].isalpha():
-                    if (
+                if (
+                    name
+                    and name[0].isalpha()
+                    and (
                         f"class {name}" not in src
                         and f"def {name}" not in src
                         and f"{name} =" not in src
                         and not re.search(
                             rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src
                         )
-                    ):
-                        pytest_import_errors.setdefault(filepath, set()).add(name)
+                    )
+                ):
+                    pytest_import_errors.setdefault(filepath, set()).add(name)
         # Match: from src.xxx import name
         for m in re.finditer(r"from\s+(src\.\w+)\s+import\s+(\w+)(?:\s|$|,)", content):
             module = m.group(1)
@@ -359,9 +362,7 @@ def has_provider():
         _provider_enabled(f"openrouter:{m}") for m in _openrouter_models()
     ):
         return True
-    if os.environ.get("GOOGLE_API_KEY") and _provider_enabled("gemini"):
-        return True
-    return False
+    return bool(os.environ.get("GOOGLE_API_KEY") and _provider_enabled("gemini"))
 
 
 def _call_chat_completions(prompt, base_url, api_key, models, provider_name):
@@ -566,9 +567,7 @@ def verify_all_gates():
             "ignore::pytest.PytestUnknownMarkWarning",
         ]
     )
-    if rc != 0:
-        return False
-    return True
+    return rc == 0
 
 
 def format_and_verify():
@@ -595,7 +594,7 @@ def select_target_test_file(errors):
             m = re.search(r"tests failing in (\S+)", reason)
             if m:
                 candidates.add(m.group(1))
-    return sorted(candidates)[0] if candidates else None
+    return min(candidates) if candidates else None
 
 
 def scope_to_test_file(all_failing, target_test_file):

@@ -1,8 +1,9 @@
 """LLM Service module for interacting with OpenAI and Google Gemini models."""
 
-import os
 import logging
-from typing import Any, List, Optional
+import os
+from typing import Any, Self
+
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 try:
@@ -20,7 +21,7 @@ class LLMService:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         model_name: str = "gpt-4o",
         provider: str = "openai",
     ) -> None:
@@ -43,9 +44,9 @@ class LLMService:
     def generate_completion(
         self,
         prompt: str,
-        system_instruction: Optional[str] = None,
+        system_instruction: str | None = None,
         temperature: float = 0.7,
-        max_tokens: Optional[int] = 1000,
+        max_tokens: int | None = 1000,
     ) -> str:
         """Generate text completion using the configured LLM provider.
 
@@ -97,9 +98,9 @@ class LLMService:
     def _generate_openai(
         self,
         prompt: str,
-        system_instruction: Optional[str],
+        system_instruction: str | None,
         temperature: float,
-        max_tokens: Optional[int],
+        max_tokens: int | None,
     ) -> str:
         """Generate response via OpenAI API."""
         try:
@@ -129,9 +130,9 @@ class LLMService:
     def _generate_gemini(
         self,
         prompt: str,
-        system_instruction: Optional[str],
+        system_instruction: str | None,
         temperature: float,
-        max_tokens: Optional[int],
+        max_tokens: int | None,
     ) -> str:
         """Generate response via Google Gemini API."""
         try:
@@ -153,9 +154,9 @@ class LLMService:
     async def generate_text(
         self,
         prompt: str,
-        system_instruction: Optional[str] = None,
+        system_instruction: str | None = None,
         temperature: float = 0.7,
-        max_tokens: Optional[int] = 1000,
+        max_tokens: int | None = 1000,
     ) -> str:
         """Alias for generate_completion (async-compatible wrapper)."""
         return self.generate_completion(
@@ -168,8 +169,8 @@ class LLMService:
     async def classify_text(
         self,
         text: str,
-        categories: Optional[List[str]] = None,
-        system_prompt: Optional[str] = None,
+        categories: list[str] | None = None,
+        system_prompt: str | None = None,
     ) -> str:
         """Alias for generate_completion for classification tasks."""
         prompt = text
@@ -200,7 +201,7 @@ class LLMService:
         return self.summarize(text=notes, max_length=max_length)
 
     async def enrich_feature(
-        self, feature: dict[str, Any], context: Optional[str] = None
+        self, feature: dict[str, Any], context: str | None = None
     ) -> dict[str, Any]:
         """Enrich a feature dictionary with additional LLM-derived details."""
         prompt = f"Enrich the following feature:\n{feature}"
@@ -212,10 +213,10 @@ class LLMService:
         enriched["enriched"] = True
         return enriched
 
-    async def __aenter__(self) -> "LLMService":
+    async def __aenter__(self) -> Self:
         """Enter async context."""
         return self
 
     async def __aexit__(self, exc_type: object, exc: object, tb: object) -> None:
         """Exit async context."""
-        return None
+        return

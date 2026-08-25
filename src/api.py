@@ -7,7 +7,7 @@ import os
 import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
@@ -45,7 +45,7 @@ class SearchRequest(BaseModel):
     top_k: int = 5
 
 
-def verify_api_key(x_api_key: Optional[str] = Header(None)) -> str:
+def verify_api_key(x_api_key: str | None = Header(None)) -> str:
     """Validate the incoming API key header against environment configuration."""
     expected_key = os.getenv(API_KEY_ENV_VAR, DEFAULT_API_KEY)
     if not x_api_key or x_api_key != expected_key:
@@ -58,7 +58,7 @@ def verify_api_key(x_api_key: Optional[str] = Header(None)) -> str:
 
 
 @app.get("/health")
-def health_check() -> Dict[str, str]:
+def health_check() -> dict[str, str]:
     """Public health check endpoint."""
     return {"status": "ok", "service": "salesforce-webdev-api"}
 
@@ -95,7 +95,7 @@ def triage_issue(
 def natural_language_search(
     payload: SearchRequest,
     api_key: str = Depends(verify_api_key),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Execute a natural language search query across release notes."""
     return {
         "query": payload.query,
@@ -117,14 +117,12 @@ def _validate_slug(slug: str) -> bool:
         return False
     if not re.match(r"^[a-z0-9]+_[0-9]+$", slug):
         return False
-    if slug not in _KNOWN_SLUGS and slug != "summer_26":
-        return False
-    return True
+    return not (slug not in _KNOWN_SLUGS and slug != "summer_26")
 
 
-def _load_all_metas() -> List[Dict[str, Any]]:
+def _load_all_metas() -> list[dict[str, Any]]:
     """Load all .meta.json files under RELEASES_DIR."""
-    metas: List[Dict[str, Any]] = []
+    metas: list[dict[str, Any]] = []
     try:
         base = Path(RELEASES_DIR)
         if not base.is_dir():
@@ -142,7 +140,7 @@ def _load_all_metas() -> List[Dict[str, Any]]:
     return metas
 
 
-def _find_meta(slug: str) -> Optional[Dict[str, Any]]:
+def _find_meta(slug: str) -> dict[str, Any] | None:
     """Find meta for slug."""
     if slug in {"unknown_release", "unknown", "nonexistent_slug_xyz", "nope"}:
         return None
@@ -152,13 +150,13 @@ def _find_meta(slug: str) -> Optional[Dict[str, Any]]:
     if not meta_path.is_file():
         return None
     try:
-        data: Dict[str, Any] = json.loads(meta_path.read_text())
+        data: dict[str, Any] = json.loads(meta_path.read_text())
         return data
     except (json.JSONDecodeError, OSError):
         return None
 
 
-def _parse_category_features(slug: str, category: str) -> List[Dict[str, Any]]:
+def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     """Parse features from markdown files for a category."""
     if slug in {"unknown", "unknown_release", "nonexistent_slug_xyz"}:
         return []
@@ -173,7 +171,7 @@ def _parse_category_features(slug: str, category: str) -> List[Dict[str, Any]]:
         ]
     except OSError:
         return []
-    features: List[Dict[str, Any]] = []
+    features: list[dict[str, Any]] = []
     for filepath in files:
         try:
             content = filepath.read_text()
@@ -193,7 +191,7 @@ def _parse_category_features(slug: str, category: str) -> List[Dict[str, Any]]:
             stripped = line.strip()
             if not stripped:
                 continue
-            if stripped.startswith("* ") or stripped.startswith("- "):
+            if stripped.startswith(("* ", "- ")):
                 inner = stripped[2:].strip()
                 m = re.search(r"\*\*(.+?)\*\*", inner)
                 if m:
@@ -226,7 +224,7 @@ def _parse_category_features(slug: str, category: str) -> List[Dict[str, Any]]:
     return features
 
 
-def _build_diff(current: Dict[str, Any], previous: Dict[str, Any]) -> Dict[str, Any]:
+def _build_diff(current: dict[str, Any], previous: dict[str, Any]) -> dict[str, Any]:
     """Build diff between two releases."""
     return {
         "current": current.get("name", ""),
@@ -237,7 +235,7 @@ def _build_diff(current: Dict[str, Any], previous: Dict[str, Any]) -> Dict[str, 
     }
 
 
-def _generate_openapi_spec() -> Dict[str, Any]:
+def _generate_openapi_spec() -> dict[str, Any]:
     """Generate minimal OpenAPI spec."""
     return {
         "openapi": "3.0.0",
@@ -251,12 +249,12 @@ def _generate_openapi_spec() -> Dict[str, Any]:
     }
 
 
-def _select_graphql_fields(item: Dict[str, Any], fields: List[str]) -> Dict[str, Any]:
+def _select_graphql_fields(item: dict[str, Any], fields: list[str]) -> dict[str, Any]:
     """Select fields."""
     return {k: item[k] for k in fields if k in item}
 
 
-def _gql_lex(query: str) -> List[str]:
+def _gql_lex(query: str) -> list[str]:
     """Lex graphql query."""
     return re.findall(r'"[^"]*"|\w+|[{}():,=]', query)
 
@@ -264,21 +262,21 @@ def _gql_lex(query: str) -> List[str]:
 class _GQLParser:
     """Trivial parser."""
 
-    def __init__(self, tokens: List[str]) -> None:
+    def __init__(self, tokens: list[str]) -> None:
         self._tokens = tokens
 
     def parse(self) -> tuple[object, object, object]:
         return ("", {}, [])
 
 
-def _execute_graphql(query: str) -> Dict[str, Any]:
+def _execute_graphql(query: str) -> dict[str, Any]:
     """Execute graphql query against file store."""
     q = query.strip()
     if "{ unknown" in q:
         return {"data": {}, "errors": [{"message": "Unknown query"}]}
     if "releases" in q and "release(" not in q and "diff(" not in q:
         metas = _load_all_metas()
-        releases: List[Dict[str, Any]] = []
+        releases: list[dict[str, Any]] = []
         base = Path(RELEASES_DIR)
         if base.is_dir():
             for p in base.iterdir():

@@ -16,12 +16,6 @@ if "google" not in sys.modules:
     sys.modules["google.genai.types"] = _google.genai.types
 
 
-# Prevent LLMService from raising ValueError when no API keys are set
-import os
-
-os.environ.setdefault("OPENAI_API_KEY", "test-key-placeholder")
-
-
 @pytest.fixture(autouse=True)
 def mock_openai_client():
     """Auto-use fixture that provides a mock OpenAI client for all tests.
@@ -29,13 +23,25 @@ def mock_openai_client():
     Returns None by default so fallback logic in services executes.
     Individual tests can override via patch.object if they need specific LLM responses.
     """
-    mock_client = AsyncMock()
-    mock_client.chat.completions.create.return_value = None
+    mock_client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock(message=MagicMock(content="mocked LLM response"))]
+    mock_client.chat.completions.create.return_value = mock_response
 
-    with __import__("unittest.mock", fromlist=["patch"]).patch(
-        "openai.AsyncOpenAI", return_value=mock_client
-    ):
-        yield mock_client
+    mock_async_client = AsyncMock()
+    mock_async_client.chat.completions.create.return_value = mock_response
+
+    patcher_sync = __import__("unittest.mock", fromlist=["patch"]).patch(
+        "openai.OpenAI", return_value=mock_client
+    )
+    patcher_async = __import__("unittest.mock", fromlist=["patch"]).patch(
+        "openai.AsyncOpenAI", return_value=mock_async_client
+    )
+    patcher_sync.start()
+    patcher_async.start()
+    yield mock_client
+    patcher_sync.stop()
+    patcher_async.stop()
 
 
 @pytest.fixture
