@@ -10,8 +10,50 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from fastapi import Depends, FastAPI, Header, HTTPException, status
-from pydantic import BaseModel
+try:
+    from fastapi import Depends, FastAPI, Header, HTTPException, status
+    from pydantic import BaseModel
+
+    _HAS_FASTAPI = True
+except ImportError:
+    _HAS_FASTAPI = False
+
+    # Stub classes so the module can be imported without fastapi
+    class BaseModel:  # type: ignore[no-redef]
+        def __init__(self, **kwargs: object) -> None:
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+    class FastAPI:  # type: ignore[no-redef]
+        def __init__(self, **kwargs: object) -> None:
+            pass
+
+        def get(self, *args: object, **kwargs: object) -> object:
+            def decorator(func: object) -> object:
+                return func
+
+            return decorator
+
+        def post(self, *args: object, **kwargs: object) -> object:
+            def decorator(func: object) -> object:
+                return func
+
+            return decorator
+
+    def Depends(*args: object, **kwargs: object) -> object:  # type: ignore[misc]
+        return None
+
+    class Header:  # type: ignore[no-redef]
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            pass
+
+    class HTTPException(Exception):  # type: ignore[no-redef]
+        pass
+
+    class status:  # type: ignore[no-redef]
+        HTTP_401_UNAUTHORIZED = 401
+        HTTP_400_BAD_REQUEST = 400
+
 
 app = FastAPI(
     title="Salesforce WebDev API",
