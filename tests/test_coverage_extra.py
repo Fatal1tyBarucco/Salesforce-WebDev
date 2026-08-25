@@ -348,8 +348,10 @@ def test_llm_gemini_import_error_fallback(monkeypatch) -> None:
 
     monkeypatch.setattr(ls, "genai", None)
     svc = ls.LLMService(api_key="k", provider="gemini")
-    out = svc.generate_completion("hi")
-    assert out.startswith("[Mock Gemini Response]")
+    # genai is None -> _generate_gemini raises ImportError -> fallback chain
+    # No other providers have keys -> all fail -> raises
+    with pytest.raises((ImportError, RuntimeError)):
+        svc.generate_completion("hi")
 
 
 def test_logger_correlation_and_setup(tmp_path: Path) -> None:

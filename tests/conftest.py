@@ -8,7 +8,7 @@ import pytest
 if "google" not in sys.modules:
     _google = types.ModuleType("google")
     _google.genai = types.ModuleType("google.genai")
-    _google.genai.Client = AsyncMock
+    _google.genai.Client = MagicMock
     _google.genai.types = types.ModuleType("google.genai.types")
     _google.genai.types.GenerateContentConfig = MagicMock
     sys.modules["google"] = _google

@@ -314,22 +314,22 @@ class TestLLMServiceResilience:
     def test_no_key_returns_mock(self) -> None:
         from src.llm_service import LLMService
 
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = svc.generate_completion("anything")
-        assert out.startswith("[Mock OpenAI Response]")
+        assert out.startswith("[Mock LLM Response]")
 
-    def test_unsupported_provider_raises(self) -> None:
+    def test_unsupported_provider_falls_back(self) -> None:
         from src.llm_service import LLMService
 
         svc = LLMService(api_key="k", provider="nope")
-        with pytest.raises(ValueError):
-            svc.generate_completion("x")
+        # Unknown provider triggers auto-detect; with a key it picks the
+        # first provider whose env var is set, or 'none' if none match.
+        assert svc.provider in ("gemini", "opencode", "openrouter", "none")
 
     def test_generate_completion_propagates_errors(self) -> None:
-
         from src.llm_service import LLMService
 
-        svc = LLMService(api_key="k", provider="openai")
+        svc = LLMService(api_key="k", provider="openrouter")
         with patch("openai.OpenAI", side_effect=RuntimeError("boom")):
             with pytest.raises(RuntimeError):
                 svc.generate_completion("x")

@@ -178,57 +178,58 @@ class TestLLMServiceCoverage:
         with pytest.raises(ValueError):
             svc.generate_completion("   ")
 
-    def test_mock_openai_no_key(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+    def test_mock_no_provider_available(self) -> None:
+        svc = LLMService(api_key=None, provider="none")
         out = svc.generate_completion("hello")
-        assert out.startswith("[Mock OpenAI Response]")
+        assert out.startswith("[Mock LLM Response]")
 
     def test_mock_gemini_no_key(self) -> None:
         svc = LLMService(api_key=None, provider="gemini")
         out = svc.generate_completion("hello")
-        assert out.startswith("[Mock Gemini Response]")
+        assert out.startswith("[Mock LLM Response]")
 
     def test_unsupported_provider(self) -> None:
         svc = LLMService(api_key="k", provider="banana")
-        with pytest.raises(ValueError):
-            svc.generate_completion("hi")
+        # With auto-detect, unknown provider falls back to first available
+        # or 'none' if no key matches. Either way, no crash.
+        assert svc.provider in ("gemini", "opencode", "openrouter", "none")
 
     def test_generate_text_alias(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = asyncio.run(svc.generate_text("x"))
         assert out.startswith("[Mock")
 
     def test_classify_text_with_categories(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = asyncio.run(svc.classify_text("text", categories=["A", "B"]))
         assert out.startswith("[Mock")
 
     def test_classify_text_no_categories(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = asyncio.run(svc.classify_text("text"))
         assert out.startswith("[Mock")
 
     def test_summarize(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = svc.summarize("long text")
         assert out.startswith("[Mock")
 
     @pytest.mark.asyncio
     async def test_summarize_release_notes(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = await svc.summarize_release_notes("notes")
         assert out.startswith("[Mock")
 
     @pytest.mark.asyncio
     async def test_enrich_feature(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = await svc.enrich_feature({"name": "x"})
         assert out["enriched"] is True
         assert "details" in out
 
     @pytest.mark.asyncio
     async def test_enrich_feature_with_context(self) -> None:
-        svc = LLMService(api_key=None, provider="openai")
+        svc = LLMService(api_key=None, provider="none")
         out = await svc.enrich_feature({"name": "x"}, context="ctx")
         assert out["enriched"] is True
 
@@ -237,7 +238,7 @@ class TestLLMServiceCoverage:
         async with LLMService(api_key="k") as svc:
             assert isinstance(svc, LLMService)
 
-    def test_generate_openai_with_client(self) -> None:
+    def test_generate_openai_compatible_with_client(self) -> None:
         from unittest.mock import MagicMock
 
         from openai import OpenAI  # noqa: F401
@@ -249,7 +250,7 @@ class TestLLMServiceCoverage:
         fake_client = MagicMock()
         fake_client.chat.completions.create.return_value = fake_resp
         with patch("openai.OpenAI", return_value=fake_client):
-            svc = LLMService(api_key="k", provider="openai")
+            svc = LLMService(api_key="k", provider="openrouter")
             out = svc.generate_completion("hi", system_instruction="sys")
         assert out == "result"
 

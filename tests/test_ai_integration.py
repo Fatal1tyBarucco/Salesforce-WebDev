@@ -32,8 +32,7 @@ from src.ai_automation import (
 # (Python Quality runs without LLM secrets).
 pytestmark = pytest.mark.skipif(
     not (
-        (os.getenv("OPENAI_API_KEY") and not os.getenv("_OPENAI_KEY_IS_PLACEHOLDER"))
-        or os.getenv("GEMINI_API_KEY")
+        os.getenv("GOOGLE_API_KEY")
         or os.getenv("OPENROUTER_API_KEY")
         or os.getenv("OPENCODE_API_KEY")
     ),

@@ -410,7 +410,7 @@ STUB_TEMPLATES = {
     "get_correlation_id": '\n\ndef get_correlation_id() -> str:\n    """Get the current correlation ID."""\n    return ""\n',
     "_setup_sentry": '\n\ndef _setup_sentry(dsn: object = None) -> None:\n    """Optionally initialize Sentry."""\n    pass\n',
     # LLM service stubs
-    "LLMProvider": '\n\n@dataclass\nclass LLMProvider:\n    """Configuration for an LLM provider."""\n    name: str\n    api_key: str\n    base_url: str = "https://api.openai.com/v1"\n    model: str = "gpt-4o"\n    provider_type: str = "openai"\n',
+    "LLMProvider": '\n\n@dataclass\nclass LLMProvider:\n    """Configuration for an LLM provider."""\n    name: str\n    api_key: str\n    base_url: str = ""\n    model: str = "gemini-2.5-flash"\n    provider_type: str = "gemini"\n',
     "CircuitBreakerConfig": '\n\n@dataclass\nclass CircuitBreakerConfig:\n    """Circuit breaker configuration."""\n    threshold: int = 5\n    cooldown: float = 30.0\n',
     "RateLimiter": '\n\nclass RateLimiter:\n    """Async rate limiter using sliding window."""\n\n    def __init__(self, max_requests: int = 10, window_seconds: float = 1.0) -> None:\n        self.max_requests = max_requests\n        self.window_seconds = window_seconds\n\n    async def acquire(self) -> None:\n        pass\n',
     # API stubs

@@ -117,7 +117,18 @@ class FeatureEnricher:
             release_context=release_context,
         )
 
-        result = await self._llm.generate_text(user_prompt, system_prompt)
+        try:
+            result = await self._llm.generate_text(user_prompt, system_prompt)
+        except Exception as err:
+            logger.warning(
+                "LLM enrichment failed for %s/%s, using fallback: %s",
+                category_name,
+                category_slug,
+                err,
+            )
+            return self._generate_fallback_enrichment(
+                category_name, category_slug, features
+            )
 
         if result:
             parsed = self._parse_llm_response(result, features)

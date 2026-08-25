@@ -16,6 +16,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# openai is kept as a core dep because OpenCode and OpenRouter use
+# the OpenAI-compatible client. google-genai is the primary provider.
 healing = [
     "fastapi>=0.115.0,<1",
     "uvicorn[standard]>=0.30.0,<1",

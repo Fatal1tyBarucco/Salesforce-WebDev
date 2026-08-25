@@ -421,7 +421,7 @@ class TestLLMServiceCoverage:
         """generate_text returns mock when no API key is configured."""
         from src.llm_service import LLMService
 
-        service = LLMService(api_key=None, provider="openai")
+        service = LLMService(api_key=None, provider="none")
         result = await service.generate_text("test prompt")
         assert result.startswith("[Mock")
 
@@ -430,7 +430,7 @@ class TestLLMServiceCoverage:
         """classify_text wraps generate_completion."""
         from src.llm_service import LLMService
 
-        service = LLMService(api_key=None, provider="openai")
+        service = LLMService(api_key=None, provider="none")
         result = await service.classify_text("test", ["Security"])
         assert "Security" in result
 
@@ -439,7 +439,7 @@ class TestLLMServiceCoverage:
         """classify_text handles non-JSON response gracefully."""
         from src.llm_service import LLMService
 
-        service = LLMService(api_key=None, provider="openai")
+        service = LLMService(api_key=None, provider="none")
         result = await service.classify_text("test", ["Security"])
         assert isinstance(result, str)
 
@@ -448,7 +448,7 @@ class TestLLMServiceCoverage:
         """classify_text returns a mock string for None-like responses."""
         from src.llm_service import LLMService
 
-        service = LLMService(api_key=None, provider="openai")
+        service = LLMService(api_key=None, provider="none")
         result = await service.classify_text("test", ["Security"])
         assert isinstance(result, str)
 
@@ -457,7 +457,7 @@ class TestLLMServiceCoverage:
 
         service = LLMService(api_key=None, provider="gemini")
         out = service.generate_completion("hi", system_instruction="s")
-        assert out.startswith("[Mock Gemini Response]")
+        assert out.startswith("[Mock LLM Response]")
 
 
 # ---------------------------------------------------------------------------

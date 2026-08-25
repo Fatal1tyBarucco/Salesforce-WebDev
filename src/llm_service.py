@@ -1,7 +1,16 @@
-"""LLM Service module for interacting with OpenAI and Google Gemini models."""
+"""LLM Service module with multi-provider fallback chain.
+
+Provider priority:
+  1. Google Gemini (primary — user has Google AI Plus subscription)
+  2. OpenCode (secondary — free tier)
+  3. OpenRouter free models (tertiary — free tier fallback)
+
+OpenAI support has been removed (no credits allocated).
+"""
 
 import logging
 import os
+from dataclasses import dataclass, field
 from typing import Any, Self
 
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -15,26 +24,142 @@ except ImportError:  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Provider configuration
+# ---------------------------------------------------------------------------
+
+# Free models on OpenRouter that work without credits
+_OPENROUTER_FREE_MODELS = [
+    "google/gemma-3-1b-it:free",
+    "meta-llama/llama-4-scout:free",
+    "deepseek/deepseek-r1-0528:free",
+]
+
+
+@dataclass
+class _ProviderConfig:
+    """Internal provider configuration."""
+
+    name: str
+    api_key_env: str
+    base_url: str = ""
+    default_model: str = ""
+    fallback_models: list[str] = field(default_factory=list)
+
+
+# Ordered by priority (first = preferred)
+_PROVIDER_CHAIN: list[_ProviderConfig] = [
+    _ProviderConfig(
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-2.5-flash",
+    ),
+    _ProviderConfig(
+        name="opencode",
+        api_key_env="OPENCODE_API_KEY",
+        base_url="https://opencode-ai.serper.dev/v1",
+        default_model="google/gemini-2.5-flash",
+    ),
+    _ProviderConfig(
+        name="openrouter",
+        api_key_env="OPENROUTER_API_KEY",
+        base_url="https://openrouter.ai/api/v1",
+        default_model="google/gemma-3-1b-it:free",
+        fallback_models=_OPENROUTER_FREE_MODELS,
+    ),
+]
+
 
 class LLMService:
-    """Service class for handling interactions with Large Language Models."""
+    """Service class for handling interactions with Large Language Models.
+
+    Supports multiple providers with automatic fallback:
+      1. Google Gemini (primary)
+      2. OpenCode (secondary)
+      3. OpenRouter free models (tertiary)
+    """
 
     def __init__(
         self,
         api_key: str | None = None,
-        model_name: str = "gpt-4o",
-        provider: str = "openai",
+        model_name: str | None = None,
+        provider: str | None = None,
     ) -> None:
         """Initialize the LLM Service.
 
         Args:
-            api_key: Optional API key for the model provider.
-            model_name: Name of the model to use.
-            provider: Provider name ('openai' or 'gemini').
+            api_key: Optional API key override. If None, resolved from env.
+            model_name: Model override. If None, uses provider default.
+            provider: Provider override. If None, auto-detects from available keys.
         """
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
-        self.model_name = model_name
-        self.provider = provider.lower()
+        self._provider_chain = list(_PROVIDER_CHAIN)
+        self._active_provider: _ProviderConfig | None = None
+        self._tried_providers: set[str] = set()
+
+        if provider:
+            # Explicit provider requested
+            cfg = self._find_provider_config(provider)
+            if cfg:
+                resolved_key = api_key or os.getenv(cfg.api_key_env, "")
+                if resolved_key:
+                    self._active_provider = cfg
+                    self.api_key = resolved_key
+                    self.model_name = model_name or cfg.default_model
+                    self.provider = cfg.name
+                    return
+            # Fallback: try auto-detect below
+
+        # Auto-detect: find first provider with a valid API key
+        for cfg in self._provider_chain:
+            resolved_key = api_key or os.getenv(cfg.api_key_env, "")
+            if resolved_key:
+                self._active_provider = cfg
+                self.api_key = resolved_key
+                self.model_name = model_name or cfg.default_model
+                self.provider = cfg.name
+                return
+
+        # No provider available — will return mock responses
+        self.api_key = ""
+        self.model_name = model_name or "mock"
+        self.provider = "none"
+        self._active_provider = None
+        logger.warning("No LLM API key configured. Service will return mock responses.")
+
+    @staticmethod
+    def _find_provider_config(name: str) -> _ProviderConfig | None:
+        """Find a provider config by name."""
+        name_lower = name.lower()
+        for cfg in _PROVIDER_CHAIN:
+            if cfg.name == name_lower:
+                return cfg
+        return None
+
+    def _next_fallback_provider(self) -> _ProviderConfig | None:
+        """Get the next untried provider from the chain."""
+        for cfg in self._provider_chain:
+            if cfg.name not in self._tried_providers:
+                key = os.getenv(cfg.api_key_env, "")
+                if key:
+                    return cfg
+        return None
+
+    def _switch_to_next_provider(self) -> bool:
+        """Switch to the next available fallback provider. Returns True if switched."""
+        self._tried_providers.add(self.provider)
+        next_cfg = self._next_fallback_provider()
+        if next_cfg:
+            self._active_provider = next_cfg
+            self.api_key = os.getenv(next_cfg.api_key_env, "")
+            self.model_name = next_cfg.default_model
+            self.provider = next_cfg.name
+            logger.info(
+                "Switching to fallback provider=%s, model=%s",
+                self.provider,
+                self.model_name,
+            )
+            return True
+        return False
 
     @retry(
         stop=stop_after_attempt(3),
@@ -50,6 +175,8 @@ class LLMService:
     ) -> str:
         """Generate text completion using the configured LLM provider.
 
+        Automatically falls back to the next provider in the chain on failure.
+
         Args:
             prompt: The input user prompt.
             system_instruction: Optional system prompt to guide behavior.
@@ -62,6 +189,10 @@ class LLMService:
         if not prompt or not prompt.strip():
             raise ValueError("Prompt cannot be empty.")
 
+        if self.provider == "none":
+            logger.warning("No LLM provider available, returning mock response.")
+            return f"[Mock LLM Response] Prompt: {prompt[:50]}..."
+
         logger.info(
             "Generating completion using provider=%s, model=%s",
             self.provider,
@@ -69,63 +200,51 @@ class LLMService:
         )
 
         try:
-            if self.provider == "openai":
-                if not self.api_key:
-                    logger.warning("No OpenAI API key configured, returning mock response.")
-                    return f"[Mock OpenAI Response] Prompt: {prompt[:50]}..."
-                return self._generate_openai(
-                    prompt=prompt,
-                    system_instruction=system_instruction,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            elif self.provider in ("gemini", "google"):
-                if not self.api_key:
-                    logger.warning("No Gemini API key configured, returning mock response.")
-                    return f"[Mock Gemini Response] Prompt: {prompt[:50]}..."
-                return self._generate_gemini(
-                    prompt=prompt,
-                    system_instruction=system_instruction,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            else:
-                raise ValueError(f"Unsupported LLM provider: {self.provider}")
+            return self._dispatch_to_provider(
+                prompt=prompt,
+                system_instruction=system_instruction,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
         except Exception as err:
-            logger.error("Failed to generate completion from LLM: %s", err)
+            logger.error(
+                "Provider=%s failed: %s. Attempting fallback...",
+                self.provider,
+                err,
+            )
+            if self._switch_to_next_provider():
+                return self._dispatch_to_provider(
+                    prompt=prompt,
+                    system_instruction=system_instruction,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
             raise
 
-    def _generate_openai(
+    def _dispatch_to_provider(
         self,
         prompt: str,
         system_instruction: str | None,
         temperature: float,
         max_tokens: int | None,
     ) -> str:
-        """Generate response via OpenAI API."""
-        try:
-            from openai import OpenAI
-
-            client = OpenAI(api_key=self.api_key)
-            messages: list[dict[str, Any]] = []
-
-            if system_instruction:
-                messages.append({"role": "system", "content": system_instruction})
-
-            messages.append({"role": "user", "content": prompt})
-
-            response = client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,  # type: ignore[arg-type]
+        """Dispatch the request to the currently active provider."""
+        if self.provider == "gemini":
+            return self._generate_gemini(
+                prompt=prompt,
+                system_instruction=system_instruction,
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-
-            content = response.choices[0].message.content
-            return content.strip() if content else ""
-        except ImportError:
-            logger.warning("OpenAI package not available, returning mock response.")
-            return f"[Mock OpenAI Response] Prompt: {prompt[:50]}..."
+        elif self.provider in ("opencode", "openrouter"):
+            return self._generate_openai_compatible(
+                prompt=prompt,
+                system_instruction=system_instruction,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+        else:
+            raise ValueError(f"Unsupported LLM provider: {self.provider}")
 
     def _generate_gemini(
         self,
@@ -135,21 +254,64 @@ class LLMService:
         max_tokens: int | None,
     ) -> str:
         """Generate response via Google Gemini API."""
+        if genai is None:
+            raise ImportError("google.genai package not available")
+
+        client = genai.Client(api_key=self.api_key)
+        full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
+
+        response = client.models.generate_content(
+            model=self.model_name,
+            contents=full_prompt,
+        )
+
+        return response.text.strip() if response.text else ""
+
+    def _generate_openai_compatible(
+        self,
+        prompt: str,
+        system_instruction: str | None,
+        temperature: float,
+        max_tokens: int | None,
+    ) -> str:
+        """Generate response via OpenAI-compatible API (OpenCode, OpenRouter)."""
         try:
-            if genai is None:
-                raise ImportError("google.genai not available")
-            client = genai.Client(api_key=self.api_key or "")
-            full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
-
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt,
-            )
-
-            return response.text.strip() if response.text else ""
+            from openai import OpenAI
         except ImportError:
-            logger.warning("Google GenAI package not available, returning mock response.")
-            return f"[Mock Gemini Response] Prompt: {prompt[:50]}..."
+            raise ImportError("openai package required for OpenAI-compatible providers")
+
+        assert self._active_provider is not None
+        client = OpenAI(
+            api_key=self.api_key,
+            base_url=self._active_provider.base_url,
+        )
+        messages: list[dict[str, Any]] = []
+
+        if system_instruction:
+            messages.append({"role": "system", "content": system_instruction})
+
+        messages.append({"role": "user", "content": prompt})
+
+        # Try primary model, then fallback models
+        models_to_try = [self.model_name] + self._active_provider.fallback_models
+        last_error: Exception | None = None
+
+        for model in models_to_try:
+            try:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,  # type: ignore[arg-type]
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+                content = response.choices[0].message.content
+                return content.strip() if content else ""
+            except Exception as err:
+                logger.warning("Model %s failed: %s", model, err)
+                last_error = err
+                continue
+
+        raise last_error or RuntimeError("All models failed")
 
     async def generate_text(
         self,
