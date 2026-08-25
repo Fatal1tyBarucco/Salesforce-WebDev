@@ -585,11 +585,13 @@ class SalesforceReleaseScraper:
         if self._browser and self._browser.is_connected():
             return True
         try:
-            if self._playwright:
-                self._browser = await self._playwright.chromium.launch(headless=True)
-                logger.info("Browser relaunched successfully")
-                return True
-        except (BrowserError, OSError) as e:
+            if not self._playwright:
+                self._playwright = await async_playwright().start()
+                logger.info("Playwright instance started")
+            self._browser = await self._playwright.chromium.launch(headless=True)
+            logger.info("Browser relaunched successfully")
+            return True
+        except (BrowserError, OSError, PlaywrightError) as e:
             logger.error("Failed to relaunch browser: %s", e)
         return False
 
