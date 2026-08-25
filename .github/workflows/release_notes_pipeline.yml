@@ -96,7 +96,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Instalar Playwright browsers
-        run: uv run playwright install chromium
+        run: uv run playwright install --with-deps chromium
 
       - name: Instalar GitHub CLI
         run: sudo apt-get install -y gh
