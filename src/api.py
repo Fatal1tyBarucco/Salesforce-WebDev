@@ -57,13 +57,13 @@ def verify_api_key(x_api_key: str | None = Header(None)) -> str:
     return x_api_key
 
 
-@app.get("/health")
+@app.get("/health")  # type: ignore[misc,untyped-decorator]
 def health_check() -> dict[str, str]:
     """Public health check endpoint."""
     return {"status": "ok", "service": "salesforce-webdev-api"}
 
 
-@app.post("/v1/triage", response_model=TriageResponse)
+@app.post("/v1/triage", response_model=TriageResponse)  # type: ignore[misc,untyped-decorator]
 def triage_issue(
     payload: TriageRequest,
     api_key: str = Depends(verify_api_key),
@@ -91,7 +91,7 @@ def triage_issue(
     )
 
 
-@app.post("/v1/search")
+@app.post("/v1/search")  # type: ignore[misc,untyped-decorator]
 def natural_language_search(
     payload: SearchRequest,
     api_key: str = Depends(verify_api_key),
