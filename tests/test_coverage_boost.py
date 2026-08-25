@@ -142,12 +142,12 @@ class TestReleaseDocsCoverage:
         assert result == set()
 
     def test_find_existing_releases_with_dirs(self, tmp_path: Path) -> None:
-        """_find_existing_releases returns slugs for dirs with .md files."""
+        """_find_existing_releases returns slugs for dirs with .meta.json."""
         from src.release_docs import _find_existing_releases
 
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / "test.md").write_text("# Test")
+        (d / ".meta.json").write_text('{"name": "Summer 26"}')
 
         with patch("src.release_docs.RELEASES_DIR", str(tmp_path)):
             result = _find_existing_releases()
