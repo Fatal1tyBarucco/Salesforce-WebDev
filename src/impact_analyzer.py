@@ -101,6 +101,7 @@ class ImpactAnalyzer:
                         {
                             "feature_type": FeatureType(fallback.get("type", "other")),
                             "impact_level": ImpactLevel(fallback.get("impact", "medium")),
+                            "impact": ImpactLevel(fallback.get("impact", "medium")),
                             "confidence": fallback.get("confidence", 0.3),
                         },
                     )()
@@ -222,6 +223,7 @@ class ImpactAnalyzer:
                         {
                             "feature_type": FeatureType(fallback.get("type", "other")),
                             "impact_level": ImpactLevel(fallback.get("impact", "medium")),
+                            "impact": ImpactLevel(fallback.get("impact", "medium")),
                             "confidence": fallback.get("confidence", 0.3),
                         },
                     )()

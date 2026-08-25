@@ -488,5 +488,10 @@ class APIHandler(BaseHTTPRequestHandler):
 
 
 def start_api_server(host: str = "127.0.0.1", port: int = 8080) -> HTTPServer:
-    """Start HTTP server."""
-    return HTTPServer((host, port), APIHandler)
+    """Start HTTP server and serve requests in a background thread."""
+    import threading
+
+    server = HTTPServer((host, port), APIHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server

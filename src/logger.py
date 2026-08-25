@@ -145,6 +145,24 @@ def setup_logging(
     return root
 
 
-def _setup_sentry(dsn: object = None) -> None:
-    """No-op sentry setup."""
-    return
+def _setup_sentry(dsn: Optional[str] = None) -> None:
+    """Initialize Sentry if a DSN is configured."""
+    if dsn is None:
+        dsn = os.getenv("SENTRY_DSN")
+    if not dsn:
+        return
+    try:
+        import sentry_sdk
+    except ImportError:
+        return
+    init_kwargs: dict[str, object] = {"dsn": dsn}
+    traces = os.getenv("SENTRY_TRACES_SAMPLE_RATE")
+    if traces:
+        try:
+            init_kwargs["traces_sample_rate"] = float(traces)
+        except ValueError:
+            pass
+    env = os.getenv("SENTRY_ENVIRONMENT")
+    if env:
+        init_kwargs["environment"] = env
+    sentry_sdk.init(**init_kwargs)

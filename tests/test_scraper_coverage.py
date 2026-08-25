@@ -87,12 +87,16 @@ class TestRateLimiter:
         # Should not block
 
     def test_acquire_respects_interval(self) -> None:
-        rl = RateLimiter(min_interval=0.01)
-        asyncio.run(rl.acquire())
-        start = time.monotonic()
-        asyncio.run(rl.acquire())
-        elapsed = time.monotonic() - start
-        assert elapsed >= 0.01
+        rl = RateLimiter(min_interval=0.05)
+
+        async def run() -> float:
+            await rl.acquire()
+            start = time.monotonic()
+            await rl.acquire()
+            return time.monotonic() - start
+
+        elapsed = asyncio.run(run())
+        assert elapsed >= 0.05
 
 
 class TestScraperAsyncMethods:
