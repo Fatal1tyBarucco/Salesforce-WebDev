@@ -335,6 +335,76 @@ class TestLLMServiceResilience:
                 svc.generate_completion("x")
 
 
+# ── LLM Service provider chain coverage ────────────────────────────
+
+
+class TestLLMProviderChain:
+    """Tests for the multi-provider fallback chain."""
+
+    def test_find_provider_config_valid(self) -> None:
+        from src.llm_service import LLMService
+
+        cfg = LLMService._find_provider_config("gemini")
+        assert cfg is not None
+        assert cfg.name == "gemini"
+
+    def test_find_provider_config_invalid(self) -> None:
+        from src.llm_service import LLMService
+
+        cfg = LLMService._find_provider_config("nonexistent")
+        assert cfg is None
+
+    def test_switch_to_next_provider_no_fallback(self, monkeypatch) -> None:
+        from src.llm_service import LLMService
+
+        monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+        monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        svc = LLMService(api_key=None, provider="none")
+        # No providers available -> switch returns False
+        assert svc._switch_to_next_provider() is False
+
+    def test_dispatch_unsupported_provider(self) -> None:
+        from src.llm_service import LLMService
+
+        svc = LLMService(api_key="k", provider="gemini")
+        svc.provider = "unknown_provider"
+        with pytest.raises(ValueError, match="Unsupported LLM provider"):
+            svc._dispatch_to_provider("hi", None, 0.7, 100)
+
+    def test_openai_compatible_all_models_fail(self, monkeypatch) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from src.llm_service import LLMService
+
+        fake_client = MagicMock()
+        fake_client.chat.completions.create.side_effect = RuntimeError("boom")
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter")
+            with pytest.raises(RuntimeError):
+                svc._generate_openai_compatible("hi", None, 0.7, 100)
+
+    def test_openai_compatible_fallback_model(self, monkeypatch) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from src.llm_service import LLMService
+
+        fake_choice = MagicMock()
+        fake_choice.message.content = "fallback result"
+        fake_resp = MagicMock()
+        fake_resp.choices = [fake_choice]
+        fake_client = MagicMock()
+        # First model fails, second succeeds
+        fake_client.chat.completions.create.side_effect = [
+            RuntimeError("model unavailable"),
+            fake_resp,
+        ]
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter")
+            out = svc._generate_openai_compatible("hi", None, 0.7, 100)
+            assert out == "fallback result"
+
+
 # ── Automation Service edge cases ──────────────────────────────────
 
 

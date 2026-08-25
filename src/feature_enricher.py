@@ -126,9 +126,7 @@ class FeatureEnricher:
                 category_slug,
                 err,
             )
-            return self._generate_fallback_enrichment(
-                category_name, category_slug, features
-            )
+            return self._generate_fallback_enrichment(category_name, category_slug, features)
 
         if result:
             parsed = self._parse_llm_response(result, features)
