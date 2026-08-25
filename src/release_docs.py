@@ -72,11 +72,7 @@ def _find_existing_releases() -> set[str]:
     releases_dir = Path(RELEASES_DIR)
     if not releases_dir.exists():
         return set()
-    return {
-        d.name
-        for d in releases_dir.iterdir()
-        if d.is_dir() and (d / ".meta.json").exists()
-    }
+    return {d.name for d in releases_dir.iterdir() if d.is_dir() and (d / ".meta.json").exists()}
 
 
 def _build_release_name(release_id: int) -> str:
