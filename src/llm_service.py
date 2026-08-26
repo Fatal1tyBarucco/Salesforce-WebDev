@@ -52,13 +52,13 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
         name="gemini",
         api_key_env="GOOGLE_API_KEY",
-        default_model="gemini-2.5-flash",
+        default_model="gemini-3.6-flash",
     ),
     _ProviderConfig(
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
         base_url="https://opencode-ai.serper.dev/v1",
-        default_model="google/gemini-2.5-flash",
+        default_model="google/gemini-3.6-flash",
     ),
     _ProviderConfig(
         name="openrouter",
