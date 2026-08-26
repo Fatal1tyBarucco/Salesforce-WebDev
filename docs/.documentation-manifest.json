@@ -1,5 +1,8 @@
 {
   "documentation_map": {
+    ".github/scripts/build_failure_issue.py": [
+      "docs/maintenance/workflow-operations.md"
+    ],
     ".github/workflows/python-quality.yml": [
       "docs/auto-healing/runbooks/troubleshooting.md"
     ],
@@ -61,6 +64,7 @@
     ],
     "src/llm_service.py": [
       "docs/api/llm_service.md",
+      "docs/architecture/decisions/adr-005-documentation-reconciliation.md",
       "docs/improvements.md",
       "docs/refatoracao.md"
     ],
@@ -118,15 +122,19 @@
     ".github/ISSUE_TEMPLATE/feature_request.md": "18c140ace665dab0a02869545a523584b37817b2",
     ".github/dependabot.yml": "ec76a0a6b7fb35c0d5996bfd80ae19dbb38044fa",
     ".github/pull_request_template.md": "8a68b77252c7e7cc402d993321f7b3c330b4f577",
+    ".github/scripts/build_failure_issue.py": "4f1152bcac06e4abcb90694a03f01640919fa905",
+    ".github/scripts/documentation_reconcile.py": "d9db2ff8b2808e249025728c3e7fac0c249e233d",
+    ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/agent-validation.yml": "bc638d931d8b25174937878ed4b4f4165c692a96",
     ".github/workflows/black.yml": "1ebfc208a5f667167d236f7e555dfb6a13029cc1",
     ".github/workflows/dependency-review.yml": "ff51fef04d8283072bc1a8daaaca44b692427f32",
     ".github/workflows/documentation-build.yml": "5f55df4667e3925d21395f3a4f3fd6192926b96c",
+    ".github/workflows/documentation-sync.yml": "246f276cc1a305f23dca53b52b96643dfc99492a",
     ".github/workflows/opencode.yml": "d480a4ad7d28ff27559819585633956431500bfb",
     ".github/workflows/python-quality.yml": "8ec30452ff2c21ab839019d5f5d040f93f8f7583",
-    ".github/workflows/release_notes_pipeline.yml": "056bc08a35384277fd553f8321cf1ffe01847f11",
+    ".github/workflows/release_notes_pipeline.yml": "aa8f54bf71ca4a062f07fb01168ef1e8f850a3ea",
     ".gitignore": "708f887bf60a58e809ea8dd3e681945b4caf9e55",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".pre-commit-config.yaml": "e3e5bc41d11e19186b796f61946c23550374caca",
@@ -140,13 +148,14 @@
     "PLANO_DE_ACAO.md": "36f228992bfd0a4b7853253420450bfdcdaf944e",
     "QUALITY_REPORT.md": "80dc1ad7465bcefee0e1e663d0a24d0c477e5ba7",
     "README.en.md": "29cf5b3f4b3ef280018ea35b6f07dd36ef026edc",
-    "README.md": "60b06d12ee2ca8eeb9c7798248c6545039332980",
+    "README.md": "6addc6bee3201a1a5293de2f0c78908cdcd6fd69",
     "REGRESSION_REPORT.md": "57026c820d1fd8c187f236461cb4115372caeff2",
     "assets/banner.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "34bb5948d2c514fded6a09104eb2188c60774679",
     "audit-fix.patch": "46535f23a3fc8c73d6eb4aaea84df481a498ca1d",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
+    "docs/.documentation-manifest.json": "e9bee760a12548d7ef604bf38e37cfc69fde0361",
     "docs/PLANO_DE_ACAO.md": "07268bb384e3b1debeb0db5a4589e9d7adc3072f",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -161,6 +170,7 @@
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
     "docs/architecture/decisions/adr-003-topic-classification.md": "0b5af8d9e4f2e944218dd594939474733c568d3e",
     "docs/architecture/decisions/adr-004-auto-healing-agent.md": "4e0fbaeb22e8f4f2571f20140013f79c78cf3d15",
+    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "ef6cf9581567f740de73301b0895ebb2c77183a0",
     "docs/architecture/overview.md": "e42ca5b9c93a3dbaee5e72892cffdb793949bc08",
     "docs/auto-healing/architecture/deep-dive.md": "284ca9fb710dfa289c57293bff2d16a0968d3088",
     "docs/auto-healing/deployment/guide.md": "e0436d6b06714e87882d74a9466c5f6bb1dbf74d",
@@ -188,11 +198,10 @@
     "docs/roadmap/v4.md": "09c38654124d1e702780f897694f9937f676e5ed",
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
     "docs/runbooks/scraper-failure.md": "3c17ebb5f6c1c186ec4a1a4e63264fd780221db5",
-    "docs/tmp/prompt.md": "a9019aea8c01971b9ed7b331705a0ba32e7dbb06",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "ae5256a28f43a4fcfbedefd98a5841b79e96a6d8",
+    "mkdocs.yml": "ce667d568d66042d0f2fcd87f2ad0d7b8b37031d",
     "pyproject.toml": "9b6550ffc8e75852cbe9ba09c6df2c95ed7677fe",
     "releases/spring_26/.meta.json": "ff6e937e001b035d0f1ffa150cdc4fc88dab363f",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -445,6 +454,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "00c1e9851da7e9e722455ace35d47c06c890557b"
   },
-  "generated_at": "2026-08-26T02:53:41.669629+00:00",
-  "repository_sha": "4b17db1b56c71705f4f4c2cd1ef557fa58a52c38"
+  "generated_at": "2026-08-26T04:41:46.953269+00:00",
+  "repository_sha": "21a565bddbfab5a7c6f5251a50e99e98dec536ff"
 }
