@@ -57,8 +57,15 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
-        base_url="https://opencode-ai.serper.dev/v1",
+        base_url="https://opencode.ai/zen/v1",
         default_model="hy3-free",
+        fallback_models=[
+            "x-preview-f-free",
+            "glm-5-free",
+            "deepseek-v4-flash-free",
+            "kimi-k2.5-free",
+            "minimax-m2.5-free",
+        ],
     ),
     _ProviderConfig(
         name="openrouter",
