@@ -1,0 +1,160 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║      📚 Documentation Sync — Continuous Reconciliation           ║
+# ║  Repository = Source of Truth → Drift Detection → LLM Reconcile  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Flowchart:
+#   Push/Schedule/Manual → Inventory → Manifest Diff → Drift Report
+#     → LLM Reconciliation (LLMService: Gemini→OpenCode→OpenRouter)
+#     → mkdocs build --strict → Commit docs → Pages deploy (via documentation-build.yml)
+#
+# Modes: incremental (push) · full (schedule) · audit (analysis only)
+# Anti-loop: skips when HEAD commit is an automation commit (docs(sync): by bot)
+
+name: 📚 Documentation Sync
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Modo de reconciliação"
+        required: false
+        default: "incremental"
+        type: choice
+        options:
+          - incremental
+          - full
+          - audit
+
+permissions:
+  contents: write
+
+concurrency:
+  group: documentation-sync
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  sync:
+    name: 🔁 Detectar e reconciliar drift documental
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Guard anti-loop (commits de automação)
+        id: guard
+        run: |
+          LAST_AUTHOR=$(git log -1 --pretty=%an)
+          LAST_MSG=$(git log -1 --pretty=%s)
+          if [ "$LAST_AUTHOR" = "github-actions[bot]" ] && [[ "$LAST_MSG" == "docs(sync)"* ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "⏭️ Commit anterior é automação do próprio sync ($LAST_MSG) — encerrando."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup uv
+        if: steps.guard.outputs.skip != 'true'
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        if: steps.guard.outputs.skip != 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Instalar dependências
+        if: steps.guard.outputs.skip != 'true'
+        run: uv sync --frozen --extra dev --extra docs
+
+      - name: Resolver modo de execução
+        if: steps.guard.outputs.skip != 'true'
+        id: mode
+        run: |
+          case "${{ github.event_name }}" in
+            push)     MODE="incremental" ;;
+            schedule) MODE="full" ;;
+            *)        MODE="${{ github.event.inputs.mode || 'incremental' }}" ;;
+          esac
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "▶️ Modo: $MODE"
+
+      - name: Detecção determinística de drift
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          uv run python .github/scripts/documentation_sync.py drift \
+            --mode "${{ steps.mode.outputs.mode }}" \
+            --report /tmp/drift_report.json
+
+      - name: Reconciliação semântica via LLM
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          DRIFT_REPORT: /tmp/drift_report.json
+          SYNC_MODE: ${{ steps.mode.outputs.mode }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          uv run python .github/scripts/documentation_reconcile.py | tee /tmp/reconcile_summary.md
+
+      - name: Validar documentação (mkdocs strict)
+        if: steps.guard.outputs.skip != 'true'
+        run: uv run mkdocs build --strict
+
+      - name: Verificar alterações documentais
+        if: steps.guard.outputs.skip != 'true'
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain docs/ README.md README.en.md mkdocs.yml)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "✅ Documentação já reflete o estado do repositório — nada a commitar."
+          fi
+
+      - name: Atualizar manifesto de baseline
+        if: |
+          steps.guard.outputs.skip != 'true' &&
+          steps.changes.outputs.has_changes == 'true' &&
+          steps.mode.outputs.mode != 'audit'
+        run: uv run python .github/scripts/documentation_sync.py manifest
+
+      - name: Configurar identidade do bot para commits
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit e push da documentação reconciliada
+        if: |
+          steps.guard.outputs.skip != 'true' &&
+          steps.changes.outputs.has_changes == 'true' &&
+          steps.mode.outputs.mode != 'audit'
+        run: |
+          git pull origin ${{ github.ref_name }}
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          git add docs/ README.md README.en.md mkdocs.yml
+          git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
+          git push --force-with-lease origin HEAD:${{ github.ref_name }}
+
+      - name: Sumário da execução
+        if: always() && steps.guard.outputs.skip != 'true'
+        run: |
+          echo "## 📚 Documentation Sync — ${{ steps.mode.outputs.mode || 'n/a' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f /tmp/reconcile_summary.md ]; then
+            cat /tmp/reconcile_summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Repository State == Documentation State == GitHub Pages" >> $GITHUB_STEP_SUMMARY

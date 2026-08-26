@@ -77,6 +77,7 @@ nav:
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
       - ADR-004 Auto-Healing Agent: architecture/decisions/adr-004-auto-healing-agent.md
+      - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
   - Auto-Healing Agent:
     - Visão Geral: auto-healing/index.md
     - Arquitetura:
