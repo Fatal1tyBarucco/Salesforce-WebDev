@@ -28,12 +28,20 @@ logger = logging.getLogger(__name__)
 # Provider configuration
 # ---------------------------------------------------------------------------
 
-# Free models on OpenRouter that work without credits
+# Free models on OpenRouter verified live via /api/v1/models (pricing == 0).
+# Slugs go stale when providers move models to paid tiers — refresh periodically.
 _OPENROUTER_FREE_MODELS = [
-    "google/gemma-3-1b-it:free",
-    "meta-llama/llama-4-scout:free",
-    "deepseek/deepseek-r1-0528:free",
+    "google/gemma-4-31b-it:free",
+    "z-ai/glm-5.2:free",
+    "minimax/minimax-m2.7:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "poolside/laguna-s-2.1:free",
+    "thinkingmachines/inkling:free",
 ]
+
+# Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
+# whole pipeline for hours (observed in run #127: 3h18m before fatal exit).
+LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 60)
 
 
 @dataclass
@@ -71,7 +79,7 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         name="openrouter",
         api_key_env="OPENROUTER_API_KEY",
         base_url="https://openrouter.ai/api/v1",
-        default_model="google/gemma-3-1b-it:free",
+        default_model="google/gemma-4-31b-it:free",
         fallback_models=_OPENROUTER_FREE_MODELS,
     ),
 ]
@@ -207,26 +215,39 @@ class LLMService:
         )
 
         try:
-            return self._dispatch_to_provider(
+            result = self._dispatch_to_provider(
                 prompt=prompt,
                 system_instruction=system_instruction,
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
+            # Success clears the blacklist so transient failures on one call
+            # don't permanently skip providers for the rest of a long run.
+            self._tried_providers.clear()
+            return result
         except Exception as err:
             logger.error(
                 "Provider=%s failed: %s. Attempting fallback...",
                 self.provider,
                 err,
             )
-            if self._switch_to_next_provider():
-                return self._dispatch_to_provider(
-                    prompt=prompt,
-                    system_instruction=system_instruction,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            raise
+            last_err: Exception = err
+            while self._switch_to_next_provider():
+                try:
+                    return self._dispatch_to_provider(
+                        prompt=prompt,
+                        system_instruction=system_instruction,
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                    )
+                except Exception as next_err:
+                    logger.error(
+                        "Fallback provider=%s failed: %s. Continuing chain...",
+                        self.provider,
+                        next_err,
+                    )
+                    last_err = next_err
+            raise last_err
 
     def _dispatch_to_provider(
         self,
@@ -261,16 +282,27 @@ class LLMService:
         max_tokens: int | None,
     ) -> str:
         """Generate response via Google Gemini API."""
+        import concurrent.futures
+
         if genai is None:
             raise ImportError("google.genai package not available")
 
         client = genai.Client(api_key=self.api_key)
         full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
 
-        response = client.models.generate_content(
-            model=self.model_name,
-            contents=full_prompt,
-        )
+        def _gen() -> Any:
+            return client.models.generate_content(
+                model=self.model_name,
+                contents=full_prompt,
+            )
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+            future = ex.submit(_gen)
+            try:
+                response = future.result(timeout=LLM_CALL_TIMEOUT_S)
+            except concurrent.futures.TimeoutError:
+                future.cancel()
+                raise RuntimeError(f"Gemini call timed out after {LLM_CALL_TIMEOUT_S}s")
 
         return response.text.strip() if response.text else ""
 
@@ -291,6 +323,8 @@ class LLMService:
         client = OpenAI(
             api_key=self.api_key,
             base_url=self._active_provider.base_url,
+            timeout=LLM_CALL_TIMEOUT_S,
+            max_retries=0,
         )
         messages: list[dict[str, Any]] = []
 

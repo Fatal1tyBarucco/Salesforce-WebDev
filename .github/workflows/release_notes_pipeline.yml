@@ -50,6 +50,7 @@ jobs:
   lint:
     name: 🔍 Lint & Type Check
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -93,6 +94,7 @@ jobs:
   extract:
     name: 📥 Extração e Geração de Artefatos
     runs-on: ubuntu-latest
+    timeout-minutes: 240
     needs: lint
     steps:
       - name: Checkout do repositório
@@ -411,6 +413,7 @@ jobs:
   create-issue:
     name: 📝 Issue com Diagnóstico de Falhas
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [lint, extract]
     if: always() && (needs.lint.result == 'failure' || needs.extract.result == 'failure')
     steps:
