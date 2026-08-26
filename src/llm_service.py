@@ -58,7 +58,7 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
         base_url="https://opencode-ai.serper.dev/v1",
-        default_model="google/gemini-3.6-flash",
+        default_model="hy3-free",
     ),
     _ProviderConfig(
         name="openrouter",

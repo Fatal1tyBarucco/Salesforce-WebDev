@@ -296,7 +296,7 @@ _PROVIDER_DISABLED = set()
 
 
 def _opencode_models():
-    primary = os.environ.get("OPENCODE_MODEL") or "x-preview-f-free"
+    primary = os.environ.get("OPENCODE_MODEL") or "hy3-free"
     if os.environ.get("OPENCODE_MODEL"):
         return [primary]
     # Free-model pool. Individual free models go down regularly (503 upstream
@@ -304,7 +304,7 @@ def _opencode_models():
     # sweep the remaining free Zen models before giving up on OpenCode.
     return [
         primary,
-        "hy3-free",
+        "x-preview-f-free",
         "glm-5-free",
         "deepseek-v4-flash-free",
         "kimi-k2.5-free",
