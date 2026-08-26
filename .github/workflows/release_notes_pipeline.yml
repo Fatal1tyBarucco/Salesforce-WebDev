@@ -6,6 +6,7 @@
 # Jobs:
 #   1. Lint & Type Check (ruff, mypy)
 #   2. Extract & Generate (scrape, parse, generate, commit)
+#   3. Create Issue on Failure (diagnóstico didático com plano de ação)
 #
 # Schedule: Weekly on Monday at 08:00 UTC
 # Manual: workflow_dispatch with optional release_slug and dry_run
@@ -65,13 +66,29 @@ jobs:
         run: uv sync --frozen --extra dev --group dev
 
       - name: Ruff — Linting e formatação
-        run: uv run ruff check src/ --output-format=github
+        run: |
+          set -o pipefail
+          mkdir -p /tmp/pipeline_logs
+          uv run ruff check src/ --output-format=github 2>&1 | tee /tmp/pipeline_logs/lint_ruff.log
 
       - name: Mypy — Verificação de tipos estáticos
-        run: uv run mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
+        run: |
+          set -o pipefail
+          uv run mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs 2>&1 | tee /tmp/pipeline_logs/lint_mypy.log
 
       - name: Pytest — Testes automatizados
-        run: uv run pytest tests/ -q --tb=short
+        run: |
+          set -o pipefail
+          uv run pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/lint_pytest.log
+
+      - name: Upload dos logs do lint
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lint-logs
+          path: /tmp/pipeline_logs/
+          retention-days: 7
+          if-no-files-found: ignore
 
   extract:
     name: 📥 Extração e Geração de Artefatos
@@ -119,6 +136,8 @@ jobs:
 
       - name: Executar pipeline de extração
         run: |
+          set -o pipefail
+          mkdir -p /tmp/pipeline_logs
           ARGS=""
           if [ "${{ steps.params.outputs.dry_run }}" == "true" ]; then
             ARGS="$ARGS --dry-run"
@@ -126,7 +145,7 @@ jobs:
           if [ -n "${{ steps.params.outputs.release_slug }}" ]; then
             ARGS="$ARGS --release ${{ steps.params.outputs.release_slug }}"
           fi
-          uv run python -m src.main $ARGS
+          uv run python -m src.main $ARGS 2>&1 | tee /tmp/pipeline_logs/extraction.log
         working-directory: ${{ env.WORKING_DIR }}
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
@@ -136,6 +155,7 @@ jobs:
       - name: Validar caches de resumo contra meta.json
         if: steps.params.outputs.dry_run == 'false'
         run: |
+          {
           echo "🔍 Validating summary caches against .meta.json..."
           ERRORS=0
           for meta_file in releases/*/.meta.json; do
@@ -175,6 +195,7 @@ jobs:
           else
             echo "✅ All summary caches are valid"
           fi
+          } 2>&1 | tee /tmp/pipeline_logs/cache_validation.log
 
       - name: Verificar alterações geradas
         id: git_status
@@ -190,18 +211,23 @@ jobs:
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
-        run: uv run pytest tests/ -q --tb=short
+        run: |
+          set -o pipefail
+          uv run pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/artifact_tests.log
 
       - name: Commit e push dos artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
+          set -o pipefail
+          {
           git pull origin ${{ github.ref_name }}
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
           git push --force-with-lease origin HEAD:${{ github.ref_name }}
+          } 2>&1 | tee /tmp/pipeline_logs/commit_push.log
 
       - name: Criar GitHub Release
         if: |
@@ -211,7 +237,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
-          python3 << 'PYEOF'
+          set -o pipefail
+          python3 << 'PYEOF' 2>&1 | tee /tmp/pipeline_logs/release_creation.log
           import json, os, re, subprocess, glob
 
           TRANSLITERATE_MAP = {
@@ -351,6 +378,15 @@ jobs:
 
           PYEOF
 
+      - name: Upload dos logs de execução
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: extract-logs
+          path: /tmp/pipeline_logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Gerar sumário do pipeline
         if: always()
         run: |
@@ -371,3 +407,60 @@ jobs:
           echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Dry Run | \`${{ steps.params.outputs.dry_run }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Release | \`${{ steps.params.outputs.release_slug || 'todas' }}\` |" >> $GITHUB_STEP_SUMMARY
+
+  create-issue:
+    name: 📝 Issue com Diagnóstico de Falhas
+    runs-on: ubuntu-latest
+    needs: [lint, extract]
+    if: always() && (needs.lint.result == 'failure' || needs.extract.result == 'failure')
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Baixar logs do lint
+        continue-on-error: true
+        uses: actions/download-artifact@v7
+        with:
+          name: lint-logs
+          path: /tmp/pipeline_logs/lint
+
+      - name: Baixar logs da extração
+        continue-on-error: true
+        uses: actions/download-artifact@v7
+        with:
+          name: extract-logs
+          path: /tmp/pipeline_logs/extract
+
+      - name: Gerar corpo didático da issue
+        id: body
+        env:
+          LOG_DIR: /tmp/pipeline_logs
+          LINT_RESULT: ${{ needs.lint.result }}
+          EXTRACT_RESULT: ${{ needs.extract.result }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python3 .github/scripts/build_failure_issue.py > /tmp/issue_body.md
+          echo "body_file=/tmp/issue_body.md" >> $GITHUB_OUTPUT
+
+      - name: Criar GitHub Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TITLE="🚀 Release Notes Pipeline falhou — run ${{ github.run_id }}"
+          BODY_FILE="${{ steps.body.outputs.body_file }}"
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
+          if [ "${EXISTING:-0}" != "0" ]; then
+            echo "Issue já existe para este run — skipping."
+            exit 0
+          fi
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+            echo "Issue criada com sucesso."
+          else
+            echo "::warning::Falha ao criar issue com body-file, tentando com --body"
+            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+          fi
