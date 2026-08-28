@@ -46,13 +46,12 @@ _OPENROUTER_FREE_MODELS = [
     "anthropic/claude-3-haiku:free",
 ]
 
-# Groq free tier: 30 requests/minute, 14_400/day.
-# Models go stale when moved to paid — refresh periodically.
-_GROQ_FREE_MODELS = [
-    "llama-3.3-70b-versatile",
-    "mixtral-8x7b-32768",
-    "llama-3.1-8b-instant",
-]
+# Groq free tier was retired on 2026-08-16:
+#   - llama-3.1-8b-instant and llama-3.3-70b-versatile deprecated
+#   - mixtral-8x7b-32768 was already decommissioned
+#   - replacements (openai/gpt-oss-*) are paid-tier only
+# Groq is kept as an opt-in via explicit provider="groq" for paid users.
+_GROQ_FREE_MODELS: list[str] = []
 
 # Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
 # whole pipeline for hours (observed in run #127: 3h18m before fatal exit).
@@ -71,17 +70,12 @@ class _ProviderConfig:
 
 
 # Ordered by priority (first = preferred).
-# Gemini is intentionally LAST: free tier caps at ~20 req/day, so we protect
-# that quota and only fall back to it after exhausting Groq/OpenCode/OpenRouter
-# pools.
+# Groq is intentionally OMITTED from the auto chain: free tier was retired
+# in 2026-08-16 (llama-3.1/3.3 deprecated, replacements are paid-only).
+# For paid Groq users, set provider="groq" explicitly.
+# Gemini is LAST: free tier caps at ~20 req/day, so we protect that quota
+# and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
-    _ProviderConfig(
-        name="groq",
-        api_key_env="GROQ_API_KEY",
-        base_url="https://api.groq.com/openai/v1",
-        default_model="llama-3.3-70b-versatile",
-        fallback_models=_GROQ_FREE_MODELS,
-    ),
     _ProviderConfig(
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
@@ -100,6 +94,16 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         base_url="https://openrouter.ai/api/v1",
         default_model="google/gemma-4-31b-it:free",
         fallback_models=_OPENROUTER_FREE_MODELS,
+    ),
+    _ProviderConfig(
+        name="groq",
+        api_key_env="GROQ_API_KEY",
+        base_url="https://api.groq.com/openai/v1",
+        default_model="llama-3.3-70b-versatile",
+        fallback_models=[
+            "openai/gpt-oss-20b",
+            "openai/gpt-oss-120b",
+        ],
     ),
     _ProviderConfig(
         name="gemini",
