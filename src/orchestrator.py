@@ -93,7 +93,7 @@ class PipelineOrchestrator:
                 async with llm:
                     for release in releases:
                         await self._process_release(
-                            release, scraper, impact_parser, generator, translator
+                            release, scraper, impact_parser, generator, translator, llm
                         )
                         result.releases_processed.append(release.slug)
 
@@ -101,7 +101,7 @@ class PipelineOrchestrator:
             else:
                 for release in releases:
                     await self._process_release(
-                        release, scraper, impact_parser, generator, translator
+                        release, scraper, impact_parser, generator, translator, None
                     )
                     result.releases_processed.append(release.slug)
 
@@ -155,12 +155,13 @@ class PipelineOrchestrator:
         impact_parser: Any,
         generator: Any,
         translator: Any,
+        llm: Any,
     ) -> None:
         """Process a single release: scrape, parse, generate files."""
         from .main import enrich_meta_with_classification, process_single_release
 
         await process_single_release(
-            release, scraper, impact_parser, generator, translator, self._config.dry_run
+            release, scraper, impact_parser, generator, translator, self._config.dry_run, llm
         )
         await self._bus.emit(
             "release.processed",

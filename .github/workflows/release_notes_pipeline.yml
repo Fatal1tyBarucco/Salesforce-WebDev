@@ -153,6 +153,7 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
       - name: Validar caches de resumo contra meta.json
         if: steps.params.outputs.dry_run == 'false'
@@ -305,7 +306,16 @@ jobs:
 
               year_short = ''.join(filter(str.isdigit, slug.split('_')[-1]))
               season = slug.rsplit('_', 1)[0]
-              tag = f'v20{year_short}-{season}'
+              tag = f'v{release_id}-{year_short}-{season}'
+
+              # Migration: delete legacy tag format v20{year}-{season} (e.g. v2027-winter)
+              # once the new v{release_id}-{year_short}-{season} tag is created.
+              legacy_tag = f'v20{year_short}-{season}'
+              if legacy_tag in existing_tags and tag not in existing_tags:
+                  print(f'🧹 Deleting legacy tag: {legacy_tag}')
+                  subprocess.run(['gh', 'release', 'delete', legacy_tag, '--yes'],
+                                 capture_output=True, text=True)
+                  existing_tags.discard(legacy_tag)
 
               if tag in existing_tags:
                   print(f'⏭️  Skip {tag}: already exists')

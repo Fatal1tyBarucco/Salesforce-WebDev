@@ -582,6 +582,9 @@ async def _build_release_block(
 
         summary = await summarizer.summarize(slug)
         summary_text = ""
+        themes_text = ""
+        impact_text = ""
+        migration_text = ""
         cat_summaries: dict[str, str] = {}
         if summary:
             # Validate summary against meta to avoid showing bad data
@@ -615,6 +618,36 @@ async def _build_release_block(
                         f"> 📊 **Executive Summary:** {summary.executive_summary[:5000]}\n"
                     )
                 cat_summaries = summary.category_summaries
+
+                if summary.business_impact:
+                    if lang == "pt_BR":
+                        impact_text = (
+                            f"\n> 🎯 **Impacto Estratégico:** {summary.business_impact[:2000]}\n"
+                        )
+                    else:
+                        impact_text = (
+                            f"\n> 🎯 **Strategic Impact:** {summary.business_impact[:2000]}\n"
+                        )
+
+                if summary.strategic_themes:
+                    themes = [t for t in summary.strategic_themes if t][:5]
+                    if themes:
+                        if lang == "pt_BR":
+                            themes_text = f"\n> 📌 **Temas-Chave:** {' • '.join(themes)}\n"
+                        else:
+                            themes_text = f"\n> 📌 **Key Themes:** {' • '.join(themes)}\n"
+
+                if summary.migration_notes and not summary.migration_notes.lower().startswith(
+                    ("nenhuma", "none")
+                ):
+                    if lang == "pt_BR":
+                        migration_text = (
+                            f"\n> ⚠️ **Notas de Migração:** {summary.migration_notes[:2000]}\n"
+                        )
+                    else:
+                        migration_text = (
+                            f"\n> ⚠️ **Migration Notes:** {summary.migration_notes[:2000]}\n"
+                        )
 
         # Build category details
         cat_lines: list[str] = []
@@ -660,12 +693,24 @@ async def _build_release_block(
             lines.append(f"\n### {emoji} {name}\n")
             if summary_text:
                 lines.append(summary_text)
+            if themes_text:
+                lines.append(themes_text)
+            if impact_text:
+                lines.append(impact_text)
+            if migration_text:
+                lines.append(migration_text)
             lines.extend(cat_lines)
         else:
             lines.append("\n<details>\n")
             lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
             if summary_text:
                 lines.append(summary_text)
+            if themes_text:
+                lines.append(themes_text)
+            if impact_text:
+                lines.append(impact_text)
+            if migration_text:
+                lines.append(migration_text)
             lines.extend(cat_lines)
             lines.append("</details>\n")
 
