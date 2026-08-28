@@ -129,14 +129,19 @@ class TestScraperAsyncMethods:
         assert result == "x" * (MIN_RAW_TEXT_LENGTH + 100)
 
     def test_ensure_browser_no_playwright(self) -> None:
-        """_ensure_browser returns False when no playwright."""
+        """_ensure_browser returns False when playwright fails to start."""
+        from unittest.mock import patch
+
         from src.scraper import SalesforceReleaseScraper
 
         scraper = SalesforceReleaseScraper.__new__(SalesforceReleaseScraper)
         scraper._browser = None
         scraper._playwright = None
 
-        result = asyncio.run(scraper._ensure_browser())
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value.start.side_effect = OSError("playwright not available")
+            result = asyncio.run(scraper._ensure_browser())
+
         assert result is False
 
     def test_ensure_browser_already_connected(self) -> None:

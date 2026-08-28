@@ -78,12 +78,18 @@ class TestEnsureBrowser:
 
     @pytest.mark.asyncio
     async def test_returns_false_when_no_playwright(self) -> None:
+        from unittest.mock import patch
+
         from src.scraper import SalesforceReleaseScraper
 
         scraper = SalesforceReleaseScraper()
         scraper._playwright = None
         scraper._browser = None
-        result = await scraper._ensure_browser()
+
+        with patch("src.scraper.async_playwright") as mock_ap:
+            mock_ap.return_value.start.side_effect = OSError("playwright not available")
+            result = await scraper._ensure_browser()
+
         assert result is False
 
     @pytest.mark.asyncio

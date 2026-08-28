@@ -37,6 +37,8 @@ _OPENROUTER_FREE_MODELS = [
     "minimax/minimax-m2.7:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
     "poolside/laguna-s-2.1:free",
+    "meta-llama/llama-4-scout:free",
+    "qwen/qwen-3-coder:free",
 ]
 
 # Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
@@ -69,7 +71,6 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
             "glm-5-free",
             "deepseek-v4-flash-free",
             "kimi-k2.5-free",
-            "minimax-m2.5-free",
         ],
     ),
     _ProviderConfig(
@@ -356,6 +357,16 @@ class LLMService:
                 is_forbidden = "403" in err_str or "inaccessible" in err_str.lower()
                 if is_forbidden:
                     logger.warning("Model %s permanently inaccessible (403), skipping.", model)
+                    last_error = err
+                    continue
+                # 401 from OpenRouter usually means the model slug is no longer
+                # available on the free tier ("not supported"). Skip without
+                # retry to avoid wasting the next model's quota.
+                is_unsupported = "401" in err_str and (
+                    "not supported" in err_str.lower() or "modelerror" in err_str.lower()
+                )
+                if is_unsupported:
+                    logger.warning("Model %s unsupported (401), skipping.", model)
                     last_error = err
                     continue
                 # 429 = rate limit or quota exceeded — back off and retry up to 3 times
