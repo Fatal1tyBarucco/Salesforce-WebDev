@@ -317,9 +317,13 @@ jobs:
                                  capture_output=True, text=True)
                   existing_tags.discard(legacy_tag)
 
+              # If new-format tag already exists (immutable release),
+              # delete it so we can recreate with fresh content.
               if tag in existing_tags:
-                  print(f'⏭️  Skip {tag}: already exists')
-                  continue
+                  print(f'🧹 Deleting existing tag: {tag} (will recreate)')
+                  subprocess.run(['gh', 'release', 'delete', tag, '--yes'],
+                                 capture_output=True, text=True)
+                  existing_tags.discard(tag)
 
               # Load AI-generated summaries
               cache = load_cache(release_dir)

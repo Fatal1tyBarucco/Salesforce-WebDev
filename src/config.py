@@ -180,6 +180,7 @@ KNOWN_RELEASES: list[ReleaseInfo] = [
     ReleaseInfo(name="Winter '26", release_id=258, slug="winter_26"),
     ReleaseInfo(name="Spring '26", release_id=260, slug="spring_26"),
     ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26"),
+    ReleaseInfo(name="Winter '27", release_id=264, slug="winter_27"),
 ]
 
 
