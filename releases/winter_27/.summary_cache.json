@@ -1,0 +1,26 @@
+{
+  "executive_summary": "A release Winter '27 representa uma atualização significativa do ecossistema Salesforce, com 1123 novos recursos distribuídos em 19 categorias.",
+  "category_summaries": {
+    "Salesforce geral": "A categoria Salesforce geral reúne 28 recursos referentes a salesforce geral. Esta categoria abrange melhorias e novas funcionalidades para salesforce geral.",
+    "Análise de dados": "A categoria Análise de dados reúne 26 recursos referentes a análise de dados. Esta categoria abrange melhorias e novas funcionalidades para análise de dados.",
+    "Automação": "A categoria Automação reúne 72 recursos referentes a automação. Esta categoria abrange melhorias e novas funcionalidades para automação.",
+    "Data 360": "A categoria Data 360 reúne 7 recursos referentes a data 360. Esta categoria abrange melhorias e novas funcionalidades para data 360.",
+    "Experience Cloud": "A categoria Experience Cloud reúne 143 recursos referentes a experience cloud. Esta categoria abrange melhorias e novas funcionalidades para experience cloud.",
+    "Field Service": "A categoria Field Service reúne 37 recursos referentes a field service. Esta categoria abrange melhorias e novas funcionalidades para field service.",
+    "Hyperforce": "A categoria Hyperforce reúne 5 recursos referentes a hyperforce. Esta categoria abrange melhorias e novas funcionalidades para hyperforce.",
+    "Setores": "A categoria Setores reúne 286 recursos referentes a setores. Esta categoria abrange melhorias e novas funcionalidades para setores.",
+    "Marketing": "A categoria Marketing reúne 1 recursos referentes a marketing. Esta categoria abrange melhorias e novas funcionalidades para marketing.",
+    "MuleSoft": "A categoria MuleSoft reúne 1 recursos referentes a mulesoft. Esta categoria abrange melhorias e novas funcionalidades para mulesoft.",
+    "Partner Cloud": "A categoria Partner Cloud reúne 38 recursos referentes a partner cloud. Esta categoria abrange melhorias e novas funcionalidades para partner cloud.",
+    "Gerenciamento de receita": "A categoria Gerenciamento de receita reúne 123 recursos referentes a gerenciamento de receita. Esta categoria abrange melhorias e novas funcionalidades para gerenciamento de receita.",
+    "Vendas": "A categoria Vendas reúne 44 recursos referentes a vendas. Esta categoria abrange melhorias e novas funcionalidades para vendas.",
+    "Integrações do Salesforce para Slack": "A categoria Integrações do Salesforce para Slack reúne 7 recursos referentes a integrações do salesforce para slack. Esta categoria abrange melhorias e novas funcionalidades para integrações do salesforce para slack.",
+    "Segurança, identidade e privacidade": "A categoria Segurança, identidade e privacidade reúne 25 recursos referentes a segurança, identidade e privacidade. Esta categoria abrange melhorias e novas funcionalidades para segurança, identidade e privacidade.",
+    "Serviço": "A categoria Serviço reúne 140 recursos referentes a serviço. Esta categoria abrange melhorias e novas funcionalidades para serviço.",
+    "Documentação legal": "A categoria Documentação legal reúne 8 recursos referentes a documentação legal. Esta categoria abrange melhorias e novas funcionalidades para documentação legal.",
+    "OmniStudio": "A categoria OmniStudio reúne 3 recursos referentes a omnistudio. Esta categoria abrange melhorias e novas funcionalidades para omnistudio.",
+    "Agentforce": "A categoria Agentforce reúne 129 recursos referentes a agentforce. Esta categoria abrange melhorias e novas funcionalidades para agentforce."
+  },
+  "generated_at": "/home/runner/work/Salesforce-WebDev/Salesforce-WebDev",
+  "fallback": true
+}
