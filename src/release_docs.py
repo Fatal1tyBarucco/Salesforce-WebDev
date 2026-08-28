@@ -489,15 +489,52 @@ def _get_release_emoji(name: str) -> str:
     return "🌸"
 
 
+def _detect_existing_release_chunk(text: str, release_name: str) -> str | None:
+    """Return the markdown chunk for ``release_name`` already present in ``text``.
+
+    Used to preserve manual edits when re-running the pipeline.
+    """
+    season_map = {
+        "Spring": "spring",
+        "Summer": "summer",
+        "Winter": "winter",
+    }
+    parts = release_name.split("'")
+    if len(parts) != 2:
+        return None
+    season_raw, year_raw = parts[0].strip(), parts[1].strip()
+    season = season_map.get(season_raw)
+    if not season or not year_raw.isdigit():
+        return None
+
+    pat = re.compile(
+        r"(?:^|\n)(?P<chunk>(?:\s*<details>\s*\n\s*<summary><h3>[^<]*?"
+        + re.escape(release_name)
+        + r"[^<]*?</h3>.*?</details>)|(?:\s*###\s+[^\n]*?"
+        + re.escape(release_name)
+        + r"[^\n]*?(?:\n|$)(?:(?!^###\s).|\n)*?))",
+        re.MULTILINE | re.DOTALL,
+    )
+    m = pat.search(text)
+    if m:
+        return m.group("chunk").lstrip("\n")
+    return None
+
+
 async def _build_release_block(
     metas: list[dict[str, Any]],
     lang: str,
     summarizer: Any,
+    existing_text: str = "",
 ) -> str:
     """Build release section for a specific language.
 
     Latest release: fully expanded (all categories open).
     Old releases: entire section collapsed, with individual topic toggles inside.
+
+    When ``existing_text`` is provided, the function reuses manually-curated
+    blocks (categories intros, executive summaries) for releases that are
+    already present in the README, instead of regenerating them from scratch.
     """
     lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
@@ -527,6 +564,18 @@ async def _build_release_block(
         name = meta["name"]
         emoji = _get_release_emoji(name)
         is_latest = idx == 0
+
+        existing_chunk = (
+            _detect_existing_release_chunk(existing_text, name) if existing_text else None
+        )
+        if existing_chunk is not None and existing_chunk.strip():
+            logger.info(
+                "README: reusing existing curated block for %s (preserves manual edits)",
+                slug,
+            )
+            lines.append("\n" + existing_chunk.rstrip() + "\n")
+            lines.append("")
+            continue
 
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
@@ -659,7 +708,13 @@ async def _update_single_readme(
     lang: str,
     summarizer: Any,
 ) -> None:
-    """Update a single README file with release sections."""
+    """Update a single README file with release sections.
+
+    Idempotent: preserves existing curated release blocks (executive summaries,
+    category descriptions) for releases already present in the README, and
+    only inserts newly-detected releases. Content before/after the releases
+    section is left untouched.
+    """
     if not readme_path.exists():
         return
 
@@ -682,7 +737,8 @@ async def _update_single_readme(
             readme_path.name,
         )
         return
-    new_block = await _build_release_block(metas, lang, summarizer)
+    existing_block = original[heading_idx:next_heading]
+    new_block = await _build_release_block(metas, lang, summarizer, existing_text=existing_block)
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
     logger.info("README atualizado (%s) — heading='%s'", lang, heading)
