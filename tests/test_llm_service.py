@@ -187,6 +187,24 @@ class TestLLMOpenAICompatible:
             out = svc._generate_openai_compatible("hi", None, 0.7, 100)
         assert out == "ok-result"
 
+    def test_with_system_instruction(self) -> None:
+        """Line 334: system_instruction is prepended to messages."""
+        fake_choice = MagicMock()
+        fake_choice.message.content = "result"
+        fake_resp = MagicMock()
+        fake_resp.choices = [fake_choice]
+        fake_client = MagicMock()
+        fake_client.chat.completions.create.return_value = fake_resp
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter")
+            out = svc._generate_openai_compatible("prompt", "sys instruction", 0.7, 100)
+        assert out == "result"
+        fake_client.chat.completions.create.assert_called_once()
+        call_kwargs = fake_client.chat.completions.create.call_args
+        messages = call_kwargs.kwargs["messages"]
+        assert messages[0]["role"] == "system"
+        assert messages[0]["content"] == "sys instruction"
+
     def test_null_content_returns_empty_string(self) -> None:
         fake_choice = MagicMock()
         fake_choice.message.content = None
@@ -470,3 +488,36 @@ class TestLLMModuleIntegrity:
         monkeypatch.delenv("LLM_CALL_TIMEOUT_S", raising=False)
         importlib.reload(ls)
         assert ls.LLM_CALL_TIMEOUT_S == 60
+
+
+# ── Dispatch router ──────────────────────────────────────────────
+
+
+class TestLLMDispatch:
+    """_dispatch_to_provider: routes by provider name, raises on unknown."""
+
+    def test_dispatch_to_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Line 263: provider='gemini' → _generate_gemini path."""
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+        svc = LLMService(api_key="goog-key", provider="gemini")
+        with patch.object(svc, "_generate_gemini", return_value="gem-out") as mock_g:
+            out = svc._dispatch_to_provider("hi", None, 0.7, 100)
+        assert out == "gem-out"
+        mock_g.assert_called_once()
+
+    def test_dispatch_to_openai_compatible(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Line 270: provider in (opencode, openrouter) → _generate_openai_compatible."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        with patch.object(svc, "_generate_openai_compatible", return_value="oai-out") as mock_o:
+            out = svc._dispatch_to_provider("hi", None, 0.7, 100)
+        assert out == "oai-out"
+        mock_o.assert_called_once()
+
+    def test_dispatch_unsupported_raises(self) -> None:
+        """Line 277: provider='none' (no active provider) → ValueError."""
+        svc = LLMService(api_key=None, provider="none")
+        svc._active_provider = None
+        svc.provider = "none"
+        with pytest.raises(ValueError, match="Unsupported LLM provider"):
+            svc._dispatch_to_provider("hi", None, 0.7, 100)
