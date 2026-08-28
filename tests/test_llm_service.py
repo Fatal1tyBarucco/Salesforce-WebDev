@@ -39,9 +39,10 @@ class TestLLMProviderInit:
     ) -> None:
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="k", provider="banana")
-        assert svc.provider in ("opencode", "openrouter", "gemini")
+        assert svc.provider in ("groq", "opencode", "openrouter", "gemini")
 
     def test_no_key_available_returns_mock(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.delenv("GROQ_API_KEY", raising=False)
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
@@ -51,11 +52,18 @@ class TestLLMProviderInit:
     def test_unsupported_provider_with_key_uses_first(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="k", provider="banana")
-        assert svc.provider in ("gemini", "opencode", "openrouter")
+        assert svc.provider in ("groq", "gemini", "opencode", "openrouter")
+
+    def test_explicit_provider_groq(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
+        svc = LLMService(api_key="k", provider="groq")
+        assert svc.provider == "groq"
+        assert svc.model_name == "llama-3.3-70b-versatile"
 
 
 # ── Prompt validation ──────────────────────────────────────────────
@@ -113,20 +121,22 @@ class TestLLMFallbackChain:
     def test_switch_to_next_provider_all_exhausted_returns_false(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        svc._tried_providers.update(["opencode", "openrouter", "gemini"])
+        svc._tried_providers.update(["groq", "opencode", "openrouter", "gemini"])
         result = svc._switch_to_next_provider()
         assert result is False
 
     def test_next_fallback_provider_skips_tried(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        svc._tried_providers.add("opencode")
+        svc._tried_providers.update(["groq", "opencode"])
         result = svc._next_fallback_provider()
         assert result is not None
         assert result.name == "openrouter"
@@ -167,6 +177,31 @@ class TestLLMFallbackChain:
         with patch.object(svc, "_dispatch_to_provider", side_effect=RuntimeError("fail")):
             with pytest.raises(RuntimeError, match="fail"):
                 svc.generate_completion("hi")
+
+    def test_provider_loops_through_models_before_switching(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """All models of a provider failing must RAISE so the chain advances.
+
+        Regression: previously a silent return caused the pipeline to think
+        the provider succeeded with empty content.
+        """
+        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
+        monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
+        svc = LLMService(api_key="groq-key", provider="groq")
+
+        attempts: list[str] = []
+
+        def fake_dispatch(*args, **kwargs):  # type: ignore[no-untyped-def]
+            attempts.append(svc.provider)
+            raise RuntimeError(f"{svc.provider} down")
+
+        with patch.object(svc, "_dispatch_to_provider", side_effect=fake_dispatch):
+            with pytest.raises(RuntimeError):
+                svc.generate_completion("hi")
+
+        assert attempts[0] == "groq"
+        assert "opencode" in attempts
 
 
 # ── OpenAI-compatible provider (OpenCode / OpenRouter) ─────────────
@@ -219,6 +254,7 @@ class TestLLMOpenAICompatible:
 
     def test_403_forbidden_skips_model(self) -> None:
         """Lines 358-360: 403 → skip without retry, next model succeeds."""
+
         fake_choice = MagicMock()
         fake_choice.message.content = "ok"
         fake_resp = MagicMock()
@@ -237,6 +273,30 @@ class TestLLMOpenAICompatible:
             svc = LLMService(api_key="k", provider="openrouter", model_name="bad:free")
             out = svc._generate_openai_compatible("hi", None, 0.7, 100)
         assert out == "ok"
+        assert call_count["n"] == 2
+
+    def test_401_unsupported_skips_model(self) -> None:
+        """Lines 391-394: 401 with 'ModelError'/'not supported' → skip next model."""
+        fake_choice = MagicMock()
+        fake_choice.message.content = "ok-after-401"
+        fake_resp = MagicMock()
+        fake_resp.choices = [fake_choice]
+        fake_client = MagicMock()
+        call_count = {"n": 0}
+
+        def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
+            call_count["n"] += 1
+            if call_count["n"] == 1:
+                raise Exception(
+                    "Error code: 401 - {'type': 'error', 'error': {'type': 'ModelError', 'message': 'Model not supported'}}"
+                )
+            return fake_resp
+
+        fake_client.chat.completions.create.side_effect = side_effect
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter", model_name="unsupported:free")
+            out = svc._generate_openai_compatible("hi", None, 0.7, 100)
+        assert out == "ok-after-401"
         assert call_count["n"] == 2
 
     def test_429_rate_limit_backoff_and_retry(self) -> None:

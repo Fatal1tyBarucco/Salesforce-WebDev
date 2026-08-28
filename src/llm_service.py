@@ -1,10 +1,12 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. OpenCode (primary — free tier)
-  2. OpenRouter free models (secondary — free tier)
-  3. Google Gemini (last resort — protects the free tier 20 req/day quota)
+  1. Groq (primary — free tier, 30 req/min)
+  2. OpenCode (secondary — free tier)
+  3. OpenRouter free models (tertiary — free tier)
+  4. Google Gemini (last resort — protects the free tier 20 req/day quota)
 
+Each provider loops through its models before moving to the next provider.
 OpenAI support has been removed (no credits allocated).
 """
 
@@ -39,6 +41,17 @@ _OPENROUTER_FREE_MODELS = [
     "poolside/laguna-s-2.1:free",
     "meta-llama/llama-4-scout:free",
     "qwen/qwen-3-coder:free",
+    "mistralai/mistral-nemo:free",
+    "deepseek/deepseek-chat-v3:free",
+    "anthropic/claude-3-haiku:free",
+]
+
+# Groq free tier: 30 requests/minute, 14_400/day.
+# Models go stale when moved to paid — refresh periodically.
+_GROQ_FREE_MODELS = [
+    "llama-3.3-70b-versatile",
+    "mixtral-8x7b-32768",
+    "llama-3.1-8b-instant",
 ]
 
 # Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
@@ -59,8 +72,16 @@ class _ProviderConfig:
 
 # Ordered by priority (first = preferred).
 # Gemini is intentionally LAST: free tier caps at ~20 req/day, so we protect
-# that quota and only fall back to it after exhausting OpenCode/OpenRouter pools.
+# that quota and only fall back to it after exhausting Groq/OpenCode/OpenRouter
+# pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
+    _ProviderConfig(
+        name="groq",
+        api_key_env="GROQ_API_KEY",
+        base_url="https://api.groq.com/openai/v1",
+        default_model="llama-3.3-70b-versatile",
+        fallback_models=_GROQ_FREE_MODELS,
+    ),
     _ProviderConfig(
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
@@ -92,9 +113,12 @@ class LLMService:
     """Service class for handling interactions with Large Language Models.
 
     Supports multiple providers with automatic fallback:
-      1. OpenCode (primary)
-      2. OpenRouter free models (secondary)
-      3. Google Gemini (tertiary, free tier 20 req/day protected)
+      1. Groq (primary, free tier 30 req/min)
+      2. OpenCode (secondary, free tier)
+      3. OpenRouter free models (tertiary)
+      4. Google Gemini (quaternary, free tier 20 req/day protected)
+
+    Each provider loops through its models before moving to the next.
     """
 
     def __init__(
@@ -267,7 +291,7 @@ class LLMService:
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-        elif self.provider in ("opencode", "openrouter"):
+        elif self.provider in ("groq", "opencode", "openrouter"):
             return self._generate_openai_compatible(
                 prompt=prompt,
                 system_instruction=system_instruction,
@@ -336,7 +360,6 @@ class LLMService:
 
         messages.append({"role": "user", "content": prompt})
 
-        # Try primary model, then fallback models
         models_to_try = [self.model_name] + self._active_provider.fallback_models
         last_error: Exception | None = None
 
@@ -387,17 +410,18 @@ class LLMService:
                         last_error = err
                         continue
                     else:
-                        # Last model hit rate limit — treat as failure
-                        logger.warning(
-                            "Last model %s hit rate limit (429) with no fallback, raising.", model
-                        )
                         last_error = err
                         continue
                 logger.warning("Model %s failed: %s", model, err)
                 last_error = err
                 continue
 
-        raise last_error or RuntimeError("All models failed")
+        # All models exhausted — raise so caller switches to the next provider
+        if last_error:
+            raise last_error
+        # Unreachable: every exception path above sets last_error. Kept as defensive
+        # fallback in case a future refactoring introduces a non-exception exit.
+        raise RuntimeError(f"All models failed for provider {self.provider}")  # pragma: no cover
 
     async def generate_text(
         self,
