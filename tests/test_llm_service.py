@@ -20,7 +20,7 @@ class TestLLMProviderInit:
         svc = LLMService(api_key="k", provider="openrouter")
         assert svc.provider == "openrouter"
         assert svc.api_key == "k"
-        assert svc.model_name == "google/gemma-4-31b-it:free"
+        assert svc.model_name == "openrouter/auto"
 
     def test_explicit_provider_opencode(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
@@ -116,7 +116,7 @@ class TestLLMFallbackChain:
         assert result is True
         assert svc.provider == "openrouter"
         assert svc.api_key == "or-key"
-        assert svc.model_name == "google/gemma-4-31b-it:free"
+        assert svc.model_name == "openrouter/auto"
 
     def test_switch_to_next_provider_all_exhausted_returns_false(
         self, monkeypatch: pytest.MonkeyPatch

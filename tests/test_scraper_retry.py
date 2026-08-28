@@ -125,6 +125,7 @@ class TestFetchFeaturesWithLinks:
         with (
             patch.object(scraper, "_ensure_browser", return_value=True),
             patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch),
+            patch("asyncio.sleep", new_callable=AsyncMock),
         ):
             result = await scraper.fetch_features_with_links("http://example.com")
 
@@ -146,6 +147,7 @@ class TestFetchFeaturesWithLinks:
         with (
             patch.object(scraper, "_ensure_browser", side_effect=mock_ensure),
             patch.object(scraper, "_fetch_with_playwright", side_effect=mock_fetch),
+            patch("asyncio.sleep", new_callable=AsyncMock),
         ):
             result = await scraper.fetch_features_with_links("http://example.com")
 

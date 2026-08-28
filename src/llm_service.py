@@ -31,30 +31,6 @@ logger = logging.getLogger(__name__)
 # Provider configuration
 # ---------------------------------------------------------------------------
 
-# Free models on OpenRouter verified live via /api/v1/models (pricing == 0).
-# Slugs go stale when providers move models to paid tiers — refresh periodically.
-_OPENROUTER_FREE_MODELS = [
-    "google/gemma-4-31b-it:free",
-    "z-ai/glm-5.2:free",
-    "minimax/minimax-m2.7:free",
-    "nvidia/nemotron-3-super-120b-a12b:free",
-    "poolside/laguna-s-2.1:free",
-    "meta-llama/llama-4-scout:free",
-    "qwen/qwen-3-coder:free",
-    "mistralai/mistral-nemo:free",
-    "deepseek/deepseek-chat-v3:free",
-    "anthropic/claude-3-haiku:free",
-]
-
-# Groq free tier was retired on 2026-08-16:
-#   - llama-3.1-8b-instant and llama-3.3-70b-versatile deprecated
-#   - mixtral-8x7b-32768 was already decommissioned
-#   - replacements (openai/gpt-oss-*) are paid-tier only
-# Groq is kept as an opt-in via explicit provider="groq" for paid users.
-_GROQ_FREE_MODELS: list[str] = []
-
-# Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
-# whole pipeline for hours (observed in run #127: 3h18m before fatal exit).
 LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 60)
 
 
@@ -70,9 +46,6 @@ class _ProviderConfig:
 
 
 # Ordered by priority (first = preferred).
-# Groq is intentionally OMITTED from the auto chain: free tier was retired
-# in 2026-08-16 (llama-3.1/3.3 deprecated, replacements are paid-only).
-# For paid Groq users, set provider="groq" explicitly.
 # Gemini is LAST: free tier caps at ~20 req/day, so we protect that quota
 # and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
@@ -92,10 +65,25 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         name="openrouter",
         api_key_env="OPENROUTER_API_KEY",
         base_url="https://openrouter.ai/api/v1",
-        default_model="google/gemma-4-31b-it:free",
-        fallback_models=_OPENROUTER_FREE_MODELS,
+        default_model="openrouter/auto",
+        fallback_models=[
+            "google/gemma-4-31b-it:free",
+            "meta-llama/llama-4-scout:free",
+            "qwen/qwen-3-coder:free",
+            "mistralai/mistral-nemo:free",
+            "deepseek/deepseek-chat-v3:free",
+            "anthropic/claude-3-haiku:free",
+        ],
     ),
     _ProviderConfig(
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-3.6-flash",
+    ),
+    _ProviderConfig(
+        # Groq: free tier retired 2026-08-16. Kept here so users with paid
+        # credentials can opt in via provider="groq". Excluded from auto-detect
+        # below via _find_provider_config fallback handling.
         name="groq",
         api_key_env="GROQ_API_KEY",
         base_url="https://api.groq.com/openai/v1",
@@ -105,11 +93,6 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
             "openai/gpt-oss-120b",
         ],
     ),
-    _ProviderConfig(
-        name="gemini",
-        api_key_env="GOOGLE_API_KEY",
-        default_model="gemini-3.6-flash",
-    ),
 ]
 
 
@@ -117,10 +100,9 @@ class LLMService:
     """Service class for handling interactions with Large Language Models.
 
     Supports multiple providers with automatic fallback:
-      1. Groq (primary, free tier 30 req/min)
-      2. OpenCode (secondary, free tier)
-      3. OpenRouter free models (tertiary)
-      4. Google Gemini (quaternary, free tier 20 req/day protected)
+      1. OpenCode (primary, free tier)
+      2. OpenRouter free models (secondary, free tier)
+      3. Google Gemini (tertiary, free tier 20 req/day protected)
 
     Each provider loops through its models before moving to the next.
     """
@@ -157,6 +139,8 @@ class LLMService:
 
         # Auto-detect: find first provider with a valid API key
         for cfg in self._provider_chain:
+            if cfg.name == "groq":
+                continue  # Groq free tier retired 2026-08-16; skip in auto-detect
             resolved_key = api_key or os.getenv(cfg.api_key_env, "")
             if resolved_key:
                 self._active_provider = cfg

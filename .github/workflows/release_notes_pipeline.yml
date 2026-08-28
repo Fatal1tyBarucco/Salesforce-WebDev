@@ -153,7 +153,6 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
       - name: Validar caches de resumo contra meta.json
         if: steps.params.outputs.dry_run == 'false'
