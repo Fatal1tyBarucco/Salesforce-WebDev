@@ -324,7 +324,7 @@ class TestLLMServiceResilience:
         svc = LLMService(api_key="k", provider="nope")
         # Unknown provider triggers auto-detect; with a key it picks the
         # first provider whose env var is set, or 'none' if none match.
-        assert svc.provider in ("gemini", "opencode", "openrouter", "none")
+        assert svc.provider in ("groq", "gemini", "opencode", "openrouter", "none")
 
     def test_generate_completion_propagates_errors(self) -> None:
         from src.llm_service import LLMService
