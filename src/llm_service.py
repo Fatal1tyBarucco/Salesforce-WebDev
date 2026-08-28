@@ -1,15 +1,16 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. Google Gemini (primary — user has Google AI Plus subscription)
-  2. OpenCode (secondary — free tier)
-  3. OpenRouter free models (tertiary — free tier fallback)
+  1. OpenCode (primary — free tier)
+  2. OpenRouter free models (secondary — free tier)
+  3. Google Gemini (last resort — protects the free tier 20 req/day quota)
 
 OpenAI support has been removed (no credits allocated).
 """
 
 import logging
 import os
+import time
 from dataclasses import dataclass, field
 from typing import Any, Self
 
@@ -36,7 +37,6 @@ _OPENROUTER_FREE_MODELS = [
     "minimax/minimax-m2.7:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
     "poolside/laguna-s-2.1:free",
-    "thinkingmachines/inkling:free",
 ]
 
 # Hard wall-clock cap per HTTP call. Without it a stalled provider can hold the
@@ -55,13 +55,10 @@ class _ProviderConfig:
     fallback_models: list[str] = field(default_factory=list)
 
 
-# Ordered by priority (first = preferred)
+# Ordered by priority (first = preferred).
+# Gemini is intentionally LAST: free tier caps at ~20 req/day, so we protect
+# that quota and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
-    _ProviderConfig(
-        name="gemini",
-        api_key_env="GOOGLE_API_KEY",
-        default_model="gemini-3.6-flash",
-    ),
     _ProviderConfig(
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
@@ -82,6 +79,11 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         default_model="google/gemma-4-31b-it:free",
         fallback_models=_OPENROUTER_FREE_MODELS,
     ),
+    _ProviderConfig(
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-3.6-flash",
+    ),
 ]
 
 
@@ -89,9 +91,9 @@ class LLMService:
     """Service class for handling interactions with Large Language Models.
 
     Supports multiple providers with automatic fallback:
-      1. Google Gemini (primary)
-      2. OpenCode (secondary)
-      3. OpenRouter free models (tertiary)
+      1. OpenCode (primary)
+      2. OpenRouter free models (secondary)
+      3. Google Gemini (tertiary, free tier 20 req/day protected)
     """
 
     def __init__(
@@ -348,6 +350,38 @@ class LLMService:
                 content = response.choices[0].message.content
                 return content.strip() if content else ""
             except Exception as err:
+                err_str = str(err)
+                # 403 may mean the model slug exists but isn't accessible via API (e.g.
+                # "only available on agentic harnesses") — skip without retry
+                is_forbidden = "403" in err_str or "inaccessible" in err_str.lower()
+                if is_forbidden:
+                    logger.warning("Model %s permanently inaccessible (403), skipping.", model)
+                    last_error = err
+                    continue
+                # 429 = rate limit or quota exceeded — back off and retry up to 3 times
+                is_rate_limit = (
+                    "429" in err_str
+                    or "rate limit" in err_str.lower()
+                    or "quota exceeded" in err_str.lower()
+                )
+                if is_rate_limit:
+                    if models_to_try.index(model) < len(models_to_try) - 1:
+                        backoff = min(30, 2 ** (3 - models_to_try.index(model)))
+                        logger.warning(
+                            "Model %s hit rate limit (429), backing off %ds before retry.",
+                            model,
+                            backoff,
+                        )
+                        time.sleep(backoff)
+                        last_error = err
+                        continue
+                    else:
+                        # Last model hit rate limit — treat as failure
+                        logger.warning(
+                            "Last model %s hit rate limit (429) with no fallback, raising.", model
+                        )
+                        last_error = err
+                        continue
                 logger.warning("Model %s failed: %s", model, err)
                 last_error = err
                 continue

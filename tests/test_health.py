@@ -325,3 +325,90 @@ class TestNewHealthFeatures:
         # Verify the body contains prometheus format
         body = handler.wfile.getvalue().decode()
         assert "pipeline_runs_total" in body or "pipeline_uptime_seconds" in body
+
+
+class TestHealthStateDirect:
+    """Direct HealthState unit tests (independent of module state)."""
+
+    def test_initial_state(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        assert state.last_run_status == "idle"
+        assert state.last_run_time == ""
+        assert state.uptime_seconds >= 0
+        assert state.metrics["pipeline_runs_total"] == 0
+
+    def test_metrics_returns_copy(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        m = state.metrics
+        m["pipeline_runs_total"] = 999
+        assert state.metrics["pipeline_runs_total"] == 0
+
+    def test_set_pipeline_status_completed_with_errors(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        state.set_pipeline_status("completed_with_errors")
+        assert state.metrics["pipeline_failures_total"] == 1
+
+    def test_set_pipeline_status_running_no_counter(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        before = state.metrics.get("pipeline_runs_total", 0)
+        state.set_pipeline_status("running")
+        assert state.metrics.get("pipeline_runs_total", 0) == before
+        assert state.last_run_status == "running"
+        assert state.last_run_time != ""
+
+    def test_inc_metric_custom(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        state.inc_metric("custom_total", 5)
+        assert state.metrics["custom_total"] == 5
+
+    def test_record_run_duration(self) -> None:
+        from src.health import HealthState
+
+        state = HealthState()
+        state.record_run_duration(42.5)
+        assert state._last_run_duration == 42.5
+
+
+class TestFallbackMetrics:
+    """_fallback_metrics_text: all 6 metrics present."""
+
+    def test_all_metrics_present(self) -> None:
+        from src.health import HealthHandler
+
+        text = HealthHandler._fallback_metrics_text()
+        for metric in [
+            "pipeline_runs_total",
+            "pipeline_failures_total",
+            "features_processed_total",
+            "scraper_requests_total",
+            "scraper_failures_total",
+            "pipeline_uptime_seconds",
+        ]:
+            assert metric in text
+
+
+class TestModuleHelpers:
+    """Module-level function smoke tests."""
+
+    def test_module_level_helpers_dont_raise(self) -> None:
+        from src.health import (
+            inc_metric,
+            record_run_duration,
+            set_pipeline_status,
+            set_release_feature_count,
+        )
+
+        inc_metric("test_metric_smoke", 1)
+        set_pipeline_status("running")
+        record_run_duration(10.0)
+        set_release_feature_count("smoke_release", 5)
