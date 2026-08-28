@@ -569,13 +569,20 @@ async def _build_release_block(
             _detect_existing_release_chunk(existing_text, name) if existing_text else None
         )
         if existing_chunk is not None and existing_chunk.strip():
+            content_chars = existing_chunk.strip().strip("#*>\n ")
+            has_real_content = bool(content_chars)
+            if has_real_content:
+                logger.info(
+                    "README: reusing existing curated block for %s (preserves manual edits)",
+                    slug,
+                )
+                lines.append("\n" + existing_chunk.rstrip() + "\n")
+                lines.append("")
+                continue
             logger.info(
-                "README: reusing existing curated block for %s (preserves manual edits)",
+                "README: detected empty block for %s — will regenerate",
                 slug,
             )
-            lines.append("\n" + existing_chunk.rstrip() + "\n")
-            lines.append("")
-            continue
 
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
