@@ -377,11 +377,7 @@ class TestUpdateBadge:
     def test_inserts_badge_after_marker_when_no_image(self, tmp_path: Path, monkeypatch) -> None:
         from src.release_docs import _update_badge, RELEASE_BADGE_MARKER
 
-        existing = (
-            "# Title\n"
-            f"\n{RELEASE_BADGE_MARKER}\n"
-            "\n## Releases\n"
-        )
+        existing = "# Title\n" f"\n{RELEASE_BADGE_MARKER}\n" "\n## Releases\n"
         readme = tmp_path / "README.md"
         readme.write_text(existing, encoding="utf-8")
 
@@ -534,7 +530,13 @@ class TestUpdateReadmeSingle:
         (tmp_path / "history.json").write_text(
             json.dumps(
                 [
-                    {"slug": "winter_26", "name": "Winter '26", "release_id": 258, "total_features": 10, "category_count": 3},
+                    {
+                        "slug": "winter_26",
+                        "name": "Winter '26",
+                        "release_id": 258,
+                        "total_features": 10,
+                        "category_count": 3,
+                    },
                 ]
             ),
             encoding="utf-8",
@@ -605,7 +607,9 @@ class TestUpdateReadmeSingle:
             async def summarize(self, slug: str):
                 return summary_mock
 
-        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing))
+        result = asyncio.run(
+            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
+        )
         assert "Winter '26" in result
         assert "Spring '26" in result
         assert "Some summary" in result
@@ -1247,7 +1251,9 @@ class TestBuildReleaseBlockLanguages:
             async def summarize(self, slug: str):
                 return bad
 
-        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing))
+        result = asyncio.run(
+            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
+        )
         assert "Summer '26" in result
 
     def test_en_us_categories_rendered(self) -> None:
@@ -1269,7 +1275,9 @@ class TestBuildReleaseBlockLanguages:
             async def summarize(self, slug: str):
                 return None
 
-        result = asyncio.run(_build_release_block(metas, "en_US", _Summarizer(), existing_text=existing))
+        result = asyncio.run(
+            _build_release_block(metas, "en_US", _Summarizer(), existing_text=existing)
+        )
         assert "features" in result
         assert "Full details" in result
 
