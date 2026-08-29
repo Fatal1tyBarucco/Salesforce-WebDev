@@ -2,7 +2,7 @@
 # Agent Validation Pipeline — GitHub Actions Workflow
 # ──────────────────────────────────────────────────────────────────────
 # Triggered ONLY on Pull Requests from auto-fix/* branches.
-# Validates that the agent's code corrections pass isolated tests
+# Validates that agent code corrections pass isolated tests
 # with a rigorous 95% coverage threshold.
 # ──────────────────────────────────────────────────────────────────────
 
