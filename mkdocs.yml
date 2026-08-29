@@ -73,6 +73,7 @@ nav:
     - Overview: architecture/overview.md
     - C4 Container: architecture/c4_container.md
     - Decisions:
+      - Index: architecture/decisions/index.md
       - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
@@ -83,18 +84,22 @@ nav:
   - Contribution:
     - Testing Strategy: contribution/testing-strategy.md
   - Maintenance:
+    - Index: maintenance/index.md
     - Local Development: maintenance/local-development.md
     - Workflow Operations: maintenance/workflow-operations.md
     - Cache Management: maintenance/cache-management.md
     - Troubleshooting: maintenance/troubleshooting.md
     - Plano de Ação: PLANO_DE_ACAO.md
   - Observability:
+    - Index: observability/index.md
     - Logging: observability/logging.md
     - Pipeline Health: observability/pipeline-health.md
   - Runbooks:
+    - Index: runbooks/index.md
     - Scraper Failure: runbooks/scraper-failure.md
     - GitHub Actions Failure: runbooks/github-actions-failure.md
   - Roadmap:
+    - Index: roadmap/index.md
     - V1: roadmap/v1.md
     - V2: roadmap/v2.md
     - V3: roadmap/v3.md

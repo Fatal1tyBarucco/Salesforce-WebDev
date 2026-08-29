@@ -26,7 +26,7 @@ class TestLLMProviderInit:
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         svc = LLMService(api_key="k", provider="opencode")
         assert svc.provider == "opencode"
-        assert svc.model_name == "hy3-free"
+        assert svc.model_name == "gemini-3.6-flash"
 
     def test_explicit_provider_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")

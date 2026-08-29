@@ -1,13 +1,13 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. Groq (primary — free tier, 30 req/min)
-  2. OpenCode (secondary — free tier)
-  3. OpenRouter free models (tertiary — free tier)
-  4. Google Gemini (last resort — protects the free tier 20 req/day quota)
+  1. OpenCode (primary — free tier)
+  2. OpenRouter free models (secondary — free tier)
+  3. Google Gemini (last resort — protects the free tier 20 req/day quota)
 
 Each provider loops through its models before moving to the next provider.
-OpenAI support has been removed (no credits allocated).
+Groq is also supported via explicit provider="groq" (free tier retired
+2026-08-16, paid opt-in only).
 """
 
 import logging
@@ -53,12 +53,13 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
         base_url="https://opencode.ai/zen/v1",
-        default_model="hy3-free",
+        default_model="gemini-3.6-flash",
         fallback_models=[
-            "x-preview-f-free",
-            "glm-5-free",
             "deepseek-v4-flash-free",
-            "kimi-k2.5-free",
+            "mimo-v2.5-free",
+            "hy3-free",
+            "nemotron-3-ultra-free",
+            "laguna-s-2.1-free",
         ],
     ),
     _ProviderConfig(
