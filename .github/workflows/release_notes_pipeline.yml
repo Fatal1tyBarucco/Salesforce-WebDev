@@ -181,7 +181,13 @@ jobs:
         run: |
           set -o pipefail
           {
-          git pull origin ${{ github.ref_name }}
+          # Stash locais (releases/ + READMEs) antes do pull para evitar
+          # conflito quando o remote estiver à frente do checkout inicial.
+          git stash push -m "pipeline-changes-pre-pull" -- releases/ README.md README.en.md
+          # Tolerar remotos inalcançáveis e não-fatal: continuar se não houver
+          # nada novo a integrar (fast-forward já implícito no push).
+          git pull --ff-only origin ${{ github.ref_name }} || echo "::warning::git pull falhou (continuando com mudanças locais)"
+          git stash pop || true
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add releases/ README.md README.en.md
           git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
