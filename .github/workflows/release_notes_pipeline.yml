@@ -336,7 +336,8 @@ jobs:
                       continue
                   elif r_del.returncode == 0:
                       # Also delete the git tag so we can recreate
-                      print(f'🧹 Deleted existing release {tag} — will recreate.')
+                      subprocess.run(['git', 'tag', '-d', tag], capture_output=True)
+                      print(f'🧹 Deleted release + git tag {tag} — will recreate.')
                   else:
                       print(f'  ⚠️ Could not delete {tag}: {r_del.stderr.strip()} — skipping.')
                       continue
@@ -353,7 +354,8 @@ jobs:
                       capture_output=True, text=True
                   )
                   if r_del_legacy.returncode == 0:
-                      print(f'🧹 Deleted legacy release: {legacy_tag}')
+                      subprocess.run(['git', 'tag', '-d', legacy_tag], capture_output=True)
+                      print(f'🧹 Deleted legacy release + tag: {legacy_tag}')
                   elif 'immutable' in r_del_legacy.stderr:
                       print(f'⏭️ Legacy {legacy_tag} is immutable — left as-is.')
 
