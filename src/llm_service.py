@@ -1,9 +1,9 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. OpenCode (primary — free tier)
-  2. OpenRouter free models (secondary — free tier)
-  3. Google Gemini (last resort — protects the free tier 20 req/day quota)
+  1. Gemini (primary — Google AI Studio, free tier 20 req/min)
+  2. OpenRouter free models (secondary)
+  3. OpenCode (tertiary — only useful for paid accounts)
 
 Each provider loops through its models before moving to the next provider.
 Groq is also supported via explicit provider="groq" (free tier retired
@@ -50,17 +50,9 @@ class _ProviderConfig:
 # and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
-        name="opencode",
-        api_key_env="OPENCODE_API_KEY",
-        base_url="https://opencode.ai/zen/v1",
-        default_model="gemini-3.6-flash",
-        fallback_models=[
-            "deepseek-v4-flash-free",
-            "mimo-v2.5-free",
-            "hy3-free",
-            "nemotron-3-ultra-free",
-            "laguna-s-2.1-free",
-        ],
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-2.0-flash",
     ),
     _ProviderConfig(
         name="openrouter",
@@ -77,9 +69,18 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         ],
     ),
     _ProviderConfig(
-        name="gemini",
-        api_key_env="GOOGLE_API_KEY",
+        # OpenCode free tier models are largely unavailable in 2026-08
+        # (401 CreditsError on default, 400 upstream on free variants).
+        # Kept last as a final attempt; useful for paid OpenCode accounts.
+        name="opencode",
+        api_key_env="OPENCODE_API_KEY",
+        base_url="https://opencode.ai/zen/v1",
         default_model="gemini-3.6-flash",
+        fallback_models=[
+            "deepseek-v4-flash-free",
+            "mimo-v2.5-free",
+            "hy3-free",
+        ],
     ),
     _ProviderConfig(
         # Groq: free tier retired 2026-08-16. Kept here so users with paid

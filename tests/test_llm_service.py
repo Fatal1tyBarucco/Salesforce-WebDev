@@ -32,7 +32,7 @@ class TestLLMProviderInit:
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="k", provider="gemini")
         assert svc.provider == "gemini"
-        assert svc.model_name == "gemini-3.6-flash"
+        assert svc.model_name == "gemini-2.0-flash"
 
     def test_explicit_unknown_provider_falls_to_autodetect(
         self, monkeypatch: pytest.MonkeyPatch
@@ -114,9 +114,9 @@ class TestLLMFallbackChain:
         svc = LLMService(api_key="oc-key", provider="opencode")
         result = svc._switch_to_next_provider()
         assert result is True
-        assert svc.provider == "openrouter"
-        assert svc.api_key == "or-key"
-        assert svc.model_name == "openrouter/auto"
+        assert svc.provider == "gemini"
+        assert svc.api_key == "goog-key"
+        assert svc.model_name == "gemini-2.0-flash"
 
     def test_switch_to_next_provider_all_exhausted_returns_false(
         self, monkeypatch: pytest.MonkeyPatch
@@ -136,10 +136,9 @@ class TestLLMFallbackChain:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        svc._tried_providers.update(["groq", "opencode"])
+        svc._tried_providers.update(["opencode", "groq", "gemini", "openrouter"])
         result = svc._next_fallback_provider()
-        assert result is not None
-        assert result.name == "openrouter"
+        assert result is None
 
     def test_generate_completion_fallback_chain_succeeds(
         self, monkeypatch: pytest.MonkeyPatch

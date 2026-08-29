@@ -148,6 +148,8 @@ def apply_actions(actions: list[dict]) -> tuple[list[str], list[str]]:
     rejected: list[str] = []
     for act in actions:
         op, path = act.get("op"), str(act.get("path", ""))
+        if op == "read":
+            continue
         if op not in ("update", "create", "delete"):
             rejected.append(f"{path}: operação inválida '{op}'")
             continue

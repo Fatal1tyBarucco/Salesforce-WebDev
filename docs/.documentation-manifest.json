@@ -127,7 +127,6 @@
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
-    ".github/workflows/agent-validation.yml": "bc638d931d8b25174937878ed4b4f4165c692a96",
     ".github/workflows/black.yml": "1ebfc208a5f667167d236f7e555dfb6a13029cc1",
     ".github/workflows/dependency-review.yml": "ff51fef04d8283072bc1a8daaaca44b692427f32",
     ".github/workflows/documentation-build.yml": "5f55df4667e3925d21395f3a4f3fd6192926b96c",
