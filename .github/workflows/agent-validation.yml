@@ -169,7 +169,7 @@ jobs:
           while IFS= read -r source_file; do
             # Derive the test file path:
             # src/service.py -> tests/test_service.py
-            # src/auto_healing/service.py -> tests/test_auto_healing_service.py
+        # src/llm_service.py -> tests/test_llm_service.py
             # service.py -> tests/test_service.py
             RELATIVE_PATH="${source_file#src/}"
             MODULE_NAME=$(basename "${RELATIVE_PATH}" .py)
@@ -231,7 +231,7 @@ jobs:
         run: |
           echo "::error::Agent correction failed isolated tests."
           echo ""
-          echo "The auto-healing agent's code correction did not pass"
+           echo "The agent's code correction did not pass"
           echo "the isolated test suite with ≥95% coverage."
           echo ""
           echo "This PR will NOT be merged until the agent produces"

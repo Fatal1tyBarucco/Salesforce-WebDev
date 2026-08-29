@@ -324,8 +324,8 @@ Salesforce-WebDev/
 
 - [Refatoração — Status](refatoracao.md) — Progresso da refatoração
 - [Arquitetura](architecture/overview.md) — Visão arquitetural detalhada
-- [Decisões (ADRs)](architecture/decisions/) — Decisões de design documentadas
-- [Manutenção](maintenance/) — Guias de desenvolvimento local e troubleshooting
-- [Observabilidade](observability/) — Logging e health checks
-- [Runbooks](runbooks/) — Procedimentos de resposta a falhas
-- [Roadmap](roadmap/) — Planejamento v1 → v3
+- [Decisões (ADRs)](architecture/decisions/index.md) — Decisões de design documentadas
+- [Manutenção](maintenance/index.md) — Guias de desenvolvimento local e troubleshooting
+- [Observabilidade](observability/index.md) — Logging e health checks
+- [Runbooks](runbooks/index.md) — Procedimentos de resposta a falhas
+- [Roadmap](roadmap/index.md) — Planejamento v1 → v3

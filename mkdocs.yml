@@ -76,17 +76,7 @@ nav:
       - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
-      - ADR-004 Auto-Healing Agent: architecture/decisions/adr-004-auto-healing-agent.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
-  - Auto-Healing Agent:
-    - Visão Geral: auto-healing/index.md
-    - Arquitetura:
-      - Deep Dive: auto-healing/architecture/deep-dive.md
-    - Deploy:
-      - Guia de Deploy: auto-healing/deployment/guide.md
-    - Runbooks:
-      - Operação: auto-healing/runbooks/auto-healing-agent.md
-      - Troubleshooting: auto-healing/runbooks/troubleshooting.md
   - Refatoração:
     - Status & Auditoria: refatoracao.md
     - Melhorias Fase 1 & V1: improvements.md
@@ -97,6 +87,7 @@ nav:
     - Workflow Operations: maintenance/workflow-operations.md
     - Cache Management: maintenance/cache-management.md
     - Troubleshooting: maintenance/troubleshooting.md
+    - Plano de Ação: PLANO_DE_ACAO.md
   - Observability:
     - Logging: observability/logging.md
     - Pipeline Health: observability/pipeline-health.md
