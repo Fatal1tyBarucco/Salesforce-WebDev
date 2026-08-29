@@ -264,23 +264,6 @@ jobs:
               season = slug.rsplit('_', 1)[0]
               tag = f'v{release_id}-{year_short}-{season}'
 
-              # Migration: delete legacy tag format v20{year}-{season} (e.g. v2027-winter)
-              # once the new v{release_id}-{year_short}-{season} tag is created.
-              legacy_tag = f'v20{year_short}-{season}'
-              if legacy_tag in existing_tags and tag not in existing_tags:
-                  print(f'🧹 Deleting legacy tag: {legacy_tag}')
-                  subprocess.run(['gh', 'release', 'delete', legacy_tag, '--yes'],
-                                 capture_output=True, text=True)
-                  existing_tags.discard(legacy_tag)
-
-              # If new-format tag already exists (immutable release),
-              # delete it so we can recreate with fresh content.
-              if tag in existing_tags:
-                  print(f'🧹 Deleting existing tag: {tag} (will recreate)')
-                  subprocess.run(['gh', 'release', 'delete', tag, '--yes'],
-                                 capture_output=True, text=True)
-                  existing_tags.discard(tag)
-
               # Load AI-generated summaries
               cache = load_cache(release_dir)
 
@@ -335,6 +318,45 @@ jobs:
               notes += f'---{nl}'
               notes += f'*Gerado automaticamente pelo Salesforce Release Notes Pipeline*'
 
+              # Check if this tag already exists (fetch current state, not stale cache)
+              r_check = subprocess.run(
+                  ['gh', 'release', 'view', tag, '--json', 'tagName,databaseId', '--jq', '.tagName'],
+                  capture_output=True, text=True
+              )
+              tag_exists = r_check.returncode == 0 and tag in r_check.stdout
+
+              if tag_exists:
+                  # Check if it's immutable by trying to delete
+                  r_del = subprocess.run(
+                      ['gh', 'release', 'delete', tag, '--yes'],
+                      capture_output=True, text=True
+                  )
+                  if r_del.returncode != 0 and 'immutable' in r_del.stderr:
+                      print(f'⏭️ Release {tag} exists and is immutable — skipping update.')
+                      continue
+                  elif r_del.returncode == 0:
+                      # Also delete the git tag so we can recreate
+                      print(f'🧹 Deleted existing release {tag} — will recreate.')
+                  else:
+                      print(f'  ⚠️ Could not delete {tag}: {r_del.stderr.strip()} — skipping.')
+                      continue
+
+              # Migration: delete legacy tag format v20{year}-{season}
+              legacy_tag = f'v20{year_short}-{season}'
+              r_legacy = subprocess.run(
+                  ['gh', 'release', 'view', legacy_tag, '--json', 'tagName', '--jq', '.tagName'],
+                  capture_output=True, text=True
+              )
+              if r_legacy.returncode == 0:
+                  r_del_legacy = subprocess.run(
+                      ['gh', 'release', 'delete', legacy_tag, '--yes'],
+                      capture_output=True, text=True
+                  )
+                  if r_del_legacy.returncode == 0:
+                      print(f'🧹 Deleted legacy release: {legacy_tag}')
+                  elif 'immutable' in r_del_legacy.stderr:
+                      print(f'⏭️ Legacy {legacy_tag} is immutable — left as-is.')
+
               max_existing = max(existing_ids) if existing_ids else 0
               cmd = ['gh', 'release', 'create', tag, '--title', name, '--notes', notes]
               if release_id > max_existing:
@@ -344,7 +366,6 @@ jobs:
               r = subprocess.run(cmd, capture_output=True, text=True)
               if r.returncode == 0:
                   print(f'  ✅ Created: {tag}')
-                  existing_tags.add(tag)
               else:
                   print(f'  ❌ Failed: {r.stderr.strip()}')
 
