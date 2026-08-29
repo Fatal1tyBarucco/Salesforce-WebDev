@@ -20,31 +20,22 @@ O workflow **🚀 Salesforce Release Notes Pipeline** atua como o orquestrador c
 * **Concurrency Group**: `pipeline-${{ github.event_name }}` (com `cancel-in-progress: false`).
 * **Python**: Versão `3.13` gerenciada via `uv`.
 * **Ambiente**: Node.js 24 forçado via `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`.
+* **Timeout**: O job de extração possui `timeout-minutes: 240`.
 
 ---
 
 ## Estrutura de Jobs
 
-O pipeline é composto por três jobs sequenciais e condicionais:
+O pipeline é composto por dois jobs sequenciais e condicionais:
 
 ```mermaid
 graph TD
-    A[1. 🔍 Lint & Type Check] -->|Sucesso| B[2. 📥 Extração e Geração]
-    A -->|Falha| C[3. 📝 Issue com Diagnóstico de Falhas]
-    B -->|Falha| C
+    A[1. 📥 Extração e Geração] -->|Falha| B[2. 📝 Issue com Diagnóstico de Falhas]
 ```
 
-### 1. 🔍 Lint & Type Check (`lint`)
-Garante a qualidade estática do código e a integridade dos testes unitários antes de executar tarefas de extração.
+> **Nota**: Lint, typecheck e testes são tratados pelo workflow separado **Python Quality** (`python-quality.yml`), que roda em todo push e PR.
 
-* **Passos principais**:
-  1. Instalação de dependências via `uv sync --frozen --extra dev --group dev`.
-  2. **Ruff**: Análise estática e formatação em `src/` (output em `/tmp/pipeline_logs/lint_ruff.log`).
-  3. **Mypy**: Verificação de tipos estáticos (output em `/tmp/pipeline_logs/lint_mypy.log`).
-  4. **Pytest**: Execução do suíte de testes automatizados (output em `/tmp/pipeline_logs/lint_pytest.log`).
-  5. **Upload de Logs**: Envia os logs armazenados em `/tmp/pipeline_logs/` como o artefato `lint-logs` (retenção de 7 dias).
-
-### 2. 📥 Extração e Geração de Artefatos (`extract`)
+### 1. 📥 Extração e Geração de Artefatos (`extract`)
 Executa a raspagem, parsing com IA, geração de marcações e publicação dos artefatos.
 
 * **Passos principais**:
@@ -58,11 +49,11 @@ Executa a raspagem, parsing com IA, geração de marcações e publicação dos 
   8. **Upload de Logs**: Envia os logs de execução como o artefato `extract-logs` (retenção de 7 dias).
   9. Geração do sumário de execução (`$GITHUB_STEP_SUMMARY`).
 
-### 3. 📝 Issue com Diagnóstico de Falhas (`create-issue`)
-Executado automaticamente em caso de falha nos jobs `lint` ou `extract` (`needs.lint.result == 'failure' || needs.extract.result == 'failure'`).
+### 2. 📝 Issue com Diagnóstico de Falhas (`create-issue`)
+Executado automaticamente em caso de falha no job `extract` (`needs.extract.result == 'failure'`).
 
 * **Passos principais**:
-  1. Download dos artefatos de log (`lint-logs` e `extract-logs`) para `/tmp/pipeline_logs/`.
+  1. Download do artefato de log `extract-logs` para `/tmp/pipeline_logs/`.
   2. Execução do script `.github/scripts/build_failure_issue.py` para construir um diagnóstico didático com plano de ação.
   3. Abertura ou atualização de uma GitHub Issue contendo os detalhes da falha para rápida resolução.
 
@@ -74,7 +65,6 @@ Todos os passos do pipeline registram suas saídas no diretório `/tmp/pipeline_
 
 | Artefato | Arquivos de Log Incluídos | Retenção |
 | :--- | :--- | :--- |
-| `lint-logs` | `lint_ruff.log`, `lint_mypy.log`, `lint_pytest.log` | 7 dias |
 | `extract-logs` | `extraction.log`, `cache_validation.log`, `artifact_tests.log`, `commit_push.log`, `release_creation.log` | 7 dias |
 
 ---
