@@ -178,7 +178,6 @@ def status_table() -> list[str]:
     return [
         "| Etapa | Resultado |",
         "|---|---|",
-        f"| 🔍 Lint & Type Check (ruff · mypy · pytest) | {STATUS_BADGE.get(LINT_RESULT, LINT_RESULT)} |",
         f"| 📥 Extração e Geração de Artefatos | {STATUS_BADGE.get(EXTRACT_RESULT, EXTRACT_RESULT)} |",
     ]
 
@@ -241,7 +240,7 @@ def build_body(findings: list[dict[str, object]]) -> str:
         "",
         "### 🔗 Links",
         f"- [Logs completos desta execução]({RUN_URL})",
-        f"- Artifacts `lint-logs` / `extract-logs` disponíveis nesta run (retenção de 7 dias): {RUN_URL}",
+        f"- Artifacts `extract-logs` disponíveis nesta run (retenção de 7 dias): {RUN_URL}",
         "",
         "> 🤖 Issue gerada automaticamente pelo Release Notes Automation Pipeline.",
     ]
