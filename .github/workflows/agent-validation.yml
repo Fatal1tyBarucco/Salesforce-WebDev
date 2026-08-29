@@ -32,7 +32,6 @@ jobs:
   # ── Gate: Only run for auto-fix branches ──────────────────────────
   check-branch:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'auto-fix/')
     outputs:
       is_auto_fix: ${{ steps.branch-check.outputs.is_auto_fix }}
     steps:
@@ -40,12 +39,12 @@ jobs:
         id: branch-check
         run: |
           BRANCH="${{ github.head_ref }}"
-          if [[ "${BRANCH}" == auto-fix/* ]]; then
+          if [[ -n "${BRANCH}" && "${BRANCH}" == auto-fix/* ]]; then
             echo "is_auto_fix=true" >> "$GITHUB_OUTPUT"
             echo "✅ Branch '${BRANCH}' is an auto-fix branch."
           else
             echo "is_auto_fix=false" >> "$GITHUB_OUTPUT"
-            echo "⏭️ Branch '${BRANCH}' is not an auto-fix branch. Skipping."
+            echo "⏭️ Branch '${BRANCH:-no-ref}' is not an auto-fix branch. Skipping."
           fi
 
   # ── Discover Changed Python Files ─────────────────────────────────
