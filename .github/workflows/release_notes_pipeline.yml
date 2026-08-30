@@ -189,9 +189,16 @@ jobs:
           git pull --ff-only origin ${{ github.ref_name }} || echo "::warning::git pull falhou (continuando com mudanças locais)"
           git stash pop || true
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-          git add releases/ README.md README.en.md
-          git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          git push --force-with-lease origin HEAD:${{ github.ref_name }}
+
+          # Add all changes — not just hardcoded paths — and detect empty commits.
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit (already up-to-date with remote)."
+          else
+            git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}" || exit 1
+            git push --force-with-lease origin HEAD:${{ github.ref_name }}
+          fi
           } 2>&1 | tee /tmp/pipeline_logs/commit_push.log
 
       - name: Criar GitHub Release
