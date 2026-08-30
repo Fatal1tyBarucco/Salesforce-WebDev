@@ -489,6 +489,30 @@ def _get_release_emoji(name: str) -> str:
     return "🌸"
 
 
+def _strip_markdown_headings(text: str) -> str:
+    """Remove leading markdown heading markers (#, ##, ###) and trailing whitespace."""
+    lines = text.splitlines()
+    result_lines: list[str] = []
+    for line in lines:
+        stripped = line.lstrip("#").strip()
+        result_lines.append(stripped)
+    return "\n".join(result_lines)
+
+
+def _has_meaningful_content(chunk: str) -> bool:
+    """Check if a release block has real content beyond just a heading.
+
+    Returns True only if:
+    - The block is wrapped in <details> tags (curated content), OR
+    - The block has at least 2 non-empty lines after stripping heading markers
+    """
+    if "<details>" in chunk:
+        return True
+    stripped = _strip_markdown_headings(chunk)
+    non_empty = [ln for ln in stripped.splitlines() if ln.strip()]
+    return len(non_empty) >= 2
+
+
 def _detect_existing_release_chunk(text: str, release_name: str) -> str | None:
     """Return the markdown chunk for ``release_name`` already present in ``text``.
 
@@ -569,8 +593,7 @@ async def _build_release_block(
             _detect_existing_release_chunk(existing_text, name) if existing_text else None
         )
         if existing_chunk is not None and existing_chunk.strip():
-            content_chars = existing_chunk.strip().strip("#*>\n ")
-            has_real_content = bool(content_chars)
+            has_real_content = _has_meaningful_content(existing_chunk)
             if has_real_content:
                 logger.info(
                     "README: reusing existing curated block for %s (preserves manual edits)",
@@ -720,6 +743,8 @@ async def _build_release_block(
                 lines.append(migration_text)
             lines.extend(cat_lines)
             lines.append("</details>\n")
+            lines.append("")
+            lines.append("")
 
         lines.append("")
 

@@ -121,7 +121,7 @@ class ReleaseSummarizer:
                         cache_is_valid = False
 
                 # Check 3: executive_summary is suspiciously short
-                if len(exec_text) < 100 and total > 100:
+                if len(exec_text) < 500 and total > 100:
                     logger.warning(
                         "Cache validation failed for %s: executive_summary too short "
                         "(%d chars) for %d features. Discarding cache.",

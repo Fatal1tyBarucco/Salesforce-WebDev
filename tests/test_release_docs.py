@@ -178,6 +178,58 @@ class TestBuildReleaseBlockPreservesExisting:
         assert "Curated intro that must be kept" in result
         assert "Summer '26" in result
 
+    def test_regenerates_empty_heading_only_block(self) -> None:
+        """Regression: bare heading with emoji but no <details> must be regenerated.
+
+        Previously the code stripped ``#*>\\n `` and treated ``❄️ Winter '27`` as
+        valid content, causing the empty placeholder to be preserved on every run.
+        """
+        import asyncio
+
+        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+
+        existing = (
+            f"{RELEASE_SECTION_HEADING}\n\n" "### ❄️ Winter '27\n\n\n\n" "### ☀️ Summer '26\n\n\n\n"
+        )
+
+        metas = [
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "total_features": 100,
+                "categories": [{"name": "Salesforce geral", "count": 28}],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [{"name": "Agentforce", "count": 37}],
+            },
+        ]
+
+        good_summary = MagicMock()
+        good_summary.executive_summary = "Detailed summary content here."
+        good_summary.category_summaries = {
+            "Salesforce geral": "Cat desc 1",
+            "Agentforce": "Cat desc 2",
+        }
+        good_summary.business_impact = ""
+        good_summary.strategic_themes = []
+        good_summary.migration_notes = ""
+
+        class _Summarizer:
+            async def summarize(self, slug: str):
+                return good_summary
+
+        result = asyncio.run(
+            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
+        )
+        assert "Detailed summary content here." in result
+        assert "Salesforce geral" in result
+        assert "Agentforce" in result
+
 
 class TestUpdateSingleReadmeIdempotent:
     """_update_single_readme preserves content outside the releases block."""
