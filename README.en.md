@@ -1,6 +1,8 @@
+<div align="center">
+
 <img src="./assets/banner1.png" alt="Salesforce Release Intelligence" width="800" />
 
-<sub><em>In production, the MkDocs documentation displays one of the banners randomly on each page load via <code>docs/assets/javascripts/banner.js</code>.</em></sub>
+</div>
 
 # 🚀 Salesforce Release Notes Intelligence
 

@@ -2,8 +2,6 @@
 
 <img src="./assets/banner1.png" alt="Salesforce Release Intelligence" width="800" />
 
-<sub><em>Em produção, a documentação MkDocs exibe um dos banners aleatoriamente a cada carregamento via <code>docs/assets/javascripts/banner.js</code>.</em></sub>
-
 </div>
 
 <div align="center">
