@@ -305,7 +305,7 @@ jobs:
 
               year_short = ''.join(filter(str.isdigit, slug.split('_')[-1]))
               season = slug.rsplit('_', 1)[0]
-              tag = f'v{release_id}-{year_short}-{season}'
+              tag = f'v{release_id}-{season}-{year_short}'
 
               # Load AI-generated summaries
               cache = load_cache(release_dir)
@@ -381,29 +381,6 @@ jobs:
                   else:
                       print(f'  ⚠️ Could not delete {tag}: {r_del.stderr.strip()} — skipping.')
                       continue
-
-              # Migration: delete legacy tag format v20{year}-{season}
-              legacy_tag = f'v20{year_short}-{season}'
-              r_legacy = subprocess.run(
-                  ['gh', 'release', 'view', legacy_tag, '--json',
-                   'tagName,databaseId,isImmutable'],
-                  capture_output=True, text=True,
-              )
-              if r_legacy.returncode == 0 and r_legacy.stdout.strip():
-                  try:
-                      legacy_detail = json.loads(r_legacy.stdout)
-                  except json.JSONDecodeError:
-                      legacy_detail = {}
-                  if legacy_detail.get('isImmutable'):
-                      print(f'⏭️ Legacy {legacy_tag} is immutable — left as-is.')
-                  else:
-                      r_del_legacy = subprocess.run(
-                          ['gh', 'release', 'delete', legacy_tag, '--yes'],
-                          capture_output=True, text=True,
-                      )
-                      if r_del_legacy.returncode == 0:
-                          subprocess.run(['git', 'tag', '-d', legacy_tag], capture_output=True)
-                          print(f'🧹 Deleted legacy release + tag: {legacy_tag}')
 
               max_existing = max(existing_ids) if existing_ids else 0
               cmd = ['gh', 'release', 'create', tag, '--title', name, '--notes', notes]
