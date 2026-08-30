@@ -1,13 +1,6 @@
 <div align="center">
 
-<table>
-  <tr>
-    <td><img src="./assets/banner1.png" alt="Salesforce Release Intelligence - Banner 1" width="800" /></td>
-  </tr>
-  <tr>
-    <td><img src="./assets/banner2.png" alt="Salesforce Release Intelligence - Banner 2" width="800" /></td>
-  </tr>
-</table>
+<img src="./assets/banner1.png" alt="Salesforce Release Intelligence" width="800" />
 
 <sub><em>Em produção, a documentação MkDocs exibe um dos banners aleatoriamente a cada carregamento via <code>docs/assets/javascripts/banner.js</code>.</em></sub>
 
