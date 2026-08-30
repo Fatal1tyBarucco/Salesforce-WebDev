@@ -154,7 +154,12 @@ class TestDetectExistingReleaseChunk:
 class TestBuildReleaseBlockPreservesExisting:
     """_build_release_block with existing_text reuses curated chunks."""
 
-    def test_preserves_curated_block(self) -> None:
+    def test_latest_always_regenerated_expanded(self) -> None:
+        """Latest release is always regenerated expanded, not preserved as-is.
+
+        This ensures the newest release is always visible when the README is opened.
+        Older releases are preserved; only the latest is regenerated.
+        """
         import asyncio
 
         from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
@@ -175,8 +180,37 @@ class TestBuildReleaseBlockPreservesExisting:
         result = asyncio.run(
             _build_release_block(metas, "pt_BR", _StubSummarizer(), existing_text=existing)
         )
-        assert "Curated intro that must be kept" in result
         assert "Summer '26" in result
+        assert "### ☀️ Summer '26" in result
+        assert "Curated intro that must be kept" not in result
+
+    def test_older_release_preserved(self) -> None:
+        """Older releases (non-latest) with meaningful content are preserved as-is."""
+        import asyncio
+
+        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+
+        curated = (
+            "<details>\n<summary><h3>🌸 Spring '26</h3></summary>\n\n"
+            "> 📊 **Resumo Executivo:** Curated intro that must be kept.\n"
+            "</details>"
+        )
+        existing = f"{RELEASE_SECTION_HEADING}\n\n{curated}\n"
+
+        metas = [
+            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str):
+                return None
+
+        result = asyncio.run(
+            _build_release_block(metas, "pt_BR", _StubSummarizer(), existing_text=existing)
+        )
+        assert "Curated intro that must be kept" in result
+        assert "Spring '26" in result
 
     def test_regenerates_empty_heading_only_block(self) -> None:
         """Regression: bare heading with emoji but no <details> must be regenerated.
@@ -234,7 +268,8 @@ class TestBuildReleaseBlockPreservesExisting:
 class TestUpdateSingleReadmeIdempotent:
     """_update_single_readme preserves content outside the releases block."""
 
-    def test_preserves_pre_heading_content(self, tmp_path: Path) -> None:
+    def test_preserves_pre_heading_content_and_older_releases(self, tmp_path: Path) -> None:
+        """Content before releases heading + older release blocks are preserved."""
         import asyncio
 
         from src.release_docs import (
@@ -242,9 +277,9 @@ class TestUpdateSingleReadmeIdempotent:
             RELEASE_SECTION_HEADING,
         )
 
-        curated = (
-            "<details>\n<summary><h3>☀️ Summer '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Curated manual edit.\n"
+        curated_old = (
+            "<details>\n<summary><h3>🌸 Spring '26</h3></summary>\n\n"
+            "> 📊 **Resumo Executivo:** Curated older content.\n"
             "</details>"
         )
         readme_text = (
@@ -252,7 +287,7 @@ class TestUpdateSingleReadmeIdempotent:
             "\nSome manual intro that must not be touched.\n"
             "\n"
             f"{RELEASE_SECTION_HEADING}\n\n"
-            f"{curated}\n"
+            f"{curated_old}\n"
             "\n## 🏗️ Como Funciona\n\nArchitecture content.\n"
         )
         readme = tmp_path / "README.md"
@@ -264,7 +299,13 @@ class TestUpdateSingleReadmeIdempotent:
                 "slug": "summer_26",
                 "release_id": 262,
                 "categories": [],
-            }
+            },
+            {
+                "name": "Spring '26",
+                "slug": "spring_26",
+                "release_id": 260,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -275,7 +316,7 @@ class TestUpdateSingleReadmeIdempotent:
 
         result = readme.read_text(encoding="utf-8")
         assert "Some manual intro that must not be touched." in result
-        assert "Curated manual edit" in result
+        assert "Curated older content" in result
         assert "Architecture content." in result
 
     def test_inserts_new_release_without_reformatting_existing(self, tmp_path: Path) -> None:

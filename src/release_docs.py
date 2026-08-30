@@ -553,16 +553,17 @@ async def _build_release_block(
 ) -> str:
     """Build release section for a specific language.
 
-    Latest release: fully expanded (all categories open).
-    Old releases: entire section collapsed, with individual topic toggles inside.
+    Strategy: PRESERVE all existing release blocks that have meaningful content.
+    Only generate new blocks for releases that don't exist in the README yet.
 
-    When ``existing_text`` is provided, the function reuses manually-curated
-    blocks (categories intros, executive summaries) for releases that are
-    already present in the README, instead of regenerating them from scratch.
+    Release order in output always follows metas (release_id desc = newest first).
+    Latest release: fully expanded with collapsed categories inside.
+    Older releases: preserved as-is (may be collapsed or expanded).
+
+    Content before/after the releases section is NEVER modified by this function.
     """
     lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
 
-    # Language toggle
     if lang == "pt_BR":
         toggle = (
             '<div style="padding:12px;margin-bottom:20px;'
@@ -583,27 +584,45 @@ async def _build_release_block(
         )
     lines.append(toggle)
 
+    # Build set of existing release names in README for quick lookup
+    existing_names: set[str] = set()
+    if existing_text:
+        for meta in metas:
+            name = meta["name"]
+            chunk = _detect_existing_release_chunk(existing_text, name)
+            if chunk and _has_meaningful_content(chunk):
+                existing_names.add(name)
+
     for idx, meta in enumerate(metas):
-        slug = meta["slug"]
         name = meta["name"]
+        slug = meta["slug"]
         emoji = _get_release_emoji(name)
         is_latest = idx == 0
 
-        existing_chunk = (
-            _detect_existing_release_chunk(existing_text, name) if existing_text else None
-        )
-        if existing_chunk is not None and existing_chunk.strip():
-            has_real_content = _has_meaningful_content(existing_chunk)
-            if has_real_content:
-                logger.info(
-                    "README: reusing existing curated block for %s (preserves manual edits)",
-                    slug,
-                )
-                lines.append("\n" + existing_chunk.rstrip() + "\n")
+        # LATEST RELEASE RULE: always expanded (`### header`), categories collapsed inside.
+        # Older releases (idx > 0): always wrapped in <details> (collapsed).
+        if is_latest:
+            # Latest: regenerate fully expanded even if it already exists in README.
+            # This ensures the newest release is always shown expanded with all content visible.
+            logger.info(
+                "README: regenerating latest release %s (always expanded)",
+                slug,
+            )
+        elif name in existing_names:
+            # Older release that exists in README — preserve exactly as-is
+            chunk = _detect_existing_release_chunk(existing_text, name)
+            if chunk:
+                lines.append("\n" + chunk.rstrip() + "\n")
                 lines.append("")
                 continue
             logger.info(
-                "README: detected empty block for %s — will regenerate",
+                "README: detected empty block for %s — will regenerate as collapsed",
+                slug,
+            )
+        else:
+            # New older release — generate collapsed
+            logger.info(
+                "README: generating new collapsed block for %s",
                 slug,
             )
 
