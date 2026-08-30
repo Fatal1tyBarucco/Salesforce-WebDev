@@ -416,6 +416,7 @@ jobs:
                   print(f'  ✅ Created: {tag}')
               else:
                   stderr = r.stderr.strip()
+                  print(f'  ❌ stderr: {stderr[:500]}')
                   if 'immutable' in stderr or 'pre_receive' in stderr or '422' in stderr:
                       print(f'  ⏭️ Skipped {tag}: release/tag protection rule blocked creation.')
                       print(f'     Hint: review Settings → Rules → "Restrict or block tag creation"')
