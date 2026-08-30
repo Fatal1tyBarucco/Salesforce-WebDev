@@ -1,6 +1,6 @@
 {
   "documentation_map": {
-    ".github/scripts/build_failure_issue.py": [
+    ".github/workflows/release_notes_pipeline.yml": [
       "docs/maintenance/workflow-operations.md"
     ],
     "src/ai_automation.py": [
@@ -123,28 +123,28 @@
     ".github/workflows/documentation-sync.yml": "246f276cc1a305f23dca53b52b96643dfc99492a",
     ".github/workflows/opencode.yml": "d480a4ad7d28ff27559819585633956431500bfb",
     ".github/workflows/python-quality.yml": "8ec30452ff2c21ab839019d5f5d040f93f8f7583",
-    ".github/workflows/release_notes_pipeline.yml": "81be15fbc8936a88cf3f8e6461145ce5a0485c18",
+    ".github/workflows/release_notes_pipeline.yml": "216007f1d5b825f44e5e16e0074fdf8ac1f1fb56",
     ".gitignore": "708f887bf60a58e809ea8dd3e681945b4caf9e55",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".pre-commit-config.yaml": "e3e5bc41d11e19186b796f61946c23550374caca",
     "AGENTS.md": "33fbe4f86365304eab5e3f4fb2b4d73142cdea82",
-    "CHANGELOG.md": "7525755aa6a0c5e634d7c6523236bc97b1d59ed4",
+    "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "2289f952a271a8e8c7a00007b4235d426dacda2e",
-    "DIFF_REPORT.md": "750f83cdf8ef34f2ed7dd3d6470bd7875e73a391",
+    "DIFF_REPORT.md": "80f31ae62a9d39f3672592df01f480e0735d6ec8",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IMPACT_REPORT.md": "31c7a539ebaa0fe3f72e9885e26e52b4b18992c8",
-    "NOTIFICATION_DIGEST.md": "60f92580fa335399a33f7dc804a5dcf2cee399df",
+    "NOTIFICATION_DIGEST.md": "e5d091b821087c568b9cf1ed90c64ab6eb9e5a6c",
     "PLANO_DE_ACAO.md": "36f228992bfd0a4b7853253420450bfdcdaf944e",
-    "QUALITY_REPORT.md": "d582939744e2306e8b8bf77391667cab8894b1f3",
-    "README.en.md": "f83b0fa1a7ce9b228886ef21b0c814c81e606657",
-    "README.md": "e3fc1f850cd5d5783424b2197b736865f7c0f434",
-    "REGRESSION_REPORT.md": "218c03fa9fc37aac020e53c8aac01250d9a63cdf",
+    "QUALITY_REPORT.md": "793e1b3b1b02bc5f14d345c125918c011fce52b6",
+    "README.en.md": "c57b2ed1acf866806f4b094e42c84a9dd48d1e0e",
+    "README.md": "0ccfdb0a071aef52694d11049c55928aa550aaba",
+    "REGRESSION_REPORT.md": "e1aac294d73e63555f5017d4c1717a7564013057",
     "assets/banner.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "34bb5948d2c514fded6a09104eb2188c60774679",
     "audit-fix.patch": "46535f23a3fc8c73d6eb4aaea84df481a498ca1d",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "1c7ec3efb2c58cdea5ce8c92b4ba5157f91954c4",
+    "docs/.documentation-manifest.json": "7981238b666d87f76c0e3745da3c33753dc96e47",
     "docs/PLANO_DE_ACAO.md": "07268bb384e3b1debeb0db5a4589e9d7adc3072f",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -173,7 +173,7 @@
     "docs/maintenance/index.md": "a6ab98576797f56072158b79d9e4ef09f1419c81",
     "docs/maintenance/local-development.md": "07ab38ee12ca16900599971518ab46b8f371f576",
     "docs/maintenance/troubleshooting.md": "391b8e0a48ab3e4cb53d85cbaa15556664cfa154",
-    "docs/maintenance/workflow-operations.md": "4e9a83ce3116c04d45a78c1a1f5f1761f772ee48",
+    "docs/maintenance/workflow-operations.md": "961d4c74030bbc9cbd034003596a7b024b5dabe3",
     "docs/observability/index.md": "950afd5375e9f49c62653bea39ccf04ea034d09b",
     "docs/observability/logging.md": "3da6bbc3fdee3ce93ab870053e4910187fd3d592",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
@@ -488,6 +488,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "00c1e9851da7e9e722455ace35d47c06c890557b"
   },
-  "generated_at": "2026-08-29T16:43:36.264377+00:00",
-  "repository_sha": "6e3c5d809a3ad50fa3d5a1e21747d1fd06fa7e46"
+  "generated_at": "2026-08-30T20:24:34.063058+00:00",
+  "repository_sha": "4bffeec47e5e8fc8bd0d7f779886b32b2f9de845"
 }

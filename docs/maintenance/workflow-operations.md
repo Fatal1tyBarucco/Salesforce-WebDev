@@ -1,77 +1,43 @@
-# Operações de Workflow (GitHub Actions)
+# Operações de Workflow
 
-Este documento detalha o funcionamento, estrutura de jobs, triggers, gerenciamento de logs e tratamento de falhas do workflow principal de integração e entrega contínua do projeto.
+Este documento descreve as operações dos workflows do pipeline no repositório Salesforce-WebDev.
 
----
+## Pipeline de Notas de Release
 
-## Workflow Principal: `release_notes_pipeline.yml`
+O workflow `release_notes_pipeline.yml` é responsável por extrair, processar e publicar as notas de release do Salesforce. Ele é acionado semanalmente ou manualmente e inclui jobs de extração e criação de releases.
 
-O workflow **🚀 Salesforce Release Notes Pipeline** atua como o orquestrador central para extração, validação, geração de artefatos e publicação das Release Notes da Salesforce.
+### Mudanças Recentes (Reconciliação)
 
-### Agendamento e Disparo (Triggers)
+Devido a atualizações no código-fonte, a documentação foi revisada para incluir as seguintes alterações no pipeline:
 
-* **Cron Schedule**: Toda segunda-feira às 08:00 UTC (`0 8 * * 1`).
-* **Workflow Dispatch (Manual)**:
-  * `release_slug`: Slug da release específica (ex: `summer_26`). Se vazio, processa todas as releases ativas.
-  * `dry_run`: Opção `true`/`false` para simular a execução sem persistir alterações no repositório.
+1. **Processo de Commit**:
+   - Antes: Usava `git add releases/ README.md README.en.md` para adicionar apenas caminhos específicos.
+   - Agora: Usa `git add -A` para adicionar todas as alterações no diretório de trabalho, e verifica se há commits vazios antes de confirmar (evitando commits desnecessários).
+   - Isso garante que todas as mudanças, incluindo logs ou caches intermediários, sejam commitadas de forma consistente.
 
-### Concorrência e Variáveis de Ambiente
+2. **Token para Criação de Releases**:
+   - Antes: Usava exclusivamente `GITHUB_TOKEN`.
+   - Agora: Preferencialmente usa `RELEASE_TOKEN` (um PAT com escopo repo) se disponível, senão usa `GITHUB_TOKEN`. Se estiver usando `GITHUB_TOKEN`, um aviso é impresso no log para alertar sobre possíveis restrições de criação de refs (HTTP 422 "Cannot create ref"), conforme issue #112.
+   - Recomenda-se configurar `RELEASE_TOKEN` como secret no GitHub para evitar falhas em organizações com restrições.
 
-* **Concurrency Group**: `pipeline-${{ github.event_name }}` (com `cancel-in-progress: false`).
-* **Python**: Versão `3.13` gerenciada via `uv`.
-* **Ambiente**: Node.js 24 forçado via `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`.
-* **Timeout**: O job de extração possui `timeout-minutes: 240`.
+3. **Formato de Tag para Releases**:
+   - Antes: `v{release_id}-{year_short}-{season}` (ex: `v1-26-summer`).
+   - Agora: `v{release_id}-{season}-{year_short}` (ex: `v1-summer-26`).
+   - Esta mudança unifica o formato e pode afetar scripts ou referências externas que dependem das tags.
 
----
+4. **Tratamento de Releases Imutáveis**:
+   - Agora, antes de tentar atualizar uma release existente, o pipeline verifica se ela é imutável (usando `gh release view` com o campo `isImmutable`).
+   - Se imutável, a atualização é pulada com um log, evitando erros HTTP 422.
+   - Se não imutável, a release é deletada e recriada normalmente.
 
-## Estrutura de Jobs
+5. **Migração Legada Removida**:
+   - A lógica para deletar tags legadas no formato `v20{year_short}-{season}` foi removida, simplificando o fluxo.
 
-O pipeline é composto por dois jobs sequenciais e condicionais:
+### Considerações Operacionais
 
-```mermaid
-graph TD
-    A[1. 📥 Extração e Geração] -->|Falha| B[2. 📝 Issue com Diagnóstico de Falhas]
-```
+- **Logs**: Os logs do pipeline são armazenados em `/tmp/pipeline_logs/` e podem ser revisados para diagnóstico.
+- **Secrets Necessários**: `GITHUB_TOKEN` (padrão) e opcionalmente `RELEASE_TOKEN` para releases. Outros secrets como `GOOGLE_API_KEY` e `OPENROUTER_API_KEY` são usados na extração.
+- **Workdir**: O diretório de trabalho padrão é a raiz do repositório (`.`).
+- **Timeout**: O job de extração tem timeout de 240 minutos devido à complexidade da extração e processamento.
 
-> **Nota**: Lint, typecheck e testes são tratados pelo workflow separado **Python Quality** (`python-quality.yml`), que roda em todo push e PR.
-
-### 1. 📥 Extração e Geração de Artefatos (`extract`)
-Executa a raspagem, parsing com IA, geração de marcações e publicação dos artefatos.
-
-* **Passos principais**:
-  1. Instalação de navegadores Playwright (Chromium) e dependências com `uv sync --frozen`.
-  2. Configuração do bot `github-actions[bot]`.
-  3. Execução do pipeline principal: `python -m src.main` (output gravado em `extraction.log`).
-  4. Validação dos caches de resumo (`.summary_cache.json`) contra os metadados de `.meta.json` (output em `cache_validation.log`).
-  5. Execução de testes automatizados nos artefatos gerados (`artifact_tests.log`).
-  6. Commit e push automático das alterações (`commit_push.log`).
-  7. Criação de GitHub Release com notas detalhadas (`release_creation.log`).
-  8. **Upload de Logs**: Envia os logs de execução como o artefato `extract-logs` (retenção de 7 dias).
-  9. Geração do sumário de execução (`$GITHUB_STEP_SUMMARY`).
-
-### 2. 📝 Issue com Diagnóstico de Falhas (`create-issue`)
-Executado automaticamente em caso de falha no job `extract` (`needs.extract.result == 'failure'`).
-
-* **Passos principais**:
-  1. Download do artefato de log `extract-logs` para `/tmp/pipeline_logs/`.
-  2. Execução do script `.github/scripts/build_failure_issue.py` para construir um diagnóstico didático com plano de ação.
-  3. Abertura ou atualização de uma GitHub Issue contendo os detalhes da falha para rápida resolução.
-
----
-
-## Gerenciamento de Logs e Artefatos
-
-Todos os passos do pipeline registram suas saídas no diretório `/tmp/pipeline_logs/` utilizando `tee` e `set -o pipefail`:
-
-| Artefato | Arquivos de Log Incluídos | Retenção |
-| :--- | :--- | :--- |
-| `extract-logs` | `extraction.log`, `cache_validation.log`, `artifact_tests.log`, `commit_push.log`, `release_creation.log` | 7 dias |
-
----
-
-## Segredos de Ambiente Requeridos
-
-* `GOOGLE_API_KEY`: Chave de API do Google Gemini para classificação de tópicos e sumarização.
-* `OPENROUTER_API_KEY`: Chave alternativa para LLMs via OpenRouter.
-* `OPENCODE_API_KEY`: Chave para provedor OpenCode.
-* `GITHUB_TOKEN`: Token com permissões de escrita para commit, criação de releases e abertura de issues.
+Para detalhes completos, consulte o arquivo `.github/workflows/release_notes_pipeline.yml` no repositório.
