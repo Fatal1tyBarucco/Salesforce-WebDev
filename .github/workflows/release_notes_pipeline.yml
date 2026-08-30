@@ -199,7 +199,12 @@ jobs:
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Prefer a PAT (RELEASE_TOKEN) over the default GITHUB_TOKEN so that
+          # release creation has the necessary scope to create refs/tags.
+          # The GITHUB_TOKEN intentionally cannot create refs in some org setups,
+          # which surfaces as HTTP 422 "Cannot create ref due to creations
+          # being restricted" — see issue #112.
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
           set -o pipefail
@@ -226,6 +231,15 @@ jobs:
               if 'summaries' not in data and 'category_summaries' in data:
                   data['summaries'] = data['category_summaries']
               return data
+
+          # Warn operator if we're using the default GITHUB_TOKEN (issue #112)
+          import os as _os
+          token_hint = _os.environ.get('GH_TOKEN', '')
+          if not token_hint or token_hint.startswith('ghs_'):
+              print('⚠️  Using GITHUB_TOKEN (default).')
+              print('    If releases fail with 422 "Cannot create ref", create a PAT')
+              print('    with repo scope and add it as secret RELEASE_TOKEN.')
+              print()
 
           # Get existing releases + their immutability status
           # gh release list doesn't expose immutable flag, so we inspect each
