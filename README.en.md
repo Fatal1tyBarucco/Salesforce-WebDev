@@ -957,3 +957,17 @@ Em suma, a Winter '26 posiciona o Salesforce como uma plataforma de agentes de I
 ## 📄 Licença
 
 Este projeto é mantido para fins educacionais e de referência técnica.
+
+---
+
+## 🖼️ Alternative Banner
+
+![Salesforce Release Intelligence - Banner 2](./assets/banner2.png)
+
+---
+
+<div align="center">
+
+Made with ☕ and Python code
+
+</div>
