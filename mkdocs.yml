@@ -31,6 +31,12 @@ theme:
     - content.code.annotate
     - content.tabs.link
 
+extra_javascript:
+  - assets/javascripts/banner.js
+
+extra_css:
+  - assets/stylesheets/banner.css
+
 plugins:
   - search
   - mkdocstrings:
