@@ -44,15 +44,11 @@
     "src/feature_classifier.py": [
       "docs/api/feature_classifier.md"
     ],
-    "src/feature_enricher.py": [
-      "docs/internal/ANALYSIS.md"
-    ],
     "src/generator.py": [
       "README.en.md"
     ],
     "src/health.py": [
-      "README.en.md",
-      "docs/internal/ANALYSIS.md"
+      "README.en.md"
     ],
     "src/llm_service.py": [
       "docs/api/llm_service.md",
@@ -85,9 +81,6 @@
       "docs/internal/ANALYSIS.md",
       "docs/internal/REFATORACAO_STATUS.md",
       "docs/refatoracao.md"
-    ],
-    "src/release_summarizer.py": [
-      "docs/internal/ANALYSIS.md"
     ],
     "src/salesforce.py": [
       "README.en.md",
@@ -133,18 +126,19 @@
     "DIFF_REPORT.md": "80f31ae62a9d39f3672592df01f480e0735d6ec8",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IMPACT_REPORT.md": "31c7a539ebaa0fe3f72e9885e26e52b4b18992c8",
-    "NOTIFICATION_DIGEST.md": "e5d091b821087c568b9cf1ed90c64ab6eb9e5a6c",
+    "NOTIFICATION_DIGEST.md": "bac63514a8f4e94ec5e3f95d94707728000385e5",
     "PLANO_DE_ACAO.md": "36f228992bfd0a4b7853253420450bfdcdaf944e",
     "QUALITY_REPORT.md": "793e1b3b1b02bc5f14d345c125918c011fce52b6",
-    "README.en.md": "c57b2ed1acf866806f4b094e42c84a9dd48d1e0e",
-    "README.md": "0ccfdb0a071aef52694d11049c55928aa550aaba",
+    "README.en.md": "a83fb6d8afd13bec1a40b208b4d9b01d527230d0",
+    "README.md": "0b7abb3d90ecd326432c26bb61852faac3bf07ad",
     "REGRESSION_REPORT.md": "e1aac294d73e63555f5017d4c1717a7564013057",
-    "assets/banner.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
+    "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
+    "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "34bb5948d2c514fded6a09104eb2188c60774679",
     "audit-fix.patch": "46535f23a3fc8c73d6eb4aaea84df481a498ca1d",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "7981238b666d87f76c0e3745da3c33753dc96e47",
+    "docs/.documentation-manifest.json": "2dde0e14afa04a1e4235cc60c2298ad4e44ab8b0",
     "docs/PLANO_DE_ACAO.md": "07268bb384e3b1debeb0db5a4589e9d7adc3072f",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -161,10 +155,12 @@
     "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "ef6cf9581567f740de73301b0895ebb2c77183a0",
     "docs/architecture/decisions/index.md": "9852c368c71ed69e304f44353f1d91f95e232f74",
     "docs/architecture/overview.md": "e42ca5b9c93a3dbaee5e72892cffdb793949bc08",
+    "docs/assets/javascripts/banner.js": "8a301034e76890dd856fb4717b21a4353631dd38",
+    "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/changelog.md": "628614e67ca1e9049ea78db520628caafa95a323",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/improvements.md": "6643507cd6a527445ad5a330d2f5427141ec082a",
-    "docs/index.md": "c5a41e3e35e7ab042b801232d997b559a6daa614",
+    "docs/index.md": "ca874b6be0b0e6b1940c9c60fa8c75cbf5c0cf7c",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/internal/ANALYSIS.md": "242ef524c54bc93b4d12f0bb38f7915109ad52d9",
     "docs/internal/AUDIT_REPORT.md": "30127ed7e081062c66e5eca5f31d0bd8492759ce",
@@ -173,7 +169,7 @@
     "docs/maintenance/index.md": "a6ab98576797f56072158b79d9e4ef09f1419c81",
     "docs/maintenance/local-development.md": "07ab38ee12ca16900599971518ab46b8f371f576",
     "docs/maintenance/troubleshooting.md": "391b8e0a48ab3e4cb53d85cbaa15556664cfa154",
-    "docs/maintenance/workflow-operations.md": "961d4c74030bbc9cbd034003596a7b024b5dabe3",
+    "docs/maintenance/workflow-operations.md": "2ba42a80194060e431d1914bf1f777c8def1d71d",
     "docs/observability/index.md": "950afd5375e9f49c62653bea39ccf04ea034d09b",
     "docs/observability/logging.md": "3da6bbc3fdee3ce93ab870053e4910187fd3d592",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
@@ -189,10 +185,11 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "d61a9473c0ea3a818191c1ad7e7c63ffe5a94a63",
+    "mkdocs.yml": "1b0951d1cfafe67bb9f22bb6933d7bf20219b0be",
     "pyproject.toml": "234071a4b1e22afe12525372678948151949b203",
     "releases/spring_26/.meta.json": "ff6e937e001b035d0f1ffa150cdc4fc88dab363f",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
+    "releases/spring_26/.summary_cache_en.json": "3f05a9d78f511603c285fe183ce6b7290a6ff3c4",
     "releases/spring_26/en_US/agentforce.md": "0893da1d1f1caed72f9b3221023bd12545f0376e",
     "releases/spring_26/en_US/automation.md": "d1e8f7ad8057b7a39ba8c4125dd1fa7a1ad2d90c",
     "releases/spring_26/en_US/customization.md": "5aa028b7d0b6f517a467a152b534b9a5c0cf5950",
@@ -236,7 +233,7 @@
     "releases/spring_26/pt_BR/setores.md": "514b43fb5b23a4c20e441599b4bdb1b57d4c5a79",
     "releases/spring_26/pt_BR/vendas.md": "4de5338307f507804e373bc500c9d6574a93c872",
     "releases/summer_26/.meta.json": "568887f5290d6764956fd4d855a84a8c43f6e330",
-    "releases/summer_26/.summary_cache.json": "2148bd1d8225ebedaa71c12d833e52a1afee1e67",
+    "releases/summer_26/.summary_cache.json": "c5bb779d7b1eb8cd87c0420c4291d0dc593a014a",
     "releases/summer_26/en_US/agentforce.md": "cef4f0f077086faaf6fae522184b893e310e2756",
     "releases/summer_26/en_US/automation.md": "e4afd2ad227614f1110bd4a6f3e6af78b2c7676f",
     "releases/summer_26/en_US/customization.md": "6504d1044edeb102ada68c70e906fd21869763cb",
@@ -322,7 +319,7 @@
     "releases/winter_26/pt_BR/setores.md": "f34cdeedc962e581f735948d71414d4f4d10d3be",
     "releases/winter_26/pt_BR/vendas.md": "628b743c3cd616cef17f69eec7e337312d4edf71",
     "releases/winter_27/.meta.json": "5b318668a11893f9b85aa1bdeece6c6f74caea00",
-    "releases/winter_27/.summary_cache.json": "67f837761ebeda6dfc94f3ccf98a34cbd50e52a3",
+    "releases/winter_27/.summary_cache.json": "b5a9d43d5e46a47836fdc371daeacb052dce42e2",
     "releases/winter_27/en_US/agentforce.md": "49115332cf85c0c491424999a4e49a4f341c3127",
     "releases/winter_27/en_US/automation.md": "ddd58717fd777347d67a76993ae9e4c487871b5d",
     "releases/winter_27/en_US/data-360.md": "3668ff77a62647c91d7591dda470caca477c0fcd",
@@ -416,8 +413,8 @@
     "src/orchestrator.py": "dee5d0a49a21553fa5041f88dc48b71afc6d9ba0",
     "src/parser.py": "a80da2ca6192f270f5c4c8c62161742d94e0aaa7",
     "src/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "src/release_docs.py": "cade4bed3b429073201d3c84d9cf921ac7fed8ab",
-    "src/release_summarizer.py": "f7495ca713ec47989bb199c91882b32110d9b164",
+    "src/release_docs.py": "b176ec9904f6e4bf4668ea782873b81c34a9ff2e",
+    "src/release_summarizer.py": "4671fa4bc3142d857b6056923ae1441e7cb6b22b",
     "src/salesforce.py": "5e154c6b541cea87b88cb7335916ee899dff4dc2",
     "src/scraper.py": "df5022023216e4af188b9cb003bcf029f1fb5048",
     "src/smart_notifications.py": "4cfb31a22d8e7921dc9a413e40b2077740d08fd9",
@@ -472,7 +469,7 @@
     "tests/test_notifications.py": "4545f8a7580620c5d1561b53149fe817e4ac9211",
     "tests/test_orchestrator.py": "82a97b7346f54d8e22a9293b03fab2e8124f4e13",
     "tests/test_phase2_coverage.py": "b8c99997b44339ada99ac0fc40fc0d881c7bf0ff",
-    "tests/test_release_docs.py": "48d3efc44ce2e842bb63e3607beb994aa158beb0",
+    "tests/test_release_docs.py": "fb2fee4f018b262a58885fec46d22af3d74022c0",
     "tests/test_release_summarizer.py": "e7719f5d5e94369db84c2faf6bda807d4a677cc2",
     "tests/test_salesforce_coverage.py": "5d4f84fb6413845db83784dd3ce036f1ead728ff",
     "tests/test_salesforce_refactored.py": "df7603964ac192979e731566815e53145b9390da",
@@ -488,6 +485,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "00c1e9851da7e9e722455ace35d47c06c890557b"
   },
-  "generated_at": "2026-08-30T20:24:34.063058+00:00",
-  "repository_sha": "4bffeec47e5e8fc8bd0d7f779886b32b2f9de845"
+  "generated_at": "2026-08-30T22:59:31.227673+00:00",
+  "repository_sha": "a65163b3041799216da3057db04addcbe6189ffc"
 }
