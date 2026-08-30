@@ -960,8 +960,6 @@ Este projeto é mantido para fins educacionais e de referência técnica.
 
 ---
 
-## 🖼️ Alternative Banner
-
 ![Salesforce Release Intelligence - Banner 2](./assets/banner2.png)
 
 ---
