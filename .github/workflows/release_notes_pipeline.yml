@@ -227,13 +227,29 @@ jobs:
                   data['summaries'] = data['category_summaries']
               return data
 
-          # Get existing releases
+          # Get existing releases + their immutability status
+          # gh release list doesn't expose immutable flag, so we inspect each
+          # candidate via `gh release view` to detect immutability upfront.
+          def fetch_release_detail(tag_name):
+              r = subprocess.run(
+                  ['gh', 'release', 'view', tag_name, '--json',
+                   'tagName,databaseId,isImmutable,isDraft'],
+                  capture_output=True, text=True,
+              )
+              if r.returncode == 0 and r.stdout.strip():
+                  try:
+                      return json.loads(r.stdout)
+                  except json.JSONDecodeError:
+                      return None
+              return None
+
           result = subprocess.run(
               ['gh', 'release', 'list', '--json', 'tagName,body'],
-              capture_output=True, text=True
+              capture_output=True, text=True,
           )
           existing_tags = set()
           existing_ids = set()
+          immutable_tags = set()
           if result.returncode == 0:
               for rel in json.loads(result.stdout):
                   existing_tags.add(rel.get('tagName', ''))
@@ -324,24 +340,21 @@ jobs:
               notes += f'---{nl}'
               notes += f'*Gerado automaticamente pelo Salesforce Release Notes Pipeline*'
 
-              # Check if this tag already exists (fetch current state, not stale cache)
-              r_check = subprocess.run(
-                  ['gh', 'release', 'view', tag, '--json', 'tagName,databaseId', '--jq', '.tagName'],
-                  capture_output=True, text=True
-              )
-              tag_exists = r_check.returncode == 0 and tag in r_check.stdout
-
-              if tag_exists:
-                  # Check if it's immutable by trying to delete
+              # Check if this tag already exists and whether it's immutable.
+              # We probe via `gh release view` instead of blindly trying to
+              # delete, which previously surfaced 422s for immutable releases.
+              detail = fetch_release_detail(tag) if tag in existing_tags else None
+              if detail is not None:
+                  if detail.get('isImmutable'):
+                      print(f'⏭️ Release {tag} exists and is immutable — skipping update.')
+                      immutable_tags.add(tag)
+                      continue
+                  # Not immutable: delete and recreate.
                   r_del = subprocess.run(
                       ['gh', 'release', 'delete', tag, '--yes'],
-                      capture_output=True, text=True
+                      capture_output=True, text=True,
                   )
-                  if r_del.returncode != 0 and 'immutable' in r_del.stderr:
-                      print(f'⏭️ Release {tag} exists and is immutable — skipping update.')
-                      continue
-                  elif r_del.returncode == 0:
-                      # Also delete the git tag so we can recreate
+                  if r_del.returncode == 0:
                       subprocess.run(['git', 'tag', '-d', tag], capture_output=True)
                       print(f'🧹 Deleted release + git tag {tag} — will recreate.')
                   else:
@@ -351,19 +364,25 @@ jobs:
               # Migration: delete legacy tag format v20{year}-{season}
               legacy_tag = f'v20{year_short}-{season}'
               r_legacy = subprocess.run(
-                  ['gh', 'release', 'view', legacy_tag, '--json', 'tagName', '--jq', '.tagName'],
-                  capture_output=True, text=True
+                  ['gh', 'release', 'view', legacy_tag, '--json',
+                   'tagName,databaseId,isImmutable'],
+                  capture_output=True, text=True,
               )
-              if r_legacy.returncode == 0:
-                  r_del_legacy = subprocess.run(
-                      ['gh', 'release', 'delete', legacy_tag, '--yes'],
-                      capture_output=True, text=True
-                  )
-                  if r_del_legacy.returncode == 0:
-                      subprocess.run(['git', 'tag', '-d', legacy_tag], capture_output=True)
-                      print(f'🧹 Deleted legacy release + tag: {legacy_tag}')
-                  elif 'immutable' in r_del_legacy.stderr:
+              if r_legacy.returncode == 0 and r_legacy.stdout.strip():
+                  try:
+                      legacy_detail = json.loads(r_legacy.stdout)
+                  except json.JSONDecodeError:
+                      legacy_detail = {}
+                  if legacy_detail.get('isImmutable'):
                       print(f'⏭️ Legacy {legacy_tag} is immutable — left as-is.')
+                  else:
+                      r_del_legacy = subprocess.run(
+                          ['gh', 'release', 'delete', legacy_tag, '--yes'],
+                          capture_output=True, text=True,
+                      )
+                      if r_del_legacy.returncode == 0:
+                          subprocess.run(['git', 'tag', '-d', legacy_tag], capture_output=True)
+                          print(f'🧹 Deleted legacy release + tag: {legacy_tag}')
 
               max_existing = max(existing_ids) if existing_ids else 0
               cmd = ['gh', 'release', 'create', tag, '--title', name, '--notes', notes]
@@ -375,7 +394,17 @@ jobs:
               if r.returncode == 0:
                   print(f'  ✅ Created: {tag}')
               else:
-                  print(f'  ❌ Failed: {r.stderr.strip()}')
+                  stderr = r.stderr.strip()
+                  if 'immutable' in stderr or 'pre_receive' in stderr or '422' in stderr:
+                      print(f'  ⏭️ Skipped {tag}: release/tag protection rule blocked creation.')
+                      print(f'     Hint: review Settings → Rules → "Restrict or block tag creation"')
+                  else:
+                      print(f'  ❌ Failed: {stderr}')
+
+          if immutable_tags:
+              print()
+              print(f'ℹ️  {len(immutable_tags)} release(s) were left as-is (immutable): {sorted(immutable_tags)}')
+              print('   To replace them, manually delete via GitHub UI then re-run the pipeline.')
 
           PYEOF
 
