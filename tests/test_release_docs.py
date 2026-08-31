@@ -99,199 +99,44 @@ class TestBuildResourceFooter:
         assert len(footer) > 0
 
 
-class TestDetectExistingReleaseChunk:
-    """_detect_existing_release_chunk: preserves curated release blocks.
+class TestBuildReleaseBlockDeterministic:
+    """_build_release_block: deterministic generation from meta.json + summary cache.
 
-    Critical for ensuring that re-running the pipeline does not reformat
-    the README — manual edits and AI-curated summaries must survive.
+    All releases are rendered from source-of-truth files. No HTML/Regex parsing
+    of existing README content. This ensures balanced <details> tags and
+    all categories present in every release block.
     """
 
-    def test_finds_collapsed_block(self) -> None:
-        from src.release_docs import _detect_existing_release_chunk
-
-        text = (
-            "## 📋 Releases Disponíveis\n\n"
-            "<details>\n<summary><h3>☀️ Summer '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Custom curated text.\n"
-            "</details>\n"
-        )
-        chunk = _detect_existing_release_chunk(text, "Summer '26")
-        assert chunk is not None
-        assert "Custom curated text" in chunk
-        assert "Summer '26" in chunk
-
-    def test_finds_expanded_block(self) -> None:
-        from src.release_docs import _detect_existing_release_chunk
-
-        text = (
-            "## 📋 Releases Disponíveis\n\n"
-            "### 🌸 Spring '26\n\n"
-            "> 📊 **Resumo Executivo:** Preserved intro.\n\n"
-            "<details><summary>Category 1</summary></details>\n"
-            "\n### Next\n"
-        )
-        chunk = _detect_existing_release_chunk(text, "Spring '26")
-        assert chunk is not None
-        assert "Spring '26" in chunk
-
-    def test_returns_none_for_missing(self) -> None:
-        from src.release_docs import _detect_existing_release_chunk
-
-        text = "## 📋 Releases\n\n### Summer '26\n"
-        assert _detect_existing_release_chunk(text, "Winter '27") is None
-
-    def test_returns_none_for_invalid_name(self) -> None:
-        from src.release_docs import _detect_existing_release_chunk
-
-        assert _detect_existing_release_chunk("any text", "NotARelease") is None
-
-    def test_returns_none_for_unknown_season(self) -> None:
-        from src.release_docs import _detect_existing_release_chunk
-
-        assert _detect_existing_release_chunk("any text", "Invalid'26") is None
-
-
-class TestBuildReleaseBlockPreservesExisting:
-    """_build_release_block with existing_text reuses curated chunks."""
-
-    def test_latest_always_regenerated_expanded(self) -> None:
-        """Latest release is always regenerated expanded, not preserved as-is.
-
-        This ensures the newest release is always visible when the README is opened.
-        Older releases are preserved; only the latest is regenerated.
-        """
+    def test_latest_release_expanded(self) -> None:
+        """Latest release is always rendered as expanded `### heading`."""
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
-
-        curated = (
-            "<details>\n<summary><h3>☀️ Summer '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Curated intro that must be kept.\n"
-            "</details>"
-        )
-        existing = f"{RELEASE_SECTION_HEADING}\n\n{curated}\n"
-
-        metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
-
-        class _StubSummarizer:
-            async def summarize(self, slug: str):
-                return None
-
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _StubSummarizer(), existing_text=existing)
-        )
-        assert "Summer '26" in result
-        assert "### ☀️ Summer '26" in result
-        assert "Curated intro that must be kept" not in result
-
-    def test_older_release_preserved(self) -> None:
-        """Older releases (non-latest) with meaningful content are preserved as-is."""
-        import asyncio
-
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
-
-        curated = (
-            "<details>\n<summary><h3>🌸 Spring '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Curated intro that must be kept.\n"
-            "</details>"
-        )
-        existing = f"{RELEASE_SECTION_HEADING}\n\n{curated}\n"
+        from src.release_docs import _build_release_block
 
         metas = [
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
-            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
-        ]
-
-        class _StubSummarizer:
-            async def summarize(self, slug: str):
-                return None
-
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _StubSummarizer(), existing_text=existing)
-        )
-        assert "Curated intro that must be kept" in result
-        assert "Spring '26" in result
-
-    def test_regenerates_empty_heading_only_block(self) -> None:
-        """Regression: bare heading with emoji but no <details> must be regenerated.
-
-        Previously the code stripped ``#*>\\n `` and treated ``❄️ Winter '27`` as
-        valid content, causing the empty placeholder to be preserved on every run.
-        """
-        import asyncio
-
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
-
-        existing = (
-            f"{RELEASE_SECTION_HEADING}\n\n" "### ❄️ Winter '27\n\n\n\n" "### ☀️ Summer '26\n\n\n\n"
-        )
-
-        metas = [
-            {
-                "name": "Winter '27",
-                "slug": "winter_27",
-                "release_id": 264,
-                "total_features": 100,
-                "categories": [{"name": "Salesforce geral", "count": 28}],
-            },
             {
                 "name": "Summer '26",
                 "slug": "summer_26",
                 "release_id": 262,
-                "total_features": 100,
                 "categories": [{"name": "Agentforce", "count": 37}],
             },
         ]
 
-        good_summary = MagicMock()
-        good_summary.executive_summary = "Detailed summary content here."
-        good_summary.category_summaries = {
-            "Salesforce geral": "Cat desc 1",
-            "Agentforce": "Cat desc 2",
-        }
-        good_summary.business_impact = ""
-        good_summary.strategic_themes = []
-        good_summary.migration_notes = ""
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
 
-        class _Summarizer:
-            async def summarize(self, slug: str):
-                return good_summary
-
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
-        assert "Detailed summary content here." in result
-        assert "Salesforce geral" in result
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
+        assert "Summer '26" in result
+        assert "### ☀️ Summer '26" in result
         assert "Agentforce" in result
+        assert "<details>" in result
 
-
-class TestUpdateSingleReadmeIdempotent:
-    """_update_single_readme preserves content outside the releases block."""
-
-    def test_preserves_pre_heading_content_and_older_releases(self, tmp_path: Path) -> None:
-        """Content before releases heading + older release blocks are preserved."""
+    def test_older_releases_collapsed(self) -> None:
+        """Older releases (idx > 0) are rendered as collapsed <details><h3> blocks."""
         import asyncio
 
-        from src.release_docs import (
-            _update_single_readme,
-            RELEASE_SECTION_HEADING,
-        )
-
-        curated_old = (
-            "<details>\n<summary><h3>🌸 Spring '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Curated older content.\n"
-            "</details>"
-        )
-        readme_text = (
-            "# Title\n"
-            "\nSome manual intro that must not be touched.\n"
-            "\n"
-            f"{RELEASE_SECTION_HEADING}\n\n"
-            f"{curated_old}\n"
-            "\n## 🏗️ Como Funciona\n\nArchitecture content.\n"
-        )
-        readme = tmp_path / "README.md"
-        readme.write_text(readme_text, encoding="utf-8")
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -304,22 +149,140 @@ class TestUpdateSingleReadmeIdempotent:
                 "name": "Spring '26",
                 "slug": "spring_26",
                 "release_id": 260,
-                "categories": [],
+                "categories": [{"name": "X", "count": 1}],
             },
         ]
 
         class _StubSummarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return None
 
-        asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
+        assert "<details>" in result
+        assert "<summary><h3>" in result
+        assert "Spring '26" in result
 
-        result = readme.read_text(encoding="utf-8")
-        assert "Some manual intro that must not be touched." in result
-        assert "Curated older content" in result
-        assert "Architecture content." in result
+    def test_all_categories_rendered(self) -> None:
+        """Every category in meta.json is rendered, even when many exist."""
+        import asyncio
 
-    def test_inserts_new_release_without_reformatting_existing(self, tmp_path: Path) -> None:
+        from src.release_docs import _build_release_block
+
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [
+                    {"name": "Agentforce", "count": 37},
+                    {"name": "Automação", "count": 118},
+                    {"name": "Setores", "count": 309},
+                    {"name": "Serviço", "count": 198},
+                ],
+            },
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                m = MagicMock()
+                m.executive_summary = "OK summary"
+                m.category_summaries = {}
+                m.business_impact = ""
+                m.strategic_themes = []
+                m.migration_notes = ""
+                return m
+
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
+        for cat in metas[0]["categories"]:
+            assert cat["name"] in result, f"{cat['name']} missing from block"
+
+    def test_all_details_tags_balanced(self) -> None:
+        """<details> and </details> counts must match in the generated block."""
+        import asyncio
+
+        from src.release_docs import _build_release_block
+
+        metas = [
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "total_features": 100,
+                "categories": [
+                    {"name": "Salesforce geral", "count": 28},
+                    {"name": "Agentforce", "count": 129},
+                    {"name": "Setores", "count": 286},
+                    {"name": "Serviço", "count": 140},
+                    {"name": "Experience Cloud", "count": 143},
+                ],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 100,
+                "categories": [
+                    {"name": "Automação", "count": 118},
+                    {"name": "Desenvolvimento", "count": 127},
+                    {"name": "Serviço", "count": 198},
+                ],
+            },
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                m = MagicMock()
+                m.executive_summary = "OK summary text"
+                m.category_summaries = {"Salesforce geral": "desc"}
+                m.business_impact = ""
+                m.strategic_themes = []
+                m.migration_notes = ""
+                return m
+
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
+        open_count = result.count("<details>")
+        close_count = result.count("</details>")
+        assert (
+            open_count == close_count
+        ), f"Unbalanced <details>: {open_count} open vs {close_count} close"
+
+    def test_en_us_language_labels(self) -> None:
+        """en_US locale uses English labels and 'features' count."""
+        import asyncio
+
+        from src.release_docs import _build_release_block
+
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "total_features": 37,
+                "categories": [{"name": "Agentforce", "count": 37}],
+            },
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                m = MagicMock()
+                m.executive_summary = "EN summary"
+                m.category_summaries = {"Agentforce": "agent desc"}
+                m.business_impact = ""
+                m.strategic_themes = []
+                m.migration_notes = ""
+                return m
+
+        result = asyncio.run(_build_release_block(metas, "en_US", _StubSummarizer()))
+        assert "features" in result
+        assert "Full details" in result
+        assert "Executive Summary" in result
+
+
+class TestUpdateSingleReadmeIdempotent:
+    """_update_single_readme preserves content outside the releases block."""
+
+    def test_preserves_pre_heading_content(self, tmp_path: Path) -> None:
+        """Content before releases heading is preserved."""
         import asyncio
 
         from src.release_docs import (
@@ -327,12 +290,46 @@ class TestUpdateSingleReadmeIdempotent:
             RELEASE_SECTION_HEADING,
         )
 
-        existing = (
-            "<details>\n<summary><h3>❄️ Winter '26</h3></summary>\n\n"
-            "> 📊 **Resumo Executivo:** Manual curated intro.\n"
-            "</details>"
+        readme_text = (
+            "# Title\n"
+            "\nSome manual intro that must not be touched.\n"
+            "\n"
+            f"{RELEASE_SECTION_HEADING}\n\n"
+            "OLD CONTENT TO BE REPLACED\n\n"
+            "\n## 🏗️ Como Funciona\n\nArchitecture content.\n"
         )
-        readme_text = f"{RELEASE_SECTION_HEADING}\n\n" f"{existing}\n" "\n## Next Section\n"
+        readme = tmp_path / "README.md"
+        readme.write_text(readme_text, encoding="utf-8")
+
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [{"name": "Agentforce", "count": 37}],
+            },
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
+
+        result = readme.read_text(encoding="utf-8")
+        assert "Some manual intro that must not be touched." in result
+        assert "Architecture content." in result
+        assert "Summer '26" in result
+
+    def test_regenerates_all_releases(self, tmp_path: Path) -> None:
+        import asyncio
+
+        from src.release_docs import (
+            _update_single_readme,
+            RELEASE_SECTION_HEADING,
+        )
+
+        readme_text = f"{RELEASE_SECTION_HEADING}\n\n" "OLD CONTENT\n\n" "## Next Section\n"
         readme = tmp_path / "README.md"
         readme.write_text(readme_text, encoding="utf-8")
 
@@ -347,14 +344,14 @@ class TestUpdateSingleReadmeIdempotent:
         ]
 
         class _StubSummarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return None
 
         asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
 
         result = readme.read_text(encoding="utf-8")
-        assert "Manual curated intro" in result
         assert "Summer '26" in result
+        assert "Winter '26" in result
         assert "Next Section" in result
 
     def test_no_heading_skips_safely(self, tmp_path: Path) -> None:
@@ -368,7 +365,7 @@ class TestUpdateSingleReadmeIdempotent:
         metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
 
         class _StubSummarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return None
 
         asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
@@ -389,23 +386,7 @@ class TestUpdateSingleReadmeIdempotent:
         metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
 
         class _StubSummarizer:
-            async def summarize(self, slug: str):
-                return None
-
-        asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
-
-        assert "no following heading" in readme.read_text(encoding="utf-8")
-
-    def test_readme_not_exists_skips(self, tmp_path: Path) -> None:
-        import asyncio
-
-        from src.release_docs import _update_single_readme
-
-        readme = tmp_path / "NotThere.md"
-        metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
-
-        class _StubSummarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return None
 
         asyncio.run(_update_single_readme(readme, metas, "pt_BR", _StubSummarizer()))
@@ -674,7 +655,7 @@ class TestUpdateReadmeSingle:
     def test_new_release_regenerates_with_categories(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -690,19 +671,16 @@ class TestUpdateReadmeSingle:
                 "categories": [{"name": "Y", "count": 1}],
             },
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\n"
 
         summary_mock = MagicMock()
         summary_mock.executive_summary = "Some summary"
         summary_mock.category_summaries = {"X": "X desc"}
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return summary_mock
 
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer()))
         assert "Winter '26" in result
         assert "Spring '26" in result
         assert "Some summary" in result
@@ -1208,29 +1186,26 @@ class TestBuildReleaseBlockLanguages:
     def test_en_us_toggle_and_summary(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
-        existing = f"{RELEASE_SECTION_HEADING}\n\nempty\n"
 
         summary = MagicMock()
         summary.executive_summary = "EN summary"
         summary.category_summaries = {"X": "cat desc"}
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return summary
 
-        result = asyncio.run(
-            _build_release_block(metas, "en_US", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "en_US", _Summarizer()))
         assert "🇺🇸 English" in result
         assert "Executive Summary" in result
 
     def test_invalid_summary_uses_fallback(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -1241,25 +1216,22 @@ class TestBuildReleaseBlockLanguages:
                 "categories": [{"name": "X", "count": 10}],
             }
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\nempty\n"
 
         bad_summary = MagicMock()
         bad_summary.executive_summary = "0 novos recursos"
         bad_summary.category_summaries = {"X": "ok"}
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return bad_summary
 
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer()))
         assert "Summer '26" in result
 
     def test_invalid_category_summary_skipped(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -1270,25 +1242,22 @@ class TestBuildReleaseBlockLanguages:
                 "categories": [{"name": "BigCat", "count": 10}],
             }
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\nempty\n"
 
         summary = MagicMock()
         summary.executive_summary = "OK summary"
         summary.category_summaries = {"BigCat": "1 novos recursos"}
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return summary
 
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer()))
         assert "1 novos recursos" not in result
 
     def test_new_release_generated_with_summary_and_categories(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -1302,19 +1271,16 @@ class TestBuildReleaseBlockLanguages:
                 ],
             }
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\n"
 
         summary = MagicMock()
         summary.executive_summary = "Executive summary text"
         summary.category_summaries = {"X": "X description"}
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return summary
 
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer()))
         assert "Summer '26" in result
         assert "Executive summary text" in result
         assert "X" in result
@@ -1323,7 +1289,7 @@ class TestBuildReleaseBlockLanguages:
     def test_warning_on_invalid_summary(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -1334,25 +1300,22 @@ class TestBuildReleaseBlockLanguages:
                 "categories": [{"name": "X", "count": 5}],
             }
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\n"
 
         bad = MagicMock()
         bad.executive_summary = "0 novos recursos"
         bad.category_summaries = []
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return bad
 
-        result = asyncio.run(
-            _build_release_block(metas, "pt_BR", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _Summarizer()))
         assert "Summer '26" in result
 
     def test_en_us_categories_rendered(self) -> None:
         import asyncio
 
-        from src.release_docs import _build_release_block, RELEASE_SECTION_HEADING
+        from src.release_docs import _build_release_block
 
         metas = [
             {
@@ -1362,15 +1325,12 @@ class TestBuildReleaseBlockLanguages:
                 "categories": [{"name": "Salesforce geral", "count": 5}],
             }
         ]
-        existing = f"{RELEASE_SECTION_HEADING}\n\n"
 
         class _Summarizer:
-            async def summarize(self, slug: str):
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
                 return None
 
-        result = asyncio.run(
-            _build_release_block(metas, "en_US", _Summarizer(), existing_text=existing)
-        )
+        result = asyncio.run(_build_release_block(metas, "en_US", _Summarizer()))
         assert "features" in result
         assert "Full details" in result
 

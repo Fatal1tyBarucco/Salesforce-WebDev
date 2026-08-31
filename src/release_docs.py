@@ -489,62 +489,6 @@ def _get_release_emoji(name: str) -> str:
     return "🌸"
 
 
-def _strip_markdown_headings(text: str) -> str:
-    """Remove leading markdown heading markers (#, ##, ###) and trailing whitespace."""
-    lines = text.splitlines()
-    result_lines: list[str] = []
-    for line in lines:
-        stripped = line.lstrip("#").strip()
-        result_lines.append(stripped)
-    return "\n".join(result_lines)
-
-
-def _has_meaningful_content(chunk: str) -> bool:
-    """Check if a release block has real content beyond just a heading.
-
-    Returns True only if:
-    - The block is wrapped in <details> tags (curated content), OR
-    - The block has at least 2 non-empty lines after stripping heading markers
-    """
-    if "<details>" in chunk:
-        return True
-    stripped = _strip_markdown_headings(chunk)
-    non_empty = [ln for ln in stripped.splitlines() if ln.strip()]
-    return len(non_empty) >= 2
-
-
-def _detect_existing_release_chunk(text: str, release_name: str) -> str | None:
-    """Return the markdown chunk for ``release_name`` already present in ``text``.
-
-    Used to preserve manual edits when re-running the pipeline.
-    """
-    season_map = {
-        "Spring": "spring",
-        "Summer": "summer",
-        "Winter": "winter",
-    }
-    parts = release_name.split("'")
-    if len(parts) != 2:
-        return None
-    season_raw, year_raw = parts[0].strip(), parts[1].strip()
-    season = season_map.get(season_raw)
-    if not season or not year_raw.isdigit():
-        return None
-
-    pat = re.compile(
-        r"(?:^|\n)(?P<chunk>(?:\s*<details>\s*\n\s*<summary><h3>[^<]*?"
-        + re.escape(release_name)
-        + r"[^<]*?</h3>.*?</details>)|(?:\s*###\s+[^\n]*?"
-        + re.escape(release_name)
-        + r"[^\n]*?(?:\n|$)(?:(?!^###\s).|\n)*?))",
-        re.MULTILINE | re.DOTALL,
-    )
-    m = pat.search(text)
-    if m:
-        return m.group("chunk").lstrip("\n")
-    return None
-
-
 async def _build_release_block(
     metas: list[dict[str, Any]],
     lang: str,
@@ -553,16 +497,24 @@ async def _build_release_block(
 ) -> str:
     """Build release section for a specific language.
 
-    Strategy: PRESERVE all existing release blocks that have meaningful content.
-    Only generate new blocks for releases that don't exist in the README yet.
+    Strategy: DETERMINISTIC generation. All releases (latest + older) are
+    rendered from the source of truth (releases/{slug}/.meta.json and
+    .summary_cache.json / .summary_cache_en.json). No HTML/Regex parsing of
+    existing README content is performed, which prevents the previous bug
+    where nested <details> tags inside older releases caused truncated
+    output.
 
-    Release order in output always follows metas (release_id desc = newest first).
+    Release order in output follows metas (release_id desc = newest first).
     Latest release: fully expanded with collapsed categories inside.
-    Older releases: preserved as-is (may be collapsed or expanded).
+    Older releases: rendered as collapsed <details><summary><h3>...</h3>
+    blocks with all their categories inside.
 
-    Content before/after the releases section is NEVER modified by this function.
+    Content before/after the releases section is NEVER modified by this
+    function.
     """
-    lines: list[str] = [f"\n{RELEASE_SECTION_HEADING}\n"]
+    _ = existing_text  # Kept for signature compatibility; not consulted.
+
+    lines: list[str] = [""]
 
     if lang == "pt_BR":
         toggle = (
@@ -584,52 +536,16 @@ async def _build_release_block(
         )
     lines.append(toggle)
 
-    # Build set of existing release names in README for quick lookup
-    existing_names: set[str] = set()
-    if existing_text:
-        for meta in metas:
-            name = meta["name"]
-            chunk = _detect_existing_release_chunk(existing_text, name)
-            if chunk and _has_meaningful_content(chunk):
-                existing_names.add(name)
-
     for idx, meta in enumerate(metas):
         name = meta["name"]
         slug = meta["slug"]
         emoji = _get_release_emoji(name)
         is_latest = idx == 0
 
-        # LATEST RELEASE RULE: always expanded (`### header`), categories collapsed inside.
-        # Older releases (idx > 0): always wrapped in <details> (collapsed).
-        if is_latest:
-            # Latest: regenerate fully expanded even if it already exists in README.
-            # This ensures the newest release is always shown expanded with all content visible.
-            logger.info(
-                "README: regenerating latest release %s (always expanded)",
-                slug,
-            )
-        elif name in existing_names:
-            # Older release that exists in README — preserve exactly as-is
-            chunk = _detect_existing_release_chunk(existing_text, name)
-            if chunk:
-                lines.append("\n" + chunk.rstrip() + "\n")
-                lines.append("")
-                continue
-            logger.info(
-                "README: detected empty block for %s — will regenerate as collapsed",
-                slug,
-            )
-        else:
-            # New older release — generate collapsed
-            logger.info(
-                "README: generating new collapsed block for %s",
-                slug,
-            )
-
         categories = meta.get("categories", [])
         active = [c for c in categories if c.get("count", 0) > 0]
 
-        summary = await summarizer.summarize(slug)
+        summary = await summarizer.summarize(slug, lang)
         summary_text = ""
         themes_text = ""
         impact_text = ""
@@ -698,7 +614,7 @@ async def _build_release_block(
                             f"\n> ⚠️ **Migration Notes:** {summary.migration_notes[:2000]}\n"
                         )
 
-        # Build category details
+        # Build category details (always rendered, always balanced).
         cat_lines: list[str] = []
         for cat in active:
             cat_name = cat["name"]
@@ -729,40 +645,44 @@ async def _build_release_block(
                 else:
                     cat_summary_text = f"\n> {raw_summary[:1000]}\n"
 
-            cat_lines.append("\n<details>")
-            cat_lines.append(
-                f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>\n"
-            )
+            cat_lines.append("<details>")
+            cat_lines.append(f"<summary><b>📄 {display_name} ({count} {count_label})</b></summary>")
             if cat_summary_text:
                 cat_lines.append(cat_summary_text)
-            cat_lines.append(f"> 📄 {details_label}: [{link}]({link})\n")
-            cat_lines.append("</details>\n")
+            cat_lines.append("")
+            cat_lines.append(f"> 📄 {details_label}: [{link}]({link})")
+            cat_lines.append("")
+            cat_lines.append("</details>")
+            cat_lines.append("")
 
         if is_latest:
-            lines.append(f"\n### {emoji} {name}\n")
-            if summary_text:
-                lines.append(summary_text)
-            if themes_text:
-                lines.append(themes_text)
-            if impact_text:
-                lines.append(impact_text)
-            if migration_text:
-                lines.append(migration_text)
-            lines.extend(cat_lines)
-        else:
-            lines.append("\n<details>\n")
-            lines.append(f"<summary><h3>{emoji} {name}</h3></summary>\n")
-            if summary_text:
-                lines.append(summary_text)
-            if themes_text:
-                lines.append(themes_text)
-            if impact_text:
-                lines.append(impact_text)
-            if migration_text:
-                lines.append(migration_text)
-            lines.extend(cat_lines)
-            lines.append("</details>\n")
+            lines.append(f"### {emoji} {name}")
             lines.append("")
+            if summary_text:
+                lines.append(summary_text)
+            if themes_text:
+                lines.append(themes_text)
+            if impact_text:
+                lines.append(impact_text)
+            if migration_text:
+                lines.append(migration_text)
+            if cat_lines:
+                lines.extend(cat_lines)
+        else:
+            lines.append("<details>")
+            lines.append(f"<summary><h3>{emoji} {name}</h3></summary>")
+            lines.append("")
+            if summary_text:
+                lines.append(summary_text)
+            if themes_text:
+                lines.append(themes_text)
+            if impact_text:
+                lines.append(impact_text)
+            if migration_text:
+                lines.append(migration_text)
+            if cat_lines:
+                lines.extend(cat_lines)
+            lines.append("</details>")
             lines.append("")
 
         lines.append("")
@@ -806,10 +726,11 @@ async def _update_single_readme(
 ) -> None:
     """Update a single README file with release sections.
 
-    Idempotent: preserves existing curated release blocks (executive summaries,
-    category descriptions) for releases already present in the README, and
-    only inserts newly-detected releases. Content before/after the releases
-    section is left untouched.
+    Deterministic: all release blocks are regenerated from .meta.json and
+    .summary_cache.json. No HTML/Regex parsing of existing README content is
+    performed, which prevents the nested <details> truncation bug.
+
+    Content before/after the releases section is left untouched.
     """
     if not readme_path.exists():
         return
@@ -824,17 +745,12 @@ async def _update_single_readme(
         return
 
     heading_idx = original.index(heading)
-    # Safety: only replace content AFTER the releases heading, never before it.
-    # Content before this heading (e.g., Guia Completo, project description) is preserved.
     next_heading = original.find("\n## ", heading_idx + len(heading))
     if next_heading == -1:
-        logger.warning(
-            "README %s: nenhum heading '## ' encontrado após releases — skip para preservar conteúdo",
-            readme_path.name,
-        )
-        return
-    existing_block = original[heading_idx:next_heading]
-    new_block = await _build_release_block(metas, lang, summarizer, existing_text=existing_block)
+        next_heading = len(original)
+    release_content = await _build_release_block(metas, lang, summarizer)
+    block_heading = "## 📋 Available Releases" if lang == "en_US" else RELEASE_SECTION_HEADING
+    new_block = f"{block_heading}\n{release_content}\n"
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
     logger.info("README atualizado (%s) — heading='%s'", lang, heading)

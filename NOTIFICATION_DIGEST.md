@@ -1,7 +1,7 @@
 # Notification Digest
 
-<MagicMock name='mock.summary_text' id='140020534367568'>
+<MagicMock name='mock.summary_text' id='507790298480'>
 
 ### [high] Alert
 
-<MagicMock name='mock.body' id='140020534364880'>
+<MagicMock name='mock.body' id='507790299488'>
