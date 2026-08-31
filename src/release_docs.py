@@ -493,6 +493,7 @@ async def _build_release_block(
     metas: list[dict[str, Any]],
     lang: str,
     summarizer: Any,
+    limit: int | None = None,
     existing_text: str = "",
 ) -> str:
     """Build release section for a specific language.
@@ -508,6 +509,7 @@ async def _build_release_block(
     Latest release: fully expanded with collapsed categories inside.
     Older releases: rendered as collapsed <details><summary><h3>...</h3>
     blocks with all their categories inside.
+    If limit is set, only the first N releases are included.
 
     Content before/after the releases section is NEVER modified by this
     function.
@@ -515,6 +517,8 @@ async def _build_release_block(
     _ = existing_text  # Kept for signature compatibility; not consulted.
 
     lines: list[str] = [""]
+    if limit is not None and limit > 0:
+        metas = metas[:limit]
 
     if lang == "pt_BR":
         toggle = (
@@ -723,6 +727,8 @@ async def _update_single_readme(
     metas: list[dict[str, Any]],
     lang: str,
     summarizer: Any,
+    limit: int | None = None,
+    all_metas: list[dict[str, Any]] | None = None,
 ) -> None:
     """Update a single README file with release sections.
 
@@ -748,9 +754,34 @@ async def _update_single_readme(
     next_heading = original.find("\n## ", heading_idx + len(heading))
     if next_heading == -1:
         next_heading = len(original)
-    release_content = await _build_release_block(metas, lang, summarizer)
+    release_content = await _build_release_block(metas, lang, summarizer, limit)
+
+    show_archive = limit is not None and all_metas is not None and len(all_metas) > limit
+    if show_archive:
+        assert all_metas is not None
+        total = len(all_metas)
+        shown = limit
+        if lang == "en_US":
+            archive_section = (
+                f'\n<div style="padding:12px;margin-top:16px;'
+                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+                f"<strong>📦 Release Archive:</strong> Showing {shown} of {total} releases. "
+                '<a href="./releases/ARCHIVE.md">View all releases →</a>'
+                "</div>\n"
+            )
+        else:
+            archive_section = (
+                f'\n<div style="padding:12px;margin-top:16px;'
+                'border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;">'
+                f"<strong>📦 Arquivo de Releases:</strong> Mostrando {shown} de {total} releases. "
+                '<a href="./releases/ARCHIVE.md">Ver todas as releases →</a>'
+                "</div>\n"
+            )
+    else:
+        archive_section = ""
+
     block_heading = "## 📋 Available Releases" if lang == "en_US" else RELEASE_SECTION_HEADING
-    new_block = f"{block_heading}\n{release_content}\n"
+    new_block = f"{block_heading}\n{release_content}{archive_section}\n"
     updated = original[:heading_idx] + new_block + original[next_heading:]
     readme_path.write_text(updated, encoding="utf-8")
     logger.info("README atualizado (%s) — heading='%s'", lang, heading)
@@ -777,20 +808,37 @@ async def update_readme_all() -> None:
         return
 
     metas.sort(key=lambda m: m.get("release_id", 0), reverse=True)
+    all_metas = list(metas)
+    max_in_readme = 3
+    readme_metas = metas[:max_in_readme]
 
     from .release_summarizer import ReleaseSummarizer
 
     summarizer = ReleaseSummarizer(str(releases_dir))
 
     # Generate pt_BR README
-    await _update_single_readme(Path("README.md"), metas, "pt_BR", summarizer)
+    await _update_single_readme(
+        Path("README.md"),
+        readme_metas,
+        "pt_BR",
+        summarizer,
+        limit=max_in_readme,
+        all_metas=all_metas,
+    )
 
     # Generate en_US README
     readme_en_path = Path("README.en.md")
     if readme_en_path.exists():
         original_en = readme_en_path.read_text(encoding="utf-8")
         if _find_release_heading(original_en) is not None:
-            await _update_single_readme(readme_en_path, metas, "en_US", summarizer)
+            await _update_single_readme(
+                readme_en_path,
+                readme_metas,
+                "en_US",
+                summarizer,
+                limit=max_in_readme,
+                all_metas=all_metas,
+            )
         else:
             # Create en_US README from pt_BR if heading not found
             pt_readme = Path("README.md").read_text(encoding="utf-8")

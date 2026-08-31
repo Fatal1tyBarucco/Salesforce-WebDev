@@ -277,6 +277,46 @@ class TestBuildReleaseBlockDeterministic:
         assert "Full details" in result
         assert "Executive Summary" in result
 
+    def test_limit_caps_releases(self) -> None:
+        """limit parameter caps the number of releases rendered."""
+        import asyncio
+
+        from src.release_docs import _build_release_block
+
+        metas = [
+            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer(), limit=2))
+        assert "Winter '27" in result
+        assert "Summer '26" in result
+        assert "Spring '26" not in result
+
+    def test_limit_none_shows_all(self) -> None:
+        """When limit is None, all metas are rendered."""
+        import asyncio
+
+        from src.release_docs import _build_release_block
+
+        metas = [
+            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
+        assert "Winter '27" in result
+        assert "Summer '26" in result
+
 
 class TestUpdateSingleReadmeIdempotent:
     """_update_single_readme preserves content outside the releases block."""
@@ -1042,6 +1082,114 @@ class TestGenerateReleaseFiles:
         content = paths[0].read_text(encoding="utf-8")
         assert "SubGroup" in content
         assert "SubFeat" in content
+
+
+class TestUpdateSingleReadmeLimitAndArchive:
+    """_update_single_readme: limit + archive link behavior."""
+
+    def test_limit_caps_release_count(self, tmp_path: Path) -> None:
+        import asyncio
+
+        from src.release_docs import (
+            _update_single_readme,
+            RELEASE_SECTION_HEADING,
+        )
+
+        readme = tmp_path / "README.md"
+        readme.write_text(
+            f"# Title\n\n{RELEASE_SECTION_HEADING}\n\n## Next\n",
+            encoding="utf-8",
+        )
+
+        metas = [
+            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+            {"name": "Winter '26", "slug": "winter_26", "release_id": 258, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        asyncio.run(
+            _update_single_readme(
+                readme, metas, "pt_BR", _StubSummarizer(), limit=2, all_metas=metas
+            )
+        )
+
+        result = readme.read_text(encoding="utf-8")
+        assert "Winter '27" in result
+        assert "Summer '26" in result
+        assert "Spring '26" not in result
+        assert "Winter '26" not in result
+        assert "releases/ARCHIVE.md" in result
+        assert "Mostrando 2 de 4 releases" in result
+
+    def test_archive_link_en(self, tmp_path: Path) -> None:
+        import asyncio
+
+        from src.release_docs import (
+            _update_single_readme,
+            RELEASE_SECTION_HEADING,
+        )
+
+        readme = tmp_path / "README.en.md"
+        readme.write_text(
+            f"# Title\n\n{RELEASE_SECTION_HEADING}\n\n## Next\n",
+            encoding="utf-8",
+        )
+
+        metas = [
+            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        asyncio.run(
+            _update_single_readme(
+                readme, metas, "en_US", _StubSummarizer(), limit=2, all_metas=metas
+            )
+        )
+
+        result = readme.read_text(encoding="utf-8")
+        assert "Showing 2 of 3 releases" in result
+        assert "releases/ARCHIVE.md" in result
+
+    def test_no_archive_link_when_within_limit(self, tmp_path: Path) -> None:
+        import asyncio
+
+        from src.release_docs import (
+            _update_single_readme,
+            RELEASE_SECTION_HEADING,
+        )
+
+        readme = tmp_path / "README.md"
+        readme.write_text(
+            f"# Title\n\n{RELEASE_SECTION_HEADING}\n\n## Next\n",
+            encoding="utf-8",
+        )
+
+        metas = [
+            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+        ]
+
+        class _StubSummarizer:
+            async def summarize(self, slug: str, lang: str = "pt_BR"):
+                return None
+
+        asyncio.run(
+            _update_single_readme(
+                readme, metas, "pt_BR", _StubSummarizer(), limit=3, all_metas=metas
+            )
+        )
+
+        result = readme.read_text(encoding="utf-8")
+        assert "ARCHIVE.md" not in result
 
 
 class TestUpdateReadmeAll:

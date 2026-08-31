@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/banner1.png" alt="Salesforce Release Intelligence" width="800" />
+<img src="./assets/banner2.png" alt="Salesforce Release Intelligence" width="800" />
 
 </div>
 
@@ -827,197 +827,7 @@ uv run mypy src/
 </details>
 
 
-<details>
-<summary><h3>❄️ Winter '26</h3></summary>
-
-> 📊 **Executive Summary:** A release Winter '26 representa uma expansão significativa do ecossistema Salesforce com **1348 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, Partner Cloud e Vendas. Esta release consolida investimentos em inteligência artificial, experiência do desenvolvedor e conformidade regulatória.
-
-
-> 📌 **Key Themes:** AI & Agentforce • Experiência do Usuário
-
-
-> 🎯 **Strategic Impact:** Para as empresas, Winter '26 entrega valor em múltiplas frentes. A automação avançada reduz tarefas manuais, enquanto as melhorias em experiência do usuário aumentam a adoção. As 1348 novas capacidades habilitam cenários que antes exigiam customização significativa, reduzindo o custo total de propriedade.
-
-<details>
-<summary><b>📄 Legal Documentation (11 features)</b></summary>
-
-> 📄 Full details: [./releases/winter_26/en_US/documentacao_legal.md](./releases/winter_26/en_US/documentacao_legal.md)
-
-</details>
-
-<details>
-<summary><b>📄 Salesforce General (32 features)</b></summary>
-
-> Salesforce geral conta com 32 novos recursos nesta release. Destaques: Melhorias gerais, Permitir que os assistentes de IA acessem com segurança seus dados do Salesforce para ajudar com tarefas de negócios (beta), Adicionar o novo domínio de configuração, Preparar-se para IPv6, Descubra os benefícios de recursos em algumas páginas de recursos do Salesforce Go.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/salesforce_geral.md](./releases/winter_26/en_US/salesforce_geral.md)
-
-</details>
-
-<details>
-<summary><b>📄 Data Analysis (91 features)</b></summary>
-
-> 📄 Full details: [./releases/winter_26/en_US/analise_de_dados.md](./releases/winter_26/en_US/analise_de_dados.md)
-
-</details>
-
-<details>
-<summary><b>📄 Customization (65 features)</b></summary>
-
-> Personalização conta com 65 novos recursos nesta release. Destaques: Modos de exibição de listas, Classificar modos de exibição de lista por várias colunas (disponível ao público em geral), Acelere a configuração do modo de exibição de lista com a pesquisa antecipada, Garantir consistência visual em listas relacionadas dinâmicas para dispositivos móveis, Mover entre o Classic e o Lightning com a capacidade de edição do modo de exibição de lista aprimorada.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/personalizacao.md](./releases/winter_26/en_US/personalizacao.md)
-
-</details>
-
-<details>
-<summary><b>📄 Development (101 features)</b></summary>
-
-> 📄 Full details: [./releases/winter_26/en_US/desenvolvimento.md](./releases/winter_26/en_US/desenvolvimento.md)
-
-</details>
-
-<details>
-<summary><b>📄 Agentforce (39 features)</b></summary>
-
-> Agentforce conta com 39 novos recursos nesta release. Destaques: Novos tipos de uso faturáveis para Agentforce Voice, Novos tipos de uso faturáveis para créditos flexíveis, Alterações no consumo de crédito de IA, Obtenha respostas resumidas com o tópico e a ação gerais da pesquisa da Web, Migre facilmente do Agentforce (padrão) para um agente do funcionário com um fluxo de configuração simples.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/agentforce.md](./releases/winter_26/en_US/agentforce.md)
-
-</details>
-
-<details>
-<summary><b>📄 Experience Cloud (8 features)</b></summary>
-
-> Experience Cloud conta com 8 novos recursos nesta release. Destaques: Atualizar para sites do LWR aprimorados (atualização de versão), Aproveite os recursos mais recentes do Salesforce Flow para Experience Cloud, Crie sites e aplicativos eficientes com componentes predefinidos do Avonni, Atualizar referências aos URLs do seu site Force.com legado, Informar os usuários quando a sessão está prestes a terminar.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/experience_cloud.md](./releases/winter_26/en_US/experience_cloud.md)
-
-</details>
-
-<details>
-<summary><b>📄 Field Service (24 features)</b></summary>
-
-> Field Service conta com 24 novos recursos nesta release. Destaques: Agendamento e otimização do Field Service, Agendamento e otimização aprimorados, Otimizar conjuntos de dados grandes em uma operação tranquila com a escala dinâmica (beta), Aumente a produtividade e aprimore a eficiência operacional eliminando lacunas de agendamento antes dos intervalos para almoço, Obtenha melhores resultados de otimização para agendamento de trabalho complexo com maior resiliência do mecanismo.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/field_service.md](./releases/winter_26/en_US/field_service.md)
-
-</details>
-
-<details>
-<summary><b>📄 Hyperforce (5 features)</b></summary>
-
-> Hyperforce conta com 5 novos recursos nesta release. Destaques: Acessar o Salesforce em mais regiões com o Hyperforce, Novos produtos e recursos disponíveis no Government Cloud Plus, Adicione a conectividade de rede direta ao Hyperforce com o AWS Direct Connect (DX), Criptografe seu banco de dados com a Criptografia de banco de dados do Salesforce (disponível ao público em geral), Recuperação de desastres do Salesforce fora da região renomeada para Continuidade avançada entre regiões.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/hyperforce.md](./releases/winter_26/en_US/hyperforce.md)
-
-</details>
-
-<details>
-<summary><b>📄 Industries (459 features)</b></summary>
-
-> Setores conta com 459 novos recursos nesta release. Destaques: Gerenciamento de ativos, Gerenciamento de ciclo de vida do serviço do ativo, Agentforce para gerenciamento de ciclo de vida do serviço de ativo, Defina e acompanhe Campanhas de serviço de produtos de maneira eficiente, Gerenciar detalhes da parte interessada para simplificar campanhas de serviço.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/setores.md](./releases/winter_26/en_US/setores.md)
-
-</details>
-
-<details>
-<summary><b>📄 Marketing (87 features)</b></summary>
-
-> Marketing conta com 87 novos recursos nesta release. Destaques: Avançar do Marketing Cloud, Alcance seus usuários com Mensagens do aplicativo móvel, Aprimore a criação e a análise de campanha com Agentforce, Criar mensagens de engajamento mais rapidamente e alcançar mais clientes, Capturar mais dados e personalizar páginas de destino.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/marketing.md](./releases/winter_26/en_US/marketing.md)
-
-</details>
-
-<details>
-<summary><b>📄 MuleSoft (4 features)</b></summary>
-
-> MuleSoft conta com 4 novos recursos nesta release. Destaques: Catálogo da API do MuleSoft para Salesforce, Autenticar conexões de API usando Básico, JWT e OAuth 2.0, Empacotar entidades do catálogo de API usando pacotes gerenciados de primeira ou segunda geração, Selecionar conexões de API por ação no Fluxo.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/mulesoft.md](./releases/winter_26/en_US/mulesoft.md)
-
-</details>
-
-<details>
-<summary><b>📄 Mobile App (7 features)</b></summary>
-
-> Aplicativo móvel conta com 7 novos recursos nesta release. Destaques: Aplicativo Salesforce móvel, Tudo o que há de novo no aplicativo Salesforce móvel, Os requisitos do aplicativo Salesforce móvel mudaram, Fazer login sem seu nome de usuário, Leve a IA conversacional para seus usuários do aplicativo móvel.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/aplicativo_movel.md](./releases/winter_26/en_US/aplicativo_movel.md)
-
-</details>
-
-<details>
-<summary><b>📄 OmniStudio (8 features)</b></summary>
-
-> OmniStudio conta com 8 novos recursos nesta release. Destaques: Aprimore seus sites do LWR do Experience Cloud com FlexCards e OmniScripts (beta), Aprimore a consistência e a eficiência dos dados com o número automático global Omni, Removação do OmniOut no tempo de execução padrão do OmniStudio, Integrar componentes do encapsulador do OmniStudio em LWCs personalizados para funcionalidade aprimorada, Aprimore o desempenho do tempo de execução de seus componentes do OmniStudio.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/omnistudio.md](./releases/winter_26/en_US/omnistudio.md)
-
-</details>
-
-<details>
-<summary><b>📄 Partner Cloud (156 features)</b></summary>
-
-> Partner Cloud conta com 156 novos recursos nesta release. Destaques: Agentforce para parceiros, Gerenciar casos de suporte do parceiro por meio de conversas guiadas, Encontre respostas para perguntas do parceiro com o Knowledge Article Search, Recomendar programas de enablement com base em conversas com parceiros, Aprimore a experiência do parceiro com layouts flexíveis, navegação avançada e ações personalizadas.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/partner_cloud.md](./releases/winter_26/en_US/partner_cloud.md)
-
-</details>
-
-<details>
-<summary><b>📄 Sales (154 features)</b></summary>
-
-> Vendas conta com 154 novos recursos nesta release. Destaques: Agentforce para vendas, Nutrição de lead do Agentforce, O Agentforce SDR está mudando para o Lead Nurturing, Enviar mais emails com SDR e Microsoft Exchange, Veja quando clientes potenciais agendam reuniões por meio do agente de SDR.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/vendas.md](./releases/winter_26/en_US/vendas.md)
-
-</details>
-
-<details>
-<summary><b>📄 Salesforce Slack Integrations (1 features)</b></summary>
-
-> Integrações do Salesforce para Slack conta com 1 novos recursos nesta release. Destaques: Criar canais do Salesforce mais facilmente.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/winter_26/en_US/integracoes_do_salesforce_para_slack.md)
-
-</details>
-
-<details>
-<summary><b>📄 Security, Identity & Privacy (55 features)</b></summary>
-
-> Segurança, identidade e privacidade conta com 55 novos recursos nesta release. Destaques: <..td class="slds-cell-wrap" style="text-align:center;vertical-align:top;" headers="rn_feature_impact__byRequest ">, Atualize as referências a nomes de host legados (atualização de versão), Substituir URLs instanciados no tráfego de API, Rotear tráfego por locais da Salesforce Edge Network apenas no Japão, Um aviso foi adicionado para possíveis interrupções de domínio personalizado.
-
-
-> 📄 Full details: [./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md](./releases/winter_26/en_US/seguranca_identidade_e_privacidade.md)
-
-</details>
-
-<details>
-<summary><b>📄 Service (41 features)</b></summary>
-
-> 📄 Full details: [./releases/winter_26/en_US/servico.md](./releases/winter_26/en_US/servico.md)
-
-</details>
-
-</details>
-
+<div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Release Archive:</strong> Showing 3 of 4 releases. <a href="./releases/ARCHIVE.md">View all releases →</a></div>
 
 
 ## 🛠️ Stack Tecnológico
@@ -1078,12 +888,14 @@ Este projeto é mantido para fins educacionais e de referência técnica.
 
 ---
 
-![Salesforce Release Intelligence - Banner 2](./assets/banner2.png)
+![Salesforce Release Intelligence - Banner 1](./assets/banner1.png)
 
 ---
 
 <div align="center">
 
 Made with ☕ and Python code
+
+[⬆ Back to top](#-salesforce-release-notes-intelligence)
 
 </div>
