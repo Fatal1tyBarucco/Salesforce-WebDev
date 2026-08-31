@@ -11,7 +11,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 try:
-    from fastapi import Depends, FastAPI, Header, HTTPException, status
+    from fastapi import Depends, FastAPI, Header, HTTPException, status  # type: ignore[import-not-found]
     from pydantic import BaseModel
 
     _HAS_FASTAPI = True
@@ -188,7 +188,14 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
         return None
     if not re.match(r"^[a-z0-9_]+$", slug):
         return None
-    meta_path = Path(RELEASES_DIR) / slug / ".meta.json"
+    base_dir = os.path.abspath(RELEASES_DIR)
+    target_path = os.path.abspath(os.path.join(base_dir, slug, ".meta.json"))
+    if (
+        not target_path.startswith(base_dir + os.sep)
+        or os.path.commonpath([base_dir, target_path]) != base_dir
+    ):
+        return None
+    meta_path = Path(target_path)
     if not meta_path.is_file():
         return None
     try:
@@ -202,7 +209,16 @@ def _parse_category_features(slug: str, category: str) -> list[dict[str, Any]]:
     """Parse features from markdown files for a category."""
     if slug in {"unknown", "unknown_release", "nonexistent_slug_xyz"}:
         return []
-    base = Path(RELEASES_DIR) / slug
+    if not re.match(r"^[a-z0-9_]+$", slug):
+        return []
+    base_dir = os.path.abspath(RELEASES_DIR)
+    target_dir = os.path.abspath(os.path.join(base_dir, slug))
+    if (
+        not target_dir.startswith(base_dir + os.sep)
+        or os.path.commonpath([base_dir, target_dir]) != base_dir
+    ):
+        return []
+    base = Path(target_dir)
     if not base.is_dir():
         return []
     try:

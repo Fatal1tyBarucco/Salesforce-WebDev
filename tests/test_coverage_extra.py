@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
+from urllib.parse import urlparse
 
 import pytest
 
@@ -150,7 +151,9 @@ def test_badge_factories() -> None:
 def test_badge_serialization() -> None:
     b = Badge(label="L", message="M", color="#123456", label_color="#654321", logo="sf")
     url = b.to_shields_url()
-    assert "img.shields.io" in url
+    parsed = urlparse(url)
+    assert parsed.scheme == "https"
+    assert parsed.hostname == "img.shields.io"
     assert "labelColor=654321" in url
     assert "logo=sf" in url
     assert b.to_markdown().startswith("![L]")
@@ -161,7 +164,9 @@ def test_badge_serialization() -> None:
 
 def test_badge_collections() -> None:
     row = release_meta_badges("Summer '26", 10, 3, api_version="v67.0")
-    assert "img.shields.io" in row
+    urls = [urlparse(u) for u in row.split() if u.startswith("https://")]
+    assert len(urls) >= 1
+    assert all(u.hostname == "img.shields.io" for u in urls)
     assert "Categorias" in row
     row2 = release_meta_badges("Summer '26", 10, 3)
     assert "API" not in row2

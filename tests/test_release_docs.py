@@ -1429,6 +1429,8 @@ class TestFormatEntryTable:
         assert "❌" in out
 
     def test_format_entry_table_low_confidence(self) -> None:
+        from urllib.parse import urlparse
+
         from src.release_docs import _format_entry_table
 
         entry = MagicMock()
@@ -1441,7 +1443,13 @@ class TestFormatEntryTable:
         entry.contact_sf = False
         out = _format_entry_table(entry)
         assert "⚠️" in out
-        assert "https://example.com" in out
+        start = out.find("](")
+        assert start != -1
+        end = out.find(")", start + 2)
+        assert end != -1
+        parsed = urlparse(out[start + 2 : end])
+        assert parsed.scheme == "https"
+        assert parsed.netloc == "example.com"
 
 
 class TestGenerateCategorySummary:

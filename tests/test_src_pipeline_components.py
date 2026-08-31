@@ -1,6 +1,7 @@
 import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
+from urllib.parse import urlparse
 
 from src.config import ReleaseInfo, TopicNode
 from src.generator import MarkdownGenerator
@@ -536,7 +537,15 @@ def test_build_topic_lines_with_articles(tmp_path: Path) -> None:
     assert "## Apex" in lines
     assert "### Feature A" in lines
     assert "Summary A" in lines
-    assert "https://example.com/a" in lines[lines.index("Summary A") + 2]
+    link_line = lines[lines.index("Summary A") + 2]
+    start = link_line.find("](")
+    assert start != -1
+    end = link_line.find(")", start + 2)
+    assert end != -1
+    parsed = urlparse(link_line[start + 2 : end])
+    assert parsed.scheme == "https"
+    assert parsed.netloc == "example.com"
+    assert parsed.path == "/a"
     assert "### Feature B" in lines
 
 

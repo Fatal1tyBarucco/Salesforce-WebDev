@@ -304,7 +304,14 @@ class TestFormatEntryTableDocsUrl:
         )
         result = _format_entry_table(entry)
         assert "🔗" in result
-        assert "https://help.salesforce.com/article" in result
+        start = result.find("](")
+        assert start != -1
+        end = result.find(")", start + 2)
+        assert end != -1
+        parsed = urlparse(result[start + 2 : end])
+        assert parsed.scheme == "https"
+        assert parsed.netloc == "help.salesforce.com"
+        assert parsed.path == "/article"
 
     def test_format_with_parameter_docs_url(self) -> None:
         """Falls back to parameter docs_url when entry has none."""
@@ -313,7 +320,14 @@ class TestFormatEntryTableDocsUrl:
         entry = FeatureImpactEntry(name="Test Feature", available_users=True)
         result = _format_entry_table(entry, docs_url="https://example.com/fallback")
         assert "🔗" in result
-        assert "https://example.com/fallback" in result
+        start = result.find("](")
+        assert start != -1
+        end = result.find(")", start + 2)
+        assert end != -1
+        parsed = urlparse(result[start + 2 : end])
+        assert parsed.scheme == "https"
+        assert parsed.netloc == "example.com"
+        assert parsed.path == "/fallback"
 
     def test_format_without_any_docs_url(self) -> None:
         """No docs link when neither entry nor parameter has URL."""
