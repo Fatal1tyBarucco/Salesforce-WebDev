@@ -449,7 +449,7 @@ jobs:
 
       - name: Baixar logs da extração
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: extract-logs
           path: /tmp/pipeline_logs/extract
