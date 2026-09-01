@@ -4,8 +4,11 @@
 #   Salesforce Help → Playwright → FeatureImpactParser → Markdown → README → GitHub Pages
 #
 # Jobs:
-#   1. Lint & Type Check (ruff, mypy)
-#   2. Extract & Generate (scrape, parse, generate, commit)
+#   1. Extract & Generate (scrape, parse, generate, commit)
+#   2. Create Issue on Failure (diagnóstico didático com plano de ação)
+#
+# Note: Lint, typecheck and tests are handled by the Python Quality workflow
+# (python-quality.yml) which runs on every push and PR.
 #
 # Schedule: Weekly on Monday at 08:00 UTC
 # Manual: workflow_dispatch with optional release_slug and dry_run
@@ -46,37 +49,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  lint:
-    name: 🔍 Lint & Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
-
-      - name: Configurar Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Instalar dependências de desenvolvimento
-        run: uv sync --frozen --extra dev --group dev
-
-      - name: Ruff — Linting e formatação
-        run: uv run ruff check src/ --output-format=github
-
-      - name: Mypy — Verificação de tipos estáticos
-        run: uv run mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
-
-      - name: Pytest — Testes automatizados
-        run: uv run pytest tests/ -q --tb=short
-
   extract:
     name: 📥 Extração e Geração de Artefatos
     runs-on: ubuntu-latest
-    needs: lint
+    timeout-minutes: 240
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -96,7 +72,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Instalar Playwright browsers
-        run: uv run playwright install chromium
+        run: uv run playwright install --with-deps chromium
 
       - name: Instalar GitHub CLI
         run: sudo apt-get install -y gh
@@ -119,6 +95,8 @@ jobs:
 
       - name: Executar pipeline de extração
         run: |
+          set -o pipefail
+          mkdir -p /tmp/pipeline_logs
           ARGS=""
           if [ "${{ steps.params.outputs.dry_run }}" == "true" ]; then
             ARGS="$ARGS --dry-run"
@@ -126,19 +104,17 @@ jobs:
           if [ -n "${{ steps.params.outputs.release_slug }}" ]; then
             ARGS="$ARGS --release ${{ steps.params.outputs.release_slug }}"
           fi
-          uv run python -m src.main $ARGS
+          uv run python -m src.main $ARGS 2>&1 | tee /tmp/pipeline_logs/extraction.log
         working-directory: ${{ env.WORKING_DIR }}
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          MIMOCODE_API_KEY: ${{ secrets.MIMOCODE_API_KEY }}
 
       - name: Validar caches de resumo contra meta.json
         if: steps.params.outputs.dry_run == 'false'
         run: |
+          {
           echo "🔍 Validating summary caches against .meta.json..."
           ERRORS=0
           for meta_file in releases/*/.meta.json; do
@@ -178,6 +154,7 @@ jobs:
           else
             echo "✅ All summary caches are valid"
           fi
+          } 2>&1 | tee /tmp/pipeline_logs/cache_validation.log
 
       - name: Verificar alterações geradas
         id: git_status
@@ -193,28 +170,52 @@ jobs:
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
-        run: uv run pytest tests/ -q --tb=short
+        run: |
+          set -o pipefail
+          uv run pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/artifact_tests.log
 
       - name: Commit e push dos artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
-          git pull origin ${{ github.ref_name }}
+          set -o pipefail
+          {
+          # Stash locais (releases/ + READMEs) antes do pull para evitar
+          # conflito quando o remote estiver à frente do checkout inicial.
+          git stash push -m "pipeline-changes-pre-pull" -- releases/ README.md README.en.md
+          # Tolerar remotos inalcançáveis e não-fatal: continuar se não houver
+          # nada novo a integrar (fast-forward já implícito no push).
+          git pull --ff-only origin ${{ github.ref_name }} || echo "::warning::git pull falhou (continuando com mudanças locais)"
+          git stash pop || true
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-          git add releases/ README.md README.en.md
-          git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}"
-          git push --force-with-lease origin HEAD:${{ github.ref_name }}
+
+          # Add all changes — not just hardcoded paths — and detect empty commits.
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit (already up-to-date with remote)."
+          else
+            git commit -m "chore(release-notes): atualização automática — ${TIMESTAMP}" || exit 1
+            git push --force-with-lease origin HEAD:${{ github.ref_name }}
+          fi
+          } 2>&1 | tee /tmp/pipeline_logs/commit_push.log
 
       - name: Criar GitHub Release
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Prefer a PAT (RELEASE_TOKEN) over the default GITHUB_TOKEN so that
+          # release creation has the necessary scope to create refs/tags.
+          # The GITHUB_TOKEN intentionally cannot create refs in some org setups,
+          # which surfaces as HTTP 422 "Cannot create ref due to creations
+          # being restricted" — see issue #112.
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
-          python3 << 'PYEOF'
+          set -o pipefail
+          python3 << 'PYEOF' 2>&1 | tee /tmp/pipeline_logs/release_creation.log
           import json, os, re, subprocess, glob
 
           TRANSLITERATE_MAP = {
@@ -238,13 +239,38 @@ jobs:
                   data['summaries'] = data['category_summaries']
               return data
 
-          # Get existing releases
+          # Warn operator if we're using the default GITHUB_TOKEN (issue #112)
+          import os as _os
+          token_hint = _os.environ.get('GH_TOKEN', '')
+          if not token_hint or token_hint.startswith('ghs_'):
+              print('⚠️  Using GITHUB_TOKEN (default).')
+              print('    If releases fail with 422 "Cannot create ref", create a PAT')
+              print('    with repo scope and add it as secret RELEASE_TOKEN.')
+              print()
+
+          # Get existing releases + their immutability status
+          # gh release list doesn't expose immutable flag, so we inspect each
+          # candidate via `gh release view` to detect immutability upfront.
+          def fetch_release_detail(tag_name):
+              r = subprocess.run(
+                  ['gh', 'release', 'view', tag_name, '--json',
+                   'tagName,databaseId,isImmutable,isDraft'],
+                  capture_output=True, text=True,
+              )
+              if r.returncode == 0 and r.stdout.strip():
+                  try:
+                      return json.loads(r.stdout)
+                  except json.JSONDecodeError:
+                      return None
+              return None
+
           result = subprocess.run(
               ['gh', 'release', 'list', '--json', 'tagName,body'],
-              capture_output=True, text=True
+              capture_output=True, text=True,
           )
           existing_tags = set()
           existing_ids = set()
+          immutable_tags = set()
           if result.returncode == 0:
               for rel in json.loads(result.stdout):
                   existing_tags.add(rel.get('tagName', ''))
@@ -279,11 +305,7 @@ jobs:
 
               year_short = ''.join(filter(str.isdigit, slug.split('_')[-1]))
               season = slug.rsplit('_', 1)[0]
-              tag = f'v20{year_short}-{season}'
-
-              if tag in existing_tags:
-                  print(f'⏭️  Skip {tag}: already exists')
-                  continue
+              tag = f'v{release_id}-{season}-{year_short}'
 
               # Load AI-generated summaries
               cache = load_cache(release_dir)
@@ -339,6 +361,27 @@ jobs:
               notes += f'---{nl}'
               notes += f'*Gerado automaticamente pelo Salesforce Release Notes Pipeline*'
 
+              # Check if this tag already exists and whether it's immutable.
+              # We probe via `gh release view` instead of blindly trying to
+              # delete, which previously surfaced 422s for immutable releases.
+              detail = fetch_release_detail(tag) if tag in existing_tags else None
+              if detail is not None:
+                  if detail.get('isImmutable'):
+                      print(f'⏭️ Release {tag} exists and is immutable — skipping update.')
+                      immutable_tags.add(tag)
+                      continue
+                  # Not immutable: delete and recreate.
+                  r_del = subprocess.run(
+                      ['gh', 'release', 'delete', tag, '--yes'],
+                      capture_output=True, text=True,
+                  )
+                  if r_del.returncode == 0:
+                      subprocess.run(['git', 'tag', '-d', tag], capture_output=True)
+                      print(f'🧹 Deleted release + git tag {tag} — will recreate.')
+                  else:
+                      print(f'  ⚠️ Could not delete {tag}: {r_del.stderr.strip()} — skipping.')
+                      continue
+
               max_existing = max(existing_ids) if existing_ids else 0
               cmd = ['gh', 'release', 'create', tag, '--title', name, '--notes', notes]
               if release_id > max_existing:
@@ -348,11 +391,30 @@ jobs:
               r = subprocess.run(cmd, capture_output=True, text=True)
               if r.returncode == 0:
                   print(f'  ✅ Created: {tag}')
-                  existing_tags.add(tag)
               else:
-                  print(f'  ❌ Failed: {r.stderr.strip()}')
+                  stderr = r.stderr.strip()
+                  print(f'  ❌ stderr: {stderr[:500]}')
+                  if 'immutable' in stderr or 'pre_receive' in stderr or '422' in stderr:
+                      print(f'  ⏭️ Skipped {tag}: release/tag protection rule blocked creation.')
+                      print(f'     Hint: review Settings → Rules → "Restrict or block tag creation"')
+                  else:
+                      print(f'  ❌ Failed: {stderr}')
+
+          if immutable_tags:
+              print()
+              print(f'ℹ️  {len(immutable_tags)} release(s) were left as-is (immutable): {sorted(immutable_tags)}')
+              print('   To replace them, manually delete via GitHub UI then re-run the pipeline.')
 
           PYEOF
+
+      - name: Upload dos logs de execução
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: extract-logs
+          path: /tmp/pipeline_logs/
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Gerar sumário do pipeline
         if: always()
@@ -374,3 +436,53 @@ jobs:
           echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Dry Run | \`${{ steps.params.outputs.dry_run }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Release | \`${{ steps.params.outputs.release_slug || 'todas' }}\` |" >> $GITHUB_STEP_SUMMARY
+
+  create-issue:
+    name: 📝 Issue com Diagnóstico de Falhas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: extract
+    if: always() && needs.extract.result == 'failure'
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Baixar logs da extração
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: extract-logs
+          path: /tmp/pipeline_logs/extract
+
+      - name: Gerar corpo didático da issue
+        id: body
+        env:
+          LOG_DIR: /tmp/pipeline_logs
+          EXTRACT_RESULT: ${{ needs.extract.result }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python3 .github/scripts/build_failure_issue.py > /tmp/issue_body.md
+          echo "body_file=/tmp/issue_body.md" >> $GITHUB_OUTPUT
+
+      - name: Criar GitHub Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TITLE="🚀 Release Notes Pipeline falhou — run ${{ github.run_id }}"
+          BODY_FILE="${{ steps.body.outputs.body_file }}"
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
+          if [ "${EXISTING:-0}" != "0" ]; then
+            echo "Issue já existe para este run — skipping."
+            exit 0
+          fi
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+            echo "Issue criada com sucesso."
+          else
+            echo "::warning::Falha ao criar issue com body-file, tentando com --body"
+            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+          fi

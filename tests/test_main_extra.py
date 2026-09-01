@@ -26,7 +26,7 @@ class TestFindExistingReleases:
     def test_with_releases(self, tmp_path: Path) -> None:
         d = tmp_path / "summer_26"
         d.mkdir()
-        (d / "cat.md").write_text("## Cat\n\n- Feature\n")
+        (d / ".meta.json").write_text('{"name": "Summer 26"}')
         with (
             patch("src.main.RELEASES_DIR", str(tmp_path)),
             patch("src.release_docs.RELEASES_DIR", str(tmp_path)),

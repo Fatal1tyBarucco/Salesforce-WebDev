@@ -12,9 +12,12 @@ dependencies = [
     "tenacity>=8.0.0",
     "aiohttp>=3.9.0",
     "pydantic>=2.0.0",
+    "prometheus-client>=0.25.0",
 ]
 
 [project.optional-dependencies]
+# openai is kept as a core dep because OpenCode and OpenRouter use
+# the OpenAI-compatible client. google-genai is the primary provider.
 healing = [
     "fastapi>=0.115.0,<1",
     "uvicorn[standard]>=0.30.0,<1",
@@ -55,6 +58,16 @@ line-length = 100
 
 [tool.ruff.lint]
 extend-select = ["F401", "F821", "E741"]
+ignore = [
+    "BLE001",   # blind exception catching — intentional in error handlers
+    "S110",      # try-except-pass — intentional suppression
+    "S112",      # try-except-continue — intentional suppression
+    "SIM102",    # nested if — readability preference
+    "SIM117",    # nested with — readability preference
+    "PLW1510",   # subprocess.run without check — handled by caller
+    "RUF034",    # useless if-else — type-checking workaround
+    "B017",      # pytest.raises(Exception) — broad match intentional
+]
 
 [tool.mypy]
 strict = true
@@ -64,18 +77,17 @@ warn_unused_ignores = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = "-q --tb=short --durations=10"
+addopts = "-q --tb=short --durations=10 --timeout=120"
 asyncio_mode = "auto"
 filterwarnings = [
     "ignore::DeprecationWarning:bs4.*",
 ]
 
 [tool.coverage.run]
-omit = [
-    "src/auto_healing/*",
-]
+
 
 [dependency-groups]
 dev = [
     "pytest-asyncio>=1.4.0",
+    "pytest-timeout>=2.4.0",
 ]

@@ -28,7 +28,7 @@ Dependency management and virtual environments are handled by `uv`.
 
 ## Repository Map
 
-- `src/` - Core ETL pipeline, scrapers, classification, and auto-healing services.
+- `src/` - Core ETL pipeline, scrapers, classification services.
 - `tests/` - Pytest test suite.
 - `stubs/` - Type stubs for mypy (`mypy_path = "stubs"`).
 - `docs/` - Documentation (MkDocs).

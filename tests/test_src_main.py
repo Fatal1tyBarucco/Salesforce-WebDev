@@ -11,7 +11,7 @@ from src.main import (
     _slugify_category,
     main,
 )
-from src.parser import FeatureImpactCategory, FeatureImpactEntry
+from src.parser import FeatureImpactEntry
 
 
 def test_find_existing_releases_empty() -> None:
@@ -82,45 +82,20 @@ def test_generate_release_files() -> None:
 
 
 @patch("src.main.setup_logging")
-@patch("src.main.SalesforceReleaseScraper")
-@patch("src.main.FeatureImpactParser")
-@patch("src.main.MarkdownGenerator")
-@patch("src.main._generate_release_files")
-@patch("src.main.update_readme_all")
-@patch("src.main._update_readme_single")
-@patch("src.main._find_existing_releases")
+@patch("src.orchestrator.PipelineOrchestrator")
+@patch("src.main.asyncio.sleep", new_callable=AsyncMock)
 def test_main_execution_success(
-    mock_find_existing: MagicMock,
-    mock_update_single: MagicMock,
-    mock_update_readme: MagicMock,
-    mock_generate_files: MagicMock,
-    mock_generator_class: MagicMock,
-    mock_impact_parser_class: MagicMock,
-    mock_scraper_class: MagicMock,
+    mock_sleep: AsyncMock,
+    mock_orch_class: MagicMock,
     mock_setup_logging: MagicMock,
 ) -> None:
-    scraper_inst = MagicMock()
-    sample_text = (
-        "Salesforce geral\n"
-        "Description of category.\n"
-        "RECURSO\tATIVADO PARA USUÁRIOS\n"
-        "Feature One\tYes\n"
-    )
-    scraper_inst.fetch_page_raw_text = AsyncMock(return_value=sample_text)
-    scraper_inst.fetch_features_with_links = AsyncMock(return_value=[])
-    scraper_inst.download_pdf_from_button = AsyncMock(return_value=True)
-    scraper_inst.__aenter__ = AsyncMock(return_value=scraper_inst)
-    scraper_inst.__aexit__ = AsyncMock(return_value=None)
-    mock_scraper_class.return_value = scraper_inst
-
-    parser_inst = MagicMock()
-    parser_inst.parse_text.return_value = [FeatureImpactCategory(name="Test Cat")]
-    mock_impact_parser_class.return_value = parser_inst
-
-    generator_inst = MagicMock()
-    mock_generator_class.return_value = generator_inst
-
-    mock_find_existing.return_value = set()
+    orch_inst = MagicMock()
+    orch_result = MagicMock()
+    orch_result.status = "completed"
+    orch_result.releases_processed = ["summer_26"]
+    orch_result.errors = []
+    orch_inst.run = AsyncMock(return_value=orch_result)
+    mock_orch_class.return_value = orch_inst
 
     original_argv = sys.argv
     try:
@@ -130,10 +105,8 @@ def test_main_execution_success(
         sys.argv = original_argv
 
     mock_setup_logging.assert_called_once()
-    scraper_inst.fetch_page_raw_text.assert_awaited()
-    parser_inst.parse_text.assert_called()
-    mock_generate_files.assert_called()
-    mock_update_single.assert_called()
+    mock_orch_class.assert_called_once()
+    orch_inst.run.assert_awaited_once()
 
 
 @patch("src.main.setup_logging")

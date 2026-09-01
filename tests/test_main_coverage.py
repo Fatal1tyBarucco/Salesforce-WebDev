@@ -943,7 +943,7 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
-    """Test en_US README where heading is at end of file — should skip to preserve content."""
+    """Test en_US README where heading is at end of file — releases are appended to EOF."""
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     slug = "summer_26"
@@ -966,7 +966,7 @@ async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
         (tmp_path / "README.md").write_text(
             "# Title\n\n" + RELEASE_SECTION_HEADING + "\n", encoding="utf-8"
         )
-        # en_US README: heading at end, no "\n## " after it → should skip
+        # en_US README: heading at end, no "\n## " after it → appended to EOF
         (tmp_path / "README.en.md").write_text(
             "# Title\n\n" + RELEASE_SECTION_HEADING + "\n", encoding="utf-8"
         )
@@ -980,6 +980,7 @@ async def testupdate_readme_all_en_us_no_next_heading(tmp_path: Path) -> None:
     finally:
         os.chdir(original_dir)
 
-    # Content should be preserved (not overwritten) since there's no next heading
+    # Releases are deterministically appended to EOF; original title preserved.
     updated_en = (tmp_path / "README.en.md").read_text(encoding="utf-8")
-    assert "Summer '26" not in updated_en  # skipped, original preserved
+    assert "Summer '26" in updated_en
+    assert "# Title" in updated_en

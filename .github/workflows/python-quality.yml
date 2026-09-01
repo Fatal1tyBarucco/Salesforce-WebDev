@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: quality-${{ github.ref }}
@@ -21,6 +22,7 @@ concurrency:
 env:
   PYTHON_VERSION: "3.13"
   UV_CACHE_DIR: /tmp/uv-cache
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
 
 # ─────────────────────────────────────────────────────────────────
 # Shared setup — reused as a composite across all jobs
@@ -173,7 +175,9 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: 📦 Install dependencies
-        run: uv sync --frozen --extra dev --extra healing --group dev
+        run: |
+          uv sync --frozen --extra dev --extra healing --group dev
+          uv pip install "syrupy>=4.9.0,<5"
 
       - name: 🧪 Run tests with coverage
         run: |
@@ -197,12 +201,87 @@ jobs:
           echo ""
 
       - name: 📊 Upload coverage report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: coverage-report
           path: coverage.xml
           retention-days: 7
+
+  # ┌─────────────────────────────────────────────────────────────┐
+  # │  📝 CREATE ISSUE ON FAILURE                                 │
+  # └─────────────────────────────────────────────────────────────┘
+  create-issue:
+    name: 📝 Create Issue on Failure
+    runs-on: ubuntu-latest
+    needs: [ruff, black, mypy, tests]
+    if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure')
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Collect failure details
+        id: collect
+        run: |
+          RUFF="${{ needs.ruff.result }}"
+          BLACK="${{ needs.black.result }}"
+          MYPY="${{ needs.mypy.result }}"
+          TESTS="${{ needs.tests.result }}"
+          echo "ruff=$RUFF" >> "$GITHUB_OUTPUT"
+          echo "black=$BLACK" >> "$GITHUB_OUTPUT"
+          echo "mypy=$MYPY" >> "$GITHUB_OUTPUT"
+          echo "tests=$TESTS" >> "$GITHUB_OUTPUT"
+
+          # Write body to file to avoid GH output quoting issues
+          BODY_FILE="/tmp/issue_body.md"
+          {
+            echo "## 🐍 Python Quality falhou — \`${{ github.sha }}\`"
+            echo ""
+            echo "**Branch:** \`${{ github.ref_name }}\` · **Workflow:** [#${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ""
+            echo "| Gate | Status |"
+            echo "|------|--------|"
+            echo "| 🔍 Ruff | \`$RUFF\` |"
+            echo "| 🎨 Black | \`$BLACK\` |"
+            echo "| 🔬 Mypy | \`$MYPY\` |"
+            echo "| 🧪 Tests & Coverage | \`$TESTS\` |"
+            echo ""
+            echo "### O que deve ser corrigido"
+            echo ""
+            if [ "$RUFF" = "failure" ]; then echo "- [ ] Corrigir **Ruff** \`uv run ruff check . --fix\`"; echo ""; fi
+            if [ "$BLACK" = "failure" ]; then echo "- [ ] Formatar com **Black** \`uv run black .\`"; echo ""; fi
+            if [ "$MYPY" = "failure" ]; then echo "- [ ] Corrigir **Mypy** \`uv run mypy src/\`"; echo ""; fi
+            if [ "$TESTS" = "failure" ]; then echo "- [ ] Corrigir **Tests / Coverage ≥95%** \`uv run pytest --cov=src --cov-fail-under=95\`"; echo ""; fi
+            echo ""
+            echo "Logs completos em: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo ""
+            echo "> Gerado automaticamente por Python Quality em \`$(date -u '+%Y-%m-%d %H:%M UTC')\`. Commit: \`${{ github.sha }}\`"
+          } > "$BODY_FILE"
+          echo "body_file=$BODY_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TITLE="🐍 Python Quality falhou — ${{ github.sha }}"
+          BODY_FILE="${{ steps.collect.outputs.body_file }}"
+          # Evita duplicatas para o mesmo commit
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
+          if [ "${EXISTING:-0}" != "0" ]; then
+            echo "Issue já existe para este commit — skipping."
+            exit 0
+          fi
+          # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+            echo "Issue criada com sucesso."
+          else
+            echo "::warning::Falha ao criar issue com body-file, tentando com --body"
+            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+          fi
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │

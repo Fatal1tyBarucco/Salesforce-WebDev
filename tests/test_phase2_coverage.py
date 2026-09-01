@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 from urllib.parse import urlparse
 
-import openai
 import pytest
 
 # ── exceptions.py ──────────────────────────────────────────────────
@@ -304,166 +301,108 @@ class TestReportingEdgeCases:
         assert "Nenhuma Regressão" in report or "regress" in report.lower()
 
 
-# ── api.py GraphQL edge cases ──────────────────────────────────────
-
-
-class TestGraphQLFieldSelection:
-    """Test GraphQL field selection and edge cases."""
-
-    def test_graphql_select_fields_empty(self) -> None:
-        from src.api import _select_graphql_fields
-
-        data = {"name": "Test", "slug": "test"}
-        result = _select_graphql_fields(data, [])
-        # Empty fields returns full data (no filtering)
-        assert result == data
-
-    def test_graphql_select_fields_mapped(self) -> None:
-        from src.api import _select_graphql_fields
-
-        data = {"name": "Test", "total_features": 100}
-        result = _select_graphql_fields(data, ["name", "totalFeatures"])
-        assert result == {"name": "Test", "totalFeatures": 100}
-
-    def test_graphql_select_fields_unknown(self) -> None:
-        from src.api import _select_graphql_fields
-
-        data = {"name": "Test"}
-        result = _select_graphql_fields(data, ["unknownField"])
-        assert result == {}
-
-    def test_graphql_extract_fields_with_keywords(self) -> None:
-        from src.api import _gql_lex, _GQLParser
-
-        # The parser extracts fields from a valid query, filtering keywords
-        query = "{ releases { name slug } }"
-        _, _, fields = _GQLParser(_gql_lex(query)).parse()
-        assert "name" in fields
-        assert "slug" in fields
-        # query/mutation are keywords but not field names in this context
-        assert "query" not in fields
-
-    def test_graphql_extract_fields_no_braces(self) -> None:
-        from src.api import _gql_lex, _GQLParser
-
-        # A minimal valid query with no field selection
-        query = "{ releases }"
-        _, _, fields = _GQLParser(_gql_lex(query)).parse()
-        assert fields == []
-
-    def test_graphql_unknown_operation(self) -> None:
-        from src.api import _execute_graphql
-
-        result = _execute_graphql("{ unknown { field } }")
-        assert "errors" in result
-
-    def test_graphql_multiple_operations(self) -> None:
-        from src.api import _execute_graphql
-
-        # The recursive parser parses the first operation and ignores trailing tokens
-        # This should still work (parses 'releases' operation)
-        result = _execute_graphql('{ releases { name } release(slug: "x") { name } }')
-        # The parser will parse 'releases' successfully; trailing tokens are ignored
-        assert "data" in result or "errors" in result
-
-    def test_graphql_release_not_found(self, tmp_path: Path) -> None:
-        from src.api import _execute_graphql
-
-        with patch("src.api.KNOWN_RELEASES", []):
-            result = _execute_graphql('{ release(slug: "nonexistent") { name } }')
-        assert result.get("data", {}).get("release") is None
-        assert "errors" in result
-
-    def test_graphql_diff_not_found(self, tmp_path: Path) -> None:
-        from src.api import _execute_graphql
-
-        with patch("src.api.KNOWN_RELEASES", []):
-            result = _execute_graphql(
-                '{ diff(current: "nonexistent", previous: "also_nonexistent") { totalDelta } }'
-            )
-        assert "errors" in result
-
-
-# ── LLM Service resilience ─────────────────────────────────────────
-
-
 class TestLLMServiceResilience:
-    """Test LLM service timeout and retry behavior."""
+    """Test LLM service error handling (modern API)."""
 
-    def _make_service(self, providers: list | None = None) -> Any:
-        from src.llm_service import CircuitBreakerConfig, LLMProvider, LLMService
+    def test_empty_prompt_raises_value_error(self) -> None:
+        from src.llm_service import LLMService
 
-        if providers is None:
-            providers = [
-                LLMProvider(
-                    name="test",
-                    api_key="sk-test",
-                    base_url="http://localhost:1",
-                    model="gpt-4o",
-                    provider_type="openai",
-                )
-            ]
-        with patch.dict(os.environ, {}, clear=True):
-            service = LLMService(
-                config=CircuitBreakerConfig(threshold=1, cooldown=0), providers=providers
-            )
-        service._providers = providers
-        service._provider_states = {
-            p.name: MagicMock(failures=0, circuit_open=False) for p in providers
-        }
-        service._client = None
-        return service
+        svc = LLMService(api_key="k")
+        with pytest.raises(ValueError):
+            svc.generate_completion("")
 
-    @pytest.mark.asyncio
-    async def test_openai_timeout(self) -> None:
-        service = self._make_service()
-        with patch.object(
-            service, "_call_provider", new=AsyncMock(side_effect=TimeoutError("timed out"))
-        ):
-            result = await service.generate_text("test", "test")
-        assert result is None
+    def test_no_key_returns_mock(self) -> None:
+        from src.llm_service import LLMService
 
-    @pytest.mark.asyncio
-    async def test_rate_limit_error_handled(self) -> None:
-        from src.circuit_breaker import CircuitBreaker
+        svc = LLMService(api_key=None, provider="none")
+        out = svc.generate_completion("anything")
+        assert out.startswith("[Mock LLM Response]")
 
-        service = self._make_service()
-        service._provider_states = {"test": CircuitBreaker(threshold=3, cooldown=60.0)}
+    def test_unsupported_provider_falls_back(self) -> None:
+        from src.llm_service import LLMService
 
-        with patch("src.llm_service.openai.AsyncOpenAI") as mock_client_cls:
-            mock_client = MagicMock()
-            mock_client.chat.completions.create = AsyncMock(
-                side_effect=openai.RateLimitError(
-                    message="rate limited",
-                    response=MagicMock(status_code=429, headers={}),
-                    body=None,
-                )
-            )
-            mock_client_cls.return_value = mock_client
-            result = await service.generate_text("test", "test")
+        svc = LLMService(api_key="k", provider="nope")
+        # Unknown provider triggers auto-detect; with a key it picks the
+        # first provider whose env var is set, or 'none' if none match.
+        assert svc.provider in ("groq", "gemini", "opencode", "openrouter", "none")
 
-        assert result is None
+    def test_generate_completion_propagates_errors(self) -> None:
+        from src.llm_service import LLMService
 
-    @pytest.mark.asyncio
-    async def test_auth_error_handled(self) -> None:
-        from src.circuit_breaker import CircuitBreaker
+        svc = LLMService(api_key="k", provider="openrouter")
+        with patch("openai.OpenAI", side_effect=RuntimeError("boom")):
+            with pytest.raises(RuntimeError):
+                svc.generate_completion("x")
 
-        service = self._make_service()
-        service._provider_states = {"test": CircuitBreaker(threshold=3, cooldown=60.0)}
 
-        with patch("src.llm_service.openai.AsyncOpenAI") as mock_client_cls:
-            mock_client = MagicMock()
-            mock_client.chat.completions.create = AsyncMock(
-                side_effect=openai.AuthenticationError(
-                    message="auth failed",
-                    response=MagicMock(status_code=401, headers={}),
-                    body=None,
-                )
-            )
-            mock_client_cls.return_value = mock_client
-            result = await service.generate_text("test", "test")
+# ── LLM Service provider chain coverage ────────────────────────────
 
-        assert result is None
+
+class TestLLMProviderChain:
+    """Tests for the multi-provider fallback chain."""
+
+    def test_find_provider_config_valid(self) -> None:
+        from src.llm_service import LLMService
+
+        cfg = LLMService._find_provider_config("gemini")
+        assert cfg is not None
+        assert cfg.name == "gemini"
+
+    def test_find_provider_config_invalid(self) -> None:
+        from src.llm_service import LLMService
+
+        cfg = LLMService._find_provider_config("nonexistent")
+        assert cfg is None
+
+    def test_switch_to_next_provider_no_fallback(self, monkeypatch) -> None:
+        from src.llm_service import LLMService
+
+        monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+        monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        svc = LLMService(api_key=None, provider="none")
+        # No providers available -> switch returns False
+        assert svc._switch_to_next_provider() is False
+
+    def test_dispatch_unsupported_provider(self) -> None:
+        from src.llm_service import LLMService
+
+        svc = LLMService(api_key="k", provider="gemini")
+        svc.provider = "unknown_provider"
+        with pytest.raises(ValueError, match="Unsupported LLM provider"):
+            svc._dispatch_to_provider("hi", None, 0.7, 100)
+
+    def test_openai_compatible_all_models_fail(self, monkeypatch) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from src.llm_service import LLMService
+
+        fake_client = MagicMock()
+        fake_client.chat.completions.create.side_effect = RuntimeError("boom")
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter")
+            with pytest.raises(RuntimeError):
+                svc._generate_openai_compatible("hi", None, 0.7, 100)
+
+    def test_openai_compatible_fallback_model(self, monkeypatch) -> None:
+        from unittest.mock import MagicMock, patch
+
+        from src.llm_service import LLMService
+
+        fake_choice = MagicMock()
+        fake_choice.message.content = "fallback result"
+        fake_resp = MagicMock()
+        fake_resp.choices = [fake_choice]
+        fake_client = MagicMock()
+        # First model fails, second succeeds
+        fake_client.chat.completions.create.side_effect = [
+            RuntimeError("model unavailable"),
+            fake_resp,
+        ]
+        with patch("openai.OpenAI", return_value=fake_client):
+            svc = LLMService(api_key="k", provider="openrouter")
+            out = svc._generate_openai_compatible("hi", None, 0.7, 100)
+            assert out == "fallback result"
 
 
 # ── Automation Service edge cases ──────────────────────────────────
@@ -486,30 +425,3 @@ class TestAutomationServiceEdges:
         host = urlparse(urls[0]).hostname
         assert host is not None
         assert host == "img.shields.io" or host.endswith(".shields.io")
-
-
-# ── OpenAPI spec ───────────────────────────────────────────────────
-
-
-class TestOpenAPISpec:
-    """Test OpenAPI spec loading."""
-
-    def test_spec_loads_valid_json(self) -> None:
-        from src.api import _generate_openapi_spec
-
-        spec = _generate_openapi_spec()
-        assert spec["openapi"] == "3.0.3"
-        assert "/releases" in spec["paths"]
-        assert "/graphql" in spec["paths"]
-        assert "Release" in spec["components"]["schemas"]
-
-    def test_spec_has_all_endpoints(self) -> None:
-        from src.api import _generate_openapi_spec
-
-        spec = _generate_openapi_spec()
-        paths = spec["paths"]
-        assert "/releases" in paths
-        assert "/releases/{slug}" in paths
-        assert "/releases/{slug}/categories/{name}" in paths
-        assert "/diff/{current}/{previous}" in paths
-        assert "/graphql" in paths

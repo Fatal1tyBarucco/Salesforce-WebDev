@@ -16,6 +16,7 @@ import json
 import logging
 import sys
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -31,7 +32,7 @@ from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
 from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
 from .llm_service import LLMService
-from .logger import setup_logger
+from .logger import setup_logging
 from .parser import (
     FeatureImpactParser,
 )
@@ -305,7 +306,8 @@ async def generate_summary_cache(
                     "business_impact": summary.business_impact,
                     "strategic_themes": summary.strategic_themes,
                     "migration_notes": summary.migration_notes,
-                    "generated_at": str(Path.cwd()),
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                    "fallback": False,
                 }
 
                 if _validate_summary_cache(ai_cache, meta, release.slug):
@@ -365,7 +367,7 @@ async def generate_summary_cache(
         fallback_cache: dict[str, Any] = {
             "executive_summary": executive_summary,
             "category_summaries": basic_summaries,
-            "generated_at": str(Path.cwd()),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "fallback": True,
         }
 
@@ -651,7 +653,7 @@ class PipelineConfig:
 
 async def run_pipeline(config: PipelineConfig | None = None) -> None:
     """Orquestrador: fetch feature impact + PDF, generate markdown for latest unseen release."""
-    setup_logger()
+    setup_logging()
 
     if config is None:
         release_filter, dry_run = _parse_args()

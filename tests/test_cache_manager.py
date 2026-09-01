@@ -120,7 +120,19 @@ def test_stats_sets(tmp_path):
 
 def test_stats_repr():
     stats = CacheStats(hits=10, misses=2, evictions=1)
-    assert "hit_rate=" in repr(stats)
+    r = repr(stats)
+    assert "hits=10" in r
+    assert "misses=2" in r
+
+
+def test_stats_total():
+    stats = CacheStats(hits=8, misses=2)
+    assert stats.total == 10
+
+
+def test_stats_hit_rate_zero():
+    stats = CacheStats()
+    assert stats.hit_rate == 0.0
 
 
 def test_clear_expired(tmp_path):
@@ -136,3 +148,105 @@ def test_clear_expired(tmp_path):
 
         assert removed == 1
         assert cache.get("fresh") == "data"
+
+
+# ── Content hash ──────────────────────────────────────────────────
+
+
+def test_compute_file_hash(tmp_path):
+    f = tmp_path / "test.txt"
+    f.write_text("hello world")
+    h = CacheManager.compute_file_hash(f)
+    assert len(h) == 32
+
+
+def test_get_content_hash_exists(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    f = tmp_path / "test.txt"
+    f.write_text("content")
+    h = cache.get_content_hash(f)
+    assert h is not None
+
+
+def test_get_content_hash_not_exists(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    h = cache.get_content_hash(tmp_path / "nonexistent.txt")
+    assert h is None
+
+
+def test_is_content_unchanged(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    f = tmp_path / "test.txt"
+    f.write_text("content")
+    h = cache.get_content_hash(f)
+    assert cache.is_content_unchanged(f, h) is True
+    assert cache.is_content_unchanged(f, "wrong_hash") is False
+
+
+def test_is_content_unchanged_nonexistent(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    assert cache.is_content_unchanged(tmp_path / "nope", "hash") is False
+
+
+# ── Content cache (JSON file) ────────────────────────────────────
+
+
+def test_save_and_load_content_cache(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    cache_file = tmp_path / "content_cache.json"
+    data = {"file1.md": "abc123", "file2.md": "def456"}
+    cache.save_content_cache(cache_file, data)
+    loaded = cache.load_content_cache(cache_file)
+    assert loaded == data
+
+
+def test_load_content_cache_nonexistent(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    result = cache.load_content_cache(tmp_path / "nope.json")
+    assert result == {}
+
+
+def test_load_content_cache_corrupt(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    f = tmp_path / "corrupt.json"
+    f.write_text("not json")
+    result = cache.load_content_cache(f)
+    assert result == {}
+
+
+def test_load_content_cache_old_format(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    f = tmp_path / "old.json"
+    import json as json_mod
+
+    f.write_text(json_mod.dumps({"file.md": {"content_hash": "abc123", "extra": "data"}}))
+    result = cache.load_content_cache(f)
+    assert result == {"file.md": "abc123"}
+
+
+# ── Edge cases ───────────────────────────────────────────────────
+
+
+def test_invalidate_nonexistent(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    cache.invalidate("nonexistent_key")
+
+
+def test_invalidate_namespace_with_entries(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache")
+    cache.set("k1", "v1", namespace="test_ns")
+    cache.set("k2", "v2", namespace="test_ns")
+    count = cache.invalidate_namespace("test_ns")
+    assert count == 2
+    assert cache.get("k1", namespace="test_ns") is None
+
+
+def test_get_expired_entry(tmp_path):
+    cache = CacheManager(cache_dir=tmp_path / "cache", ttl_seconds=1)
+    cache.set("key", "value", ttl=0)
+    import time as time_mod
+
+    time_mod.sleep(0.01)
+    result = cache.get("key")
+    assert result is None
+    assert cache.stats.evictions == 1

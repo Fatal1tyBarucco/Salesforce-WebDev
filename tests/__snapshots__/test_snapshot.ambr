@@ -1,0 +1,124 @@
+# serializer version: 1
+# name: TestFeatureImpactEntry.test_entry_minimal
+  dict({
+    'confidence': 0.5,
+    'has_url': False,
+    'name': 'Minimal Feature',
+  })
+# ---
+# name: TestFeatureImpactEntry.test_entry_with_all_flags
+  dict({
+    'available_admins': True,
+    'available_users': True,
+    'confidence': 1.0,
+    'contact_sf': False,
+    'docs_url': 'https://example.com/docs',
+    'name': 'Test Feature',
+    'requires_config': True,
+  })
+# ---
+# name: TestParserSnapshot.test_extract_topic_tree_structure
+  list([
+  ])
+# ---
+# name: TestParserSnapshot.test_feature_impact_parser_categories
+  dict({
+    'categories': list([
+      dict({
+        'description': 'Apex REST Annotations\tYes\tYes\tNo\tNo',
+        'entries': list([
+          dict({
+            'available_admins': True,
+            'available_users': True,
+            'confidence': 1.0,
+            'contact_sf': False,
+            'name': 'SOQL Improvements',
+            'requires_config': True,
+          }),
+          dict({
+            'available_admins': False,
+            'available_users': False,
+            'confidence': 0.5,
+            'contact_sf': False,
+            'name': 'Total de Recursos: 4',
+            'requires_config': False,
+          }),
+        ]),
+        'entries_count': 2,
+        'name': 'Desenvolvimento',
+        'subcategories_count': 0,
+      }),
+    ]),
+    'count': 1,
+  })
+# ---
+# name: TestParserSnapshot.test_feature_impact_parser_quality_metrics
+  dict({
+    'avg_confidence': 0.75,
+    'categories': 1,
+    'low_confidence_count': 1,
+    'total_features': 2,
+  })
+# ---
+# name: TestParserSnapshot.test_feature_impact_parser_single_category
+  dict({
+    'categories': list([
+      dict({
+        'description': 'Apex REST Annotations\tYes\tYes\tNo\tNo',
+        'entries': list([
+          dict({
+            'available_admins': False,
+            'available_users': False,
+            'confidence': 0.5,
+            'contact_sf': False,
+            'name': 'Total de Recursos: 2',
+            'requires_config': False,
+          }),
+        ]),
+        'entries_count': 1,
+        'name': 'Desenvolvimento',
+        'subcategories_count': 0,
+      }),
+    ]),
+    'count': 1,
+  })
+# ---
+# name: TestParserSnapshot.test_feature_impact_parser_stats
+  dict({
+    'stats1': dict({
+      'parsed': 2,
+      'skipped': 4,
+      'total_lines': 9,
+    }),
+    'stats2': dict({
+      'parsed': 1,
+      'skipped': 2,
+      'total_lines': 7,
+    }),
+  })
+# ---
+# name: TestTopicNode.test_topic_node_serialization
+  dict({
+    'article_count': 1,
+    'children_count': 0,
+    'display_name': 'Test Topic',
+    'is_leaf': True,
+    'level': 2,
+    'slug': 'test_topic',
+    'url': '/test/topic',
+  })
+# ---
+# name: TestTopicNode.test_topic_node_with_children
+  dict({
+    'all_articles_count': 0,
+    'child': dict({
+      'is_leaf': True,
+      'slug': 'child_topic',
+    }),
+    'parent': dict({
+      'children_count': 1,
+      'is_leaf': False,
+      'slug': 'parent_topic',
+    }),
+  })
+# ---
