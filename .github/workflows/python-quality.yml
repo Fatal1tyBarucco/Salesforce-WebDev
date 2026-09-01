@@ -174,7 +174,9 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: 📦 Install dependencies
-        run: uv sync --frozen --extra dev --extra healing --group dev
+        run: |
+          uv sync --frozen --extra dev --extra healing --group dev
+          uv pip install syrupy>=4.9.0,<5
 
       - name: 🧪 Run tests with coverage
         run: |
