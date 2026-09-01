@@ -22,6 +22,7 @@ concurrency:
 env:
   PYTHON_VERSION: "3.13"
   UV_CACHE_DIR: /tmp/uv-cache
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
 
 # ─────────────────────────────────────────────────────────────────
 # Shared setup — reused as a composite across all jobs
@@ -176,7 +177,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           uv sync --frozen --extra dev --extra healing --group dev
-          uv pip install syrupy>=4.9.0,<5
+          uv pip install "syrupy>=4.9.0,<5"
 
       - name: 🧪 Run tests with coverage
         run: |
