@@ -6,7 +6,7 @@ This guide is for AI coding agents working in the `Salesforce-WebDev` repository
 
 Salesforce-WebDev is an ETL pipeline for extracting, classifying, and versioning Salesforce Release Notes, built with Python (3.13), BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, and FastAPI.
 
-Dependency management and virtual environments are handled by `uv`.
+Dependency management and virtual environments are handled by `uv`. The project runs under **Python 3.13** via `uv` (system default may be 3.14, but `uv` pins to 3.13 via `requires-python = ">=3.13,<3.14"`).
 
 ## Setup & Development Commands
 
@@ -21,7 +21,8 @@ Dependency management and virtual environments are handled by `uv`.
 
 ## Stack & Conventions
 
-- Python `>=3.13,<3.14` with strict typing (`mypy strict = true`, mypy path `stubs`).
+- Python `>=3.13,<3.14` (via `uv`; system may have 3.14, but lock file pins to 3.13).
+- `pytest-timeout` is configured globally via `addopts = "--timeout=120"` (120s per test).
 - Code style: Black (line length 100) and Ruff linting.
 - Async code: Asyncio (`asyncio_mode = "auto"` in pytest).
 - Commit messages: Conventional Commits (`feat(scope): ...`, `fix(scope): ...`, `refactor(scope): ...`, `test(scope): ...`, `docs(scope): ...`, `chore(scope): ...`).
@@ -33,40 +34,8 @@ Dependency management and virtual environments are handled by `uv`.
 - `stubs/` - Type stubs for mypy (`mypy_path = "stubs"`).
 - `docs/` - Documentation (MkDocs).
 - `k8s/` - Kubernetes manifests and deployment configs.
-
-## Key Files & Decisions
-
-### Dependency constraints
-
-- `pyproject.toml` specifies `Python >=3.13,<3.14`.
-- `pytest==9.1.1` in `uv.lock` — **do not** add `pytest-syrupy` to `pyproject.toml` (it would downgrade pytest to 8.4.2).
-- `syrupy` is installed via `uv pip install syrupy` (not via pyproject.toml). In CI, it is installed in the `tests` job step after `uv sync`.
-
-### Tests & mypy
-
-- `mypy strict = true` is applied globally (including `tests/`).
-- `mypy_path = "stubs"` in `pyproject.toml`.
-- Stub module: `stubs/syrupy/__init__.pyi` (with `py.typed`) provides `SnapshotAssertion` and `snapshot()` for mypy type checking.
-- `tests/conftest.py` stubs `openai` (and `google`) in `sys.modules` to avoid import hangs during test collection.
-- `tests/test_snapshot.py` and `tests/test_llm_service.py` have pre-existing mypy errors (`no-untyped-def` in fixture methods) — do not introduce new mypy errors.
-
-### Test Data
-
-- Factory module: `tests/factories.py` (not `tests/test_factories.py`).
-- Factory provides: `make_release`, `make_topic_node`, `make_topic_tree`, `make_toc_html`, `make_feature_impact_text`, `make_feature_impact_html`, `make_release_metadata`, `make_mock_html_response`.
-- Snapshots in `tests/__snapshots__/test_snapshot.ambr` (syrupy).
-
-### Documentation
-
-- Spec reference: `newPrompt.md` (5 gaps, Gap 3 was cancelled due to pytest hangs).
-- Source selectors reference: `docs/SOURCE_SCHEMA.md` (CSS selectors, ARIA attributes, feature impact format).
-- Enhanced search: `docs/assets/javascripts/enhanced_search.js` + `docs/assets/stylesheets/enhanced_search.css` + `docs/maintenance/enhanced-search.md`.
-- MkDocs search configured with i18n `[en, pt]` and extra assets in `mkdocs.yml`.
-
-### Known issues (do not re-introduce)
-
-- `NOTIFICATION_DIGEST.md` is an artifact from test runs — do not commit.
-- `datetime.utcnow()` was deprecated — use `datetime.now()` instead.
+- `src/auto_healing/` - **Untracked** directory (exists locally from develop branch; deleted in main, pending cleanup).
+- `docs/auto-healing/` - **Untracked** directory (same as above).
 
 ## Validation Checklist
 
@@ -74,11 +43,48 @@ Before finishing changes, always run:
 1. `uv run ruff check .`
 2. `uv run black --check .`
 3. `uv run mypy src/`
-4. `uv run pytest`
+4. `uv run pytest --cov=src --cov-fail-under=95 --cov-report=term-missing --cov-report=xml:coverage.xml`
+
+## Key Files & Decisions
+
+### Dependency constraints
+
+- `pyproject.toml` specifies `requires-python = ">=3.13,<3.14"`.
+- `pytest>=8.0.0,<10` — pytest 9.x in `uv.lock` (`pytest==9.1.1`).
+- **Do not** add `pytest-syrupy` to `pyproject.toml` — it would downgrade pytest to 8.4.2.
+- `syrupy` is installed via `uv pip install "syrupy>=4.9.0,<5"` in the CI tests job (after `uv sync`), NOT via pyproject.toml.
+- `pytest-timeout>=2.4.0` is in dev dependencies; `--timeout=120` is set globally via `addopts`.
+
+### mypy
+
+- `mypy strict = true` is in `pyproject.toml` (applied to all files including tests).
+- `mypy_path = "stubs"` — stub modules go in `stubs/`.
+- CI runs `uv run mypy src/ --ignore-missing-imports --pretty` — the `--ignore-missing-imports` flag is intentional to suppress import errors for optional deps.
+- Stub module: `stubs/syrupy/__init__.pyi` (with `py.typed`) provides `SnapshotAssertion` and `snapshot()` for mypy type checking.
+
+### Tests
+
+- `tests/conftest.py` stubs `openai` and `google` in `sys.modules` to avoid import hangs during test collection.
+- `tests/test_snapshot.py` and `tests/test_llm_service.py` may have pre-existing mypy errors in helper fixtures — do not introduce new errors.
+- Factory module: `tests/factories.py` (8 functions: `make_release`, `make_topic_node`, `make_topic_tree`, `make_toc_html`, `make_feature_impact_text`, `make_feature_impact_html`, `make_release_metadata`, `make_mock_html_response`).
+- Snapshots in `tests/__snapshots__/test_snapshot.ambr` (syrupy, 9 snapshots).
+
+### Documentation
+
+- Spec reference: `newPrompt.md` (untracked file, reference only).
+- Source selectors: `docs/SOURCE_SCHEMA.md` (CSS selectors, ARIA attributes, feature impact format).
+- Enhanced search: `docs/assets/javascripts/enhanced_search.js` + `docs/assets/stylesheets/enhanced_search.css` + `docs/maintenance/enhanced-search.md`.
+- MkDocs configured in `mkdocs.yml` with i18n `[en, pt]` and extra assets.
+
+### Known issues (do not re-introduce)
+
+- `NOTIFICATION_DIGEST.md` is an artifact from test runs — do not commit.
+- `datetime.utcnow()` was deprecated — use `datetime.now()` instead.
+- `src/auto_healing/` and `docs/auto-healing/` are untracked leftovers from the develop branch — do not add to git without justification.
 
 ## GitHub Project Integration
 
-This repository is linked to a GitHub Project used for tracking work:
+This repository is linked to a GitHub Project for tracking work:
 
 - **Project:** [Salesforce Release Notes](https://github.com/users/Fatal1tyBarucco/projects/5)
 - **Project ID:** `PVT_kwDOCQOIIc4BiKNM`
@@ -89,53 +95,42 @@ This repository is linked to a GitHub Project used for tracking work:
 
 | Status | Meaning |
 |--------|---------|
-| `Backlog` | Tasks not yet started, prioritized in the backlog |
-| `In Progress` | Active work — agent is implementing the change |
+| `Backlog` | Tasks not yet started |
+| `In Progress` | Agent is actively working |
 | `In Review` | PR open, awaiting review / CI checks |
 | `Done` | Merged and closed |
 
-The field's option IDs (GraphQL) are:
-- `Backlog` → `a368d611`
-- `In Progress` → `3808f0ce`
-- `In Review` → `10aa434a`
-- `Done` → `f87ad5a7`
+Option IDs (GraphQL):
+- Backlog → `a368d611`
+- In Progress → `3808f0ce`
+- In Review → `10aa434a`
+- Done → `f87ad5a7`
 
-### When an agent must update the Project
+### When to update the Project
 
-Every agent working on an issue or PR **must** keep the project board in sync:
+Every agent **must** keep the board in sync:
 
-1. **When starting work on an issue:**
-   - Set the issue's `Status` to `In Progress`.
-2. **When opening a PR for the work:**
-   - Set the linked issue's `Status` to `In Review`.
-3. **After the PR is merged:**
-   - Set the linked issue's `Status` to `Done`.
-4. **When a new task is identified** (not in the board yet):
-   - Add it as a Draft Issue to the project with `Status: Backlog`.
+1. Start work on an issue → set Status to `In Progress`
+2. Open a PR → set linked issue's Status to `In Review`
+3. PR merged → set Status to `Done`
+4. New task identified → add Draft Issue with Status `Backlog`
 
-### CLI commands (gh project)
+### CLI commands
 
-The `gh` CLI requires the `project` and `read:project` scopes on the auth token. Verify with:
+Requires `project` + `read:project` scopes. Verify:
 
 ```bash
 gh auth status
 ```
 
-List items:
-
 ```bash
 gh project item-list 5 --owner Fatal1tyBarucco
-```
-
-View a single item:
-
-```bash
 gh project view 5 --owner Fatal1tyBarucco
 ```
 
-### GraphQL examples (for automation)
+### GraphQL examples
 
-**Add an existing issue to the project:**
+**Add existing issue to project:**
 
 ```bash
 ISSUE_ID=$(gh issue view <N> --json id -q .id)
@@ -148,7 +143,7 @@ gh api graphql -f query="
   }"
 ```
 
-**Set the status of a project item:**
+**Set item status:**
 
 ```bash
 gh api graphql -f query="
@@ -162,7 +157,7 @@ gh api graphql -f query="
   }"
 ```
 
-**Add a draft issue to Backlog:**
+**Add draft issue to Backlog:**
 
 ```bash
 ITEM_ID=$(gh api graphql -f query="
@@ -189,9 +184,9 @@ gh api graphql -f query="
 
 The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on every push to `main` and `develop` and on PRs. Gates:
 
-- Ruff (linting)
-- Black (formatting)
-- Mypy (type checking)
-- Tests + Coverage (`--cov-fail-under=95`)
+- **Ruff** — `uv run ruff check .`
+- **Black** — `uv run black --check .`
+- **Mypy** — `uv run mypy src/ --ignore-missing-imports --pretty`
+- **Tests + Coverage** — `uv run pytest tests/ --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --cov-fail-under=95`
 
-All third-party GitHub Actions are pinned to immutable commit SHAs (not tags). Do not re-introduce mutable Action references (e.g. `@v5` instead of `@<sha>`).
+All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).
