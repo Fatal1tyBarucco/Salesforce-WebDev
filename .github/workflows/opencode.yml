@@ -30,4 +30,5 @@ jobs:
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: opencode/x-preview-f-free
+          #model: opencode/x-preview-f-free
+          model: opencode/mimo-v2.5-free
