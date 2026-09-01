@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-# Ensure google.genai is available as a mock before any test imports
+# Stub google.genai before any test imports (prevents import hangs)
 if "google" not in sys.modules:
     _google = types.ModuleType("google")
     _google.genai = types.ModuleType("google.genai")
@@ -15,6 +15,12 @@ if "google" not in sys.modules:
     sys.modules["google.genai"] = _google.genai
     sys.modules["google.genai.types"] = _google.genai.types
 
+# Stub openai before any test imports (prevents import hangs when patch() is called)
+if "openai" not in sys.modules:
+    _openai = types.ModuleType("openai")
+    _openai.OpenAI = MagicMock
+    sys.modules["openai"] = _openai
+
 
 @pytest.fixture(autouse=True)
 def mock_openai_client():
@@ -22,7 +28,12 @@ def mock_openai_client():
 
     Returns None by default so fallback logic in services executes.
     Individual tests can override via patch.object if they need specific LLM responses.
+
+    Skipped gracefully if the openai package is unavailable or hangs during import
+    (e.g. in environments where the package can't be loaded).
     """
+    import contextlib
+
     mock_client = MagicMock()
     mock_response = MagicMock()
     mock_response.choices = [MagicMock(message=MagicMock(content="mocked LLM response"))]
@@ -31,17 +42,21 @@ def mock_openai_client():
     mock_async_client = AsyncMock()
     mock_async_client.chat.completions.create.return_value = mock_response
 
-    patcher_sync = __import__("unittest.mock", fromlist=["patch"]).patch(
-        "openai.OpenAI", return_value=mock_client
-    )
-    patcher_async = __import__("unittest.mock", fromlist=["patch"]).patch(
-        "openai.AsyncOpenAI", return_value=mock_async_client
-    )
-    patcher_sync.start()
-    patcher_async.start()
-    yield mock_client
-    patcher_sync.stop()
-    patcher_async.stop()
+    import unittest.mock
+
+    patchers: list[unittest.mock._patch] = []
+    with contextlib.suppress(Exception):
+        patchers.append(unittest.mock.patch("openai.OpenAI", return_value=mock_client))
+        patchers.append(unittest.mock.patch("openai.AsyncOpenAI", return_value=mock_async_client))
+        for p in patchers:
+            p.start()
+
+    try:
+        yield mock_client
+    finally:
+        for p in patchers:
+            with contextlib.suppress(Exception):
+                p.stop()
 
 
 @pytest.fixture

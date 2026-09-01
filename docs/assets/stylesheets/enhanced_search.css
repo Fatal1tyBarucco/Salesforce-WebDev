@@ -1,0 +1,38 @@
+/* Enhanced Search Styles for Salesforce Release Notes */
+
+.md-search-result__article {
+  transition: all 0.2s ease;
+}
+
+.md-search-result__article[data-fuzzy-score] {
+  position: relative;
+}
+
+.md-search-result__article[data-fuzzy-score]:before {
+  content: "★ " attr(data-fuzzy-score);
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 10px;
+  color: var(--md-accent-fg-color);
+  opacity: 0.6;
+  font-weight: 600;
+}
+
+.md-search-result mark {
+  background: var(--md-accent-fg-color);
+  color: white;
+  padding: 0 2px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+.md-search__input::placeholder {
+  color: var(--md-default-fg-color--light);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+.md-search__input:focus::placeholder {
+  opacity: 0.3;
+}

@@ -33,12 +33,18 @@ theme:
 
 extra_javascript:
   - assets/javascripts/banner.js
+  - assets/javascripts/enhanced_search.js
 
 extra_css:
   - assets/stylesheets/banner.css
+  - assets/stylesheets/enhanced_search.css
 
 plugins:
-  - search
+  - search:
+      separator: '[\s\-\.\,\:\/\(\)\[\]]+'
+      lang:
+        - en
+        - pt
   - mkdocstrings:
       handlers:
         python:
@@ -96,6 +102,7 @@ nav:
     - Cache Management: maintenance/cache-management.md
     - Troubleshooting: maintenance/troubleshooting.md
     - Plano de Ação: PLANO_DE_ACAO.md
+    - Enhanced Search: maintenance/enhanced-search.md
   - Observability:
     - Index: observability/index.md
     - Logging: observability/logging.md
