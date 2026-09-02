@@ -46,6 +46,14 @@ jobs:
         run: |
           uv run mkdocs build --strict
 
+      - name: Show documentation updates (summary for deploy)
+        run: |
+          echo "=== DOCS UPDATED ==="
+          git diff --name-only HEAD~1 -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md || echo "(first deploy or no doc changes in last commit)"
+          echo "=== DOCS FILES CURRENT ==="
+          git ls-files docs/ mkdocs.yml README.md README.en.md CHANGELOG.md | wc -l | xargs echo "tracked docs files:"
+          git log -1 --format="commit: %h | msg: %s" -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md || true
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
