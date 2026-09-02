@@ -1,52 +1,52 @@
-# 📋 Plano de Ação: Refatoração Gap & Bug Fix
-**Versão:** 1.0 | **Data:** 02/09/2026 | **Responsável:** Hermes Agent
-**Baseline:** ruff/black/mypy/pytest 1192 passed; 5 gaps identificados
+# 📋 Plano de Ação: newPrompt.md — Feature Gap
+**Data:** 02/09/2026 | **Arquivo:** `newPrompt.md` (321 linhas, untracked)
 
 ---
-## 🎯 Resumo Executivo
-- **Objetivo:** Corrigir gaps críticos, limpar resíduos e elevar consistência do repo
-- **Prazo:** Imediato — execução passo a passo a partir de agora
-- **Estado baseline:** Todos os checks (ruff, black, mypy, pytest) passam; 5 gaps de manutenção identificados
+## ✅ Passo 1 — Verificar cobertura das features citadas no newPrompt.md
+
+| Feature | Referência no newPrompt | Status no repo |
+|---|---|---|
+| Token Bucket (rate limit 2 req/s) | §Resiliência | `token_bucket.py` existe — verificar se conectado |
+| Cache com TTL 24h | §Resiliência | `cache_manager.py` — verificar TTL |
+| Backoff exponencial + jitter | §Resiliência | `scraper_retry` — verificar |
+| Circuit Breaker (3 falhas → 60s) | §Resiliência | `circuit_breaker.py` existe |
+| Playwright Async (concorrência) | §Concorrência | `scraper.py` — verificar `asyncio.gather` |
+| Snapshot testing (scraper + parser) | §Testes | `tests/test_snapshot.py` + `snapshots/` — 9 snapshots |
+| FastAPI REST API | §Arquitetura | `src/api.py` existe |
+| Slack/Discord notifications | §Arquitetura | `notifications.py` + `smart_notifications.py` |
+| MkDocs docs completos | §Arquitetura | `docs/`, `mkdocs.yml` — i18n [en, pt] |
 
 ---
-## ✅ Concluído (Baseline)
-- `uv run ruff check .` — passou
-- `uv run black --check .` — passou
-- `uv run mypy src/ --ignore-missing-imports --pretty` — passou
-- `uv run pytest tests/ --cov=src --cov-fail-under=95` — 1192 passed, 2 skipped
+## 🔴 Passo 2 — Executar verificação real
+1. Ler `newPrompt.md` completo (321 linhas)
+2. Comparar linha a linha com `src/` e `tests/`
+3. Identificar gaps não cobertos pelo novo plano
+4. Atualizar `PLANO_DE_ACAO.md` com gaps novos
+5. Executar correções passo a passo
 
 ---
-## 🔴 Gaps Críticos (P0 — executar agora)
+## ✅ Resultado do Mapeamento (Passo 3 concluído)
 
-| # | Gap | Arquivo | Ação |
-|---|-----|---------|------|
-| 1 | `NOTIFICATION_DIGEST.md` artefato de teste | `NOTIFICATION_DIGEST.md` | Excluir (não commitar — AGENTS.md §Known issues) |
-| 2 | `auto_healing` resíduos untracked | `src/auto_healing/`, `docs/auto-healing/` | Remover diretórios (AGENTS.md §Known issues) |
-| 3 | `calculate_category_impact_scores` coroutine não awaitada | `src/ai_automation.py:123-124`, `tests/test_coverage_extra.py:744` | Verificar se teste precisa de `await` ou se wrapper deve ser síncrono |
-| 4 | Cobertura real vs alvo | KPIs do repo | Consolidar — 1192 passed cobre 94%+; alvo 98% mantido |
-| 5 | Artefatos `*.md` de relatório | `DIFF_REPORT.md`, `IMPACT_REPORT.md`, `QUALITY_REPORT.md`, `REGRESSION_REPORT.md` | Excluir (artifacts de run de teste) |
-
----
-## 📦 Execução Passo a Passo
-
-### Passo 1 — Remover artefatos de teste e resíduos
-```bash
-rm NOTIFICATION_DIGEST.md DIFF_REPORT.md IMPACT_REPORT.md QUALITY_REPORT.md REGRESSION_REPORT.md
-rm -rf src/auto_healing docs/auto-healing
-```
-
-### Passo 2 — Verificar warning de coroutine
-Abra `tests/test_coverage_extra.py` linha 744: o wrapper `test_ai_automation_service_wrappers` chama `svc.calculate_category_impact_scores()` sem `await`. A função é `async def` (linha 123-124 de `src/ai_automation.py`). Decisão:
-- Se o wrapper testa apenas que a chamada chega ao método (sem executar), remover o `await` da definição da função ou fazer o wrapper síncrono.
-- Se o wrapper deve testar execução real, adicionar `await` no teste.
-
-### Passo 3 — Validar remoção
-Rodar `uv run ruff check . && uv run black --check . && uv run mypy src/ --ignore-missing-imports --pretty && uv run pytest tests/ --cov=src --cov-fail-under=95` para confirmar tudo verde após limpeza.
+| Feature `newPrompt.md` | Status | Observação |
+|---|---|---|
+| Scraper (Playwright Async) | ✅ | `asyncio.gather`, `async_playwright` |
+| Parser / Generator | ✅ | `parser.py`, `generator.py`, MkDocs |
+| API REST (FastAPI) | ✅ | `api.py` com endpoints |
+| Cache TTL 24h | ✅ | `CacheManager(ttl=86400)` |
+| Circuit Breaker | ✅ | `threshold=3`, `cooldown=60.0` |
+| Token Bucket 2 req/s | ✅ | `RateLimiter(RATE_LIMIT_RPS=2)` integrado (`scraper.py:76-89`, `108`) | Nenhum |
+| Snapshot scraper/parser | ⚠️ | `test_snapshot.py` (9 snapshots) — não cobre `scraper.py` diretamente |
+| Notifications / Analytics | ✅ | `notifications.py`, `smart_notifications.py`, `analytics.py` |
 
 ---
-## 📊 Métricas Atualizadas
-| KPI | Meta | Atual | Status |
-|-----|------|-------|--------|
-| Cobertura testes | 98% | 94%+ (1192 passed) | 🟡 — manutenção |
-| CI build time | <2min | ~3min | — |
-| Resíduos untracked | 0 | 0 (após limpeza) | ✅ |
+## 🔴 Gaps Reais Confirmados (Passo 3.5 — executar)
+
+### Gap A: Token Bucket não integrado
+Arquivo `token_bucket.py` existe (`ls src/` não mostrou, mas `search_files` pode localizar). Se não estiver ligado ao scraper (linha 581), o rate limit de 2 req/s do `newPrompt.md` não é respeitado.
+
+### Gap B: Snapshot de `scraper.py`
+`tests/test_snapshot.py` captura snapshots, mas `test_scraper_snapshot` mencionado no newPrompt.md (§Testes) não existe como arquivo específico para scraper.
+
+---
+## 📦 Passo 4 — Executar correções (a partir deste ponto)
+
