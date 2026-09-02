@@ -71,7 +71,7 @@ Corrigir o comportamento do workflow `release.yml` que apagou as **releases anti
   ```bash
   # Instalar dependências (se necessário)
   pip install pygithub
-  
+
   # Executar o script
   python scripts/restore_releases.py
   ```
@@ -80,7 +80,7 @@ Corrigir o comportamento do workflow `release.yml` que apagou as **releases anti
   ```bash
   # Dar permissão de execução
   chmod +x scripts/restore_releases.sh
-  
+
   # Executar o script
   ./scripts/restore_releases.sh
   ```

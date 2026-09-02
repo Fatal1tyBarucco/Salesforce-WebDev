@@ -6,7 +6,7 @@
 
 <!-- List the main changes -->
 
-- 
+-
 
 ## Type of Change
 

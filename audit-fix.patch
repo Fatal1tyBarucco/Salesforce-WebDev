@@ -56,7 +56,7 @@ index 465f892..ea0aff5 100644
          with:
 -          python-version: "3.14"
 +          python-version: "3.13"
- 
+
        - name: Install dependencies
          run: uv sync --extra docs
 diff --git a/.github/workflows/python-quality.yml b/.github/workflows/python-quality.yml
@@ -64,12 +64,12 @@ index 427c300..518dafa 100644
 --- a/.github/workflows/python-quality.yml
 +++ b/.github/workflows/python-quality.yml
 @@ -19,7 +19,7 @@ jobs:
- 
+
      strategy:
        matrix:
 -        python-version: [3.14]
 +        python-version: [3.13]
- 
+
      steps:
        - name: Checkout repository
 @@ -59,7 +59,7 @@ jobs:
@@ -78,7 +78,7 @@ index 427c300..518dafa 100644
          with:
 -          python-version: "3.14"
 +          python-version: "3.13"
- 
+
        - name: Install dependencies
          run: uv sync --extra dev
 diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
@@ -87,11 +87,11 @@ index 7249749..b03a837 100644
 +++ b/.github/workflows/release.yml
 @@ -11,7 +11,7 @@ permissions:
    packages: write
- 
+
  env:
 -  PYTHON_VERSION: "3.14"
 +  PYTHON_VERSION: "3.13"
- 
+
  jobs:
    release:
 diff --git a/.github/workflows/release_notes_pipeline.yml b/.github/workflows/release_notes_pipeline.yml
@@ -100,21 +100,21 @@ index d5c30d6..73fd3ab 100644
 +++ b/.github/workflows/release_notes_pipeline.yml
 @@ -40,7 +40,7 @@ concurrency:
    cancel-in-progress: false
- 
+
  env:
 -  PYTHON_VERSION: "3.14"
 +  PYTHON_VERSION: "3.13"
    WORKING_DIR: "."
    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
- 
+
 @@ -68,6 +68,9 @@ jobs:
- 
+
        - name: Mypy — Verificação de tipos estáticos
          run: uv run mypy src/ --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs
 +
 +      - name: Pytest — Testes automatizados
 +        run: uv run pytest tests/ -q --tb=short
-       
+
    extract:
      name: 📥 Extração e Geração de Artefatos
 diff --git a/AUDIT_REPORT.md b/AUDIT_REPORT.md
@@ -125,8 +125,8 @@ index 0000000..775d7f3
 @@ -0,0 +1,404 @@
 +# 🔍 Relatório de Auditoria Completa — Salesforce-WebDev
 +
-+**Data:** 2026-07-15  
-+**Escopo:** Todos os módulos de automação (`src/`), CI/CD (`.github/workflows/`), e testes  
++**Data:** 2026-07-15
++**Escopo:** Todos os módulos de automação (`src/`), CI/CD (`.github/workflows/`), e testes
 +**Metodologia:** Revisão manual linha-a-linha de todos os 24 módulos Python + 7 workflows CI/CD
 +
 +---
@@ -135,7 +135,7 @@ index 0000000..775d7f3
 +
 +### BUG-001: SyntaxError em 13+ arquivos — `except X, Y:` é sintaxe Python 2
 +
-+**Severidade:** 🔴 CRÍTICA (impede execução em Python 3)  
++**Severidade:** 🔴 CRÍTICA (impede execução em Python 3)
 +**Afeta:** scraper.py, translator.py, ai_automation.py, health.py, notifications.py, workflow.py, smart_notifications.py, impact_analyzer.py, issue_triage.py, release_summarizer.py, dashboard.py, api.py, analytics.py
 +
 +**O problema:** Múltiplos arquivos usam `except ExcecaoA, ExcecaoB:` que é sintaxe **Python 2**. Em Python 3, isso é interpretado como `except ExcecaoA:` com alias `ExcecaoB`, o que:
@@ -181,7 +181,7 @@ index 0000000..775d7f3
 +
 +### BUG-002: Circuit Breaker do Scraper não reseta falhas após cooldown
 +
-+**Severidade:** 🔴 CRÍTICA  
++**Severidade:** 🔴 CRÍTICA
 +**Arquivo:** `scraper.py` — classe `CircuitBreaker`
 +
 +```python
@@ -214,7 +214,7 @@ index 0000000..775d7f3
 +
 +### BUG-003: Logger duplicado em `scraper.py`
 +
-+**Severidade:** 🟡 MÉDIA  
++**Severidade:** 🟡 MÉDIA
 +**Arquivo:** `scraper.py`, linhas 20-22
 +
 +```python
@@ -229,7 +229,7 @@ index 0000000..775d7f3
 +
 +### BUG-004: `main.py` — `detect_new_release` pode retornar release já existente
 +
-+**Severidade:** 🔴 CRÍTICA  
++**Severidade:** 🔴 CRÍTICA
 +**Arquivo:** `main.py`, função `detect_new_release`
 +
 +```python
@@ -247,7 +247,7 @@ index 0000000..775d7f3
 +
 +### BUG-005: `_build_release_name` assume sequência perfeita de releases
 +
-+**Severidade:** 🟠 ALTA  
++**Severidade:** 🟠 ALTA
 +**Arquivo:** `main.py`
 +
 +```python
@@ -263,7 +263,7 @@ index 0000000..775d7f3
 +
 +### BUG-006: Tradução não afeta subcategorias no `main.py`
 +
-+**Severidade:** 🟡 MÉDIA  
++**Severidade:** 🟡 MÉDIA
 +**Arquivo:** `main.py`, `_generate_release_files`
 +
 +```python
@@ -283,7 +283,7 @@ index 0000000..775d7f3
 +
 +### BUG-007: `_format_impact_report` e `_format_notification_digest` usam `object` como tipo
 +
-+**Severidade:** 🟡 MÉDIA  
++**Severidade:** 🟡 MÉDIA
 +**Arquivo:** `main.py`
 +
 +```python
@@ -297,7 +297,7 @@ index 0000000..775d7f3
 +
 +### BUG-008: `generate_dynamic_badge` é método de instância mas chamado como estático
 +
-+**Severidade:** 🟡 MÉDIA  
++**Severidade:** 🟡 MÉDIA
 +**Arquivo:** `ai_automation.py` + `main.py`
 +
 +Em `ai_automation.py`:
@@ -323,7 +323,7 @@ index 0000000..775d7f3
 +
 +### BUG-009: `workflow.py` — `commit_and_push` hardcodeia diretórios
 +
-+**Severidade:** 🟠 ALTA  
++**Severidade:** 🟠 ALTA
 +**Arquivo:** `workflow.py`
 +
 +```python
@@ -339,7 +339,7 @@ index 0000000..775d7f3
 +
 +### BUG-010: API GraphQL — parser regex é frágil e inseguro
 +
-+**Severidade:** 🟠 ALTA  
++**Severidade:** 🟠 ALTA
 +**Arquivo:** `api.py`, `_execute_graphql`
 +
 +```python
@@ -347,7 +347,7 @@ index 0000000..775d7f3
 +release_match = re.search(r'release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)\s*\{', query)
 +```
 +
-+**O problema:** 
++**O problema:**
 +1. O parser regex não suporta queries GraphQL reais (fragments, variables inline, nested queries)
 +2. Não valida a query contra um schema
 +3. `requested_fields` extrai **todas** as palavras após o primeiro `{`, incluindo keywords de controle
@@ -547,7 +547,7 @@ index 43e1e77..bc6f80b 100644
 -        except json.JSONDecodeError, TypeError:
 +        except (json.JSONDecodeError, TypeError):
              return {}
- 
+
      def _save_content_cache(self, cache_path: Path, cache: dict[str, ContentHash]) -> None:
 diff --git a/src/analytics.py b/src/analytics.py
 index 3824ea8..f8ff1ca 100644
@@ -560,7 +560,7 @@ index 3824ea8..f8ff1ca 100644
 -            except json.JSONDecodeError, OSError:
 +            except (json.JSONDecodeError, OSError):
                  continue
- 
+
      metas.sort(key=lambda m: m.get("release_id", 0))
 @@ -76,7 +76,7 @@ def _parse_generated_at(meta: dict[str, Any]) -> float:
          if dt.tzinfo is None:
@@ -569,8 +569,8 @@ index 3824ea8..f8ff1ca 100644
 -    except ValueError, TypeError:
 +    except (ValueError, TypeError):
          return 0.0
- 
- 
+
+
 diff --git a/src/api.py b/src/api.py
 index bab87db..82a5ec5 100644
 --- a/src/api.py
@@ -591,18 +591,18 @@ index bab87db..82a5ec5 100644
 -    except json.JSONDecodeError, OSError:
 +    except (json.JSONDecodeError, OSError):
          return None
- 
- 
+
+
 @@ -175,33 +175,41 @@ def _execute_graphql(query: str, variables: dict[str, Any] | None = None) -> dic
      query = query.strip()
      variables = variables or {}
- 
+
 -    # Simple parser: extract operation and fields
 -    # { releases { ... } } or { release(slug: "...") { ... } }
 +    # Strip outer braces and whitespace
 +    query = re.sub(r"^\s*\{\s*", "", query)
 +    query = re.sub(r"\s*\}\s*$", "", query)
- 
+
      # Detect query type
 -    releases_match = re.search(r"releases\s*\{", query)
 -    release_match = re.search(r'release\s*\(\s*slug\s*:\s*"([^"]+)"\s*\)\s*\{', query)
@@ -614,7 +614,7 @@ index bab87db..82a5ec5 100644
 +        r'^diff\s*\(\s*current\s*:\s*"([^"]+)"\s*,\s*previous\s*:\s*"([^"]+)"\s*\)$',
          query,
      )
- 
+
 -    # Extract all field names from the query (flat extraction, ignores nesting)
 -    requested_fields = list(
 -        dict.fromkeys(re.findall(r"\b(\w+)\b", query.split("{", 2)[-1] if "{" in query else query))
@@ -654,11 +654,11 @@ index bab87db..82a5ec5 100644
 +        requested_fields = list(dict.fromkeys(f for f in raw_fields if f not in graphql_keywords))
 +    else:
 +        requested_fields = []
- 
+
      def _select_fields(data: dict[str, Any], fields: list[str]) -> dict[str, Any]:
          if not fields:
 @@ -553,7 +561,7 @@ class APIHandler(BaseHTTPRequestHandler):
- 
+
          try:
              content_length = int(self.headers.get("Content-Length", 0))
 -        except ValueError, TypeError:
@@ -674,7 +674,7 @@ index bab87db..82a5ec5 100644
 +        except (json.JSONDecodeError, UnicodeDecodeError):
              self._respond(400, {"error": "invalid JSON"})
              return
- 
+
 diff --git a/src/dashboard.py b/src/dashboard.py
 index 8854c17..cf3fc96 100644
 --- a/src/dashboard.py
@@ -686,7 +686,7 @@ index 8854c17..cf3fc96 100644
 -            except json.JSONDecodeError, OSError:
 +            except (json.JSONDecodeError, OSError):
                  continue
- 
+
      metas.sort(key=lambda m: m.get("release_id", 0))
 @@ -299,11 +299,11 @@ function renderHeatmap() {{
    const r = DATA.releases.find(x => x.slug === slug);
@@ -702,7 +702,7 @@ index 8854c17..cf3fc96 100644
 +    return '<div class="heat-cell" style="background:'+bg+'" data-tip="'+esc(c.name)+': '+c.count+' features ('+heat+'% conf)">'+c.count+'</div>';
    }}).join('');
  }}
- 
+
 diff --git a/src/health.py b/src/health.py
 index 889a6b5..54b6ccc 100644
 --- a/src/health.py
@@ -714,7 +714,7 @@ index 889a6b5..54b6ccc 100644
 -                    except json.JSONDecodeError, OSError:
 +                    except (json.JSONDecodeError, OSError):
                          pass
- 
+
      return {
 diff --git a/src/impact_analyzer.py b/src/impact_analyzer.py
 index 662cc9b..074dc46 100644
@@ -727,7 +727,7 @@ index 662cc9b..074dc46 100644
 -            except ValueError, IndexError:
 +            except (ValueError, IndexError):
                  parsed = {}
- 
+
          migration_actions = parsed.get(
 diff --git a/src/issue_triage.py b/src/issue_triage.py
 index daecdc2..c5cd7dd 100644
@@ -740,25 +740,25 @@ index daecdc2..c5cd7dd 100644
 -            except ValueError, IndexError:
 +            except (ValueError, IndexError):
                  parsed = {}
- 
+
          # Fallbacks
 @@ -188,7 +188,7 @@ class IssueTriager:
              triage.issue_number = issue_number
              return triage
- 
+
 -        except subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError:
 +        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
              return None
- 
+
      def apply_triage(self, result: TriageResult) -> bool:
 @@ -251,7 +251,7 @@ class IssueTriager:
- 
+
              return True
- 
+
 -        except subprocess.TimeoutExpired, FileNotFoundError:
 +        except (subprocess.TimeoutExpired, FileNotFoundError):
              return False
- 
+
      def _suggest_labels(self, category: IssueCategory, priority: Priority, text: str) -> list[str]:
 diff --git a/src/main.py b/src/main.py
 index 05482b5..9ecf0a8 100644
@@ -774,15 +774,15 @@ index 05482b5..9ecf0a8 100644
 +if TYPE_CHECKING:
 +    from .impact_analyzer import ImpactReport
 +    from .smart_notifications import NotificationDigest
- 
+
  from .config import (
      BILINGUAL_TEMPLATES,
 @@ -284,10 +288,16 @@ async def run_pipeline() -> None:
- 
+
      args = sys.argv[1:]
      release_filter: str | None = None
 +    dry_run = False
- 
+
      for i, arg in enumerate(args):
          if arg == "--release" and i + 1 < len(args):
              release_filter = args[i + 1]
@@ -791,12 +791,12 @@ index 05482b5..9ecf0a8 100644
 +
 +    if dry_run:
 +        logger.info("[DRY RUN] Modo simulacao ativado — nenhum arquivo sera escrito")
- 
+
      releases_to_process: list[ReleaseInfo] = []
- 
+
 @@ -324,6 +334,10 @@ async def run_pipeline() -> None:
              raw_text = await scraper.fetch_page_raw_text(impact_url)
- 
+
              await pdf_task
 +            if dry_run:
 +                logger.info("[DRY RUN] Conteudo obtido (%d chars). Nenhum arquivo sera gerado.", len(raw_text or ""))
@@ -807,8 +807,8 @@ index 05482b5..9ecf0a8 100644
                      "No content for %s — falling back to existing release data",
 @@ -383,39 +397,33 @@ async def run_pipeline() -> None:
          set_pipeline_status("completed")
- 
- 
+
+
 -def _format_impact_report(report: object, release_name: str) -> str:
 +def _format_impact_report(report: ImpactReport, release_name: str) -> str:
      """Format an ImpactReport into Markdown."""
@@ -832,8 +832,8 @@ index 05482b5..9ecf0a8 100644
 -        lines.append(f"## Risk Score: {report.risk_score}\n")
 +    lines.append(f"## Risk Score: {report.risk_score}\n")
      return "\n".join(lines)
- 
- 
+
+
 -def _format_notification_digest(digest: object) -> str:
 +def _format_notification_digest(digest: NotificationDigest) -> str:
      """Format a NotificationDigest into Markdown."""
@@ -855,11 +855,11 @@ index 05482b5..9ecf0a8 100644
 +        if notif.body:
 +            lines.append(f"{notif.body}\n")
      return "\n".join(lines)
- 
- 
+
+
 @@ -504,6 +512,8 @@ async def _generate_release_files(
          cat_name = cat.name if locale == "pt_BR" else ENGLISH_CATEGORY_NAMES.get(cat.name, cat.name)
- 
+
          if locale == "en_US" and translator:
 +            import copy
 +            cat = copy.deepcopy(cat)
@@ -877,8 +877,8 @@ index e74fd45..3a1c94f 100644
 -    except json.JSONDecodeError, OSError:
 +    except (json.JSONDecodeError, OSError):
          return None
- 
- 
+
+
 @@ -269,7 +269,7 @@ def _load_profiles() -> list[NotificationProfile]:
              )
              for p in data
@@ -886,8 +886,8 @@ index e74fd45..3a1c94f 100644
 -    except json.JSONDecodeError, OSError:
 +    except (json.JSONDecodeError, OSError):
          return []
- 
- 
+
+
 @@ -281,7 +281,7 @@ def _load_unsubscribed() -> set[str]:
      try:
          data: list[str] = json.loads(unsub_path.read_text(encoding="utf-8"))
@@ -895,8 +895,8 @@ index e74fd45..3a1c94f 100644
 -    except json.JSONDecodeError, OSError:
 +    except (json.JSONDecodeError, OSError):
          return set()
- 
- 
+
+
 diff --git a/src/parser.py b/src/parser.py
 index ac7267f..755eb60 100644
 --- a/src/parser.py
@@ -908,7 +908,7 @@ index ac7267f..755eb60 100644
 -        except ValueError, TypeError:
 +        except (ValueError, TypeError):
              return 1
- 
+
      def _get_label_text(self, li: Tag) -> str:
 diff --git a/src/release_summarizer.py b/src/release_summarizer.py
 index 5b7b0fa..52a4e86 100644
@@ -921,7 +921,7 @@ index 5b7b0fa..52a4e86 100644
 -            except json.JSONDecodeError, OSError:
 +            except (json.JSONDecodeError, OSError):
                  pass
- 
+
          return {}
 diff --git a/src/salesforce.py b/src/salesforce.py
 index 7da55c7..7c1a865 100644
@@ -934,19 +934,19 @@ index 7da55c7..7c1a865 100644
 -    except json.JSONDecodeError, OSError:
 +    except (json.JSONDecodeError, OSError):
          return {}
- 
- 
+
+
 diff --git a/src/scraper.py b/src/scraper.py
 index 6979254..8811198 100644
 --- a/src/scraper.py
 +++ b/src/scraper.py
 @@ -25,8 +25,6 @@ from .cache_manager import CacheManager
- 
+
  logger = logging.getLogger(__name__)
- 
+
 -logger = logging.getLogger(__name__)
 -
- 
+
  def is_rate_limited_response(status_code: int | str | None) -> bool:
      """Check if an HTTP response status code indicates rate limiting (429).
 @@ -42,7 +40,7 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
@@ -956,8 +956,8 @@ index 6979254..8811198 100644
 -    except TypeError, ValueError:
 +    except (TypeError, ValueError):
          return False
- 
- 
+
+
 @@ -91,6 +89,7 @@ class CircuitBreaker:
              return False
          elapsed = time.monotonic() - self._opened_at
@@ -965,7 +965,7 @@ index 6979254..8811198 100644
 +            self._failures = 0
              return False
          return True
- 
+
 diff --git a/src/smart_notifications.py b/src/smart_notifications.py
 index e2843cd..430675a 100644
 --- a/src/smart_notifications.py
@@ -977,7 +977,7 @@ index e2843cd..430675a 100644
 -            except ValueError, IndexError:
 +            except (ValueError, IndexError):
                  parsed = {}
- 
+
          # Fallbacks
 diff --git a/src/translator.py b/src/translator.py
 index 6386eca..d01cfde 100644
@@ -990,7 +990,7 @@ index 6386eca..d01cfde 100644
 -            except json.JSONDecodeError, OSError:
 +            except (json.JSONDecodeError, OSError):
                  self._cache = {}
- 
+
      def _save_cache(self) -> None:
 diff --git a/src/workflow.py b/src/workflow.py
 index d21e318..1e405a6 100644
@@ -1012,7 +1012,7 @@ index d21e318..1e405a6 100644
 -                except ValueError, IndexError:
 +                except (ValueError, IndexError):
                      pass
- 
+
      # Check for new release directories
 @@ -200,7 +200,7 @@ def create_pr(
      if "/pull/" in pr_url:
@@ -1021,8 +1021,7 @@ index d21e318..1e405a6 100644
 -        except ValueError, IndexError:
 +        except (ValueError, IndexError):
              pass
- 
-     if auto_merge and pr_number:
--- 
-2.43.0
 
+     if auto_merge and pr_number:
+--
+2.43.0

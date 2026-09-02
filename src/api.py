@@ -78,20 +78,20 @@ RELEASES_DIR: str = os.getenv("RELEASES_DIR", "releases")
 _KNOWN_SLUGS = {"summer_26", "spring_26", "winter_26"}
 
 
-class TriageRequest(BaseModel):
+class TriageRequest(BaseModel):  # type: ignore[misc]
     title: str
     description: str
     labels: list[str] = []
 
 
-class TriageResponse(BaseModel):
+class TriageResponse(BaseModel):  # type: ignore[misc]
     status: str
     category: str
     priority: str
     suggested_action: str
 
 
-class SearchRequest(BaseModel):
+class SearchRequest(BaseModel):  # type: ignore[misc]
     query: str
     top_k: int = 5
 

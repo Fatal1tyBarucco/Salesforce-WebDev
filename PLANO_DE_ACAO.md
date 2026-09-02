@@ -49,4 +49,3 @@ Arquivo `token_bucket.py` existe (`ls src/` não mostrou, mas `search_files` pod
 
 ---
 ## 📦 Passo 4 — Executar correções (a partir deste ponto)
-
