@@ -90,9 +90,6 @@ nav:
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
-  - Refatoração:
-    - Status & Auditoria: refatoracao.md
-    - Melhorias Fase 1 & V1: improvements.md
   - Contribution:
     - Testing Strategy: contribution/testing-strategy.md
   - Maintenance:
@@ -101,7 +98,6 @@ nav:
     - Workflow Operations: maintenance/workflow-operations.md
     - Cache Management: maintenance/cache-management.md
     - Troubleshooting: maintenance/troubleshooting.md
-    - Plano de Ação: PLANO_DE_ACAO.md
     - Enhanced Search: maintenance/enhanced-search.md
   - Observability:
     - Index: observability/index.md
@@ -129,6 +125,3 @@ nav:
     - Cache Manager: api/cache_manager.md
   - Internos:
     - Diretiva do Agente: internal/AGENT_DIRECTIVE.md
-    - Análise: internal/ANALYSIS.md
-    - Relatório de Auditoria: internal/AUDIT_REPORT.md
-    - Status da Refatoração: internal/REFATORACAO_STATUS.md

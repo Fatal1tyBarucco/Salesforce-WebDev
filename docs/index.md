@@ -324,7 +324,7 @@ Salesforce-WebDev/
 
 ## Documentação
 
-- [Refatoração — Status](refatoracao.md) — Progresso da refatoração
+- [Contribuição](contribution/testing-strategy.md)
 - [Arquitetura](architecture/overview.md) — Visão arquitetural detalhada
 - [Decisões (ADRs)](architecture/decisions/index.md) — Decisões de design documentadas
 - [Manutenção](maintenance/index.md) — Guias de desenvolvimento local e troubleshooting
