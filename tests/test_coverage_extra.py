@@ -728,7 +728,8 @@ async def test_summarizer_parse_category_summaries_nonstring() -> None:
 
 
 # ── AIAutomationService wrapper gaps 121, 144, 150 ──────────────────────
-def test_ai_automation_service_wrappers() -> None:
+@pytest.mark.asyncio
+async def test_ai_automation_service_wrappers() -> None:
     """Lines 121, 144, 150: AIAutomationService wrapper methods."""
     import tempfile
     from pathlib import Path
@@ -741,7 +742,7 @@ def test_ai_automation_service_wrappers() -> None:
 
     # Line 121: calculate_category_impact_scores wrapper
     try:
-        svc.calculate_category_impact_scores()
+        await svc.calculate_category_impact_scores()
     except Exception:
         pass  # line 121 reached before the call
 
