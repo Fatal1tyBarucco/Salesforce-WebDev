@@ -48,9 +48,7 @@ except ImportError:
             pass
 
     class HTTPException(Exception):  # type: ignore[no-redef]
-        def __init__(
-            self, status_code: int = 500, detail: object = None, headers: dict | None = None
-        ) -> None:
+        def __init__(self, status_code: int = 500, detail: object = None, headers: dict[str, str] | None = None) -> None:
             self.status_code = status_code
             self.detail = detail
             self.headers = headers
