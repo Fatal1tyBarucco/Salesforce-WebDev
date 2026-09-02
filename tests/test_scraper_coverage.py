@@ -6,8 +6,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from src.circuit_breaker import CircuitBreaker
+from src.limiters.rate_limiter import RateLimiter
 from src.scraper import (
-    RateLimiter,
     calculate_jittered_delay,
     is_rate_limited_response,
 )
@@ -81,8 +81,8 @@ class TestCircuitBreaker:
 
 
 class TestRateLimiter:
-    def test_acquire(self) -> None:
-        rl = RateLimiter(min_interval=0)
+    def test_acquire_positive_interval(self) -> None:
+        rl = RateLimiter(min_interval=0.1)
         asyncio.run(rl.acquire())
         # Should not block
 

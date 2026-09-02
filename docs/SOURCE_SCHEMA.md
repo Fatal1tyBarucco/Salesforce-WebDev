@@ -315,7 +315,15 @@ The scraper includes a circuit breaker (`src/circuit_breaker.py`) that:
 
 ### 8.3 Rate Limiting
 
-The scraper uses a `RateLimiter` (referenced in `src/scraper.py:578`) that throttles requests to avoid IP blocks. Default configuration: **2 requests/second**.
+O scraper respeita `RATE_LIMIT_RPS = 2` (2 requisições/segundo) via `RateLimiter` (referenciado em `src/scraper.py` e implementado em `src/limiters/rate_limiter.py`). Nenhuma requisição ao Salesforce Help pode exceder esse limite.
+
+```python
+# Configuração defensiva — nunca remova sem aprovação
+RATE_LIMIT_RPS = 2
+RATE_LIMIT_MIN_INTERVAL = 1.0 / RATE_LIMIT_RPS  # 0.5 segundos
+```
+
+Se a taxa de scraping precisar ser ajustada, altere apenas `RATE_LIMIT_MIN_INTERVAL` via `RateLimiter(min_interval=...)`; nunca desative o limitador em produção.
 
 ---
 

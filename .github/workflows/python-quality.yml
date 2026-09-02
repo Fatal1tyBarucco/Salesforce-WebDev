@@ -68,6 +68,13 @@ jobs:
           printf '\033[1;32m  ✅  Ruff passed — no issues found\033[0m\n'
           echo ""
 
+      - name: Cache pytest / snapshots
+        uses: actions/cache@v4
+        with:
+          path: tests/__snapshots__
+          key: ${{ runner.os }}-snapshots-${{ hashFiles('tests/__snapshots__/*.ambr') }}
+          restore-keys: ${{ runner.os }}-snapshots-
+
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🎨 BLACK — Code formatting                                 │
   # └─────────────────────────────────────────────────────────────┘

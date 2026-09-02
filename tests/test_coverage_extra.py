@@ -49,6 +49,7 @@ from src.api import (
     natural_language_search,
     triage_issue,
     verify_api_key,
+    HTTPException,  # type: ignore[attr-defined]
 )
 from src.automation.comparison import (
     calculate_quality_metrics,
@@ -576,13 +577,21 @@ def test_logger_file_handler(tmp_path: Path) -> None:
 
 
 def test_verify_api_key_flow() -> None:
+    # Sem chave configurada: deve retornar 503 (defensivo)
     os.environ.pop("API_SECRET_KEY", None)
-    # default key is "default-dev-key"
-    assert verify_api_key(x_api_key="default-dev-key") == "default-dev-key"
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as exc:
+        verify_api_key(x_api_key="any")
+    assert exc.value.status_code == 503
+
+    # Com chave configurada: valida corretamente
+    os.environ["API_SECRET_KEY"] = "secret-test-key"
+    assert verify_api_key(x_api_key="secret-test-key") == "secret-test-key"
+    with pytest.raises(HTTPException) as exc:
         verify_api_key(x_api_key="wrong")
-    with pytest.raises(Exception):
+    assert exc.value.status_code == 401
+    with pytest.raises(HTTPException) as exc:
         verify_api_key(x_api_key=None)
+    assert exc.value.status_code == 401
 
 
 def test_fastapi_endpoints() -> None:
