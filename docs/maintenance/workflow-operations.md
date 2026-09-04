@@ -33,6 +33,10 @@ Devido a atualizações no código-fonte, a documentação foi revisada para inc
 5. **Migração Legada Removida**:
    - A lógica para deletar tags legadas no formato `v20{year_short}-{season}` foi removida, simplificando o fluxo.
 
+6. **Versões de Actions Fixadas**:
+   - As actions do GitHub no workflow agora usam versões fixadas por commit SHA (ex: `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` para v7 e `actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c` para v8).
+   - Isso melhora a reprodutibilidade e segurança, evitando alterações inesperadas de versões.
+
 ### Considerações Operacionais
 
 - **Logs**: Os logs do pipeline são armazenados em `/tmp/pipeline_logs/` e podem ser revisados para diagnóstico.
