@@ -1,9 +1,9 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. Gemini (primary — Google AI Studio, free tier 20 req/min)
-  2. OpenRouter free models (secondary)
-  3. OpenCode (tertiary — only useful for paid accounts)
+  1. OpenRouter (free)
+  2. OpenCode (free)
+  3. Gemini (3.6-flash)
 
 Each provider loops through its models before moving to the next provider.
 Groq is also supported via explicit provider="groq" (free tier retired
@@ -49,11 +49,6 @@ class _ProviderConfig:
 # Gemini is LAST: free tier caps at ~20 req/day, so we protect that quota
 # and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
-    _ProviderConfig(
-        name="gemini",
-        api_key_env="GOOGLE_API_KEY",
-        default_model="gemini-2.0-flash",
-    ),
     _ProviderConfig(
         name="openrouter",
         api_key_env="OPENROUTER_API_KEY",
