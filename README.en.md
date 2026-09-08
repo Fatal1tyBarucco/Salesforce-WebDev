@@ -170,18 +170,27 @@ uv run mypy src/
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 ### ❄️ Winter '27
 
-> 📊 **Executive Summary:** A release Winter '27 representa uma expansão significativa do ecossistema Salesforce com **1123 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, Experience Cloud e Serviço. Esta release consolida investimentos em inteligência artificial, experiência do desenvolvedor e conformidade regulatória.
+> 📊 **Executive Summary:** A versão Winter '27 do Salesforce representa um marco decisivo na transformação da plataforma em um ecossistema inteiramente orientado por Inteligência Artificial Agêntica e dados unificados. Com um volume expressivo de 1.123 recursos distribuídos em 19 categorias especializadas, a atualização reflete a consolidação da estratégia 'Agentforce-First', onde agentes autônomos trabalham lado a lado com equipes humanas para automatizar processos complexos, prever demandas e personalizar interações em escala global.
+
+Dentre os pilares de destaque deste lançamento, o Agentforce assume o centro das atenções, integrando-se nativamente a múltiplos produtos como Vendas, Serviço, Gerenciamento de Receita, Marketing e Partner Cloud. Com capacidades avançadas que vão desde a prospecção autônoma de vendas até o suporte proativo ao cliente e automação de campanhas com o Agentforce Content Agent, o ecossistema redefine o conceito de produtividade operacional. Na categoria de Setores — a maior desta versão, acumulando 286 recursos —, a Salesforce demonstra seu compromisso com a verticalização de soluções, introduzindo fluxos de trabalho altamente específicos, como a gestão completa de reposição e inadimplência automotiva e ferramentas integradas para parceiros e setor público.
+
+No ecossistema de dados e analytics, o avanço da arquitetura Data 360 e do Tableau Next capacita as empresas a consolidar fontes heterogêneas em uma visão verdadeiramente tridimensional do cliente, permitindo análises de sentimento e acompanhamento da linha do tempo de engajamento em tempo real. Simultaneamente, o Flow Builder no módulo de Automação recebe uma das atualizações visuais e funcionais mais marcantes de sua história, adotando o tema moderno Salesforce Cosmos, tela mais densa para visualização de diagramas complexos, atalhos de teclado aperfeiçoados e histórico de alterações detalhado.
+
+Para administradores e arquitetos de soluções, a versão Winter '27 exige atenção estratégica quanto à modernização da arquitetura e segurança. A transição obrigatória de aplicativos conectados para aplicativos cliente externos, a descontinuação de fluxos legados de autenticação OAuth 2.0 e a descontinuação da Entrega da experiência (Beta) no Experience Cloud reforçam a postura rígida da Salesforce em relação à governança e conformidade. Em suma, esta versão estabelece o paradigma da 'Empresa Agêntica', onde a infraestrutura global no Hyperforce (agora no Google Cloud) e a inteligência contextual se unem para acelerar receitas, otimizar operações e entregar valor imediato aos negócios.
 
 
-> 📌 **Key Themes:** AI & Agentforce • Data & Analytics • Experiência do Usuário
+> 📌 **Key Themes:** Agentforce e IA Agêntica Autônoma • Verticalização e Especialização por Setores • Escala de Dados com Data 360 e Tableau Next • Produtividade do Desenvolvedor e Flow Builder Cosmos • Segurança, Modernização de Identity e Conformidade
 
 
-> 🎯 **Strategic Impact:** Para as empresas, Winter '27 entrega valor em múltiplas frentes. A automação avançada reduz tarefas manuais, enquanto as melhorias em experiência do usuário aumentam a adoção. As 1123 novas capacidades habilitam cenários que antes exigiam customização significativa, reduzindo o custo total de propriedade.
+> 🎯 **Strategic Impact:** As inovações da versão Winter '27 trazem impacto financeiro e operacional direto para as organizações. A expansão do Agentforce Revenue Management permite que equipes lidem com cotações e pedidos massivos de até 15 mil itens de linha sem interrupção de cálculo, acelerando o ciclo de vendas B2B complexas e reduzindo gargalos de faturamento. No atendimento ao cliente, recursos do Field Service como a gravação de áudio do Visual Remote Assistant (VRA) e a captura dinâmica de dados por voz aumentam a taxa de resolução no primeiro contato e garantem conformidade com normas de privacidade. Além disso, a automação de prospecção autônoma no Sales Cloud e o Agentforce Partner Success Agent otimizam o uso de fundos de marketing (MDF) e a gestão de canais, permitindo que as empresas vendam mais rápido, reduzam custos operacionais e elevem a satisfação do cliente.
+
+
+> ⚠️ **Migration Notes:** Atenção a importantes mudanças e descontinuações: 1) A funcionalidade 'Entrega da experiência (Beta)' no Experience Cloud foi descontinuada. 2) Atualização de versão obrigatória para migrar todos os Aplicativos Conectados empacotados/distribuídos para Aplicativos Cliente Externos. 3) Descontinuação programada do fluxo de nome de usuário e senha do OAuth 2.0 para aplicativos conectados e restrição do fluxo de dispositivos. 4) Recomendada a migração dos componentes de linha do tempo antigos para a nova Linha do Tempo de Engajamento do Data 360. 5) Conclusão de migrações pendentes do Cloudflare para Redes de Entrega de Conteúdo (CDN).
 
 <details>
 <summary><b>📄 Salesforce General (28 features)</b></summary>
 
-> Salesforce geral conta com 28 novos recursos nesta release. Destaques: IA Agentforce e agente, Aprenda sobre novos recursos e aprimoramentos que afetam sua experiência geral do Salesforce., Melhorias gerais, Conclua migrações pendentes do Cloudflare para redes de entrega de conteúdo (CDN), Ative a CDN para todos os recursos estáticos do aplicativo Lightning.
+> Lançamento do Salesforce Go para configuração simplificada, aprimoramentos globais de acessibilidade em modais e seletores de data, e rastreamento de sandboxes no My Trust Center.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/salesforce_geral.md](./releases/winter_27/en_US/salesforce_geral.md)
@@ -191,7 +200,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Data Analysis (26 features)</b></summary>
 
-> Análise de dados conta com 26 novos recursos nesta release. Destaques: Tableau Next, Próximos destaques do Tableau, Relatórios e painéis, Visualizar registros de relatórios do Lightning sem perder contexto (beta), Integre painéis do Lightning em seus sites do Lightning Web Runtime Experience Cloud (beta).
+> Traz o Tableau Next, pré-visualização de registros em relatórios do Lightning sem perda de contexto, relatórios combinados no Data 360 e análise de sentimento do cliente.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/analise_de_dados.md](./releases/winter_27/en_US/analise_de_dados.md)
@@ -201,7 +210,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Automation (72 features)</b></summary>
 
-> Automação conta com 72 novos recursos nesta release. Destaques: Flow Builder, Atualizações do Flow Builder, Criador de fluxo de experiências no tema moderno do Salesforce Cosmos, Ver mais do seu fluxo com uma tela mais densa, Acompanhe alterações de fluxo ao longo do tempo com o histórico de edição.
+> O Flow Builder adota o tema moderno Salesforce Cosmos, oferece tela mais densa, histórico de alterações de fluxo, rótulos gerados automaticamente e agrupamento de elementos para simplificar diagramas.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/automacao.md](./releases/winter_27/en_US/automacao.md)
@@ -211,7 +220,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Data 360 (7 features)</b></summary>
 
-> Data 360 conta com 7 novos recursos nesta release. Destaques: Implementação, Processar e enriquecer, Migrar para a linha do tempo de engajamento do Data 360, Linha do tempo do engajamento do Data 360, Expanda a compatibilidade de tipo de campo para aprimoramentos de campo de cópia.
+> Destaque para a Linha do Tempo de Engajamento do Data 360, expansão de tipos de campo compatíveis para aprimoramentos de cópia e integração com campos dependentes de lista de opções.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/data_360.md](./releases/winter_27/en_US/data_360.md)
@@ -221,7 +230,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Experience Cloud (143 features)</b></summary>
 
-> Experience Cloud conta com 143 novos recursos nesta release. Destaques: Sites do Aura e do LWR, A Entrega da experiência (Beta) foi descontinuada, Adicione vários processos de aprovação de fluxo a um registro com o componente Solicitar aprovações no Criador de experiências, Abra o próximo item de trabalho na mesma execução de orquestração no Criador de experiências, Iniciar um painel nativo do Agentforce em aplicativos Mobile Publisher.
+> Foco na segurança com ocultação de dados confidenciais de usuários convidados, descontinuação do módulo de Entrega da Experiência (Beta) e inclusão do componente de solicitação de aprovação de fluxos.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/experience_cloud.md](./releases/winter_27/en_US/experience_cloud.md)
@@ -231,7 +240,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Field Service (37 features)</b></summary>
 
-> Field Service conta com 37 novos recursos nesta release. Destaques: 360 autônomo, Notas do patch do Field Service, Notas de patch mensais do Field Service Desktop, Notas de patch mensais do Field Service Mobile, Engajamento do cliente do Field Service.
+> Introduz gravação de sessões somente áudio no Visual Remote Assistant (VRA) para conformidade, suporte a preenchimento de formulários dinâmicos por voz e notificações push direcionadas a LWCs.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/field_service.md](./releases/winter_27/en_US/field_service.md)
@@ -241,7 +250,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Hyperforce (5 features)</b></summary>
 
-> Hyperforce conta com 5 novos recursos nesta release. Destaques: Acessar o Salesforce em mais regiões com o Hyperforce, Hyperforce está chegando ao Google Cloud Platform (GCP), Gerenciar opções de rede do Salesforce Edge em Configuração, Adicionar automação e integração com o MuleSoft no Government Cloud, Criação rápida de sandbox e clonagem rápida disponíveis para Government Cloud.
+> Expansão da presença global para o Google Cloud Platform (GCP), gerenciamento de rede no Salesforce Edge e suporte a criação e clonagem rápida de sandboxes no Government Cloud.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/hyperforce.md](./releases/winter_27/en_US/hyperforce.md)
@@ -251,7 +260,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Industries (286 features)</b></summary>
 
-> Setores conta com 286 novos recursos nesta release. Destaques: Agentforce para Automotivo, Criar agentes para Automotive no novo Agentforce Builder, Ajude os clientes a comprar veículos com o agente do Concierge de vendas em seu site, Gerenciando a reposição automotiva, Monitorar a inadimplência com visualizações de registro consolidado e alertas de recomendação.
+> Com 286 recursos, traz soluções profundas como o ecossistema de gestão de inadimplência e reposição de veículos no Automotive Cloud, além de agentes especializados para o setor público e financeiro.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/setores.md](./releases/winter_27/en_US/setores.md)
@@ -261,7 +270,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Marketing (1 features)</b></summary>
 
-> Marketing conta com 1 novos recursos nesta release. Destaques: Marketing Cloud.
+> Aprimoramentos contínuos no Marketing Cloud para personalização contextual ao longo de toda a jornada do cliente e otimização do engajamento cross-channel.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/marketing.md](./releases/winter_27/en_US/marketing.md)
@@ -271,7 +280,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 MuleSoft (1 features)</b></summary>
 
-> MuleSoft conta com 1 novos recursos nesta release. Destaques: Inteligência de integração do MuleSoft.
+> Recurso de Inteligência de Integração do MuleSoft para otimizar fluxos de trabalho, conexões de dados enterprise e automação sem código no Anypoint Platform.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/mulesoft.md](./releases/winter_27/en_US/mulesoft.md)
@@ -281,7 +290,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Partner Cloud (38 features)</b></summary>
 
-> Partner Cloud conta com 38 novos recursos nesta release. Destaques: Setor público, Gerenciar fundos de desenvolvimento de marketing com Agentforce Partner Success Agent, Automatizar o gerenciamento de objetivos e vincular registros para planos de negócios conjuntos, Descubra e inscreva-se em campanhas do fornecedor no Mercado de campanhas, Rastrear a atividade do parceiro em interações com o cliente.
+> Inclusão do Agentforce Partner Success Agent para gestão de fundos MDF, criação conjunta de planos de negócios e agendamento de compromissos via Einstein Activity Capture.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/partner_cloud.md](./releases/winter_27/en_US/partner_cloud.md)
@@ -291,7 +300,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Revenue Management (123 features)</b></summary>
 
-> Gerenciamento de receita conta com 123 novos recursos nesta release. Destaques: Simplifique a descoberta e a configuração de recursos do Revenue Cloud, Orquestrar cenários de pedido de alta tecnologia usando um modelo predefinido, Configurar recursos de faturamento mais rapidamente, Promoções no gerenciamento de receita, Aumente as vendas com promoções no gerenciamento de receita.
+> Capacidade de processar cotações e pedidos de grandes volumes (até 15 mil itens de linha), promoção de vendas integradas ao Revenue Cloud e orquestração ágil com modelos Salesforce Go.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/gerenciamento_de_receita.md](./releases/winter_27/en_US/gerenciamento_de_receita.md)
@@ -301,7 +310,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Sales (44 features)</b></summary>
 
-> Vendas conta com 44 novos recursos nesta release. Destaques: Salesforce CMS, Agentes de IA para vendas, Em prospecção do Agentforce, Automatizar quando seu agente de prospecção é executado, Priorizar clientes potenciais com engajamentos recentes.
+> Transição da marca para Agentforce Sales, prospecção autônoma agendada, recomendações com sinais personalizados no espaço de trabalho de vendas e coaching de chamadas em vídeo.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/vendas.md](./releases/winter_27/en_US/vendas.md)
@@ -311,7 +320,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Salesforce Slack Integrations (7 features)</b></summary>
 
-> Integrações do Salesforce para Slack conta com 7 novos recursos nesta release. Destaques: Use o Slack e o Salesforce juntos para se conectar com os clientes, rastrear o progresso, colaborar perfeitamente e proporcionar sucesso de equipe em qualquer lugar., Venda de modo mais inteligente no Slack: Vendas da Agentforce e a nova página Go, Pacotes do Salesforce, Envie emails para suas listas de Contato e Lead imediatamente com a experiência remodelada de Envios de lista., Ignorar a espera ao enviar emails para listas de contatos e leads no Salesforce Suites.
+> Integração do Agentforce Sales diretamente no Slack, envio simplificado de emails para listas no Salesforce Suites e inclusão do Agentforce nos pacotes gratuitos.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/integracoes_do_salesforce_para_slack.md](./releases/winter_27/en_US/integracoes_do_salesforce_para_slack.md)
@@ -321,7 +330,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Security, Identity & Privacy (25 features)</b></summary>
 
-> Segurança, identidade e privacidade conta com 25 novos recursos nesta release. Destaques: Aprimoramentos de segurança, Revisar e cumprir os próximos requisitos de segurança, Explorar recursos compatíveis com MFA e segurança de email, Fazer backup e recuperar em seguida, Baixar metadados do instantâneo de backup.
+> Recursos de busca avançada e download de metadados no backup, além de atualizações rígidas para migração de aplicativos conectados e descontinuação de fluxos legados OAuth 2.0.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/seguranca_identidade_e_privacidade.md](./releases/winter_27/en_US/seguranca_identidade_e_privacidade.md)
@@ -331,7 +340,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Service (140 features)</b></summary>
 
-> Serviço conta com 140 novos recursos nesta release. Destaques: Central de contato, Centro de conexão do Agentforce, Workforce Engagement Management, Central de contato do parceiro, Usar a configuração com Agentforce para gerenciar usuários da Central de contato.
+> Configuração da Central de Contato impulsionada pelo Agentforce, melhorias na integração com o Amazon Connect, gravação de saudações personalizadas e descarte de correio de voz para chamadas ativas.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/servico.md](./releases/winter_27/en_US/servico.md)
@@ -341,7 +350,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Legal Documentation (8 features)</b></summary>
 
-> Documentação legal conta com 8 novos recursos nesta release. Destaques: Você está aqui:, AJUDA DO SALESFORCE, DOCUMENTAÇÃO, NOTAS DA VERSÃO DO SALESFORCE, Como e quando os recursos ficam disponíveis?.
+> Detalhamento das regras de disponibilidade geral, preview da versão, atualizações de versão e diretrizes de ativação de recursos para administradores.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/documentacao_legal.md](./releases/winter_27/en_US/documentacao_legal.md)
@@ -351,7 +360,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 OmniStudio (3 features)</b></summary>
 
-> OmniStudio conta com 3 novos recursos nesta release. Destaques: Reutilizar a lógica de fluxo iniciada automaticamente em seus FlexCards (disponível ao público em geral), Executar FlexCards e OmniScripts offline em dispositivos móveis, Versões secundárias do OmniStudio.
+> Permite a execução de FlexCards e OmniScripts offline em dispositivos móveis e viabiliza a reutilização da lógica de fluxos iniciados automaticamente dentro de FlexCards.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/omnistudio.md](./releases/winter_27/en_US/omnistudio.md)
@@ -361,7 +370,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Agentforce (129 features)</b></summary>
 
-> Agentforce conta com 129 novos recursos nesta release. Destaques: Crie conteúdo pronto para campanha mais rapidamente com o Agentforce Content Agent, Campanhas e fluxos, Automatizar tarefas de acompanhamento com ações de conclusão de marketing, Manter guias nas métricas de desempenho e conteúdo da campanha, Usar modelos de fluxo personalizados de uma campanha.
+> Apresenta o Agentforce Content Agent para criação ágil de campanhas, Brand Center para manter a identidade visual da IA, e ações de conclusão de marketing automatizadas, fortalecendo a execução agêntica autônoma.
 
 
 > 📄 Full details: [./releases/winter_27/en_US/agentforce.md](./releases/winter_27/en_US/agentforce.md)
@@ -372,18 +381,27 @@ uv run mypy src/
 <details>
 <summary><h3>☀️ Summer '26</h3></summary>
 
-> 📊 **Executive Summary:** A release Summer '26 representa uma expansão significativa do ecossistema Salesforce com **1337 novos recursos** distribuídos em **22 categorias**. As áreas com maior volume de inovação são Setores, Serviço e Desenvolvimento. Esta release consolida investimentos em inteligência artificial, experiência do desenvolvedor e conformidade regulatória.
+> 📊 **Executive Summary:** A versão Summer '26 do Salesforce representa um marco transformacional na evolução da plataforma para um ecossistema totalmente impulsionado por agentes de inteligência artificial autônomos e arquitetura de dados unificada em tempo real. Com um volume impressionante de 1.337 novos recursos distribuídos em 22 categorias operacionais e verticais, esta release consolida a transição da automação tradicional baseada em regras para uma orquestração cognitiva inteligente e proativa em todas as frentes de negócios. O epicentro estratégico desta atualização é a expansão massiva do Agentforce e da infraestrutura de Data 360, estabelecendo uma nova era onde humanos e agentes de IA colaboram de forma fluida para otimizar processos de vendas, atendimento ao cliente, serviços de campo e desenvolvimento de software.
+
+No coração das inovações técnicas, o Agentforce evolui de assistentes conversacionais simples para agentes operacionais autônomos integrados a processos críticos. Na área de Serviços, os novos Centros de Conexão do Agentforce permitem a transição transparente de chamadas de voz entre agentes autônomos e representantes humanos, suportados por IVR dinâmico baseado em seleção de mídia por variáveis. Em Vendas, os agentes do Agentforce passam a qualificar leads, contatos e contas pessoais de forma autônoma, inclusive estendendo a gestão de estratégias de vendas para ambientes externos como o aplicativo Agentforce Sales no Gemini (beta). No âmbito de Automação, o Flow Builder agora integra nativamente a criação e execução de agentes Agentforce, permitindo que administradores combinem a lógica tradicional de fluxos com instruções de linguagem natural.
+
+A base para essa inteligência autônoma é impulsionada pela evolução do Data 360 (Data Cloud), que elimina silos de dados ao introduzir conectividade federada zero-copy com plataformas como Databricks, AWS Glue Data Catalog e Microsoft Fabric OneLake. Isso garante acesso a dados do CRM em tempo real sem latência de pipelines de ingestão ou custos adicionais de armazenamento. Paralelamente, o Tableau Next reformula a análise de dados com auditoria detalhada de interações do usuário, carregamento otimizado de painéis e análise direta de objetos em Data Lakes.
+
+Para desenvolvedores e arquitetos, a Summer '26 traz a API versão 67.0 do LWC, suporte ao Lightning Out 2.0 no Experience Cloud, além do suporte estendido ao Model Context Protocol (MCP) via MuleSoft e AgentExchange, padronizando a integração de ferramentas externas aos agentes. Do ponto de vista de negócios, esta release entrega valor imediato ao reduzir custos operacionais, acelerar ciclos de vendas e reforçar a segurança corporativa com novos padrões de conformidade e governança de identidade.
 
 
-> 📌 **Key Themes:** AI & Agentforce • Data & Analytics • Experiência do Usuário
+> 📌 **Key Themes:** Agentes Autônomos e IA Ubíqua (Agentforce) • Conectividade de Dados Zero-Copy e Data 360 • Produtividade Móvel e Experiência Omnicanal • Extensibilidade da Plataforma e Ferramentas para Desenvolvedores (MCP & LWC) • Conformidade, Cibersegurança e Governança Criptográfica
 
 
-> 🎯 **Strategic Impact:** Para as empresas, Summer '26 entrega valor em múltiplas frentes. A automação avançada reduz tarefas manuais, enquanto as melhorias em experiência do usuário aumentam a adoção. As 1337 novas capacidades habilitam cenários que antes exigiam customização significativa, reduzindo o custo total de propriedade.
+> 🎯 **Strategic Impact:** As inovações da release Summer '26 impactam diretamente a rentabilidade e a eficiência operacional das empresas ao acelerar o ciclo de receita e reduzir custos de atendimento. Com a federação de dados zero-copy no Data 360 (conectando Databricks e AWS Glue em tempo real), as empresas reduzem dramaticamente o gasto com engenharia de dados e obtêm insights unificados instantaneamente. A qualificação autônoma de leads e o agendamento autônomo via WhatsApp e e-mail no Field Service elevam as taxas de conversão de vendas e otimizam a produtividade da equipe de campo. No atendimento, a transferência fluida de chamadas de voz no Agentforce Contact Center e a transcrição móvel offline de reuniões reduzem o tempo médio de atendimento (TMA) e melhoram o FCR (First Contact Resolution). Além disso, soluções automáticas de orquestração Dunning em Gerenciamento de Receita protegem a receita recorrente ao reduzir a inadimplência, enquanto ferramentas de varredura de malware e criptografia garantem total conformidade regulatória.
+
+
+> ⚠️ **Migration Notes:** Atenção administradores para breaking changes importantes nesta release: 1) Descontinuação do fluxo de autenticação OAuth 2.0 Username-Password para Aplicativos Conectados (exigindo migração para fluxos de credenciais de cliente ou servidor web); 2) Fim do suporte ao algoritmo Triple DES para autenticação SAML SSO e obrigatoriedade da estrutura SAML de ajustes múltiplos; 3) O Chatter agora vem desativado por padrão em novas organizações; 4) Habilitação obrigatória dos formatos de localidade ICU e filtragem de perfis; 5) Alterações no Lightning Web Security (LWS) bloqueiam URIs de esquema 'data:' em elementos HTMLAnchorElement; 6) Descontinuação do provedor de autenticação gerenciado pelo Salesforce X (antigo Twitter); 7) Migração necessária do armazenamento de transcrições de chat e redirecionamento de geradores de PDF legados.
 
 <details>
 <summary><b>📄 Legal Documentation (6 features)</b></summary>
 
-> Documentação legal conta com 6 novos recursos nesta release. Destaques: Você está aqui:, AJUDA DO SALESFORCE, DOCUMENTAÇÃO, NOTAS DA VERSÃO DO SALESFORCE, Como e quando os recursos ficam disponíveis?.
+> Atualização das diretrizes e termos de uso do Salesforce Help, incluindo esclarecimentos detalhados sobre o cronograma de ativação automática de novos recursos e impactos imediatos para usuários e administradores.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/documentacao_legal.md](./releases/summer_26/en_US/documentacao_legal.md)
@@ -393,7 +411,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Salesforce General (36 features)</b></summary>
 
-> Salesforce geral conta com 36 novos recursos nesta release. Destaques: Melhorias gerais, Gire seus certificados com mais frequência — _admins_, Validar informações de domínio com mais frequência — _admins_, Atualizar seus certificados mTLS — _admins_, Preparar-se para IPv6 — _admins_.
+> Desativação do Chatter por padrão em novas organizações, implementação das diretrizes de acessibilidade para elementos visuais com zoom acima de 200%, rotação mTLS frequente e monitoramento na Digital Wallet.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/salesforce_geral.md](./releases/summer_26/en_US/salesforce_geral.md)
@@ -403,6 +421,9 @@ uv run mypy src/
 <details>
 <summary><b>📄 Agentforce (37 features)</b></summary>
 
+> Introdução de capacidades nativas de voz (Voice feature) para agentes autônomos, permitindo interações conversacionais por áudio diretamente integradas aos papéis de administradores e usuários finais na plataforma.
+
+
 > 📄 Full details: [./releases/summer_26/en_US/agentforce.md](./releases/summer_26/en_US/agentforce.md)
 
 </details>
@@ -410,7 +431,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Data Analysis (58 features)</b></summary>
 
-> Análise de dados conta com 58 novos recursos nesta release. Destaques: Tableau Next, Próximos recursos do Tableau lançados por mês (usuários) — _usuários_, Acelere a criação de Next Ativo do Tableau com modelos de mercado (usuários) — _usuários_, Configuração e administração, Obtenha visibilidade das interações com o usuário com a Próxima auditoria do Tableau (beta) (config) — _config_.
+> Destaque para o Tableau Next, que traz auditoria detalhada de interações de usuários (beta), ingestão via Google Drive, suporte a análise de objetos em Data Lakes e visualizações personalizadas com otimização dinâmica de dados.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/analise_de_dados.md](./releases/summer_26/en_US/analise_de_dados.md)
@@ -420,7 +441,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Automation (118 features)</b></summary>
 
-> Automação conta com 118 novos recursos nesta release. Destaques: Recursos de automação lançados por mês, Flow Builder, Atualizações do Flow Builder, Criar e usar agentes Agentforce diretamente no Flow Builder — _usuários_, Melhorar o desempenho com lote para fluxos agendados — _usuários_.
+> Integração direta de agentes Agentforce no Flow Builder (beta), execução de fluxos agendados em lote para alto desempenho, operadores de data aprimorados e atualização de fluxos de tela utilizando avisos em linguagem natural.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/automacao.md](./releases/summer_26/en_US/automacao.md)
@@ -430,7 +451,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 OmniStudio (9 features)</b></summary>
 
-> OmniStudio conta com 9 novos recursos nesta release. Destaques: Otimizar a consistência da implementação com controle de versão do Data Mapper — _usuários_, Alternar entre designers e tempos de execução de pacote padrão e gerenciado na mesma organização — _usuários_, Migrar para o tempo de execução padrão do OmniStudio usando o Assistente de migração do OmniStudio — _usuários_, Acelere o desenvolvimento do FlexCard com o OmniStudio MCP (beta) — _contato_, Chamar fluxos iniciados automaticamente em FlexCards do OmniStudio (piloto) — _contato_.
+> Controle de versão no Data Mapper para implantações consistentes, suporte ao OmniStudio MCP (beta) para acelerar o desenvolvimento de FlexCards e migração simplificada para o tempo de execução padrão.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/omnistudio.md](./releases/summer_26/en_US/omnistudio.md)
@@ -440,7 +461,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Customization (33 features)</b></summary>
 
-> Personalização conta com 33 novos recursos nesta release. Destaques: Recursos de personalização lançados por mês, AgentExchange, Explorar soluções com servidores MCP no AgentExchange — _admins_, Adicione servidores MCP do registro Agentforce por meio de uma experiência integrada do AgentExchange — _admins_, Avaliar ativos do agente rapidamente com a página de detalhes aprimorada — _admins_.
+> Aprimoramentos no AgentExchange com soluções MCP, expansão do suporte a arquivos binários e enumerações em Serviços Externos, suporte a fusos horários adicionais e novas traduções para catalão e basco.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/personalizacao.md](./releases/summer_26/en_US/personalizacao.md)
@@ -450,7 +471,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Data 360 (72 features)</b></summary>
 
-> Data 360 conta com 72 novos recursos nesta release. Destaques: Introdução ao Data Cloud, Expanda seu Knowledge do Data 360 com orientação no aplicativo (beta) — _admins_, Planejar estratégia de dados, Migrar metadados de governança do Data 360 do sandbox para produção — _admins_, Dados do Connect.
+> Avanço significativo na federação de dados zero-copy com Databricks, AWS Glue e Microsoft Fabric OneLake, permitindo acesso a dados do CRM em tempo real sem latência de pipeline e rastreamento de engajamento via SDK Web.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/data_360.md](./releases/summer_26/en_US/data_360.md)
@@ -460,7 +481,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Development (127 features)</b></summary>
 
-> Desenvolvimento conta com 127 novos recursos nesta release. Destaques: Componentes do Lightning, Obtenha as alterações mais recentes do LWC com a API versão 67.0 do LWC, Elementos de detalhes do grupo com o nome Atributo — _admins_, Melhorar o desempenho de recarregamento de módulo hot — _admins_, O desenvolvedor local agora é a visualização ativa — _usuários_.
+> Lançamento da API LWC 67.0, ativação da visualização do desenvolvedor local no navegador e VS Code, suporte ao Lightning Out 2.0 no Experience Cloud e atualizações cruciais de segurança no Lightning Web Security (LWS).
 
 
 > 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
@@ -470,7 +491,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Experience Cloud (14 features)</b></summary>
 
-> Experience Cloud conta com 14 novos recursos nesta release. Destaques: Sites do Aura e do LWR, Configurar experiências de autoatendimento assistido por IA em sites do Aura e do LWR — _admins_, Habilite o Chatter para recursos dependentes do Chatter em sites do Aura e do LWR em novas organizações — _admins_, Mantenha páginas privadas do LWR indisponíveis até que a configuração ou redefinição de senha seja concluída — _admins_, Verificar arquivos para malware no Salesforce Files (disponível ao público em geral) — _admins_.
+> Expansão das experiências de autoatendimento assistidas por IA em sites Aura e LWR, melhorias no upload de arquivos grandes, varredura de malware no Salesforce Files e personalização avançada de estilos em fluxos de tela.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/experience_cloud.md](./releases/summer_26/en_US/experience_cloud.md)
@@ -480,7 +501,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Field Service (48 features)</b></summary>
 
-> Field Service conta com 48 novos recursos nesta release. Destaques: Notas de versão mensal do Field Service, Notas do patch do Field Service, Notas de patch mensais do desktop, Notas de patch mensais móveis, Agentforce para Field Service.
+> Agentes autônomos de agendamento do Agentforce estendidos para e-mail e WhatsApp, resumos interativos pré-trabalho para técnicos de campo e suporte a sessões seguras e multiaplicativos no Assistente Remoto Visual (VRA).
 
 
 > 📄 Full details: [./releases/summer_26/en_US/field_service.md](./releases/summer_26/en_US/field_service.md)
@@ -490,7 +511,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Hyperforce (3 features)</b></summary>
 
-> Hyperforce conta com 3 novos recursos nesta release. Destaques: Acessar o Salesforce em mais regiões com o Hyperforce — _config_, Novos produtos e recursos disponíveis na Defesa do Government Cloud — _config_, A continuidade avançada entre regiões alcança objetivos de recuperação mais rápidos — _contato_.
+> Expansão da presença global em novas regiões, melhorias na continuidade de negócios entre regiões para recuperação de desastres mais rápida e novos recursos de conformidade na Defesa do Government Cloud.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/hyperforce.md](./releases/summer_26/en_US/hyperforce.md)
@@ -500,7 +521,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Industries (309 features)</b></summary>
 
-> Setores conta com 309 novos recursos nesta release. Destaques: Gerenciamento de ativos, Simplificar a descoberta e a configuração de recursos do Gerenciamento de ciclo de vida do ativo — _config_, Otimização de planilhas de horas e custos trabalhistas, Editar e excluir planilhas usando o Agentforce — _config_, Gerenciar planilhas de horários da equipe no campo — _config_.
+> Mais de 300 recursos focados em verticais: automação de declarações de garantia no setor automotivo via Agentforce, resolução de disputas financeiras, gestão otimizada de planilhas de horas e ciclo de vida de ativos.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/setores.md](./releases/summer_26/en_US/setores.md)
@@ -510,7 +531,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Marketing (64 features)</b></summary>
 
-> Marketing conta com 64 novos recursos nesta release. Destaques: Marketing Cloud Next, Criar e expandir seu público — _usuários_, Criar e projetar conteúdo com facilidade — _usuários_, Criar e gerenciar campanhas efetivas, Carregar modelos de DLT para enviar mensagens SMS na Índia.
+> Lançamento do Marketing Cloud Next, unificação do gerenciamento de consentimento e SMS, sincronização de membros de campanha em um clique e acompanhamento da atividade de engajamento em registros de oportunidade.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/marketing.md](./releases/summer_26/en_US/marketing.md)
@@ -520,7 +541,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 MuleSoft (8 features)</b></summary>
 
-> MuleSoft conta com 8 novos recursos nesta release. Destaques: Catálogo de API para Salesforce, Mapear seus agentes para ferramentas do servidor MCP — _admins_, Mapear modelos de prompts para ferramentas do servidor MCP — _admins_, Adicionar anotações a ferramentas do servidor MCP — _admins_, Trazer servidores MCP do MuleSoft para o catálogo de API (disponível ao público em geral) — _admins_.
+> Introdução do Catálogo de API do Salesforce com suporte a mapeamento de ferramentas do Model Context Protocol (MCP), inteligência de integração e visualização de consultas nomeadas para acionar ações automatizadas.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/mulesoft.md](./releases/summer_26/en_US/mulesoft.md)
@@ -530,7 +551,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Mobile App (17 features)</b></summary>
 
-> Aplicativo móvel conta com 17 novos recursos nesta release. Destaques: Recursos móveis lançados por mês, Aplicativo Salesforce móvel, Tudo o que há de novo no aplicativo Salesforce móvel, Conclua tarefas diretamente de notificações telefônicas personalizadas (disponível ao público em geral), Personalizar sua página inicial do aplicativo móvel (beta).
+> Inovações focadas em produtividade de campo: execução de tarefas diretamente em notificações push, transcrição de reuniões via IA no dispositivo, nova interface fluida 'Liquid Glass' e suporte ao Agentforce móvel via SDK React Native.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/aplicativo_movel.md](./releases/summer_26/en_US/aplicativo_movel.md)
@@ -540,7 +561,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Partner Cloud (1 features)</b></summary>
 
-> Partner Cloud conta com 1 novos recursos nesta release. Destaques: Configurar emails com marca combinada para parceiros no Salesforce Go — _config_.
+> Inclusão da configuração de e-mails com marca combinada (co-branded) para parceiros através da interface unificada do Salesforce Go, fortalecendo a colaboração com canais de venda indireta.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/partner_cloud.md](./releases/summer_26/en_US/partner_cloud.md)
@@ -550,7 +571,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Revenue Management (97 features)</b></summary>
 
-> Gerenciamento de receita conta com 97 novos recursos nesta release. Destaques: Experiência de configuração aprimorada com o Salesforce Go, Simplifique a coleta de receita com a Solução de orquestração Dunning — _admins_, Descubra mais recursos de gerenciamento de receita — _admins_, Gerenciamento de catálogo de produtos, Crie transações mais rapidamente com a Descoberta baseada em regra — _usuários_.
+> Lançamento do Salesforce Go, introdução da Solução de Orquestração Dunning para otimização de cobrança e expansão do Gerenciamento de Catálogo de Produtos (PCM) com suporte decimal estendido e variações de produtos.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/gerenciamento_de_receita.md](./releases/summer_26/en_US/gerenciamento_de_receita.md)
@@ -560,7 +581,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Sales (58 features)</b></summary>
 
-> Vendas conta com 58 novos recursos nesta release. Destaques: Agentes de vendas de IA, Engajamento do Agentforce, Aumentar a conversão de clientes potenciais com a disponibilidade de calendário de grupo — _config_, Alterar o comportamento do agente de fomento de lead e geração de lead de entrada mais rapidamente — _admins_, Continuar engajamento de lead com transferência de agente — _config_.
+> Agentes de IA do Agentforce para qualificação autônoma de leads, contatos e contas, agendamento de reuniões com calendários de grupo e integração do aplicativo Agentforce Sales diretamente no Google Gemini (beta).
 
 
 > 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
@@ -570,7 +591,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Salesforce Slack Integrations (2 features)</b></summary>
 
-> Integrações do Salesforce para Slack conta com 2 novos recursos nesta release. Destaques: Desfrute da colaboração habilitada pelo Slack em novas organizações do Salesforce — _usuários_, Acessar canais do Salesforce no painel do Slack — _admins_.
+> Habilitação padrão da colaboração no Slack em novas organizações do Salesforce e visualização direta de canais do Salesforce no painel lateral do Slack para otimizar o fluxo de trabalho em equipe.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md](./releases/summer_26/en_US/integracoes_do_salesforce_para_slack.md)
@@ -580,7 +601,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Security, Identity & Privacy (58 features)</b></summary>
 
-> Segurança, identidade e privacidade conta com 58 novos recursos nesta release. Destaques: Aprimoramentos de segurança, Revisar e cumprir os requisitos de segurança novos e futuros — _admins_, Evite interrupção de email com atualizações automáticas de junho — _admins_, Encontre conteúdo de segurança do administrador para a plataforma em um só lugar — _usuários_, Adicionar um contato de segurança para alertas de incidente — _admins_.
+> Descontinuação do fluxo OAuth 2.0 Username-Password para aplicativos conectados, fim do suporte ao Triple DES no SAML SSO, backups sob demanda com opção de cancelamento e novos contatos de segurança para alertas.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md](./releases/summer_26/en_US/seguranca_identidade_e_privacidade.md)
@@ -590,7 +611,7 @@ uv run mypy src/
 <details>
 <summary><b>📄 Service (198 features)</b></summary>
 
-> Serviço conta com 198 novos recursos nesta release. Destaques: Notas de versão mensal do serviço, Centro de conexão do Agentforce, Transfira suas conversas do agente do Agentforce do Salesforce Voice para um representante de serviço nas centrais de contato do Agentforce — _usuários_, Melhore a experiência do representante evitando chamadas antes que os representantes estejam prontos — _config_, Fornecer um serviço melhor com retornos de chamada agendados flexíveis — _config_.
+> Centros de Conexão do Agentforce com suporte completo a chamadas de voz, retornos de chamada agendados flexíveis, restauração automática de sessões de telefonia e vinculação direta de voz a Ordens de Trabalho.
 
 
 > 📄 Full details: [./releases/summer_26/en_US/servico.md](./releases/summer_26/en_US/servico.md)
