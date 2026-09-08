@@ -28,24 +28,20 @@ class TestLLMProviderInit:
         assert svc.provider == "opencode"
         assert svc.model_name == "gemini-3.6-flash"
 
-    def test_explicit_provider_gemini_falls_back_to_autodetect(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        """gemini was removed from _PROVIDER_CHAIN: explicit gemini falls to auto-detect."""
-        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+    def test_explicit_provider_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="k", provider="gemini")
-        assert svc.provider == "openrouter"
-        assert svc.model_name == "openrouter/free"
+        assert svc.provider == "gemini"
+        assert svc.model_name == "gemini-3.6-flash"
 
     def test_explicit_unknown_provider_falls_to_autodetect(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="k", provider="banana")
-        assert svc.provider in ("groq", "opencode", "openrouter", "gemini")
+        assert svc.provider in ("gemini", "opencode", "openrouter")
 
     def test_no_key_available_returns_mock(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delenv("GROQ_API_KEY", raising=False)
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
@@ -55,18 +51,11 @@ class TestLLMProviderInit:
     def test_unsupported_provider_with_key_uses_first(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="k", provider="banana")
-        assert svc.provider in ("groq", "gemini", "opencode", "openrouter")
-
-    def test_explicit_provider_groq(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
-        svc = LLMService(api_key="k", provider="groq")
-        assert svc.provider == "groq"
-        assert svc.model_name == "llama-3.3-70b-versatile"
+        assert svc.provider in ("gemini", "opencode", "openrouter")
 
 
 # ── Prompt validation ──────────────────────────────────────────────
@@ -124,22 +113,20 @@ class TestLLMFallbackChain:
     def test_switch_to_next_provider_all_exhausted_returns_false(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        svc._tried_providers.update(["groq", "opencode", "openrouter", "gemini"])
+        svc._tried_providers.update(["opencode", "openrouter", "gemini"])
         result = svc._switch_to_next_provider()
         assert result is False
 
     def test_next_fallback_provider_skips_tried(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        svc._tried_providers.update(["opencode", "groq", "gemini", "openrouter"])
+        svc._tried_providers.update(["opencode", "gemini", "openrouter"])
         result = svc._next_fallback_provider()
         assert result is None
 
@@ -188,9 +175,9 @@ class TestLLMFallbackChain:
         Regression: previously a silent return caused the pipeline to think
         the provider succeeded with empty content.
         """
-        monkeypatch.setenv("GROQ_API_KEY", "groq-key")
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
-        svc = LLMService(api_key="groq-key", provider="groq")
+        svc = LLMService(api_key="goog-key", provider="gemini")
 
         attempts: list[str] = []
 
@@ -202,7 +189,7 @@ class TestLLMFallbackChain:
             with pytest.raises(RuntimeError):
                 svc.generate_completion("hi")
 
-        assert attempts[0] == "groq"
+        assert attempts[0] == "gemini"
         assert "opencode" in attempts
 
 
@@ -529,8 +516,8 @@ class TestLLMModuleIntegrity:
     def test_find_provider_config(self) -> None:
         assert LLMService._find_provider_config("opencode") is not None
         assert LLMService._find_provider_config("openrouter") is not None
-        assert LLMService._find_provider_config("groq") is not None
-        assert LLMService._find_provider_config("gemini") is None  # removed from chain
+        assert LLMService._find_provider_config("gemini") is not None
+        assert LLMService._find_provider_config("groq") is None  # removed from chain
         assert LLMService._find_provider_config("banana") is None
 
     def test_llm_call_timeout_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -559,10 +546,10 @@ class TestLLMModuleIntegrity:
 class TestLLMDispatch:
     """_dispatch_to_provider: routes by provider name, raises on unknown."""
 
-    def test_dispatch_to_gemini(self) -> None:
+    def test_dispatch_to_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Line 263: provider='gemini' → _generate_gemini path."""
-        svc = LLMService(api_key=None, provider="none")
-        svc.provider = "gemini"  # gemini dispatches directly though out of the chain
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+        svc = LLMService(api_key="goog-key", provider="gemini")
         with patch.object(svc, "_generate_gemini", return_value="gem-out") as mock_g:
             out = svc._dispatch_to_provider("hi", None, 0.7, 100)
         assert out == "gem-out"

@@ -3,11 +3,9 @@
 Provider priority:
   1. OpenRouter (free)
   2. OpenCode (free)
-  3. Groq (explicit opt-in only, paid — skipped in auto-detect)
+  3. Gemini (3.6-flash)
 
 Each provider loops through its models before moving to the next provider.
-Legacy `provider="gemini"` still dispatches to `_generate_gemini`, but gemini
-is no longer part of the auto-detect/fallback chain.
 """
 
 import logging
@@ -66,7 +64,7 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
         # OpenCode free tier models are largely unavailable in 2026-08
         # (401 CreditsError on default, 400 upstream on free variants).
-        # Kept last as a final attempt; useful for paid OpenCode accounts.
+        # Kept as secondary; useful for paid OpenCode accounts.
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
         base_url="https://opencode.ai/zen/v1",
@@ -82,17 +80,11 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         ],
     ),
     _ProviderConfig(
-        # Groq: free tier retired 2026-08-16. Kept here so users with paid
-        # credentials can opt in via provider="groq". Excluded from auto-detect
-        # below via _find_provider_config fallback handling.
-        name="groq",
-        api_key_env="GROQ_API_KEY",
-        base_url="https://api.groq.com/openai/v1",
-        default_model="llama-3.3-70b-versatile",
-        fallback_models=[
-            "openai/gpt-oss-20b",
-            "openai/gpt-oss-120b",
-        ],
+        # Gemini is LAST: free tier caps at ~20 req/day, so we protect that
+        # quota and only fall back to it after exhausting OpenRouter/OpenCode.
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-3.6-flash",
     ),
 ]
 
@@ -103,7 +95,7 @@ class LLMService:
     Supports multiple providers with automatic fallback:
       1. OpenRouter free models (primary, free tier)
       2. OpenCode (secondary)
-      3. Groq (explicit opt-in only, skipped in auto-detect)
+      3. Google Gemini (tertiary, free tier 20 req/day protected)
 
     Each provider loops through its models before moving to the next.
     """
@@ -140,8 +132,6 @@ class LLMService:
 
         # Auto-detect: find first provider with a valid API key
         for cfg in self._provider_chain:
-            if cfg.name == "groq":
-                continue  # Groq free tier retired 2026-08-16; skip in auto-detect
             resolved_key = api_key or os.getenv(cfg.api_key_env, "")
             if resolved_key:
                 self._active_provider = cfg
@@ -280,7 +270,7 @@ class LLMService:
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-        elif self.provider in ("groq", "opencode", "openrouter"):
+        elif self.provider in ("opencode", "openrouter"):
             return self._generate_openai_compatible(
                 prompt=prompt,
                 system_instruction=system_instruction,
