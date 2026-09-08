@@ -69,7 +69,10 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependências
-        run: uv sync --frozen
+        run: |
+          uv sync --frozen
+          # syrupy fora do pyproject (evita downgrade do pytest); igual ao python-quality.yml
+          uv pip install "syrupy>=4.9.0,<5"
 
       - name: Instalar Playwright browsers
         run: uv run playwright install --with-deps chromium
