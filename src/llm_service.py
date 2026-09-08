@@ -77,9 +77,13 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         base_url="https://opencode.ai/zen/v1",
         default_model="gemini-3.6-flash",
         fallback_models=[
-            "deepseek-v4-flash-free",
-            "mimo-v2.5-free",
-            "hy3-free",
+            "ling-3.0-flash-free",
+            "ling-3.0-tiny-free",
+            "nemotron-3-ultra-free",
+            "north-mini-code-free",
+            "laguna-s-2.1-free",
+            "longcat-2.0-free",
+            "mus-e-spark-1.2-contributor-free",
         ],
     ),
     _ProviderConfig(
