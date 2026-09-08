@@ -353,9 +353,12 @@ def test_llm_gemini_import_error_fallback(monkeypatch) -> None:
     import src.llm_service as ls
 
     monkeypatch.setattr(ls, "genai", None)
-    svc = ls.LLMService(api_key="k", provider="gemini")
-    # genai is None -> _generate_gemini raises ImportError -> fallback chain
-    # No other providers have keys -> all fail -> raises
+    for var in ("OPENROUTER_API_KEY", "OPENCODE_API_KEY", "GROQ_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.delenv(var, raising=False)
+    svc = ls.LLMService(api_key="k", provider="openrouter")
+    # Active gemini provider with missing SDK and no fallback keys configured
+    # -> the ImportError must propagate instead of returning a mock.
+    svc.provider = "gemini"
     with pytest.raises((ImportError, RuntimeError)):
         svc.generate_completion("hi")
 

@@ -344,9 +344,9 @@ class TestLLMProviderChain:
     def test_find_provider_config_valid(self) -> None:
         from src.llm_service import LLMService
 
-        cfg = LLMService._find_provider_config("gemini")
+        cfg = LLMService._find_provider_config("groq")
         assert cfg is not None
-        assert cfg.name == "gemini"
+        assert cfg.name == "groq"
 
     def test_find_provider_config_invalid(self) -> None:
         from src.llm_service import LLMService

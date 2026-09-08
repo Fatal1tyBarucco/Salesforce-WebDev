@@ -20,7 +20,7 @@ class TestLLMProviderInit:
         svc = LLMService(api_key="k", provider="openrouter")
         assert svc.provider == "openrouter"
         assert svc.api_key == "k"
-        assert svc.model_name == "openrouter/auto"
+        assert svc.model_name == "openrouter/free"
 
     def test_explicit_provider_opencode(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
@@ -28,11 +28,14 @@ class TestLLMProviderInit:
         assert svc.provider == "opencode"
         assert svc.model_name == "gemini-3.6-flash"
 
-    def test_explicit_provider_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+    def test_explicit_provider_gemini_falls_back_to_autodetect(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """gemini was removed from _PROVIDER_CHAIN: explicit gemini falls to auto-detect."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="k", provider="gemini")
-        assert svc.provider == "gemini"
-        assert svc.model_name == "gemini-2.0-flash"
+        assert svc.provider == "openrouter"
+        assert svc.model_name == "openrouter/free"
 
     def test_explicit_unknown_provider_falls_to_autodetect(
         self, monkeypatch: pytest.MonkeyPatch
@@ -114,9 +117,9 @@ class TestLLMFallbackChain:
         svc = LLMService(api_key="oc-key", provider="opencode")
         result = svc._switch_to_next_provider()
         assert result is True
-        assert svc.provider == "gemini"
-        assert svc.api_key == "goog-key"
-        assert svc.model_name == "gemini-2.0-flash"
+        assert svc.provider == "openrouter"
+        assert svc.api_key == "or-key"
+        assert svc.model_name == "openrouter/free"
 
     def test_switch_to_next_provider_all_exhausted_returns_false(
         self, monkeypatch: pytest.MonkeyPatch
@@ -526,7 +529,8 @@ class TestLLMModuleIntegrity:
     def test_find_provider_config(self) -> None:
         assert LLMService._find_provider_config("opencode") is not None
         assert LLMService._find_provider_config("openrouter") is not None
-        assert LLMService._find_provider_config("gemini") is not None
+        assert LLMService._find_provider_config("groq") is not None
+        assert LLMService._find_provider_config("gemini") is None  # removed from chain
         assert LLMService._find_provider_config("banana") is None
 
     def test_llm_call_timeout_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -555,10 +559,10 @@ class TestLLMModuleIntegrity:
 class TestLLMDispatch:
     """_dispatch_to_provider: routes by provider name, raises on unknown."""
 
-    def test_dispatch_to_gemini(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_dispatch_to_gemini(self) -> None:
         """Line 263: provider='gemini' → _generate_gemini path."""
-        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
-        svc = LLMService(api_key="goog-key", provider="gemini")
+        svc = LLMService(api_key=None, provider="none")
+        svc.provider = "gemini"  # gemini dispatches directly though out of the chain
         with patch.object(svc, "_generate_gemini", return_value="gem-out") as mock_g:
             out = svc._dispatch_to_provider("hi", None, 0.7, 100)
         assert out == "gem-out"

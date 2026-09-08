@@ -3,11 +3,11 @@
 Provider priority:
   1. OpenRouter (free)
   2. OpenCode (free)
-  3. Gemini (3.6-flash)
+  3. Groq (explicit opt-in only, paid — skipped in auto-detect)
 
 Each provider loops through its models before moving to the next provider.
-Groq is also supported via explicit provider="groq" (free tier retired
-2026-08-16, paid opt-in only).
+Legacy `provider="gemini"` still dispatches to `_generate_gemini`, but gemini
+is no longer part of the auto-detect/fallback chain.
 """
 
 import logging
@@ -101,9 +101,9 @@ class LLMService:
     """Service class for handling interactions with Large Language Models.
 
     Supports multiple providers with automatic fallback:
-      1. OpenCode (primary, free tier)
-      2. OpenRouter free models (secondary, free tier)
-      3. Google Gemini (tertiary, free tier 20 req/day protected)
+      1. OpenRouter free models (primary, free tier)
+      2. OpenCode (secondary)
+      3. Groq (explicit opt-in only, skipped in auto-detect)
 
     Each provider loops through its models before moving to the next.
     """
