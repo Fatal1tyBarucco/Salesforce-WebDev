@@ -53,7 +53,7 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
         name="openrouter",
         api_key_env="OPENROUTER_API_KEY",
         base_url="https://openrouter.ai/api/v1",
-        default_model="openrouter/auto",
+        default_model="openrouter/free",
         fallback_models=[
             "google/gemma-4-31b-it:free",
             "meta-llama/llama-4-scout:free",
