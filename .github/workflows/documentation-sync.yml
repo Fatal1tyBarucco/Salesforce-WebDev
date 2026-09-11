@@ -178,14 +178,12 @@ jobs:
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # VALIDAÇÃO 1/3 — LINK CHECKER:
-      # Executa markdown-link-check para detectar links quebrados
-      # internos e externos nos docs. Configuração em
-      # .github/link-check-config.json.
+      # Usa markdown-link-check via npx (pacote npm).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar links — link checker
         if: steps.guard.outputs.skip != 'true'
         run: |
-          uv run markdown-link-check \
+          npx --yes markdown-link-check \
             --quiet \
             --config .github/link-check-config.json \
             docs/ \
@@ -193,16 +191,14 @@ jobs:
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # VALIDAÇÃO 2/3 — MARKDOWN LINTING:
-      # Executa markdownlint-cli2 para validar estilo e consistência
-      # de Markdown (títulos, listas, espaçamento, frontmatter).
-      # Configuração em .markdownlint.yml na raiz do repositório.
+      # Usa markdownlint-cli2 via npx (pacote npm).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar formatação — markdown lint
         if: steps.guard.outputs.skip != 'true'
         run: |
-          uv run markdownlint-cli2 \
+          npx --yes markdownlint-cli2 \
             "docs/**/*.md" \
-            --config-file .markdownlint.yml \
+            --config-file .markdownlint.json \
             --ignore node_modules \
             || { echo "❌ Markdown lint falhou. Corrija os avisos acima."; exit 1; }
 
