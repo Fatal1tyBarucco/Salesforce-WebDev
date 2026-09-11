@@ -4,7 +4,7 @@ Fluxo completo de execução do pipeline ETL de Salesforce Release Notes.
 
 ## Visão Geral do Fluxo
 
-```
+```text
 Detectar Nova Release → Scraper (Playwright) → Parser (HTML) → Classifier (LLM)
     → Generator (Markdown) → Atualizar README → Notificações → GitHub Pages
 ```

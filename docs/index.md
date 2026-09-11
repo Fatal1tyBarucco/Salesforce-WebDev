@@ -1,6 +1,6 @@
 # Salesforce Release Intelligence
 
-<img id="random-banner" class="hero-banner" src="../../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
+<img id="random-banner" class="hero-banner" src="../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
 
 Pipeline automatizado para extração, classificação, análise e versionamento das Release Notes da Salesforce como artefatos Markdown estruturados.
 
@@ -268,7 +268,7 @@ Pattern reutilizável para chamadas externas:
 
 ## Estrutura de Diretórios
 
-```
+```text
 Salesforce-WebDev/
 ├── src/
 │   ├── main.py              # Orquestrador principal

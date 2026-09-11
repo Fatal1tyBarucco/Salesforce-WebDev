@@ -18,9 +18,11 @@ O scraper não consegue acessar a Salesforce Help (timeout, DNS, mudança de DOM
 
 - Verificar conectividade: `curl -I https://help.salesforce.com`
 - Executar scraper localmente para diagnóstico:
+
   ```bash
   uv run python src/main.py --dry-run
   ```
+
 - Verificar se os selectors do DOM ainda são válidos (ver `docs/SOURCE_SCHEMA.md`)
 - Se o DOM mudou, atualizar selectors e snapshots
 
@@ -47,6 +49,7 @@ A classificação de release ou a geração de resumos falha porque nenhum provi
 - Verificar se pelo menos uma chave LLM está configurada nos secrets
 - Verificar se o provider tem quota disponível
 - Executar em modo dry-run para validar sem chamar LLM:
+
   ```bash
   uv run python src/main.py --dry-run
   ```
@@ -58,9 +61,11 @@ O generator não consegue escrever os arquivos Markdown.
 **Ação:**
 
 - Verificar permissões do diretório `releases/`:
+
   ```bash
   ls -la releases/
   ```
+
 - Verificar se o caminho do release é válido e criável
 
 ### 5. Falha na Atualização do README

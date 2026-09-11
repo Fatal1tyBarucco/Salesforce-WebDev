@@ -90,7 +90,7 @@ export GOOGLE_API_KEY="sua-chave-aqui"
 
 ## Estrutura do Projeto
 
-```
+```text
 Salesforce-WebDev/
 ├── src/                    # Código-fonte Python
 │   ├── main.py             # Orquestrador principal

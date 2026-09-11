@@ -15,7 +15,7 @@ O mkdocs.yml referencia um arquivo que não existe no disco.
 
 **Erro típico:**
 
-```
+```text
 mkdocs.exceptions.ConfigError: Documentation file not found: docs/arquivo-inexistente.md
 ```
 

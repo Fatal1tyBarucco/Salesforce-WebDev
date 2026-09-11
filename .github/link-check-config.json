@@ -18,7 +18,10 @@
       "pattern": "^#"
     },
     {
-      "pattern": "^mailto:"
+      "pattern": "^assets/"
+    },
+    {
+      "pattern": "^/assets/"
     }
   ]
 }

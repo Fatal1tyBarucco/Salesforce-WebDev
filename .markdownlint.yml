@@ -1,40 +1,53 @@
-# Configuração do markdownlint-cli2 para documentação do projeto
-# Regras mais permissivas para docs técnicos com código e Mermaid
+# markdownlint-cli2 config for technical documentation with code blocks and Mermaid diagrams.
+# This file is YAML, not Markdown — the rules below do not apply to it.
 
 default: true
 
-# ── Títulos ─────────────────────────────────────────────────────────────
-heading-style: setext           # Usar underline (=== ///) em H1/H2
-first-line-h1: false            # Não exige H1 na primeira linha
+# Ignorar arquivos que não são documentação Markdown
+ignore:
+  - ".markdownlint.yml"
+  - ".markdownlintignore"
+  - "node_modules/**"
+  - "site/**"
+  - "package.json"
+  - "package-lock.json"
 
-# ── Conteúdo ────────────────────────────────────────────────────────────
+# ── Headings ────────────────────────────────────────────────────────────
+heading-style: setext
+first-line-h1: false
+
+# ── Content ─────────────────────────────────────────────────────────────
 front-matter-title-format: "%(title)s"
-no-duplicate-header: true       # Não permite headers duplicados na mesma página
-no-trailing-spaces: true        # Não permite espaços no final das linhas
-hard-tabs: false                # Não permite tabs (use spaces)
+no-duplicate-header: true
+no-trailing-spaces: true
+hard-tabs: false
 
-# ── Linhas ──────────────────────────────────────────────────────────────
-line-length: false              # Desativado — código e Mermaid precisam de linhas longas
-MD013: false                    # Alias para line-length (explicitado)
+# ── Lines ───────────────────────────────────────────────────────────────
+line-length: false
+MD013: false
 
 # ── HTML ────────────────────────────────────────────────────────────────
-MD033: false                    # Inline HTML permitido (banners, Mermaid, snippets)
+MD033: false
 
-# ── Listas ──────────────────────────────────────────────────────────────
-ul-indent: 2                    # Indentação de listas sem marcador: 2 spaces
-ol-prefix: decimal             # Listas ordenadas usam decimal (1. 2. 3.)
+# ── Lists ───────────────────────────────────────────────────────────────
+ul-indent: 2
+MD007:
+  indent: 2
 
-# ── Espaçamento ─────────────────────────────────────────────────────────
-blanks-around-headings: true    # Quebras de linha antes/depois de headings
-blanks-around-code-blocks: true # Quebras de linha antes/depois de code blocks
-blanks-around-tables: true      # Quebras de linha antes/depois de tables
+# ── Spacing ─────────────────────────────────────────────────────────────
+blanks-around-headings: true
+blanks-around-code-blocks: true
+blanks-around-tables: true
 
-# ── Regras específicas ──────────────────────────────────────────────────
+# ── Specific rules ──────────────────────────────────────────────────────
 MD024:
-  style: strict                # Não permite headings duplicados na mesma página
+  style: strict
 MD004:
-  style: subtree               # Listas aninhadas devem usar subtree
+  style: subtree
 MD005:
-  style: consistent            # Listas devem ter indentation consistente
+  style: consistent
 MD046:
-  style: fenced               # Code blocks devem usar fenced (```) em vez de indented
+  style: fenced
+
+# ── Tables ──────────────────────────────────────────────────────────────
+MD060: false
