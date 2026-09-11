@@ -1,0 +1,24 @@
+{
+  "_comment": "Configuração do markdown-link-check para validação de links no docs/",
+  "aliveStatusCodes": [200, 301, 302],
+  "requestTimeout": 10000,
+  "retryConnReset": true,
+  "baseUrl": "https://fatal1tybarucco.github.io/Salesforce-WebDev/",
+  "ignorePatterns": [
+    {
+      "pattern": "^https://help\\.salesforce\\.com/"
+    },
+    {
+      "pattern": "^https://github\\.com/Fatal1tyBarucco/Salesforce-WebDev/actions/"
+    },
+    {
+      "pattern": "^mailto:"
+    },
+    {
+      "pattern": "^#"
+    },
+    {
+      "pattern": "^mailto:"
+    }
+  ]
+}
