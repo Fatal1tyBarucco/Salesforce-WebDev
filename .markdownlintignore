@@ -1,0 +1,6 @@
+# arquivos não-documentação
+.markdownlint.yml
+package.json
+package-lock.json
+node_modules/
+site/

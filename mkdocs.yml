@@ -81,40 +81,23 @@ extra:
 
 nav:
   - Home: index.md
-  - Architecture:
-    - Overview: architecture/overview.md
-    - C4 Container: architecture/c4_container.md
-    - Decisions:
-      - Index: architecture/decisions/index.md
+  - Guias:
+    - Visão Geral: guides/index.md
+    - Quickstart: guides/getting-started.md
+    - Executando o Pipeline: guides/running-pipeline.md
+    - Desenvolvimento Local: guides/local-development.md
+  - Arquitetura:
+    - Visão Geral: architecture/overview.md
+    - Diagrama C4: architecture/c4_container.md
+    - Decisões (ADRs):
+      - Índice: architecture/decisions/index.md
       - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
+      - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
-  - Contribution:
-    - Testing Strategy: contribution/testing-strategy.md
-  - Maintenance:
-    - Index: maintenance/index.md
-    - Local Development: maintenance/local-development.md
-    - Workflow Operations: maintenance/workflow-operations.md
-    - Cache Management: maintenance/cache-management.md
-    - Troubleshooting: maintenance/troubleshooting.md
-    - Enhanced Search: maintenance/enhanced-search.md
-  - Observability:
-    - Index: observability/index.md
-    - Logging: observability/logging.md
-    - Pipeline Health: observability/pipeline-health.md
-  - Runbooks:
-    - Index: runbooks/index.md
-    - Scraper Failure: runbooks/scraper-failure.md
-    - GitHub Actions Failure: runbooks/github-actions-failure.md
-  - Roadmap:
-    - Index: roadmap/index.md
-    - V1: roadmap/v1.md
-    - V2: roadmap/v2.md
-    - V3: roadmap/v3.md
-    - V4 (Atual): roadmap/v4.md
-  - Changelog: changelog.md
   - API Reference:
+    - Visão Geral: api/index.md
     - Pipeline Principal: api/main.md
     - Scraper: api/scraper.md
     - Parser: api/parser.md
@@ -123,5 +106,28 @@ nav:
     - Translator: api/translator.md
     - Notifications: api/notifications.md
     - Cache Manager: api/cache_manager.md
-  - Internos:
-    - Diretiva do Agente: internal/AGENT_DIRECTIVE.md
+  - Runbooks:
+    - Visão Geral: runbooks/index.md
+    - Falha no Scraper: runbooks/scraper-failure.md
+    - Falha no GitHub Actions: runbooks/github-actions-failure.md
+    - Falha no Document Sync: runbooks/documentation-sync-failure.md
+    - Falha no MkDocs Build: runbooks/mkdocs-build-failure.md
+    - Falha na Geração de Release: runbooks/release-generation-failure.md
+  - Observabilidade:
+    - Visão Geral: observability/index.md
+    - Logging: observability/logging.md
+    - Pipeline Health: observability/pipeline-health.md
+  - Manutenção:
+    - Visão Geral: maintenance/index.md
+    - Operações de Workflow: maintenance/workflow-operations.md
+    - Desenvolvimento Local: maintenance/local-development.md
+    - Cache Management: maintenance/cache-management.md
+    - Troubleshooting: maintenance/troubleshooting.md
+    - Enhanced Search: maintenance/enhanced-search.md
+  - Roadmap:
+    - Visão Geral: roadmap/index.md
+    - V1: roadmap/v1.md
+    - V2: roadmap/v2.md
+    - V3: roadmap/v3.md
+    - V4 (Atual): roadmap/v4.md
+  - Changelog: changelog.md

@@ -1,6 +1,6 @@
 # Salesforce Release Intelligence
 
-<img id="random-banner" class="hero-banner" src="../../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
+<img id="random-banner" class="hero-banner" src="../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
 
 Pipeline automatizado para extração, classificação, análise e versionamento das Release Notes da Salesforce como artefatos Markdown estruturados.
 
@@ -18,7 +18,7 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 **📄 Documentação completa:**
 
-- [🇧🇷 Português](https://github.com/Fatal1tyBarucco/Salesforce-WebDev#-releases-disponíveis)
+- [🇧🇷 Português](index.md)
 - [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-releases-disponíveis)
 
 ---
@@ -268,7 +268,7 @@ Pattern reutilizável para chamadas externas:
 
 ## Estrutura de Diretórios
 
-```
+```text
 Salesforce-WebDev/
 ├── src/
 │   ├── main.py              # Orquestrador principal
@@ -325,9 +325,11 @@ Salesforce-WebDev/
 ## Documentação
 
 - [Contribuição](contribution/testing-strategy.md)
+- [Guia de Desenvolvimento Local](maintenance/local-development.md)
 - [Arquitetura](architecture/overview.md) — Visão arquitetural detalhada
 - [Decisões (ADRs)](architecture/decisions/index.md) — Decisões de design documentadas
 - [Manutenção](maintenance/index.md) — Guias de desenvolvimento local e troubleshooting
 - [Observabilidade](observability/index.md) — Logging e health checks
 - [Runbooks](runbooks/index.md) — Procedimentos de resposta a falhas
-- [Roadmap](roadmap/index.md) — Planejamento v1 → v3
+- [API Reference](api/index.md) — Referência autogerada a partir de docstrings
+- [Roadmap](roadmap/index.md) — Planejamento v1 → v4

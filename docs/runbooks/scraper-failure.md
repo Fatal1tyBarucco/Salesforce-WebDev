@@ -17,7 +17,16 @@ curl -I https://help.salesforce.com
 ### Execute scraper locally
 
 ```bash
-python -m src.main
+uv run python src/main.py
+# ou, para execução em modo dry-run:
+uv run python src/main.py --dry-run
+```
+
+### Validar ambiente Playwright
+
+```bash
+uv run playwright install chromium
+uv run python -c "from playwright.sync_api import sync_playwright; print('Playwright OK')"
 ```
 
 ## Recovery
