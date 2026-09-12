@@ -51,9 +51,6 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.13"
-  # Cache key base: hash do pyproject.toml + uv.lock para invalidar
-  # o cache quando as dependências mudam.
-  UV_CACHE_KEY: "uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}"
 
 jobs:
   sync:
@@ -101,9 +98,9 @@ jobs:
           path: |
             .venv
             ~/.cache/uv
-          key: ${{ env.UV_CACHE_KEY }}-${{ runner.os }}-${{ github.sha }}
+          key: uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
-            ${{ env.UV_CACHE_KEY }}-${{ runner.os }}-
+            uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}-${{ runner.os }}-
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # SETUP UV: instala uv na versão mais recente estável.
