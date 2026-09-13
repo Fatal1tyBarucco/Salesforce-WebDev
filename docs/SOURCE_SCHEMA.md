@@ -34,7 +34,7 @@ ul.tree                 /* Secondary */
 [role="tree"]           /* ARIA fallback */
 nav.toc                 /* Semantic fallback */
 .slds-tree__group       /* SLDS framework */
-```
+```text
 
 ### 2.2 Tree Items (Navigation Nodes)
 
@@ -55,7 +55,7 @@ Each node in the ToC uses ARIA roles for accessibility:
     </li>
   </ul>
 </li>
-```
+```text
 
 **Key attributes:**
 
@@ -92,11 +92,11 @@ The feature impact page renders all features with availability flags in a table:
     </tr>
   </tbody>
 </table>
-```
+```text
 
 **Tab-separated format (extracted via `inner_text`):**
 
-```
+```text
 Plataforma
 Enhanced Flow Builder\tYes\tYes\tNo\tNo
 New API Versioning\tYes\tYes\tYes\tNo
@@ -301,6 +301,7 @@ return Array.from(document.querySelectorAll('.feature-item')).map(item => ({
 
 The pipeline includes snapshot tests in `tests/test_snapshot.py` that capture expected parser output. When the DOM changes, these tests will fail and require snapshot regeneration:
 
+
 ```bash
 uv run pytest tests/test_snapshot.py           # Run snapshots
 uv run pytest tests/test_snapshot.py --snapshot-update  # Update after intentional changes
@@ -344,7 +345,8 @@ Se a taxa de scraping precisar ser ajustada, altere apenas `RATE_LIMIT_MIN_INTER
 When Salesforce updates its portal:
 
 1. **Run a probe** to detect new failures:
-   ```bash
+   
+```bash
    uv run pytest tests/test_snapshot.py -v
    ```
 
@@ -355,7 +357,8 @@ When Salesforce updates its portal:
 4. **Update this document** with the new selectors/structure
 
 5. **Regenerate snapshots**:
-   ```bash
+   
+```bash
    uv run pytest tests/test_snapshot.py --snapshot-update
    ```
 
