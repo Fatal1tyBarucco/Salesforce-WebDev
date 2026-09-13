@@ -41,7 +41,7 @@ Matching terms are highlighted in both titles and teaser text using the `<mark>`
 
 ## How It Works
 
-```
+```text
 User Input → Debounce (200ms)
     ↓
 Expand with Synonyms
@@ -51,7 +51,7 @@ Fuzzy Match (Levenshtein)
 Score + Sort
     ↓
 Display with Fuzzy Indicator (★)
-```
+```text
 
 ## Configuration
 
@@ -67,7 +67,7 @@ plugins:
       prebuild_index:
         enabled: true
         method: "local"
-```
+```text
 
 ## Customization
 
@@ -78,7 +78,7 @@ const SF_SYNONYMS = {
   // Add your custom mappings here
   myTerm: ["synonym1", "synonym2"],
 };
-```
+```text
 
 ## Performance
 

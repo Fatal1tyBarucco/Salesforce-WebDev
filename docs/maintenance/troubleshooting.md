@@ -2,7 +2,7 @@
 
 ## Scraper Failure
 
-### Symptoms
+### Symptoms - Scraper Failure
 
 - HTTP timeout
 
@@ -10,7 +10,7 @@
 
 - Salesforce response changes
 
-### Actions
+### Actions - Scraper Failure
 
 - validate Salesforce endpoint
 
@@ -42,7 +42,7 @@
 
 ## Workflow Failure
 
-### Actions
+### Actions - Parser Failure
 
 - inspect GitHub Actions logs
 
