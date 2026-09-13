@@ -309,8 +309,11 @@ uv run pytest tests/test_snapshot.py --snapshot-update  # Update after intention
 ### 8.2 Circuit Breaker
 
 The scraper includes a circuit breaker (`src/circuit_breaker.py`) that:
+
 - Opens after **3 consecutive failures**
+
 - Stays open for **60 seconds** before allowing a retry
+
 - Returns stale cache (if available) when open
 
 ### 8.3 Rate Limiting
@@ -368,8 +371,13 @@ When Salesforce updates its portal:
 ## Related Files
 
 - `src/scraper.py` — Playwright-based scraper with all DOM access logic
+
 - `src/parser.py` — BeautifulSoup-based parser with ToC extraction
+
 - `src/config.py` — Configuration constants (URLs, selectors, release IDs)
+
 - `src/circuit_breaker.py` — Failure tracking and circuit breaker
+
 - `tests/test_snapshot.py` — Snapshot tests for regression detection
+
 - `tests/__snapshots__/test_snapshot.ambr` — Saved snapshot data
