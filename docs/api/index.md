@@ -8,7 +8,7 @@ Cada módulo documentado possui um arquivo "evocador" em `docs/api/` com uma dir
 
 ```markdown
 ::: src.modulo
-```
+```markdown
 
 O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funções definidas em `src/` e gera a documentação automaticamente no site.
 

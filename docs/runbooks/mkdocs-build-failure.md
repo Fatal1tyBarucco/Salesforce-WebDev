@@ -17,7 +17,7 @@ O mkdocs.yml referencia um arquivo que não existe no disco.
 
 ```text
 mkdocs.exceptions.ConfigError: Documentation file not found: docs/arquivo-inexistente.md
-```
+```text
 
 **Ação:**
 
@@ -29,7 +29,7 @@ uv run mkdocs build --strict 2>&1 | grep "Documentation file not found"
 ls -la docs/caminho/para/arquivo.md
 
 # Se faltar, criar o arquivo ou remover a entrada do nav
-```
+```text
 
 ### 2. Snippet Markdown faltando
 
@@ -49,7 +49,7 @@ cat > CHANGELOG.md << 'EOF'
 
 Documentação em construção.
 EOF
-```
+```text
 
 Ou remover o snippet de `docs/changelog.md` e manter o changelog apenas no MkDocs.
 
@@ -64,7 +64,7 @@ Um arquivo em `docs/api/*.md` referencia `::: src.modulo` e o módulo não exist
 ls -la src/modulo_que_deve_existir.py
 
 # Se não existir, remover ou corrigir a diretiva no arquivo docs/api/*.md
-```
+```text
 
 ### 4. Extensão de Markdown não carregada
 
@@ -87,7 +87,7 @@ PYTHONPATH=. uv run python -c "import src.main; print('OK')"
 
 # Se falhar, verificar se src/ tem __init__.py ou se o path está correto
 ls src/__init__.py
-```
+```text
 
 ### 6. Erro de template ou tema
 

@@ -55,7 +55,7 @@ graph LR
     GEN --> NOTIFY
     GEN --> GH
     TRAIL --> GEN
-```
+```markdown
 
 ## Arquitetura em Camadas
 
@@ -89,7 +89,7 @@ uv run pytest
 
 # 5. Verificar cobertura
 uv run pytest --cov=src --cov-fail-under=95
-```
+```markdown
 
 ## Variáveis de Ambiente
 
@@ -138,7 +138,7 @@ sequenceDiagram
     end
 
     M->>H: set_pipeline_status("completed")
-```
+```text
 
 ## Módulos Principais
 
@@ -156,7 +156,7 @@ Orquestrador central. Responsável por:
 # Uso com injeção de dependências
 config = PipelineConfig(dry_run=True, release_filter="summer_26")
 await run_pipeline(config)
-```
+```text
 
 ### Scraper (`scraper.py`)
 
@@ -176,7 +176,7 @@ stateDiagram-v2
     HalfOpen --> Closed: sucesso
     HalfOpen --> Open: falha
     Closed --> Closed: sucesso (reset)
-```
+```text
 
 ### LLM Service (`llm_service.py`)
 
@@ -194,7 +194,7 @@ graph LR
     GEM -->|falha| OC["OpenCode"]
     OC -->|falha| MIMO["MiMoCode"]
     MIMO -->|falha| NULL["return None"]
-```
+```javascript
 
 ### Parser (`parser.py`)
 

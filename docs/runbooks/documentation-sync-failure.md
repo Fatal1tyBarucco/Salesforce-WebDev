@@ -19,7 +19,7 @@ Se `GOOGLE_API_KEY`, `OPENCODE_API_KEY` e `OPENROUTER_API_KEY` estiverem ausente
 ```bash
 # Verificar secrets configurados (secreto, apenas indicador de presença)
 gh secret list | grep -E "GOOGLE_API_KEY|OPENCODE_API_KEY|OPENROUTER_API_KEY"
-```
+```text
 
 **Ação:**
 
@@ -38,7 +38,7 @@ O build falha por:
 
 ```bash
 uv run mkdocs build --strict
-```
+```text
 
 **Ação:**
 
@@ -53,7 +53,7 @@ uv run mkdocs build --strict
 
 ```bash
 uv run markdown-link-check --config .github/link-check-config.json docs/
-```
+```text
 
 **Ação:**
 
@@ -68,7 +68,7 @@ uv run markdown-link-check --config .github/link-check-config.json docs/
 
 ```bash
 uv run markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.yml
-```
+```text
 
 **Ação:**
 

@@ -34,7 +34,7 @@ C4Container
     UpdateRelStyle(user, mkdocs, $offsetY="-40")
     UpdateRelStyle(scraper, parser, $offsetY="-40")
     UpdateRelStyle(generator, mkdocs, $offsetY="-40")
-```
+```markdown
 
 ## Containers
 

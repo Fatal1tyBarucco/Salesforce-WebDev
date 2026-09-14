@@ -8,25 +8,25 @@ Instale as dependências do projeto:
 
 ```bash
 uv sync --extra dev
-```
+```text
 
 Para instalar apenas o ambiente de execução (sem ferramentas de desenvolvimento):
 
 ```bash
 uv sync
-```
+```text
 
 ## Execute Pipeline
 
 ```bash
 uv run python src/main.py
-```
+```text
 
 ## Execute Tests
 
 ```bash
 uv run pytest
-```
+```text
 
 ## Validate Quality
 
@@ -34,7 +34,7 @@ uv run pytest
 uv run ruff check .
 uv run black --check .
 uv run mypy src/
-```
+```text
 
 ## Instalar Navegador Playwright
 
@@ -42,7 +42,7 @@ O scraper utiliza Playwright para renderizar a Salesforce Help (SPA JavaScript).
 
 ```bash
 uv run playwright install chromium
-```
+```markdown
 
 ## Variáveis de Ambiente
 
@@ -63,7 +63,7 @@ Para validar o pipeline sem gerar efeitos colaterais (sem escrever arquivos, sem
 
 ```bash
 uv run python src/main.py --dry-run
-```
+```text
 
 ## Debugging
 
@@ -71,7 +71,7 @@ Para logs detalhados com correlation_id:
 
 ```bash
 LOG_LEVEL=DEBUG uv run python src/main.py
-```
+```text
 
 Para logs em formato JSON (integração com sistemas de agregação):
 

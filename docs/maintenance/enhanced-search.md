@@ -5,6 +5,7 @@ The Salesforce Release Notes documentation site features an enhanced search syst
 ## Features
 
 ### 1. **Fuzzy Matching**
+
 Typo-tolerant search powered by Levenshtein distance. Try searching for:
 
 - `apex` → matches "Apex", "Apache", "APE"
@@ -12,6 +13,7 @@ Typo-tolerant search powered by Levenshtein distance. Try searching for:
 - `flow builder` → matches "Flow", "Builder", "Flows"
 
 ### 2. **Salesforce Synonym Expansion**
+
 The search automatically expands queries using Salesforce terminology:
 
 | Term | Expands to |
@@ -34,9 +36,11 @@ The search automatically expands queries using Salesforce terminology:
 - `Enter` — Execute search and save to history
 
 ### 4. **Recent Searches**
+
 The 5 most recent searches are saved in `localStorage` and displayed as placeholders.
 
 ### 5. **Result Highlighting**
+
 Matching terms are highlighted in both titles and teaser text using the `<mark>` tag.
 
 ## How It Works
@@ -59,9 +63,11 @@ Search configuration is in `mkdocs.yml`:
 
 ```yaml
 plugins:
+
   - search:
-      separator: "[\s\-\.\,\:\/\(\)\[\]]+"
+      separator: "[\s\-\.,:/\(\)\[\]]+"
       lang:
+
         - en
         - pt
       prebuild_index:
@@ -78,7 +84,7 @@ const SF_SYNONYMS = {
   // Add your custom mappings here
   myTerm: ["synonym1", "synonym2"],
 };
-```text
+```
 
 ## Performance
 

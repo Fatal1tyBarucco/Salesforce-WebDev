@@ -16,7 +16,7 @@ Configuração mínima para rodar o pipeline de extração e documentação em 5
 ```bash
 git clone https://github.com/Fatal1tyBarucco/Salesforce-WebDev.git
 cd Salesforce-WebDev
-```
+```bash
 
 ### 2. Instalar dependências com uv
 
@@ -26,7 +26,7 @@ uv sync --extra dev
 
 # Se quiser apenas o ambiente de execução (sem lint/test tools):
 # uv sync
-```
+```text
 
 ### 3. Instalar navegador Playwright
 
@@ -34,7 +34,7 @@ O scraper usa Playwright para renderizar a Salesforce Help (SPA JavaScript).
 
 ```bash
 uv run playwright install chromium
-```
+```text
 
 ## Execução Rápida
 
@@ -42,25 +42,25 @@ uv run playwright install chromium
 
 ```bash
 uv run python src/main.py
-```
+```text
 
 ### Executar em modo dry-run (sem efeitos colaterais)
 
 ```bash
 uv run python src/main.py --dry-run
-```
+```text
 
 ### Executar testes
 
 ```bash
 uv run pytest
-```
+```text
 
 ### Verificar cobertura de testes
 
 ```bash
 uv run pytest --cov=src --cov-fail-under=95
-```
+```text
 
 ### Validar qualidade de código
 
@@ -68,7 +68,7 @@ uv run pytest --cov=src --cov-fail-under=95
 uv run ruff check .
 uv run black --check .
 uv run mypy src/
-```
+```markdown
 
 ## Configuração de API Keys
 
@@ -86,7 +86,7 @@ O pipeline usa LLMs para classificação, resumos e relatórios. Configure pelo 
 ```bash
 # Exemplo: configurar Google Gemini
 export GOOGLE_API_KEY="sua-chave-aqui"
-```
+```text
 
 ## Estrutura do Projeto
 

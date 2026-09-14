@@ -12,7 +12,7 @@
 
 ```bash
 curl -I https://help.salesforce.com
-```
+```text
 
 ### Execute scraper locally
 
@@ -20,7 +20,7 @@ curl -I https://help.salesforce.com
 uv run python src/main.py
 # ou, para execução em modo dry-run:
 uv run python src/main.py --dry-run
-```
+```text
 
 ### Validar ambiente Playwright
 

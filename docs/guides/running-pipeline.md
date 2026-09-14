@@ -7,7 +7,7 @@ Fluxo completo de execução do pipeline ETL de Salesforce Release Notes.
 ```text
 Detectar Nova Release → Scraper (Playwright) → Parser (HTML) → Classifier (LLM)
     → Generator (Markdown) → Atualizar README → Notificações → GitHub Pages
-```
+```text
 
 ## 1. Detecção de Nova Release
 
@@ -22,7 +22,7 @@ config = PipelineConfig(
     release_filter=None,        # None = todas as releases, ou "summer_26"
     log_level="INFO",           # DEBUG, INFO, WARNING, ERROR
 )
-```
+```text
 
 ## 2. Execução Local
 

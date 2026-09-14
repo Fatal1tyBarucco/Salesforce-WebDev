@@ -174,11 +174,34 @@ jobs:
           uv run python .github/scripts/documentation_reconcile.py | tee /tmp/reconcile_summary.md
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # AUTO-FIX MARKDOWN LINT: corrige erros determinísticos
+      # (MD022, MD024, MD031, MD040, MD047, MD012, MD009).
+      # MD029 (ordered list prefix) não é auto-fixável — requer
+      # entendimento semântico do conteúdo da lista.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Auto-fix erros determinísticos de markdown lint
+        if: steps.guard.outputs.skip != 'true'
+        id: markdown-fix
+        run: |
+          set +e
+          uv run python .github/scripts/fix_markdown.py
+          FIX_EXIT=$?
+          set -e
+          if [ $FIX_EXIT -eq 1 ]; then
+            echo "has_fixes=true" >> $GITHUB_OUTPUT
+            echo "✅ Arquivos corrigidos pelo auto-fix."
+            git add docs/
+          else
+            echo "has_fixes=false" >> $GITHUB_OUTPUT
+            echo "✅ Nenhum erro determinístico encontrado."
+          fi
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # VALIDAÇÃO 1/3 — LINK CHECKER:
       # Usa markdown-link-check via npx (pacote npm).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar links — link checker
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.markdown-fix.outputs.has_fixes != 'true'
         run: |
           npx --yes markdown-link-check \
             --quiet \
@@ -191,7 +214,7 @@ jobs:
       # Usa markdownlint-cli2 via npx (pacote npm).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar formatação — markdown lint
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.markdown-fix.outputs.has_fixes != 'true'
         run: |
           npx --yes markdownlint-cli2 \
             "docs/**/*.md" \

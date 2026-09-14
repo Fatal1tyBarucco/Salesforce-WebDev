@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Fix deterministic markdown lint errors (MD022, MD024, MD031, MD032, MD040, MD047, MD012, MD009, MD029)."""
+"""Fix deterministic markdown lint errors.
+Rules: MD022, MD024, MD031, MD032, MD040, MD047, MD012, MD009, MD029.
+
+MD029 (ordered list prefix) is NOT auto-fixed here because renumbering
+requires semantic understanding of the list content. Fix manually.
+"""
 import re
 import sys
 from pathlib import Path
@@ -14,11 +19,8 @@ def detect_language(block_lines):
     text = "\n".join(block_lines).strip()
     if not text:
         return "text"
-    lower = text.lower()
     # HTML patterns
-    if re.search(r"<\s*html|<\s*li|<\s*table|<\s*style|<\s*link|<\s*head|<\s*body", text):
-        return "html"
-    if re.search(r"<\s*\w+[\s>]", text) and "</" in text:
+    if re.search(r"<\s*html|<\s*li|<\s*table|<\s*style|<\s*link|<\s*head|<\s*body|</\w+>", text):
         return "html"
     # JavaScript patterns
     if re.search(r"\bfunction\b|\bconst\b|\blet\b|\bvar\b|\bimport\b|\bexport\b|=>\s*\{", text):
@@ -226,6 +228,7 @@ def fix_md029_ordered_lists(lines):
         if m:
             indent = m.group(1)
             # Check if this is start of consecutive ordered list
+            # Only renumber if items are clearly sequential
             j = i
             while j < len(lines) and re.match(rf"^{re.escape(indent)}\d+\.\s", lines[j]):
                 j += 1

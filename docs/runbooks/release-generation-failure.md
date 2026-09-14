@@ -21,7 +21,7 @@ O scraper não consegue acessar a Salesforce Help (timeout, DNS, mudança de DOM
 
   ```bash
   uv run python src/main.py --dry-run
-  ```
+  ```text
 
 - Verificar se os selectors do DOM ainda são válidos (ver `docs/SOURCE_SCHEMA.md`)
 - Se o DOM mudou, atualizar selectors e snapshots
@@ -38,7 +38,7 @@ uv run pytest tests/test_snapshot.py -v
 
 # Se falhar, verificar diff e atualizar snapshots se a mudança foi intencional
 uv run pytest tests/test_snapshot.py --snapshot-update
-```
+```text
 
 ### 3. Falha no LLM (provider indisponível)
 
@@ -52,7 +52,7 @@ A classificação de release ou a geração de resumos falha porque nenhum provi
 
   ```bash
   uv run python src/main.py --dry-run
-  ```
+  ```text
 
 ### 4. Falha na Geração de Markdown (permissão, caminho inválido)
 
@@ -64,7 +64,7 @@ O generator não consegue escrever os arquivos Markdown.
 
   ```bash
   ls -la releases/
-  ```
+  ```text
 
 - Verificar se o caminho do release é válido e criável
 

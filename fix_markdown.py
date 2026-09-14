@@ -43,7 +43,7 @@ while i < len(lines):
                     lang = 'python'
                 elif 'uv run' in block_content or 'pytest' in block_content or '$' in block_content:
                     lang = 'bash'
-                elif '{' in block_content and '}' in block_content and ':' in block_content and not 'function' in block_content:
+                elif '{' in block_content and '}' in block_content and ':' in block_content and 'function' not in block_content:
                     lang = 'json'
                 elif '|' in block_content and '---' in block_content:
                     lang = 'markdown'
