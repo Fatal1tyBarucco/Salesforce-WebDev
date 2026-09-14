@@ -160,19 +160,23 @@ def make_toc_html(
         cat_slug = cat.lower().replace(" ", "_")
         article_items: list[str] = []
         for i in range(1, articles_per_category + 1):
-            article_items.append(f"""        <li role="treeitem" aria-level="3">
+            article_items.append(
+                f"""        <li role="treeitem" aria-level="3">
           <div class="slds-tree__item" data-is-link="true" data-node-id="rn_{cat_slug}_art{i}">
             <a href="/s/articleView?id=release-notes.rn_{cat_slug}_art{i}.htm">{cat} Article {i}</a>
           </div>
-        </li>""")
-        items_html.append(f"""      <li role="treeitem" aria-level="2">
+        </li>"""
+            )
+        items_html.append(
+            f"""      <li role="treeitem" aria-level="2">
         <div class="slds-tree__item" data-node-id="rn_{cat_slug}">
           <span class="tree-item-label">{cat}</span>
         </div>
         <ul>
 {chr(10).join(article_items)}
         </ul>
-      </li>""")
+      </li>"""
+        )
 
     return f"""<html>
 <body>
@@ -243,8 +247,10 @@ def make_feature_impact_html(
 
     for cat_idx, cat in enumerate(categories):
         cat_id = f"cat_{cat_idx}"
-        sections.append(f"""<section class="feature-category" data-category="{cat}" id="{cat_id}">
-  <h2>{cat}</h2>""")
+        sections.append(
+            f"""<section class="feature-category" data-category="{cat}" id="{cat_id}">
+  <h2>{cat}</h2>"""
+        )
         for i in range(1, features_per_category + 1):
             sections.append(
                 f"""  <div class="feature-item" data-feature-id="W26-{cat_idx:02d}{i:02d}">

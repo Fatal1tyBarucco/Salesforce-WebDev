@@ -26,10 +26,18 @@ def detect_language(block_lines):
     if re.search(r"\bfunction\b|\bconst\b|\blet\b|\bvar\b|\bimport\b|\bexport\b|=>\s*\{", text):
         return "javascript"
     # Python patterns
-    if re.search(r"\bdef \w+|\bclass \w+|\bimport \w+|\bprint\(|\bif __name__|SECTION_HEADERS|RATE_LIMIT", text):
+    if re.search(
+        r"\bdef \w+|\bclass \w+|\bimport \w+|\bprint\(|\bif __name__|SECTION_HEADERS|RATE_LIMIT",
+        text,
+    ):
         return "python"
     # Bash patterns
-    if re.search(r"\b(uv|pytest|npm|node|yarn|pip|python|bash|sh)\b", text) or "$ " in text or "&&" in text or re.search(r"^\s*[a-z_]+\s*&&", text, re.MULTILINE):
+    if (
+        re.search(r"\b(uv|pytest|npm|node|yarn|pip|python|bash|sh)\b", text)
+        or "$ " in text
+        or "&&" in text
+        or re.search(r"^\s*[a-z_]+\s*&&", text, re.MULTILINE)
+    ):
         return "bash"
     if re.search(r"^\s*[a-z_]+\s*\|\s*[a-z_]+", text, re.MULTILINE):
         return "bash"
@@ -107,7 +115,9 @@ def fix_md031_fences(lines):
                 fence_indent = len(line) - len(line.lstrip())
                 while j < len(lines):
                     next_stripped = lines[j].strip()
-                    if next_stripped == "```" or (next_stripped.startswith("```") and len(next_stripped) <= 10):
+                    if next_stripped == "```" or (
+                        next_stripped.startswith("```") and len(next_stripped) <= 10
+                    ):
                         # Check if this is closing fence (same or less indented than opening)
                         if len(lines[j]) - len(lines[j].lstrip()) <= fence_indent + 1:
                             break
@@ -118,7 +128,11 @@ def fix_md031_fences(lines):
                         out.append(lines[k])
                     out.append(lines[j])  # closing fence
                     # Ensure blank after if next line is non-blank non-fence
-                    if j + 1 < len(lines) and lines[j + 1].strip() != "" and not lines[j + 1].strip().startswith("```"):
+                    if (
+                        j + 1 < len(lines)
+                        and lines[j + 1].strip() != ""
+                        and not lines[j + 1].strip().startswith("```")
+                    ):
                         out.append("")
                     i = j + 1
                 else:
@@ -138,8 +152,16 @@ def fix_md032_lists(lines):
     out = []
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if stripped.startswith("- ") or stripped.startswith("* ") or re.match(r"^\d+\.\s", stripped):
-            if i > 0 and lines[i - 1].strip() != "" and not re.match(r"^[\s]*[-*+]|^[\s]*\d+\.", lines[i - 1].strip()):
+        if (
+            stripped.startswith("- ")
+            or stripped.startswith("* ")
+            or re.match(r"^\d+\.\s", stripped)
+        ):
+            if (
+                i > 0
+                and lines[i - 1].strip() != ""
+                and not re.match(r"^[\s]*[-*+]|^[\s]*\d+\.", lines[i - 1].strip())
+            ):
                 out.append("")
             out.append(line)
         else:
