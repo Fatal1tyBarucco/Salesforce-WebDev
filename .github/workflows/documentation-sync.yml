@@ -281,7 +281,7 @@ jobs:
           steps.changes.outputs.has_changes == 'true' &&
           steps.mode.outputs.mode != 'audit'
         run: |
-          git pull --rebase origin ${{ github.ref_name }}
+          git pull --rebase --autostash origin ${{ github.ref_name }}
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add docs/ README.md README.en.md mkdocs.yml
           # Só faz commit se houver arquivos stageados (evita commit vazio)
