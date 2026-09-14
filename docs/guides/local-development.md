@@ -62,7 +62,9 @@ uv run playwright install chromium
 Para validar o pipeline sem gerar efeitos colaterais (sem escrever arquivos, sem notificações):
 
 ```bash
+
 uv run python src/main.py --dry-run
+
 ```text
 
 ## Debugging
@@ -70,11 +72,15 @@ uv run python src/main.py --dry-run
 Para logs detalhados com correlation_id:
 
 ```bash
+
 LOG_LEVEL=DEBUG uv run python src/main.py
+
 ```text
 
 Para logs em formato JSON (integração com sistemas de agregação):
 
 ```bash
+
 LOG_FORMAT=json LOG_LEVEL=DEBUG uv run python src/main.py
+
 ```

@@ -84,13 +84,16 @@ O pipeline usa LLMs para classificação, resumos e relatórios. Configure pelo 
 *Pelo menos uma chave é necessária para funcionalidades de IA.
 
 ```bash
+
 # Exemplo: configurar Google Gemini
 export GOOGLE_API_KEY="sua-chave-aqui"
+
 ```text
 
 ## Estrutura do Projeto
 
 ```text
+
 Salesforce-WebDev/
 ├── src/                    # Código-fonte Python
 │   ├── main.py             # Orquestrador principal
@@ -104,6 +107,7 @@ Salesforce-WebDev/
 ├── tests/                  # Testes pytest
 ├── mkdocs.yml              # Configuração do site de docs
 └── pyproject.toml          # Configuração do projeto e dependências
+
 ```
 
 ## Próximos Passos

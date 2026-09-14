@@ -1,7 +1,13 @@
 {
   "documentation_map": {
+    ".github/workflows/documentation-sync.yml": [
+      "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
+    ],
     ".github/workflows/release_notes_pipeline.yml": [
       "docs/maintenance/workflow-operations.md"
+    ],
+    "src/__init__.py": [
+      "docs/runbooks/mkdocs-build-failure.md"
     ],
     "src/ai_automation.py": [
       "README.en.md"
@@ -16,10 +22,12 @@
       "docs/api/notifications.md"
     ],
     "src/cache_manager.py": [
-      "docs/api/cache_manager.md"
+      "docs/api/cache_manager.md",
+      "docs/architecture/c4_container.md"
     ],
     "src/circuit_breaker.py": [
-      "docs/SOURCE_SCHEMA.md"
+      "docs/SOURCE_SCHEMA.md",
+      "docs/architecture/c4_container.md"
     ],
     "src/config.py": [
       "docs/SOURCE_SCHEMA.md"
@@ -34,24 +42,34 @@
       "README.en.md"
     ],
     "src/health.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/architecture/c4_container.md"
     ],
     "src/limiters/rate_limiter.py": [
-      "docs/SOURCE_SCHEMA.md"
+      "docs/SOURCE_SCHEMA.md",
+      "docs/architecture/c4_container.md"
     ],
     "src/llm_service.py": [
       "docs/api/llm_service.md",
-      "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
+      "docs/architecture/c4_container.md"
     ],
     "src/logger.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/observability/logging.md",
+      "docs/runbooks/index.md"
     ],
     "src/main.py": [
       "README.en.md",
       "README.md",
       "docs/api/main.md",
       "docs/architecture/overview.md",
-      "docs/index.md"
+      "docs/guides/getting-started.md",
+      "docs/guides/local-development.md",
+      "docs/guides/running-pipeline.md",
+      "docs/index.md",
+      "docs/maintenance/local-development.md",
+      "docs/runbooks/release-generation-failure.md",
+      "docs/runbooks/scraper-failure.md"
     ],
     "src/notifications.py": [
       "README.en.md",
@@ -60,7 +78,8 @@
     "src/parser.py": [
       "README.en.md",
       "docs/SOURCE_SCHEMA.md",
-      "docs/api/parser.md"
+      "docs/api/parser.md",
+      "docs/architecture/c4_container.md"
     ],
     "src/salesforce.py": [
       "README.en.md"
@@ -85,21 +104,25 @@
     ".github/agents/salesforce-release-notes-agent.md": "046eac5a22983a4d6995a130772897c7b14c1dfc",
     ".github/copilot-instructions.md": "98a4d9c95cc74ecef68835f3704d897b4a29e0f4",
     ".github/dependabot.yml": "ec76a0a6b7fb35c0d5996bfd80ae19dbb38044fa",
+    ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
+    ".github/scripts/fix_markdown.py": "e80c76f0c6a246917747317d30a47e336dfe1d5a",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/copilot-setup-steps.yml": "85ee69418c3c87b3ad07f0e69c13a8ce48f2a10d",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "73d09952b1d3f2af75b282b954cd91454e6afa81",
-    ".github/workflows/documentation-sync.yml": "246f276cc1a305f23dca53b52b96643dfc99492a",
+    ".github/workflows/documentation-sync.yml": "c91b66510043a4353c9284227ad8a4d34c8d0309",
     ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
     ".github/workflows/python-quality.yml": "25d7ce6abb5a42263e923167c133a66726707c92",
     ".github/workflows/release_notes_pipeline.yml": "c23f663e2c0edaaf9624254edb0f57fbd08b7dcf",
-    ".gitignore": "70c5a217dc80a12d98bfacd21edf16413f26eaf1",
+    ".gitignore": "5f6ed21a738b17a85b6b7d049504e4fe2768e9b4",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
+    ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
+    ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "3d26311f3520b555301701831e5d909c419f7259",
     "AGENTS.md": "b0089487a65dd57c0836f4ff86b6cac75d4fd00b",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
@@ -114,53 +137,63 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "637fb0ce9a4569b3cda3c755db12df138e7a1873",
-    "docs/SOURCE_SCHEMA.md": "29ae960e28d63a2ed361a1cc2971fcd5088b5239",
+    "docs/.documentation-manifest.json": "1ff73fd601880b63b4dcd5097fe779b6649f5775",
+    "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
+    "docs/api/index.md": "87475ee5b91944de323d1a9115208c22f3b2bbd8",
     "docs/api/llm_service.md": "288965a8f6f021c5626160bef328de04ba244cbb",
     "docs/api/main.md": "53e9a11d01a4f783418fe3d0cd8f4e295a2c4bfd",
     "docs/api/notifications.md": "3de012aa6dce7127ab6089af6c53bd1ade0cd8bf",
     "docs/api/parser.md": "b1818951d365ebf204b6a7871583329b22ae6866",
     "docs/api/scraper.md": "80250db67c4db6397739e97e2b2729806f4146e7",
     "docs/api/translator.md": "c994097761189c1a4881946dd75ffc5b8b3fa4bb",
-    "docs/architecture/c4_container.md": "3730b48eee30be04797636868ffa9a1803505c78",
+    "docs/architecture/c4_container.md": "46451f3fa0af8ef4dbd4313637c85ab77eebc4eb",
     "docs/architecture/decisions/adr-001-parser-strategy.md": "445fcc85b61a64b6ad7d706621681022bcab875e",
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
     "docs/architecture/decisions/adr-003-topic-classification.md": "0b5af8d9e4f2e944218dd594939474733c568d3e",
-    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "ef6cf9581567f740de73301b0895ebb2c77183a0",
+    "docs/architecture/decisions/adr-004-auto-healing.md": "04b40d512bc7a5eed78848ade93527e11bfbec9a",
+    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "7c191df5c470c5e3145e03fbf056478fd00ed4ba",
     "docs/architecture/decisions/index.md": "8096383df92242c03bff21e412c3d502165bda1e",
-    "docs/architecture/overview.md": "e42ca5b9c93a3dbaee5e72892cffdb793949bc08",
+    "docs/architecture/overview.md": "ea33eec85676621e598086f57f973789ed768fab",
+    "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "docs/assets/javascripts/banner.js": "8a301034e76890dd856fb4717b21a4353631dd38",
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
     "docs/changelog.md": "628614e67ca1e9049ea78db520628caafa95a323",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
-    "docs/index.md": "a2173039d178d49b2ac55382d7493fbae51b1d83",
+    "docs/guides/getting-started.md": "63072bf5cd72cad290c3134ea465fb4a3eb2cafa",
+    "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
+    "docs/guides/local-development.md": "24a946e6895afb8871bdc7c1850942f4623ca6d1",
+    "docs/guides/running-pipeline.md": "36120cdf19558fa04dd87112a6d96bb1ad3d2f24",
+    "docs/index.md": "9a93744c534f8467f313f280589e733d07401f90",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
-    "docs/maintenance/enhanced-search.md": "ca1e1acf5918e7a96a77d9e81569bf3b72ae714a",
+    "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
     "docs/maintenance/index.md": "9738d83904ac022c7f1dd62b3c49ab6189268631",
-    "docs/maintenance/local-development.md": "07ab38ee12ca16900599971518ab46b8f371f576",
-    "docs/maintenance/troubleshooting.md": "391b8e0a48ab3e4cb53d85cbaa15556664cfa154",
-    "docs/maintenance/workflow-operations.md": "74d3b751c628ae3530fe64ea4faaabad1e10da2d",
+    "docs/maintenance/local-development.md": "3a7f494edf4654c38f72b052ec6044d273ae559b",
+    "docs/maintenance/troubleshooting.md": "7aca3e97dedf949d164c7bd13f5b963e2f99fa29",
+    "docs/maintenance/workflow-operations.md": "fa8cf2e1f9e54d017af07dc311758f03539d88f9",
     "docs/observability/index.md": "2bd56341a645958c8d55912e17b6d54ac1ae49e2",
-    "docs/observability/logging.md": "3da6bbc3fdee3ce93ab870053e4910187fd3d592",
+    "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
-    "docs/roadmap/index.md": "f2c07b80fa5497217324abd1fbc4f24e6203ee05",
+    "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
-    "docs/roadmap/v3.md": "38c62bb3673cbd63b51d05468b07c30b2f8d422f",
-    "docs/roadmap/v4.md": "fe56336bf85fd3cda96ca57d6617b4bff0132c09",
+    "docs/roadmap/v3.md": "57e06591c6941ba9df4035b103b979d7c6530ae0",
+    "docs/roadmap/v4.md": "bc7e75d4dbdeb362ca25a9bdca4b890c4134cac9",
+    "docs/runbooks/documentation-sync-failure.md": "59cbf7403a4b93ffa401f8a85d0690be1ca739ec",
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
-    "docs/runbooks/index.md": "b8b7c7747d3c7e695ccdfa0f043ea40d859b63d7",
-    "docs/runbooks/scraper-failure.md": "3c17ebb5f6c1c186ec4a1a4e63264fd780221db5",
+    "docs/runbooks/index.md": "a267cf5c71ad14f310433cb669f110ae9b7f6e60",
+    "docs/runbooks/mkdocs-build-failure.md": "bcf7c297d31b5b0c6fe93587afd8c95256072687",
+    "docs/runbooks/release-generation-failure.md": "2b371146d6706d625039adb3b0bbff55abe4144d",
+    "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "075c618b2863d5c1b47d16c22d724eb87c6ae064",
-    "pyproject.toml": "234071a4b1e22afe12525372678948151949b203",
+    "mkdocs.yml": "43d21a9a373b1400ece481da74a61ea1005d7db1",
+    "pyproject.toml": "73e64346a7d4acb813cf51276b4e1d2f5a1017f5",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -340,7 +373,7 @@
     "src/ai/generators/__init__.py": "5ab9d99fb21d6731656b5ed040bda325134bfcf3",
     "src/ai/generators/badges.py": "21bb22b6ebb83a36c4905e942d2c8cdd97cf32e5",
     "src/ai/generators/code.py": "427fa116b2aac7da1daef025c91697d047563304",
-    "src/ai/generators/markdown.py": "3350602479e5fc7489cf744e3accd0ceae401313",
+    "src/ai/generators/markdown.py": "04ca0ee9e2b629b2c04a6303895468d922ee5587",
     "src/ai/integrations/__init__.py": "7dddfaa16c89a53d047c236220754d79a5fe5a0e",
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
@@ -372,7 +405,7 @@
     "src/exceptions.py": "782997996ef0b0ee7588d0ec915635a37c1be893",
     "src/feature_classifier.py": "b65e1b4af9d9fe6ff10fd6afb83244a3d8730467",
     "src/feature_enricher.py": "2fdb810c2d3e7a989accbec599a006d13debb242",
-    "src/generator.py": "8beefa022b496c4f750057b40d912c6b9cc37be9",
+    "src/generator.py": "a42ff6123b021198c967663a324f43377fa582f5",
     "src/health.py": "291c3677dac99a60d2605405463bc54ee5923112",
     "src/heuristic_classifier.py": "1700baa558733f1e1482770009a3b957d4c203ad",
     "src/i18n.py": "5a370fa7bf90069c8dbbb8746df8b0145b5c1939",
@@ -405,6 +438,7 @@
     "stubs/google/genai/types/__init__.pyi": "ae8cd9410757cd4fcfc0ca043c2aaf53ddf68e8c",
     "stubs/google/genai/types/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "stubs/google/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "stubs/openai/__init__.pyi": "5fa414e415609bdfb7a3b1b8f18150a707bfd869",
     "stubs/sentry_sdk/__init__.pyi": "e4dff2872497e49a9d5b2deffa323156225dd9a0",
     "stubs/syrupy/__init__.pyi": "825812b3a59f5f739c98b179d86a059622c0b5c2",
     "stubs/syrupy/py.typed": "c33f70a926f9572e0ff3ac73fd12e1374999c195",
@@ -413,7 +447,7 @@
     "tests/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__snapshots__/test_snapshot.ambr": "5cbfeb7b448f5fe7ab139fb6b3bf4e5fc2411d8b",
     "tests/conftest.py": "91fea67cba7db7080cd2685878ec496ae9062c16",
-    "tests/factories.py": "429ca6f2e980e30aa4ab6321ac86d7bc4de2f0aa",
+    "tests/factories.py": "36faf42e8640a21965c980500b90f8da038fb030",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
@@ -468,8 +502,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "00c1e9851da7e9e722455ace35d47c06c890557b"
+    "uv.lock": "5df1ee2a6e37505d2d171d2a3647e675226b2dc3"
   },
-  "generated_at": "2026-09-09T20:56:12.322684+00:00",
-  "repository_sha": "7937345a18bf6d938e9390efa94c1c5d7ff3a445"
+  "generated_at": "2026-09-14T02:58:50.961289+00:00",
+  "repository_sha": "ada0d0908e0a2233677f4e0d18595d9eacbe6736"
 }

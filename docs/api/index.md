@@ -36,6 +36,7 @@ Para que a referência de API seja consistente e útil, todas as novas classes e
 Exemplo:
 
 ```python
+
 def classify_release(
     self,
     slug: str,
@@ -58,6 +59,7 @@ def classify_release(
         LLMProviderExhausted: Se nenhum provider LLM estiver disponível.
         ReleaseNotFoundError: Se a release não existir no armazenamento.
     """
+
 ```
 
 ## Manutenção da Referência

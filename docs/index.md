@@ -75,6 +75,7 @@ graph LR
 ## Quick Start
 
 ```bash
+
 # 1. Instalar dependências
 uv sync --extra dev
 
@@ -89,6 +90,7 @@ uv run pytest
 
 # 5. Verificar cobertura
 uv run pytest --cov=src --cov-fail-under=95
+
 ```markdown
 
 ## Variáveis de Ambiente
@@ -105,6 +107,7 @@ uv run pytest --cov=src --cov-fail-under=95
 ## Fluxo de Execução do Pipeline
 
 ```mermaid
+
 sequenceDiagram
     participant M as main.py
     participant S as Scraper
@@ -138,6 +141,7 @@ sequenceDiagram
     end
 
     M->>H: set_pipeline_status("completed")
+
 ```text
 
 ## Módulos Principais
@@ -153,9 +157,11 @@ Orquestrador central. Responsável por:
 - **`run_pipeline(config: PipelineConfig)`** — Orquestrador principal com DI
 
 ```python
+
 # Uso com injeção de dependências
 config = PipelineConfig(dry_run=True, release_filter="summer_26")
 await run_pipeline(config)
+
 ```text
 
 ### Scraper (`scraper.py`)
@@ -169,6 +175,7 @@ Scraping resiliente do Salesforce Help (SPA JavaScript):
 - **Cache** — Evita re-fetch de conteúdo inalterado
 
 ```mermaid
+
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: failures >= threshold
@@ -176,6 +183,7 @@ stateDiagram-v2
     HalfOpen --> Closed: sucesso
     HalfOpen --> Open: falha
     Closed --> Closed: sucesso (reset)
+
 ```text
 
 ### LLM Service (`llm_service.py`)
@@ -188,12 +196,14 @@ Serviço LLM multi-provider com fallback automático:
 - **Timeout** — 30s (cliente) / 60s (operação)
 
 ```mermaid
+
 graph LR
     REQ["Request"] --> OAI["OpenAI"]
     OAI -->|falha| GEM["Gemini"]
     GEM -->|falha| OC["OpenCode"]
     OC -->|falha| MIMO["MiMoCode"]
     MIMO -->|falha| NULL["return None"]
+
 ```javascript
 
 ### Parser (`parser.py`)
@@ -269,6 +279,7 @@ Pattern reutilizável para chamadas externas:
 ## Estrutura de Diretórios
 
 ```text
+
 Salesforce-WebDev/
 ├── src/
 │   ├── main.py              # Orquestrador principal
@@ -311,6 +322,7 @@ Salesforce-WebDev/
 ├── docs/                    # Documentação MkDocs
 ├── mkdocs.yml               # Configuração MkDocs
 └── pyproject.toml           # Configuração do projeto
+
 ```
 
 ## Qualidade de Código

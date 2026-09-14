@@ -51,6 +51,7 @@ C4Container
 ## Data Flow
 
 ```mermaid
+
 flowchart LR
     subgraph SF["Salesforce Help (externo)"]
         SPA["Release Notes SPA"]
@@ -84,6 +85,7 @@ flowchart LR
     GENERATE --> DOCS
     GENERATE --> README
     GENERATE --> NOTIFY
+
 ```
 
 ## Padrões de Resiliência por Container

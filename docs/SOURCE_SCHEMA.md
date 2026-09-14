@@ -116,6 +116,7 @@ New API Versioning\tYes\tYes\tYes\tNo
 Individual article pages use semantic HTML for the main content:
 
 ```html
+
 <article>
   <h1>Feature Name</h1>
   <h2>Why is this important?</h2>  <!-- English: "Why" -->
@@ -123,14 +124,17 @@ Individual article pages use semantic HTML for the main content:
   <h3>Where</h3>
   <p>Setup instructions...</p>
 </article>
+
 ```text
 
 **Content selectors (in priority order, see `src/parser.py:115-117`):**
 
 ```css
+
 article                  /* Semantic main content */
 #articleViewContent      /* Salesforce legacy ID */
 div.content              /* Generic fallback */
+
 ```markdown
 
 **Summary detection (see `src/parser.py:108-110`):**
@@ -151,6 +155,7 @@ The Feature Impact page organizes features by category using section headers. Th
 **Known section headers (portuguese):**
 
 ```python
+
 SECTION_HEADERS = {
     "Plataforma",
     "Desenvolvimento",
@@ -178,6 +183,7 @@ SECTION_HEADERS = {
     "Agentforce",
     "Personalização",
 }
+
 ```text
 
 **Table header detection (see `src/parser.py:583-584`):**
@@ -191,12 +197,14 @@ A line is considered a table header when it contains both `"RECURSO"` and `"ATIV
 Some ToC nodes are parsed but then filtered out by `EXCLUDED_NODE_SLUGS` in `src/config.py:61-68`. These are administrative pages, not feature content:
 
 ```python
+
 EXCLUDED_NODE_SLUGS = {
     "features_released_monthly",  # "Recursos lançados mensalmente"
     "change_log",                 # "Log de mudanças"
     "feature_impact",             # "Impacto das features" (we have a separate parser)
     "previous_release_notes",     # "Notas de releases anteriores"
 }
+
 ```text
 
 ---
@@ -206,11 +214,13 @@ EXCLUDED_NODE_SLUGS = {
 ### 5.1 Release Notes Index
 
 ```text
+
 https://help.salesforce.com/s/articleView
   ?id=release-notes.salesforce_release_notes.htm
   &release={release_id}
   &type=5
   &language=pt_BR
+
 ```text
 
 Defined in `src/config.py:25-31` as `BASE_URL`.
@@ -218,11 +228,13 @@ Defined in `src/config.py:25-31` as `BASE_URL`.
 ### 5.2 Feature Impact
 
 ```bash
+
 https://help.salesforce.com/s/articleView
   ?id=release-notes.rn_feature_impact.htm
   &release={release_id}
   &type=5
   &language=pt_BR
+
 ```text
 
 Defined in `src/config.py:33-39` as `FEATURE_IMPACT_URL`.
@@ -230,8 +242,10 @@ Defined in `src/config.py:33-39` as `FEATURE_IMPACT_URL`.
 ### 5.3 Release-in-a-Box PDF
 
 ```json
+
 https://www.salesforce.com/en-us/wp-content/uploads/sites/4/
   documents/PDF/release-in-a-box-{season}-{year_short}-v{version}.pdf
+
 ```html
 
 Defined in `src/config.py:41-44` as `PDF_URL_TEMPLATE`.
@@ -276,9 +290,11 @@ For feature impact pages, the scraper uses three strategies in order (`src/scrap
 All `query_selector` calls are followed by `None` checks (`src/scraper.py:340-341`):
 
 ```python
+
 element = await page.query_selector(selector)
 if element is None:
     continue
+
 ```text
 
 ### 7.4 Optional Chaining in JavaScript Evaluation
