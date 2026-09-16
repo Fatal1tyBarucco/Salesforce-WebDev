@@ -3,9 +3,6 @@
     ".github/workflows/documentation-sync.yml": [
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
     ],
-    ".github/workflows/release_notes_pipeline.yml": [
-      "docs/maintenance/workflow-operations.md"
-    ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
     ],
@@ -112,13 +109,13 @@
     ".github/scripts/fix_markdown.py": "e80c76f0c6a246917747317d30a47e336dfe1d5a",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
-    ".github/workflows/copilot-setup-steps.yml": "85ee69418c3c87b3ad07f0e69c13a8ce48f2a10d",
+    ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
-    ".github/workflows/documentation-build.yml": "73d09952b1d3f2af75b282b954cd91454e6afa81",
-    ".github/workflows/documentation-sync.yml": "c91b66510043a4353c9284227ad8a4d34c8d0309",
+    ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
+    ".github/workflows/documentation-sync.yml": "994e1e64886a08a84b563c8f1b715504cda0f62d",
     ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
-    ".github/workflows/python-quality.yml": "25d7ce6abb5a42263e923167c133a66726707c92",
-    ".github/workflows/release_notes_pipeline.yml": "c23f663e2c0edaaf9624254edb0f57fbd08b7dcf",
+    ".github/workflows/python-quality.yml": "e1412d099e41ba820fecf6563b403c8fc20f5741",
+    ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "5f6ed21a738b17a85b6b7d049504e4fe2768e9b4",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
@@ -128,7 +125,7 @@
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "2289f952a271a8e8c7a00007b4235d426dacda2e",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
-    "README.en.md": "653d402ecccae237d5f26b8d5470347fff3bff5b",
+    "README.en.md": "45f17015c74ba897970c7a92f3e0d0dc49e2647c",
     "README.md": "1c84ba373b45b2828ccbc8bcb128f7216c8d1794",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -137,7 +134,7 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "1ff73fd601880b63b4dcd5097fe779b6649f5775",
+    "docs/.documentation-manifest.json": "2e0b974151c26cb77fece47ed852e987b4aa595c",
     "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -153,7 +150,7 @@
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
     "docs/architecture/decisions/adr-003-topic-classification.md": "0b5af8d9e4f2e944218dd594939474733c568d3e",
     "docs/architecture/decisions/adr-004-auto-healing.md": "04b40d512bc7a5eed78848ade93527e11bfbec9a",
-    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "7c191df5c470c5e3145e03fbf056478fd00ed4ba",
+    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "b2e4f8d2027f9ae1b4a48eeed2aa1498b54d52cb",
     "docs/architecture/decisions/index.md": "8096383df92242c03bff21e412c3d502165bda1e",
     "docs/architecture/overview.md": "ea33eec85676621e598086f57f973789ed768fab",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -174,7 +171,7 @@
     "docs/maintenance/index.md": "9738d83904ac022c7f1dd62b3c49ab6189268631",
     "docs/maintenance/local-development.md": "3a7f494edf4654c38f72b052ec6044d273ae559b",
     "docs/maintenance/troubleshooting.md": "7aca3e97dedf949d164c7bd13f5b963e2f99fa29",
-    "docs/maintenance/workflow-operations.md": "fa8cf2e1f9e54d017af07dc311758f03539d88f9",
+    "docs/maintenance/workflow-operations.md": "7d9b00a2e027fec9ef484c05bd5b0c19a1d361ec",
     "docs/observability/index.md": "2bd56341a645958c8d55912e17b6d54ac1ae49e2",
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
@@ -504,6 +501,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "5df1ee2a6e37505d2d171d2a3647e675226b2dc3"
   },
-  "generated_at": "2026-09-14T02:58:50.961289+00:00",
-  "repository_sha": "ada0d0908e0a2233677f4e0d18595d9eacbe6736"
+  "generated_at": "2026-09-16T21:43:37.395916+00:00",
+  "repository_sha": "3a78d78612249eccd0cabf223eb861bf744fb4ca"
 }

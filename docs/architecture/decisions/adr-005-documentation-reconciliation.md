@@ -34,3 +34,4 @@ The workflow file (`.github/workflows/documentation-sync.yml`) was updated to re
 - Changed the concurrency group from `documentation-sync` to `pages`.
 - Added anti‑loop guard, cache restore, and explicit mode resolution steps.
 - Adjusted the `mkdocs build` step to conditionally commit only when changes are detected.
+- Uses setup-uv v10.1.0 (commit bec219d24cd3e171d82865faccec33120bb574f4).

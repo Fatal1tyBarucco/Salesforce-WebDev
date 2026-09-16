@@ -47,5 +47,4 @@ Devido a atualizações no código-fonte, a documentação foi revisada para inc
 - **Secrets Necessários**: `GITHUB_TOKEN` (padrão) e opcionalmente `RELEASE_TOKEN` para releases. Outros secrets como `GOOGLE_API_KEY` e `OPENROUTER_API_KEY` são usados na extração.
 - **Workdir**: O diretório de trabalho padrão é a raiz do repositório (`.`).
 - **Timeout**: O job de extração tem timeout de 240 minutos devido à complexidade da extração e processamento.
-
-Para detalhes completos, consulte o arquivo `.github/workflows/release_notes_pipeline.yml` no repositório.
+- **Setup UV**: O workflow python-quality.yml e o workflow release_notes_pipeline.yml utilizam o setup-uv v10.1.0 (commit bec219d24cd3e171d82865faccec33120bb574f4).
