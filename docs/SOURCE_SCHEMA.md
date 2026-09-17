@@ -378,7 +378,7 @@ When Salesforce updates its portal:
    uv run ruff check . && uv run black --check . && uv run mypy src/ && uv run pytest
    ```
 
-7. **Commit** with a `fix(scraper):` or `fix(parser):` conventional commit message.
+1. **Commit** with a `fix(scraper):` or `fix(parser):` conventional commit message.
 
 ---
 
