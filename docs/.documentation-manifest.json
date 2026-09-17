@@ -224,7 +224,7 @@
     ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
-    ".github/workflows/documentation-sync.yml": "d3a7ecdf27dac96f06c8302f5d087997c96849c3",
+    ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
     ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
     ".github/workflows/python-quality.yml": "f73081b69b1f674bce1926a6d9e76f7ab7988e68",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
@@ -656,6 +656,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T04:56:54.429374+00:00",
-  "repository_sha": "307e2a485df852cb90dd2be3bce1cc2fe9a89e55"
+  "generated_at": "2026-09-17T04:58:18.418948+00:00",
+  "repository_sha": "9a18cc9c225d073e6c0f84168f034ab4be17bb7c"
 }
