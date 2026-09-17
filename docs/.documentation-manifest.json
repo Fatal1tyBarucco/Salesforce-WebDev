@@ -1,5 +1,8 @@
 {
   "documentation_map": {
+    ".github/scripts/docs_sync_engine.py": [
+      "AGENTS.md"
+    ],
     ".github/workflows/documentation-sync.yml": [
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
     ],
@@ -230,7 +233,7 @@
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "3d26311f3520b555301701831e5d909c419f7259",
-    "AGENTS.md": "b0089487a65dd57c0836f4ff86b6cac75d4fd00b",
+    "AGENTS.md": "bc9a23923d33a6e8193c8219aae68b37dfe315cb",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -653,6 +656,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T04:05:37.978849+00:00",
-  "repository_sha": "c44a7a940cec9447472306b8b1f7a7eeeda7e7c7"
+  "generated_at": "2026-09-17T04:33:10.592228+00:00",
+  "repository_sha": "51170f063bf496004bdf5ecd1cc9761678d13ce9"
 }
