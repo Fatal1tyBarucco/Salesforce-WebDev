@@ -5,6 +5,7 @@ Rules: MD022, MD024, MD031, MD032, MD040, MD047, MD012, MD009, MD029.
 MD029 (ordered list prefix) is NOT auto-fixed here because renumbering
 requires semantic understanding of the list content. Fix manually.
 """
+
 import re
 import sys
 from pathlib import Path

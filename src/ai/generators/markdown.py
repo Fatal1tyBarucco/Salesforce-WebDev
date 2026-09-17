@@ -272,7 +272,9 @@ class MarkdownGenerator:
             lines.append(f"- 🔸 {r}")
 
         lines.append(f"\n### 💡 Recomendação\n{report.recommendation}\n")
-        trend_emoji = {"crescimento": "📈", "estável": "➡️", "declínio": "📉"}.get(report.trend, "➡️")
+        trend_emoji = {"crescimento": "📈", "estável": "➡️", "declínio": "📉"}.get(
+            report.trend, "➡️"
+        )
         lines.append(f"### 📊 Tendência: {trend_emoji} **{report.trend.upper()}**\n")
 
         return "\n".join(lines)

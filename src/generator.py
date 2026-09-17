@@ -29,8 +29,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 # Constante de template
 # ---------------------------------------------------------------------------
 
-MARKDOWN_HEADER_TEMPLATE: Template = Template(
-    """\
+MARKDOWN_HEADER_TEMPLATE: Template = Template("""\
 # ${topic_name} — ${release_name}
 
 > **Release:** ${release_name}
@@ -39,8 +38,7 @@ MARKDOWN_HEADER_TEMPLATE: Template = Template(
 
 ---
 
-"""
-)
+""")
 
 NO_CONTENT_MESSAGE: str = (
     "_Nenhum conteúdo relevante identificado para este tópico nesta release._\n"
