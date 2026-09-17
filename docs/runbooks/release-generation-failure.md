@@ -24,6 +24,7 @@ O scraper não consegue acessar a Salesforce Help (timeout, DNS, mudança de DOM
   ```text
 
 - Verificar se os selectors do DOM ainda são válidos (ver `docs/SOURCE_SCHEMA.md`)
+
 - Se o DOM mudou, atualizar selectors e snapshots
 
 ### 2. Falha no Parser (estrutura de HTML alterada)
