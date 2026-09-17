@@ -483,8 +483,12 @@ def write_manifest() -> dict[str, str]:
     inventory = tracked_inventory()
     doc_map = build_documentation_map(inventory)
     existing = load_manifest()
-    if (existing.get("repository_sha") == head_sha()
-            and existing.get("files") == inventory
+    # Idempotency is content-based: the tracked inventory and documentation
+    # map are the source of truth.  repository_sha is informational
+    # ("generated against commit X") and is intentionally NOT part of the
+    # staleness check -- otherwise every new commit would force a manifest
+    # rewrite since HEAD always advances on commit.
+    if (existing.get("files") == inventory
             and existing.get("documentation_map") == doc_map):
         return {"manifest": "baseline unchanged (idempotent, no drift)", "changed": False}
     manifest = {

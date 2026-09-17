@@ -212,7 +212,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
-    ".github/scripts/docs_sync_engine.py": "27ad4454f491e5da9eab1aaf4e9f590b7541166b",
+    ".github/scripts/docs_sync_engine.py": "f9ff517a91b77883d7d99ad308bbdcb611c8c6d5",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
@@ -653,6 +653,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T03:51:04.685453+00:00",
-  "repository_sha": "9664676b08f48f5d548d48fb4522e002f5e6487b"
+  "generated_at": "2026-09-17T03:58:54.717378+00:00",
+  "repository_sha": "c955ef8fbe0a115bf3ebe7a6a7096936c8abb0a3"
 }
