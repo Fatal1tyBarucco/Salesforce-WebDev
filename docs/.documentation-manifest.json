@@ -319,7 +319,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "24a946e6895afb8871bdc7c1850942f4623ca6d1",
     "docs/guides/running-pipeline.md": "36120cdf19558fa04dd87112a6d96bb1ad3d2f24",
-    "docs/index.md": "c4e0e9c20aebd2bbf4ca2ea74b6e231b47a33a99",
+    "docs/index.md": "fbad1e95ffb8d54063d1a426bc647cb5945c724a",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -656,6 +656,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T04:58:18.418948+00:00",
-  "repository_sha": "9a18cc9c225d073e6c0f84168f034ab4be17bb7c"
+  "generated_at": "2026-09-17T05:01:14.014905+00:00",
+  "repository_sha": "9c7842c7dde13606420884ece3bf7de11bc6fe79"
 }
