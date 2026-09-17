@@ -8,9 +8,10 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 | Release | Features | Categorias | Status |
 | :--- | :---: | :---: | :---: |
-| ☀️ **Summer '26** | 1.434 | 22 | ✅ Atual |
-| 🌸 **Spring '26** | 1.438 | 21 | ✅ Completo |
-| ❄️ **Winter '26** | 1.348 | 19 | ✅ Completo |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
 
 > Cada release inclui resumos executivos gerados por AI (até 5.000 caracteres),
 > resumos por categoria (até 1.000 caracteres), e documentação completa em
@@ -281,48 +282,62 @@ Pattern reutilizável para chamadas externas:
 ```text
 
 Salesforce-WebDev/
-├── src/
-│   ├── main.py              # Orquestrador principal
-│   ├── scraper.py           # Playwright + Circuit Breaker
-│   ├── parser.py            # Parser HTML/Markdown
-│   ├── llm_service.py       # Multi-provider LLM
-│   ├── generator.py         # Geração Markdown
-│   ├── translator.py        # Tradução via LLM
-│   ├── salesforce.py        # Integração Trailhead
-│   ├── notifications.py     # Email/Slack/Discord
-│   ├── api.py               # REST + GraphQL
-│   ├── dashboard.py         # Dashboard HTML interativo
-│   ├── analytics.py         # Análise estatística
-│   ├── health.py            # Health checks
-│   ├── config.py            # Configuração central
-│   ├── exceptions.py        # Hierarquia de exceções
-│   ├── circuit_breaker.py   # Circuit Breaker unificado
-│   ├── cache_manager.py     # Cache TTL + content-hash
-│   ├── logger.py            # Logging estruturado JSON
-│   ├── feature_classifier.py# Classificação via LLM
-│   ├── impact_analyzer.py   # Análise de impacto
-│   ├── issue_triage.py      # Triage automático
-│   ├── nl_search.py         # Busca semântica
-│   ├── release_summarizer.py# Resumos executivos
-│   ├── workflow.py          # Git + GitHub CLI
-│   ├── i18n.py              # Internacionalização
-│   └── automation/          # Pacote de automação AI
-│       ├── service.py
-│       ├── reporting.py
-│       ├── comparison.py
-│       ├── impact.py
-│       ├── content.py
-│       ├── export.py
-│       ├── github_ops.py
-│       ├── notifications.py
-│       ├── models.py
-│       └── badge.py
-├── releases/                # Artefatos Markdown por release
-├── tests/                   # Testes pytest (>95% cobertura)
-├── docs/                    # Documentação MkDocs
-├── mkdocs.yml               # Configuração MkDocs
-└── pyproject.toml           # Configuração do projeto
-
+  ├── ai/
+      ├── generators/
+      ├── integrations/
+      ├── prompts/
+  ├── automation/
+      ├── badge.py
+      ├── comparison.py
+      ├── content.py
+      ├── export.py
+      ├── github_ops.py
+      ├── impact.py
+      ├── models.py
+      ├── notifications.py
+      ├── reporting.py
+      └── service.py
+  ├── limiters/
+      └── rate_limiter.py
+  ├── ai_automation.py
+  ├── analytics.py
+  ├── api.py
+  ├── cache_manager.py
+  ├── circuit_breaker.py
+  ├── config.py
+  ├── dashboard.py
+  ├── events.py
+  ├── exceptions.py
+  ├── feature_classifier.py
+  ├── feature_enricher.py
+  ├── generator.py
+  ├── health.py
+  ├── heuristic_classifier.py
+  ├── i18n.py
+  ├── impact_analyzer.py
+  ├── issue_triage.py
+  ├── llm_service.py
+  ├── logger.py
+  ├── main.py
+  ├── models.py
+  ├── nl_search.py
+  ├── notifications.py
+  ├── orchestrator.py
+  ├── parser.py
+  ├── release_docs.py
+  ├── release_summarizer.py
+  ├── salesforce.py
+  ├── scraper.py
+  ├── smart_notifications.py
+  ├── translator.py
+  └── workflow.py
+  ├── releases/                # Artefatos Markdown por release
+  ├── tests/                     # Suíte pytest
+  ├── docs/                      # Documentação MkDocs
+  ├── k8s/                       # Manifestos Kubernetes
+  ├── mkdocs.yml                 # Configuração MkDocs
+  ├── pyproject.toml             # Configuração do projeto
+  ├── uv.lock                    # Lockfile determinístico
 ```
 
 ## Qualidade de Código

@@ -1,0 +1,3 @@
+# Generator
+
+::: src.generator

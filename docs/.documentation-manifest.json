@@ -3,6 +3,9 @@
     ".github/workflows/documentation-sync.yml": [
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
     ],
+    ".github/workflows/python-quality.yml": [
+      "AGENTS.md"
+    ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
     ],
@@ -14,9 +17,6 @@
     ],
     "src/api.py": [
       "README.en.md"
-    ],
-    "src/automation/notifications.py": [
-      "docs/api/notifications.md"
     ],
     "src/cache_manager.py": [
       "docs/api/cache_manager.md",
@@ -106,15 +106,15 @@
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
-    ".github/scripts/fix_markdown.py": "e80c76f0c6a246917747317d30a47e336dfe1d5a",
+    ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
-    ".github/workflows/documentation-sync.yml": "994e1e64886a08a84b563c8f1b715504cda0f62d",
+    ".github/workflows/documentation-sync.yml": "d3a7ecdf27dac96f06c8302f5d087997c96849c3",
     ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
-    ".github/workflows/python-quality.yml": "e1412d099e41ba820fecf6563b403c8fc20f5741",
+    ".github/workflows/python-quality.yml": "f73081b69b1f674bce1926a6d9e76f7ab7988e68",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "5f6ed21a738b17a85b6b7d049504e4fe2768e9b4",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -134,7 +134,7 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "2e0b974151c26cb77fece47ed852e987b4aa595c",
+    "docs/.documentation-manifest.json": "f1430e4e32f88654f07729335036999a7bc47a88",
     "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -190,7 +190,7 @@
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
     "mkdocs.yml": "43d21a9a373b1400ece481da74a61ea1005d7db1",
-    "pyproject.toml": "73e64346a7d4acb813cf51276b4e1d2f5a1017f5",
+    "pyproject.toml": "234071a4b1e22afe12525372678948151949b203",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -370,7 +370,7 @@
     "src/ai/generators/__init__.py": "5ab9d99fb21d6731656b5ed040bda325134bfcf3",
     "src/ai/generators/badges.py": "21bb22b6ebb83a36c4905e942d2c8cdd97cf32e5",
     "src/ai/generators/code.py": "427fa116b2aac7da1daef025c91697d047563304",
-    "src/ai/generators/markdown.py": "04ca0ee9e2b629b2c04a6303895468d922ee5587",
+    "src/ai/generators/markdown.py": "3350602479e5fc7489cf744e3accd0ceae401313",
     "src/ai/integrations/__init__.py": "7dddfaa16c89a53d047c236220754d79a5fe5a0e",
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
@@ -402,7 +402,7 @@
     "src/exceptions.py": "782997996ef0b0ee7588d0ec915635a37c1be893",
     "src/feature_classifier.py": "b65e1b4af9d9fe6ff10fd6afb83244a3d8730467",
     "src/feature_enricher.py": "2fdb810c2d3e7a989accbec599a006d13debb242",
-    "src/generator.py": "a42ff6123b021198c967663a324f43377fa582f5",
+    "src/generator.py": "8beefa022b496c4f750057b40d912c6b9cc37be9",
     "src/health.py": "291c3677dac99a60d2605405463bc54ee5923112",
     "src/heuristic_classifier.py": "1700baa558733f1e1482770009a3b957d4c203ad",
     "src/i18n.py": "5a370fa7bf90069c8dbbb8746df8b0145b5c1939",
@@ -444,7 +444,7 @@
     "tests/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__snapshots__/test_snapshot.ambr": "5cbfeb7b448f5fe7ab139fb6b3bf4e5fc2411d8b",
     "tests/conftest.py": "91fea67cba7db7080cd2685878ec496ae9062c16",
-    "tests/factories.py": "36faf42e8640a21965c980500b90f8da038fb030",
+    "tests/factories.py": "429ca6f2e980e30aa4ab6321ac86d7bc4de2f0aa",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
@@ -499,8 +499,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "5df1ee2a6e37505d2d171d2a3647e675226b2dc3"
+    "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-16T21:43:37.395916+00:00",
-  "repository_sha": "3a78d78612249eccd0cabf223eb861bf744fb4ca"
+  "generated_at": "2026-09-17T03:41:55.646003+00:00",
+  "repository_sha": "2412e9b8c7d84ce0a2c0bda5ddf071e3504ee29e"
 }

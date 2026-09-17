@@ -90,6 +90,6 @@ Configure e visualize modos de exibição de lista e seus itens de modo mais fá
 
 ## 📚 Recursos
 
-- [📄 Release in a Box PDF](./release-in-a-box.pdf)
+- 📄 Release in a Box PDF
 - [🔗 Feature Impact Page](https://help.salesforce.com/s/articleView?id=release-notes.rn_feature_impact.htm&release=258&type=5&language=pt_BR)
 - [📋 Release Notes](https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=258&type=5&language=pt_BR)

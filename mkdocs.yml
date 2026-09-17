@@ -97,6 +97,50 @@ nav:
       - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
   - API Reference:
+    - Ai Generators Badges: api/ai-generators-badges.md
+    - Ai Generators Code: api/ai-generators-code.md
+    - Ai Generators Markdown: api/ai-generators-markdown.md
+    - Ai Integrations Salesforce: api/ai-integrations-salesforce.md
+    - Ai Integrations Trailhead: api/ai-integrations-trailhead.md
+    - Ai Prompts Classification: api/ai-prompts-classification.md
+    - Ai Prompts Enrichment: api/ai-prompts-enrichment.md
+    - Ai Prompts Reporting: api/ai-prompts-reporting.md
+    - Ai Prompts Validation: api/ai-prompts-validation.md
+    - Ai Automation: api/ai_automation.md
+    - Analytics: api/analytics.md
+    - Api: api/api.md
+    - Automation Badge: api/automation-badge.md
+    - Automation Comparison: api/automation-comparison.md
+    - Automation Content: api/automation-content.md
+    - Automation Export: api/automation-export.md
+    - Automation Github Ops: api/automation-github_ops.md
+    - Automation Impact: api/automation-impact.md
+    - Automation Models: api/automation-models.md
+    - Automation Notifications: api/automation-notifications.md
+    - Automation Reporting: api/automation-reporting.md
+    - Automation Service: api/automation-service.md
+    - Circuit Breaker: api/circuit_breaker.md
+    - Config: api/config.md
+    - Dashboard: api/dashboard.md
+    - Events: api/events.md
+    - Exceptions: api/exceptions.md
+    - Feature Enricher: api/feature_enricher.md
+    - Generator: api/generator.md
+    - Health: api/health.md
+    - Heuristic Classifier: api/heuristic_classifier.md
+    - I18N: api/i18n.md
+    - Impact Analyzer: api/impact_analyzer.md
+    - Issue Triage: api/issue_triage.md
+    - Limiters Rate Limiter: api/limiters-rate_limiter.md
+    - Logger: api/logger.md
+    - Models: api/models.md
+    - Nl Search: api/nl_search.md
+    - Orchestrator: api/orchestrator.md
+    - Release Docs: api/release_docs.md
+    - Release Summarizer: api/release_summarizer.md
+    - Salesforce: api/salesforce.md
+    - Smart Notifications: api/smart_notifications.md
+    - Workflow: api/workflow.md
     - Visão Geral: api/index.md
     - Pipeline Principal: api/main.md
     - Scraper: api/scraper.md
@@ -131,3 +175,7 @@ nav:
     - V3: roadmap/v3.md
     - V4 (Atual): roadmap/v4.md
   - Changelog: changelog.md
+  - Referências:
+    - Source Schema: SOURCE_SCHEMA.md
+  - Contribuição:
+    - Testing Strategy: contribution/testing-strategy.md
