@@ -9,14 +9,74 @@
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
     ],
+    "src/ai/generators/badges.py": [
+      "docs/api/ai-generators-badges.md"
+    ],
+    "src/ai/generators/code.py": [
+      "docs/api/ai-generators-code.md"
+    ],
+    "src/ai/generators/markdown.py": [
+      "docs/api/ai-generators-markdown.md"
+    ],
+    "src/ai/integrations/salesforce.py": [
+      "docs/api/ai-integrations-salesforce.md"
+    ],
+    "src/ai/integrations/trailhead.py": [
+      "docs/api/ai-integrations-trailhead.md"
+    ],
+    "src/ai/prompts/classification.py": [
+      "docs/api/ai-prompts-classification.md"
+    ],
+    "src/ai/prompts/enrichment.py": [
+      "docs/api/ai-prompts-enrichment.md"
+    ],
+    "src/ai/prompts/reporting.py": [
+      "docs/api/ai-prompts-reporting.md"
+    ],
+    "src/ai/prompts/validation.py": [
+      "docs/api/ai-prompts-validation.md"
+    ],
     "src/ai_automation.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/ai_automation.md"
     ],
     "src/analytics.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/analytics.md"
     ],
     "src/api.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/api.md"
+    ],
+    "src/automation/badge.py": [
+      "docs/api/automation-badge.md"
+    ],
+    "src/automation/comparison.py": [
+      "docs/api/automation-comparison.md"
+    ],
+    "src/automation/content.py": [
+      "docs/api/automation-content.md"
+    ],
+    "src/automation/export.py": [
+      "docs/api/automation-export.md"
+    ],
+    "src/automation/github_ops.py": [
+      "docs/api/automation-github_ops.md"
+    ],
+    "src/automation/impact.py": [
+      "docs/api/automation-impact.md"
+    ],
+    "src/automation/models.py": [
+      "docs/api/automation-models.md"
+    ],
+    "src/automation/notifications.py": [
+      "docs/api/automation-notifications.md"
+    ],
+    "src/automation/reporting.py": [
+      "docs/api/automation-reporting.md"
+    ],
+    "src/automation/service.py": [
+      "docs/api/automation-service.md"
     ],
     "src/cache_manager.py": [
       "docs/api/cache_manager.md",
@@ -24,26 +84,53 @@
     ],
     "src/circuit_breaker.py": [
       "docs/SOURCE_SCHEMA.md",
+      "docs/api/circuit_breaker.md",
       "docs/architecture/c4_container.md"
     ],
     "src/config.py": [
-      "docs/SOURCE_SCHEMA.md"
+      "docs/SOURCE_SCHEMA.md",
+      "docs/api/config.md"
     ],
     "src/dashboard.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/dashboard.md"
+    ],
+    "src/events.py": [
+      "docs/api/events.md"
+    ],
+    "src/exceptions.py": [
+      "docs/api/exceptions.md"
     ],
     "src/feature_classifier.py": [
       "docs/api/feature_classifier.md"
     ],
+    "src/feature_enricher.py": [
+      "docs/api/feature_enricher.md"
+    ],
     "src/generator.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/generator.md"
     ],
     "src/health.py": [
       "README.en.md",
+      "docs/api/health.md",
       "docs/architecture/c4_container.md"
+    ],
+    "src/heuristic_classifier.py": [
+      "docs/api/heuristic_classifier.md"
+    ],
+    "src/i18n.py": [
+      "docs/api/i18n.md"
+    ],
+    "src/impact_analyzer.py": [
+      "docs/api/impact_analyzer.md"
+    ],
+    "src/issue_triage.py": [
+      "docs/api/issue_triage.md"
     ],
     "src/limiters/rate_limiter.py": [
       "docs/SOURCE_SCHEMA.md",
+      "docs/api/limiters-rate_limiter.md",
       "docs/architecture/c4_container.md"
     ],
     "src/llm_service.py": [
@@ -52,6 +139,7 @@
     ],
     "src/logger.py": [
       "README.en.md",
+      "docs/api/logger.md",
       "docs/observability/logging.md",
       "docs/runbooks/index.md"
     ],
@@ -68,9 +156,18 @@
       "docs/runbooks/release-generation-failure.md",
       "docs/runbooks/scraper-failure.md"
     ],
+    "src/models.py": [
+      "docs/api/models.md"
+    ],
+    "src/nl_search.py": [
+      "docs/api/nl_search.md"
+    ],
     "src/notifications.py": [
       "README.en.md",
       "docs/api/notifications.md"
+    ],
+    "src/orchestrator.py": [
+      "docs/api/orchestrator.md"
     ],
     "src/parser.py": [
       "README.en.md",
@@ -78,19 +175,30 @@
       "docs/api/parser.md",
       "docs/architecture/c4_container.md"
     ],
+    "src/release_docs.py": [
+      "docs/api/release_docs.md"
+    ],
+    "src/release_summarizer.py": [
+      "docs/api/release_summarizer.md"
+    ],
     "src/salesforce.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/salesforce.md"
     ],
     "src/scraper.py": [
       "README.en.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/scraper.md"
     ],
+    "src/smart_notifications.py": [
+      "docs/api/smart_notifications.md"
+    ],
     "src/translator.py": [
       "docs/api/translator.md"
     ],
     "src/workflow.py": [
-      "README.en.md"
+      "README.en.md",
+      "docs/api/workflow.md"
     ]
   },
   "files": {
@@ -104,6 +212,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
+    ".github/scripts/docs_sync_engine.py": "d0f8897f591a489690cb9649645a4f83558a53e0",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
@@ -123,10 +232,10 @@
     ".pre-commit-config.yaml": "3d26311f3520b555301701831e5d909c419f7259",
     "AGENTS.md": "b0089487a65dd57c0836f4ff86b6cac75d4fd00b",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
-    "CONTRIBUTING.md": "2289f952a271a8e8c7a00007b4235d426dacda2e",
+    "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
-    "README.en.md": "45f17015c74ba897970c7a92f3e0d0dc49e2647c",
-    "README.md": "1c84ba373b45b2828ccbc8bcb128f7216c8d1794",
+    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
+    "README.md": "3bc3f7f12f4a362a419f1303957ed453c853fc58",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
@@ -134,17 +243,61 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "f1430e4e32f88654f07729335036999a7bc47a88",
+    "docs/.documentation-manifest.json": "e869ccc388bf70f57907abbeeaf085f432c520cd",
     "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
+    "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
+    "docs/api/ai-generators-code.md": "ca91c83974278c114cd8b4245730bf871373fd59",
+    "docs/api/ai-generators-markdown.md": "dc7ac6c3c69321da49715702b9576df0388dd2d4",
+    "docs/api/ai-integrations-salesforce.md": "0fc0895f6c6c03c286ac04c716372d3ef343af52",
+    "docs/api/ai-integrations-trailhead.md": "968898ead647e8771f5e8fbb8051d9b21b2d1659",
+    "docs/api/ai-prompts-classification.md": "a0a583745f994e4c77f6632e221e7ea3e54d3d5a",
+    "docs/api/ai-prompts-enrichment.md": "b040524c8d12b2425e26c6139661dce7c3cc0972",
+    "docs/api/ai-prompts-reporting.md": "f738154420cb3ee1a4a039a7b0f9afd47d3f7b56",
+    "docs/api/ai-prompts-validation.md": "49385cc354c6bf816af94c3ec6e727a77727f643",
+    "docs/api/ai_automation.md": "a1ea277b13046b56a2fd6768076645a6ae3b3856",
+    "docs/api/analytics.md": "7105a221508c060d8f9b53cc8172cb3f0eb94dd6",
+    "docs/api/api.md": "d7100cbd3a24d99e620f46afe9e49e2a08ed5a08",
+    "docs/api/automation-badge.md": "e5fafcf68a937d89d95e72170246a60753aa5a68",
+    "docs/api/automation-comparison.md": "d158dbf7a6bcd3ba039deaab15a9c33d7716a87e",
+    "docs/api/automation-content.md": "a0a9e2429609d31f5ef375f041a9bd465503a82a",
+    "docs/api/automation-export.md": "aa870a56947bd5fe35007612b4d623edc48a2df0",
+    "docs/api/automation-github_ops.md": "cba8bfd6adf3ea4364881d4af3b6eba3c7d2eae1",
+    "docs/api/automation-impact.md": "1bd92ad8c34833f996bc94275726da91c9cf0884",
+    "docs/api/automation-models.md": "440412f63c5cd725d629577ae4006a6593b4a89e",
+    "docs/api/automation-notifications.md": "cdcafd817b0915d0ecf86d13120b45edce4b2f3b",
+    "docs/api/automation-reporting.md": "277c730ec06d479265c34dcafb289b1ddb73e7fe",
+    "docs/api/automation-service.md": "334c0e1356d6c636baffc5254a1f3ab037e17d4e",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
+    "docs/api/circuit_breaker.md": "4951f3bec38382fb5c982ca49173070fc26e78ae",
+    "docs/api/config.md": "1370ab2b6e9c35c5073cb2635f95697e42a6a99f",
+    "docs/api/dashboard.md": "2f1c89f362acc1bbddd1796bb9b6b3a27abe4a07",
+    "docs/api/events.md": "12b7d6dbfafaec48faa1c813b828c4a3563019ff",
+    "docs/api/exceptions.md": "396e65ade40d1225ea70376994128ace314a869c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
-    "docs/api/index.md": "87475ee5b91944de323d1a9115208c22f3b2bbd8",
+    "docs/api/feature_enricher.md": "59ca44787aa8e22b3b065b09c51ff1a591107619",
+    "docs/api/generator.md": "daca5cc1a4ec5543ad3718a4e75928cafd64a8a7",
+    "docs/api/health.md": "2a2d343736e18c71891d7a1d119fb6a0937531e6",
+    "docs/api/heuristic_classifier.md": "c3705f92dae7e1271201529a5cf14565c8c315f5",
+    "docs/api/i18n.md": "efe82d1cc4f0579e55bc63fbe665bd0871e18b07",
+    "docs/api/impact_analyzer.md": "5dd325b4f5583b76bb0227e69455182db1e84a01",
+    "docs/api/index.md": "63e0d563d0d7bba66b9f4b278b5fc01b8a1cec19",
+    "docs/api/issue_triage.md": "49cb16da7575d4cdf083bcaf0081ed4938c91508",
+    "docs/api/limiters-rate_limiter.md": "48c91b54624f14e792d4ad2e6e4c805740d18875",
     "docs/api/llm_service.md": "288965a8f6f021c5626160bef328de04ba244cbb",
+    "docs/api/logger.md": "cc32a6d9b7ecf9747f2bf8bcc47df411d5b89a43",
     "docs/api/main.md": "53e9a11d01a4f783418fe3d0cd8f4e295a2c4bfd",
+    "docs/api/models.md": "a0ec3b0f5e8129a8c3b8634aba8e9648f8d6adee",
+    "docs/api/nl_search.md": "cbdb53427a20a1f25172a46ff59060e01028577f",
     "docs/api/notifications.md": "3de012aa6dce7127ab6089af6c53bd1ade0cd8bf",
+    "docs/api/orchestrator.md": "3dbfd07f1dddbbad59907d38e95fc2d333055d83",
     "docs/api/parser.md": "b1818951d365ebf204b6a7871583329b22ae6866",
+    "docs/api/release_docs.md": "b8b90f26224b3e4e534ed5fd52a3adabd05b76d1",
+    "docs/api/release_summarizer.md": "de91a5c3a8412e6cf9da73eebfeefc8d12d95583",
+    "docs/api/salesforce.md": "06a89502788e101dbaf8cdbfbb2444c532ef7863",
     "docs/api/scraper.md": "80250db67c4db6397739e97e2b2729806f4146e7",
+    "docs/api/smart_notifications.md": "5c28fa9d62aadb9deb1b57d4d64565334f9d88fa",
     "docs/api/translator.md": "c994097761189c1a4881946dd75ffc5b8b3fa4bb",
+    "docs/api/workflow.md": "3e446601659d78db75ba647e0437fa8be426e4ac",
     "docs/architecture/c4_container.md": "46451f3fa0af8ef4dbd4313637c85ab77eebc4eb",
     "docs/architecture/decisions/adr-001-parser-strategy.md": "445fcc85b61a64b6ad7d706621681022bcab875e",
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
@@ -164,7 +317,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "24a946e6895afb8871bdc7c1850942f4623ca6d1",
     "docs/guides/running-pipeline.md": "36120cdf19558fa04dd87112a6d96bb1ad3d2f24",
-    "docs/index.md": "9a93744c534f8467f313f280589e733d07401f90",
+    "docs/index.md": "c4e0e9c20aebd2bbf4ca2ea74b6e231b47a33a99",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -189,180 +342,180 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "43d21a9a373b1400ece481da74a61ea1005d7db1",
+    "mkdocs.yml": "0b9efc12d90f2551ca1da5f3474fc8ac123ff484",
     "pyproject.toml": "234071a4b1e22afe12525372678948151949b203",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
     "releases/spring_26/.summary_cache_en.json": "b5e360e0f2708233ea967e2584c9a259a023a8c7",
-    "releases/spring_26/en_US/agentforce.md": "0893da1d1f1caed72f9b3221023bd12545f0376e",
-    "releases/spring_26/en_US/automation.md": "d1e8f7ad8057b7a39ba8c4125dd1fa7a1ad2d90c",
-    "releases/spring_26/en_US/customization.md": "5aa028b7d0b6f517a467a152b534b9a5c0cf5950",
-    "releases/spring_26/en_US/data-360.md": "b1af5dd3c218a79cc911cde7b826c2db495d132b",
-    "releases/spring_26/en_US/data-analysis.md": "b3096bc34fb00cc3dc1ae967e804299eb85f695c",
-    "releases/spring_26/en_US/development.md": "d9d18bad8d85c26a876885e588b7f288fa750399",
-    "releases/spring_26/en_US/experience-cloud.md": "50105eb06205a5db66f31169590d4f5835596aca",
-    "releases/spring_26/en_US/field-service.md": "ef87faefbc2351b202abf23195845e1ba4c13268",
-    "releases/spring_26/en_US/hyperforce.md": "045affd77f80082c67c7cad2e211f378d8a4bc6b",
-    "releases/spring_26/en_US/industries.md": "c22fa1def233ab34a97d293fdddd8bf6d6a00324",
-    "releases/spring_26/en_US/legal-documentation.md": "653cd305f73fc51d24c84356dab7e81cefcd2e4a",
-    "releases/spring_26/en_US/marketing.md": "251a9cf6d5574144352c94763b2c2a2d4a0ac848",
-    "releases/spring_26/en_US/mobile-app.md": "9f1fb84191d81ba3595d796d3c745d08cbbcee47",
-    "releases/spring_26/en_US/mulesoft.md": "1dd4f04380608ef9f1644bd14e5e1a495701e224",
-    "releases/spring_26/en_US/omnistudio.md": "c32661fc03260512fd5a6cd3f1b0a4afb6306b94",
-    "releases/spring_26/en_US/partner-cloud.md": "b7bd7ac167080a2f51366426cd6c2c7a9753c308",
-    "releases/spring_26/en_US/revenue-management.md": "e33012c6acfaff61f1583c92890f152b598a3d4b",
-    "releases/spring_26/en_US/sales.md": "6ec546c182e0d89140b71ec3daf90395d2549f3b",
-    "releases/spring_26/en_US/salesforce-general.md": "6d3c9eaa25edba220adee3f94ac848e0ddbbf81c",
-    "releases/spring_26/en_US/security-identity-privacy.md": "a42c104a588d8a16e3540d2be96f7aff0243a3db",
-    "releases/spring_26/en_US/service.md": "ebbafc1bd2297c554299a35b5f5a065bf67c6efe",
-    "releases/spring_26/pt_BR/agentforce.md": "b8eac4c10cd1f623b7a287a6661a65118bbb7b84",
-    "releases/spring_26/pt_BR/analise_de_dados.md": "79dc643f445b627f8f2566c95d7e2e72d3fc3357",
-    "releases/spring_26/pt_BR/aplicativo_movel.md": "66e7c9f94dfb2ef10938e161014b5650de9dcd7c",
-    "releases/spring_26/pt_BR/automacao.md": "d63ff547dffc9d5a1bc3adaaf67bc8183c2dd376",
-    "releases/spring_26/pt_BR/data_360.md": "938957d4fadf090e25dba9e0aaa6f05e2fe181a8",
-    "releases/spring_26/pt_BR/desenvolvimento.md": "d0393b6babbd451c6b978590d0e3fadef777dd6f",
-    "releases/spring_26/pt_BR/documentacao_legal.md": "3f7bc48ff849707970e660d50e39757f1b987b38",
-    "releases/spring_26/pt_BR/experience_cloud.md": "8febd147cf88d749861213d47377e5beeb2801a7",
-    "releases/spring_26/pt_BR/field_service.md": "4e0ecfade9d4aca41d0aa939a25f96bb3a39d735",
-    "releases/spring_26/pt_BR/gerenciamento_de_receita.md": "9f8d85d104d8b654957383c0b91c45ff2d1a6908",
-    "releases/spring_26/pt_BR/hyperforce.md": "c1e7f5602785fa016d97020dd994ada5c402b2c7",
-    "releases/spring_26/pt_BR/marketing.md": "a6fd802b3920d86e451eb031fe300c34acff686e",
-    "releases/spring_26/pt_BR/mulesoft.md": "fcc7f11fa2b220ae265428a45786e1b7e9391c80",
-    "releases/spring_26/pt_BR/omnistudio.md": "3f92b5be1606037e92d8bd8fcd835be9b0999d67",
-    "releases/spring_26/pt_BR/partner_cloud.md": "03cb8fe06bfdce2a23c56b0f9d3fd192f57b2241",
-    "releases/spring_26/pt_BR/personalizacao.md": "1404e1dcbaf14532f8516a2fae91e1e1e955b6ea",
-    "releases/spring_26/pt_BR/salesforce_geral.md": "d39126aba7c755cc43d9277e94ca871e7690d395",
-    "releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md": "a565d66d65de58a1df32dfa4b609471e90ea5bcf",
-    "releases/spring_26/pt_BR/servico.md": "2ee7fc26a9c475f48eee17c66d2fc8a93a0c4276",
-    "releases/spring_26/pt_BR/setores.md": "514b43fb5b23a4c20e441599b4bdb1b57d4c5a79",
-    "releases/spring_26/pt_BR/vendas.md": "4de5338307f507804e373bc500c9d6574a93c872",
+    "releases/spring_26/en_US/agentforce.md": "fc6643562e6960c5a5fa16ece829a9aecd0a1059",
+    "releases/spring_26/en_US/automation.md": "72766b77b2fa79ff804b91351900fd1e9afde4c1",
+    "releases/spring_26/en_US/customization.md": "59afb4be2a3a77f8e443872c0ffa10c3e7e8ce70",
+    "releases/spring_26/en_US/data-360.md": "8105a468aa0f35b3f138709b9e4cab32785d2179",
+    "releases/spring_26/en_US/data-analysis.md": "d9ffa9b0cebcc85698155507eeead0d66418583d",
+    "releases/spring_26/en_US/development.md": "d88873afe03706e4ade98968f98098f95d62eae5",
+    "releases/spring_26/en_US/experience-cloud.md": "37e00d8e8666f10aa4ee53683f8855df6a802716",
+    "releases/spring_26/en_US/field-service.md": "e0c26009484f1a29814e84a60e1702adb54ce5b3",
+    "releases/spring_26/en_US/hyperforce.md": "e4411719fcf5d3d58460e50c9ea41657127af6a9",
+    "releases/spring_26/en_US/industries.md": "2c7e6591bab6b2a620c54ebcd30dfa6d7bd1cc8d",
+    "releases/spring_26/en_US/legal-documentation.md": "f9ea172b57c0f2c9f325b9c01b94d4e5d2f3751d",
+    "releases/spring_26/en_US/marketing.md": "e4589b78cbef7d454bc689b7a07f4586de81f893",
+    "releases/spring_26/en_US/mobile-app.md": "9f9b313b70c0d2f2a92b317485592a291f6fdbf4",
+    "releases/spring_26/en_US/mulesoft.md": "aa190207e9695179be14ab7ee9696cf51f5fcdaf",
+    "releases/spring_26/en_US/omnistudio.md": "524ecd37eca4759b4b347e3357b6960335693818",
+    "releases/spring_26/en_US/partner-cloud.md": "c60582eabcb80ce2dac0be9e58cd74a65639c9ae",
+    "releases/spring_26/en_US/revenue-management.md": "a3dbc7a9c2440ed0f3dd7b0626089dd605c4b901",
+    "releases/spring_26/en_US/sales.md": "46929dda8b4251d60418a607c6fe7bca095fd92f",
+    "releases/spring_26/en_US/salesforce-general.md": "ab9bf2edbcc816eb7dd4ab4f67167a5230b1d4b6",
+    "releases/spring_26/en_US/security-identity-privacy.md": "8da7b466c9a66fc1a3602ed00d6eb7e7ff1b2447",
+    "releases/spring_26/en_US/service.md": "cca0e04a98f61ffcda94d8d83ba68e25979b5463",
+    "releases/spring_26/pt_BR/agentforce.md": "728f32f5b2c759d825e29c2f64d461f44a9f6827",
+    "releases/spring_26/pt_BR/analise_de_dados.md": "c749742e7f99245bb3466f7433d1a9d28cd2c4b5",
+    "releases/spring_26/pt_BR/aplicativo_movel.md": "3a9f337121db53e301ffb72f939008d855787fc2",
+    "releases/spring_26/pt_BR/automacao.md": "df586f9d4ed87265db03bd352b42f53a024b424c",
+    "releases/spring_26/pt_BR/data_360.md": "fd30fea55e613ffe572417ab7c8198fdb8b66295",
+    "releases/spring_26/pt_BR/desenvolvimento.md": "57162be7084881e788b63a86641689a6754e57d9",
+    "releases/spring_26/pt_BR/documentacao_legal.md": "15ae6e6b2f1d46212e26de815aa8419736b68759",
+    "releases/spring_26/pt_BR/experience_cloud.md": "c38b36c263edfda005200731cdc32ca187de4953",
+    "releases/spring_26/pt_BR/field_service.md": "0fa013e193677542732af6d03afd53eeafef0252",
+    "releases/spring_26/pt_BR/gerenciamento_de_receita.md": "5729b3ce2e4fe6cc9f12af596ab9e9f9ec772c7a",
+    "releases/spring_26/pt_BR/hyperforce.md": "4d7164c7cc5385a53a1fc4bf92cd8858a8c629b9",
+    "releases/spring_26/pt_BR/marketing.md": "9361367de795dc615c0d13426dc477445b1c9947",
+    "releases/spring_26/pt_BR/mulesoft.md": "52a6e6811fac9510a75a7a9178fc0301f728b51d",
+    "releases/spring_26/pt_BR/omnistudio.md": "010b8120f5194402febe58e5639a62bfbb1ff480",
+    "releases/spring_26/pt_BR/partner_cloud.md": "369ad97eb59bb751ff1ce2b550852fa4c6723c48",
+    "releases/spring_26/pt_BR/personalizacao.md": "56c4c2db35f31553c9d32488d9b53a4e2061ceb7",
+    "releases/spring_26/pt_BR/salesforce_geral.md": "21a3cb8363e134b94ebc4a491b14f8c61d001c44",
+    "releases/spring_26/pt_BR/seguranca_identidade_e_privacidade.md": "9a1389e2cc3bb51417d0647792acdaec51815b6a",
+    "releases/spring_26/pt_BR/servico.md": "fac4cb54044d1504f78eff9250e09a33b24e539e",
+    "releases/spring_26/pt_BR/setores.md": "d84bcba93c743fca27ce17401bed7d13b3b5265e",
+    "releases/spring_26/pt_BR/vendas.md": "31726c342e97c0a8a896515ebe97ee6501cefc5c",
     "releases/summer_26/.meta.json": "568887f5290d6764956fd4d855a84a8c43f6e330",
     "releases/summer_26/.summary_cache.json": "c5bb779d7b1eb8cd87c0420c4291d0dc593a014a",
-    "releases/summer_26/en_US/agentforce.md": "cef4f0f077086faaf6fae522184b893e310e2756",
-    "releases/summer_26/en_US/automation.md": "e4afd2ad227614f1110bd4a6f3e6af78b2c7676f",
-    "releases/summer_26/en_US/customization.md": "6504d1044edeb102ada68c70e906fd21869763cb",
-    "releases/summer_26/en_US/data-360.md": "3eada630b7270714c25e894579be0a900042d960",
-    "releases/summer_26/en_US/data-analysis.md": "07265f2f9338a64dd65d5c506d4e414ad69c9523",
-    "releases/summer_26/en_US/development.md": "cf82dd2e58d45a67d4753f473066c062aeab592b",
-    "releases/summer_26/en_US/experience-cloud.md": "1f92d73d602ae4674241c7227b7272c4a775cdb4",
-    "releases/summer_26/en_US/field-service.md": "12e6ec9c419e8e53429549c55b0b50d3414219c0",
-    "releases/summer_26/en_US/hyperforce.md": "2a308f51ba14597d4dfb8302cadc07105c45b91b",
-    "releases/summer_26/en_US/industries.md": "4b820f9b109d43523cce3f45351e06c793cf4000",
-    "releases/summer_26/en_US/legal-documentation.md": "616815f6f2b4acf38c9cd6397ffdd8e3e6959ddb",
-    "releases/summer_26/en_US/marketing.md": "05df3a87bc7d29099a58995bab19cc34fc7c3ef1",
-    "releases/summer_26/en_US/mobile-app.md": "f5da59a1c5c5e0c49cb323e4b3feb35d58e1e0fa",
-    "releases/summer_26/en_US/mulesoft.md": "350712a21c555040e883be208d17aeb8962f11a6",
-    "releases/summer_26/en_US/omnistudio.md": "dd4c6c4fe656dcc2e79494173866f9eb9a3c41e7",
-    "releases/summer_26/en_US/partner-cloud.md": "8f319d2adbf668f29bde72f36af43a72e672c498",
-    "releases/summer_26/en_US/revenue-management.md": "1622043f33f378f85f0ad9cb9df2cc510eb12cd2",
-    "releases/summer_26/en_US/sales.md": "f7cbe556860d054097b4dc6a4c60d73466a9dbee",
-    "releases/summer_26/en_US/salesforce-general.md": "f3efd4e33b02e7fb4f125a2e7a02aad9791cbdd6",
-    "releases/summer_26/en_US/salesforce-slack-integrations.md": "e8a8f26116f8fb059ba35fb22c6e37cecc923167",
-    "releases/summer_26/en_US/security-identity-privacy.md": "ab085f6d13b331d581d75b3f9f47b5154bf222d8",
-    "releases/summer_26/en_US/service.md": "de400d83ec6f2e94636c356dc121e440f9615d0f",
-    "releases/summer_26/pt_BR/agentforce.md": "6b4517fac858b8d1581f5a0acd6a60836469f67b",
-    "releases/summer_26/pt_BR/analise_de_dados.md": "f1bb6120b9e78a478673ac149806eded97ec4755",
-    "releases/summer_26/pt_BR/aplicativo_movel.md": "0e86d7c193a95964391da0ec7b8bd8e540eaf00d",
-    "releases/summer_26/pt_BR/automacao.md": "1e50718b6a106771f9afc2196fae42f112b5e430",
-    "releases/summer_26/pt_BR/data_360.md": "5e6079ba7e8cad06a45edb44be5e0fc855bc1ce4",
-    "releases/summer_26/pt_BR/desenvolvimento.md": "0636df03f017ddb023097b7eb55fcec59e88b416",
-    "releases/summer_26/pt_BR/documentacao_legal.md": "55f63f3d70e76dce47dddff627a5697f81fe9482",
-    "releases/summer_26/pt_BR/experience_cloud.md": "80148c38f3fa6340579e107f869b7bb6379069aa",
-    "releases/summer_26/pt_BR/field_service.md": "d13eee898e952f7c63251ee7309ed83d354547e6",
-    "releases/summer_26/pt_BR/gerenciamento_de_receita.md": "beab2d77469825139f374ad87aaefeafaffa5d17",
-    "releases/summer_26/pt_BR/hyperforce.md": "7d64d0a4c93ce3ed2e36fa714f818360cb642161",
-    "releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md": "27fb0f2df0d73bec68c295a1d6eed34a8df8ba75",
-    "releases/summer_26/pt_BR/marketing.md": "6f5686e9c731f676b62be4998f88c9b6d9878e45",
-    "releases/summer_26/pt_BR/mulesoft.md": "93e04ad6b3fa9bf47b01ac1edc5906a3d27c00c2",
-    "releases/summer_26/pt_BR/omnistudio.md": "530edde9ad5aa30aab35fcf05a747033884648f5",
-    "releases/summer_26/pt_BR/partner_cloud.md": "22b29b2bacef03fe9a2b9e5f6d55b0e88ad0fef4",
-    "releases/summer_26/pt_BR/personalizacao.md": "37daf33c491aa616d4d1d3d62112347b0b26bd95",
-    "releases/summer_26/pt_BR/salesforce_geral.md": "57a12a0651f1dd704dd53e04c59f0dbb77181c68",
-    "releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md": "f4a64c7a326d75a426ccec840e02b5e05218f699",
-    "releases/summer_26/pt_BR/servico.md": "9077eac5acfbd58f298a1630315fac724fbab58e",
-    "releases/summer_26/pt_BR/setores.md": "caf00df5183195d0e8f3bfd0b564403d1613947a",
-    "releases/summer_26/pt_BR/vendas.md": "71cee0434b306f7b47f0d2f0c9846837c7196c34",
+    "releases/summer_26/en_US/agentforce.md": "a16335509e10a4c3dc5294f11e6d134eb732e136",
+    "releases/summer_26/en_US/automation.md": "2591e06c2e54d1a0f679590bed9e2e69152a27cd",
+    "releases/summer_26/en_US/customization.md": "3a002fe74a6bfff77a235229bd92ff439dc75700",
+    "releases/summer_26/en_US/data-360.md": "0582f897afd03defa70a75a0595ed827c099b5e2",
+    "releases/summer_26/en_US/data-analysis.md": "b3d632aec2493b37f63e580dd51e28f64eeb3ee5",
+    "releases/summer_26/en_US/development.md": "dc582f45880e34a11524c0900a3252e0ea7bf22e",
+    "releases/summer_26/en_US/experience-cloud.md": "018d999b8bf5523f565a0d3e0d04d40706e5d3f8",
+    "releases/summer_26/en_US/field-service.md": "70ebdcd751de812d51b4ea666cc1fec985573c34",
+    "releases/summer_26/en_US/hyperforce.md": "f77ce413bae5cc53645661c7309edf75014a0abc",
+    "releases/summer_26/en_US/industries.md": "793125f0d2b64cd1dafc8bca1829e715650e0a23",
+    "releases/summer_26/en_US/legal-documentation.md": "d86b32d922d4ba0b118302b78707e20df91b9c88",
+    "releases/summer_26/en_US/marketing.md": "47e31817e2fb9a9fdf62912fb284d3314a332dfd",
+    "releases/summer_26/en_US/mobile-app.md": "df34ab7a28ca6f6a6b1516898c88850ef9d570f1",
+    "releases/summer_26/en_US/mulesoft.md": "0439df46fba92490356998d6eea4e998c7fdee35",
+    "releases/summer_26/en_US/omnistudio.md": "977cc3d3280e880c8e359c776726b71c459a5a60",
+    "releases/summer_26/en_US/partner-cloud.md": "2fd71981ebd40c81e0f446617c8969503fde3217",
+    "releases/summer_26/en_US/revenue-management.md": "6fe02106eb69fa253707620d9a8754c72acde835",
+    "releases/summer_26/en_US/sales.md": "6130e59150b840880314c3add1dbc34ad47f5606",
+    "releases/summer_26/en_US/salesforce-general.md": "2edad2fbc9ed19f42d092252032a1d24684b1b06",
+    "releases/summer_26/en_US/salesforce-slack-integrations.md": "3d6f796795073106b927b960a5eb9e8e167109f3",
+    "releases/summer_26/en_US/security-identity-privacy.md": "7eb3d1bac95007762f4ed4f9e9cea5f6e7e16a1f",
+    "releases/summer_26/en_US/service.md": "01b056f07243a8395e847be1670a1bc80b9aeedb",
+    "releases/summer_26/pt_BR/agentforce.md": "59d8be5b1e9b316994fe0810cc3d7307ac5d5ba8",
+    "releases/summer_26/pt_BR/analise_de_dados.md": "b999485fb22e47133eeb1b51a600325c104f8ad9",
+    "releases/summer_26/pt_BR/aplicativo_movel.md": "1eebc2f1c51583367e350ce6f24e4b74980b6644",
+    "releases/summer_26/pt_BR/automacao.md": "b8a5649f8bdf2e32ed40bedfd6ba9c69986a27c6",
+    "releases/summer_26/pt_BR/data_360.md": "7c2dc777d23e6a1bf6c78a18a08545afb17d6454",
+    "releases/summer_26/pt_BR/desenvolvimento.md": "92e31a19da1091375d8f7aabd646e1e4aa3500a6",
+    "releases/summer_26/pt_BR/documentacao_legal.md": "59270b4fe1fc38d09b8264215bf5f62660d8c322",
+    "releases/summer_26/pt_BR/experience_cloud.md": "77575a606cb34303928594067abac545d96e45e1",
+    "releases/summer_26/pt_BR/field_service.md": "8c6c86777525315bb406d101339e553ebf5ffce8",
+    "releases/summer_26/pt_BR/gerenciamento_de_receita.md": "65d39bbfebbfc4c0c204624263cf3a2278c4ef28",
+    "releases/summer_26/pt_BR/hyperforce.md": "7bbcb392a4a1f97e82a3c370a172eb6904fd1853",
+    "releases/summer_26/pt_BR/integracoes_do_salesforce_para_slack.md": "cc86f67cefc3f47d4367a371556cde62c5f3de25",
+    "releases/summer_26/pt_BR/marketing.md": "e1816f5dc4e2edc0027fce75ed3c68dbe3ec7a86",
+    "releases/summer_26/pt_BR/mulesoft.md": "9865750e4e138c494e5cc3cb0978c9d70e82b68a",
+    "releases/summer_26/pt_BR/omnistudio.md": "acae5286fecd281f503b2f59d25991b4c659d732",
+    "releases/summer_26/pt_BR/partner_cloud.md": "fbb2b1eb6bd234a159c32851063f021a46b6b22c",
+    "releases/summer_26/pt_BR/personalizacao.md": "0b8c815fedbe925221fe31582b6897e30a3de3b4",
+    "releases/summer_26/pt_BR/salesforce_geral.md": "c70b5e80300d6514e99d61f633f89ba9aa3c2bf9",
+    "releases/summer_26/pt_BR/seguranca_identidade_e_privacidade.md": "ee4d521d925ef8f4a1b63a220ba264720d02b505",
+    "releases/summer_26/pt_BR/servico.md": "84937e9c1aed20090a72c9acc3aee498ab2ede52",
+    "releases/summer_26/pt_BR/setores.md": "0f548065bac19ffcbc1b95ed6f1e7866619b615d",
+    "releases/summer_26/pt_BR/vendas.md": "1dbade343bd4a5a032e1bdb6cb9f4c98321eb6cd",
     "releases/winter_26/.meta.json": "f838eeb2eaac5d1ad8d5b1dae8d67361389c3a95",
     "releases/winter_26/.summary_cache.json": "8da5df0127e928d35cbafb10cef07fcca9d28658",
-    "releases/winter_26/en_US/agentforce.md": "39e2f3a26fee5015e583c1e4362b8b235b9014ba",
-    "releases/winter_26/en_US/customization.md": "97a48174d9a3c85c093aaa09de9db3ae0b6a3819",
-    "releases/winter_26/en_US/data-analysis.md": "2a990ee0050ef56e24eeffb2c5aa6a171426bfd9",
-    "releases/winter_26/en_US/development.md": "0e79be8c755dda78029c8919ae891b22de6644d3",
-    "releases/winter_26/en_US/experience-cloud.md": "1ba984e1942461dabdf0049693303ba23d79a421",
-    "releases/winter_26/en_US/field-service.md": "3ff209245550490a130f86b7622553d97c6549f8",
-    "releases/winter_26/en_US/hyperforce.md": "81feccdaca30abee13f8baf176fb7b728c4004e7",
-    "releases/winter_26/en_US/industries.md": "0518d5fd7a7ba4114b71987ce5695c9c2eeda16b",
-    "releases/winter_26/en_US/legal-documentation.md": "c99715dee12c575f730abb9fcd1ff6f70ddb22c5",
-    "releases/winter_26/en_US/marketing.md": "6eb0c34eafb4fb888838bfc3aa90a2fc7a8d717c",
-    "releases/winter_26/en_US/mobile-app.md": "4d68766441c8278965a0ed60e841b6df6d6be133",
-    "releases/winter_26/en_US/mulesoft.md": "5ed34239623cb45f976e50234098428664a5c69f",
-    "releases/winter_26/en_US/omnistudio.md": "dac3fa2f1daf40be231f0f1715a87d6da6bb3c85",
-    "releases/winter_26/en_US/partner-cloud.md": "54dd121747598dfa5d1d5a90dc7d42d41717b3d2",
-    "releases/winter_26/en_US/sales.md": "340b1422d363ee0add2ce5f3da0589155de78efb",
-    "releases/winter_26/en_US/salesforce-general.md": "189e236f22624c6921cc1a89d41315fb89d9223b",
-    "releases/winter_26/en_US/salesforce-slack-integrations.md": "2336b659c7b4984dadc20717a991264abe9d4ab8",
-    "releases/winter_26/en_US/security-identity-privacy.md": "811bd9f7e5cc88725017c7670141032dbe1dcb3c",
-    "releases/winter_26/en_US/service.md": "77aa9eff28bd0bfaf09edb49aa979d6c390080a2",
-    "releases/winter_26/pt_BR/agentforce.md": "348371206be9547b9529d533667a7a8a0a6a9857",
-    "releases/winter_26/pt_BR/analise_de_dados.md": "15d2ffa9f54f9d2b3e0cf8fa1cc1be29e6692388",
-    "releases/winter_26/pt_BR/aplicativo_movel.md": "4936b0cea85af0529ae56cb6a430d09b83389084",
-    "releases/winter_26/pt_BR/desenvolvimento.md": "772ee9ed43b6df48fe39d8fbf500314fd6744ddd",
-    "releases/winter_26/pt_BR/documentacao_legal.md": "5b512bb67d0f5b910fbd5c2d1ae57dc094f8c6fb",
-    "releases/winter_26/pt_BR/experience_cloud.md": "443dfff3a1783464f93ef94c195cc2e939749efa",
-    "releases/winter_26/pt_BR/field_service.md": "37356ced60c140f8d96c3408ffdd959b3677d635",
-    "releases/winter_26/pt_BR/hyperforce.md": "15e0da5f189266abc80c2b63fac3f423889dae13",
-    "releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md": "03920279873c597699d80ae06ea5e5c2bbd656f5",
-    "releases/winter_26/pt_BR/marketing.md": "a10261491ceb630f321ff1db4fe9d0b8e3d5ddfb",
-    "releases/winter_26/pt_BR/mulesoft.md": "559f4781f18dca5264ceea2ba5f3ea28a69c2cde",
-    "releases/winter_26/pt_BR/omnistudio.md": "364e9925ffe44a1a25c21c8865fa41b52cc7a4c4",
-    "releases/winter_26/pt_BR/partner_cloud.md": "849d0317ec2aa5484d5f3dc993eae2ec3208449a",
-    "releases/winter_26/pt_BR/personalizacao.md": "c4ee18f882dc9b7ca75b969ba6eee3914558d78c",
-    "releases/winter_26/pt_BR/salesforce_geral.md": "6306c74a632203445e121a2858bfce198f14b71f",
-    "releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md": "d2dc809624ec1606424cf86a26cf8d8463769ca4",
-    "releases/winter_26/pt_BR/servico.md": "4dc8d4ac4e4bcc1c04adddea03609d653f92be39",
-    "releases/winter_26/pt_BR/setores.md": "f34cdeedc962e581f735948d71414d4f4d10d3be",
-    "releases/winter_26/pt_BR/vendas.md": "628b743c3cd616cef17f69eec7e337312d4edf71",
+    "releases/winter_26/en_US/agentforce.md": "ef8ae925eb5646c42ad3695bee4060a7b81c5fe8",
+    "releases/winter_26/en_US/customization.md": "bd0dcfbd59abe9a9d143793ccb2c4d637cfdb1c7",
+    "releases/winter_26/en_US/data-analysis.md": "4b3d2c6b54b2502e237149fd415f3f25f5bce801",
+    "releases/winter_26/en_US/development.md": "676a204eece04e1d788dbcad90c335372f60a064",
+    "releases/winter_26/en_US/experience-cloud.md": "4eb8bc667f9bb09bb479c9c132d54a2a1de666eb",
+    "releases/winter_26/en_US/field-service.md": "28debaae88c2a1b9e9455f1bd35d065a047e5a6b",
+    "releases/winter_26/en_US/hyperforce.md": "f3b91ce53e9271b28eb54b4907c9eaed1fb22bc9",
+    "releases/winter_26/en_US/industries.md": "dfda4e7c117cd7e8c2e2c7d5f5b46fccb94edd1c",
+    "releases/winter_26/en_US/legal-documentation.md": "9652ca78dd9783ae3d817d380ae1cc43245deb9d",
+    "releases/winter_26/en_US/marketing.md": "26142ebdc6c47a03a8a015fdf0ad93f2a011aa4b",
+    "releases/winter_26/en_US/mobile-app.md": "c2da4c8c50258f5aafa85411bf34dee1e7fa6c32",
+    "releases/winter_26/en_US/mulesoft.md": "7410f6f761102afa61b8acca80f850e6ab85e9ab",
+    "releases/winter_26/en_US/omnistudio.md": "b4d9e04fc54e79f71c2b0e44da4fc0610c575720",
+    "releases/winter_26/en_US/partner-cloud.md": "fe30e634c7b981eca789a7de19cccc995191f239",
+    "releases/winter_26/en_US/sales.md": "ed78162bb69c82eeacc276a25b80998c0e35d2e0",
+    "releases/winter_26/en_US/salesforce-general.md": "fa4da1c7c75b00c40a0b2f30652ff5c977410795",
+    "releases/winter_26/en_US/salesforce-slack-integrations.md": "eea483a4be5acfc421f2657dde03d9b38594d7e2",
+    "releases/winter_26/en_US/security-identity-privacy.md": "d44011e92dd01f99e2f474e465c11a4978520d88",
+    "releases/winter_26/en_US/service.md": "273f1d58357908cc47dad0dec422d67f98ff5b8a",
+    "releases/winter_26/pt_BR/agentforce.md": "4892c3133723998457e3193a18525315410f974f",
+    "releases/winter_26/pt_BR/analise_de_dados.md": "51d27b2a38616af297939aa5a7cb9a0ea7256590",
+    "releases/winter_26/pt_BR/aplicativo_movel.md": "f67e5e4ee5fe09d9679e131b0029e2003effce4d",
+    "releases/winter_26/pt_BR/desenvolvimento.md": "dc79e1c2a6f68f5c3e7588a0366acbc29085bc17",
+    "releases/winter_26/pt_BR/documentacao_legal.md": "96723652f5cf24b2c66f7ce38ff61d4919fa7318",
+    "releases/winter_26/pt_BR/experience_cloud.md": "c34415d18d6983335c39bcd076e863226fd01331",
+    "releases/winter_26/pt_BR/field_service.md": "11913ccfe3a8d181b942908a8c90359c4c871efd",
+    "releases/winter_26/pt_BR/hyperforce.md": "680d3eb515b3547009f16222376655f3518d2caa",
+    "releases/winter_26/pt_BR/integracoes_do_salesforce_para_slack.md": "969a7d0c29cae6ffb927364eb3494c11e8477698",
+    "releases/winter_26/pt_BR/marketing.md": "8ce212419a2fc70109ea6dc6400dbf011696e657",
+    "releases/winter_26/pt_BR/mulesoft.md": "e14d05344e375b5bd3538e03d90355364b2ed47f",
+    "releases/winter_26/pt_BR/omnistudio.md": "508f3c211070cc9fd449c29d1104868f5d09f966",
+    "releases/winter_26/pt_BR/partner_cloud.md": "ad50c46fe2881f16518f6d8fb7bdbedcd49794de",
+    "releases/winter_26/pt_BR/personalizacao.md": "13ba8af4baf002b235f73f7d3d8a2f68d0c22c51",
+    "releases/winter_26/pt_BR/salesforce_geral.md": "916e1d86b99f603e65314556f31ee48dec39f1fe",
+    "releases/winter_26/pt_BR/seguranca_identidade_e_privacidade.md": "8add7aa79439b70b4af95d4b70ecec5a39cb2d6b",
+    "releases/winter_26/pt_BR/servico.md": "9f9dcffadce0ce602a481ca45613981c9e341c97",
+    "releases/winter_26/pt_BR/setores.md": "30545856fb34c22ab2c0d713bde3a2524d38258a",
+    "releases/winter_26/pt_BR/vendas.md": "4f85fe7e5ace01c46206777e0210057f1e28d7e6",
     "releases/winter_27/.meta.json": "d97ed7b99514e8953706496d6279162995c147bf",
     "releases/winter_27/.summary_cache.json": "b5a9d43d5e46a47836fdc371daeacb052dce42e2",
-    "releases/winter_27/en_US/agentforce.md": "49115332cf85c0c491424999a4e49a4f341c3127",
-    "releases/winter_27/en_US/automation.md": "ddd58717fd777347d67a76993ae9e4c487871b5d",
-    "releases/winter_27/en_US/data-360.md": "3668ff77a62647c91d7591dda470caca477c0fcd",
-    "releases/winter_27/en_US/data-analysis.md": "6eff5a1f49ce69d1db53a9165171c6de04530473",
-    "releases/winter_27/en_US/experience-cloud.md": "a86ace61afbd928d5093218f862e36f9d98e1a55",
-    "releases/winter_27/en_US/field-service.md": "ce3f877550779dec7a9c3f50964900ee233cc6b2",
-    "releases/winter_27/en_US/hyperforce.md": "865b8c45cd0833206e842f5e5f58fca47fc972fc",
-    "releases/winter_27/en_US/industries.md": "f7d556896a8618b6dcf9411c149f6ca464b35b6f",
-    "releases/winter_27/en_US/legal-documentation.md": "db01ab4c6c96b2dd2cd8b48e4fdd99ebb4841ac6",
-    "releases/winter_27/en_US/marketing.md": "7dc6fff5981701ec64225ffc6b1877f4fadc0172",
-    "releases/winter_27/en_US/mulesoft.md": "260c9a364a48539d4196a122520e1e9b12ef0d6a",
-    "releases/winter_27/en_US/omnistudio.md": "b09f41a0c2b2a9a6fa6f348bbaad56de67c0da4c",
-    "releases/winter_27/en_US/partner-cloud.md": "85549977c8e9b58bf1c3dd36f35ba21a730ab254",
-    "releases/winter_27/en_US/revenue-management.md": "8c0540429ae0a5cf039bf6a961f9865ab0981caf",
-    "releases/winter_27/en_US/sales.md": "cbcf5ce67cb37cc6cd84e3cd27d731a55c27f639",
-    "releases/winter_27/en_US/salesforce-general.md": "ed1d12a32dc576502ad78f7ceab264185d21475b",
-    "releases/winter_27/en_US/salesforce-slack-integrations.md": "feba32809d113185df723c7d7fa900100eb03fac",
-    "releases/winter_27/en_US/security-identity-privacy.md": "d4a930113e3f0cd53a34290f99245ee71557672c",
-    "releases/winter_27/en_US/service.md": "8e5a878e522881464f4da3dcaacc4c03f8d32147",
-    "releases/winter_27/pt_BR/agentforce.md": "264e602a785b0578ee84e6ede423dec69a6e80cf",
-    "releases/winter_27/pt_BR/analise_de_dados.md": "a5f5a47e41fda1adf865c67d5e4bc7faa1ea6487",
-    "releases/winter_27/pt_BR/automacao.md": "5de78eb1143945ff711ea9b45ff36c3a2bfad349",
-    "releases/winter_27/pt_BR/data_360.md": "101970617b0eb0f63de5406460acfa1a8fd0a777",
-    "releases/winter_27/pt_BR/documentacao_legal.md": "e9384f939b1996f1fd971fd26abafd516c172967",
-    "releases/winter_27/pt_BR/experience_cloud.md": "d35189ab68ad89609839b040797e507a7524fce5",
-    "releases/winter_27/pt_BR/field_service.md": "8f8300671f4bf54b9ff5b591d2223bc7187c0077",
-    "releases/winter_27/pt_BR/gerenciamento_de_receita.md": "01e775f6a3b312f9db6a44c98e785b91bab45b1a",
-    "releases/winter_27/pt_BR/hyperforce.md": "de3cf16f31f354eb0fc3ceed822aa8164dd2134b",
-    "releases/winter_27/pt_BR/integracoes_do_salesforce_para_slack.md": "019aeb36d596d94f6baa469d6d10705d1b945f7b",
-    "releases/winter_27/pt_BR/marketing.md": "45cdb23a92085b270a32cf82d830fe4e4a1556c6",
-    "releases/winter_27/pt_BR/mulesoft.md": "00c6e235f5d2069ae80e39ba1ffa9fbbc2eff8cc",
-    "releases/winter_27/pt_BR/omnistudio.md": "a25ba23fc6a1f2f085f704070f676f932b02ab72",
-    "releases/winter_27/pt_BR/partner_cloud.md": "231e65edbbe4a3fb6b6375046e74086500136e00",
-    "releases/winter_27/pt_BR/salesforce_geral.md": "47f41cc5bf0bc901c83f196e0ebf76dd84bb1b3c",
-    "releases/winter_27/pt_BR/seguranca_identidade_e_privacidade.md": "99a794b05fe0c73cafd39107e48ea133d1b47d0f",
-    "releases/winter_27/pt_BR/servico.md": "ada0f3a91fabc3e694d386ad07e85ddfdb38a939",
-    "releases/winter_27/pt_BR/setores.md": "982b2400e73695de43b3cfd4fd6eaa819473a538",
-    "releases/winter_27/pt_BR/vendas.md": "9a19b01c8fec787cde99f6abda28ffdf3bfc1ae4",
+    "releases/winter_27/en_US/agentforce.md": "e854265767c6b0ee4aeaa358ab95c661b37dad2a",
+    "releases/winter_27/en_US/automation.md": "017fbaaba6d9d571dd65397a35ab8da55b3ccf35",
+    "releases/winter_27/en_US/data-360.md": "c8ba2ca1b806b860e0367d03c558f825357264e3",
+    "releases/winter_27/en_US/data-analysis.md": "220dbe0320936d81b1048267829f4ba989cc8ad1",
+    "releases/winter_27/en_US/experience-cloud.md": "f8983a56e2463d5318a05af53f70abf4689b5d6e",
+    "releases/winter_27/en_US/field-service.md": "609c49e099777cfcd50446b5f535cf32d921e90f",
+    "releases/winter_27/en_US/hyperforce.md": "bc77c1945620b824300c8f6aa31bf23fe3ee4c20",
+    "releases/winter_27/en_US/industries.md": "b1afd48698b4e1c38bd6d02ed97e773949235d1a",
+    "releases/winter_27/en_US/legal-documentation.md": "e5f5e71cade819b1cd206a8c5619ce63ea1bd762",
+    "releases/winter_27/en_US/marketing.md": "66ff4c7fa52ca972bfd9ac3ab5a61e0f3a7ff9ea",
+    "releases/winter_27/en_US/mulesoft.md": "6654f18460e0d156d3df09643b9d822bbc937f46",
+    "releases/winter_27/en_US/omnistudio.md": "1caa75da7dd9e84da0724e766c830cf6065a7f0c",
+    "releases/winter_27/en_US/partner-cloud.md": "72f82f38930326d1c4bfc8f13d6b3f1041da09a2",
+    "releases/winter_27/en_US/revenue-management.md": "1178c32c3f8702559871173f836bc4f527b0fb77",
+    "releases/winter_27/en_US/sales.md": "4ba46c017810d9c77993b750d3cfbf9827284b35",
+    "releases/winter_27/en_US/salesforce-general.md": "c3420b05c78976cfcfd1d8db32cff40d7b8dacb5",
+    "releases/winter_27/en_US/salesforce-slack-integrations.md": "877999abde15b755c21e98c83f8f1b537501ea13",
+    "releases/winter_27/en_US/security-identity-privacy.md": "e322153f4e128bff5d6b80560fbf74232a9b89a3",
+    "releases/winter_27/en_US/service.md": "220eb15bb6cda5e245c4e4bb898b6c2ae83b672b",
+    "releases/winter_27/pt_BR/agentforce.md": "e12808f0c877c81d9c84b58ebd596715b958d268",
+    "releases/winter_27/pt_BR/analise_de_dados.md": "359f775e32426bbe161971f45e4ab31ddf13ac04",
+    "releases/winter_27/pt_BR/automacao.md": "48a2d43e270f12b9dd3076ad216d906c5a4da9ec",
+    "releases/winter_27/pt_BR/data_360.md": "1640feb6fb619642076e0aa17ba2357ae65e87bc",
+    "releases/winter_27/pt_BR/documentacao_legal.md": "7a46987c17391dc5a4c2d02b4235dcc507efb37b",
+    "releases/winter_27/pt_BR/experience_cloud.md": "8efeddfeb41e3e08ed21b4d88d7ae4a25933b5e9",
+    "releases/winter_27/pt_BR/field_service.md": "da28ef3a02291eb83ca26019630c9220ead3562d",
+    "releases/winter_27/pt_BR/gerenciamento_de_receita.md": "846e96158e7d3aadc31205579fc2e2a0d8809fb4",
+    "releases/winter_27/pt_BR/hyperforce.md": "9a700f8c9773ecab093bceef9c54bc445625228b",
+    "releases/winter_27/pt_BR/integracoes_do_salesforce_para_slack.md": "be4f568c7648ea83bd845cc3bb25057fb3fa464f",
+    "releases/winter_27/pt_BR/marketing.md": "47dc761240246b905021a3abfefb3db9a2585c92",
+    "releases/winter_27/pt_BR/mulesoft.md": "52e9bce9d1b4f126722b1d2a66e6a025cdb8591b",
+    "releases/winter_27/pt_BR/omnistudio.md": "47530ae4d389a26df11941001edf6bddd462f226",
+    "releases/winter_27/pt_BR/partner_cloud.md": "e7472d1dee3bfe19ff23bc45826eec71f5274ef7",
+    "releases/winter_27/pt_BR/salesforce_geral.md": "696f1a7c89a3c68fdf508e235aa24734fa36dc1f",
+    "releases/winter_27/pt_BR/seguranca_identidade_e_privacidade.md": "af2b686957ecdb09b094773093cfe25339be12bc",
+    "releases/winter_27/pt_BR/servico.md": "1f05994a77858081ae72351b5f39551d87a21ee9",
+    "releases/winter_27/pt_BR/setores.md": "bdde8a183a22f72edc278ef5ac84f60bdcc09d0c",
+    "releases/winter_27/pt_BR/vendas.md": "8de6229100322d6f71ab949ce00688c157254a53",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
     "src/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
@@ -501,6 +654,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T03:41:55.646003+00:00",
-  "repository_sha": "2412e9b8c7d84ce0a2c0bda5ddf071e3504ee29e"
+  "generated_at": "2026-09-17T03:46:58.261331+00:00",
+  "repository_sha": "7f0b7bbd8d08ba0fecde834f56e9cff56d6c2cf8"
 }
