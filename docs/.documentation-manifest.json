@@ -243,7 +243,6 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.documentation-manifest.json": "e869ccc388bf70f57907abbeeaf085f432c520cd",
     "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
     "docs/api/ai-generators-code.md": "ca91c83974278c114cd8b4245730bf871373fd59",
@@ -654,6 +653,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T03:46:58.261331+00:00",
-  "repository_sha": "7f0b7bbd8d08ba0fecde834f56e9cff56d6c2cf8"
+  "generated_at": "2026-09-17T03:50:35.429613+00:00",
+  "repository_sha": "98b6e774fd242d59a6404d82e0f1c6bc935a7d73"
 }

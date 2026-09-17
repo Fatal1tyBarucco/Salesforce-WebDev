@@ -30,6 +30,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", Path(__file__).resolve().parents[2]))
 MANIFEST_PATH = REPO_ROOT / "docs" / ".documentation-manifest.json"
+MANIFEST_REL = "docs/.documentation-manifest.json"  # relative key for inventory compare (manifest is metadata, not a tracked doc)
 SRC_ROOT = REPO_ROOT / "src"
 DOCS_ROOT = REPO_ROOT / "docs"
 MKKDOCS_PATH = REPO_ROOT / "mkdocs.yml"
@@ -86,7 +87,7 @@ def tracked_inventory() -> dict[str, str]:
     inv: dict[str, str] = {}
     for line in out.splitlines():
         parts = line.split()
-        if len(parts) >= 4:
+        if len(parts) >= 4 and parts[3] != MANIFEST_REL:
             inv[parts[3]] = parts[1]
     return inv
 
