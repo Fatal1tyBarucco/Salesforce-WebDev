@@ -472,18 +472,32 @@ def audit() -> dict:
 # Reconciliation (deterministic, build-safe)
 # --------------------------------------------------------------------------- #
 def write_manifest() -> dict[str, str]:
+    """(Re)write the documentation baseline manifest.
+
+    Idempotent: if the tracked inventory, documentation map and HEAD SHA are
+    unchanged since the last manifest, the file is left untouched so a stable
+    repo produces zero reconciliation diff.  Only the stable fields are
+    compared; the volatile ``generated_at`` timestamp is refreshed only when the
+    baseline actually changed.
+    """
     inventory = tracked_inventory()
+    doc_map = build_documentation_map(inventory)
+    existing = load_manifest()
+    if (existing.get("repository_sha") == head_sha()
+            and existing.get("files") == inventory
+            and existing.get("documentation_map") == doc_map):
+        return {"manifest": "baseline unchanged (idempotent, no drift)", "changed": False}
     manifest = {
         "repository_sha": head_sha(),
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "files": inventory,
-        "documentation_map": build_documentation_map(inventory),
+        "documentation_map": doc_map,
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n",
                              encoding="utf-8")
     return {"manifest": f"regenerated baseline ({len(inventory)} files, "
-                        f"{len(manifest['documentation_map'])} map entries)"}
+                        f"{len(doc_map)} map entries)", "changed": True}
 
 
 def fix_version_badges() -> list[str]:
@@ -817,7 +831,10 @@ def reconcile(generate_api: bool = True) -> int:
         actions += generate_api_index_table()
     actions += strip_dead_refs()
     # Regenerate manifest LAST so it captures every reconciled file.
-    actions.append(write_manifest()["manifest"])
+    # Only record the action when the baseline actually changed (idempotent).
+    manifest_info = write_manifest()
+    if manifest_info.get("changed"):
+        actions.append(manifest_info["manifest"])
 
     print(f"\nDocumentation reconciliation complete: {len(actions)} action(s)")
     for a in actions:
