@@ -37,14 +37,31 @@ MKKDOCS_PATH = REPO_ROOT / "mkdocs.yml"
 REPORT_PATH = Path(os.environ.get("DRIFT_REPORT", "/tmp/drift_report.json"))
 
 SRC_NON_MODULE_FILES = {
-    "openapi_spec.json", "trailhead.json", "dashboard_template.html", "py.typed",
+    "openapi_spec.json",
+    "trailhead.json",
+    "dashboard_template.html",
+    "py.typed",
 }
 SKIP_DIRS = {
-    ".git", "__pycache__", ".venv", "venv", "site", "node_modules",
-    ".pytest_cache", ".ruff_cache", ".mypy_cache", "stubs",
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "site",
+    "node_modules",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+    "stubs",
 }
-DOC_ROOT_FILES = {"README.md", "README.en.md", "AGENTS.md", "CONTRIBUTING.md",
-                  "SECURITY.md", "CHANGELOG.md"}
+DOC_ROOT_FILES = {
+    "README.md",
+    "README.en.md",
+    "AGENTS.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+}
 
 # Matches prose code-path references: src/foo.py, scripts/x.sh, .github/workflows/y.yml
 PATH_REF_RE = re.compile(
@@ -66,9 +83,12 @@ MD_LINK_RE = re.compile(r"(?<!\\)!?\[([^\]]*)\]\(([^)\s]*)\)")
 def run_git(args: list[str]) -> tuple[int, str]:
     try:
         import subprocess
+
         proc = subprocess.run(
             ["git", "-C", str(REPO_ROOT)] + args,
-            capture_output=True, text=True, timeout=120,
+            capture_output=True,
+            text=True,
+            timeout=120,
         )
         return proc.returncode, proc.stdout.strip()
     except (OSError, Exception):
@@ -186,8 +206,7 @@ def build_documentation_map(inventory: dict[str, str]) -> dict[str, list[str]]:
         link(mod["file"], evoker_rel_for(mod["dotted"]))
 
     candidates = sorted(
-        p for p in inventory if p.endswith(".md")
-        and (p.startswith("docs/") or p in DOC_ROOT_FILES)
+        p for p in inventory if p.endswith(".md") and (p.startswith("docs/") or p in DOC_ROOT_FILES)
     )
     for doc in candidates:
         for match in PATH_REF_RE.findall(read_text(doc)[:180_000]):
@@ -231,19 +250,34 @@ def stale_manifest(inventory: dict[str, str], manifest: dict) -> list[dict]:
     old_files: dict[str, str] = manifest.get("files", {})
     for path, sha in inventory.items():
         if path in old_files and old_files[path] != sha:
-            findings.append({"type": "MANIFEST_STALE_SHA", "severity": "high",
-                             "path": path,
-                             "detail": f"'{path}' blob SHA changed since last manifest baseline."})
+            findings.append(
+                {
+                    "type": "MANIFEST_STALE_SHA",
+                    "severity": "high",
+                    "path": path,
+                    "detail": f"'{path}' blob SHA changed since last manifest baseline.",
+                }
+            )
     for path in old_files:
         if path not in inventory:
-            findings.append({"type": "MANIFEST_STALE_FILE", "severity": "medium",
-                             "path": path,
-                             "detail": f"'{path}' is in manifest but missing from repo."})
+            findings.append(
+                {
+                    "type": "MANIFEST_STALE_FILE",
+                    "severity": "medium",
+                    "path": path,
+                    "detail": f"'{path}' is in manifest but missing from repo.",
+                }
+            )
     for path in inventory:
         if path not in old_files:
-            findings.append({"type": "MANIFEST_NEW_FILE", "severity": "info",
-                             "path": path,
-                             "detail": f"'{path}' is new since last manifest baseline."})
+            findings.append(
+                {
+                    "type": "MANIFEST_NEW_FILE",
+                    "severity": "info",
+                    "path": path,
+                    "detail": f"'{path}' is new since last manifest baseline.",
+                }
+            )
     return findings
 
 
@@ -260,15 +294,22 @@ def _iter_doc_lines(rel: str):
 
 def dead_references(inventory: set[str]) -> list[dict]:
     findings: list[dict] = []
-    docs = sorted(p for p in inventory
-                  if p.endswith(".md") and (p.startswith("docs/") or p in DOC_ROOT_FILES))
+    docs = sorted(
+        p for p in inventory if p.endswith(".md") and (p.startswith("docs/") or p in DOC_ROOT_FILES)
+    )
     for doc in docs:
         for line in _iter_doc_lines(doc):
             for m in PATH_REF_RE.findall(line):
                 if m not in inventory:
-                    findings.append({"type": "DEAD_CODE_REF", "severity": "medium",
-                                     "doc": doc, "ref": m,
-                                     "detail": f"'{doc}' references '{m}' which no longer exists."})
+                    findings.append(
+                        {
+                            "type": "DEAD_CODE_REF",
+                            "severity": "medium",
+                            "doc": doc,
+                            "ref": m,
+                            "detail": f"'{doc}' references '{m}' which no longer exists.",
+                        }
+                    )
     return findings
 
 
@@ -289,12 +330,22 @@ def broken_internal_links(docs: list[str], inventory: set[str]) -> list[dict]:
                 rel = resolved.relative_to(root_resolved).as_posix()
             except ValueError:
                 rel = str(resolved)
-            exists = resolved.is_file() or resolved.is_dir() or rel in inventory \
+            exists = (
+                resolved.is_file()
+                or resolved.is_dir()
+                or rel in inventory
                 or (REPO_ROOT / rel).is_dir()
+            )
             if not exists:
-                findings.append({"type": "DOC_BROKEN_LINK", "severity": "medium",
-                                 "doc": doc, "target": target,
-                                 "detail": f"'{doc}' links to inexistent '{target}'."})
+                findings.append(
+                    {
+                        "type": "DOC_BROKEN_LINK",
+                        "severity": "medium",
+                        "doc": doc,
+                        "target": target,
+                        "detail": f"'{doc}' links to inexistent '{target}'.",
+                    }
+                )
     return findings
 
 
@@ -312,11 +363,18 @@ def version_drift() -> list[dict]:
         for match in re.compile(pattern).finditer(read_text(doc)):
             claimed = match.group(1)
             if claimed != authoritative:
-                findings.append({"type": "DOC_VERSION_MISMATCH", "severity": "high",
-                                 "doc": doc, "claimed": claimed,
-                                 "authoritative": authoritative,
-                                 "detail": f"'{doc}' claims Python {claimed}; "
-                                           f"pyproject requires {authoritative}."})
+                findings.append(
+                    {
+                        "type": "DOC_VERSION_MISMATCH",
+                        "severity": "high",
+                        "doc": doc,
+                        "claimed": claimed,
+                        "authoritative": authoritative,
+                        "detail": f"'{doc}' claims Python {claimed}; "
+                        f"pyproject requires {authoritative}.",
+                    }
+                )
+
     # Patterns capture the full "3.X" literal (e.g. "3.13") so the comparison
     # against the authoritative pyproject value is exact, not minor-only.
     check("README.en.md", r"Python-(3\.\d+(?:\.\d+)?)(?:-blue)")
@@ -342,14 +400,16 @@ def release_inventory() -> list[dict]:
             except (OSError, json.JSONDecodeError):
                 data = {}
         cats = data.get("categories", [])
-        out.append({
-            "dir": d.name,
-            "name": data.get("name", d.name),
-            "slug": data.get("slug", d.name),
-            "features": data.get("total_features", 0),
-            "categories": len(cats) if isinstance(cats, list) else 0,
-            "release_id": int(data.get("release_id", 0) or 0),
-        })
+        out.append(
+            {
+                "dir": d.name,
+                "name": data.get("name", d.name),
+                "slug": data.get("slug", d.name),
+                "features": data.get("total_features", 0),
+                "categories": len(cats) if isinstance(cats, list) else 0,
+                "release_id": int(data.get("release_id", 0) or 0),
+            }
+        )
     out.sort(key=lambda r: r["release_id"], reverse=True)
     return out
 
@@ -359,10 +419,8 @@ SEASON_ICON = {"spring": "🌸", "summer": "☀️", "winter": "❄️", "fall":
 
 def release_table_header(locale: str = "pt") -> list[str]:
     if locale == "en":
-        return ["| Release | Features | Categories | Status |",
-                "| :--- | :---: | :---: | :---: |"]
-    return ["| Release | Features | Categorias | Status |",
-            "| :--- | :---: | :---: | :---: |"]
+        return ["| Release | Features | Categories | Status |", "| :--- | :---: | :---: | :---: |"]
+    return ["| Release | Features | Categorias | Status |", "| :--- | :---: | :---: | :---: |"]
 
 
 def release_table_rows(locale: str = "pt") -> list[str]:
@@ -382,35 +440,54 @@ def release_table_rows(locale: str = "pt") -> list[str]:
     return rows
 
 
-def release_table_drift(text: str, header_title: str, doc: str,
-                        locale: str = "pt") -> list[dict]:
+def release_table_drift(text: str, header_title: str, doc: str, locale: str = "pt") -> list[dict]:
     """Verify a locale-localised releases table matches releases/*.meta.json."""
     findings: list[dict] = []
     # Section header carries an emoji (e.g. "## 📋 Releases Disponíveis ...").
     header_re = re.compile(r"(?m)^##[^\n]*\b" + re.escape(header_title) + r"\b[^\n]*\n")
     hm = header_re.search(text)
     if not hm:
-        findings.append({"type": "RELEASE_TABLE_MISSING", "severity": "high",
-                         "doc": doc,
-                         "detail": f"'{doc}' has no '{header_title}' releases section."})
+        findings.append(
+            {
+                "type": "RELEASE_TABLE_MISSING",
+                "severity": "high",
+                "doc": doc,
+                "detail": f"'{doc}' has no '{header_title}' releases section.",
+            }
+        )
         return findings
     expected = release_table_rows(locale)
     table_re = re.compile(
-        r"(?m)\n*\| Release[^\n]*\|[^\n]*\r?\n\|\s*:?-+:?\s*\|[^\n]*\r?\n(?:\|.*\r?\n)*")
+        r"(?m)\n*\| Release[^\n]*\|[^\n]*\r?\n\|\s*:?-+:?\s*\|[^\n]*\r?\n(?:\|.*\r?\n)*"
+    )
     tm = table_re.search(text, hm.end())
     if not tm:
-        findings.append({"type": "RELEASE_TABLE_MISSING", "severity": "high",
-                         "doc": doc,
-                         "detail": f"'{doc}' '{header_title}' section has no releases table."})
+        findings.append(
+            {
+                "type": "RELEASE_TABLE_MISSING",
+                "severity": "high",
+                "doc": doc,
+                "detail": f"'{doc}' '{header_title}' section has no releases table.",
+            }
+        )
         return findings
     block = tm.group(0)
-    actual = [s for s in (l.strip() for l in block.splitlines())
-              if s.startswith("|") and "Release |" not in s and ":---" not in s]
+    actual = [
+        s
+        for s in (line.strip() for line in block.splitlines())
+        if s.startswith("|") and "Release |" not in s and ":---" not in s
+    ]
     if actual != expected:
-        findings.append({"type": "RELEASE_TABLE_STALE", "severity": "high",
-                         "doc": doc, "expected": expected,
-                         "detail": f"'{doc}' releases table stale vs releases/ metadata "
-                                   f"({locale}); Winter '27 missing or feature counts drift."})
+        findings.append(
+            {
+                "type": "RELEASE_TABLE_STALE",
+                "severity": "high",
+                "doc": doc,
+                "expected": expected,
+                "detail": f"'{doc}' releases table stale vs releases/ metadata "
+                f"({locale}); Winter '27 missing or feature counts drift.",
+            }
+        )
     return findings
 
 
@@ -426,34 +503,56 @@ def audit() -> dict:
     # Only real site pages are relevant for "not in nav"; generated release
     # notes, root docs, the auto-generated api/ stubs and private internal docs
     # are intentionally excluded to keep the finding actionable.
-    site_docs = sorted(p for p in inv_set if p.endswith(".md")
-                       and p.startswith("docs/")
-                       and not p.startswith("docs/api/")
-                       and not p.startswith("docs/internal/"))
+    site_docs = sorted(
+        p
+        for p in inv_set
+        if p.endswith(".md")
+        and p.startswith("docs/")
+        and not p.startswith("docs/api/")
+        and not p.startswith("docs/internal/")
+    )
     mk_nav, nav_set = parse_nav_docs(read_text("mkdocs.yml"))
     for missing in nav_missing_files(nav_set, inv_set):
-        findings.append({"type": "NAV_MISSING_FILE", "severity": "high",
-                         "doc": missing,
-                         "detail": f"mkdocs.yml nav references inexistent '{missing}'."})
+        findings.append(
+            {
+                "type": "NAV_MISSING_FILE",
+                "severity": "high",
+                "doc": missing,
+                "detail": f"mkdocs.yml nav references inexistent '{missing}'.",
+            }
+        )
     for orphan in docs_not_in_nav(site_docs, nav_set):
-        findings.append({"type": "DOC_NOT_IN_NAV", "severity": "medium",
-                         "doc": orphan,
-                         "detail": f"'{orphan}' exists but is absent from mkdocs nav."})
+        findings.append(
+            {
+                "type": "DOC_NOT_IN_NAV",
+                "severity": "medium",
+                "doc": orphan,
+                "detail": f"'{orphan}' exists but is absent from mkdocs nav.",
+            }
+        )
 
     findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
 
     for mod in missing_api_evokers():
-        findings.append({"type": "MISSING_API_DOC", "severity": "medium",
-                         "source": mod["file"], "doc": mod["evoker"],
-                         "detail": f"'{mod['file']}' has no API evoker at '{mod['evoker']}'."})
+        findings.append(
+            {
+                "type": "MISSING_API_DOC",
+                "severity": "medium",
+                "source": mod["file"],
+                "doc": mod["evoker"],
+                "detail": f"'{mod['file']}' has no API evoker at '{mod['evoker']}'.",
+            }
+        )
 
     findings += version_drift()
     # Releases availability table is curated in BOTH locales (pt-BR docs home +
     # English README), each from the authoritative releases/*.meta.json.
-    findings += release_table_drift(read_text("docs/index.md"), "Releases Disponíveis",
-                                    "docs/index.md", "pt")
-    findings += release_table_drift(read_text("README.en.md"), "Available Releases",
-                                    "README.en.md", "en")
+    findings += release_table_drift(
+        read_text("docs/index.md"), "Releases Disponíveis", "docs/index.md", "pt"
+    )
+    findings += release_table_drift(
+        read_text("README.en.md"), "Available Releases", "README.en.md", "en"
+    )
 
     report = {
         "mode": "audit",
@@ -488,8 +587,7 @@ def write_manifest() -> dict[str, str]:
     # ("generated against commit X") and is intentionally NOT part of the
     # staleness check -- otherwise every new commit would force a manifest
     # rewrite since HEAD always advances on commit.
-    if (existing.get("files") == inventory
-            and existing.get("documentation_map") == doc_map):
+    if existing.get("files") == inventory and existing.get("documentation_map") == doc_map:
         return {"manifest": "baseline unchanged (idempotent, no drift)", "changed": False}
     manifest = {
         "repository_sha": head_sha(),
@@ -498,10 +596,14 @@ def write_manifest() -> dict[str, str]:
         "documentation_map": doc_map,
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MANIFEST_PATH.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-                             encoding="utf-8")
-    return {"manifest": f"regenerated baseline ({len(inventory)} files, "
-                        f"{len(doc_map)} map entries)", "changed": True}
+    MANIFEST_PATH.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return {
+        "manifest": f"regenerated baseline ({len(inventory)} files, "
+        f"{len(doc_map)} map entries)",
+        "changed": True,
+    }
 
 
 def fix_version_badges() -> list[str]:
@@ -554,7 +656,8 @@ def _upsert_release_table(doc: str, header_title: str, locale: str = "pt") -> li
     if not hm:
         return []
     table_re = re.compile(
-        r"(?m)\n*(\| Release[^\n]*\|[^\n]*\r?\n\|\s*:?-+:?\s*\|[^\n]*\r?\n)(?:\|.*\r?\n)*")
+        r"(?m)\n*(\| Release[^\n]*\|[^\n]*\r?\n\|\s*:?-+:?\s*\|[^\n]*\r?\n)(?:\|.*\r?\n)*"
+    )
     tm = table_re.search(txt, hm.end())
     built = "\n" + "\n".join(header_lines + rows) + "\n"
     if tm:
@@ -565,9 +668,9 @@ def _upsert_release_table(doc: str, header_title: str, locale: str = "pt") -> li
         # bail out -- never overwrite real content.
         if any(line.strip() and not line.lstrip().startswith("|") for line in block.splitlines()):
             return []
-        new = txt[:tm.start()] + built + txt[tm.end():]
+        new = txt[: tm.start()] + built + txt[tm.end() :]
     else:
-        new = txt[:hm.end()] + built + txt[hm.end():]
+        new = txt[: hm.end()] + built + txt[hm.end() :]
     if new != txt:
         write_file(doc, new)
         return [f"updated {doc}: {locale} releases table upserted ({len(rows)} releases)"]
@@ -588,8 +691,9 @@ def add_missing_nav_entries() -> list[str]:
     text = read_text("mkdocs.yml")
     inv = set(tracked_inventory().keys())
     _, nav_set = parse_nav_docs(text)
-    orphans = sorted(p for p in inv if p.endswith(".md") and p.startswith("docs/")
-                     and p not in nav_set)
+    orphans = sorted(
+        p for p in inv if p.endswith(".md") and p.startswith("docs/") and p not in nav_set
+    )
     if not orphans:
         return []
     lines = text.splitlines(keepends=True)
@@ -644,10 +748,11 @@ def add_api_nav_entries() -> list[str]:
     text = read_text("mkdocs.yml")
     _, nav_set = parse_nav_docs(text)
     lines = text.splitlines(keepends=True)
-    api_docs = sorted(p.relative_to(REPO_ROOT).as_posix()
-                      for p in DOCS_ROOT.glob("api/*.md")
-                      if p.name != "index.md"
-                      and p.relative_to(REPO_ROOT).as_posix() not in nav_set)
+    api_docs = sorted(
+        p.relative_to(REPO_ROOT).as_posix()
+        for p in DOCS_ROOT.glob("api/*.md")
+        if p.name != "index.md" and p.relative_to(REPO_ROOT).as_posix() not in nav_set
+    )
     if not api_docs:
         return []
     # find the "- API Reference:" section and insert leaves right after it
@@ -685,9 +790,11 @@ def generate_api_index_table() -> list[str]:
     # Read from the filesystem so freshly-created (uncommitted) stubs are
     # visible immediately -- the index must reflect what lives on disk, not
     # what git has recorded.
-    evokers = sorted(p.relative_to(REPO_ROOT).as_posix()
-                     for p in DOCS_ROOT.glob("api/*.md")
-                     if p.name != "index.md")
+    evokers = sorted(
+        p.relative_to(REPO_ROOT).as_posix()
+        for p in DOCS_ROOT.glob("api/*.md")
+        if p.name != "index.md"
+    )
     rows = ["| Módulo | Evocador |", "|--------|----------|"]
     for ev in evokers:
         rel = ev.replace("docs/api/", "")
@@ -793,9 +900,11 @@ def strip_dead_refs() -> list[str]:
             delta = 0
             for m in MD_LINK_RE.finditer(line):
                 target = m.group(2)
-                if (not target
-                        or target.startswith(("http://", "https://", "mailto:", "tel:", "#"))
-                        or target.endswith((":", "::"))):
+                if (
+                    not target
+                    or target.startswith(("http://", "https://", "mailto:", "tel:", "#"))
+                    or target.endswith((":", "::"))
+                ):
                     continue
                 clean = target.split("#")[0].split("?")[0].strip()
                 if not clean:
@@ -808,7 +917,7 @@ def strip_dead_refs() -> list[str]:
                     exists = False
                 if not exists:
                     replacement = m.group(1) or clean
-                    cur = cur[:m.start() + delta] + replacement + cur[m.end() + delta:]
+                    cur = cur[: m.start() + delta] + replacement + cur[m.end() + delta :]
                     delta += len(replacement) - (m.end() - m.start())
                     changed = True
             # (2) shorten bare dead code-path mentions in whatever remains
@@ -851,8 +960,7 @@ def reconcile(generate_api: bool = True) -> int:
 # --------------------------------------------------------------------------- #
 def _write_report(report: dict) -> None:
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False),
-                           encoding="utf-8")
+    REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def cmd_scan() -> int:
@@ -866,8 +974,10 @@ def cmd_scan() -> int:
         "documentation_map": build_documentation_map(inv),
     }
     _write_report(report)
-    print(f"scan: {len(inv)} tracked files | src_modules={len(report['src_modules'])} "
-          f"| api_evokers={len(report['api_evokers'])} | releases={len(report['releases'])}")
+    print(
+        f"scan: {len(inv)} tracked files | src_modules={len(report['src_modules'])} "
+        f"| api_evokers={len(report['api_evokers'])} | releases={len(report['releases'])}"
+    )
     return 0
 
 
@@ -875,9 +985,11 @@ def cmd_audit() -> int:
     report = audit()
     _write_report(report)
     counts = Counter(f["type"] for f in report["findings"])
-    print(f"audit: {len(report['findings'])} findings | inventory={report['inventory_count']} "
-          f"src_modules={report['src_modules']} api_evokers={report['existing_api_evokers']} "
-          f"releases={len(report['releases'])}")
+    print(
+        f"audit: {len(report['findings'])} findings | inventory={report['inventory_count']} "
+        f"src_modules={report['src_modules']} api_evokers={report['existing_api_evokers']} "
+        f"releases={len(report['releases'])}"
+    )
     for kind, n in sorted(counts.items()):
         print(f"  {kind}: {n}")
     print(f"\nDrift report written to {REPORT_PATH}")
@@ -901,8 +1013,10 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     cmd = argv[0]
     if cmd not in ("scan", "audit", "reconcile", "manifest"):
-        print("usage: docs_sync_engine.py [scan|audit|reconcile[--no-api-stubs]|manifest]",
-              file=sys.stderr)
+        print(
+            "usage: docs_sync_engine.py [scan|audit|reconcile[--no-api-stubs]|manifest]",
+            file=sys.stderr,
+        )
         return 2
     generate_api = "--no-api-stubs" not in argv
     try:
