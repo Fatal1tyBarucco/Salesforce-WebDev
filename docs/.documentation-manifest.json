@@ -246,7 +246,7 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "audit-fix.patch": "ace60b7b51435eaf37f73a5fdcb52691cbd9a6a1",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/SOURCE_SCHEMA.md": "69b714cf9ed7628ba97da208d481e2daff694e8a",
+    "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
     "docs/api/ai-generators-code.md": "ca91c83974278c114cd8b4245730bf871373fd59",
     "docs/api/ai-generators-markdown.md": "dc7ac6c3c69321da49715702b9576df0388dd2d4",
@@ -339,7 +339,7 @@
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
     "docs/runbooks/index.md": "a267cf5c71ad14f310433cb669f110ae9b7f6e60",
     "docs/runbooks/mkdocs-build-failure.md": "bcf7c297d31b5b0c6fe93587afd8c95256072687",
-    "docs/runbooks/release-generation-failure.md": "2b371146d6706d625039adb3b0bbff55abe4144d",
+    "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
@@ -656,6 +656,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T04:33:10.592228+00:00",
-  "repository_sha": "51170f063bf496004bdf5ecd1cc9761678d13ce9"
+  "generated_at": "2026-09-17T04:56:54.429374+00:00",
+  "repository_sha": "307e2a485df852cb90dd2be3bce1cc2fe9a89e55"
 }
