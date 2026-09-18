@@ -25,7 +25,7 @@ import os
 import re
 import sys
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", Path(__file__).resolve().parents[2]))
@@ -511,7 +511,7 @@ def audit() -> dict:
         and not p.startswith("docs/api/")
         and not p.startswith("docs/internal/")
     )
-    mk_nav, nav_set = parse_nav_docs(read_text("mkdocs.yml"))
+    _mk_nav, nav_set = parse_nav_docs(read_text("mkdocs.yml"))
     for missing in nav_missing_files(nav_set, inv_set):
         findings.append(
             {
@@ -557,7 +557,7 @@ def audit() -> dict:
     report = {
         "mode": "audit",
         "repository_sha": head_sha(),
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "inventory_count": len(inventory),
         "src_modules": len(src_python_modules()),
         "existing_api_evokers": len(existing_api_evokers()),
@@ -591,7 +591,7 @@ def write_manifest() -> dict[str, str]:
         return {"manifest": "baseline unchanged (idempotent, no drift)", "changed": False}
     manifest = {
         "repository_sha": head_sha(),
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "files": inventory,
         "documentation_map": doc_map,
     }
@@ -625,6 +625,10 @@ def fix_version_badges() -> list[str]:
             (r"\*\*Python 3\.(\d+(?:\.\d+)?)\*\*", f"**Python {ver}**"),
         ],
         "README.md": [(r"Python-3\.(\d+(?:\.\d+)?)\+", f"Python-{ver}+")],
+        # docs/index.md uses the same ``**Python 3.X**`` badge prose that
+        # version_drift() audits — close the audit→reconcile gap so a stale
+        # Python claim here is auto-fixed, not just flagged.
+        "docs/index.md": [(r"\*\*Python 3\.(\d+(?:\.\d+)?)\*\*", f"**Python {ver}**")],
     }
     for doc, patterns in specs.items():
         txt = read_text(doc)
@@ -764,13 +768,11 @@ def add_api_nav_entries() -> list[str]:
             break
     if anchor is None:
         return []
-    inserted = 0
-    for doc in api_docs:
+    for i, doc in enumerate(api_docs):
         rel = doc.replace("docs/api/", "api/")
         title = Path(rel).stem.replace("-", " ").replace("_", " ").title()
         leaf = f"    - {title}: {rel}\n"
-        lines.insert(anchor + 1 + inserted, leaf)
-        inserted += 1
+        lines.insert(anchor + 1 + i, leaf)
         actions.append(f"added nav entry {rel}")
     MKKDOCS_PATH.write_text("".join(lines), encoding="utf-8")
     return actions
@@ -831,22 +833,107 @@ def _tree_lines(root_rel: str, depth: int, prefix: str) -> list[str]:
     return entries
 
 
+_TOP_LEVEL_COMMENTS = {
+    "releases": "Artefatos Markdown por release",
+    "tests": "Suíte pytest",
+    "docs": "Documentação MkDocs",
+    "k8s": "Manifestos Kubernetes",
+    "mkdocs.yml": "Configuração MkDocs",
+    "pyproject.toml": "Configuração do projeto",
+    "uv.lock": "Lockfile determinístico",
+    ".github": "Workflows e scripts do GitHub",
+    "scripts": "Scripts utilitários",
+    "Dockerfile": "Imagem Docker de runtime",
+    "CHANGELOG.md": "Changelog do projeto",
+    "README.md": "Readme em português",
+    "README.en.md": "Readme em inglês",
+    "SECURITY.md": "Política de segurança",
+    "CONTRIBUTING.md": "Guia de contribuição",
+    "AGENTS.md": "Diretrizes para agentes de código",
+}
+
+# Top-level names that exist on disk but are infra/caches and should NOT
+# appear in the curated project tree shown to humans.
+_TREE_SKIP_DIRS = frozenset(
+    {
+        ".git",
+        "__pycache__",
+        ".venv",
+        "venv",
+        "site",
+        "node_modules",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".mypy_cache",
+        "stubs",
+        "assets",
+        "data",
+        ".hooks",
+        ".mimocode",
+        "src",
+    }
+)
+_TREE_SKIP_FILES = frozenset(
+    {
+        ".env",
+        ".markdownlintignore",
+        ".markdownlint.json",
+        ".pre-commit-config.yaml",
+        ".gitignore",
+        ".dockerignore",
+        "audit-fix.patch",
+    }
+)
+
+
+def _top_level_tree_lines() -> list[str]:
+    """Dynamically enumerate real top-level repo entries for the directory tree.
+
+    Replaces the previously hardcoded list so the tree never goes stale as
+    files/dirs are added. Curated inline comments are attached where a
+    meaningful label exists; new entries are emitted without a comment rather
+    than silently omitted. Never raises.
+    """
+    try:
+        items = sorted(
+            (p for p in REPO_ROOT.iterdir()),
+            key=lambda p: (p.is_file(), p.name),
+        )
+    except OSError:
+        return []
+    visible: list[str] = []
+    for p in items:
+        if p.name in _TREE_SKIP_DIRS or p.name in _TREE_SKIP_FILES:
+            continue
+        visible.append(p.name)
+    if not visible:
+        return []
+    out: list[str] = []
+    for i, name in enumerate(visible):
+        last = i == len(visible) - 1
+        branch = "└── " if last else "├── "
+        is_dir = (REPO_ROOT / name).is_dir()
+        label = f"{name}{'/' if is_dir else ''}"
+        comment = _TOP_LEVEL_COMMENTS.get(name)
+        if comment:
+            out.append(f"  {branch}{label:<26} # {comment}")
+        else:
+            out.append(f"  {branch}{label}")
+    return out
+
+
 def fix_directory_tree() -> list[str]:
     path = "docs/index.md"
     txt = read_text(path)
+    if not txt:
+        return []
     lines = ["Salesforce-WebDev/"]
     lines += _tree_lines("src", depth=2, prefix="  ")
-    lines.append("  ├── releases/                # Artefatos Markdown por release")
-    lines.append("  ├── tests/                     # Suíte pytest")
-    lines.append("  ├── docs/                      # Documentação MkDocs")
-    lines.append("  ├── k8s/                       # Manifestos Kubernetes")
-    lines.append("  ├── mkdocs.yml                 # Configuração MkDocs")
-    lines.append("  ├── pyproject.toml             # Configuração do projeto")
-    lines.append("  ├── uv.lock                    # Lockfile determinístico")
+    lines += _top_level_tree_lines()
     tree = "\n".join(lines)
     pattern = re.compile(r"(?ms)^```text\n(?:\s*\n)?Salesforce-WebDev/\n.*?```\n")
     replacement = f"```text\n\n{tree}\n```\n"
-    new, n = pattern.subn(replacement, txt, count=1)
+    new, _n = pattern.subn(replacement, txt, count=1)
     if new != txt:
         write_file(path, new)
         return [f"updated {path}: directory tree refreshed"]
@@ -1028,7 +1115,7 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_manifest()
         if cmd == "reconcile":
             return cmd_reconcile(generate_api)
-    except Exception as exc:  # noqa: BLE001 — engine must never crash CI
+    except Exception as exc:  # engine must never crash CI
         print(f"❌ docs_sync_engine {cmd} failed (safe abort): {exc}", file=sys.stderr)
         return 1
     return 2

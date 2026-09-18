@@ -18,13 +18,15 @@ Dependency management and virtual environments are handled by `uv`. The project 
   - `uv run black --check .`
 - **Run typecheck:** `uv run mypy src/`
 - **Run all pre-commit checks manually:** `uv run pre-commit run --all-files`
+  - Pre-push hook (`.hooks/pytest-pre-push.sh`) runs `pytest tests/ -x -q` automatically on push; it uses `python3` directly, so ensure deps are in the active venv.
 
 ## Stack & Conventions
 
 - Python `>=3.13,<3.14` (via `uv`; system may have 3.14, but lock file pins to 3.13).
-- `pytest-timeout` is configured globally via `addopts = "--timeout=120"` (120s per test).
+- `addopts = "-q --tb=short --durations=10 --timeout=120"` in pyproject.toml; `--timeout=120` (pytest-timeout) enforces a 120s per-test limit.
 - Code style: Black (line length 100) and Ruff linting.
 - Async code: Asyncio (`asyncio_mode = "auto"` in pytest).
+- `pythonpath = ["."]` in pyproject.toml — `src` modules are importable without installation.
 - Commit messages: Conventional Commits (`feat(scope): ...`, `fix(scope): ...`, `refactor(scope): ...`, `test(scope): ...`, `docs(scope): ...`, `chore(scope): ...`).
 
 ## Repository Map
@@ -55,7 +57,7 @@ Before finishing changes, always run:
 
 ### mypy
 
-- `mypy strict = true` is in `pyproject.toml` (applied to all files including tests).
+- `mypy strict = true` is in `pyproject.toml`. CI and pre-commit check `src/` only (`uv run mypy src/`); tests are not type-checked.
 - `mypy_path = "stubs"` — stub modules go in `stubs/`.
 - CI runs `uv run mypy src/ --ignore-missing-imports --pretty` — the `--ignore-missing-imports` flag is intentional to suppress import errors for optional deps.
 - Stub module: `stubs/syrupy/__init__.pyi` (with `py.typed`) provides `SnapshotAssertion` and `snapshot()` for mypy type checking.
@@ -66,6 +68,7 @@ Before finishing changes, always run:
 - `tests/test_snapshot.py` and `tests/test_llm_service.py` may have pre-existing mypy errors in helper fixtures — do not introduce new errors.
 - Factory module: `tests/factories.py` (8 functions: `make_release`, `make_topic_node`, `make_topic_tree`, `make_toc_html`, `make_feature_impact_text`, `make_feature_impact_html`, `make_release_metadata`, `make_mock_html_response`).
 - Snapshots in `tests/__snapshots__/test_snapshot.ambr` (syrupy, 9 snapshots).
+  - Regenerate with `pytest tests/test_snapshot.py --snapshot-update`.
 
 ### Documentation
 
@@ -186,5 +189,7 @@ The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on eve
 - **Black** — `uv run black --check .`
 - **Mypy** — `uv run mypy src/ --ignore-missing-imports --pretty`
 - **Tests + Coverage** — `uv run pytest tests/ --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --cov-fail-under=95`
+
+  CI installs deps with `uv sync --frozen --extra dev --group dev` (ruff/black jobs) or `uv sync --frozen --extra dev --extra healing --group dev` (mypy/tests jobs). Syrupy is added separately via `uv pip install "syrupy>=4.9.0,<5"`.
 
 All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).

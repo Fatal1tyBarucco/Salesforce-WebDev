@@ -331,14 +331,22 @@ Salesforce-WebDev/
   ├── smart_notifications.py
   ├── translator.py
   └── workflow.py
-  ├── releases/                # Artefatos Markdown por release
-  ├── tests/                     # Suíte pytest
+  ├── .github/                   # Workflows e scripts do GitHub
   ├── docs/                      # Documentação MkDocs
   ├── k8s/                       # Manifestos Kubernetes
+  ├── releases/                  # Artefatos Markdown por release
+  ├── scripts/                   # Scripts utilitários
+  ├── tests/                     # Suíte pytest
+  ├── AGENTS.md                  # Diretrizes para agentes de código
+  ├── CHANGELOG.md               # Changelog do projeto
+  ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── Dockerfile                 # Imagem Docker de runtime
+  ├── README.en.md               # Readme em inglês
+  ├── README.md                  # Readme em português
+  ├── SECURITY.md                # Política de segurança
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
-  ├── uv.lock                    # Lockfile determinístico
-
+  └── uv.lock                    # Lockfile determinístico
 ```
 
 ## Qualidade de Código
