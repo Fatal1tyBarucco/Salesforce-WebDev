@@ -76,3 +76,6 @@ workspace/
 fase3.md
 NOTIFICATION_DIGEST.md
 .aider*
+# Ambient-specific: uv __init__.py corruption workaround (container/overlay fs only)
+PLANO_AJUSTES.md
+restore_init_files.py
