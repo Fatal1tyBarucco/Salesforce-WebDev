@@ -215,7 +215,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
-    ".github/scripts/docs_sync_engine.py": "58bcf58f4b295b32a5a5b822008745ff3fe0cbd7",
+    ".github/scripts/docs_sync_engine.py": "fde39d021307e737a5166ed9337e68ed80bfc192",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "256b33f0ce0b39d3c78972b39e6790280b863ccf",
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
@@ -233,7 +233,7 @@
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "3d26311f3520b555301701831e5d909c419f7259",
-    "AGENTS.md": "bc9a23923d33a6e8193c8219aae68b37dfe315cb",
+    "AGENTS.md": "0340a3c610428f2b5390d3b0e1ecb94c6cc3786d",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -319,7 +319,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "24a946e6895afb8871bdc7c1850942f4623ca6d1",
     "docs/guides/running-pipeline.md": "36120cdf19558fa04dd87112a6d96bb1ad3d2f24",
-    "docs/index.md": "fbad1e95ffb8d54063d1a426bc647cb5945c724a",
+    "docs/index.md": "0e12e9c6bb44464ebd0b278d935b80e61b533ef7",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -656,6 +656,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "ae9d944a615e045105d0fbfad811cc56235c0c95"
   },
-  "generated_at": "2026-09-17T05:30:06.994394+00:00",
-  "repository_sha": "1ebf777a5f093d79c0364de8a6f366330eeac681"
+  "generated_at": "2026-09-18T21:03:45.364222+00:00",
+  "repository_sha": "7749f12e672e92a5d9414e91243c2c20640e3642"
 }
