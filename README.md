@@ -818,7 +818,7 @@ flowchart LR
 
 | Requisito | Versão | Instalação |
 |:----------|:-------|:-----------|
-| Python | 3.12+ | [python.org](https://www.python.org/) |
+| Python | 3.13+ | [python.org](https://www.python.org/) |
 | uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Playwright | Chromium | `uv run playwright install chromium` |
 
@@ -917,7 +917,7 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 
 | Ferramenta | Configuração | Status |
 |:-----------|:-------------|:------:|
-| 🐍 **Python** | 3.12-3.13, type hints completos | ✅ |
+| 🐍 **Python** | 3.13, type hints completos | ✅ |
 | 🔍 **Mypy** | `strict = true` | ✅ |
 | ⚡ **Ruff** | `line-length = 100` | ✅ |
 | 🖤 **Black** | `target-version = py313` | ✅ |
@@ -1083,7 +1083,7 @@ Salesforce-WebDev/
 ├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
 │
 ├── mkdocs.yml                       # 📖 Config MkDocs
-├── pyproject.toml                   # 📦 Config do projeto (Python >=3.12,<3.14)
+├── pyproject.toml                   # 📦 Config do projeto (Python >=3.13,<3.14)
 ├── uv.lock                          # 🔒 Lock file
 ├── Dockerfile                       # 🐳 Multi-stage build
 └── .pre-commit-config.yaml          # 🪝 Pre-commit hooks

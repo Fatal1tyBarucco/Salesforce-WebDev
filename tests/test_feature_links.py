@@ -154,10 +154,64 @@ class TestExtractFeaturesFromHtml:
         """Handles malformed HTML gracefully."""
         from src.scraper import SalesforceReleaseScraper
 
-        html = "<<invalid>><<><<>"
+        html = "<<invalid>><<><<<"
         # Should not raise
         features = SalesforceReleaseScraper._extract_features_from_html(html)
         assert isinstance(features, list)
+
+    def test_non_http_scheme_skipped(self) -> None:
+        """Links with non-http schemes are filtered by _is_allowed_salesforce_href (Strategy 1)."""
+        from src.scraper import SalesforceReleaseScraper
+
+        # FTP link inside a table row — _is_allowed_salesforce_href is called
+        html = """
+        <table>
+            <tr>
+                <td>FTP Feature</td>
+                <td><a href="ftp://help.salesforce.com/x.htm">Docs</a></td>
+            </tr>
+        </table>
+        """
+        features = SalesforceReleaseScraper._extract_features_from_html(html)
+        assert len(features) == 1
+        assert features[0]["docs_url"] == ""  # _is_allowed_salesforce_href returned False
+
+    def test_list_item_without_link(self) -> None:
+        """Strategy 2: list items without anchor tags are skipped."""
+        from src.scraper import SalesforceReleaseScraper
+
+        html = "<ul><li>Plain text item with no link</li></ul>"
+        features = SalesforceReleaseScraper._extract_features_from_html(html)
+        assert features == []
+
+    def test_list_item_short_name_skipped(self) -> None:
+        """Strategy 2: list items with names shorter than 3 chars are skipped."""
+        from src.scraper import SalesforceReleaseScraper
+
+        html = (
+            "<ul>"
+            '<li><a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_ab.htm">AB</a></li>'
+            '<li><a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_long.htm">Long Feature</a></li>'
+            "</ul>"
+        )
+        features = SalesforceReleaseScraper._extract_features_from_html(html)
+        assert len(features) == 1
+        assert features[0]["name"] == "Long Feature"
+
+    def test_strategy2_non_salesforce_release_notes_link(self) -> None:
+        """Strategy 2: link with release-notes but non-salesforce host is skipped (508->498)."""
+        from src.scraper import SalesforceReleaseScraper
+
+        html = (
+            "<ul>"
+            '<li><a href="https://example.com/release-notes.x.htm">NonSF Feature</a></li>'
+            "</ul>"
+        )
+        features = SalesforceReleaseScraper._extract_features_from_html(html)
+        # Strategy 2 fails (non-salesforce), Strategy 3 picks it up
+        assert len(features) == 1
+        assert features[0]["name"] == "NonSF Feature"
+        assert features[0]["docs_url"] == "https://example.com/release-notes.x.htm"
 
 
 # ---------------------------------------------------------------------------

@@ -16,12 +16,8 @@ class RateLimiter:
             raise ValueError("RateLimiter min_interval must be positive, got %s" % min_interval)
         self._min_interval = float(min_interval)
         self._last_request: float = 0.0
-        if self is None:
-            raise RuntimeError("RateLimiter instance cannot be None")
 
     async def acquire(self) -> None:
-        if self is None:
-            raise RuntimeError("RateLimiter instance is None")
         now = time.monotonic()
         elapsed = now - self._last_request
         if elapsed < self._min_interval:

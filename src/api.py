@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import re
@@ -108,7 +109,7 @@ def verify_api_key(x_api_key: str | None = Header(None)) -> str:
             detail="Server API key not configured",
             headers={"WWW-Authenticate": "ApiKey"},
         )
-    if not x_api_key or x_api_key != expected_key:
+    if not x_api_key or not hmac.compare_digest(x_api_key, expected_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or missing API key",
@@ -439,7 +440,7 @@ class APIHandler(BaseHTTPRequestHandler):
         if auth and auth.startswith("Bearer "):
             token = auth[len("Bearer ") :].strip()
         provided = hdr_key or token
-        if provided == _API_KEY:
+        if provided and hmac.compare_digest(provided, _API_KEY):
             return True
         try:
             self.send_response(401)
