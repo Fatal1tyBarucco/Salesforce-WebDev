@@ -23,6 +23,8 @@ graph TB
     subgraph "Orchestration"
         MAIN["main.py<br/>run_pipeline(PipelineConfig)"]
         CONFIG["PipelineConfig<br/>DI Container"]
+        DISCOVERY["ReleaseDiscoveryService<br/>ReleaseDiscoveryService"]
+        DOCS_SVC["DocumentationService<br/>DocumentationService"]
     end
 
     subgraph "Scraping Layer"
@@ -80,7 +82,13 @@ graph TB
     MAIN --> AI_SVC
     MAIN --> HEALTH
 
-    SCRAPER --> CB1
+    MAIN --> DISCOVERY
+    DISCOVERY --> SCRAPER
+    DISCOVERY --> CONFIG
+
+    MAIN --> DOCS_SVC
+    DOCS_SVC --> GEN
+    GEN --> SF
     SCRAPER --> RL
     SCRAPER --> PW
     SCRAPER --> CACHE

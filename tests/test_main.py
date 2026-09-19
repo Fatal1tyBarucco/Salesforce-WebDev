@@ -37,7 +37,7 @@ class TestParseArgs:
 
 
 class TestDetectNewRelease:
-    """detect_new_release: returns latest known or None when all exist."""
+    """detect_new_release: delegates to ReleaseDiscoveryService."""
 
     @pytest.mark.asyncio
     async def test_returns_latest_when_no_existing(self) -> None:
@@ -45,10 +45,12 @@ class TestDetectNewRelease:
 
         scraper = AsyncMock()
         known = [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")]
-
         with (
-            patch("src.main._find_existing_releases", return_value=set()),
-            patch("src.main.KNOWN_RELEASES", known),
+            patch("src.release_discovery.KNOWN_RELEASES", known),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.find_existing_releases",
+                return_value=set(),
+            ),
         ):
             result = await detect_new_release(scraper)
         assert result is not None
@@ -60,10 +62,17 @@ class TestDetectNewRelease:
 
         scraper = AsyncMock()
         known = [ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")]
-
         with (
-            patch("src.main._find_existing_releases", return_value={"summer_26"}),
-            patch("src.main.KNOWN_RELEASES", known),
+            patch("src.release_discovery.KNOWN_RELEASES", known),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.find_existing_releases",
+                return_value={"summer_26"},
+            ),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService._discover_via_content_comparison",
+                new_callable=AsyncMock,
+                return_value=None,
+            ),
         ):
             result = await detect_new_release(scraper)
         assert result is None

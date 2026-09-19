@@ -137,6 +137,8 @@ nav:
     - Nl Search: api/nl_search.md
     - Orchestrator: api/orchestrator.md
     - Release Docs: api/release_docs.md
+    - Release Discovery: api/release_discovery.md
+    - Documentation Service: api/documentation_service.md
     - Release Summarizer: api/release_summarizer.md
     - Salesforce: api/salesforce.md
     - Smart Notifications: api/smart_notifications.md

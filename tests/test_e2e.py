@@ -142,8 +142,11 @@ class TestPipelineE2E:
 
         with (
             patch("src.main.RELEASES_DIR", str(releases_dir)),
-            patch("src.main._generate_release_files", new_callable=AsyncMock) as mock_gen,
-            patch("src.main._update_readme_single"),
+            patch(
+                "src.documentation_service.DocumentationService.generate_release_files",
+                new_callable=AsyncMock,
+            ) as mock_gen,
+            patch("src.documentation_service.DocumentationService.update_readme_single"),
             patch(
                 "src.feature_enricher.FeatureEnricher.enrich_release",
                 new_callable=AsyncMock,

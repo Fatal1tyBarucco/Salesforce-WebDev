@@ -74,7 +74,9 @@ class TestDetectReleases:
 
         orch = PipelineOrchestrator(config)
         with patch(
-            "src.main.detect_new_release", new_callable=AsyncMock, return_value=mock_release
+            "src.release_discovery.ReleaseDiscoveryService.discover",
+            new_callable=AsyncMock,
+            return_value=[mock_release],
         ):
             result = await orch._detect_releases(MagicMock())
         assert len(result) == 1
@@ -88,7 +90,11 @@ class TestDetectReleases:
         config.known_releases = None
 
         orch = PipelineOrchestrator(config)
-        with patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=None):
+        with patch(
+            "src.release_discovery.ReleaseDiscoveryService.discover",
+            new_callable=AsyncMock,
+            return_value=[],
+        ):
             result = await orch._detect_releases(MagicMock())
         assert len(result) == 0
 
@@ -106,7 +112,10 @@ class TestRunAIReports:
         orch = PipelineOrchestrator(config)
         result = PipelineResult(releases_processed=[], errors=[], status="running")
 
-        with patch("src.release_docs.update_readme_all", new_callable=AsyncMock):
+        with patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ):
             await orch._run_ai_reports([], None, result)
         assert result.status == "completed"
 
@@ -119,7 +128,10 @@ class TestRunAIReports:
         result = PipelineResult(releases_processed=[], errors=[], status="running")
 
         with (
-            patch("src.release_docs.update_readme_all", new_callable=AsyncMock),
+            patch(
+                "src.documentation_service.DocumentationService.update_readme_all",
+                new_callable=AsyncMock,
+            ),
             patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         ):
             await orch._run_ai_reports([MagicMock()], MagicMock(), result)
@@ -138,7 +150,10 @@ class TestRunAIReports:
         result = PipelineResult(releases_processed=[], errors=[], status="running")
 
         with (
-            patch("src.release_docs.update_readme_all", new_callable=AsyncMock),
+            patch(
+                "src.documentation_service.DocumentationService.update_readme_all",
+                new_callable=AsyncMock,
+            ),
             patch(
                 "src.main.generate_ai_reports_async",
                 new_callable=AsyncMock,

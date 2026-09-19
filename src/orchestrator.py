@@ -81,9 +81,9 @@ class PipelineOrchestrator:
 
         releases = await self._detect_releases(scraper)
         if not releases:
-            from .release_docs import update_readme_all
+            from .documentation_service import DocumentationService
 
-            await update_readme_all()
+            await DocumentationService().update_readme_all()
             result.status = "no_new_releases"
             await self._bus.emit("pipeline.completed", {"new_releases": 0}, source="orchestrator")
             return result
@@ -135,18 +135,15 @@ class PipelineOrchestrator:
             )
             return []
 
-        from .main import detect_new_release
+        from .release_discovery import ReleaseDiscoveryService
 
-        new_release = await detect_new_release(scraper)
-        if new_release:
-            await self._bus.emit(
-                "release.detected",
-                {"slug": new_release.slug, "name": new_release.name},
-                source="orchestrator",
-            )
-            return [new_release]
-
-        return []
+        service = ReleaseDiscoveryService(
+            scraper=scraper,
+            known_releases=known if known else None,
+            event_bus=self._bus,
+        )
+        releases = await service.discover()
+        return releases
 
     async def _process_release(
         self,
@@ -180,9 +177,9 @@ class PipelineOrchestrator:
     ) -> None:
         """Generate AI reports and update README."""
         from .main import generate_ai_reports_async
-        from .release_docs import update_readme_all
+        from .documentation_service import DocumentationService
 
-        await update_readme_all()
+        await DocumentationService().update_readme_all()
 
         if llm is None:
             logger.info("LLM not available — skipping AI reports")

@@ -42,6 +42,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.circuit_breaker` | [`circuit_breaker.md`](circuit_breaker.md) |
 | `src.config` | [`config.md`](config.md) |
 | `src.dashboard` | [`dashboard.md`](dashboard.md) |
+| `src.documentation_service` | [`documentation_service.md`](documentation_service.md) |
 | `src.events` | [`events.md`](events.md) |
 | `src.exceptions` | [`exceptions.md`](exceptions.md) |
 | `src.feature_classifier` | [`feature_classifier.md`](feature_classifier.md) |
@@ -61,6 +62,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.notifications` | [`notifications.md`](notifications.md) |
 | `src.orchestrator` | [`orchestrator.md`](orchestrator.md) |
 | `src.parser` | [`parser.md`](parser.md) |
+| `src.release_discovery` | [`release_discovery.md`](release_discovery.md) |
 | `src.release_docs` | [`release_docs.md`](release_docs.md) |
 | `src.release_summarizer` | [`release_summarizer.md`](release_summarizer.md) |
 | `src.salesforce` | [`salesforce.md`](salesforce.md) |
