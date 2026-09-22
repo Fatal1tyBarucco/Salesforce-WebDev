@@ -2,6 +2,13 @@ name: Refresh Dependabot Lockfile
 
 # Automatically regenerates uv.lock when a Dependabot PR updates
 # pyproject.toml, so the lockfile never lags behind dependency declarations.
+#
+# ⚠️ POLICY NOTE — GitHub will restrict `pull_request_target` on public
+# repositories by default starting Nov 2, 2026.
+# This workflow is scoped to dependabot[bot] actor + same-repo PRs only,
+# so the security surface is minimal. If the trigger stops firing after
+# that date, update the repo's Actions policy to allow `pull_request_target`
+# for this workflow, or migrate to `pull_request` + a PAT (see issue #140).
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
