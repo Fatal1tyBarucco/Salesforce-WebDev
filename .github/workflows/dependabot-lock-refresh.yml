@@ -11,7 +11,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: dependabot-lock-${{ github.event.pull_request?.head.ref || github.ref }}
+  group: dependabot-lock-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
