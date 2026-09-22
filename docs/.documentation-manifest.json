@@ -221,7 +221,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
-    ".github/scripts/docs_sync_engine.py": "40f3c321f5966d01319d8947e45bdcd9f5a3f69d",
+    ".github/scripts/docs_sync_engine.py": "a99bad021cd203057ce02c1aa738366a788b3c58",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "3d23cf4bd3be2f234992a78280669779688d008d",
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
@@ -666,6 +666,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-22T14:58:06.835107+00:00",
-  "repository_sha": "07f62069fa129003619cb8120e408d8bbac977da"
+  "generated_at": "2026-09-22T15:00:49.677699+00:00",
+  "repository_sha": "37274da399545dc6a16e550b7632330bbf61a017"
 }
