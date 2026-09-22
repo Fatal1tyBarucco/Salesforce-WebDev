@@ -45,7 +45,10 @@ Before finishing changes, always run:
 3. `uv run mypy src/`
 4. `uv run pytest --cov=src --cov-fail-under=95 --cov-report=term-missing --cov-report=xml:coverage.xml`
 
-## Key Files & Decisions
+### Quality issue fix convention (updated 2026-09-22)
+When an open issue reports "Python Quality falhou": fix with `uv run ruff check . --fix`, `uv run black .`, commit to main, push, then close all related issues (#141-143 pattern). Remove test artifacts (`NOTIFICATION_DIGEST.md`, `DIFF_REPORT.md`, etc.). Verify with `uv run pytest --cov=src --cov-fail-under=95`.
+
+### Key Files & Decisions
 
 ### Dependency constraints
 
