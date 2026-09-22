@@ -228,7 +228,7 @@
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
-    ".github/workflows/dependabot-lock-refresh.yml": "16dea23130ef24bebc2914298ec200a0ea446577",
+    ".github/workflows/dependabot-lock-refresh.yml": "9722b828f31dcf939da1979dda689f6624e2fe8f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
@@ -667,6 +667,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-22T13:23:35.768248+00:00",
-  "repository_sha": "8143fe4c1ca37bf0ca29acb2761d522a72d30620"
+  "generated_at": "2026-09-22T13:55:00.232818+00:00",
+  "repository_sha": "555be7d3f99fe8c32d002d1e2afabc38b7c1935d"
 }
