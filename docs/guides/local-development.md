@@ -51,7 +51,6 @@ uv run playwright install chromium
 | `OPENAI_API_KEY` | Não* | — | Chave da API OpenAI |
 | `GOOGLE_API_KEY` | Não* | — | Chave do Google Gemini |
 | `OPENCODE_API_KEY` | Não* | — | Chave OpenCode |
-| `MIMOCODE_API_KEY` | Não* | — | Chave MiMoCode |
 | `LOG_LEVEL` | Não | `INFO` | Nível de log (DEBUG, INFO, WARNING, ERROR) |
 | `LOG_FORMAT` | Não | `text` | Formato do log: `text` ou `json` |
 

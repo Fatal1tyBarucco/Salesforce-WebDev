@@ -869,7 +869,6 @@ _TREE_SKIP_DIRS = frozenset(
         "assets",
         "data",
         ".hooks",
-        ".mimocode",
         "src",
     }
 )

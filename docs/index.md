@@ -65,7 +65,7 @@ graph LR
 | **Orquestração** | `main.py`, `orchestrator.py` | Pipeline principal, DI, detecção de novas releases |
 | **Scraping** | `scraper.py` | Playwright headless, circuit breaker, rate limiter |
 | **Parsing** | `parser.py` | Árvore de navegação, tabelas de feature impact |
-| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode/MiMoCode), retry, fallback, rate limiting |
+| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode), retry, fallback, rate limiting |
 | **Enriquecimento AI** | `feature_enricher.py`, `release_summarizer.py` | Descrições por feature, resumos executivos, impacto por categoria |
 | **Automação** | `automation/` | Relatórios AI, triage, impacto, deduplicação, exportação |
 | **Integração** | `salesforce.py`, `workflow.py` | Trailhead, GitHub CLI, PRs |
@@ -101,7 +101,6 @@ uv run pytest --cov=src --cov-fail-under=95
 | `OPENAI_API_KEY` | Não* | Chave da API OpenAI para relatórios AI |
 | `GOOGLE_API_KEY` | Não* | Chave do Google Gemini (fallback) |
 | `OPENCODE_API_KEY` | Não* | Chave OpenCode (compatível OpenAI) |
-| `MIMOCODE_API_KEY` | Não* | Chave MiMoCode (compatível OpenAI) |
 
 *Pelo menos uma chave LLM é necessária para funcionalidades de IA (classificação, resumos, triage).
 
@@ -191,7 +190,7 @@ stateDiagram-v2
 
 Serviço LLM multi-provider com fallback automático:
 
-- **Providers**: OpenAI → Google Gemini → OpenCode → MiMoCode
+- **Providers**: OpenAI → Google Gemini → OpenCode
 - **Circuit Breaker** por provider (independente)
 - **Retry com tenacity** — 3 tentativas, backoff exponencial
 - **Timeout** — 30s (cliente) / 60s (operação)
@@ -202,8 +201,7 @@ graph LR
     REQ["Request"] --> OAI["OpenAI"]
     OAI -->|falha| GEM["Gemini"]
     GEM -->|falha| OC["OpenCode"]
-    OC -->|falha| MIMO["MiMoCode"]
-    MIMO -->|falha| NULL["return None"]
+    OC -->|falha| NULL["return None"]
 
 ```javascript
 

@@ -57,7 +57,6 @@ Após execução bem-sucedida, o pipeline gera:
 | `OPENAI_API_KEY` | Não* | — | Chave OpenAI |
 | `GOOGLE_API_KEY` | Não* | — | Chave Google Gemini |
 | `OPENCODE_API_KEY` | Não* | — | Chave OpenCode |
-| `MIMOCODE_API_KEY` | Não* | — | Chave MiMoCode |
 | `LOG_LEVEL` | Não | `INFO` | Nível de log |
 | `LOG_FORMAT` | Não | `text` | Formato: `text` ou `json` |
 | `SENTRY_DSN` | Não | — | DSN do Sentry para error tracking |

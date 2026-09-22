@@ -7,7 +7,7 @@ Configuração mínima para rodar o pipeline de extração e documentação em 5
 - Python 3.13 ou superior (o projeto usa `uv` para gerenciamento)
 - Git
 - Conta no GitHub (para clonar o repositório)
-- Chave LLM (opcional — OpenAI, Google Gemini, OpenCode ou MiMoCode)
+- Chave LLM (opcional — OpenAI, Google Gemini ou OpenCode)
 
 ## Instalação
 
@@ -79,7 +79,6 @@ O pipeline usa LLMs para classificação, resumos e relatórios. Configure pelo 
 | `OPENAI_API_KEY` | API Key da OpenAI | Não* |
 | `GOOGLE_API_KEY` | API Key do Google Gemini (fallback) | Não* |
 | `OPENCODE_API_KEY` | API Key OpenCode (compatível OpenAI) | Não* |
-| `MIMOCODE_API_KEY` | API Key MiMoCode (compatível OpenAI) | Não* |
 
 *Pelo menos uma chave é necessária para funcionalidades de IA.
 
