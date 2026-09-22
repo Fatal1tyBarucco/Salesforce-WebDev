@@ -24,10 +24,13 @@ concurrency:
 jobs:
   refresh-lock:
     # Only run for Dependabot PRs from the same repository.
+    # Checks the PR author (not the event actor) so it works for both
+    # `opened` and `synchronize` events — a push by a maintainer to the
+    # PR branch would set `github.actor` to the maintainer, not Dependabot.
     # Forks do not get write access to the base repo, and running
     # contents:write on untrusted fork branches is a security risk.
     if: >
-      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
