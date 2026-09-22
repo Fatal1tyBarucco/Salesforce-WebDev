@@ -238,12 +238,12 @@
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
-    ".pre-commit-config.yaml": "dffbc169a71318f5939a2358ca9883cd5abb4b2e",
+    ".pre-commit-config.yaml": "ca0d499338d2c5ef503a55790ac65670fae8e3df",
     "AGENTS.md": "0340a3c610428f2b5390d3b0e1ecb94c6cc3786d",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
-    "README.en.md": "53704fd2e5f448db01152b6b07a8a62a8ee48c57",
+    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
     "README.md": "a91d8221d1532d0f3021e672a232d1c4c925b1a8",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -666,6 +666,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "380b1744d5924584590584bb8fa54d0ba3b51074"
   },
-  "generated_at": "2026-09-21T22:00:19.822097+00:00",
-  "repository_sha": "f59cb287191aea1d3ea56173c930e067bf7a4a90"
+  "generated_at": "2026-09-22T02:22:03.869443+00:00",
+  "repository_sha": "191e442327cbb7ecaf1a831e5d7580606769fe69"
 }
