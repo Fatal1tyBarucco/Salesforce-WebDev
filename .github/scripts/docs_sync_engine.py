@@ -491,6 +491,52 @@ def release_table_drift(text: str, header_title: str, doc: str, locale: str = "p
     return findings
 
 
+OBSOLETE_PATTERNS = {
+    ".gitignore": [
+        (re.compile(r"^\.mimocode/\r?$", re.MULTILINE), "remove .mimocode/ line"),
+    ],
+    ".md": [
+        (re.compile(r"MiMoCode", re.IGNORECASE), "deprecated provider reference"),
+        (re.compile(r"MIMOCODE_API_KEY", re.IGNORECASE), "deprecated env key"),
+    ],
+    ".py": [
+        (re.compile(r"\.mimocode", re.IGNORECASE), "deprecated directory ref"),
+    ],
+}
+
+
+def obsolete_content(inventory: dict[str, str]) -> list[dict]:
+    findings: list[dict] = []
+    for path in sorted(inventory):
+        text = read_text(path)
+        if not text:
+            continue
+        if not (
+            path.startswith("docs/")
+            or path.startswith(".github/")
+            or path in ("README.md", "README.en.md", ".gitignore", ".github/ISSUE_TEMPLATE/bug_report.md")
+        ):
+            continue
+        if path.endswith("docs_sync_engine.py"):
+            continue
+        for suffix_key, rules in OBSOLETE_PATTERNS.items():
+            if not path.endswith(suffix_key) and not (suffix_key == ".md" and path.endswith(".md")) and not (suffix_key == ".py" and path.endswith(".py")):
+                continue
+            for pattern, label in rules:
+                for m in pattern.finditer(text):
+                    findings.append(
+                        {
+                            "type": "OBSOLETE_CONTENT",
+                            "severity": "high",
+                            "path": path,
+                            "match": m.group(0),
+                            "line_hint": text[: m.start()].count("\n") + 1,
+                            "detail": f"'{path}' contains obsolete '{label}' (match: '{m.group(0)}').",
+                        }
+                    )
+    return findings
+
+
 def audit() -> dict:
     inventory = tracked_inventory()
     inv_set = set(inventory)
@@ -499,6 +545,7 @@ def audit() -> dict:
 
     findings += stale_manifest(inventory, manifest)
     findings += dead_references(inv_set)
+    findings += obsolete_content(inventory)
 
     # Only real site pages are relevant for "not in nav"; generated release
     # notes, root docs, the auto-generated api/ stubs and private internal docs
@@ -1018,12 +1065,44 @@ def strip_dead_refs() -> list[str]:
     return actions
 
 
+def reconcile_obsolete() -> list[str]:
+    actions: list[str] = []
+    gitignore_path = REPO_ROOT / ".gitignore"
+    if gitignore_path.is_file():
+        text = gitignore_path.read_text(encoding="utf-8", errors="replace")
+        new_text = re.sub(r"(?m)^\.mimocode/\r?\n", "", text)
+        if new_text != text:
+            gitignore_path.write_text(new_text, encoding="utf-8")
+            actions.append("reconciled: removed .mimocode/ entries from .gitignore")
+    for doc_path in [
+        "docs/index.md",
+        "README.md",
+        ".github/ISSUE_TEMPLATE/bug_report.md",
+    ]:
+        p = REPO_ROOT / doc_path
+        if not p.is_file():
+            continue
+        text = p.read_text(encoding="utf-8", errors="replace")
+        new_text = text
+        new_text = re.sub(r"(?m)^\| `MIMOCODE_API_KEY` \|[^\n]*\r?\n", "", new_text)
+        new_text = new_text.replace(" → MiMoCode", "")
+        new_text = re.sub(r"MiMoCode", "", new_text, flags=re.IGNORECASE)
+        new_text = new_text.replace("OpenCode/MiMoCode", "OpenCode")
+        new_text = new_text.replace("OpenAI/Gemini/OpenCode/", "OpenAI/Gemini/OpenCode")
+        new_text = re.sub(r", ,", ",", new_text)
+        if new_text != text:
+            p.write_text(new_text, encoding="utf-8")
+            actions.append(f"reconciled: removed obsolete MiMoCode references from {doc_path}")
+    return actions
+
+
 def reconcile(generate_api: bool = True) -> int:
     actions: list[str] = []
     actions += fix_version_badges()
     actions += fix_release_table()
     actions += fix_directory_tree()
     actions += add_missing_nav_entries()
+    actions += reconcile_obsolete()
     if generate_api:
         actions += generate_api_stubs()
         actions += add_api_nav_entries()
