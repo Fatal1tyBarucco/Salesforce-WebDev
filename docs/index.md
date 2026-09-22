@@ -338,7 +338,6 @@ Salesforce-WebDev/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
   ├── AGENTS.md                  # Diretrizes para agentes de código
-  ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
   ├── Dockerfile                 # Imagem Docker de runtime
   ├── README.en.md               # Readme em inglês
