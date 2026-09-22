@@ -53,6 +53,7 @@ Before finishing changes, always run:
 - `pytest>=8.0.0,<10` — pytest 9.x in `uv.lock` (`pytest==9.1.1`).
 - **Do not** add `pytest-syrupy` to `pyproject.toml` — it would downgrade pytest to 8.4.2.
 - `syrupy` is installed via `uv pip install "syrupy>=4.9.0,<5"` in the CI tests job (after `uv sync`), NOT via pyproject.toml.
+  - This downgrades pytest from 9.x to 8.4.2 for local venvs. When running tests locally with syrupy installed, use `uv run --no-sync` (or `python -m pytest` directly) to prevent `uv` from re-syncing and reverting the pytest downgrade.
 - `pytest-timeout>=2.4.0` is in dev dependencies; `--timeout=120` is set globally via `addopts`.
 
 ### mypy

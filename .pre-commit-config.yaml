@@ -19,6 +19,13 @@ repos:
   # This avoids maintaining a second independent Black pin here.
   - repo: local
     hooks:
+      - id: uv-lock-check
+        name: 🔒 Verify uv.lock is in sync with pyproject.toml
+        entry: uv lock --check
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: black
         name: Black
         entry: uv run black
