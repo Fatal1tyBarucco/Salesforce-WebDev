@@ -514,13 +514,18 @@ def obsolete_content(inventory: dict[str, str]) -> list[dict]:
         if not (
             path.startswith("docs/")
             or path.startswith(".github/")
-            or path in ("README.md", "README.en.md", ".gitignore", ".github/ISSUE_TEMPLATE/bug_report.md")
+            or path
+            in ("README.md", "README.en.md", ".gitignore", ".github/ISSUE_TEMPLATE/bug_report.md")
         ):
             continue
         if path.endswith("docs_sync_engine.py"):
             continue
         for suffix_key, rules in OBSOLETE_PATTERNS.items():
-            if not path.endswith(suffix_key) and not (suffix_key == ".md" and path.endswith(".md")) and not (suffix_key == ".py" and path.endswith(".py")):
+            if (
+                not path.endswith(suffix_key)
+                and not (suffix_key == ".md" and path.endswith(".md"))
+                and not (suffix_key == ".py" and path.endswith(".py"))
+            ):
                 continue
             for pattern, label in rules:
                 for m in pattern.finditer(text):
