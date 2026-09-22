@@ -9,16 +9,19 @@ from src.ai.integrations.salesforce import SalesforceAnalyzer, OrgMetadata, Adop
 @pytest.mark.asyncio
 async def test_salesforce_analyzer_load_with_sf() -> None:
     analyzer = SalesforceAnalyzer(sf_connection=object())
-    with patch.object(analyzer, "_fetch_metadata_from_org", new=AsyncMock(return_value=OrgMetadata())):
+    with patch.object(
+        analyzer, "_fetch_metadata_from_org", new=AsyncMock(return_value=OrgMetadata())
+    ):
         result = await analyzer.load_metadata()
         assert isinstance(result, OrgMetadata)
 
 
 def test_salesforce_analyzer_low_priority_suggestions() -> None:
     # Directly exercise lines 188-191 via the report formatting
-    analyzer = SalesforceAnalyzer()
     suggestions = [
-        AdoptionSuggestion(feature_name="F", suggestion="S", priority="baixa", affected_components=["C"]),
+        AdoptionSuggestion(
+            feature_name="F", suggestion="S", priority="baixa", affected_components=["C"]
+        ),
     ]
     # Lines 188-191 are inside generate_impact_report formatting
     # We call the private formatting path indirectly by constructing report text

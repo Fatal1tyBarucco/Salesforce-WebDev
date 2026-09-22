@@ -5,7 +5,8 @@ from unittest.mock import patch
 
 def test_main_exit_path() -> None:
     import src.main as main
-    with patch.object(main, "sys") as mock_sys:
+
+    with patch.object(main, "sys"):
         try:
             # Try to trigger exit branch
             main.sys.exit = lambda code: None  # type: ignore[attr-defined]
