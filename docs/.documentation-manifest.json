@@ -228,18 +228,19 @@
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
+    ".github/workflows/dependabot-lock-refresh.yml": "589645540781cb6c51e68e809538528e35ab2bc0",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
     ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
-    ".github/workflows/python-quality.yml": "f73081b69b1f674bce1926a6d9e76f7ab7988e68",
+    ".github/workflows/python-quality.yml": "951883f92ada9d25260f2a77969c2117c4207510",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "ef23d580659b3af1655278553723d51987645d49",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
-    ".pre-commit-config.yaml": "ca0d499338d2c5ef503a55790ac65670fae8e3df",
-    "AGENTS.md": "0340a3c610428f2b5390d3b0e1ecb94c6cc3786d",
+    ".pre-commit-config.yaml": "7299f8a981b33a8cd4c17b5abd2373c4d9c3bebd",
+    "AGENTS.md": "93f7cf5a245555f7bb8f27690bfc8b58c35dce65",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -666,6 +667,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "380b1744d5924584590584bb8fa54d0ba3b51074"
   },
-  "generated_at": "2026-09-22T02:22:03.869443+00:00",
-  "repository_sha": "191e442327cbb7ecaf1a831e5d7580606769fe69"
+  "generated_at": "2026-09-22T12:27:48.738361+00:00",
+  "repository_sha": "f05f6625056fc6785458b6b608fe67d47ddb1e6c"
 }
