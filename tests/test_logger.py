@@ -216,7 +216,8 @@ class TestSetupLoggerWithFile:
         import tempfile
         import uuid
 
-        tmp = tempfile.mktemp(suffix=".log")
+        tmp_fd, tmp = tempfile.mkstemp(suffix=".log")
+        os.close(tmp_fd)
         logger = setup_logger("test_with_file_" + uuid.uuid4().hex, log_file=tmp)
         assert len(logger.handlers) >= 2  # stream + file
         for h in list(logger.handlers):

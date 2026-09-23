@@ -18,7 +18,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: dependabot-lock-${{ github.event.pull_request.head.ref || github.ref }}
+  group: dependabot-lock-pr-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -66,4 +66,4 @@ jobs:
 
           git add uv.lock
           git commit -m "chore(deps): refresh uv lockfile"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          git push origin HEAD
