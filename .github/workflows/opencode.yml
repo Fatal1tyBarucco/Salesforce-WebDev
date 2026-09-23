@@ -29,6 +29,7 @@ jobs:
         uses: anomalyco/opencode/github@733562e92a96255fb123aae92f267e4534a635fb # v1.18.25
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           #model: opencode/x-preview-f-free
           model: opencode/mimo-v2.6-flash-free
