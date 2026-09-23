@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 if TYPE_CHECKING:
     import pytest
@@ -86,9 +86,13 @@ def test_toggle_in_generated_file(tmp_path: Path) -> None:
 
     generator = MarkdownGenerator(base_dir=str(tmp_path))
     translator = MagicMock()
-    files = asyncio.run(
-        _generate_release_files(release, [cat], generator, translator, locale="pt_BR")
-    )
+    with (
+        patch("src.main.RELEASES_DIR", str(tmp_path)),
+        patch("src.release_docs.RELEASES_DIR", str(tmp_path)),
+    ):
+        files = asyncio.run(
+            _generate_release_files(release, [cat], generator, translator, locale="pt_BR")
+        )
 
     assert len(files) > 0
     content = files[0].read_text(encoding="utf-8")

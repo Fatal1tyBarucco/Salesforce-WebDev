@@ -1,13 +1,11 @@
 """LLM Service module with multi-provider fallback chain.
 
 Provider priority:
-  1. Gemini (primary — Google AI Studio, free tier 20 req/min)
-  2. OpenRouter free models (secondary)
-  3. OpenCode (tertiary — only useful for paid accounts)
+  1. OpenRouter (free)
+  2. OpenCode (free)
+  3. Gemini (3.6-flash)
 
 Each provider loops through its models before moving to the next provider.
-Groq is also supported via explicit provider="groq" (free tier retired
-2026-08-16, paid opt-in only).
 """
 
 import logging
@@ -50,15 +48,10 @@ class _ProviderConfig:
 # and only fall back to it after exhausting OpenCode/OpenRouter pools.
 _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
-        name="gemini",
-        api_key_env="GOOGLE_API_KEY",
-        default_model="gemini-2.0-flash",
-    ),
-    _ProviderConfig(
         name="openrouter",
         api_key_env="OPENROUTER_API_KEY",
         base_url="https://openrouter.ai/api/v1",
-        default_model="openrouter/auto",
+        default_model="openrouter/free",
         fallback_models=[
             "google/gemma-4-31b-it:free",
             "meta-llama/llama-4-scout:free",
@@ -71,29 +64,27 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
     _ProviderConfig(
         # OpenCode free tier models are largely unavailable in 2026-08
         # (401 CreditsError on default, 400 upstream on free variants).
-        # Kept last as a final attempt; useful for paid OpenCode accounts.
+        # Kept as secondary; useful for paid OpenCode accounts.
         name="opencode",
         api_key_env="OPENCODE_API_KEY",
         base_url="https://opencode.ai/zen/v1",
         default_model="gemini-3.6-flash",
         fallback_models=[
-            "deepseek-v4-flash-free",
-            "mimo-v2.5-free",
-            "hy3-free",
+            "ling-3.0-flash-free",
+            "ling-3.0-tiny-free",
+            "nemotron-3-ultra-free",
+            "north-mini-code-free",
+            "laguna-s-2.1-free",
+            "longcat-2.0-free",
+            "mus-e-spark-1.2-contributor-free",
         ],
     ),
     _ProviderConfig(
-        # Groq: free tier retired 2026-08-16. Kept here so users with paid
-        # credentials can opt in via provider="groq". Excluded from auto-detect
-        # below via _find_provider_config fallback handling.
-        name="groq",
-        api_key_env="GROQ_API_KEY",
-        base_url="https://api.groq.com/openai/v1",
-        default_model="llama-3.3-70b-versatile",
-        fallback_models=[
-            "openai/gpt-oss-20b",
-            "openai/gpt-oss-120b",
-        ],
+        # Gemini is LAST: free tier caps at ~20 req/day, so we protect that
+        # quota and only fall back to it after exhausting OpenRouter/OpenCode.
+        name="gemini",
+        api_key_env="GOOGLE_API_KEY",
+        default_model="gemini-3.6-flash",
     ),
 ]
 
@@ -102,8 +93,8 @@ class LLMService:
     """Service class for handling interactions with Large Language Models.
 
     Supports multiple providers with automatic fallback:
-      1. OpenCode (primary, free tier)
-      2. OpenRouter free models (secondary, free tier)
+      1. OpenRouter free models (primary, free tier)
+      2. OpenCode (secondary)
       3. Google Gemini (tertiary, free tier 20 req/day protected)
 
     Each provider loops through its models before moving to the next.
@@ -141,8 +132,6 @@ class LLMService:
 
         # Auto-detect: find first provider with a valid API key
         for cfg in self._provider_chain:
-            if cfg.name == "groq":
-                continue  # Groq free tier retired 2026-08-16; skip in auto-detect
             resolved_key = api_key or os.getenv(cfg.api_key_env, "")
             if resolved_key:
                 self._active_provider = cfg
@@ -281,7 +270,7 @@ class LLMService:
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-        elif self.provider in ("groq", "opencode", "openrouter"):
+        elif self.provider in ("opencode", "openrouter"):
             return self._generate_openai_compatible(
                 prompt=prompt,
                 system_instruction=system_instruction,

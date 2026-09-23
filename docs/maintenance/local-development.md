@@ -5,26 +5,31 @@
 Install dependencies:
 
 ```bash
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-```
+uv sync --extra dev
+```text
+
+Para instalar apenas o ambiente de execução (sem ferramentas de desenvolvimento):
+
+```bash
+uv sync
+```text
 
 ## Execute Pipeline
 
 ```bash
-python -m src.main
-```
+uv run python src/main.py
+```text
 
 ## Execute Tests
 
 ```bash
-pytest
-```
+uv run pytest
+```text
 
 ## Validate Quality
 
 ```bash
-ruff check .
-black --check .
-mypy src/
+uv run ruff check .
+uv run black --check .
+uv run mypy src/
 ```

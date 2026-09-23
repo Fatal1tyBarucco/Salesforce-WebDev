@@ -1,0 +1,69 @@
+name: Refresh Dependabot Lockfile
+
+# Automatically regenerates uv.lock when a Dependabot PR updates
+# pyproject.toml, so the lockfile never lags behind dependency declarations.
+#
+# ⚠️ POLICY NOTE — GitHub will restrict `pull_request_target` on public
+# repositories by default starting Nov 2, 2026.
+# This workflow is scoped to dependabot[bot] actor + same-repo PRs only,
+# so the security surface is minimal. If the trigger stops firing after
+# that date, update the repo's Actions policy to allow `pull_request_target`
+# for this workflow, or migrate to `pull_request` + a PAT (see issue #140).
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: dependabot-lock-pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh-lock:
+    # Only run for Dependabot PRs from the same repository.
+    # Checks the PR author (not the event actor) so it works for both
+    # `opened` and `synchronize` events — a push by a maintainer to the
+    # PR branch would set `github.actor` to the maintainer, not Dependabot.
+    # Forks do not get write access to the base repo, and running
+    # contents:write on untrusted fork branches is a security risk.
+    if: >
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️  Checkout PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: 🐍 Setup Python 3.13
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: ⚡ Setup uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4  # v10.1.0
+        with:
+          enable-cache: true
+
+      - name: 🔒 Refresh uv lockfile
+        run: uv lock
+
+      - name: 📦 Commit lockfile update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "No lockfile changes needed."
+            exit 0
+          fi
+
+          git add uv.lock
+          git commit -m "chore(deps): refresh uv lockfile"
+          git push origin HEAD

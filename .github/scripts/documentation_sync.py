@@ -31,7 +31,6 @@ SKIP_DIRS = {
     "venv",
     "site",
     "node_modules",
-    ".mimocode",
     ".pytest_cache",
     ".ruff_cache",
     ".mypy_cache",

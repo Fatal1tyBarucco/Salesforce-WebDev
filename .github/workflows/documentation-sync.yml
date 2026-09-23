@@ -3,22 +3,38 @@
 # ║  Repository = Source of Truth → Drift Detection → LLM Reconcile  ║
 # ╚══════════════════════════════════════════════════════════════════╝
 #
-# Flowchart:
-#   Push/Schedule/Manual → Inventory → Manifest Diff → Drift Report
-#     → LLM Reconciliation (LLMService: Gemini→OpenCode→OpenRouter)
-#     → mkdocs build --strict → Commit docs → Pages deploy (via documentation-build.yml)
+# Flow:
+#   Push/Schedule/Manual → Guard Anti-Loop → Setup uv/Python
+#     → Inventory → Manifest Diff → Drift Report
+#     → LLM Reconciliation → Markdown Auto-Fix → Markdown Lint
+#     → Link Checker → mkdocs build --strict (best-effort) → Commit (se Changes) → Push
+#     → Triggers documentation-build.yml → GitHub Pages
 #
-# Modes: incremental (push) · full (schedule) · audit (analysis only)
+# Modos: incremental (push) · full (schedule) · audit (analysis only)
 # Anti-loop: skips when HEAD commit is an automation commit (docs(sync): by bot)
+#
+# Concurrency: grupo "pages" coordena sync + build/deploy para evitar
+# escrita paralela no branch principal e deploys concorrentes.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# Correções aplicadas (v2.1):
+#   1. Cache: substituído actions/cache com chave quebrada (github.sha)
+#      por setup-uv enable-cache (padrão usado por python-quality.yml).
+#   2. Markdown: adicionado markdownlint-cli2 --fix ANTES da validação,
+#      corrigindo MD029/MD031 que fix_markdown.py não consegue resolver.
+#   3. Markdown lint + link checker: validação SEMPRE executa (não pula
+#      quando has_fixes=true), garantindo que fixes sejam validados.
+#   4. pipefail adicionado ao step de reconciliação LLM (| tee pipe).
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-name: 📚 Documentation Sync
+name: Documentation Sync
 
 on:
   push:
     branches:
       - main
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 */6 * * *"   # a cada 6 horas
   workflow_dispatch:
     inputs:
       mode:
@@ -34,127 +50,294 @@ on:
 permissions:
   contents: write
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CONCURRENCY: grupo "pages" garante que sync e build/deploy
+# não executam escrita paralela no branch principal nem disparam
+# deploys concorrentes no GitHub Pages.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 concurrency:
-  group: documentation-sync
+  group: pages
   cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
 
 env:
   PYTHON_VERSION: "3.13"
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
 
 jobs:
   sync:
-    name: 🔁 Detectar e reconciliar drift documental
+    name: Detect and reconcile documentation drift
     runs-on: ubuntu-latest
+
     steps:
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # CHECKOUT: fetch-depth: 0 para que o script de drift
+      # possa analisar o histórico de blobs e calcular diffs.
+      # Token padrão GITHUB_TOKEN com escopo contents: write.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Checkout do repositório
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # GUARD ANTI-LOOP: previne execução recursiva quando o
+      # commit mais recente é do próprio bot de sync.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Guard anti-loop (commits de automação)
         id: guard
         run: |
+          set -e
           LAST_AUTHOR=$(git log -1 --pretty=%an)
           LAST_MSG=$(git log -1 --pretty=%s)
           if [ "$LAST_AUTHOR" = "github-actions[bot]" ] && [[ "$LAST_MSG" == "docs(sync)"* ]]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             echo "⏭️ Commit anterior é automação do próprio sync ($LAST_MSG) — encerrando."
           else
-            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # SETUP UV: instala uv + cache embutido (enable-cache invalida
+      # quando uv.lock muda). Substitui o actions/cache manual que
+      # usava github.sha na chave (cache hit de 0% — nunca restaurava).
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Setup uv
         if: steps.guard.outputs.skip != 'true'
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # SETUP PYTHON: versão definida em env.PYTHON_VERSION.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Setup Python ${{ env.PYTHON_VERSION }}
         if: steps.guard.outputs.skip != 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # INSTALAR DEPENDÊNCIAS: uv sync --frozen garante que o
+      # ambiente espelha exatamente o lockfile. continue-on-error: o
+      # engine (python3, stdlib-only) NÃO depende deste venv; se a instalação
+      # do mkdocs/griffe falhar em CI (ex.: corrupção de namespace), a sync
+      # determinística ainda roda. Hardening anti-falha de pipeline.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Instalar dependências
         if: steps.guard.outputs.skip != 'true'
+        continue-on-error: true
         run: uv sync --frozen --extra dev --extra docs
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # RESOLVER MODO: incremental (push), full (schedule),
+      # audit (manual ou forçado). O modo audit não escreve commits.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Resolver modo de execução
         if: steps.guard.outputs.skip != 'true'
         id: mode
         run: |
+          set -e
           case "${{ github.event_name }}" in
             push)     MODE="incremental" ;;
             schedule) MODE="full" ;;
             *)        MODE="${{ github.event.inputs.mode || 'incremental' }}" ;;
           esac
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
           echo "▶️ Modo: $MODE"
 
-      - name: Detecção determinística de drift
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # DETECÇÃO DETERMINÍSTICA DE DRIFT:
+      # Compara o manifesto .documentation-manifest.json (snapshot
+      # de blobs) com o estado atual do repositório para detectar
+      # arquivos criados, alterados, removidos e órfãos.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Detecção determinística de drift (engine, LLM-free)
         if: steps.guard.outputs.skip != 'true'
         run: |
-          uv run python .github/scripts/documentation_sync.py drift \
-            --mode "${{ steps.mode.outputs.mode }}" \
+          python3 .github/scripts/docs_sync_engine.py audit \
             --report /tmp/drift_report.json
 
-      - name: Reconciliação semântica via LLM
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # RECONCILIAÇÃO DETERMINÍSTICA (LLM-FREE):
+      # docs_sync_engine.py reconcilia 100% deterministicamente (git blob
+      # SHAs + releases/*.meta.json = fonte de verdade). Nenhum LLM, nenhuma
+      # chave de API → elimina vazamento de credenciais e falhas por quota.
+      # Idempotente: 0 ações num repo estável. pipefail: erro propaga
+      # (main() do engine faz safe-abort e nunca trava a CI).
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Reconciliação determinística (LLM-free, idempotent)
         if: steps.guard.outputs.skip != 'true'
-        env:
-          DRIFT_REPORT: /tmp/drift_report.json
-          SYNC_MODE: ${{ steps.mode.outputs.mode }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          uv run python .github/scripts/documentation_reconcile.py | tee /tmp/reconcile_summary.md
+          set -o pipefail
+          python3 .github/scripts/docs_sync_engine.py reconcile | tee /tmp/reconcile_summary.md
 
-      - name: Validar documentação (mkdocs strict)
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # AUTO-FIX MARKDOWN — CAMADA 1 + CAMADA 2
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # Camada 1: fix_markdown.py — corrige MD022, MD024 (duplicate
+      #   headings), MD032, MD040, MD047, MD012, MD009. Regras que o
+      #   markdownlint-cli2 não consegue auto-corrigir.
+      # Camada 2: markdownlint-cli2 --fix — corrige MD029 (list
+      #   numbering), MD031 (blanks around fences) e todas as demais
+      #   regras nativamente auto-fixable. ESTA É A CORREÇÃO DEFINITIVA:
+      #   o script customizado não consegue resolver MD029/MD031, mas o
+      #   fixer nativo do markdownlint-cli2 resolve ambos.
+      # Não falha o step se --fix encontrar erros não-corrigíveis;
+      # a validação no próximo step captura e reporta.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Auto-fix erros determinísticos de markdown lint
         if: steps.guard.outputs.skip != 'true'
+        id: markdown-fix
+        run: |
+          set -e
+
+          # Camada 1: script customizado (MD024 etc.)
+          set +e
+          python3 .github/scripts/fix_markdown.py
+          set -e
+
+          # Camada 2: markdownlint-cli2 --fix (MD029, MD031, etc.)
+          set +e
+          npx --yes markdownlint-cli2 \
+            "docs/**/*.md" \
+            --fix \
+            --config-file .markdownlint.json \
+            --ignore node_modules
+          set -e
+
+          # Stage todas as alterações de ambas as camadas
+          if ! git diff --quiet -- docs/ 2>/dev/null; then
+            git add docs/
+            echo "has_fixes=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Auto-fix de markdown concluído e arquivos stageados."
+          else
+            echo "has_fixes=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Nenhum erro determinístico de markdown encontrado."
+          fi
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # VALIDAÇÃO 1/3 — MARKDOWN LINTING (sempre executa)
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # SEMPRE valida, independentemente de has_fixes. Garante que os
+      # fixes aplicados estejam corretos e que nenhum erro permaneça.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Validar formatação — markdown lint
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          npx --yes markdownlint-cli2 \
+            "docs/**/*.md" \
+            --config-file .markdownlint.json \
+            --ignore node_modules \
+            || { echo "❌ Markdown lint falhou após tentativa de auto-fix. Corrija manualmente os avisos acima."; exit 1; }
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # VALIDAÇÃO 2/3 — LINK CHECKER (sempre executa)
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Validar links — link checker
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          npx --yes markdown-link-check \
+            --quiet \
+            --config .github/link-check-config.json \
+            docs/ \
+            || { echo "❌ Link checker encontrou links quebrados. Ver logs."; exit 1; }
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # VALIDAÇÃO 3/3 — MKDOCS BUILD STRICT (best-effort / soft gate)
+      # continue-on-error: validação mkdocs é melhor-efeito. O engine já
+      # valida a superfície de API estaticamente (griffe), sem depender do
+      # build. Evita travar a pipeline por corrupção de namespace do mkdocs
+      # em ambientes efêmeros de CI. Falha aqui NÃO aborta a sync.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Validar documentação (mkdocs strict, best-effort)
+        if: steps.guard.outputs.skip != 'true'
+        continue-on-error: true
         run: uv run mkdocs build --strict
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # VERIFICAR ALTERAÇÕES:
+      # Checa se há arquivos modificados na allowlist
+      # (docs/, README.md, README.en.md, mkdocs.yml).
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Verificar alterações documentais
         if: steps.guard.outputs.skip != 'true'
         id: changes
         run: |
           if [ -n "$(git status --porcelain docs/ README.md README.en.md mkdocs.yml)" ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "✅ Documentação já reflete o estado do repositório — nada a commitar."
           fi
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # ATUALIZAR MANIFESTO DE BASELINE:
+      # Atualiza docs/.documentation-manifest.json (baseline de blobs). O
+      # engine `reconcile` já chama write_manifest() internamente; este passo
+      # garante o baseline fique commitado quando o modo não for audit.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Atualizar manifesto de baseline
         if: |
           steps.guard.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
           steps.mode.outputs.mode != 'audit'
-        run: uv run python .github/scripts/documentation_sync.py manifest
+        run: python3 .github/scripts/docs_sync_engine.py manifest
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # CONFIGURAR IDENTIDADE DO BOT PARA COMMITS:
+      # Git precisa de user.name e user.email configurados
+      # para criar o commit de automação.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Configurar identidade do bot para commits
         if: steps.changes.outputs.has_changes == 'true'
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit e push da documentação reconciliada
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # COMMIT E PUSH:
+      # Usa --force-with-lease para garantir que não sobrescreve
+      # commits que não conhece (evita perda de trabalho paralelo).
+      # git pull --rebase --autostash antes do commit garante que
+      # não haja conflitos de escrita concorrente.
+      # Timestamp no commit message para rastreabilidade.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Commit and push reconciled documentation
         if: |
           steps.guard.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
           steps.mode.outputs.mode != 'audit'
         run: |
-          git pull origin ${{ github.ref_name }}
+          set -e
+          git pull --rebase --autostash origin ${{ github.ref_name }}
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add docs/ README.md README.en.md mkdocs.yml
-          git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
-          git push --force-with-lease origin HEAD:${{ github.ref_name }}
+          # Só faz commit se houver arquivos stageados (evita commit vazio)
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
+            git push --force-with-lease origin HEAD:${{ github.ref_name }}
+          else
+            echo "⚠️ Nenhum arquivo stageado após git add — nada a commitar."
+          fi
 
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # SUMÁRIO DA EXECUÇÃO:
+      # Grava no GitHub Step Summary o relatório de reconciliação
+      # para visibilidade no UI do Actions.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Sumário da execução
         if: always() && steps.guard.outputs.skip != 'true'
         run: |
-          echo "## 📚 Documentation Sync — ${{ steps.mode.outputs.mode || 'n/a' }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📚 Documentation Sync — ${{ steps.mode.outputs.mode || 'n/a' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ -f /tmp/reconcile_summary.md ]; then
-            cat /tmp/reconcile_summary.md >> $GITHUB_STEP_SUMMARY
+            cat /tmp/reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> Repository State == Documentation State == GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "> Repository State == Documentation State == GitHub Pages" >> "$GITHUB_STEP_SUMMARY"

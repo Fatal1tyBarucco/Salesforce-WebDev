@@ -1,6 +1,6 @@
 # Salesforce Release Intelligence
 
-<img id="random-banner" class="hero-banner" src="../../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
+<img id="random-banner" class="hero-banner" src="../assets/banner1.png" alt="Salesforce Release Intelligence Banner" />
 
 Pipeline automatizado para extração, classificação, análise e versionamento das Release Notes da Salesforce como artefatos Markdown estruturados.
 
@@ -8,9 +8,10 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 | Release | Features | Categorias | Status |
 | :--- | :---: | :---: | :---: |
-| ☀️ **Summer '26** | 1.434 | 22 | ✅ Atual |
-| 🌸 **Spring '26** | 1.438 | 21 | ✅ Completo |
-| ❄️ **Winter '26** | 1.348 | 19 | ✅ Completo |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
 
 > Cada release inclui resumos executivos gerados por AI (até 5.000 caracteres),
 > resumos por categoria (até 1.000 caracteres), e documentação completa em
@@ -18,7 +19,7 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 **📄 Documentação completa:**
 
-- [🇧🇷 Português](https://github.com/Fatal1tyBarucco/Salesforce-WebDev#-releases-disponíveis)
+- [🇧🇷 Português](index.md)
 - [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-releases-disponíveis)
 
 ---
@@ -55,7 +56,7 @@ graph LR
     GEN --> NOTIFY
     GEN --> GH
     TRAIL --> GEN
-```
+```markdown
 
 ## Arquitetura em Camadas
 
@@ -64,7 +65,7 @@ graph LR
 | **Orquestração** | `main.py`, `orchestrator.py` | Pipeline principal, DI, detecção de novas releases |
 | **Scraping** | `scraper.py` | Playwright headless, circuit breaker, rate limiter |
 | **Parsing** | `parser.py` | Árvore de navegação, tabelas de feature impact |
-| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode/MiMoCode), retry, fallback, rate limiting |
+| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode), retry, fallback, rate limiting |
 | **Enriquecimento AI** | `feature_enricher.py`, `release_summarizer.py` | Descrições por feature, resumos executivos, impacto por categoria |
 | **Automação** | `automation/` | Relatórios AI, triage, impacto, deduplicação, exportação |
 | **Integração** | `salesforce.py`, `workflow.py` | Trailhead, GitHub CLI, PRs |
@@ -75,6 +76,7 @@ graph LR
 ## Quick Start
 
 ```bash
+
 # 1. Instalar dependências
 uv sync --extra dev
 
@@ -89,7 +91,8 @@ uv run pytest
 
 # 5. Verificar cobertura
 uv run pytest --cov=src --cov-fail-under=95
-```
+
+```markdown
 
 ## Variáveis de Ambiente
 
@@ -98,13 +101,13 @@ uv run pytest --cov=src --cov-fail-under=95
 | `OPENAI_API_KEY` | Não* | Chave da API OpenAI para relatórios AI |
 | `GOOGLE_API_KEY` | Não* | Chave do Google Gemini (fallback) |
 | `OPENCODE_API_KEY` | Não* | Chave OpenCode (compatível OpenAI) |
-| `MIMOCODE_API_KEY` | Não* | Chave MiMoCode (compatível OpenAI) |
 
 *Pelo menos uma chave LLM é necessária para funcionalidades de IA (classificação, resumos, triage).
 
 ## Fluxo de Execução do Pipeline
 
 ```mermaid
+
 sequenceDiagram
     participant M as main.py
     participant S as Scraper
@@ -138,7 +141,8 @@ sequenceDiagram
     end
 
     M->>H: set_pipeline_status("completed")
-```
+
+```text
 
 ## Módulos Principais
 
@@ -153,10 +157,12 @@ Orquestrador central. Responsável por:
 - **`run_pipeline(config: PipelineConfig)`** — Orquestrador principal com DI
 
 ```python
+
 # Uso com injeção de dependências
 config = PipelineConfig(dry_run=True, release_filter="summer_26")
 await run_pipeline(config)
-```
+
+```text
 
 ### Scraper (`scraper.py`)
 
@@ -169,6 +175,7 @@ Scraping resiliente do Salesforce Help (SPA JavaScript):
 - **Cache** — Evita re-fetch de conteúdo inalterado
 
 ```mermaid
+
 stateDiagram-v2
     [*] --> Closed
     Closed --> Open: failures >= threshold
@@ -176,25 +183,27 @@ stateDiagram-v2
     HalfOpen --> Closed: sucesso
     HalfOpen --> Open: falha
     Closed --> Closed: sucesso (reset)
-```
+
+```text
 
 ### LLM Service (`llm_service.py`)
 
 Serviço LLM multi-provider com fallback automático:
 
-- **Providers**: OpenAI → Google Gemini → OpenCode → MiMoCode
+- **Providers**: OpenAI → Google Gemini → OpenCode
 - **Circuit Breaker** por provider (independente)
 - **Retry com tenacity** — 3 tentativas, backoff exponencial
 - **Timeout** — 30s (cliente) / 60s (operação)
 
 ```mermaid
+
 graph LR
     REQ["Request"] --> OAI["OpenAI"]
     OAI -->|falha| GEM["Gemini"]
     GEM -->|falha| OC["OpenCode"]
-    OC -->|falha| MIMO["MiMoCode"]
-    MIMO -->|falha| NULL["return None"]
-```
+    OC -->|falha| NULL["return None"]
+
+```javascript
 
 ### Parser (`parser.py`)
 
@@ -268,49 +277,77 @@ Pattern reutilizável para chamadas externas:
 
 ## Estrutura de Diretórios
 
-```
+```text
+
 Salesforce-WebDev/
-├── src/
-│   ├── main.py              # Orquestrador principal
-│   ├── scraper.py           # Playwright + Circuit Breaker
-│   ├── parser.py            # Parser HTML/Markdown
-│   ├── llm_service.py       # Multi-provider LLM
-│   ├── generator.py         # Geração Markdown
-│   ├── translator.py        # Tradução via LLM
-│   ├── salesforce.py        # Integração Trailhead
-│   ├── notifications.py     # Email/Slack/Discord
-│   ├── api.py               # REST + GraphQL
-│   ├── dashboard.py         # Dashboard HTML interativo
-│   ├── analytics.py         # Análise estatística
-│   ├── health.py            # Health checks
-│   ├── config.py            # Configuração central
-│   ├── exceptions.py        # Hierarquia de exceções
-│   ├── circuit_breaker.py   # Circuit Breaker unificado
-│   ├── cache_manager.py     # Cache TTL + content-hash
-│   ├── logger.py            # Logging estruturado JSON
-│   ├── feature_classifier.py# Classificação via LLM
-│   ├── impact_analyzer.py   # Análise de impacto
-│   ├── issue_triage.py      # Triage automático
-│   ├── nl_search.py         # Busca semântica
-│   ├── release_summarizer.py# Resumos executivos
-│   ├── workflow.py          # Git + GitHub CLI
-│   ├── i18n.py              # Internacionalização
-│   └── automation/          # Pacote de automação AI
-│       ├── service.py
-│       ├── reporting.py
-│       ├── comparison.py
-│       ├── impact.py
-│       ├── content.py
-│       ├── export.py
-│       ├── github_ops.py
-│       ├── notifications.py
-│       ├── models.py
-│       └── badge.py
-├── releases/                # Artefatos Markdown por release
-├── tests/                   # Testes pytest (>95% cobertura)
-├── docs/                    # Documentação MkDocs
-├── mkdocs.yml               # Configuração MkDocs
-└── pyproject.toml           # Configuração do projeto
+  ├── ai/
+      ├── generators/
+      ├── integrations/
+      ├── prompts/
+  ├── automation/
+      ├── badge.py
+      ├── comparison.py
+      ├── content.py
+      ├── export.py
+      ├── github_ops.py
+      ├── impact.py
+      ├── models.py
+      ├── notifications.py
+      ├── reporting.py
+      └── service.py
+  ├── limiters/
+      └── rate_limiter.py
+  ├── ai_automation.py
+  ├── analytics.py
+  ├── api.py
+  ├── cache_manager.py
+  ├── circuit_breaker.py
+  ├── config.py
+  ├── dashboard.py
+  ├── documentation_service.py
+  ├── events.py
+  ├── exceptions.py
+  ├── feature_classifier.py
+  ├── feature_enricher.py
+  ├── generator.py
+  ├── health.py
+  ├── heuristic_classifier.py
+  ├── i18n.py
+  ├── impact_analyzer.py
+  ├── issue_triage.py
+  ├── llm_service.py
+  ├── logger.py
+  ├── main.py
+  ├── models.py
+  ├── nl_search.py
+  ├── notifications.py
+  ├── orchestrator.py
+  ├── parser.py
+  ├── release_discovery.py
+  ├── release_docs.py
+  ├── release_summarizer.py
+  ├── salesforce.py
+  ├── scraper.py
+  ├── smart_notifications.py
+  ├── translator.py
+  └── workflow.py
+  ├── .github/                   # Workflows e scripts do GitHub
+  ├── docs/                      # Documentação MkDocs
+  ├── k8s/                       # Manifestos Kubernetes
+  ├── releases/                  # Artefatos Markdown por release
+  ├── scripts/                   # Scripts utilitários
+  ├── tests/                     # Suíte pytest
+  ├── AGENTS.md                  # Diretrizes para agentes de código
+  ├── CHANGELOG.md               # Changelog do projeto
+  ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── Dockerfile                 # Imagem Docker de runtime
+  ├── README.en.md               # Readme em inglês
+  ├── README.md                  # Readme em português
+  ├── SECURITY.md                # Política de segurança
+  ├── mkdocs.yml                 # Configuração MkDocs
+  ├── pyproject.toml             # Configuração do projeto
+  └── uv.lock                    # Lockfile determinístico
+
 ```
 
 ## Qualidade de Código
@@ -324,10 +361,12 @@ Salesforce-WebDev/
 
 ## Documentação
 
-- [Refatoração — Status](refatoracao.md) — Progresso da refatoração
+- [Contribuição](contribution/testing-strategy.md)
+- [Guia de Desenvolvimento Local](maintenance/local-development.md)
 - [Arquitetura](architecture/overview.md) — Visão arquitetural detalhada
 - [Decisões (ADRs)](architecture/decisions/index.md) — Decisões de design documentadas
 - [Manutenção](maintenance/index.md) — Guias de desenvolvimento local e troubleshooting
 - [Observabilidade](observability/index.md) — Logging e health checks
 - [Runbooks](runbooks/index.md) — Procedimentos de resposta a falhas
-- [Roadmap](roadmap/index.md) — Planejamento v1 → v3
+- [API Reference](api/index.md) — Referência autogerada a partir de docstrings
+- [Roadmap](roadmap/index.md) — Planejamento v1 → v4

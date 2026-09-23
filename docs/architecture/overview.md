@@ -23,6 +23,8 @@ graph TB
     subgraph "Orchestration"
         MAIN["main.py<br/>run_pipeline(PipelineConfig)"]
         CONFIG["PipelineConfig<br/>DI Container"]
+        DISCOVERY["ReleaseDiscoveryService<br/>ReleaseDiscoveryService"]
+        DOCS_SVC["DocumentationService<br/>DocumentationService"]
     end
 
     subgraph "Scraping Layer"
@@ -80,7 +82,13 @@ graph TB
     MAIN --> AI_SVC
     MAIN --> HEALTH
 
-    SCRAPER --> CB1
+    MAIN --> DISCOVERY
+    DISCOVERY --> SCRAPER
+    DISCOVERY --> CONFIG
+
+    MAIN --> DOCS_SVC
+    DOCS_SVC --> GEN
+    GEN --> SF
     SCRAPER --> RL
     SCRAPER --> PW
     SCRAPER --> CACHE
@@ -114,7 +122,7 @@ graph TB
     style CACHE fill:#3498db,stroke:#2980b9,color:#fff
     style EXCEP fill:#e74c3c,stroke:#c0392b,color:#fff
     style HEALTH fill:#2ecc71,stroke:#27ae60,color:#fff
-```
+```text
 
 ## Fluxo de Dados
 
@@ -159,7 +167,7 @@ graph LR
     META --> API_R
     GENERATE --> NOTIFY_R
     GENERATE --> GH_R
-```
+```text
 
 ## Hierarquia de Exceções
 
@@ -192,7 +200,7 @@ graph TB
     style SE fill:#3498db,stroke:#2980b9,color:#fff
     style LE fill:#e74c3c,stroke:#c0392b,color:#fff
     style CE fill:#f39c12,stroke:#e67e22,color:#fff
-```
+```text
 
 ## Circuit Breaker State Machine
 
@@ -223,7 +231,7 @@ stateDiagram-v2
         [*] --> Probe
         Probe --> Probe: Testando
     }
-```
+```text
 
 ## Cache Strategy
 

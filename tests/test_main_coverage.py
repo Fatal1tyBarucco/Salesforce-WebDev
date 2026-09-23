@@ -104,7 +104,7 @@ async def testgenerate_ai_reports_async_normal_execution(tmp_path: Path) -> None
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
         await generate_ai_reports_async([release])
@@ -153,7 +153,7 @@ async def testgenerate_ai_reports_async_no_previous_release(tmp_path: Path) -> N
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", known_releases),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
         await generate_ai_reports_async([release])
@@ -179,7 +179,7 @@ async def testgenerate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict(
             "sys.modules",
             _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed")),
@@ -216,7 +216,7 @@ async def testgenerate_ai_reports_async_impact_and_notification(tmp_path: Path) 
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict(
             "sys.modules",
             _ai_modules(
@@ -250,7 +250,7 @@ async def testgenerate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai, impact_result=None)),
     ):
         # Override the analyzer in the module to simulate failure
@@ -270,7 +270,7 @@ async def testgenerate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict(
             "sys.modules",
             {
@@ -317,7 +317,7 @@ async def testgenerate_ai_reports_async_notification_failure(tmp_path: Path) -> 
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict(
             "sys.modules",
             {
@@ -356,7 +356,7 @@ async def testgenerate_ai_reports_async_issue_url_logged(tmp_path: Path) -> None
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
-        patch("src.main._update_badge"),
+        patch("src.documentation_service._update_badge"),
         patch.dict("sys.modules", _ai_modules(mock_ai)),
     ):
         await generate_ai_reports_async([release])
@@ -416,7 +416,10 @@ async def test_feature_classification_enriches_meta(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ),
         patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
@@ -431,7 +434,11 @@ async def test_feature_classification_enriches_meta(tmp_path: Path) -> None:
                 "src.main.SalesforceReleaseScraper",
                 return_value=_make_pipeline_scraper(raw_text="Sales\n- Feature1\n"),
             ),
-            patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=release),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.discover",
+                new_callable=AsyncMock,
+                return_value=[release],
+            ),
             patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
         ):
             await run_pipeline()
@@ -461,7 +468,10 @@ async def test_feature_classification_no_meta_path(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ),
         patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
@@ -476,7 +486,11 @@ async def test_feature_classification_no_meta_path(tmp_path: Path) -> None:
                 "src.main.SalesforceReleaseScraper",
                 return_value=_make_pipeline_scraper(raw_text="Sales\n- Feature1\n"),
             ),
-            patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=release),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.discover",
+                new_callable=AsyncMock,
+                return_value=[release],
+            ),
             patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
         ):
             await run_pipeline()
@@ -502,7 +516,10 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ),
         patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
@@ -517,7 +534,11 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
                 "src.main.SalesforceReleaseScraper",
                 return_value=_make_pipeline_scraper(raw_text="Sales\n- Feature1\n"),
             ),
-            patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=release),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.discover",
+                new_callable=AsyncMock,
+                return_value=[release],
+            ),
             patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
         ):
             await run_pipeline()
@@ -545,7 +566,10 @@ async def test_feature_classification_empty_features(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ),
         patch("src.main.generate_ai_reports_async", new_callable=AsyncMock),
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
@@ -560,7 +584,11 @@ async def test_feature_classification_empty_features(tmp_path: Path) -> None:
                 "src.main.SalesforceReleaseScraper",
                 return_value=_make_pipeline_scraper(raw_text="Sales\n- Feature1\n"),
             ),
-            patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=release),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.discover",
+                new_callable=AsyncMock,
+                return_value=[release],
+            ),
             patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
         ):
             await run_pipeline()
@@ -907,7 +935,10 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(tmp_path / "releases")),
         patch("src.release_docs.RELEASES_DIR", str(tmp_path / "releases")),
-        patch("src.main.update_readme_all", new_callable=AsyncMock),
+        patch(
+            "src.documentation_service.DocumentationService.update_readme_all",
+            new_callable=AsyncMock,
+        ),
         patch(
             "src.main.generate_ai_reports_async",
             new_callable=AsyncMock,
@@ -924,7 +955,11 @@ async def test_run_pipeline_ai_reports_exception(tmp_path: Path) -> None:
                 "src.main.SalesforceReleaseScraper",
                 return_value=_make_pipeline_scraper(raw_text="Sales\n- F1\n"),
             ),
-            patch("src.main.detect_new_release", new_callable=AsyncMock, return_value=release),
+            patch(
+                "src.release_discovery.ReleaseDiscoveryService.discover",
+                new_callable=AsyncMock,
+                return_value=[release],
+            ),
             patch("src.main.FEATURE_IMPACT_URL", "http://example.com/{release_id}"),
         ):
             await run_pipeline()

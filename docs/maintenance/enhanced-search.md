@@ -5,11 +5,15 @@ The Salesforce Release Notes documentation site features an enhanced search syst
 ## Features
 
 ### 1. **Fuzzy Matching**
+
 Typo-tolerant search powered by Levenshtein distance. Try searching for:
+
 - `apex` → matches "Apex", "Apache", "APE"
+
 - `flow builder` → matches "Flow", "Builder", "Flows"
 
 ### 2. **Salesforce Synonym Expansion**
+
 The search automatically expands queries using Salesforce terminology:
 
 | Term | Expands to |
@@ -24,19 +28,24 @@ The search automatically expands queries using Salesforce terminology:
 | `agentforce` | Agent Force, Einstein Agents |
 
 ### 3. **Keyboard Shortcuts**
+
 - `/` — Focus search
+
 - `Esc` — Blur search
+
 - `Enter` — Execute search and save to history
 
 ### 4. **Recent Searches**
+
 The 5 most recent searches are saved in `localStorage` and displayed as placeholders.
 
 ### 5. **Result Highlighting**
+
 Matching terms are highlighted in both titles and teaser text using the `<mark>` tag.
 
 ## How It Works
 
-```
+```text
 User Input → Debounce (200ms)
     ↓
 Expand with Synonyms
@@ -46,7 +55,7 @@ Fuzzy Match (Levenshtein)
 Score + Sort
     ↓
 Display with Fuzzy Indicator (★)
-```
+```text
 
 ## Configuration
 
@@ -54,15 +63,17 @@ Search configuration is in `mkdocs.yml`:
 
 ```yaml
 plugins:
+
   - search:
-      separator: "[\s\-\.\,\:\/\(\)\[\]]+"
+      separator: "[\s\-\.,:/\(\)\[\]]+"
       lang:
+
         - en
         - pt
       prebuild_index:
         enabled: true
         method: "local"
-```
+```text
 
 ## Customization
 
@@ -78,12 +89,17 @@ const SF_SYNONYMS = {
 ## Performance
 
 - **Index size**: ~50-200KB (depends on doc size)
+
 - **Search time**: <50ms for typical queries
+
 - **Debounce**: 200ms (prevents excessive computation)
+
 - **Fuzzy threshold**: 0.75 (75% similarity required)
 
 ## Files
 
 - `docs/assets/javascripts/enhanced_search.js` — Search logic
+
 - `docs/assets/stylesheets/enhanced_search.css` — Visual styling
+
 - `mkdocs.yml` — Plugin configuration

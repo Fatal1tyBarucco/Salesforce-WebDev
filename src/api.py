@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import re
@@ -48,11 +49,21 @@ except ImportError:
             pass
 
     class HTTPException(Exception):  # type: ignore[no-redef]
-        pass
+        def __init__(
+            self,
+            status_code: int = 500,
+            detail: object = None,
+            headers: dict[str, str] | None = None,
+        ) -> None:
+            self.status_code = status_code
+            self.detail = detail
+            self.headers = headers
+            super().__init__(detail)
 
     class status:  # type: ignore[no-redef]
         HTTP_401_UNAUTHORIZED = 401
         HTTP_400_BAD_REQUEST = 400
+        HTTP_503_SERVICE_UNAVAILABLE = 503
 
 
 app = FastAPI(
@@ -62,35 +73,43 @@ app = FastAPI(
 )
 
 API_KEY_ENV_VAR = "API_SECRET_KEY"
-DEFAULT_API_KEY = "default-dev-key"
 
 _API_KEY: str = os.getenv(API_KEY_ENV_VAR, "")
 RELEASES_DIR: str = os.getenv("RELEASES_DIR", "releases")
 _KNOWN_SLUGS = {"summer_26", "spring_26", "winter_26"}
 
 
-class TriageRequest(BaseModel):
+class TriageRequest(BaseModel):  # type: ignore[misc]
     title: str
     description: str
     labels: list[str] = []
 
 
-class TriageResponse(BaseModel):
+class TriageResponse(BaseModel):  # type: ignore[misc]
     status: str
     category: str
     priority: str
     suggested_action: str
 
 
-class SearchRequest(BaseModel):
+class SearchRequest(BaseModel):  # type: ignore[misc]
     query: str
     top_k: int = 5
 
 
 def verify_api_key(x_api_key: str | None = Header(None)) -> str:
-    """Validate the incoming API key header against environment configuration."""
-    expected_key = os.getenv(API_KEY_ENV_VAR, DEFAULT_API_KEY)
-    if not x_api_key or x_api_key != expected_key:
+    """Validate the incoming API key header against environment configuration.
+    Raises HTTPException 503 when the server key is unconfigured,
+    and HTTPException 401 for any missing or mismatched key.
+    """
+    expected_key = os.getenv(API_KEY_ENV_VAR)
+    if expected_key is None or expected_key == "":
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Server API key not configured",
+            headers={"WWW-Authenticate": "ApiKey"},
+        )
+    if not x_api_key or not hmac.compare_digest(x_api_key, expected_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or missing API key",
@@ -421,7 +440,7 @@ class APIHandler(BaseHTTPRequestHandler):
         if auth and auth.startswith("Bearer "):
             token = auth[len("Bearer ") :].strip()
         provided = hdr_key or token
-        if provided == _API_KEY:
+        if provided and hmac.compare_digest(provided, _API_KEY):
             return True
         try:
             self.send_response(401)

@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -52,6 +52,9 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 🔒 Check uv lockfile is in sync
+        run: uv lock --check
 
       - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --group dev
@@ -68,6 +71,13 @@ jobs:
           printf '\033[1;32m  ✅  Ruff passed — no issues found\033[0m\n'
           echo ""
 
+      - name: Cache pytest / snapshots
+        uses: actions/cache@v6.1.0
+        with:
+          path: tests/__snapshots__
+          key: ${{ runner.os }}-snapshots-${{ hashFiles('tests/__snapshots__/*.ambr') }}
+          restore-keys: ${{ runner.os }}-snapshots-
+
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🎨 BLACK — Code formatting                                 │
   # └─────────────────────────────────────────────────────────────┘
@@ -79,7 +89,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -120,7 +130,7 @@ jobs:
           sudo apt-get install -y -qq libxml2-dev libxslt1-dev
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -164,7 +174,7 @@ jobs:
           sudo apt-get install -y -qq libxml2-dev libxslt1-dev
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -263,6 +273,7 @@ jobs:
           echo "body_file=$BODY_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Issue
+        id: create-issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -275,13 +286,51 @@ jobs:
             echo "Issue já existe para este commit — skipping."
             exit 0
           fi
-          # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
-          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+          # Cria issue; captura URL para extrair número (gh nao tem --json number nesta versao)
+          ISSUE_FILE="/tmp/issue_url.txt"
+          NUMBER=""
+          if OUTPUT=$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>/dev/null); then
             echo "Issue criada com sucesso."
+            echo "$OUTPUT" > "$ISSUE_FILE"
+            NUMBER=$(echo "$OUTPUT" | grep -oE '[0-9]+' | tail -n1 || true)
           else
             echo "::warning::Falha ao criar issue com body-file, tentando com --body"
-            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+            if OUTPUT=$(gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" 2>/dev/null); then
+              echo "Issue criada com sucesso (fallback body)."
+              echo "$OUTPUT" > "$ISSUE_FILE"
+              NUMBER=$(echo "$OUTPUT" | grep -oE '[0-9]+' | tail -n1 || true)
+            else
+              echo "Falha ao criar issue." > "$ISSUE_FILE"
+              NUMBER=""
+            fi
           fi
+          # Fallback: busca pelo título (se arquivo falhou)
+          if [ -z "$NUMBER" ]; then
+            NUMBER=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          fi
+          # Salva em arquivo persistente (tmp persiste entre steps do mesmo job)
+          echo "$NUMBER" > /tmp/issue_number.txt
+          if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
+
+      - name: 💬 Comment /oc fix (only ruff/black)
+        if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ steps.create-issue.outputs.issue_number }}
+        run: |
+          # Só comenta se o número do issue existe e a falha é apenas de lint/format
+          # Tenta ler do env, depois do arquivo persistente, depois busca pelo título
+          ISSUE_NUM="${NUMBER:-}"
+          if [ -z "$ISSUE_NUM" ] && [ -f /tmp/issue_number.txt ]; then
+            ISSUE_NUM=$(cat /tmp/issue_number.txt | tr -d ' \n')
+          fi
+          if [ -z "$ISSUE_NUM" ]; then
+            ISSUE_NUM=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          fi
+          if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
+          echo "Comentando no issue #$ISSUE_NUM com /oc fix only ruff/black..."
+          # Usa comando específico, não genérico
+          gh issue comment "$ISSUE_NUM" --body "/oc fix only ruff and black formatting. Skip mypy and tests." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │

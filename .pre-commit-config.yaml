@@ -15,11 +15,22 @@ repos:
       - id: ruff
         args: [--fix]
 
-  - repo: https://github.com/psf/black
-    rev: 26.5.1
+  # Use the Black version resolved by uv from pyproject.toml/uv.lock.
+  # This avoids maintaining a second independent Black pin here.
+  - repo: local
     hooks:
+      - id: uv-lock-check
+        name: 🔒 Verify uv.lock is in sync with pyproject.toml
+        entry: uv lock --check
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: black
-        language_version: python3.13
+        name: Black
+        entry: uv run black
+        language: system
+        types: [python]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.15.0

@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -43,10 +43,78 @@ jobs:
         run: uv sync --frozen --extra docs
 
       - name: Build documentation
-        run: |
-          uv run mkdocs build --strict
+        run: uv run mkdocs build --strict
 
-      - name: Upload artifact
+      - name: Write doc-update summary (step summary + artifact)
+        run: |
+          # --- GitHub Step Summary (visível na aba Summary do run) ---
+          {
+            echo "## 📚 Documentação Atualizada — Resumo do Deploy"
+            echo ""
+            echo "| Campo | Valor |"
+            echo "|---|---|"
+            echo "| **Commit** | \`$(git log -1 --format='%h')\` — $(git log -1 --format='%s') |"
+            echo "| **Autor** | $(git log -1 --format='%an') |"
+            echo "| **Data** | $(git log -1 --format='%ci' | cut -d' ' -f1) |"
+            echo "| **Site** | [fatal1tybarucco.github.io/Salesforce-WebDev/](https://fatal1tybarucco.github.io/Salesforce-WebDev/) |"
+            echo ""
+            echo "### Arquivos de documentação alterados (desde HEAD~1)"
+            echo ""
+            if git diff --name-only HEAD~1 -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md 2>/dev/null | grep -q .; then
+              echo '```'
+              git diff --name-only HEAD~1 -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md
+              echo '```'
+            else
+              echo "_Nenhum arquivo de documentação alterado no último commit_"
+            fi
+            echo ""
+            echo "### Estatísticas"
+            echo ""
+            echo "- Arquivos rastreados em docs/: **$(git ls-files docs/ mkdocs.yml README.md README.en.md CHANGELOG.md | wc -l)**"
+            echo "- Pipeline: **MkDocs** (Material theme, strict mode)"
+            echo "- Deployment: **GitHub Pages**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # --- Artefato formatado (docs-updates-formatted.md) ---
+          {
+            echo "# 📚 Documentação Atualizada — Resumo do Deploy MkDocs"
+            echo ""
+            echo "**Status do Workflow:** ✅ Completo"
+            echo "**Repositório:** Fatal1tyBarucco/Salesforce-WebDev"
+            echo "**Commit:** $(git log -1 --format='%h | %s')"
+            echo "**Autor:** $(git log -1 --format='%an')"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Arquivos alterados (desde HEAD~1)"
+            echo ""
+            if git diff --name-only HEAD~1 -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md 2>/dev/null | grep -q .; then
+              git diff --name-only HEAD~1 -- docs/ mkdocs.yml README.md README.en.md CHANGELOG.md | sed 's/^/* /'
+            else
+              echo "* Nenhum arquivo de documentação alterado no último commit"
+            fi
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Estatísticas"
+            echo ""
+            echo "| Métrica | Valor |"
+            echo "|---------|-------|"
+            echo "| Arquivos rastreados | $(git ls-files docs/ mkdocs.yml README.md README.en.md CHANGELOG.md | wc -l) |"
+            echo "| Pipeline | MkDocs (Material) |"
+            echo "| Modo | strict |"
+            echo "| Deploy target | GitHub Pages |"
+          } > docs-updates-formatted.md
+
+      - name: Upload doc-update summary artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-updates-summary
+          path: docs-updates-formatted.md
+          retention-days: 7
+          overwrite: true
+
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: site/
@@ -60,4 +128,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5

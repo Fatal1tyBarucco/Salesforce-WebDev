@@ -2,17 +2,22 @@
 
 ## Scraper Failure
 
-### Symptoms
+### Symptoms - Scraper Failure
 
 - HTTP timeout
+
 - empty payload
+
 - Salesforce response changes
 
-### Actions
+### Actions - Scraper Failure
 
 - validate Salesforce endpoint
+
 - inspect HTML structure
+
 - rerun GitHub workflow
+
 - validate retry logs
 
 ---
@@ -22,21 +27,27 @@
 ### Symptoms
 
 - missing markdown content
+
 - malformed sections
 
 ### Actions
 
 - inspect semantic parser
+
 - validate HTML strategy
+
 - review topic extraction
 
 ---
 
 ## Workflow Failure
 
-### Actions
+### Actions - Parser Failure
 
 - inspect GitHub Actions logs
+
 - validate dependencies
+
 - validate Python version
+
 - rerun workflow

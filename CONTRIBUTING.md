@@ -248,4 +248,4 @@ src/
 
 ## 📄 Licença
 
-Este projeto é educacional. Veja [LICENSE](./LICENSE) para detalhes.
+Este projeto é educacional. Veja LICENSE para detalhes.

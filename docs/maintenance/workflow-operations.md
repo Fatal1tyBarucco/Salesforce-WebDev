@@ -33,11 +33,18 @@ Devido a atualizações no código-fonte, a documentação foi revisada para inc
 5. **Migração Legada Removida**:
    - A lógica para deletar tags legadas no formato `v20{year_short}-{season}` foi removida, simplificando o fluxo.
 
+6. **Versões de Actions Fixadas**:
+   - As actions do GitHub no workflow agora usam versões fixadas por commit SHA (ex: `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` para v7 e `actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c` para v8).
+   - Isso melhora a reprodutibilidade e segurança, evitando alterações inesperadas de versões.
+
+7. **Dependência syrupy externa**:
+   - Agora: O passo de instalação de dependências inclui `uv pip install "syrupy>=4.9.0,<5"` além do `uv sync --frozen`.
+   - Motivo: O syrupy fica fora do pyproject.toml para evitar downgrade do pytest; consistente com python-quality.yml.
+
 ### Considerações Operacionais
 
 - **Logs**: Os logs do pipeline são armazenados em `/tmp/pipeline_logs/` e podem ser revisados para diagnóstico.
 - **Secrets Necessários**: `GITHUB_TOKEN` (padrão) e opcionalmente `RELEASE_TOKEN` para releases. Outros secrets como `GOOGLE_API_KEY` e `OPENROUTER_API_KEY` são usados na extração.
 - **Workdir**: O diretório de trabalho padrão é a raiz do repositório (`.`).
 - **Timeout**: O job de extração tem timeout de 240 minutos devido à complexidade da extração e processamento.
-
-Para detalhes completos, consulte o arquivo `.github/workflows/release_notes_pipeline.yml` no repositório.
+- **Setup UV**: O workflow python-quality.yml e o workflow release_notes_pipeline.yml utilizam o setup-uv v10.1.0 (commit bec219d24cd3e171d82865faccec33120bb574f4).

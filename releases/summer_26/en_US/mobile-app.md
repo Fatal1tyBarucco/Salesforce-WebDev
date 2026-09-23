@@ -34,6 +34,6 @@ O Agentforce Voice agora está disponível ao público em geral para integraçã
 
 ## 📚 Resources
 
-- [📄 Release in a Box PDF](./release-in-a-box.pdf)
+- 📄 Release in a Box PDF
 - [🔗 Feature Impact Page](https://help.salesforce.com/s/articleView?id=release-notes.rn_feature_impact.htm&release=262&type=5&language=en_US)
 - [📋 Release Notes](https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=262&type=5&language=en_US)

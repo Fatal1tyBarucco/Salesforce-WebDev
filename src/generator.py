@@ -75,9 +75,9 @@ class MarkdownGenerator:
         Gera todos os arquivos Markdown para uma release a partir da árvore.
 
         Args:
-            release     : Metadados da release.
-            topic_nodes : Lista de TopicNode raiz (nível 2) da árvore.
-            source_url  : URL de origem (incluída como referência no header).
+            release: Metadados da release.
+            topic_nodes: Lista de TopicNode raiz (nível 2) da árvore.
+            source_url: URL de origem (incluída como referência no header).
 
         Returns:
             Lista dos caminhos de arquivos gerados/atualizados.

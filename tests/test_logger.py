@@ -118,3 +118,109 @@ class TestFormatters:
         )
         result = formatter.format(record)
         assert "warning msg" in result
+
+
+class TestGetLogger:
+    """get_logger: existing logger vs setup path."""
+
+    def test_creates_new_logger_when_no_handlers(self) -> None:
+        from src.logger import get_logger
+
+        logger = get_logger("test_new_logger_no_handlers")
+        assert logger.name == "test_new_logger_no_handlers"
+        assert len(logger.handlers) > 0
+        # Cleanup
+        for h in list(logger.handlers):
+            logger.removeHandler(h)
+
+    def test_returns_existing_logger(self) -> None:
+        from src.logger import get_logger
+
+        name = "test_existing_logger_handlers"
+        logger = logging.getLogger(name)
+        logger.addHandler(logging.StreamHandler(sys.stdout))
+        result = get_logger(name)
+        assert result is logger
+
+
+class TestJSONFormatterWithExtras:
+    """JSONFormatter with correlation_id and exception info."""
+
+    def test_with_cid_and_exception(self) -> None:
+        from src.logger import JSONFormatter
+
+        formatter = JSONFormatter()
+        record = logging.LogRecord(
+            name="test",
+            level=logging.ERROR,
+            pathname="test.py",
+            lineno=1,
+            msg="error msg",
+            args=(),
+            exc_info=(ValueError, ValueError("boom"), None),
+        )
+        record.correlation_id = "abc123def456"
+        result = formatter.format(record)
+        parsed = json.loads(result)
+        assert parsed["correlation_id"] == "abc123def456"
+        assert "exception" in parsed
+        assert "boom" in parsed["exception"]
+
+    def test_without_cid_no_exception(self) -> None:
+        from src.logger import JSONFormatter
+
+        formatter = JSONFormatter()
+        record = logging.LogRecord(
+            name="test",
+            level=logging.INFO,
+            pathname="test.py",
+            lineno=1,
+            msg="hello",
+            args=(),
+            exc_info=None,
+        )
+        result = formatter.format(record)
+        parsed = json.loads(result)
+        assert "correlation_id" not in parsed
+        assert "exception" not in parsed
+
+
+class TestSetupSentryEdgeCases:
+    """_setup_sentry edge cases."""
+
+    def test_invalid_traces_sample_rate(self) -> None:
+        from src.logger import _setup_sentry
+
+        with (
+            patch.dict(
+                "os.environ",
+                {
+                    "SENTRY_DSN": "https://example@sentry.io/123",
+                    "SENTRY_TRACES_SAMPLE_RATE": "not_a_number",
+                    "SENTRY_ENVIRONMENT": "",
+                },
+                clear=False,
+            ),
+            patch.dict(sys.modules, {"sentry_sdk": MagicMock()}),
+        ):
+            _setup_sentry()  # Should not raise on invalid float
+
+
+class TestSetupLoggerWithFile:
+    """setup_logger with log_file parameter."""
+
+    def test_with_log_file(self) -> None:
+        from src.logger import setup_logger
+
+        import os
+        import tempfile
+        import uuid
+
+        tmp_fd, tmp = tempfile.mkstemp(suffix=".log")
+        os.close(tmp_fd)
+        logger = setup_logger("test_with_file_" + uuid.uuid4().hex, log_file=tmp)
+        assert len(logger.handlers) >= 2  # stream + file
+        for h in list(logger.handlers):
+            logger.removeHandler(h)
+        if os.path.exists(tmp):
+            os.remove(tmp)

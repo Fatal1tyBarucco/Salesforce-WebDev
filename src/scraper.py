@@ -12,7 +12,6 @@ This scraper uses a resilient strategy:
 import asyncio
 import logging
 import random
-import time
 import urllib.request
 from pathlib import Path
 from types import TracebackType
@@ -26,6 +25,7 @@ from .cache_manager import CacheManager
 from .circuit_breaker import CircuitBreaker
 from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from .exceptions import BrowserError, ScraperError
+from .limiters.rate_limiter import RateLimiter
 
 logger = logging.getLogger(__name__)
 
@@ -73,22 +73,6 @@ CIRCUIT_BREAKER_THRESHOLD = 3
 CIRCUIT_BREAKER_COOLDOWN = 60  # seconds
 
 
-class RateLimiter:
-    """Simple token-bucket rate limiter for async operations."""
-
-    def __init__(self, min_interval: float = RATE_LIMIT_MIN_INTERVAL) -> None:
-        self._min_interval = min_interval
-        self._last_request: float = 0.0
-
-    async def acquire(self) -> None:
-        """Wait until enough time has passed since the last request."""
-        now = time.monotonic()
-        elapsed = now - self._last_request
-        if elapsed < self._min_interval:
-            await asyncio.sleep(self._min_interval - elapsed)
-        self._last_request = time.monotonic()
-
-
 class SalesforceReleaseScraper:
     """Fetches fully rendered HTML from Salesforce Help release notes URLs."""
 
@@ -105,7 +89,7 @@ class SalesforceReleaseScraper:
     def __init__(self) -> None:
         self._playwright: Playwright | None = None
         self._browser: Browser | None = None
-        self._rate_limiter = RateLimiter()
+        self._rate_limiter = RateLimiter(min_interval=RATE_LIMIT_MIN_INTERVAL)
         self._circuit_breaker = CircuitBreaker()
         self._cache = CacheManager(cache_dir=Path("cache"))
 

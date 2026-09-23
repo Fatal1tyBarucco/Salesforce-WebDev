@@ -49,6 +49,7 @@ from src.api import (
     natural_language_search,
     triage_issue,
     verify_api_key,
+    HTTPException,  # type: ignore[attr-defined]
 )
 from src.automation.comparison import (
     calculate_quality_metrics,
@@ -352,9 +353,13 @@ def test_llm_gemini_import_error_fallback(monkeypatch) -> None:
     import src.llm_service as ls
 
     monkeypatch.setattr(ls, "genai", None)
-    svc = ls.LLMService(api_key="k", provider="gemini")
+    for var in ("OPENROUTER_API_KEY", "OPENCODE_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+    svc = ls.LLMService(api_key="goog-key", provider="gemini")
+    assert svc.provider == "gemini"
     # genai is None -> _generate_gemini raises ImportError -> fallback chain
-    # No other providers have keys -> all fail -> raises
+    # finds no other provider keys -> raises
     with pytest.raises((ImportError, RuntimeError)):
         svc.generate_completion("hi")
 
@@ -576,13 +581,21 @@ def test_logger_file_handler(tmp_path: Path) -> None:
 
 
 def test_verify_api_key_flow() -> None:
+    # Sem chave configurada: deve retornar 503 (defensivo)
     os.environ.pop("API_SECRET_KEY", None)
-    # default key is "default-dev-key"
-    assert verify_api_key(x_api_key="default-dev-key") == "default-dev-key"
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as exc:
+        verify_api_key(x_api_key="any")
+    assert exc.value.status_code == 503
+
+    # Com chave configurada: valida corretamente
+    os.environ["API_SECRET_KEY"] = "secret-test-key"
+    assert verify_api_key(x_api_key="secret-test-key") == "secret-test-key"
+    with pytest.raises(HTTPException) as exc:
         verify_api_key(x_api_key="wrong")
-    with pytest.raises(Exception):
+    assert exc.value.status_code == 401
+    with pytest.raises(HTTPException) as exc:
         verify_api_key(x_api_key=None)
+    assert exc.value.status_code == 401
 
 
 def test_fastapi_endpoints() -> None:
@@ -728,7 +741,8 @@ async def test_summarizer_parse_category_summaries_nonstring() -> None:
 
 
 # ── AIAutomationService wrapper gaps 121, 144, 150 ──────────────────────
-def test_ai_automation_service_wrappers() -> None:
+@pytest.mark.asyncio
+async def test_ai_automation_service_wrappers() -> None:
     """Lines 121, 144, 150: AIAutomationService wrapper methods."""
     import tempfile
     from pathlib import Path
@@ -741,7 +755,7 @@ def test_ai_automation_service_wrappers() -> None:
 
     # Line 121: calculate_category_impact_scores wrapper
     try:
-        svc.calculate_category_impact_scores()
+        await svc.calculate_category_impact_scores()
     except Exception:
         pass  # line 121 reached before the call
 

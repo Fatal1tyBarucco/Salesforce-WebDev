@@ -81,44 +81,69 @@ extra:
 
 nav:
   - Home: index.md
-  - Architecture:
-    - Overview: architecture/overview.md
-    - C4 Container: architecture/c4_container.md
-    - Decisions:
-      - Index: architecture/decisions/index.md
+  - Guias:
+    - Visão Geral: guides/index.md
+    - Quickstart: guides/getting-started.md
+    - Executando o Pipeline: guides/running-pipeline.md
+    - Desenvolvimento Local: guides/local-development.md
+  - Arquitetura:
+    - Visão Geral: architecture/overview.md
+    - Diagrama C4: architecture/c4_container.md
+    - Decisões (ADRs):
+      - Índice: architecture/decisions/index.md
       - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
+      - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
-  - Refatoração:
-    - Status & Auditoria: refatoracao.md
-    - Melhorias Fase 1 & V1: improvements.md
-  - Contribution:
-    - Testing Strategy: contribution/testing-strategy.md
-  - Maintenance:
-    - Index: maintenance/index.md
-    - Local Development: maintenance/local-development.md
-    - Workflow Operations: maintenance/workflow-operations.md
-    - Cache Management: maintenance/cache-management.md
-    - Troubleshooting: maintenance/troubleshooting.md
-    - Plano de Ação: PLANO_DE_ACAO.md
-    - Enhanced Search: maintenance/enhanced-search.md
-  - Observability:
-    - Index: observability/index.md
-    - Logging: observability/logging.md
-    - Pipeline Health: observability/pipeline-health.md
-  - Runbooks:
-    - Index: runbooks/index.md
-    - Scraper Failure: runbooks/scraper-failure.md
-    - GitHub Actions Failure: runbooks/github-actions-failure.md
-  - Roadmap:
-    - Index: roadmap/index.md
-    - V1: roadmap/v1.md
-    - V2: roadmap/v2.md
-    - V3: roadmap/v3.md
-    - V4 (Atual): roadmap/v4.md
-  - Changelog: changelog.md
   - API Reference:
+    - Ai Generators Badges: api/ai-generators-badges.md
+    - Ai Generators Code: api/ai-generators-code.md
+    - Ai Generators Markdown: api/ai-generators-markdown.md
+    - Ai Integrations Salesforce: api/ai-integrations-salesforce.md
+    - Ai Integrations Trailhead: api/ai-integrations-trailhead.md
+    - Ai Prompts Classification: api/ai-prompts-classification.md
+    - Ai Prompts Enrichment: api/ai-prompts-enrichment.md
+    - Ai Prompts Reporting: api/ai-prompts-reporting.md
+    - Ai Prompts Validation: api/ai-prompts-validation.md
+    - Ai Automation: api/ai_automation.md
+    - Analytics: api/analytics.md
+    - Api: api/api.md
+    - Automation Badge: api/automation-badge.md
+    - Automation Comparison: api/automation-comparison.md
+    - Automation Content: api/automation-content.md
+    - Automation Export: api/automation-export.md
+    - Automation Github Ops: api/automation-github_ops.md
+    - Automation Impact: api/automation-impact.md
+    - Automation Models: api/automation-models.md
+    - Automation Notifications: api/automation-notifications.md
+    - Automation Reporting: api/automation-reporting.md
+    - Automation Service: api/automation-service.md
+    - Circuit Breaker: api/circuit_breaker.md
+    - Config: api/config.md
+    - Dashboard: api/dashboard.md
+    - Events: api/events.md
+    - Exceptions: api/exceptions.md
+    - Feature Enricher: api/feature_enricher.md
+    - Generator: api/generator.md
+    - Health: api/health.md
+    - Heuristic Classifier: api/heuristic_classifier.md
+    - I18N: api/i18n.md
+    - Impact Analyzer: api/impact_analyzer.md
+    - Issue Triage: api/issue_triage.md
+    - Limiters Rate Limiter: api/limiters-rate_limiter.md
+    - Logger: api/logger.md
+    - Models: api/models.md
+    - Nl Search: api/nl_search.md
+    - Orchestrator: api/orchestrator.md
+    - Release Docs: api/release_docs.md
+    - Release Discovery: api/release_discovery.md
+    - Documentation Service: api/documentation_service.md
+    - Release Summarizer: api/release_summarizer.md
+    - Salesforce: api/salesforce.md
+    - Smart Notifications: api/smart_notifications.md
+    - Workflow: api/workflow.md
+    - Visão Geral: api/index.md
     - Pipeline Principal: api/main.md
     - Scraper: api/scraper.md
     - Parser: api/parser.md
@@ -127,8 +152,32 @@ nav:
     - Translator: api/translator.md
     - Notifications: api/notifications.md
     - Cache Manager: api/cache_manager.md
-  - Internos:
-    - Diretiva do Agente: internal/AGENT_DIRECTIVE.md
-    - Análise: internal/ANALYSIS.md
-    - Relatório de Auditoria: internal/AUDIT_REPORT.md
-    - Status da Refatoração: internal/REFATORACAO_STATUS.md
+  - Runbooks:
+    - Visão Geral: runbooks/index.md
+    - Falha no Scraper: runbooks/scraper-failure.md
+    - Falha no GitHub Actions: runbooks/github-actions-failure.md
+    - Falha no Document Sync: runbooks/documentation-sync-failure.md
+    - Falha no MkDocs Build: runbooks/mkdocs-build-failure.md
+    - Falha na Geração de Release: runbooks/release-generation-failure.md
+  - Observabilidade:
+    - Visão Geral: observability/index.md
+    - Logging: observability/logging.md
+    - Pipeline Health: observability/pipeline-health.md
+  - Manutenção:
+    - Visão Geral: maintenance/index.md
+    - Operações de Workflow: maintenance/workflow-operations.md
+    - Desenvolvimento Local: maintenance/local-development.md
+    - Cache Management: maintenance/cache-management.md
+    - Troubleshooting: maintenance/troubleshooting.md
+    - Enhanced Search: maintenance/enhanced-search.md
+  - Roadmap:
+    - Visão Geral: roadmap/index.md
+    - V1: roadmap/v1.md
+    - V2: roadmap/v2.md
+    - V3: roadmap/v3.md
+    - V4 (Atual): roadmap/v4.md
+  - Changelog: changelog.md
+  - Referências:
+    - Source Schema: SOURCE_SCHEMA.md
+  - Contribuição:
+    - Testing Strategy: contribution/testing-strategy.md

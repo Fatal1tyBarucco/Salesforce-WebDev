@@ -61,7 +61,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -69,7 +69,10 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependências
-        run: uv sync --frozen
+        run: |
+          uv sync --frozen
+          # syrupy fora do pyproject (evita downgrade do pytest); igual ao python-quality.yml
+          uv pip install "syrupy>=4.9.0,<5"
 
       - name: Instalar Playwright browsers
         run: uv run playwright install --with-deps chromium

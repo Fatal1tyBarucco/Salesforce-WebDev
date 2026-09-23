@@ -27,6 +27,7 @@ from .config import (
     RELEASES_DIR,
     ReleaseInfo,
 )
+from .documentation_service import DocumentationService
 from .events import EventBus, get_event_bus
 from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
@@ -77,6 +78,10 @@ logger = logging.getLogger(__name__)
 async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo | None:
     """Detect whether there is a new release candidate to process.
 
+    Delegates to :class:`~src.release_discovery.ReleaseDiscoveryService` for
+    resilient, multi-strategy discovery (content comparison with probing,
+    falling back to the ``release_id + 2`` heuristic).
+
     Returns:
         - ReleaseInfo for the latest known release when the repo has no release artifacts yet.
         - ReleaseInfo for the next release when its page content differs from the current release.
@@ -86,66 +91,11 @@ async def detect_new_release(scraper: SalesforceReleaseScraper) -> ReleaseInfo |
             * page fetch/comparison fails,
             * compared content indicates the next release is not yet available.
     """
-    existing_slugs = _find_existing_releases()
-    known_sorted = sorted(KNOWN_RELEASES, key=lambda x: x.release_id, reverse=True)
+    from .release_discovery import ReleaseDiscoveryService
 
-    current = None
-    for r in known_sorted:
-        if r.slug in existing_slugs:
-            current = r
-            break
-
-    if current is None:
-        # No existing releases found. Process the latest known release,
-        # but if it already exists (e.g. repo populated manually), fall back
-        # to the next unseen release so we don't return an already-existing slug.
-        for r in known_sorted:
-            if r.slug not in existing_slugs:
-                logger.info("No releases in repo, processing latest known: %s", r.name)
-                return r
-        return None
-
-    next_id = current.release_id + 2
-    next_info = ReleaseInfo(
-        name=_build_release_name(next_id),
-        release_id=next_id,
-        slug=_build_release_slug(next_id),
-    )
-
-    if next_info.slug in existing_slugs:
-        return None
-
-    current_url = FEATURE_IMPACT_URL.format(release_id=current.release_id)
-    next_url = FEATURE_IMPACT_URL.format(release_id=next_id)
-
-    logger.info(
-        "Comparing content: %s (id=%d) vs %s (id=%d)",
-        current.name,
-        current.release_id,
-        next_info.name,
-        next_id,
-    )
-
-    results = await asyncio.gather(
-        scraper.fetch_page_raw_text(current_url),
-        scraper.fetch_page_raw_text(next_url),
-        return_exceptions=True,
-    )
-    current_text = results[0] if not isinstance(results[0], BaseException) else None
-    next_text = results[1] if not isinstance(results[1], BaseException) else None
-
-    if not current_text or not next_text:
-        logger.info("Could not fetch pages for comparison")
-        return None
-
-    if len(current_text) == len(next_text) and current_text[:500] == next_text[:500]:
-        logger.info(
-            "Release %s not yet available (content identical to %s)", next_info.name, current.name
-        )
-        return None
-
-    logger.info("New release detected: %s (content differs from %s)", next_info.name, current.name)
-    return next_info
+    service = ReleaseDiscoveryService(scraper=scraper)
+    releases = await service.discover()
+    return releases[0] if releases else None
 
 
 async def _process_release_triage(
@@ -182,11 +132,14 @@ async def _process_release_analytics(
     release: ReleaseInfo,
 ) -> None:
     """Generate impact report and notification digest for a single release."""
+    doc_service = DocumentationService()
     try:
         report = await analyzer.analyze(release.slug)
         if report:
             impact_path = Path("IMPACT_REPORT.md")
-            impact_path.write_text(_format_impact_report(report, release.name), encoding="utf-8")
+            impact_path.write_text(
+                doc_service.format_impact_report(report, release.name), encoding="utf-8"
+            )
     except (LLMError, OSError) as e:
         logger.warning("Impact analysis failed: %s", e)
 
@@ -200,7 +153,7 @@ async def _process_release_analytics(
             )
             digest = await engine.generate_digest(notifs, default_user)
             notif_path = Path("NOTIFICATION_DIGEST.md")
-            notif_path.write_text(_format_notification_digest(digest), encoding="utf-8")
+            notif_path.write_text(doc_service.format_notification_digest(digest), encoding="utf-8")
     except (NotificationError, LLMError, OSError) as e:
         logger.warning("Notification digest failed: %s", e)
 
@@ -440,7 +393,7 @@ async def generate_ai_reports_async(
             _safe_write(all_results[3], "DIFF_REPORT.md")
             logger.info("Regression and Diff reports generated.")
 
-        _update_badge(releases_to_process)
+        DocumentationService().update_badge(releases_to_process)
 
         # Per-release AI processing (each release independent)
         triage_results = await asyncio.gather(
@@ -548,8 +501,9 @@ async def process_single_release(
     enrichments = await enricher.enrich_release(release.slug, release.name)
     logger.info("Enriched %d categories with AI descriptions", len(enrichments))
 
+    doc_service = DocumentationService()
     for locale in ["pt_BR", "en_US"]:
-        await _generate_release_files(
+        await doc_service.generate_release_files(
             release,
             categories,
             generator,
@@ -561,7 +515,7 @@ async def process_single_release(
     # Generate summary cache for professional release notes
     await generate_summary_cache(release, categories, llm)
 
-    _update_readme_single(release, categories)
+    doc_service.update_readme_single(release, categories)
     return True
 
 

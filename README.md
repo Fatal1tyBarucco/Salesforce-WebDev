@@ -16,7 +16,7 @@
 [![Python Quality](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/python-quality.yml)
 [![Pipeline](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml/badge.svg)](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/release_notes_pipeline.yml)
 [![Docs](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/actions/workflows/documentation-build.yml/badge.svg)](https://fatal1tybarucco.github.io/Salesforce-WebDev/)
-![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.13+-3776AB?logo=python&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-Headless-2EAD33?logo=playwright&logoColor=white)
 ![Coverage](https://img.shields.io/badge/Cobertura-95%25-2ECC71)
 ![License](https://img.shields.io/badge/License-Educacional-blue)
@@ -818,7 +818,7 @@ flowchart LR
 
 | Requisito | Versão | Instalação |
 |:----------|:-------|:-----------|
-| Python | 3.12+ | [python.org](https://www.python.org/) |
+| Python | 3.13+ | [python.org](https://www.python.org/) |
 | uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Playwright | Chromium | `uv run playwright install chromium` |
 
@@ -842,8 +842,7 @@ uv run pre-commit install --hook-type pre-push
 # 5. Configure as chaves LLM (pelo menos uma)
 export OPENAI_API_KEY="sk-..."    # ou
 export GOOGLE_API_KEY="AIza..."   # ou
-export OPENCODE_API_KEY="..."     # ou
-export MIMOCODE_API_KEY="..."
+export OPENCODE_API_KEY="..."
 ```
 
 ### Execução
@@ -917,7 +916,7 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 
 | Ferramenta | Configuração | Status |
 |:-----------|:-------------|:------:|
-| 🐍 **Python** | 3.12-3.13, type hints completos | ✅ |
+| 🐍 **Python** | 3.13, type hints completos | ✅ |
 | 🔍 **Mypy** | `strict = true` | ✅ |
 | ⚡ **Ruff** | `line-length = 100` | ✅ |
 | 🖤 **Black** | `target-version = py313` | ✅ |
@@ -928,7 +927,7 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 
 ## 🤖 Automação AI
 
-O pipeline utiliza LLM (OpenAI, Google Gemini, OpenCode, MiMoCode) para gerar conteúdo inteligente:
+O pipeline utiliza LLM (OpenAI, Google Gemini, OpenCode) para gerar conteúdo inteligente:
 
 ### Enriquecimento de Features (`feature_enricher.py`)
 
@@ -961,7 +960,7 @@ Cada arquivo de categoria inclui:
 ### Cadeia de Fallback
 
 ```
-OpenAI → Google Gemini → OpenCode → MiMoCode → Classificação Heurística
+OpenAI → Google Gemini → OpenCode → Classificação Heurística
 ```
 
 Quando nenhum LLM está disponível, o sistema usa classificação por keywords como fallback.
@@ -1083,7 +1082,7 @@ Salesforce-WebDev/
 ├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
 │
 ├── mkdocs.yml                       # 📖 Config MkDocs
-├── pyproject.toml                   # 📦 Config do projeto (Python >=3.12,<3.14)
+├── pyproject.toml                   # 📦 Config do projeto (Python >=3.13,<3.14)
 ├── uv.lock                          # 🔒 Lock file
 ├── Dockerfile                       # 🐳 Multi-stage build
 └── .pre-commit-config.yaml          # 🪝 Pre-commit hooks

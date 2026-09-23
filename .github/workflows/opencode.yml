@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -29,6 +29,7 @@ jobs:
         uses: anomalyco/opencode/github@733562e92a96255fb123aae92f267e4534a635fb # v1.18.25
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           #model: opencode/x-preview-f-free
-          model: opencode/mimo-v2.5-free
+          model: opencode/mimo-v2.6-flash-free

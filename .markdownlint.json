@@ -1,0 +1,40 @@
+{
+  "default": true,
+  "ignore": [
+    ".markdownlint.json",
+    ".markdownlintignore",
+    "node_modules/**",
+    "site/**",
+    "package.json",
+    "package-lock.json"
+  ],
+  "heading-style": "setext",
+  "first-line-h1": false,
+  "front-matter-title-format": "%(title)s",
+  "no-duplicate-header": true,
+  "no-trailing-spaces": true,
+  "hard-tabs": false,
+  "line-length": false,
+  "MD013": false,
+  "MD033": false,
+  "ul-indent": 2,
+  "MD007": {
+    "indent": 2
+  },
+  "blanks-around-headings": true,
+  "blanks-around-code-blocks": true,
+  "blanks-around-tables": true,
+  "MD024": {
+    "style": "strict"
+  },
+  "MD004": {
+    "style": "subtree"
+  },
+  "MD005": {
+    "style": "consistent"
+  },
+  "MD046": {
+    "style": "fenced"
+  },
+  "MD060": false
+}
