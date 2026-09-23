@@ -45,6 +45,9 @@ Before finishing changes, always run:
 3. `uv run mypy src/`
 4. `uv run pytest --cov=src --cov-fail-under=95 --cov-report=term-missing --cov-report=xml:coverage.xml`
 
+### Feature: Python Quality + /oc fix auto-comment (2026-09-23)
+Quando `python-quality.yml` falha, ele cria um issue automaticamente e comenta `/oc fix only ruff and black formatting. Skip mypy and tests.` para acionar `opencode` (`opencode.yml`). Modelo configurado: `opencode/mimo-v2.6-flash-free` (v2.5 removida). Requer `OPENCODE_API_KEY` + `GITHUB_TOKEN` no `opencode.yml`. Se o `opencode` reagir, ele cria PR automaticamente; caso contrário, a correção é manual (`uv run ruff check . --fix`, `uv run black .`).
+
 ### Quality issue fix convention (updated 2026-09-22)
 When an open issue reports "Python Quality falhou": fix with `uv run ruff check . --fix`, `uv run black .`, commit to main, push, then close all related issues (#141-143 pattern). Remove test artifacts (`NOTIFICATION_DIGEST.md`, `DIFF_REPORT.md`, etc.). Verify with `uv run pytest --cov=src --cov-fail-under=95`.
 
