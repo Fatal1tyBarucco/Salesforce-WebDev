@@ -319,10 +319,13 @@ jobs:
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
         run: |
           # Só comenta se o número do issue existe e a falha é apenas de lint/format
-          # Tenta ler do env, depois do arquivo persistente no workspace
+          # Tenta ler do env, depois do arquivo persistente, depois busca pelo título
           ISSUE_NUM="${NUMBER:-}"
           if [ -z "$ISSUE_NUM" ] && [ -f /tmp/issue_number.txt ]; then
             ISSUE_NUM=$(cat /tmp/issue_number.txt | tr -d ' \n')
+          fi
+          if [ -z "$ISSUE_NUM" ]; then
+            ISSUE_NUM=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
           if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
           echo "Comentando no issue #$ISSUE_NUM com /oc fix only ruff/black..."
