@@ -240,7 +240,7 @@
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
     ".github/workflows/opencode.yml": "b18b5abd6c71c054621ef9e17ba1735b39557f0e",
-    ".github/workflows/python-quality.yml": "bb3dec9726b766098e9b9434f2183f7d49979d99",
+    ".github/workflows/python-quality.yml": "5d98904faf5065b8c8f3a0988fc5711fa1b9bb18",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "cfc07df51e22e82b40cfb6fc5069bebd2a390bb9",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -583,7 +583,7 @@
     "src/limiters/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/limiters/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/limiters/rate_limiter.py": "7a6c325bb3eaf21a27650660629546782168a8c3",
-    "src/llm_service.py": "ad27a800f632c200040bb2e3a7bf1bc9f5928059",
+    "src/llm_service.py": "eef1c2fe41bc93e94d89dd04ab23ac1574589269",
     "src/logger.py": "1e0c0c804d5b1de2f9afab65016d89d4851ded0a",
     "src/main.py": "6df9a30bb58a6840f618748f87fd646212fd38a1",
     "src/models.py": "56d66cc465befe230342bba24776f50246f84b0d",
@@ -685,6 +685,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-23T05:53:44.592377+00:00",
-  "repository_sha": "e35bca3f3fb463a590c5b36c236089b28a899bb4"
+  "generated_at": "2026-09-23T05:57:11.652019+00:00",
+  "repository_sha": "c738a97813dd9115642b65c967efb2aacae59703"
 }
