@@ -240,7 +240,7 @@
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
     ".github/workflows/opencode.yml": "39dd8bb886bce0124acd3aa13edd808122ee48ea",
-    ".github/workflows/python-quality.yml": "5d98904faf5065b8c8f3a0988fc5711fa1b9bb18",
+    ".github/workflows/python-quality.yml": "eed3a31f01d4ced8bb45afd3fab3852ec1ecdc63",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "cfc07df51e22e82b40cfb6fc5069bebd2a390bb9",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -685,6 +685,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-23T06:03:12.443986+00:00",
-  "repository_sha": "fe9af7bc4fb660488cd44950b557ef45ee7cf376"
+  "generated_at": "2026-09-23T06:04:50.803652+00:00",
+  "repository_sha": "8e560d0c0a6877c7e6eb5da34d058a8dda699bd4"
 }
