@@ -273,6 +273,7 @@ jobs:
           echo "body_file=$BODY_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Issue
+        id: create-issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -286,12 +287,33 @@ jobs:
             exit 0
           fi
           # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
-          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>&1; then
+          ISSUE_FILE="/tmp/issue.json"
+          NUMBER=""
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" > "$ISSUE_FILE" 2>/dev/null; then
             echo "Issue criada com sucesso."
           else
             echo "::warning::Falha ao criar issue com body-file, tentando com --body"
-            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
+            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" > "$ISSUE_FILE" 2>/dev/null || true
           fi
+          # Extrai número do issue (tenta arquivo, depois busca aberta pelo título)
+          if [ -f "$ISSUE_FILE" ]; then
+            NUMBER=$(cat "$ISSUE_FILE" 2>/dev/null | grep -oE '[0-9]+' | head -1 || true)
+          fi
+          if [ -z "$NUMBER" ]; then
+            NUMBER=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          fi
+          if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
+
+      - name: 💬 Comment /oc fix (only ruff/black)
+        if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ steps.create-issue.outputs.issue_number }}
+        run: |
+          # Só comenta se o número do issue existe e a falha é apenas de lint/format
+          if [ -z "$NUMBER" ]; then echo "Sem número do issue — skip."; exit 0; fi
+          # Usa comando específico, não genérico
+          gh issue comment "$NUMBER" --body "/oc fix only ruff and black formatting. Skip mypy and tests." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │
