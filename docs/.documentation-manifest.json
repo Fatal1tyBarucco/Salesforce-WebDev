@@ -228,7 +228,7 @@
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/workflows/copilot-setup-steps.yml": "cee72171358a5d6cf042ad76e9b88c3a08cff71f",
-    ".github/workflows/dependabot-lock-refresh.yml": "9722b828f31dcf939da1979dda689f6624e2fe8f",
+    ".github/workflows/dependabot-lock-refresh.yml": "31d31fe6f08b4e8ca158b5ee13122544fa9183d8",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
@@ -647,7 +647,7 @@
     "tests/test_impact_analyzer.py": "602c0fd10047259300e4908b995cd87731baa731",
     "tests/test_issue_triage.py": "29ea4caead630dac664dce17b0caf804c65d0b95",
     "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
-    "tests/test_logger.py": "30fbd21e17319bc591bcdbedfd1590832b008b4d",
+    "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
     "tests/test_main_coverage.py": "1dbd1fc1ab48ae1f6310122dcd27fd250cdf1868",
@@ -677,6 +677,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-22T16:42:51.277844+00:00",
-  "repository_sha": "8b29db6da6d29e21e3bdfe75a3c30f9d1c588e89"
+  "generated_at": "2026-09-23T05:15:54.192595+00:00",
+  "repository_sha": "63cbf69e2a50d78d640864668b8c0c2df921a743"
 }
