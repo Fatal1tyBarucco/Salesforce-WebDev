@@ -286,18 +286,19 @@ jobs:
             echo "Issue já existe para este commit — skipping."
             exit 0
           fi
-          # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
-          ISSUE_FILE="/tmp/issue.json"
+          # Cria issue; captura URL para extrair número (gh nao tem --json number nesta versao)
+          ISSUE_FILE="/tmp/issue_url.txt"
           NUMBER=""
-          # Usa --json number para obter saída estruturada; salva também em arquivo de workspace para persistência entre steps
-          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" --json number > "$ISSUE_FILE" 2>/dev/null; then
+          if OUTPUT=$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>/dev/null); then
             echo "Issue criada com sucesso."
-            NUMBER=$(python3 -c "import sys,json; d=json.load(open('$ISSUE_FILE')); print(d.get('number',''))" 2>/dev/null || echo "")
+            echo "$OUTPUT" > "$ISSUE_FILE"
+            NUMBER=$(echo "$OUTPUT" | grep -oE '[0-9]+' | tail -n1 || true)
           else
             echo "::warning::Falha ao criar issue com body-file, tentando com --body"
-            if gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" --json number > "$ISSUE_FILE" 2>/dev/null; then
+            if OUTPUT=$(gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" 2>/dev/null); then
               echo "Issue criada com sucesso (fallback body)."
-              NUMBER=$(python3 -c "import sys,json; d=json.load(open('$ISSUE_FILE')); print(d.get('number',''))" 2>/dev/null || echo "")
+              echo "$OUTPUT" > "$ISSUE_FILE"
+              NUMBER=$(echo "$OUTPUT" | grep -oE '[0-9]+' | tail -n1 || true)
             else
               echo "Falha ao criar issue." > "$ISSUE_FILE"
               NUMBER=""
