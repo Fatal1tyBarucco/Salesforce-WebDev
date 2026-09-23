@@ -289,19 +289,26 @@ jobs:
           # Cria issue sem labels obrigatórios (falha silenciosa se label não existir)
           ISSUE_FILE="/tmp/issue.json"
           NUMBER=""
-          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" > "$ISSUE_FILE" 2>/dev/null; then
+          # Usa --json number para obter saída estruturada; salva também em arquivo de workspace para persistência entre steps
+          if gh issue create --title "$TITLE" --body-file "$BODY_FILE" --json number > "$ISSUE_FILE" 2>/dev/null; then
             echo "Issue criada com sucesso."
+            NUMBER=$(python3 -c "import sys,json; d=json.load(open('$ISSUE_FILE')); print(d.get('number',''))" 2>/dev/null || echo "")
           else
             echo "::warning::Falha ao criar issue com body-file, tentando com --body"
-            gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" > "$ISSUE_FILE" 2>/dev/null || true
+            if gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")" --json number > "$ISSUE_FILE" 2>/dev/null; then
+              echo "Issue criada com sucesso (fallback body)."
+              NUMBER=$(python3 -c "import sys,json; d=json.load(open('$ISSUE_FILE')); print(d.get('number',''))" 2>/dev/null || echo "")
+            else
+              echo "Falha ao criar issue." > "$ISSUE_FILE"
+              NUMBER=""
+            fi
           fi
-          # Extrai número do issue (tenta arquivo, depois busca aberta pelo título)
-          if [ -f "$ISSUE_FILE" ]; then
-            NUMBER=$(cat "$ISSUE_FILE" 2>/dev/null | grep -oE '[0-9]+' | head -1 || true)
-          fi
+          # Fallback: busca pelo título (se arquivo falhou)
           if [ -z "$NUMBER" ]; then
             NUMBER=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
+          # Salva em arquivo de workspace (garante persistência entre steps do mesmo job)
+          echo "$NUMBER" > /github/workspace/issue_number.txt
           if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
 
       - name: 💬 Comment /oc fix (only ruff/black)
@@ -311,9 +318,15 @@ jobs:
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
         run: |
           # Só comenta se o número do issue existe e a falha é apenas de lint/format
-          if [ -z "$NUMBER" ]; then echo "Sem número do issue — skip."; exit 0; fi
+          # Tenta ler do env, depois do arquivo persistente no workspace
+          ISSUE_NUM="${NUMBER:-}"
+          if [ -z "$ISSUE_NUM" ] && [ -f /github/workspace/issue_number.txt ]; then
+            ISSUE_NUM=$(cat /github/workspace/issue_number.txt | tr -d ' \n')
+          fi
+          if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
+          echo "Comentando no issue #$ISSUE_NUM com /oc fix only ruff/black..."
           # Usa comando específico, não genérico
-          gh issue comment "$NUMBER" --body "/oc fix only ruff and black formatting. Skip mypy and tests." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
+          gh issue comment "$ISSUE_NUM" --body "/oc fix only ruff and black formatting. Skip mypy and tests." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │
