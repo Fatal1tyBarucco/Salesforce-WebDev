@@ -1,13 +1,20 @@
 {
   "documentation_map": {
+    ".github/scripts/build_failure_issue.py": [
+      "docs/plans/auto-opencode-issue.md"
+    ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md"
     ],
     ".github/workflows/documentation-sync.yml": [
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
     ],
+    ".github/workflows/opencode.yml": [
+      "docs/plans/auto-opencode-issue.md"
+    ],
     ".github/workflows/python-quality.yml": [
-      "AGENTS.md"
+      "AGENTS.md",
+      "docs/plans/auto-opencode-issue.md"
     ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
@@ -220,7 +227,7 @@
     ".github/dependabot.yml": "ec76a0a6b7fb35c0d5996bfd80ae19dbb38044fa",
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
-    ".github/scripts/build_failure_issue.py": "1479322d58910dfb02a2feecb6bccf7c6a92ab57",
+    ".github/scripts/build_failure_issue.py": "758b2d9db510dcacad75015dfa451d60be3ffb6b",
     ".github/scripts/docs_sync_engine.py": "a99bad021cd203057ce02c1aa738366a788b3c58",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "3d23cf4bd3be2f234992a78280669779688d008d",
@@ -232,8 +239,8 @@
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "71509cf36ec7790dccdaefaaedad955d1f282ef5",
     ".github/workflows/documentation-sync.yml": "8e54deb6dc6c5e6c8355547d0cd18e698bdfc05c",
-    ".github/workflows/opencode.yml": "f5ffdcffa333084710386c2211ead0718211c795",
-    ".github/workflows/python-quality.yml": "951883f92ada9d25260f2a77969c2117c4207510",
+    ".github/workflows/opencode.yml": "b18b5abd6c71c054621ef9e17ba1735b39557f0e",
+    ".github/workflows/python-quality.yml": "d078636f9fa61cf54fecb5ab87b5befa2e62447f",
     ".github/workflows/release_notes_pipeline.yml": "4fd9cbb5d1bc31f4fa394adc21e9e2df9fd04e10",
     ".gitignore": "cfc07df51e22e82b40cfb6fc5069bebd2a390bb9",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -338,6 +345,7 @@
     "docs/observability/index.md": "2bd56341a645958c8d55912e17b6d54ac1ae49e2",
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
+    "docs/plans/auto-opencode-issue.md": "75186d5f5a1a9b4fd2f797f8873ba9bcb23599b0",
     "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
@@ -677,6 +685,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-23T05:15:54.192595+00:00",
-  "repository_sha": "63cbf69e2a50d78d640864668b8c0c2df921a743"
+  "generated_at": "2026-09-23T05:42:03.283470+00:00",
+  "repository_sha": "e4febcd1f1d4f425ea8d560037fbdfa28ced18d7"
 }
