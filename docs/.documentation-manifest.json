@@ -247,7 +247,7 @@
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "7299f8a981b33a8cd4c17b5abd2373c4d9c3bebd",
-    "AGENTS.md": "e08b7a8849cb9bdee163288b5f98f0116da866f7",
+    "AGENTS.md": "f9e74123c36037ef52045b4b292dc9faa1be97cd",
     "CHANGELOG.md": "5ddad421e08fd03db41b6415c978420528314efc",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -685,6 +685,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-23T13:39:49.340274+00:00",
-  "repository_sha": "c189595d3604539521bb2e0025a8bf694dfcad7a"
+  "generated_at": "2026-09-23T13:46:21.189541+00:00",
+  "repository_sha": "a6a8259b51f9696d6a13cb2f620adb4c5b92fc4f"
 }
