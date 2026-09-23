@@ -29,6 +29,7 @@ import re  # ruff: F401 — import não usado (erro intencional)
   # black: indentação incorreta (erro intencional)# ---------------------------------------------------------------------------
 # Provider configuration
 # ---------------------------------------------------------------------------
+# TEST ERROR — validação /oc fix
 
 LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 60)
 
