@@ -24,8 +24,9 @@ except ImportError:  # pragma: no cover
     genai = None  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)
+import re  # ruff: F401 — import não usado (erro intencional)
 
-# ---------------------------------------------------------------------------
+  # black: indentação incorreta (erro intencional)# ---------------------------------------------------------------------------
 # Provider configuration
 # ---------------------------------------------------------------------------
 
