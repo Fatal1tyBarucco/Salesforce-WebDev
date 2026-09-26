@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 # Provider configuration
 # ---------------------------------------------------------------------------
 
-LLM_CALL_TIMEOUT_S = int(os.environ.get("LLM_CALL_TIMEOUT_S") or 60)
+LLM_CALL_TIMEOUT_S = int(os.getenv("LLM_CALL_TIMEOUT_S") or 60)
 
 
 @dataclass
