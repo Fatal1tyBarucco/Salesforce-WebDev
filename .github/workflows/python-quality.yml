@@ -315,10 +315,13 @@ jobs:
       - name: 💬 Comment /oc fix (only ruff/black)
         if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure')
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.COMMENT_TOKEN || secrets.GITHUB_TOKEN }}
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
         run: |
           # Só comenta se o número do issue existe e a falha é apenas de lint/format
+          # Usa COMMENT_TOKEN (PAT de usuário real) quando disponível para que o
+          # OpenCode acione — o GITHUB_TOKEN faz o comment aparecer como bot e o
+          # opencode-agent ignora. Fallback para GITHUB_TOKEN se o secret não existir.
           # Tenta ler do env, depois do arquivo persistente, depois busca pelo título
           ISSUE_NUM="${NUMBER:-}"
           if [ -z "$ISSUE_NUM" ] && [ -f /tmp/issue_number.txt ]; then
@@ -328,7 +331,7 @@ jobs:
             ISSUE_NUM=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
           if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
-          echo "Comentando no issue #$ISSUE_NUM com /oc fix only ruff/black..."
+          echo "Comentando no issue #$ISSUE_NUM com /oc fix only ruff/black (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
           # Usa comando específico, não genérico
           gh issue comment "$ISSUE_NUM" --body "/oc fix only ruff and black formatting. Skip mypy and tests." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
