@@ -85,13 +85,7 @@ async def test_generate_ledger_deprecated_status(
 async def test_generate_ledger_removed_via_link(
     releases_dir_fake: Path,
 ) -> None:
-    """Cobre a branch REMOVED quando um link tem status REMOVED.
-
-    O linker mockado linka todos os pares (para que nenhuma feature anterior
-    seja contabilizada como removed pelo caminho "não linkada") e marca o
-    primeiro par como REMOVED — assim ``removed_count`` é exatamente 1 e a
-    contagem vem da branch sob teste.
-    """
+    """Cobre a branch REMOVED quando um link tem status REMOVED."""
 
     class RemovedLinker(FeatureLinker):
         def link(  # type: ignore[misc]
@@ -176,7 +170,7 @@ async def test_generate_ledger_born_via_link(
         linker_instance=BornLinker(),
     )
 
-    diff = await svc.generate_ledger("summer_26", "spring_26")
+    await svc.generate_ledger("summer_26", "spring_26")
     stats = svc.get_cached_stats("summer_26", "spring_26")
     assert stats is not None
     assert stats.born_count >= 1

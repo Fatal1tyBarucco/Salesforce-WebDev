@@ -376,7 +376,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "343754f2c860252d1aba10d261a22b4b1c63d1c0",
+    "mkdocs.yml": "ce890444487b730caeb9b7a602772b164bd85459",
     "pyproject.toml": "b251cc65abe2c2f80ecd006f8ecd40ea7dc11862",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -677,11 +677,11 @@
     "tests/test_issue_triage.py": "29ea4caead630dac664dce17b0caf804c65d0b95",
     "tests/test_ledger/conftest.py": "43fc94203c4dadf026495491f4396deaa086531c",
     "tests/test_ledger/test_linker.py": "594f3ee1c9330496003e4e55459bd96f3d130932",
-    "tests/test_ledger/test_linker_coverage.py": "73fd427a6f51d7303669fa01ae77821cfb1ba917",
+    "tests/test_ledger/test_linker_coverage.py": "30f579ad95a640dd29fa78b04ff9f1a58fe3c0a6",
     "tests/test_ledger/test_models_pydantic.py": "3c1a83685e7abc6c0bc3e498e0b68281057a1f57",
     "tests/test_ledger/test_prompts.py": "ff486ac8b2fd8553a96682d4876996d2455b0ba5",
     "tests/test_ledger/test_service.py": "1e94e32ef56c46fc03b2386d7d5dcf3b5dc412de",
-    "tests/test_ledger/test_service_branch_coverage.py": "0ff1d9cf4c4ec195b03dab1dc166e26be12c5d2a",
+    "tests/test_ledger/test_service_branch_coverage.py": "f15085492cf83026e4244898f34965c859bd47ff",
     "tests/test_ledger/test_service_coverage.py": "347aa6d83673c9d2ddf7a192e3939b0ea296821c",
     "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
@@ -714,6 +714,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T01:40:59.408404+00:00",
-  "repository_sha": "1e4b78ec49511998d238c62c16d5a0cb2815d592"
+  "generated_at": "2026-09-28T03:13:42.017733+00:00",
+  "repository_sha": "3a02d7cdb673d3048ebfc7b4de7be37b387b1263"
 }
