@@ -26,6 +26,7 @@ from .models import (
     LedgerDiff,
     LedgerStats,
     LifecycleStatus,
+    LinkageMethod,
 )
 
 logger = logging.getLogger(__name__)
@@ -429,27 +430,32 @@ class FeatureEvolutionLedgerService:
         norm = self._normalize_name(feature_name)
         all_metas = self._load_all_metas_sorted()
         entries: list[FeatureSnapshot] = []
+        tracked_name = norm
 
         for meta in all_metas:
             slug = meta.get("slug", "")
             if not slug:
                 continue
             features = self._extract_features(slug)
-            for f in features:
-                if f["name"] == norm:
-                    ts = meta.get("generated_at", "") or now_iso()
-                    entries.append(
-                        FeatureSnapshot(
-                            name=norm,
-                            release_slug=slug,
-                            category=f["category"],
-                            snippet=f["snippet"],
-                            feature_type=f["feature_type"],
-                            impact=f["impact"],
-                            first_seen=ts,
-                            last_seen=ts,
-                        ),
-                    )
+            matched = [f for f in features if f["name"] == tracked_name]
+            if not matched and entries:
+                # Nome sumiu desta release — tenta seguir uma renomeação.
+                matched = self._follow_rename(features, entries[-1], slug, meta)
+            for f in matched:
+                ts = meta.get("generated_at", "") or now_iso()
+                tracked_name = str(f["name"])
+                entries.append(
+                    FeatureSnapshot(
+                        name=str(f["name"]),
+                        release_slug=slug,
+                        category=f["category"],
+                        snippet=f["snippet"],
+                        feature_type=f["feature_type"],
+                        impact=f["impact"],
+                        first_seen=ts,
+                        last_seen=ts,
+                    ),
+                )
 
         total_seen = len(entries)
         current_status: LifecycleStatus = LifecycleStatus.ALIVE
@@ -491,6 +497,50 @@ class FeatureEvolutionLedgerService:
             total_releases_seen=total_seen,
             removed_in=removed_in,
         )
+
+    def _follow_rename(
+        self,
+        features: list[dict[str, Any]],
+        previous: FeatureSnapshot,
+        slug: str,
+        meta: dict[str, Any],
+    ) -> list[dict[str, Any]]:
+        """Tenta seguir uma renomeação da feature rastreada.
+
+        Quando o nome normalizado não aparece em uma release, pergunta ao
+        ``FeatureLinker`` se a feature foi renomeada. Só aceita matches
+        FUZZY (Jaccard >= 0.5 e mesma categoria), a mesma regra que
+        ``generate_ledger`` usa para classificar uma transição como
+        RENAMED — matches heurísticos de baixa confiança são ignorados.
+
+        Args:
+            features: Features extraídas da release atual.
+            previous: Último snapshot conhecido da feature rastreada.
+            slug: Slug da release atual.
+            meta: Metadados da release atual.
+
+        Returns:
+            Features da release atual que dão continuidade à feature
+            rastreada, ou lista vazia se nenhuma renomeação foi detectada.
+        """
+        ts = meta.get("generated_at", "") or now_iso()
+        current_snaps = [
+            FeatureSnapshot(
+                name=f["name"],
+                release_slug=slug,
+                category=f["category"],
+                snippet=f["snippet"],
+                feature_type=f["feature_type"],
+                impact=f["impact"],
+                first_seen=ts,
+                last_seen=ts,
+            )
+            for f in features
+        ]
+        for link in self._linker.link(current_snaps, [previous], meta, {}):
+            if link.linkage_method == LinkageMethod.FUZZY:
+                return [f for f in features if f["name"] == link.feature_a.name]
+        return []
 
     def _load_all_metas_sorted(self) -> list[dict[str, Any]]:
         """Carrega .meta.json de todos os releases ordenados por release_id.

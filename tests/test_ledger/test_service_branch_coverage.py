@@ -95,18 +95,30 @@ async def test_generate_ledger_removed_via_link(
             current_meta: dict,
             previous_meta: dict,
         ) -> list[FeatureLink]:
-            if current_snaps and previous_snaps:
-                return [
+            if not (current_snaps and previous_snaps):
+                return []
+            links = [
+                FeatureLink(
+                    feature_a=current_snaps[0],
+                    feature_b=previous_snaps[0],
+                    status=LifecycleStatus.REMOVED,
+                    linkage_method=LinkageMethod.EXACT,
+                    similarity_score=1.0,
+                    notes="Removed via test mock.",
+                ),
+            ]
+            for curr, prev in zip(current_snaps[1:], previous_snaps[1:]):
+                links.append(
                     FeatureLink(
-                        feature_a=current_snaps[0],
-                        feature_b=previous_snaps[0],
-                        status=LifecycleStatus.REMOVED,
+                        feature_a=curr,
+                        feature_b=prev,
+                        status=LifecycleStatus.ALIVE,
                         linkage_method=LinkageMethod.EXACT,
                         similarity_score=1.0,
-                        notes="Removed via test mock.",
-                    )
-                ]
-            return []
+                        notes="Alive via test mock.",
+                    ),
+                )
+            return links
 
     svc = FeatureEvolutionLedgerService(
         releases_dir=str(releases_dir_fake),
@@ -117,6 +129,7 @@ async def test_generate_ledger_removed_via_link(
     diff = await svc.generate_ledger("summer_26", "spring_26")
     stats = svc.get_cached_stats("summer_26", "spring_26")
     assert stats is not None
+    assert stats.unlinked_previous == []
     assert stats.removed_count == 1
     assert len(diff.removed) == 1
 
@@ -161,6 +174,7 @@ async def test_generate_ledger_born_via_link(
     stats = svc.get_cached_stats("summer_26", "spring_26")
     assert stats is not None
     assert stats.born_count >= 1
+    assert diff.born
 
 
 # ── Service: get_cached_ledger com ValidationError (linhas 377-384) ───────
@@ -272,8 +286,9 @@ async def test_feature_history_covers_renamed_branch(
     """Cobre a branch de RENAMED no get_feature_history (linha 473).
 
     Cria um release extra onde 'Flow Builder' aparece como 'Flow Builder New Name'
-    na categoria Plataforma. O histórico de 'Flow Builder' terá 2 entradas
-    com nomes diferentes → RENAMED.
+    na categoria Plataforma. O histórico de 'Flow Builder' segue a renomeação
+    via match FUZZY do linker e terá 3 entradas, a última com nome diferente
+    → RENAMED.
     """
     extra_dir = releases_dir_fake / "renamed_history_test"
     extra_dir.mkdir(parents=True, exist_ok=True)
@@ -305,13 +320,10 @@ async def test_feature_history_covers_renamed_branch(
     # Entradas: [spring_26/flow builder, summer_26/flow builder, renamed_history_test/flow builder new name]
     assert entry.total_releases_seen == 3
     # Os dois últimos entries têm nomes diferentes → current_status == RENAMED
-    if entry.total_releases_seen >= 2:
-        prev = entry.entries[-2]
-        curr = entry.entries[-1]
-        assert prev.name != curr.name
-        assert entry.current_status == LifecycleStatus.RENAMED
-    # Nota: se total_releases_seen != 3, fluxo de extração de features não
-    # encontrou o release extra — ignoramos o assert exato de total.
+    prev = entry.entries[-2]
+    curr = entry.entries[-1]
+    assert prev.name != curr.name
+    assert entry.current_status == LifecycleStatus.RENAMED
 
 
 # ── Service: get_feature_history com categoria diferente (linha 475) ──────
