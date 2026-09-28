@@ -337,7 +337,7 @@
     "docs/architecture/decisions/adr-003-topic-classification.md": "0b5af8d9e4f2e944218dd594939474733c568d3e",
     "docs/architecture/decisions/adr-004-auto-healing.md": "04b40d512bc7a5eed78848ade93527e11bfbec9a",
     "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "b2e4f8d2027f9ae1b4a48eeed2aa1498b54d52cb",
-    "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "24cc3ab80d2e51c676bf06c14764c5b9b0a73f3a",
+    "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "f19c0b74c4db19849ea593153751df05a27c9a5f",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -639,7 +639,7 @@
     "stubs/tenacity/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__snapshots__/test_snapshot.ambr": "5cbfeb7b448f5fe7ab139fb6b3bf4e5fc2411d8b",
-    "tests/conftest.py": "91fea67cba7db7080cd2685878ec496ae9062c16",
+    "tests/conftest.py": "da39f92632e0f730a89d8a153483819b646dfcbc",
     "tests/factories.py": "429ca6f2e980e30aa4ab6321ac86d7bc4de2f0aa",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
@@ -715,6 +715,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T03:44:27.416176+00:00",
-  "repository_sha": "07ec5eba2c20891795dccef5162b66f5b69c6a45"
+  "generated_at": "2026-09-28T12:24:40.674982+00:00",
+  "repository_sha": "b53dbbea0799ce9d42d9f30b77837ef4b2e5f293"
 }

@@ -75,7 +75,7 @@ tests/test_ledger/
 ├── test_service_branch_coverage.py  # 6 testes: DEPRECATED, REMOVED, BORN via mock linker, cache/stats validation error, short names
 ├── test_models_pydantic.py      # 11 testes: validação Pydantic, enums, constraints
 └── test_prompts.py              # 3 testes: prompt builder (campos, truncamento)
-```
+```bash
 
 > **Cobertura**: pytest com `--cov=src.automation.ledger` + `--cov-fail-under=95`
 
