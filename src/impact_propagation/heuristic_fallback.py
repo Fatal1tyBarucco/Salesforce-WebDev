@@ -102,7 +102,7 @@ class DependencyHeuristicFallback:
             if in_table and stripped.startswith("|"):
                 cells = [c.strip() for c in stripped.split("|")]
                 if len(cells) >= 2:
-                    name = cells[0].strip()
+                    name = next((c for c in cells if c), "")
                     name = name.replace("**", "").replace("*", "").strip()
                     if name and name not in {"Feature", "Recurso"}:
                         features.append(name)
