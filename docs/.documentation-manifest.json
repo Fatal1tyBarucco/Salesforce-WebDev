@@ -76,18 +76,6 @@
     "src/automation/impact.py": [
       "docs/api/automation-impact.md"
     ],
-    "src/automation/ledger/linker.py": [
-      "docs/api/automation-ledger-linker.md"
-    ],
-    "src/automation/ledger/models.py": [
-      "docs/api/automation-ledger-models.md"
-    ],
-    "src/automation/ledger/prompts.py": [
-      "docs/api/automation-ledger-prompts.md"
-    ],
-    "src/automation/ledger/service.py": [
-      "docs/api/automation-ledger-service.md"
-    ],
     "src/automation/models.py": [
       "docs/api/automation-models.md"
     ],
@@ -290,10 +278,6 @@
     "docs/api/automation-export.md": "aa870a56947bd5fe35007612b4d623edc48a2df0",
     "docs/api/automation-github_ops.md": "cba8bfd6adf3ea4364881d4af3b6eba3c7d2eae1",
     "docs/api/automation-impact.md": "1bd92ad8c34833f996bc94275726da91c9cf0884",
-    "docs/api/automation-ledger-linker.md": "a7053b7ee30db0462e67ffc46af9fa5c747e9e83",
-    "docs/api/automation-ledger-models.md": "80fe5638487e43a7f070fe90e5c9506ad6c9e3c5",
-    "docs/api/automation-ledger-prompts.md": "852e787e7c293a95b9e63ae7555f365893b7b09d",
-    "docs/api/automation-ledger-service.md": "1fa610682eb45b3bac6e3fcd549ae7fba5c0a5bf",
     "docs/api/automation-models.md": "440412f63c5cd725d629577ae4006a6593b4a89e",
     "docs/api/automation-notifications.md": "cdcafd817b0915d0ecf86d13120b45edce4b2f3b",
     "docs/api/automation-reporting.md": "277c730ec06d479265c34dcafb289b1ddb73e7fe",
@@ -312,7 +296,7 @@
     "docs/api/heuristic_classifier.md": "c3705f92dae7e1271201529a5cf14565c8c315f5",
     "docs/api/i18n.md": "efe82d1cc4f0579e55bc63fbe665bd0871e18b07",
     "docs/api/impact_analyzer.md": "5dd325b4f5583b76bb0227e69455182db1e84a01",
-    "docs/api/index.md": "e62d2f927df9ec09174cc1d10db829af9872940d",
+    "docs/api/index.md": "313d47d895950a8cf2979e0c345e2a1fc509d0a5",
     "docs/api/issue_triage.md": "49cb16da7575d4cdf083bcaf0081ed4938c91508",
     "docs/api/limiters-rate_limiter.md": "48c91b54624f14e792d4ad2e6e4c805740d18875",
     "docs/api/llm_service.md": "288965a8f6f021c5626160bef328de04ba244cbb",
@@ -350,7 +334,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "5050f4dccffc24ab3a362cfd2e2ff855dc9f9768",
-    "docs/index.md": "0d8cb8acc50fe4374074f68d340feb4b32b0a12e",
+    "docs/index.md": "2b2e37e0a868a0cb112c781817bb9ce369c41790",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -376,7 +360,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "ce890444487b730caeb9b7a602772b164bd85459",
+    "mkdocs.yml": "343754f2c860252d1aba10d261a22b4b1c63d1c0",
     "pyproject.toml": "b251cc65abe2c2f80ecd006f8ecd40ea7dc11862",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -580,7 +564,7 @@
     "src/automation/ledger/linker.py": "08fe3e6fd657a6f955a5647716d82457e0c9d470",
     "src/automation/ledger/models.py": "e5e442dda6ce90c48124d88afd13585fa809dc59",
     "src/automation/ledger/prompts.py": "2d10e88898a25aea09f77f1bb22ba0450e2593f8",
-    "src/automation/ledger/service.py": "5a5163a44f2d81a791fb65ccde5aa2e8ad2094da",
+    "src/automation/ledger/service.py": "59f03f5d00a0fe997a04bbb416c227a76fc8c71d",
     "src/automation/models.py": "6f7174ba6a7eff8d0b8e29d595382150751ed9e0",
     "src/automation/notifications.py": "6ff1503c666cb3bfefa4465140ce5ff6b1113573",
     "src/automation/reporting.py": "7bc22a33f9057537e03e6bc0bb58c130545c7701",
@@ -677,11 +661,11 @@
     "tests/test_issue_triage.py": "29ea4caead630dac664dce17b0caf804c65d0b95",
     "tests/test_ledger/conftest.py": "43fc94203c4dadf026495491f4396deaa086531c",
     "tests/test_ledger/test_linker.py": "594f3ee1c9330496003e4e55459bd96f3d130932",
-    "tests/test_ledger/test_linker_coverage.py": "30f579ad95a640dd29fa78b04ff9f1a58fe3c0a6",
+    "tests/test_ledger/test_linker_coverage.py": "73fd427a6f51d7303669fa01ae77821cfb1ba917",
     "tests/test_ledger/test_models_pydantic.py": "3c1a83685e7abc6c0bc3e498e0b68281057a1f57",
     "tests/test_ledger/test_prompts.py": "ff486ac8b2fd8553a96682d4876996d2455b0ba5",
     "tests/test_ledger/test_service.py": "1e94e32ef56c46fc03b2386d7d5dcf3b5dc412de",
-    "tests/test_ledger/test_service_branch_coverage.py": "2825e0fa962b9f4437046bc7dead855462f9bc47",
+    "tests/test_ledger/test_service_branch_coverage.py": "0ff1d9cf4c4ec195b03dab1dc166e26be12c5d2a",
     "tests/test_ledger/test_service_coverage.py": "347aa6d83673c9d2ddf7a192e3939b0ea296821c",
     "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
@@ -714,11 +698,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-<<<<<<< Updated upstream
-  "generated_at": "2026-09-28T03:23:18.480563+00:00",
-  "repository_sha": "e7f8770f40f2c8be5159491466c480fc7577c391"
-=======
-  "generated_at": "2026-09-28T03:23:58.485381+00:00",
-  "repository_sha": "5bb4700b934ba8b9b85ad8117453b3382198f144"
->>>>>>> Stashed changes
+  "generated_at": "2026-09-28T03:34:32.057252+00:00",
+  "repository_sha": "1e4b78ec49511998d238c62c16d5a0cb2815d592"
 }

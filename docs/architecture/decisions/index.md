@@ -8,3 +8,4 @@ Decisões de design documentadas do projeto Salesforce Release Intelligence.
 - **[ADR-002 GitHub Actions](adr-002-github-actions.md)** — Pipeline de CI/CD e automação via GitHub Actions
 - **[ADR-003 Topic Classification](adr-003-topic-classification.md)** — Classificação de tópicos via LLM
 - **[ADR-005 Documentation Reconciliation](adr-005-documentation-reconciliation.md)** — Reconciliação contínua da documentação
+- **[ADR-006 Feature Evolution Ledger](adr-006-feature-evolution-ledger.md)** — Rastreamento cross-release de features individuais

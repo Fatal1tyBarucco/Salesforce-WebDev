@@ -26,37 +26,72 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 ## O Que Este Repositório Faz
 
+O Salesforce-WebDev é um pipeline inteligente automatizado (Knowledge-as-Code) que extrai, enriquece via LLM e versiona as Release Notes da Salesforce em Markdown (pt_BR e en_US).
+
 ```mermaid
-graph LR
-    subgraph "Entrada"
-        SF["Salesforce Help<br/>(SPA JavaScript)"]
-        TRAIL["Trailhead<br/>(Módulos)"]
-    end
+graph TB
+    SF["Salesforce Help<br/>(SPA JavaScript)"] --> S
+    S[🎭 Scraper<br/>Playwright + Circuit Breaker] --> P
+    P[📋 Parser<br/>HTML/Markdown] --> L
+    L[🧠 LLM<br/>OpenAI/Gemini/OpenCode] --> G
+    G[📦 Generator<br/>Markdown pt_BR/en_US] --> REL[📄 releases/<br/>Markdown versionado]
+    G --> API[🌐 REST/GraphQL<br/>API standalone]
+    G --> NOTIF[📧 Notificações<br/>Email/Slack/Discord]
+    G --> GH[🐙 GitHub Issues<br/>+ PRs]
+    G --> DASH[📊 Dashboard<br/>HTML interativo]
+    G --> LEDGER[📊 SFEL<br/>Rastreamento cross-release<br/>de features individuais]
 
-    subgraph "Pipeline"
-        SCRAPE["Scraper<br/>Playwright"]
-        PARSE["Parser<br/>HTML/Markdown"]
-        CLASS["Classifier<br/>LLM"]
-        GEN["Generator<br/>Markdown"]
-    end
+    style S fill:#E3F2FD,stroke:#2196F3
+    style L fill:#FCE4EC,stroke:#E91E63
+    style G fill:#F3E5F5,stroke:#9C27B0
+    style LEDGER fill:#E8F5E9,stroke:#4CAF50
+```
 
-    subgraph "Saída"
-        REL["releases/<br/>(Markdown)"]
-        API["REST/GraphQL<br/>API"]
-        NOTIFY["Notificações<br/>Email/Slack/Discord"]
-        GH["GitHub Issues<br/>+ PRs"]
-    end
+O pipeline inclui uma camada de automação AI com 12 módulos, sendo um dos eles o **Salesforce Feature Evolution Ledger (SFEL)** — submódulo `src/automation/ledger/` que rastreia features individuais entre releases consecutivas e mantém histórico consultável.
 
-    SF --> SCRAPE
-    SCRAPE --> PARSE
-    PARSE --> CLASS
-    CLASS --> GEN
-    GEN --> REL
-    GEN --> API
-    GEN --> NOTIFY
-    GEN --> GH
-    TRAIL --> GEN
-```markdown
+### Camadas do Pipeline
+
+| Camada | Módulos | Responsabilidade |
+|--------|---------|------------------|
+| **Orquestração** | `main.py`, `orchestrator.py` | Pipeline principal, DI, detecção de novas releases |
+| **Scraping** | `scraper.py` | Playwright headless, circuit breaker, rate limiter |
+| **Parsing** | `parser.py` | Árvore de navegação, tabelas de feature impact |
+| **LLM** | `llm_service.py` | Multi-provider (OpenAI/Gemini/OpenCode), retry, fallback, rate limiting |
+| **Enriquecimento AI** | `feature_enricher.py`, `release_summarizer.py` | Descrições por feature, resumos executivos, impacto por categoria |
+| **Automação AI** | `automation/` (12 módulos) | Relatórios AI, triage, impacto, deduplicação, exportação, SFEL |
+| **Integração** | `salesforce.py`, `workflow.py` | Trailhead, GitHub CLI, PRs |
+| **Saída** | `generator.py`, `release_docs.py`, `notifications.py`, `dashboard.py` | Markdown enriquecido, Email, Slack, Discord, Dashboard |
+| **API** | `api.py` | REST + GraphQL + Autenticação + OpenAPI |
+| **Infra** | `cache_manager.py`, `circuit_breaker.py`, `events.py`, `health.py` | Cache, resiliência, event bus, Prometheus metrics |
+
+### Automação AI — 12 Módulos
+
+| Módulo | Função |
+|--------|--------|
+| `automation/service.py` | `AIAutomationService` — Facade para todas as operações AI |
+| `automation/reporting.py` | Changelog, regression, diff, quality reports |
+| `automation/comparison.py` | Comparação entre releases, detecção de regressões |
+| `automation/impact.py` | Análise de impacto por categoria, predição |
+| `automation/content.py` | Deduplicação por content-hash |
+| `automation/export.py` | Exportação JSON/CSV |
+| `automation/github_ops.py` | Criação de GitHub Issues |
+| `automation/notifications.py` | Notificações filtradas por perfil |
+| `automation/models.py` | Dataclasses (11 modelos) |
+| `automation/badge.py` | Badges dinâmicos |
+| `automation/ledger/` | **SFEL** — Rastreamento cross-release de features individuais com 5 níveis de matching (EXACT, CATEGORY_CHANGE, FUZZY, HEURISTIC, LLM), geração de `LedgerDiff`/`LedgerStats`, histórico consultável por feature nome, cache TTL + content-hash, eventos no EventBus. Ver [ADR-006](architecture/decisions/adr-006-feature-evolution-ledger.md) |
+
+### Salesforce Feature Evolution Ledger (SFEL)
+
+Rastreia features individuais entre releases consecutivas e mantém histórico consultável. O `FeatureLinker` compara features usando 5 níveis de matching em ordem de confiança (first-match-wins):
+
+1. **EXACT** — nome normalizado idêntico + mesma categoria → `ALIVE` ou `CATEGORY_CHANGED`
+2. **FUZZY** — Jaccard dos tokens do nome ≥ 0.5 + mesma categoria → `RENAMED` ou `ALIVE`
+3. **HEURISTIC** — mesma categoria + melhor par mútuo com Jaccard ≥ 0.2 → `RENAMED`
+4. **LLM** — similaridade 0.2–0.5, desambiguação opcional via LLM → `RENAMED` ou `ALIVE`
+
+`FeatureEvolutionLedgerService` gera `LedgerDiff` + `LedgerStats` entre dois releases, cacheia com TTL 1h via `CacheManager` (namespace `sfel`), emite evento `ledger.generated` no EventBus e permite consulta de histórico completo de qualquer feature.
+
+Status de lifecycle: `BORN`, `ALIVE`, `RENAMED`, `CATEGORY_CHANGED`, `DEPRECATED`, `REMOVED`.
 
 ## Arquitetura em Camadas
 
@@ -333,22 +368,29 @@ Salesforce-WebDev/
   ├── translator.py
   └── workflow.py
   ├── .github/                   # Workflows e scripts do GitHub
+  ├── cache/
   ├── docs/                      # Documentação MkDocs
   ├── k8s/                       # Manifestos Kubernetes
   ├── releases/                  # Artefatos Markdown por release
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
+  ├── .coverage
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── DIFF_REPORT.md
   ├── Dockerfile                 # Imagem Docker de runtime
+  ├── IMPACT_REPORT.md
+  ├── NOTIFICATION_DIGEST.md
+  ├── QUALITY_REPORT.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
+  ├── REGRESSION_REPORT.md
   ├── SECURITY.md                # Política de segurança
+  ├── coverage.xml
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código

@@ -967,6 +967,73 @@ Quando nenhum LLM está disponível, o sistema usa classificação por keywords 
 
 ---
 
+## 📊 Salesforce Feature Evolution Ledger (SFEL)
+
+Submódulo `src/automation/ledger/` que rastreia features individuais entre releases consecutivas e mantém histórico consultável de cada feature.
+
+### Problema que resolve
+
+O pipeline processa cada release isoladamente. Sem uma camada de rastreamento cross-release, não é possível saber se uma feature presente no summer_26 é a mesma que estava no spring_26, se mudou de nome, se mudou de categoria, ou se foi removida.
+
+Módulos relacionados (não substituidos):
+- `automation/comparison.py` — compara releases a nível de **categoria**, não de feature individual
+- `automation/impact.py` — analisa impacto de uma release isolada
+- `nl_search.py` — busca estática em um release
+
+### Como funciona
+
+O `FeatureLinker` compara features de duas releases consecutivas usando 5 níveis de matching em ordem de confiança (first-match-wins):
+
+1. **EXACT** — nome normalizado idêntico + mesma categoria → `ALIVE` ou `CATEGORY_CHANGED`
+2. **FUZZY** — Jaccard dos tokens do nome ≥ 0.5 + mesma categoria → `RENAMED` ou `ALIVE`
+3. **HEURISTIC** — mesma categoria + melhor par mútuo com Jaccard ≥ 0.2 → `RENAMED`
+4. **LLM** — similaridade 0.2–0.5, desambiguação opcional via LLM → `RENAMED` ou `ALIVE`
+
+O `FeatureEvolutionLedgerService` orquestra:
+- Extração de features de .md files (nome normalizado, categoria, snippet)
+- Geração de `LedgerDiff` (features born/alive/renamed/category_changed/deprecated/removed entre dois releases) + `LedgerStats` (contagens agregadas)
+- Cache com TTL 1h usando o `CacheManager` existente (namespace `sfel`)
+- Consulta de histórico de uma feature (`get_feature_history("Flow Builder")` → timeline completa)
+- Emissão de evento `ledger.generated` no EventBus
+
+### Status das lifecycle
+
+| Status | Significado |
+|:--------|:------------|
+| `BORN` | Presente apenas na release atual |
+| `ALIVE` | Presente em ambas as releases, inalterada |
+| `RENAMED` | Mesma feature, nome diferente (detected por fuzzy/heuristic/llm) |
+| `CATEGORY_CHANGED` | Mesmo nome, categoria diferente |
+| `DEPRECATED` | Marcada como depreciada na release atual |
+| `REMOVED` | Presente apenas na release anterior |
+
+### Exemplo de uso
+
+```python
+from src.automation.ledger.service import FeatureEvolutionLedgerService
+
+svc = FeatureEvolutionLedgerService()
+# Diff entre duas releases consecutivas
+diff = await svc.generate_ledger("summer_26", "spring_26")
+print(f"{diff.born_count} features novas, {diff.removed_count} removidas")
+
+# Histórico completo de uma feature
+history = await svc.get_feature_history("Flow Builder")
+print(f"Viu {history.total_releases_seen} releases, status atual: {history.current_status}")
+```
+
+### Testes
+
+```
+tests/test_ledger/  — 70+ testes (linker, service, modelos, prompts, branches/erro handling)
+```
+
+Cobertura com `pytest --cov=src.automation.ledger --cov-fail-under=95`.
+
+> **Nota:** o módulo é autonomous — não é chamado pelo pipeline principal. Integração via `orchestrator.py` é trabalho futuro (ver ADR-006).
+
+---
+
 ## 🌐 API
 
 O projeto expõe uma API REST + GraphQL standalone (zero dependências externas):
@@ -1068,7 +1135,13 @@ Salesforce-WebDev/
 │       ├── github_ops.py            #    GitHub Issues
 │       ├── notifications.py         #    Notificações filtradas
 │       ├── models.py                #    Dataclasses
-│       └── badge.py                 #    Badges dinâmicos
+│       ├── badge.py                 #    Badges dinâmicos
+│       └── ledger/                  #    📊 Salesforce Feature Evolution Ledger (SFEL)
+│           ├── __init__.py           #    Pacote de rastreamento cross-release
+│           ├── models.py             #    Pydantic v2: FeatureSnapshot, FeatureLink, LedgerDiff, LedgerStats, LifecycleStatus, LinkageMethod
+│           ├── linker.py            #    FeatureLinker: 5 níveis de matching (EXACT, CATEGORY_CHANGE, FUZZY, HEURISTIC, LLM)
+│           ├── prompts.py           #    Prompt builder para desambiguação LLM
+│           └── service.py           #    FeatureEvolutionLedgerService: geração de ledger, cache, histórico por feature
 │
 ├── 📂 releases/                     # 📄 Artefatos Markdown versionados
 │   ├── summer_26/                   #    v2.1.0
