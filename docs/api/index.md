@@ -56,6 +56,10 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.heuristic_classifier` | [`heuristic_classifier.md`](heuristic_classifier.md) |
 | `src.i18n` | [`i18n.md`](i18n.md) |
 | `src.impact_analyzer` | [`impact_analyzer.md`](impact_analyzer.md) |
+| `src.impact_propagation.engine` | [`impact_propagation-engine.md`](impact_propagation-engine.md) |
+| `src.impact_propagation.graph_builder` | [`impact_propagation-graph_builder.md`](impact_propagation-graph_builder.md) |
+| `src.impact_propagation.heuristic_fallback` | [`impact_propagation-heuristic_fallback.md`](impact_propagation-heuristic_fallback.md) |
+| `src.impact_propagation.models` | [`impact_propagation-models.md`](impact_propagation-models.md) |
 | `src.issue_triage` | [`issue_triage.md`](issue_triage.md) |
 | `src.limiters.rate_limiter` | [`limiters-rate_limiter.md`](limiters-rate_limiter.md) |
 | `src.llm_service` | [`llm_service.md`](llm_service.md) |

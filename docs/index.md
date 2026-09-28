@@ -331,6 +331,11 @@ Salesforce-WebDev/
       ├── notifications.py
       ├── reporting.py
       └── service.py
+  ├── impact_propagation/
+      ├── engine.py
+      ├── graph_builder.py
+      ├── heuristic_fallback.py
+      └── models.py
   ├── limiters/
       └── rate_limiter.py
   ├── ai_automation.py
@@ -377,6 +382,7 @@ Salesforce-WebDev/
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
   ├── Dockerfile                 # Imagem Docker de runtime
+  ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança

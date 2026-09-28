@@ -97,6 +97,10 @@ nav:
       - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
   - API Reference:
+    - Impact Propagation Engine: api/impact_propagation-engine.md
+    - Impact Propagation Graph Builder: api/impact_propagation-graph_builder.md
+    - Impact Propagation Heuristic Fallback: api/impact_propagation-heuristic_fallback.md
+    - Impact Propagation Models: api/impact_propagation-models.md
     - Automation Ledger Linker: api/automation-ledger-linker.md
     - Automation Ledger Models: api/automation-ledger-models.md
     - Automation Ledger Prompts: api/automation-ledger-prompts.md
