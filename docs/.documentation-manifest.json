@@ -276,7 +276,7 @@
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "53704fd2e5f448db01152b6b07a8a62a8ee48c57",
+    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
     "README.md": "0a179b02c679110f6cc5c3e5fef5850f098d7e84",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -394,7 +394,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "ce890444487b730caeb9b7a602772b164bd85459",
+    "mkdocs.yml": "3c06c96644fa17b1da37e1c57c99dd4d21b73845",
     "pyproject.toml": "b251cc65abe2c2f80ecd006f8ecd40ea7dc11862",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -621,7 +621,7 @@
     "src/impact_propagation/__init__.py": "53321933bffef54c8cf0c15d56566bc7ebb8ccf6",
     "src/impact_propagation/engine.py": "10e57b552aeaca9002b86a4214bb2409e0e8f850",
     "src/impact_propagation/graph_builder.py": "40e526a25c03c4ed4c368db24fb26f29ef06b751",
-    "src/impact_propagation/heuristic_fallback.py": "b0fca692dba5c7fa71786924eee79a3f80f187fb",
+    "src/impact_propagation/heuristic_fallback.py": "c9ad4ce220621dfc9a0fe4624ceba8919a5f29cd",
     "src/impact_propagation/models.py": "c190c87296896374eb76f8342998dc179eb331f4",
     "src/issue_triage.py": "fe795df178a21e77cf06c541a728d5277257b4b5",
     "src/limiters/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
@@ -697,7 +697,7 @@
     "tests/test_heuristic_classifier.py": "feeb433bb64cac1627e26663b97da2c5aabea71c",
     "tests/test_i18n.py": "2aa2eef9ed2a784ac8776c8412dafe561fc9ad04",
     "tests/test_impact_analyzer.py": "602c0fd10047259300e4908b995cd87731baa731",
-    "tests/test_impact_propagation.py": "381c0dcf7711e8c887635fc2f88afbfe1df15ac6",
+    "tests/test_impact_propagation.py": "94d810ab8fb3585fbfa3f3c02f7e5d751b43a4cb",
     "tests/test_issue_triage.py": "29ea4caead630dac664dce17b0caf804c65d0b95",
     "tests/test_ledger/conftest.py": "43fc94203c4dadf026495491f4396deaa086531c",
     "tests/test_ledger/test_linker.py": "594f3ee1c9330496003e4e55459bd96f3d130932",
@@ -738,6 +738,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T20:17:51.169449+00:00",
-  "repository_sha": "5031d00373294ab2b4898eaa0b392b09f9ef37f8"
+  "generated_at": "2026-09-28T20:50:46.502273+00:00",
+  "repository_sha": "753b1ed8fab3a626f609d52d289ac334b038e8aa"
 }
