@@ -97,6 +97,10 @@ nav:
       - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
   - API Reference:
+    - Automation Ledger Linker: api/automation-ledger-linker.md
+    - Automation Ledger Models: api/automation-ledger-models.md
+    - Automation Ledger Prompts: api/automation-ledger-prompts.md
+    - Automation Ledger Service: api/automation-ledger-service.md
     - Ai Generators Badges: api/ai-generators-badges.md
     - Ai Generators Code: api/ai-generators-code.md
     - Ai Generators Markdown: api/ai-generators-markdown.md

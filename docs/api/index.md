@@ -34,6 +34,10 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.automation.export` | [`automation-export.md`](automation-export.md) |
 | `src.automation.github_ops` | [`automation-github_ops.md`](automation-github_ops.md) |
 | `src.automation.impact` | [`automation-impact.md`](automation-impact.md) |
+| `src.automation.ledger.linker` | [`automation-ledger-linker.md`](automation-ledger-linker.md) |
+| `src.automation.ledger.models` | [`automation-ledger-models.md`](automation-ledger-models.md) |
+| `src.automation.ledger.prompts` | [`automation-ledger-prompts.md`](automation-ledger-prompts.md) |
+| `src.automation.ledger.service` | [`automation-ledger-service.md`](automation-ledger-service.md) |
 | `src.automation.models` | [`automation-models.md`](automation-models.md) |
 | `src.automation.notifications` | [`automation-notifications.md`](automation-notifications.md) |
 | `src.automation.reporting` | [`automation-reporting.md`](automation-reporting.md) |
