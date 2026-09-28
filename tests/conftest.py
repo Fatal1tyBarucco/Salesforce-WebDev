@@ -1,8 +1,18 @@
+import os
 import sys
 import types
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
+# LLM provider keys exported by the host shell (opencode runs, release pipeline
+# steps, local dev) must never leak into the test session: LLMService
+# auto-detects a provider from these vars, which defeats mock mode and fails
+# every test that asserts on mock responses. Collection-time decisions such as
+# the skipif in test_ai_integration.py also read os.environ before any fixture
+# runs, so the cleanup has to happen at import time.
+for _key in ("OPENROUTER_API_KEY", "OPENCODE_API_KEY", "GOOGLE_API_KEY"):
+    os.environ.pop(_key, None)
 
 # Stub google.genai before any test imports (prevents import hangs)
 if "google" not in sys.modules:
