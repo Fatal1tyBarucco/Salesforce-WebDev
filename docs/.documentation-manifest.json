@@ -714,6 +714,11 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
+<<<<<<< Updated upstream
   "generated_at": "2026-09-28T03:23:18.480563+00:00",
   "repository_sha": "e7f8770f40f2c8be5159491466c480fc7577c391"
+=======
+  "generated_at": "2026-09-28T03:23:58.485381+00:00",
+  "repository_sha": "5bb4700b934ba8b9b85ad8117453b3382198f144"
+>>>>>>> Stashed changes
 }
