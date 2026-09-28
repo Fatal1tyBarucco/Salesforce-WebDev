@@ -18,6 +18,7 @@ Módulos existentes que operam em nível de release ou de categoria:
 - `automation/reporting.py` — gera diff entre releases via LLM, mas o diff é a nível de release (resumo executivo, changelog), não a nível de feature.
 
 **Problema:** sem um módulo dedicado, é impossível responder perguntas como:
+
 - "A feature `Flow Builder` mudou de nome entre spring_26 e summer_26?"
 - "Quais features foram removidas na release mais recente?"
 - "Qual é o histórico completo de `Campanhas de Marketing` através de todas as releases?"
@@ -64,7 +65,7 @@ Criar um subpacote `src/automation/ledger/` com dois componentes principais:
 
 ## Testes
 
-```
+```text
 tests/test_ledger/
 ├── conftest.py                  # Fixtures: releases_dir_fake (3 releases), cache_dir, mock_llm_service
 ├── test_linker.py               # 17 testes: _jaccard, _tokenize_name, EXACT, CATEGORY_CHANGE, FUZZY, HEURISTIC
