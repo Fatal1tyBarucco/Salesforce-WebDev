@@ -580,7 +580,7 @@
     "src/automation/ledger/linker.py": "08fe3e6fd657a6f955a5647716d82457e0c9d470",
     "src/automation/ledger/models.py": "e5e442dda6ce90c48124d88afd13585fa809dc59",
     "src/automation/ledger/prompts.py": "2d10e88898a25aea09f77f1bb22ba0450e2593f8",
-    "src/automation/ledger/service.py": "59f03f5d00a0fe997a04bbb416c227a76fc8c71d",
+    "src/automation/ledger/service.py": "5a5163a44f2d81a791fb65ccde5aa2e8ad2094da",
     "src/automation/models.py": "6f7174ba6a7eff8d0b8e29d595382150751ed9e0",
     "src/automation/notifications.py": "6ff1503c666cb3bfefa4465140ce5ff6b1113573",
     "src/automation/reporting.py": "7bc22a33f9057537e03e6bc0bb58c130545c7701",
@@ -681,7 +681,7 @@
     "tests/test_ledger/test_models_pydantic.py": "3c1a83685e7abc6c0bc3e498e0b68281057a1f57",
     "tests/test_ledger/test_prompts.py": "ff486ac8b2fd8553a96682d4876996d2455b0ba5",
     "tests/test_ledger/test_service.py": "1e94e32ef56c46fc03b2386d7d5dcf3b5dc412de",
-    "tests/test_ledger/test_service_branch_coverage.py": "f15085492cf83026e4244898f34965c859bd47ff",
+    "tests/test_ledger/test_service_branch_coverage.py": "52f1172d96945031e490455d325b21c467a1bf38",
     "tests/test_ledger/test_service_coverage.py": "347aa6d83673c9d2ddf7a192e3939b0ea296821c",
     "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
@@ -714,6 +714,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T03:13:42.017733+00:00",
-  "repository_sha": "3a02d7cdb673d3048ebfc7b4de7be37b387b1263"
+  "generated_at": "2026-09-28T03:16:31.490511+00:00",
+  "repository_sha": "070a76403da7c8f6bcaaa20c77d2fd65293eb207"
 }
