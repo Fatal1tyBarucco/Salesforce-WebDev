@@ -170,7 +170,7 @@ async def test_generate_ledger_born_via_link(
         linker_instance=BornLinker(),
     )
 
-    await svc.generate_ledger("summer_26", "spring_26")
+    diff = await svc.generate_ledger("summer_26", "spring_26")
     stats = svc.get_cached_stats("summer_26", "spring_26")
     assert stats is not None
     assert stats.born_count >= 1
