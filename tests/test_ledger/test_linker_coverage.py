@@ -25,6 +25,7 @@ def _snap(name: str, category: str, release_slug: str = "test") -> FeatureSnapsh
 
 # ── Linker: passo 1 (EXACT) com categoria igual ─────────────────────────
 
+
 def test_exact_match_covered_by_linker_single_pair() -> None:
     """Cobre a branch de EXACT link com categoria igual."""
     linker = FeatureLinker()
@@ -40,6 +41,7 @@ def test_exact_match_covered_by_linker_single_pair() -> None:
 
 
 # ── Linker: passo 1 já marca used_current → segunda iteração pula ───────
+
 
 def test_exact_match_second_iteration_skipped_via_used_current() -> None:
     """Cobre a linha 96 (continue por used_current) do passo EXACT."""
@@ -60,6 +62,7 @@ def test_exact_match_second_iteration_skipped_via_used_current() -> None:
 
 # ── Linker: passo 2 (CATEGORY_CHANGED) ────────────────────────────────────
 
+
 def test_category_changed_link_created() -> None:
     """Cobre a branch CATEGORY_CHANGED do passo 2."""
     linker = FeatureLinker()
@@ -74,6 +77,7 @@ def test_category_changed_link_created() -> None:
 
 
 # ── Linker: continuar no passo 3 (FUZZY) quando used_previous ─────────────
+
 
 def test_fuzzy_step_continue_via_used_previous() -> None:
     """Cobre o continue de used_previous no passo FUZZY.
@@ -105,6 +109,7 @@ def test_fuzzy_step_continue_via_used_previous() -> None:
 
 # ── Linker: links.append no passo FUZZY (linha 148->144) ─────────────────
 
+
 def test_fuzzy_link_appended() -> None:
     """Cobre a branch de append no passo FUZZY (linha 148->144 do linker)."""
     linker = FeatureLinker()
@@ -121,6 +126,7 @@ def test_fuzzy_link_appended() -> None:
 
 
 # ── Linker: passo 4 (HEURISTIC) — append (linha 148 do passo 4) ──────────
+
 
 def test_heuristic_step_appended() -> None:
     """Cobre a branch de append no passo HEURISTIC."""
@@ -139,6 +145,7 @@ def test_heuristic_step_appended() -> None:
 
 # ── Linker: condição de Jaccard >= threshold não atendida no passo FUZZY ──
 
+
 def test_fuzzy_step_no_match_below_threshold() -> None:
     """Cobre o caso onde FUZZY não encontra match (nenhum link append)."""
     linker = FeatureLinker()
@@ -152,6 +159,7 @@ def test_fuzzy_step_no_match_below_threshold() -> None:
 
 
 # ── Linker: condição best_pi is not None no passo HEURISTIC ───────────────
+
 
 def test_heuristic_step_no_match_below_llm_threshold() -> None:
     """Cobre o caso onde HEURISTIC não encontra par (best_pi is None)."""

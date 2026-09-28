@@ -32,6 +32,7 @@ def _snap(name: str, category: str, release_slug: str = "test") -> FeatureSnapsh
 
 # ── Service: DEPRECATED status (linha 246-247) ───────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_generate_ledger_deprecated_status(
     releases_dir_fake: Path,
@@ -42,6 +43,7 @@ async def test_generate_ledger_deprecated_status(
     status == LifecycleStatus.DEPRECATED. Como o linker atual não produz
     esse status, mockamos o linker para emitir um link DEPRECATED.
     """
+
     class DeprecatedLinker(FeatureLinker):
         def link(  # type: ignore[misc]
             self,
@@ -78,11 +80,13 @@ async def test_generate_ledger_deprecated_status(
 
 # ── Service: REMOVED status via link (linha 248-249) ──────────────────────
 
+
 @pytest.mark.asyncio
 async def test_generate_ledger_removed_via_link(
     releases_dir_fake: Path,
 ) -> None:
     """Cobre a branch REMOVED quando um link tem status REMOVED."""
+
     class RemovedLinker(FeatureLinker):
         def link(  # type: ignore[misc]
             self,
@@ -119,11 +123,13 @@ async def test_generate_ledger_removed_via_link(
 
 # ── Service: BORN status via link (linha 239 do service) ───────────────────
 
+
 @pytest.mark.asyncio
 async def test_generate_ledger_born_via_link(
     releases_dir_fake: Path,
 ) -> None:
     """Cobre a branch BORN quando um FeatureLink tem status BORN."""
+
     class BornLinker(FeatureLinker):
         def link(  # type: ignore[misc]
             self,
@@ -151,13 +157,14 @@ async def test_generate_ledger_born_via_link(
         linker_instance=BornLinker(),
     )
 
-    diff = await svc.generate_ledger("summer_26", "spring_26")
+    await svc.generate_ledger("summer_26", "spring_26")
     stats = svc.get_cached_stats("summer_26", "spring_26")
     assert stats is not None
     assert stats.born_count >= 1
 
 
 # ── Service: get_cached_ledger com ValidationError (linhas 377-384) ───────
+
 
 def test_get_cached_ledger_validation_error_branch(
     releases_dir_fake: Path,
@@ -191,6 +198,7 @@ def test_get_cached_ledger_validation_error_branch(
 
 # ── Service: get_cached_stats com ValidationError (linhas 406-413) ────────
 
+
 def test_get_cached_stats_validation_error_branch(
     releases_dir_fake: Path,
 ) -> None:
@@ -219,6 +227,7 @@ def test_get_cached_stats_validation_error_branch(
 
 # ── Service: feature com nome curto pulado (linha 93 do service) ──────────
 
+
 def test_extract_features_skips_short_names_branch(
     releases_dir_fake: Path,
 ) -> None:
@@ -234,7 +243,8 @@ def test_extract_features_skips_short_names_branch(
         "generated_at": "2026-01-01T00:00:00+00:00",
     }
     (extra_dir / ".meta.json").write_text(
-        json.dumps(meta, ensure_ascii=False), encoding="utf-8",
+        json.dumps(meta, ensure_ascii=False),
+        encoding="utf-8",
     )
     (extra_dir / "plataforma.md").write_text(
         "# Plataforma\n\n## Plataforma\n\n- Ab\n- Flow Builder\n",
@@ -253,6 +263,7 @@ def test_extract_features_skips_short_names_branch(
 
 
 # ── Service: get_feature_history com status RENAMED na branch (linha 473) ─
+
 
 @pytest.mark.asyncio
 async def test_feature_history_covers_renamed_branch(
@@ -275,7 +286,8 @@ async def test_feature_history_covers_renamed_branch(
         "generated_at": "2026-03-01T00:00:00+00:00",
     }
     (extra_dir / ".meta.json").write_text(
-        json.dumps(meta, ensure_ascii=False), encoding="utf-8",
+        json.dumps(meta, ensure_ascii=False),
+        encoding="utf-8",
     )
     (extra_dir / "plataforma.md").write_text(
         "# Plataforma\n\n## Plataforma\n\n- Flow Builder New Name\n",
@@ -304,6 +316,7 @@ async def test_feature_history_covers_renamed_branch(
 
 # ── Service: get_feature_history com categoria diferente (linha 475) ──────
 
+
 @pytest.mark.asyncio
 async def test_feature_history_covers_category_changed_branch(
     releases_dir_fake: Path,
@@ -324,7 +337,8 @@ async def test_feature_history_covers_category_changed_branch(
         "generated_at": "2026-04-01T00:00:00+00:00",
     }
     (extra_dir / ".meta.json").write_text(
-        json.dumps(meta, ensure_ascii=False), encoding="utf-8",
+        json.dumps(meta, ensure_ascii=False),
+        encoding="utf-8",
     )
     (extra_dir / "seguranca.md").write_text(
         "# Segurança\n\n## Segurança\n\n- Flow Builder\n",
