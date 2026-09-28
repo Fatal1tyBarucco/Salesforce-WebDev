@@ -681,7 +681,7 @@
     "tests/test_ledger/test_models_pydantic.py": "3c1a83685e7abc6c0bc3e498e0b68281057a1f57",
     "tests/test_ledger/test_prompts.py": "ff486ac8b2fd8553a96682d4876996d2455b0ba5",
     "tests/test_ledger/test_service.py": "1e94e32ef56c46fc03b2386d7d5dcf3b5dc412de",
-    "tests/test_ledger/test_service_branch_coverage.py": "52f1172d96945031e490455d325b21c467a1bf38",
+    "tests/test_ledger/test_service_branch_coverage.py": "2825e0fa962b9f4437046bc7dead855462f9bc47",
     "tests/test_ledger/test_service_coverage.py": "347aa6d83673c9d2ddf7a192e3939b0ea296821c",
     "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
@@ -714,6 +714,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T03:16:31.490511+00:00",
-  "repository_sha": "070a76403da7c8f6bcaaa20c77d2fd65293eb207"
+  "generated_at": "2026-09-28T03:23:18.480563+00:00",
+  "repository_sha": "e7f8770f40f2c8be5159491466c480fc7577c391"
 }
