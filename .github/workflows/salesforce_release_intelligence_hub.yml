@@ -1,0 +1,137 @@
+name: Salesforce Release Intelligence Hub — Pipeline Defensivo
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # Recorrente semanal (segunda, 04:00 UTC)
+  workflow_dispatch:
+    inputs:
+      release_identifier_input:
+        description: 'Número da Release (ex: 264) — se omitido, extração automática via URL'
+        required: false
+        default: '264'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  extract-and-build-defensive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (defensive)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Configure Python 3.13 (defensive — pinado)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install uv and sync dependencies (defensive)
+        run: |
+          pip install uv
+          uv sync --frozen --extra dev --group dev
+
+      - name: Install Playwright browsers (defensive)
+        run: uv run playwright install chromium
+
+      - name: Execute defensive extraction pipeline (Status + Change Log + Home)
+        id: extraction_pipeline_defensive
+        run: |
+          python - << 'PYTHON_DEFENSIVE_BLOCK'
+          import sys, os
+          sys.path.insert(0, ".")
+          from intelligence.intelligence_hub.scripts.scrapers.salesforce_defensive_scraper_engine import (
+              SalesforceStatusScraperEngineDefensive,
+              ChangeLogDefensiveParserEngine,
+              ReleaseNotesHomeDefensiveParserEngine,
+          )
+
+          RELEASE_NUMBER = "${{ github.event.inputs.release_identifier_input || '264' }}"
+          STATUS_URL = "https://status.salesforce.com/"
+          CHANGE_LOG_URL = f"https://help.salesforce.com/s/articleView?id=release-notes.rn_change_log.htm&release={RELEASE_NUMBER}&type=5"
+          HOME_URL = f"https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm&language=en_US&type=5&release={RELEASE_NUMBER}"
+
+          # Defensive: validação de None e captura de Timeout/HTTPError
+          status_scraper_engine = SalesforceStatusScraperEngineDefensive(target_status_url=STATUS_URL)
+          status_identifier_result = status_scraper_engine.extract_release_identifier_from_url()
+
+          change_log_parser_engine = ChangeLogDefensiveParserEngine(change_log_source_url=CHANGE_LOG_URL)
+          print(f"[DEFENSIVO] Release identificada pelo Change Log: {change_log_parser_engine.release_identifier}")
+
+          home_parser_engine = ReleaseNotesHomeDefensiveParserEngine(release_notes_home_url_string=HOME_URL)
+          print(f"[DEFENSIVO] Release identificada pela Home: {home_parser_engine.release_identifier}")
+          print(f"[DEFENSIVO] Parâmetro language: {home_parser_engine.language_parameter}")
+
+          # Escreve arquivo de controle defensivo para o step de build
+          with open("intelligence/intelligence_hub/.release_control_defensive.txt", "w") as control_file:
+              control_file.write(RELEASE_NUMBER + "\n")
+              control_file.write(str(status_identifier_result or "NONE") + "\n")
+          PYTHON_DEFENSIVE_BLOCK
+
+      - name: Build defensive artifacts (PDF, Manual, Cronograma, Readiness, Org Prep)
+        run: |
+          RELEASE_NUMBER=$(cat intelligence/intelligence_hub/.release_control_defensive.txt | head -n1)
+          uv run python - << PYTHON_BUILD_BLOCK
+          import sys
+          sys.path.insert(0, ".")
+          from intelligence.intelligence_hub.scripts.builders.salesforce_release_defensive_builder import (
+              SalesforceReleaseManualBuilderDefensive,
+              SalesforceOrgPreparationGuideDefensiveBuilder,
+          )
+          builder_engine = SalesforceReleaseManualBuilderDefensive(release_identifier_string="${RELEASE_NUMBER}")
+          deploy_document = builder_engine.generate_deployment_manual_document()
+          sandbox_document = builder_engine.compile_sandbox_preview_schedule_document()
+          readiness_document = builder_engine.compile_release_readiness_action_document()
+          org_prep_engine = SalesforceOrgPreparationGuideDefensiveBuilder(release_identifier_string="${RELEASE_NUMBER}")
+          org_prep_document = org_prep_engine.generate_org_preparation_guide()
+          # Escrita defensiva de arquivos auxiliares
+          import json, os
+          for file_path, content in [
+              ("intelligence/intelligence_hub/deploy_manuals/Release_"+"${RELEASE_NUMBER}"+"_Deploy_Guide.json", deploy_document),
+              ("intelligence/intelligence_hub/sandbox_preview_schedules/Release_"+"${RELEASE_NUMBER}"+"_Sandbox.json", sandbox_document),
+              ("intelligence/intelligence_hub/release_readiness/Release_"+"${RELEASE_NUMBER}"+"_Readiness.json", readiness_document),
+              ("intelligence/intelligence_hub/org_preparation_guides/Release_"+"${RELEASE_NUMBER}"+"_Org_Prep.json", org_prep_document),
+          ]:
+              with open(file_path, "w") as f: json.dump(content, f, indent=2)
+          PYTHON_BUILD_BLOCK
+
+      - name: Inject links defensively into READMEs (SoC — isolado)
+        run: |
+          uv run python - << PYTHON_INJECT_BLOCK
+          import sys
+          sys.path.insert(0, ".")
+          from intelligence.intelligence_hub.scripts.readme_injectors.readme_defensive_injector_engine import ReadmeDefensiveLinkInjectorEngine
+          injector_engine = ReadmeDefensiveLinkInjectorEngine()
+          RELEASE_NUMBER = open("intelligence/intelligence_hub/.release_control_defensive.txt").readline().strip()
+          injector_engine.inject_intelligence_index_into_readme_files(
+              release_identifier_string=RELEASE_NUMBER,
+              generated_link_entries=[
+                  {"label": f"Release {RELEASE_NUMBER} — Deploy Manual", "relative_path": f"intelligence/intelligence_hub/deploy_manuals/Release_{RELEASE_NUMBER}_Deploy_Guide.md"},
+                  {"label": f"Release {RELEASE_NUMBER} — Sandbox Preview", "relative_path": f"intelligence/intelligence_hub/sandbox_preview_schedules/Release_{RELEASE_NUMBER}_Sandbox.md"},
+                  {"label": f"Release {RELEASE_NUMBER} — Release Readiness", "relative_path": f"intelligence/intelligence_hub/release_readiness/Release_{RELEASE_NUMBER}_Readiness.md"},
+                  {"label": f"Release {RELEASE_NUMBER} — Org Preparation", "relative_path": f"intelligence/intelligence_hub/org_preparation_guides/Release_{RELEASE_NUMBER}_Org_Prep.md"},
+              ],
+          )
+          PYTHON_INJECT_BLOCK
+
+      - name: Deploy to GitHub Pages (defensive — only if build passes)
+        if: success()
+        uses: actions/deploy-pages@v4
+        with:
+          folder: intelligence/intelligence_hub/assets/pages
+
+      - name: Commit defensively updated READMEs and artifacts
+        if: success()
+        run: |
+          git config user.name "Salesforce-Intelligence-Hub-Automation"
+          git config user.email "automation@fatal1tybarucco.dev"
+          git add README.md README-us.md intelligence/intelligence_hub/
+          git commit -m "feat(intelligence): evoluir para Release Intelligence Hub (release=${RELEASE_NUMBER}) — defensivo" || echo "Nada para commitar."
+          git push
