@@ -41,13 +41,9 @@ class ReadmeDefensiveLinkInjectorEngine:
                 with open(file_path_string, "r", encoding="utf-8") as file_handler:
                     file_content_string = file_handler.read()
             except Exception as exception_instance:
-<<<<<<< HEAD
-                print(f"[DEFENSIVO] Falha ao ler arquivo: {file_path_string} — {exception_instance}")
-=======
                 print(
                     f"[DEFENSIVO] Falha ao ler arquivo: {file_path_string} — {exception_instance}"
                 )
->>>>>>> origin/main
                 continue
 
             index_header_text = (
@@ -56,13 +52,9 @@ class ReadmeDefensiveLinkInjectorEngine:
             )
             for link_entry in generated_link_entries:
                 index_header_text += f"- [{link_entry.get('label', 'Link')}]({self.github_pages_base_url_string}{link_entry.get('relative_path', '')})\n"
-<<<<<<< HEAD
-            index_header_text += f"*Atualizado automaticamente em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n"
-=======
             index_header_text += (
                 f"*Atualizado automaticamente em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n"
             )
->>>>>>> origin/main
 
             # Defensivo: não substitui se já existe o mesmo release_identifier no comentário
             if f"Release {release_identifier_string}" in file_content_string:
@@ -84,10 +76,6 @@ class ReadmeDefensiveLinkInjectorEngine:
                 with open(file_path_string, "w", encoding="utf-8") as file_writer:
                     file_writer.write(file_content_string)
             except Exception as exception_instance:
-<<<<<<< HEAD
-                print(f"[DEFENSIVO] Falha ao escrever arquivo: {file_path_string} — {exception_instance}")
-=======
                 print(
                     f"[DEFENSIVO] Falha ao escrever arquivo: {file_path_string} — {exception_instance}"
                 )
->>>>>>> origin/main
