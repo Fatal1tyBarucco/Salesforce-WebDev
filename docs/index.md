@@ -374,6 +374,7 @@ Salesforce-WebDev/
   └── workflow.py
   ├── .github/                   # Workflows e scripts do GitHub
   ├── docs/                      # Documentação MkDocs
+  ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
   ├── releases/                  # Artefatos Markdown por release
   ├── scripts/                   # Scripts utilitários
