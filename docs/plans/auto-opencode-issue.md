@@ -4,7 +4,7 @@ Status: Proposto (Backlog) | Referência: `.github/workflows/python-quality.yml:
 
 ## Objetivo
 
-Quando o workflow `Python Quality` falhar (`python-quality.yml`) e criar um issue automaticamente (`create-issue`), incluir um comentário `/oc fix` nesse issue para acionar a action `opencode` (`opencode.yml`) e tentar corrigir automaticamente erros simples (`ruff`, `black`, `tests`).
+Quando o workflow `Python Quality` falhar (`python-quality.yml`) e criar um issue automaticamente (`create-issue`), incluir um comentário `/oc fix` nesse issue para acionar a action `opencode` (`opencode.yml`) e tentar corrigir automaticamente erros simples (`ruff`, `black`, `mypy`, `tests`).
 
 ## Arquivos afetados
 
@@ -23,11 +23,11 @@ Quando o workflow `Python Quality` falhar (`python-quality.yml`) e criar um issu
 
 2. **Restringir a quais falhas aplicar** (`python-quality.yml`, step `Create Issue on Failure`, linha 228)
    - Só comentar se `ruff`, `black` ou `tests` falhar (`needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.tests.result == 'failure'`).
-   - Não comentar se apenas `mypy` falhar — risco de PR incorreto (`build_failure_issue.py:103-121`).
+   - Incluir `mypy` no escopo do `/oc fix`; se apenas `mypy` falhar, comentar normalmente (`opencode` corrige tipos).
 
 3. **Comentar no issue** (novo step `Comment /oc fix`, após `Create GitHub Issue`)
    - Executar apenas se `NUMBER` existir e se `ruff`/`black`/`tests` falhou:
-     `gh issue comment "$NUMBER" --body "/oc fix for ruff, black formatting and test errors. Skip mypy."`
+     `gh issue comment "$NUMBER" --body "/oc fix for ruff, black, mypy and test errors."`
 
    - Usar `gh issue comment` com `GH_TOKEN` (`python-quality.yml` já define `permissions: issues: write` no job `create-issue`, linha 230-231).
 
@@ -41,7 +41,7 @@ Quando o workflow `Python Quality` falhar (`python-quality.yml`) e criar um issu
 
 5. **Ajustar o comando no comentário**
    - Evitar `/oc fix` genérico; especificar:
-     `/oc fix for ruff (lint), black (format) and test errors. Skip mypy.`
+     `/oc fix for ruff (lint), black (format), mypy (types) and test errors.`
 
    - Isso limita o escopo e reduz risco de PR incorreto.
 
@@ -52,14 +52,14 @@ Quando o workflow `Python Quality` falhar (`python-quality.yml`) e criar um issu
 
 - Quando `python-quality.yml` cria issue (`create-issue`), dentro de 30s o comentário `/oc fix` aparece no issue (verificável via `gh issue view <N> --comments`).
 - A action `opencode` reage (`opencode.yml`: `on: issue_comment`) e cria uma branch/PR se `ruff` ou `black` falhou.
-- Se `tests` ou `mypy` falhar, `tests` também aciona `/oc fix` (escopo inclui testes) e `mypy` é excluído do escopo.
+- Se `tests` ou `mypy` falhar, `tests` também aciona `/oc fix` (escopo inclui testes) e `mypy` está incluído no escopo.
 - Se `OPENCODE_API_KEY` estiver ausente, o `opencode` falha silenciosamente (sem quebrar o `create-issue`).
 
 ## Riscos e mitigações
 
 | Risco | Impacto | Mitigação |
 |---|---|---|
-| `opencode` cria PR incorreto para `ruff`/`black`/`tests` complexo | PR com código quebrado | Restringir comando (`ruff/black/tests`, excluir `mypy`); revisar PR manualmente antes de merge |
+| `opencode` cria PR incorreto para `ruff`/`black`/`tests` complexo | PR com código quebrado | Restringir comando (`ruff/black/mypy/tests`); revisar PR manualmente antes de merge |
 | `opencode` falha por falta de permissões (`opencode.yml`) | Nenhuma ação; comentário existe mas PR não é criado | Ajustar permissões (`contents: write`, `pull-requests: write`) antes de ativar |
 | `opencode` falha por falta de `OPENCODE_API_KEY` | Nenhuma ação | Confirmar secret; o workflow `python-quality.yml` continua funcionando independentemente |
 | Loop: PR do `opencode` não resolve tudo → novo commit → novo issue | Múltiplos issues para o mesmo erro | `python-quality.yml` evita duplicata por SHA (`linha 283-286`); se PR não corrigir tudo, o próximo push (novo SHA) criará novo issue — aceitável |
