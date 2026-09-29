@@ -9,11 +9,15 @@ from datetime import datetime
 class SalesforceReleaseManualBuilderDefensive:
     """Construtor defensivo de manuais de processo (Deploy, Sandbox Preview, Readiness)."""
 
-    def __init__(self, release_identifier_string: str, release_name_string: Optional[str] = None) -> None:
+    def __init__(
+        self, release_identifier_string: str, release_name_string: Optional[str] = None
+    ) -> None:
         if not release_identifier_string:
             raise ValueError("release_identifier_string é obrigatório.")
         self.release_identifier_string: str = release_identifier_string
-        self.release_name_string: Optional[str] = release_name_string if release_name_string else f"Release {release_identifier_string}"
+        self.release_name_string: Optional[str] = (
+            release_name_string if release_name_string else f"Release {release_identifier_string}"
+        )
         self.generation_timestamp: datetime = datetime.now()
 
     def generate_deployment_manual_document(self) -> Dict[str, Any]:

@@ -83,7 +83,9 @@ class ChangeLogDefensiveParserEngine:
         except Exception:
             self.release_identifier = None
 
-    def parse_change_log_document_nodes(self, html_content_string: Optional[str]) -> List[Dict[str, Any]]:
+    def parse_change_log_document_nodes(
+        self, html_content_string: Optional[str]
+    ) -> List[Dict[str, Any]]:
         """Parseia nós HTML sem gerar exceções obstrutivas."""
         results_list: List[Dict[str, Any]] = []
         if html_content_string is None:
@@ -96,10 +98,12 @@ class ChangeLogDefensiveParserEngine:
             for document_node in soup_document.find_all(["article", "section", "table"]):
                 node_text_content = document_node.get_text(separator=" ", strip=True)
                 if node_text_content and len(node_text_content) > 50:
-                    results_list.append({
-                        "element_tag_name": document_node.name,
-                        "element_text_preview": node_text_content[:500],
-                    })
+                    results_list.append(
+                        {
+                            "element_tag_name": document_node.name,
+                            "element_text_preview": node_text_content[:500],
+                        }
+                    )
         except Exception:
             pass
         return results_list
