@@ -266,6 +266,7 @@
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "3a7feb6e3f01e7f0fee3b9d0abc1660346eb1ca0",
     ".github/workflows/release_notes_pipeline.yml": "2bb3348e9bb1e1b61386c5b5126a33bc63322e5d",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "6d032fa9b8d0e4c931f8add0a6ed52c69dd7df33",
     ".gitignore": "cfc07df51e22e82b40cfb6fc5069bebd2a390bb9",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
@@ -368,7 +369,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "5050f4dccffc24ab3a362cfd2e2ff855dc9f9768",
-    "docs/index.md": "eaf6660d3dd03cd041a78e41c57caf0b5c0eb2ba",
+    "docs/index.md": "1475a65a3ff4154272c183fd742cb9d53931ee38",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -391,6 +392,11 @@
     "docs/runbooks/mkdocs-build-failure.md": "bcf7c297d31b5b0c6fe93587afd8c95256072687",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
+    "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
+    "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
+    "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "30bb38e24de91a0e7847132c39e613bedaf62bf1",
+    "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "bbdfafa3831b7b274eb969d6af9aa800b23c1b62",
+    "intelligence/intelligence_hub/scripts/scrapers/salesforce_defensive_scraper_engine.py": "995324a552d69ee01523170cab8a334dc35f5d02",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
@@ -738,6 +744,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-28T20:56:24.232291+00:00",
-  "repository_sha": "78f33d94fd57cbda8e920b92aee84a042e4aebcb"
+  "generated_at": "2026-09-29T05:14:27.922177+00:00",
+  "repository_sha": "7e4f64363a52e229d586aef1984aab287a66b2b8"
 }
