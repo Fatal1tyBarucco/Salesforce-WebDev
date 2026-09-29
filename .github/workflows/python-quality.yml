@@ -312,8 +312,8 @@ jobs:
           echo "$NUMBER" > /tmp/issue_number.txt
           if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
 
-      - name: 💬 Comment /oc fix (ruff/black/tests)
-        if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.tests.result == 'failure')
+      - name: 💬 Comment /oc fix (ruff/black/mypy/tests)
+        if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure')
         env:
           GH_TOKEN: ${{ secrets.COMMENT_TOKEN || secrets.GITHUB_TOKEN }}
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
@@ -331,9 +331,9 @@ jobs:
             ISSUE_NUM=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
           if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
-          echo "Comentando no issue #$ISSUE_NUM com /oc fix ruff/black/tests (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
+          echo "Comentando no issue #$ISSUE_NUM com /oc fix ruff/black/mypy/tests (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
           # Usa comando específico, não genérico
-          gh issue comment "$ISSUE_NUM" --body "/oc fix for ruff, black formatting and test errors. Skip mypy." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
+          gh issue comment "$ISSUE_NUM" --body "/oc fix for ruff, black, mypy and test errors." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │

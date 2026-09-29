@@ -242,7 +242,7 @@ def build_body(findings: list[dict[str, object]]) -> str:
         f"- [Logs completos desta execução]({RUN_URL})",
         f"- Artifacts `extract-logs` disponíveis nesta run (retenção de 7 dias): {RUN_URL}",
         "",
-        "> 💬 Se a falha incluir lint/format/testes, pode solicitar correção automática via comentário `/oc fix` neste issue (escopo: ruff, black, testes; mypy excluído).",
+        "> 💬 Se a falha incluir lint/format/testes/mypy, pode solicitar correção automática via comentário `/oc fix` neste issue (escopo: ruff, black, mypy, testes).",
         "> 🤖 Issue gerada automaticamente pelo Release Notes Automation Pipeline.",
     ]
     return "\n".join(parts)
