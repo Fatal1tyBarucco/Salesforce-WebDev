@@ -123,7 +123,7 @@ jobs:
 
       - name: Deploy to GitHub Pages (defensive — only if build passes)
         if: success()
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           folder: intelligence/intelligence_hub/assets/pages
 
