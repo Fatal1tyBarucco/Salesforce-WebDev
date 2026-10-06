@@ -277,7 +277,7 @@
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
+    "README.en.md": "53704fd2e5f448db01152b6b07a8a62a8ee48c57",
     "README.md": "0a179b02c679110f6cc5c3e5fef5850f098d7e84",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -744,6 +744,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-09-29T09:46:14.293057+00:00",
-  "repository_sha": "72b1fc4dc3ce89def7f240b31769d661e6b532f5"
+  "generated_at": "2026-10-06T00:05:25.190462+00:00",
+  "repository_sha": "66b21667f9cc0f96baeddab44556c34901c924b1"
 }
