@@ -2,29 +2,29 @@
 
 ## Sintomas
 
-- Workflow `documentation-sync.yml` falha no step de reconciliação LLM
-- `mkdocs build --strict` falha após mudanças documentais
+- Workflow `documentation-sync.yml` falha no step de reconciliação determinística
+- `mkdocs build --strict` reporta erro; esse step é best-effort e não bloqueia o sync
 - Link checker ou markdown lint bloqueiam o commit
 - O workflow detecta drift mas não consegue reconciliar
 - Commit do bot é skipado pelo anti-loop sem motivo aparente
 
-## Causa Raiz Comum
+## Diagnóstico e causas comuns
 
-### 1. Provider LLM indisponível
+### 1. Inspecionar drift sem escrita
 
-Se `GOOGLE_API_KEY`, `OPENCODE_API_KEY` e `OPENROUTER_API_KEY` estiverem ausentes ou inválidos, o step de reconciliação falha.
+O modo `audit` detecta drift sem instalar dependências, alterar arquivos ou fazer push. Ele não executa reconciliação nem auto-fix.
 
 **Validação:**
 
 ```bash
-# Verificar secrets configurados (secreto, apenas indicador de presença)
-gh secret list | grep -E "GOOGLE_API_KEY|OPENCODE_API_KEY|OPENROUTER_API_KEY"
-```text
+# Executar a engine de auditoria localmente
+DRIFT_REPORT=/tmp/drift_report.json python3 .github/scripts/docs_sync_engine.py audit
+```
 
 **Ação:**
 
-- Confirmar que pelo menos uma chave LLM está configurada nos secrets do repositório
-- Se nenhuma chave disponível, o sync deve ser executado em modo `audit` (sem escrita)
+- No GitHub Actions, executar manualmente `Documentation Sync` com o modo `audit`
+- Inspecionar `/tmp/drift_report.json` no ambiente local para ver os findings
 
 ### 2. mkdocs build --strict falhou
 
@@ -38,7 +38,7 @@ O build falha por:
 
 ```bash
 uv run mkdocs build --strict
-```text
+```
 
 **Ação:**
 
@@ -52,8 +52,8 @@ uv run mkdocs build --strict
 **Validação:**
 
 ```bash
-uv run markdown-link-check --config .github/link-check-config.json docs/
-```text
+npx --yes markdown-link-check --quiet --config .github/link-check-config.json docs/
+```
 
 **Ação:**
 
@@ -67,13 +67,13 @@ uv run markdown-link-check --config .github/link-check-config.json docs/
 **Validação:**
 
 ```bash
-uv run markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.yml
-```text
+npx --yes markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.json --ignore node_modules
+```
 
 **Ação:**
 
 - Corrigir as violações reportadas (títulos, listas, espaçamento, etc.)
-- Se uma regra é muito restritiva para o contexto, ajustar no `.markdownlint.yml`
+- Se uma regra é muito restritiva para o contexto, ajustar no `.markdownlint.json`
 
 ### 5. Anti-loop skipou sem motivo
 
@@ -86,12 +86,12 @@ O guard anti-loop skipou porque o último commit tem autor `github-actions[bot]`
 
 ### 6. Conflito de concorrência no push
 
-O `git push --force-with-lease` falhou porque outro processo escreveu no branch entre o checkout e o push.
+O push sem force pode ser rejeitado se outro processo atualizar o branch durante a execução.
 
 **Ação:**
 
-- O `git pull --rebase` antes do push deve resolver a maioria dos casos
-- Se persistir, re-executar o workflow manualmente
+- O workflow tenta buscar, rebasear e fazer push até três vezes, com espera progressiva
+- Conflito de conteúdo interrompe o workflow para evitar sobrescrever alterações; resolva-o e execute novamente
 
 ## Verificação Pós-Falha
 
@@ -106,8 +106,8 @@ git diff --stat
 uv run mkdocs build --strict
 
 # 4. Validar links
-uv run markdown-link-check --config .github/link-check-config.json docs/
+npx --yes markdown-link-check --quiet --config .github/link-check-config.json docs/
 
 # 5. Verificar lint
-uv run markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.yml
+npx --yes markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.json --ignore node_modules
 ```
