@@ -85,6 +85,24 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # Sonda os pools de modelos free (OpenRouter → OpenCode) e fixa o
+      # primeiro modelo saudável via LLM_PROVIDER + <PROVIDER>_MODEL,
+      # lidos por src/llm_service.py. Roda a cada execução porque free tiers
+      # oscilam (503 upstream/stalls um dia, saudáveis no outro).
+      # Não-fatal: se nada responder, o fallback interno do serviço varre
+      # todos os pools normalmente.
+      - name: Selecionar modelo free dinamicamente
+        id: free_model
+        continue-on-error: true
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          FREE_MODEL_PROBE_BUDGET_S: "90"
+        run: |
+          mkdir -p /tmp/pipeline_logs
+          uv run python .github/scripts/select_free_model.py 2>&1 | tee /tmp/pipeline_logs/free_model_selection.log
+
       - name: Resolver parâmetros de execução
         id: params
         run: |
@@ -439,6 +457,7 @@ jobs:
           echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Dry Run | \`${{ steps.params.outputs.dry_run }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Release | \`${{ steps.params.outputs.release_slug || 'todas' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Modelo LLM (selecionado) | \`${{ steps.free_model.outputs.model && format('{0}:{1}', steps.free_model.outputs.provider, steps.free_model.outputs.model) || 'auto (fallback)' }}\` |" >> $GITHUB_STEP_SUMMARY
 
   create-issue:
     name: 📝 Issue com Diagnóstico de Falhas

@@ -571,3 +571,84 @@ class TestLLMDispatch:
         svc.provider = "none"
         with pytest.raises(ValueError, match="Unsupported LLM provider"):
             svc._dispatch_to_provider("hi", None, 0.7, 100)
+
+
+# ── Env-driven provider/model selection ─────────────────────────────
+
+
+class TestLLMEnvSelection:
+    """LLM_PROVIDER + <PROVIDER>_MODEL overrides used by GitHub Actions.
+
+    The release-notes pipeline runs .github/scripts/select_free_model.py each
+    run and exports the healthiest free model through these env vars.
+    """
+
+    def test_openrouter_model_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("OPENROUTER_MODEL", "z-ai/glm-5.2:free")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        assert svc.model_name == "z-ai/glm-5.2:free"
+
+    def test_opencode_model_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
+        monkeypatch.setenv("OPENCODE_MODEL", "ling-3.0-flash-free")
+        svc = LLMService(api_key="oc-key", provider="opencode")
+        assert svc.model_name == "ling-3.0-flash-free"
+
+    def test_gemini_model_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+        monkeypatch.setenv("GEMINI_MODEL", "gemini-2.5-flash")
+        svc = LLMService(api_key="goog-key", provider="gemini")
+        assert svc.model_name == "gemini-2.5-flash"
+
+    def test_blank_env_override_uses_provider_default(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("OPENROUTER_MODEL", "   ")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        assert svc.model_name == "openrouter/free"
+
+    def test_explicit_model_name_beats_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("OPENROUTER_MODEL", "z-ai/glm-5.2:free")
+        svc = LLMService(api_key="or-key", provider="openrouter", model_name="explicit-model")
+        assert svc.model_name == "explicit-model"
+
+    def test_llm_provider_env_pins_provider(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+        monkeypatch.setenv("LLM_PROVIDER", "opencode")
+        monkeypatch.setenv("OPENCODE_MODEL", "ling-3.0-flash-free")
+        svc = LLMService()
+        assert svc.provider == "opencode"
+        assert svc.model_name == "ling-3.0-flash-free"
+
+    def test_llm_provider_env_without_key_falls_back_to_autodetect(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("LLM_PROVIDER", "opencode")
+        svc = LLMService()
+        assert svc.provider == "openrouter"
+        assert svc.model_name == "openrouter/free"
+
+    def test_no_llm_provider_env_autodetects_first_key(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.delenv("LLM_PROVIDER", raising=False)
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
+        svc = LLMService()
+        assert svc.provider == "openrouter"
+
+    def test_switch_to_next_provider_uses_env_model(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        monkeypatch.setenv("OPENROUTER_MODEL", "qwen/qwen-3-coder:free")
+        svc = LLMService(api_key="oc-key", provider="opencode")
+        assert svc._switch_to_next_provider() is True
+        assert svc.provider == "openrouter"
+        assert svc.model_name == "qwen/qwen-3-coder:free"
