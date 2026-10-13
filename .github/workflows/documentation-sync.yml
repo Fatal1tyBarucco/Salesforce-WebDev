@@ -4,13 +4,13 @@
 # ╚══════════════════════════════════════════════════════════════════╝
 #
 # Flow:
-#   Push/Schedule/Manual → Guard Anti-Loop → Setup uv/Python
+#   Push/Schedule/Manual → Guard Anti-Loop → Resolve Mode → Setup uv/Python
 #     → Inventory → Manifest Diff → Drift Report
-#     → LLM Reconciliation → Markdown Auto-Fix → Markdown Lint
+#     → Deterministic Reconciliation → Markdown Auto-Fix → Markdown Lint
 #     → Link Checker → mkdocs build --strict (best-effort) → Commit (se Changes) → Push
 #     → Triggers documentation-build.yml → GitHub Pages
 #
-# Modos: incremental (push) · full (schedule) · audit (analysis only)
+# Modos: incremental (push) · full (schedule) · audit (read-only drift report)
 # Anti-loop: skips when HEAD commit is an automation commit (docs(sync): by bot)
 #
 # Concurrency: grupo "pages" coordena sync + build/deploy para evitar
@@ -102,12 +102,31 @@ jobs:
           fi
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # RESOLVER MODO ANTES DA INSTALAÇÃO: audit só executa a engine
+      # stdlib-only e não precisa baixar dependências.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Resolver modo de execução
+        if: steps.guard.outputs.skip != 'true'
+        id: mode
+        run: |
+          set -e
+          case "${{ github.event_name }}" in
+            push)     MODE="incremental" ;;
+            schedule) MODE="full" ;;
+            *)        MODE="${{ github.event.inputs.mode || 'incremental' }}" ;;
+          esac
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "started_at=$(date -u +%s)" >> "$GITHUB_OUTPUT"
+          echo "▶️ Modo: $MODE"
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # SETUP UV: instala uv + cache embutido (enable-cache invalida
       # quando uv.lock muda). Substitui o actions/cache manual que
       # usava github.sha na chave (cache hit de 0% — nunca restaurava).
+      # O modo audit não configura uv, pois não executa ferramentas do projeto.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Setup uv
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           enable-cache: true
@@ -128,28 +147,12 @@ jobs:
       # engine (python3, stdlib-only) NÃO depende deste venv; se a instalação
       # do mkdocs/griffe falhar em CI (ex.: corrupção de namespace), a sync
       # determinística ainda roda. Hardening anti-falha de pipeline.
+      # É pulado em audit: a engine usa apenas a biblioteca padrão.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Instalar dependências
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
         continue-on-error: true
         run: uv sync --frozen --extra dev --extra docs
-
-      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      # RESOLVER MODO: incremental (push), full (schedule),
-      # audit (manual ou forçado). O modo audit não escreve commits.
-      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      - name: Resolver modo de execução
-        if: steps.guard.outputs.skip != 'true'
-        id: mode
-        run: |
-          set -e
-          case "${{ github.event_name }}" in
-            push)     MODE="incremental" ;;
-            schedule) MODE="full" ;;
-            *)        MODE="${{ github.event.inputs.mode || 'incremental' }}" ;;
-          esac
-          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-          echo "▶️ Modo: $MODE"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # DETECÇÃO DETERMINÍSTICA DE DRIFT:
@@ -159,9 +162,11 @@ jobs:
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Detecção determinística de drift (engine, LLM-free)
         if: steps.guard.outputs.skip != 'true'
+        id: drift
+        env:
+          DRIFT_REPORT: /tmp/drift_report.json
         run: |
-          python3 .github/scripts/docs_sync_engine.py audit \
-            --report /tmp/drift_report.json
+          python3 .github/scripts/docs_sync_engine.py audit
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # RECONCILIAÇÃO DETERMINÍSTICA (LLM-FREE):
@@ -172,7 +177,8 @@ jobs:
       # (main() do engine faz safe-abort e nunca trava a CI).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Reconciliação determinística (LLM-free, idempotent)
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        id: reconcile
         run: |
           set -o pipefail
           python3 .github/scripts/docs_sync_engine.py reconcile | tee /tmp/reconcile_summary.md
@@ -192,7 +198,7 @@ jobs:
       # a validação no próximo step captura e reporta.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Auto-fix erros determinísticos de markdown lint
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
         id: markdown-fix
         run: |
           set -e
@@ -228,7 +234,8 @@ jobs:
       # fixes aplicados estejam corretos e que nenhum erro permaneça.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar formatação — markdown lint
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        id: markdown-lint
         run: |
           npx --yes markdownlint-cli2 \
             "docs/**/*.md" \
@@ -240,7 +247,8 @@ jobs:
       # VALIDAÇÃO 2/3 — LINK CHECKER (sempre executa)
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar links — link checker
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        id: link-check
         run: |
           npx --yes markdown-link-check \
             --quiet \
@@ -256,7 +264,8 @@ jobs:
       # em ambientes efêmeros de CI. Falha aqui NÃO aborta a sync.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar documentação (mkdocs strict, best-effort)
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        id: mkdocs-build
         continue-on-error: true
         run: uv run mkdocs build --strict
 
@@ -266,7 +275,7 @@ jobs:
       # (docs/, README.md, README.en.md, mkdocs.yml).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Verificar alterações documentais
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
         id: changes
         run: |
           if [ -n "$(git status --porcelain docs/ README.md README.en.md mkdocs.yml)" ]; then
@@ -283,6 +292,7 @@ jobs:
       # garante o baseline fique commitado quando o modo não for audit.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Atualizar manifesto de baseline
+        id: manifest
         if: |
           steps.guard.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
@@ -295,33 +305,55 @@ jobs:
       # para criar o commit de automação.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Configurar identidade do bot para commits
-        if: steps.changes.outputs.has_changes == 'true'
+        if: |
+          steps.guard.outputs.skip != 'true' &&
+          steps.mode.outputs.mode != 'audit' &&
+          steps.changes.outputs.has_changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # COMMIT E PUSH:
-      # Usa --force-with-lease para garantir que não sobrescreve
-      # commits que não conhece (evita perda de trabalho paralelo).
-      # git pull --rebase --autostash antes do commit garante que
-      # não haja conflitos de escrita concorrente.
+      # Push sem force; em rejeição/transiente, atualiza e rebaseia até
+      # três vezes. Conflitos de conteúdo falham explicitamente.
       # Timestamp no commit message para rastreabilidade.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Commit and push reconciled documentation
+        id: commit-push
         if: |
           steps.guard.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
           steps.mode.outputs.mode != 'audit'
         run: |
-          set -e
-          git pull --rebase --autostash origin ${{ github.ref_name }}
+          set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           git add docs/ README.md README.en.md mkdocs.yml
           # Só faz commit se houver arquivos stageados (evita commit vazio)
           if ! git diff --cached --quiet; then
             git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
-            git push --force-with-lease origin HEAD:${{ github.ref_name }}
+
+            for attempt in 1 2 3; do
+              if ! git fetch origin "$GITHUB_REF_NAME"; then
+                echo "⚠️ Fetch falhou (tentativa $attempt/3)."
+              elif ! git rebase FETCH_HEAD; then
+                git rebase --abort || true
+                echo "❌ Rebase encontrou conflito; push cancelado sem sobrescrever o remoto." >&2
+                exit 1
+              elif git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+                echo "✅ Push concluído na tentativa $attempt/3."
+                exit 0
+              else
+                echo "⚠️ Push falhou (tentativa $attempt/3)."
+              fi
+
+              if [ "$attempt" -lt 3 ]; then
+                sleep "$((attempt * 2))"
+              fi
+            done
+
+            echo "❌ Push não concluiu após 3 tentativas." >&2
+            exit 1
           else
             echo "⚠️ Nenhum arquivo stageado após git add — nada a commitar."
           fi
@@ -334,10 +366,38 @@ jobs:
       - name: Sumário da execução
         if: always() && steps.guard.outputs.skip != 'true'
         run: |
-          echo "## 📚 Documentation Sync — ${{ steps.mode.outputs.mode || 'n/a' }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          MODE="${{ steps.mode.outputs.mode || 'n/a' }}"
+          STARTED_AT="${{ steps.mode.outputs.started_at || '' }}"
+          DURATION="n/a"
+          if [[ "$STARTED_AT" =~ ^[0-9]+$ ]]; then
+            DURATION="$(( $(date -u +%s) - STARTED_AT ))s"
+          fi
+
+          {
+            echo "## 📚 Documentation Sync — $MODE"
+            echo ""
+            echo "| Métrica | Resultado |"
+            echo "| --- | --- |"
+            echo "| Duração após resolução do modo | $DURATION |"
+            echo "| Drift audit | ${{ steps.drift.outcome || 'skipped' }} |"
+            echo "| Reconciliação | ${{ steps.reconcile.outcome || 'skipped' }} |"
+            echo "| Markdown auto-fix | ${{ steps.markdown-fix.outcome || 'skipped' }} |"
+            echo "| Markdown lint | ${{ steps.markdown-lint.outcome || 'skipped' }} |"
+            echo "| Link checker | ${{ steps.link-check.outcome || 'skipped' }} |"
+            echo "| MkDocs strict | ${{ steps.mkdocs-build.outcome || 'skipped' }} (best-effort) |"
+            echo "| Alterações documentais | ${{ steps.changes.outputs.has_changes || 'n/a' }} |"
+            echo "| Atualização do manifesto | ${{ steps.manifest.outcome || 'skipped' }} |"
+            echo "| Commit/push | ${{ steps.commit-push.outcome || 'skipped' }} |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
           if [ -f /tmp/reconcile_summary.md ]; then
             cat /tmp/reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
+
+          if [ "$MODE" = "audit" ]; then
+            echo "Audit é somente leitura: não instala dependências nem executa reconciliação, auto-fix, build ou push." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "> Repository State == Documentation State == GitHub Pages" >> "$GITHUB_STEP_SUMMARY"
