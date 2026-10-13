@@ -258,6 +258,7 @@
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
     ".github/scripts/llm_fallback.py": "ed3b36e4203b5cbe780520a1fd1708ebf68160d0",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
+    ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/workflows/copilot-setup-steps.yml": "3b5cb21c3664a263761ab4ab80cbc109d5453d20",
     ".github/workflows/dependabot-lock-refresh.yml": "5148101c0bcf9f4a8731696446bd11e2bb86a38f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
@@ -265,7 +266,7 @@
     ".github/workflows/documentation-sync.yml": "9da8c7901f0956ad9419362aab3c7a0f8bc21c6c",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "37794d906fa02382d56052d930bdabd39ee4a9cb",
-    ".github/workflows/release_notes_pipeline.yml": "2bb3348e9bb1e1b61386c5b5126a33bc63322e5d",
+    ".github/workflows/release_notes_pipeline.yml": "6f9fd384706fa15693fc89acf10728801d1e9f60",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "6d032fa9b8d0e4c931f8add0a6ed52c69dd7df33",
     ".gitignore": "cfc07df51e22e82b40cfb6fc5069bebd2a390bb9",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -277,7 +278,7 @@
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "53704fd2e5f448db01152b6b07a8a62a8ee48c57",
+    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
     "README.md": "0a179b02c679110f6cc5c3e5fef5850f098d7e84",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -633,7 +634,7 @@
     "src/limiters/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/limiters/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/limiters/rate_limiter.py": "7a6c325bb3eaf21a27650660629546782168a8c3",
-    "src/llm_service.py": "57040512c0dd9b7110eb18ab2f80e5e6ac712132",
+    "src/llm_service.py": "8c6a4b6a408b27366d5e7147f6e2b29e30b6f39b",
     "src/logger.py": "1e0c0c804d5b1de2f9afab65016d89d4851ded0a",
     "src/main.py": "6df9a30bb58a6840f618748f87fd646212fd38a1",
     "src/models.py": "56d66cc465befe230342bba24776f50246f84b0d",
@@ -713,7 +714,7 @@
     "tests/test_ledger/test_service.py": "1e94e32ef56c46fc03b2386d7d5dcf3b5dc412de",
     "tests/test_ledger/test_service_branch_coverage.py": "2825e0fa962b9f4437046bc7dead855462f9bc47",
     "tests/test_ledger/test_service_coverage.py": "347aa6d83673c9d2ddf7a192e3939b0ea296821c",
-    "tests/test_llm_service.py": "fdcf0eb9b81c6eb584ad08929fbb0b6058d3d311",
+    "tests/test_llm_service.py": "1b8bfc5992f83a49b5c3c39284279fa8d6446304",
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
@@ -744,6 +745,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-10-06T00:05:25.190462+00:00",
-  "repository_sha": "66b21667f9cc0f96baeddab44556c34901c924b1"
+  "generated_at": "2026-10-13T08:05:27.006062+00:00",
+  "repository_sha": "d58b3eebbd3ff53bba9d1148146b4c19c18bcdbb"
 }
