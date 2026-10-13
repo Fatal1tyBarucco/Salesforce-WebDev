@@ -89,6 +89,19 @@ _PROVIDER_CHAIN: list[_ProviderConfig] = [
 ]
 
 
+def _env_model_override(cfg: _ProviderConfig) -> str:
+    """Resolve the model for a provider, honoring per-provider env overrides.
+
+    Each provider reads ``<PROVIDER>_MODEL`` (e.g. ``OPENROUTER_MODEL``,
+    ``OPENCODE_MODEL``, ``GEMINI_MODEL``) so automation — such as the
+    release-notes pipeline's dynamic free-tier selector — can pin the
+    healthiest model for the current run. Unset/blank values fall back to
+    the provider's built-in default.
+    """
+    override = os.getenv(f"{cfg.name.upper()}_MODEL", "").strip()
+    return override or cfg.default_model
+
+
 class LLMService:
     """Service class for handling interactions with Large Language Models.
 
@@ -111,11 +124,15 @@ class LLMService:
         Args:
             api_key: Optional API key override. If None, resolved from env.
             model_name: Model override. If None, uses provider default.
-            provider: Provider override. If None, auto-detects from available keys.
+            provider: Provider override. If None, falls back to the
+                ``LLM_PROVIDER`` env var, then auto-detects from available keys.
         """
         self._provider_chain = list(_PROVIDER_CHAIN)
         self._active_provider: _ProviderConfig | None = None
         self._tried_providers: set[str] = set()
+
+        if provider is None:
+            provider = os.getenv("LLM_PROVIDER", "").strip() or None
 
         if provider:
             # Explicit provider requested
@@ -125,7 +142,7 @@ class LLMService:
                 if resolved_key:
                     self._active_provider = cfg
                     self.api_key = resolved_key
-                    self.model_name = model_name or cfg.default_model
+                    self.model_name = model_name or _env_model_override(cfg)
                     self.provider = cfg.name
                     return
             # Fallback: try auto-detect below
@@ -136,7 +153,7 @@ class LLMService:
             if resolved_key:
                 self._active_provider = cfg
                 self.api_key = resolved_key
-                self.model_name = model_name or cfg.default_model
+                self.model_name = model_name or _env_model_override(cfg)
                 self.provider = cfg.name
                 return
 
@@ -172,7 +189,7 @@ class LLMService:
         if next_cfg:
             self._active_provider = next_cfg
             self.api_key = os.getenv(next_cfg.api_key_env, "")
-            self.model_name = next_cfg.default_model
+            self.model_name = _env_model_override(next_cfg)
             self.provider = next_cfg.name
             logger.info(
                 "Switching to fallback provider=%s, model=%s",
