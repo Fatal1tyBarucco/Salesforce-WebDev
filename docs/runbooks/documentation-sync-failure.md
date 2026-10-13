@@ -19,7 +19,7 @@ O modo `audit` detecta drift sem instalar dependências, alterar arquivos ou faz
 ```bash
 # Executar a engine de auditoria localmente
 DRIFT_REPORT=/tmp/drift_report.json python3 .github/scripts/docs_sync_engine.py audit
-```
+```text
 
 **Ação:**
 
@@ -38,7 +38,7 @@ O build falha por:
 
 ```bash
 uv run mkdocs build --strict
-```
+```text
 
 **Ação:**
 
@@ -53,7 +53,7 @@ uv run mkdocs build --strict
 
 ```bash
 npx --yes markdown-link-check --quiet --config .github/link-check-config.json docs/
-```
+```text
 
 **Ação:**
 
@@ -68,7 +68,7 @@ npx --yes markdown-link-check --quiet --config .github/link-check-config.json do
 
 ```bash
 npx --yes markdownlint-cli2 "docs/**/*.md" --config-file .markdownlint.json --ignore node_modules
-```
+```text
 
 **Ação:**
 

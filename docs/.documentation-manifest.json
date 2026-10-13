@@ -4,7 +4,8 @@
       "docs/plans/auto-opencode-issue.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
-      "AGENTS.md"
+      "AGENTS.md",
+      "docs/runbooks/documentation-sync-failure.md"
     ],
     ".github/workflows/documentation-sync.yml": [
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
@@ -263,7 +264,7 @@
     ".github/workflows/dependabot-lock-refresh.yml": "5148101c0bcf9f4a8731696446bd11e2bb86a38f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "77768f8fbf258d29cd56bf71576c1902e79f9d69",
-    ".github/workflows/documentation-sync.yml": "9da8c7901f0956ad9419362aab3c7a0f8bc21c6c",
+    ".github/workflows/documentation-sync.yml": "e7205a1cdfb069eac955b8cfb8ac7fa22d579095",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "37794d906fa02382d56052d930bdabd39ee4a9cb",
     ".github/workflows/release_notes_pipeline.yml": "6f9fd384706fa15693fc89acf10728801d1e9f60",
@@ -278,7 +279,7 @@
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "53704fd2e5f448db01152b6b07a8a62a8ee48c57",
+    "README.en.md": "cdce96d098d1fab8f8616dee97d72a58bcce356f",
     "README.md": "0a179b02c679110f6cc5c3e5fef5850f098d7e84",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -387,7 +388,7 @@
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
     "docs/roadmap/v3.md": "57e06591c6941ba9df4035b103b979d7c6530ae0",
     "docs/roadmap/v4.md": "bc7e75d4dbdeb362ca25a9bdca4b890c4134cac9",
-    "docs/runbooks/documentation-sync-failure.md": "59cbf7403a4b93ffa401f8a85d0690be1ca739ec",
+    "docs/runbooks/documentation-sync-failure.md": "b50d133cd3bc502e45b294fefb73699747e9b001",
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
     "docs/runbooks/index.md": "a267cf5c71ad14f310433cb669f110ae9b7f6e60",
     "docs/runbooks/mkdocs-build-failure.md": "bcf7c297d31b5b0c6fe93587afd8c95256072687",
@@ -745,6 +746,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "03b84d70af5c1bcbcdf327998b7fd3793aa690e3"
   },
-  "generated_at": "2026-10-13T14:15:46.008481+00:00",
-  "repository_sha": "585418404442ca3049a75ab9154a58b2eefbf6cf"
+  "generated_at": "2026-10-13T14:46:54.290856+00:00",
+  "repository_sha": "ef55ed6e69baa12f589e26bbadb9e72399a6077c"
 }
