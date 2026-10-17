@@ -44,7 +44,7 @@ def is_rate_limited_response(status_code: int | str | None) -> bool:
         return False
     try:
         return int(status_code) == 429
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return False
 
 
@@ -218,7 +218,7 @@ class SalesforceReleaseScraper:
                 "ul.tree, li[role='treeitem'], article, table, main",
                 timeout=15000,
             )
-        except (TimeoutError, PlaywrightTimeout, PlaywrightError, Exception):
+        except TimeoutError, PlaywrightTimeout, PlaywrightError, Exception:
             # Fallback: proceed without waiting for selector
             await page.wait_for_timeout(5000)
 
@@ -609,7 +609,7 @@ class SalesforceReleaseScraper:
 
             try:
                 await page.wait_for_selector("button[title='Open PDF']", timeout=15000)
-            except (TimeoutError, PlaywrightTimeout):
+            except TimeoutError, PlaywrightTimeout:
                 logger.warning("PDF button not found on %s", page_url)
                 await context.close()
                 if browser_to_close:

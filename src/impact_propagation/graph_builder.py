@@ -33,7 +33,7 @@ class DependencyGraphBuilder:
         if meta_path.exists():
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 pass
 
         # Extrai nomes de features a partir da meta / estrutura de markdown
