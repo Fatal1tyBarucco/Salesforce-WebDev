@@ -710,7 +710,7 @@ async def test_summarizer_corrupt_cache_path() -> None:
     bad = "{bad json}"
     try:
         json.loads(bad)
-    except (json.JSONDecodeError, ValueError):
+    except json.JSONDecodeError, ValueError:
         pass  # confirm except is reachable
 
 

@@ -75,7 +75,7 @@ def load_manifest() -> dict | None:
     try:
         data = json.loads(MANIFEST_PATH.read_text())
         return data if isinstance(data, dict) else None
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
 
 

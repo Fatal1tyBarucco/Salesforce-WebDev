@@ -215,7 +215,7 @@ async def generate_ai_summary(
     # Try Pydantic validation first
     try:
         validated = parse_report_response(result_text)
-    except (ValueError, IndexError):
+    except ValueError, IndexError:
         return _generate_legacy_ai_summary(
             comparison, regressions, current_metrics, previous_metrics
         )

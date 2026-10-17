@@ -71,7 +71,7 @@ def _load_release_meta(slug: str) -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.loads(meta_path.read_text(encoding="utf-8"))
         return result
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
 
 
@@ -269,7 +269,7 @@ def _load_profiles() -> list[NotificationProfile]:
             )
             for p in data
         ]
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return []
 
 
@@ -281,7 +281,7 @@ def _load_unsubscribed() -> set[str]:
     try:
         data: list[str] = json.loads(unsub_path.read_text(encoding="utf-8"))
         return set(data)
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return set()
 
 
