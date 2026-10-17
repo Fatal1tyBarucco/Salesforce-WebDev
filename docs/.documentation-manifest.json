@@ -403,7 +403,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "3c06c96644fa17b1da37e1c57c99dd4d21b73845",
+    "mkdocs.yml": "4bca4d1d0941c89706462a7d3b238b16c5c60b77",
     "pyproject.toml": "84655888bc51f85db6447680a9c698bb36dc19bc",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -747,6 +747,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-17T13:37:59.137947+00:00",
-  "repository_sha": "c9f69a074840c76941fe7fc892f48510027ad170"
+  "generated_at": "2026-10-17T13:48:04.305006+00:00",
+  "repository_sha": "ef64d71f71aeb97ea4300ef67ba2a49db0aa5860"
 }
