@@ -134,7 +134,7 @@ class CacheManager:
 
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
+        except json.JSONDecodeError, OSError:
             self._stats.misses += 1
             return None
 
@@ -201,7 +201,7 @@ class CacheManager:
                 if now - payload.get("timestamp", 0) > ttl:
                     path.unlink()
                     removed += 1
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
 
         if removed > 0:
@@ -272,7 +272,7 @@ class CacheManager:
                 elif isinstance(value, dict):
                     result[key] = value.get("content_hash", "")
             return result
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
 
     def save_content_cache(self, cache_file: Path, cache: dict[str, str]) -> None:

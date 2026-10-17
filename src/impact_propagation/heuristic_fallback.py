@@ -28,7 +28,7 @@ class DependencyHeuristicFallback:
         if meta_path.exists():
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 pass
 
         features = self._extract_feature_names(release_dir, meta)

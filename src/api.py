@@ -194,7 +194,7 @@ def _load_all_metas() -> list[dict[str, Any]]:
                 try:
                     data = json.loads(meta_path.read_text())
                     metas.append(data)
-                except (json.JSONDecodeError, OSError):
+                except json.JSONDecodeError, OSError:
                     continue
     except OSError:
         return []
@@ -220,7 +220,7 @@ def _find_meta(slug: str) -> dict[str, Any] | None:
     try:
         data: dict[str, Any] = json.loads(meta_path.read_text())
         return data
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
 
 

@@ -421,7 +421,7 @@ def _update_readme_single(
     _year_part = 25  # default
     try:
         _year_part = int(release.name.split("'")[1])
-    except (IndexError, ValueError):
+    except IndexError, ValueError:
         pass
     _major = _year_part - 24  # 2025 = v1.x.x
     _minor = _season_index.get(_season_part, 0)
@@ -432,7 +432,7 @@ def _update_readme_single(
             _prev_ver = _prev.get("version", "1.0.0")
             _prev_patch = int(_prev_ver.split(".")[2])
             _patch = _prev_patch + 1
-        except (json.JSONDecodeError, OSError, IndexError, ValueError):
+        except json.JSONDecodeError, OSError, IndexError, ValueError:
             pass
     version = f"{_major}.{_minor}.{_patch}"
 

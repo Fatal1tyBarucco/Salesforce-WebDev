@@ -58,7 +58,7 @@ def load_all_metas() -> list[dict[str, Any]]:
             try:
                 meta = json.loads(meta_path.read_text(encoding="utf-8"))
                 metas.append(meta)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
 
     metas.sort(key=lambda m: m.get("release_id", 0))
@@ -77,7 +77,7 @@ def _parse_generated_at(meta: dict[str, Any]) -> float:
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=UTC)
         return dt.timestamp()
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return 0.0
 
 
