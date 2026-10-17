@@ -818,7 +818,7 @@ flowchart LR
 
 | Requisito | Versão | Instalação |
 |:----------|:-------|:-----------|
-| Python | 3.13+ | [python.org](https://www.python.org/) |
+| Python | 3.14+ | [python.org](https://www.python.org/) |
 | uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Playwright | Chromium | `uv run playwright install chromium` |
 

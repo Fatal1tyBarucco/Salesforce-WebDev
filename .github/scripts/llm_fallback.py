@@ -241,7 +241,7 @@ def build_single_file_prompt(filepath, errors, test_context):
         "3. Preserve ALL existing functionality, classes, functions, and imports.\n"
         "4. Add missing classes/functions that tests expect, with real logic when clear.\n"
         "5. Use minimal stubs only when behavior is ambiguous.\n"
-        "6. Ensure valid Python 3.13.\n\n"
+        "6. Ensure valid Python 3.14.\n\n"
         "JSON format:\n"
         '{"corrected_code": "complete file content here"}\n'
     )
@@ -275,7 +275,7 @@ def build_import_fix_prompt(filepath, missing_names, test_context):
         "4. Implement with real logic when test expectations are clear.\n"
         "5. Use minimal stubs for ambiguous cases.\n"
         "6. Add necessary imports (dataclass, typing, etc.) at the top.\n"
-        "7. Ensure valid Python 3.13.\n\n"
+        "7. Ensure valid Python 3.14.\n\n"
         "JSON format:\n"
         '{"corrected_code": "complete file content here"}\n'
     )

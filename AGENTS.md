@@ -4,9 +4,9 @@ This guide is for AI coding agents working in the `Salesforce-WebDev` repository
 
 ## Project Snapshot
 
-Salesforce-WebDev is an ETL pipeline for extracting, classifying, and versioning Salesforce Release Notes, built with Python (3.13), BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, and FastAPI.
+Salesforce-WebDev is an ETL pipeline for extracting, classifying, and versioning Salesforce Release Notes, built with Python (3.14), BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, and FastAPI.
 
-Dependency management and virtual environments are handled by `uv`. The project runs under **Python 3.13** via `uv` (system default may be 3.14, but `uv` pins to 3.13 via `requires-python = ">=3.13,<3.14"`).
+Dependency management and virtual environments are handled by `uv`. The project runs under **Python 3.14** via `uv` (system default may be 3.14, but `uv` pins to 3.14 via `requires-python = ">=3.14,<3.15"`).
 
 ## Setup & Development Commands
 
@@ -22,7 +22,7 @@ Dependency management and virtual environments are handled by `uv`. The project 
 
 ## Stack & Conventions
 
-- Python `>=3.13,<3.14` (via `uv`; system may have 3.14, but lock file pins to 3.13).
+- Python `>=3.14,<3.15` (via `uv`; system may have 3.14, lock file pins to 3.14).
 - `addopts = "-q --tb=short --durations=10 --timeout=120"` in pyproject.toml; `--timeout=120` (pytest-timeout) enforces a 120s per-test limit.
 - Code style: Black (line length 100) and Ruff linting.
 - Async code: Asyncio (`asyncio_mode = "auto"` in pytest).
@@ -51,11 +51,16 @@ Quando `python-quality.yml` falha, ele cria um issue automaticamente e comenta `
 ### Quality issue fix convention (updated 2026-09-22)
 When an open issue reports "Python Quality falhou": fix with `uv run ruff check . --fix`, `uv run black .`, commit to main, push, then close all related issues (#141-143 pattern). Remove test artifacts (`NOTIFICATION_DIGEST.md`, `DIFF_REPORT.md`, etc.). Verify with `uv run pytest --cov=src --cov-fail-under=95`.
 
-### Key Files & Decisions
+#### Atualização de conclusão (2026-10-17 — Renato / Termux aarch64-android)
+- Issue #184 fechada; PR #188 mergeada; repo sincronizado para 93cf8c2.
+- MEMORY.md criado local (não versionado) com registro da conclusão e bloqueio (ruff 0.17.1 não linkado, python3.13 indisponível).
+- Bloqueio documentado honestamente: não inventado.
+
+## Key Files & Decisions
 
 ### Dependency constraints
 
-- `pyproject.toml` specifies `requires-python = ">=3.13,<3.14"`.
+- `pyproject.toml` specifies `requires-python = ">=3.14,<3.15"`.
 - `pytest>=8.0.0,<10` — pytest 9.x in `uv.lock` (`pytest==9.1.1`).
 - **Do not** add `pytest-syrupy` to `pyproject.toml` — it would downgrade pytest to 8.4.2.
 - `syrupy` is installed via `uv pip install "syrupy>=4.9.0,<5"` in the CI tests job (after `uv sync`), NOT via pyproject.toml.

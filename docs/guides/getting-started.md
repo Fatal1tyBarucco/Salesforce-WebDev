@@ -4,7 +4,7 @@ Configuração mínima para rodar o pipeline de extração e documentação em 5
 
 ## Pré-requisitos
 
-- Python 3.13 ou superior (o projeto usa `uv` para gerenciamento)
+- Python 3.14 or higher (o projeto usa `uv` para gerenciamento)
 - Git
 - Conta no GitHub (para clonar o repositório)
 - Chave LLM (opcional — OpenAI, Google Gemini ou OpenCode)

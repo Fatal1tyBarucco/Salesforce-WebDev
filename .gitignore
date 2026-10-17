@@ -25,6 +25,9 @@ ENV/
 *.swo
 *~
 
+# Não versionado — registro local de conclusão (Renato)
+MEMORY.md
+
 # OS
 .DS_Store
 Thumbs.db
