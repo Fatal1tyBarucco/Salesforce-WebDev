@@ -1,6 +1,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║           🐍 Python Quality — Salesforce Release Notes           ║
-# ║  Lint · Format · Types · Tests · Coverage — Python 3.13          ║
+# ║  Lint · Format · Types · Tests · Coverage — Python 3.14          ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 name: Python Quality
@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
   UV_CACHE_DIR: /tmp/uv-cache
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
 
