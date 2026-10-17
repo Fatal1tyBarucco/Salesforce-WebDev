@@ -379,6 +379,7 @@ Salesforce-WebDev/
   ├── releases/                  # Artefatos Markdown por release
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
+  ├── .python-version
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
