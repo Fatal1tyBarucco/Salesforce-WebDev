@@ -69,7 +69,7 @@ O pipeline é executado automaticamente via GitHub Actions:
 
 - **Push na branch main** — Execução incremental
 - **Cron a cada 6 horas** — Execução completa (`schedule: 17 */6 * * *`)
-- **Manual** — Via `workflow_dispatch` com modos `incremental`, `full` ou `audit`
+- **Manual** — Via `workflow_dispatch` com modo `reconcile` (obrigatório) ou `full`. `audit` foi removido; qualquer alteração deve refletir na documentação.
 
 Ver [Operações de Workflow](../maintenance/workflow-operations.md) para detalhes.
 
