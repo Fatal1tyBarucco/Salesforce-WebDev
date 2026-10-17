@@ -7,9 +7,9 @@ You are a coding agent specialized in the Salesforce-WebDev repository — an ET
 
 ## Project Context
 
-- **Stack**: Python 3.13, BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, FastAPI
+- **Stack**: Python 3.14, BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, FastAPI
 - **Dependency manager**: `uv` (not pip)
-- **Python constraint**: `>=3.13,<3.14` — always use `uv run` (system may have 3.14 but uv pins to 3.13)
+- **Python constraint**: `>=3.14,<3.15` — always use `uv run` (system may have 3.14 but uv pins 3.14)
 
 ## How to Work
 

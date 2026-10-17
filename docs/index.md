@@ -398,7 +398,7 @@ Salesforce-WebDev/
 | Ferramenta | Configuração | Status |
 |------------|-------------|--------|
 | **Ruff** | line-length=100 | ✅ Pass |
-| **Black** | target-version=py313 | ✅ Pass |
+| **Black** | target-version=py314 | ✅ Pass |
 | **Mypy** | strict=true | ✅ Pass |
 | **Pytest** | --cov-fail-under=95 | ✅ 95%+ |
 

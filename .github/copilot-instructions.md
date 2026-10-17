@@ -4,7 +4,7 @@ Custom instructions for GitHub Copilot agents working in the Salesforce-WebDev r
 
 ## Project Summary
 
-ETL pipeline for extracting, classifying, and versioning Salesforce Release Notes. Python 3.13, BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, FastAPI.
+ETL pipeline for extracting, classifying, and versioning Salesforce Release Notes. Python 3.14, BeautifulSoup, Playwright, OpenAI/Google GenAI, Pydantic, FastAPI.
 
 ## Build & Test Commands
 
@@ -28,7 +28,7 @@ uv run pre-commit run --all-files
 ### Dependencies
 - **Never** add `pytest-syrupy` to `pyproject.toml` (it would downgrade pytest from 9.x to 8.4.2)
 - Install `syrupy` via `uv pip install "syrupy>=4.9.0,<5"` — not via pyproject.toml
-- Python constraint: `>=3.13,<3.14` — use `uv run` (system may have 3.14 but uv pins 3.13)
+- Python constraint: `>=3.14,<3.15` — use `uv run` (system may have 3.14 but uv pins 3.14)
 
 ### Code Quality
 - Use `datetime.now()` — never `datetime.utcnow()` (deprecated)
