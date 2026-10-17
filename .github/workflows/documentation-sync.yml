@@ -10,7 +10,7 @@
 #     → Link Checker → mkdocs build --strict (best-effort) → Commit (se Changes) → Push
 #     → Triggers documentation-build.yml → GitHub Pages
 #
-# Modos: incremental (push) · full (schedule) · audit (read-only drift report)
+# Modos: reconcile (push/PR) · full (schedule) · reconcile (manual) — obrigatório para qualquer alteração
 # Anti-loop: skips when HEAD commit is an automation commit (docs(sync): by bot)
 #
 # Concurrency: grupo "pages" coordena sync + build/deploy para evitar
@@ -32,20 +32,21 @@ name: Documentation Sync
 on:
   push:
     branches:
-      - main
+      - '*'
+  pull_request:
+    types: [opened, synchronize, reopened]
   schedule:
     - cron: "17 */6 * * *"   # a cada 6 horas
   workflow_dispatch:
     inputs:
       mode:
-        description: "Modo de reconciliação"
+        description: "Modo de reconciliação (obrigatório: reconcile)"
         required: false
-        default: "incremental"
+        default: "reconcile"
         type: choice
         options:
-          - incremental
+          - reconcile
           - full
-          - audit
 
 permissions:
   contents: write
@@ -102,7 +103,7 @@ jobs:
           fi
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      # RESOLVER MODO ANTES DA INSTALAÇÃO: audit só executa a engine
+      # RESOLVER MODO ANTES DA INSTALAÇÃO: reconcile executa a engine
       # stdlib-only e não precisa baixar dependências.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Resolver modo de execução
@@ -111,9 +112,10 @@ jobs:
         run: |
           set -e
           case "${{ github.event_name }}" in
-            push)     MODE="incremental" ;;
+            push)     MODE="reconcile" ;;
+            pull_request) MODE="reconcile" ;;
             schedule) MODE="full" ;;
-            *)        MODE="${{ github.event.inputs.mode || 'incremental' }}" ;;
+            *)        MODE="${{ github.event.inputs.mode || 'reconcile' }}" ;;
           esac
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
           echo "started_at=$(date -u +%s)" >> "$GITHUB_OUTPUT"
@@ -123,10 +125,10 @@ jobs:
       # SETUP UV: instala uv + cache embutido (enable-cache invalida
       # quando uv.lock muda). Substitui o actions/cache manual que
       # usava github.sha na chave (cache hit de 0% — nunca restaurava).
-      # O modo audit não configura uv, pois não executa ferramentas do projeto.
+      # Reconcile configura uv obrigatoriamente, pois não executa ferramentas do projeto.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Setup uv
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           enable-cache: true
@@ -147,10 +149,10 @@ jobs:
       # engine (python3, stdlib-only) NÃO depende deste venv; se a instalação
       # do mkdocs/griffe falhar em CI (ex.: corrupção de namespace), a sync
       # determinística ainda roda. Hardening anti-falha de pipeline.
-      # É pulado em audit: a engine usa apenas a biblioteca padrão.
+      # Sempre executa: a engine usa apenas a biblioteca padrão.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Instalar dependências
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         continue-on-error: true
         run: uv sync --frozen --extra dev --extra docs
 
@@ -177,7 +179,7 @@ jobs:
       # (main() do engine faz safe-abort e nunca trava a CI).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Reconciliação determinística (LLM-free, idempotent)
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: reconcile
         run: |
           set -o pipefail
@@ -198,7 +200,7 @@ jobs:
       # a validação no próximo step captura e reporta.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Auto-fix erros determinísticos de markdown lint
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: markdown-fix
         run: |
           set -e
@@ -234,7 +236,7 @@ jobs:
       # fixes aplicados estejam corretos e que nenhum erro permaneça.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar formatação — markdown lint
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: markdown-lint
         run: |
           npx --yes markdownlint-cli2 \
@@ -247,7 +249,7 @@ jobs:
       # VALIDAÇÃO 2/3 — LINK CHECKER (sempre executa)
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar links — link checker
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: link-check
         run: |
           npx --yes markdown-link-check \
@@ -264,7 +266,7 @@ jobs:
       # em ambientes efêmeros de CI. Falha aqui NÃO aborta a sync.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Validar documentação (mkdocs strict, best-effort)
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: mkdocs-build
         continue-on-error: true
         run: uv run mkdocs build --strict
@@ -275,7 +277,7 @@ jobs:
       # (docs/, README.md, README.en.md, mkdocs.yml).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Verificar alterações documentais
-        if: steps.guard.outputs.skip != 'true' && steps.mode.outputs.mode != 'audit'
+        if: steps.guard.outputs.skip != 'true'
         id: changes
         run: |
           if [ -n "$(git status --porcelain docs/ README.md README.en.md mkdocs.yml)" ]; then
@@ -289,14 +291,13 @@ jobs:
       # ATUALIZAR MANIFESTO DE BASELINE:
       # Atualiza docs/.documentation-manifest.json (baseline de blobs). O
       # engine `reconcile` já chama write_manifest() internamente; este passo
-      # garante o baseline fique commitado quando o modo não for audit.
+      # garante o baseline fique commitado sempre.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Atualizar manifesto de baseline
         id: manifest
         if: |
           steps.guard.outputs.skip != 'true' &&
-          steps.changes.outputs.has_changes == 'true' &&
-          steps.mode.outputs.mode != 'audit'
+          steps.changes.outputs.has_changes == 'true'
         run: python3 .github/scripts/docs_sync_engine.py manifest
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -307,7 +308,6 @@ jobs:
       - name: Configurar identidade do bot para commits
         if: |
           steps.guard.outputs.skip != 'true' &&
-          steps.mode.outputs.mode != 'audit' &&
           steps.changes.outputs.has_changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
@@ -323,8 +323,7 @@ jobs:
         id: commit-push
         if: |
           steps.guard.outputs.skip != 'true' &&
-          steps.changes.outputs.has_changes == 'true' &&
-          steps.mode.outputs.mode != 'audit'
+          steps.changes.outputs.has_changes == 'true'
         run: |
           set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
@@ -395,8 +394,8 @@ jobs:
             cat /tmp/reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          if [ "$MODE" = "audit" ]; then
-            echo "Audit é somente leitura: não instala dependências nem executa reconciliação, auto-fix, build ou push." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$MODE" = "reconcile" ]; then
+            echo "Reconcile é obrigatório: instala, reconcilia, valida, commita e faz push obrigatoriamente para qualquer alteração." >> "$GITHUB_STEP_SUMMARY"
           fi
 
           echo "" >> "$GITHUB_STEP_SUMMARY"

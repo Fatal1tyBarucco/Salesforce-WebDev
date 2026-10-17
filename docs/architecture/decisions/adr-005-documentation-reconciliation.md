@@ -2,7 +2,7 @@
 
 ## Context
 
-The repository uses a GitHub Actions workflow to keep documentation in sync with the source code. The workflow runs on pushes to `main`, on a schedule (every 6 hours), and can be manually triggered.
+The repository uses a GitHub Actions workflow (`documentation-sync.yml`) that runs on every push to any branch (`*`), on every `pull_request`, on a schedule (every 6 hours), and can be manually triggered. Reconciliation is mandatory (`reconcile` mode); `audit` (read-only) has been removed to guarantee that any repository change always reflects in documentation.
 
 ## Decision
 
@@ -11,9 +11,9 @@ We chose to use a dedicated workflow (`documentation-sync.yml`) to detect and re
 1. **Checkout** the repository with full history (`fetch-depth: 0`) so the drift detection script can analyze the blob history.
 2. **Guard anti-loop**: skip execution if the latest commit is an automation commit created by the workflow itself (`docs(sync)`).
 3. **Cache restore**: restore the `uv` virtual environment and cache to avoid re‑installing dependencies on every run.
-4. **Setup** `uv` and Python (version 3.13) in the environment.
+4. **Setup** `uv` and Python (version 3.14) in the environment.
 5. **Install dependencies** (`uv sync --frozen --extra dev --extra docs`).
-6. **Determine execution mode** (`incremental`, `full`, or `audit`) based on the event type or input.
+6. **Determine execution mode** (`reconcile` for push/PR, `full` for schedule, `reconcile` for manual) — reconciliation is mandatory.
 7. **Deterministic drift detection**: compare the `.documentation-manifest.json` snapshot with the current repository state to identify added, modified, removed, or orphaned files.
 8. **LLM reconciliation**, **link checking**, and **markdown linting**.
 9. **Build documentation** with `mkdocs build --strict`. If changes are detected, the workflow commits the updated documentation and pushes it, which triggers the `documentation-build.yml` workflow that publishes the site to GitHub Pages.

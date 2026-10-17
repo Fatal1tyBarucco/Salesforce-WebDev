@@ -12,18 +12,18 @@
 
 ### 1. Inspecionar drift sem escrita
 
-O modo `audit` detecta drift sem instalar dependências, alterar arquivos ou fazer push. Ele não executa reconciliação nem auto-fix.
+O modo `audit` foi removido. Todo push/PR executa `reconcile` obrigatoriamente: instala dependências, reconcilia, valida e faz push.
 
 **Validação:**
 
 ```bash
-# Executar a engine de auditoria localmente
+# Executar a engine de detecção de drift localmente (leitura)
 DRIFT_REPORT=/tmp/drift_report.json python3 .github/scripts/docs_sync_engine.py audit
 ```text
 
 **Ação:**
 
-- No GitHub Actions, executar manualmente `Documentation Sync` com o modo `audit`
+- No GitHub Actions, o modo é obrigatório (`reconcile`); `audit` foi removido para garantir que qualquer alteração reflita na documentação.
 - Inspecionar `/tmp/drift_report.json` no ambiente local para ver os findings
 
 ### 2. mkdocs build --strict falhou
