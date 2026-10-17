@@ -916,10 +916,10 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 
 | Ferramenta | Configuração | Status |
 |:-----------|:-------------|:------:|
-| 🐍 **Python** | 3.13, type hints completos | ✅ |
+| 🐍 **Python** | 3.14, type hints completos | ✅ |
 | 🔍 **Mypy** | `strict = true` | ✅ |
 | ⚡ **Ruff** | `line-length = 100` | ✅ |
-| 🖤 **Black** | `target-version = py313` | ✅ |
+| 🖤 **Black** | `target-version = py314` | ✅ |
 | 🧪 **Pytest** | 95%+ cobertura | ✅ |
 | 📦 **uv** | Lock file determinístico | ✅ |
 
@@ -1155,7 +1155,7 @@ Salesforce-WebDev/
 ├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
 │
 ├── mkdocs.yml                       # 📖 Config MkDocs
-├── pyproject.toml                   # 📦 Config do projeto (Python >=3.13,<3.14)
+├── pyproject.toml                   # 📦 Config do projeto (Python >=3.14,<3.15)
 ├── uv.lock                          # 🔒 Lock file
 ├── Dockerfile                       # 🐳 Multi-stage build
 └── .pre-commit-config.yaml          # 🪝 Pre-commit hooks
