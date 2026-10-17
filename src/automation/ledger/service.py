@@ -564,7 +564,7 @@ class FeatureEvolutionLedgerService:
                     )
                     meta["slug"] = d.name
                     metas.append(meta)
-                except (json.JSONDecodeError, OSError):
+                except json.JSONDecodeError, OSError:
                     logger.debug(
                         "Não foi possível carregar %s, pulando.",
                         meta_path,

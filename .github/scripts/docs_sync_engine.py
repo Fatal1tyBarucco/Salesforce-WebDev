@@ -91,7 +91,7 @@ def run_git(args: list[str]) -> tuple[int, str]:
             timeout=120,
         )
         return proc.returncode, proc.stdout.strip()
-    except (OSError, Exception):
+    except OSError, Exception:
         return 1, ""
 
 
@@ -115,7 +115,7 @@ def tracked_inventory() -> dict[str, str]:
 def read_text(rel: str) -> str:
     try:
         return (REPO_ROOT / rel).read_text(encoding="utf-8", errors="replace")
-    except (OSError, ValueError):
+    except OSError, ValueError:
         return ""
 
 
@@ -123,7 +123,7 @@ def load_manifest() -> dict:
     try:
         data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         return data if isinstance(data, dict) else {}
-    except (OSError, ValueError, json.JSONDecodeError):
+    except OSError, ValueError, json.JSONDecodeError:
         return {}
 
 
@@ -136,7 +136,7 @@ def write_file(rel: str, content: str) -> bool:
             return False
         path.write_text(content, encoding="utf-8")
         return True
-    except (OSError, ValueError):
+    except OSError, ValueError:
         return False
 
 
@@ -178,7 +178,7 @@ def module_title(dotted: str, rel_file: str) -> str:
             first = doc.strip().splitlines()[0].strip().rstrip(".")
             if first and len(first) <= 60:
                 return first
-    except (SyntaxError, ValueError):
+    except SyntaxError, ValueError:
         pass
     stem = Path(rel_file).stem
     human = " ".join(w.capitalize() for w in re.split(r"[_\-.]+", stem))
@@ -397,7 +397,7 @@ def release_inventory() -> list[dict]:
         if meta.is_file():
             try:
                 data = json.loads(meta.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
+            except OSError, json.JSONDecodeError:
                 data = {}
         cats = data.get("categories", [])
         out.append(
@@ -1051,7 +1051,7 @@ def strip_dead_refs() -> list[str]:
                     resolved = (REPO_ROOT / base / clean).resolve()
                     rel = resolved.relative_to(root_resolved).as_posix()
                     exists = resolved.is_file() or resolved.is_dir() or rel in inventory
-                except (ValueError, OSError):
+                except ValueError, OSError:
                     exists = False
                 if not exists:
                     replacement = m.group(1) or clean

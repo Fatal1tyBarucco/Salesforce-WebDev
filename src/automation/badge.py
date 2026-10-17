@@ -57,7 +57,7 @@ def get_latest_release_badge() -> str:
                 if meta and meta.get("release_id", 0) > latest_id:
                     latest_id = meta.get("release_id", 0)
                     latest = meta.get("name", d.name)
-            except (json.JSONDecodeError, OSError):
+            except json.JSONDecodeError, OSError:
                 continue
     return latest or "N/A"
 
@@ -79,7 +79,7 @@ def generate_release_header_badges(slug: str) -> str:
 
     try:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return ""
 
     name = meta.get("name", slug)
@@ -107,7 +107,7 @@ def generate_category_badges(slug: str, category_name: str) -> str:
 
     try:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return ""
 
     for cat in meta.get("categories", []):
