@@ -96,6 +96,7 @@ nav:
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
       - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
+      - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
   - API Reference:
     - Impact Propagation Engine: api/impact_propagation-engine.md
     - Impact Propagation Graph Builder: api/impact_propagation-graph_builder.md
@@ -185,6 +186,8 @@ nav:
     - V3: roadmap/v3.md
     - V4 (Atual): roadmap/v4.md
   - Changelog: changelog.md
+  - Planos:
+    - Comentário Automático /oc fix: plans/auto-opencode-issue.md
   - Referências:
     - Source Schema: SOURCE_SCHEMA.md
   - Contribuição:

@@ -264,7 +264,7 @@
     ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "7bdb0240a23d94d6de522df5b3e5fa2db55e51dd",
-    ".github/workflows/documentation-sync.yml": "c39242b713607cc0770fcabba67d9bc28d637c03",
+    ".github/workflows/documentation-sync.yml": "17f9e55ff75aec603c009562f9152b1275e3bdc0",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
     ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
@@ -357,7 +357,7 @@
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
     "docs/architecture/decisions/adr-003-topic-classification.md": "0b5af8d9e4f2e944218dd594939474733c568d3e",
     "docs/architecture/decisions/adr-004-auto-healing.md": "04b40d512bc7a5eed78848ade93527e11bfbec9a",
-    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "b2e4f8d2027f9ae1b4a48eeed2aa1498b54d52cb",
+    "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "939d7a55b2d046315b6486b6c11cad0d1c0b35bf",
     "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "f19c0b74c4db19849ea593153751df05a27c9a5f",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
@@ -371,7 +371,7 @@
     "docs/guides/getting-started.md": "09febb51ced41f0e828d0adcab215176de4e54af",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
-    "docs/guides/running-pipeline.md": "5050f4dccffc24ab3a362cfd2e2ff855dc9f9768",
+    "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
     "docs/index.md": "1adcdd3ca8d7156eb6757edcd7123bff2f5afb35",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -389,7 +389,7 @@
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
     "docs/roadmap/v3.md": "57e06591c6941ba9df4035b103b979d7c6530ae0",
     "docs/roadmap/v4.md": "bc7e75d4dbdeb362ca25a9bdca4b890c4134cac9",
-    "docs/runbooks/documentation-sync-failure.md": "b50d133cd3bc502e45b294fefb73699747e9b001",
+    "docs/runbooks/documentation-sync-failure.md": "4fb1967b45c0b4db9298d506eacaa39d1f2cb683",
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
     "docs/runbooks/index.md": "a267cf5c71ad14f310433cb669f110ae9b7f6e60",
     "docs/runbooks/mkdocs-build-failure.md": "bcf7c297d31b5b0c6fe93587afd8c95256072687",
@@ -747,6 +747,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-17T05:00:27.053168+00:00",
-  "repository_sha": "e06c05ffc7d862ec946644362ea77ea6f0af6bf6"
+  "generated_at": "2026-10-17T13:37:59.137947+00:00",
+  "repository_sha": "c9f69a074840c76941fe7fc892f48510027ad170"
 }
