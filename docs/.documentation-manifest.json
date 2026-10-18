@@ -626,7 +626,7 @@
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
     "src/ai/llm/client.py": "8736a1483dddb2fe6010fb2ae2dd41a7da6a0756",
-    "src/ai/orchestrator.py": "4d367959e88e6e784d49b6f93091d7fa79db7c2e",
+    "src/ai/orchestrator.py": "69c36812302aaa1c63518bb831c66101489ee76f",
     "src/ai/prompts/__init__.py": "69c96756d3b9a2933f2ba03fb0078a88a7d13a11",
     "src/ai/prompts/changelog.prompt": "edbc30d83502a43060d17af5e9007b778cfaff05",
     "src/ai/prompts/classification.py": "bc5ff4851227f8fa3bfbdbc0459e926953514570",
@@ -796,6 +796,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T03:55:12.612699+00:00",
-  "repository_sha": "c07e25b1dcb7fcb9d2ab9df1f58dfa3149aec171"
+  "generated_at": "2026-10-18T03:56:40.838645+00:00",
+  "repository_sha": "ad8c69ba6160206ed2f40e05edcb32bd3eb6ffa1"
 }
