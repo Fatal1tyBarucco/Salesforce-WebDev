@@ -1,0 +1,101 @@
+name: AI Documentation Pipeline (Dynamic — Free Tier Providers)
+# Uses the project's existing LLMService provider chain:
+# OpenRouter (free) -> OpenCode (free) -> Gemini (free tier, ~20 req/day protected).
+# All secrets already configured by the existing pipeline.
+
+on:
+  push:
+    branches: [main, release/*]
+    paths:
+      - 'src/**'
+      - 'force-app/**'
+      - 'sfdx-project.json'
+  workflow_dispatch:
+    inputs:
+      since_ref:
+        description: 'Git ref to start from (optional)'
+        required: false
+        default: ''
+  workflow_call:
+
+concurrency:
+  group: ai-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ai-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      # Existing free-tier provider chain (LLMService reads these automatically)
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      # Pipeline config
+      LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openrouter' }}
+      AI_DOCS_SELF_REVIEW: ${{ vars.AI_DOCS_SELF_REVIEW || 'false' }}
+      AI_DOCS_REVIEWERS: ${{ vars.AI_DOCS_REVIEWERS || '' }}
+      PUBLISH_MODE: ${{ github.event.inputs.publish_mode || 'commit' }}
+
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          fetch-depth: 0  # Needed for git diff since last ref
+
+      - name: Setup Python (3.14 via uv)
+        uses: actions/setup-python@0b93645e9fea731ce31601cb75cbf0769bccc6bb # v5
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies (existing uv + free-tier chain)
+        run: |
+          pip install uv
+          uv sync --frozen --extra dev --extra healing --group dev
+          # LLMService uses openai + google-genai already in pyproject.toml
+
+      - name: Read last processed ref
+        id: last_ref
+        run: |
+          if [ -f docs/.last-processed-ref ]; then
+            echo "ref=$(cat docs/.last-processed-ref)" >> $GITHUB_OUTPUT
+          else
+            echo "ref=HEAD~10" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run AI-doc pipeline (uses ExistingLLMClient / LLMService)
+        id: pipeline
+        env:
+          SINCE_REF: ${{ github.event.inputs.since_ref || steps.last_ref.outputs.ref }}
+          PUBLISH_MODE: ${{ env.PUBLISH_MODE }}
+        run: |
+          # Pipeline delegates to LLMService (free-tier chain: openrouter -> opencode -> gemini)
+          uv run python -m src.ai.orchestrator \
+            --since-ref "$SINCE_REF" \
+            --publish-mode "$PUBLISH_MODE"
+
+      - name: Upload audit artifacts (prompts, raw LLM output, validated schemas, diff)
+        if: always()
+        uses: actions/upload-artifact@4cec3d8aa74aeb955ef31e5334f3df34eedeed2 # v4
+        with:
+          name: ai-docs-audit-${{ github.run_id }}
+          path: docs/.ai-logs/
+
+      - name: Commit or open PR (controlled by PUBLISH_MODE)
+        if: steps.pipeline.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "$PUBLISH_MODE" = "pr" ]; then
+            gh pr create --title "docs: atualização automática via IA [skip ci]" \
+              --body "Resumo gerado pelo pipeline AI-docs. Verificar antes de mesclar." \
+              --base main --head ai-docs/${{ github.run_id }}
+          else
+            git config user.name "AI-Docs Bot"
+            git config user.email "ai-docs-bot@users.noreply.github.com"
+            git add docs/ src/ai/ .github/ai-docs-ignore
+            git commit -m "docs: atualização automática via IA [skip ci]" || echo "No changes to commit"
+            git push
+          fi
