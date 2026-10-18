@@ -1,13 +1,9 @@
 """Pydantic schema for change classification output from LLM."""
-<<<<<<< HEAD
 
-=======
->>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
 from __future__ import annotations
 from typing import Literal
 from pydantic import BaseModel, Field
 
-<<<<<<< HEAD
 
 class ChangeEntry(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
@@ -24,22 +20,12 @@ class ChangeEntry(BaseModel):
     impact: Literal["high", "medium", "low"]
     impact_justification: str = Field(..., min_length=10, max_length=500)
     priority: Literal["P0", "P1", "P2", "P3"]
-=======
-class ChangeEntry(BaseModel):
-    title: str = Field(..., min_length=1, max_length=200)
-    description: str = Field(..., min_length=10, max_length=2000)
-    type: Literal["feature","bugfix","security","performance","breaking_change","documentation","refactor"]
-    impact: Literal["high","medium","low"]
-    impact_justification: str = Field(..., min_length=10, max_length=500)
-    priority: Literal["P0","P1","P2","P3"]
->>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
     affected_components: list[str] = Field(default_factory=list)
     source_refs: list[str] = Field(..., min_length=1)
     confidence: float = Field(..., ge=0.0, le=1.0)
     needs_review: bool = False
     review_note: str = ""
 
-<<<<<<< HEAD
 
 class ChangeClassification(BaseModel):
     changes: list[ChangeEntry] = Field(default_factory=list)
@@ -51,11 +37,3 @@ class ChangeClassification(BaseModel):
         for entry in self.review_needed:
             entry.needs_review = True
             entry.review_note = "Baixa confiança — ser revisado pela equipe."
-<<<<<<< HEAD
-=======
-class ChangeClassification(BaseModel):
-    changes: list[ChangeEntry] = Field(default_factory=list)
-    review_needed: list[ChangeEntry] = Field(default_factory=list)
->>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
-=======
->>>>>>> 4279e73 (fix(ai-docs): corrige change_reviewer (import + logger), change_classifier (retorno), e prompts path)
