@@ -288,7 +288,7 @@
     ".github/scripts/llm_fallback.py": "3ff9f3af317e746772e85b4e585bf510c6ed17f8",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
-    ".github/workflows/ai-docs.yml": "c1fa2c7172b3ac5bd3376341254058d3fa84ad56",
+    ".github/workflows/ai-docs.yml": "e1d4b4a0b2f788fd46897e14cbe31c35a3f4623b",
     ".github/workflows/copilot-setup-steps.yml": "5f72d484df396c45cb5a3a586aacdaf009ecc4ce",
     ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
@@ -317,6 +317,7 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
+    "docs/.ai-logs/README.md": "d879af066b571b32d20aeb6ff4e31ef075b209bc",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -800,6 +801,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T04:03:08.679690+00:00",
-  "repository_sha": "609caf07f0f2aeb9bcc8ba5ee630a69ac5daf252"
+  "generated_at": "2026-10-18T04:06:26.865143+00:00",
+  "repository_sha": "b64eca738a8d62ba7a026ad2b6394b7976567710"
 }
