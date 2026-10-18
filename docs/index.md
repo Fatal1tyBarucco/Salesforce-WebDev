@@ -380,8 +380,6 @@ Salesforce-WebDev/
   ├── docs/                      # Documentação MkDocs
   ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
-  ├── logs/
-  ├── references/
   ├── releases/                  # Artefatos Markdown por release
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
@@ -390,7 +388,6 @@ Salesforce-WebDev/
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
   ├── Dockerfile                 # Imagem Docker de runtime
-  ├── MEMORY.md
   ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
@@ -398,6 +395,7 @@ Salesforce-WebDev/
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
+
 ```
 
 ## Qualidade de Código
