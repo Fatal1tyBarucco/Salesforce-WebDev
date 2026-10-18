@@ -296,7 +296,7 @@
     ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "7bdb0240a23d94d6de522df5b3e5fa2db55e51dd",
-    ".github/workflows/documentation-sync.yml": "6ea80a986cf2e2b562547fb7e0fbce492532d5ec",
+    ".github/workflows/documentation-sync.yml": "52dcf8e99aae3cb1b33cd336b0f47dae509707ff",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
     ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
@@ -414,7 +414,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "19a0785e83e7820215446e234f8d5184d78358f0",
+    "docs/index.md": "6ff20dce84d1a48370ac9786aca4d57f62da02b1",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -809,6 +809,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T22:46:04.308999+00:00",
-  "repository_sha": "5f7ca50718dcca408523ea6cd83ac470e6dafedd"
+  "generated_at": "2026-10-18T22:48:00.477080+00:00",
+  "repository_sha": "4b8ffff32ab97e6e9782c4bc111c1ea90a1463e2"
 }
