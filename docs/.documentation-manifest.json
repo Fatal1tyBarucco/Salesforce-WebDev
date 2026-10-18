@@ -275,6 +275,7 @@
     ".github/ISSUE_TEMPLATE/bug_report.md": "7bff8dccde6a73cfbed3cf71d272aa50ff00fdc7",
     ".github/ISSUE_TEMPLATE/feature_request.md": "18c140ace665dab0a02869545a523584b37817b2",
     ".github/agents/salesforce-release-notes-agent.md": "0f8b0d0be627d96cccc60838bf5febf518f68fca",
+    ".github/ai-docs-ignore": "a746cb8c884050cde72a63823554919581180938",
     ".github/copilot-instructions.md": "e5356af3a20a992710a9959394dcbcb5f9ef22ed",
     ".github/dependabot.yml": "ec76a0a6b7fb35c0d5996bfd80ae19dbb38044fa",
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
@@ -796,6 +797,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T03:56:40.838645+00:00",
-  "repository_sha": "ad8c69ba6160206ed2f40e05edcb32bd3eb6ffa1"
+  "generated_at": "2026-10-18T03:59:28.432274+00:00",
+  "repository_sha": "c9e2cd25a484c8191850af2d79d4efab42976f9e"
 }
