@@ -57,3 +57,10 @@ Melhorias de grande impacto no projeto. Refatorações e features apenas; atuali
 ---
 
 Formatado para leitura direta: cada seção com título claro, breve descrição e arquivos-chave envolvidos.
+
+---
+
+## Atualizações automáticas (grande impacto)
+
+- `4f88fd6` — feat(automation): changelog automático para atualizações de grande impacto
+- `54d4696` — docs(changelog): inclui todas as melhorias grandes — refatorações e features
