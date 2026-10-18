@@ -16,15 +16,22 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 
 | Módulo | Evocador |
 |--------|----------|
+| `src.ai.collectors.change_collector` | [`ai-collectors-change_collector.md`](ai-collectors-change_collector.md) |
 | `src.ai.generators.badges` | [`ai-generators-badges.md`](ai-generators-badges.md) |
 | `src.ai.generators.code` | [`ai-generators-code.md`](ai-generators-code.md) |
 | `src.ai.generators.markdown` | [`ai-generators-markdown.md`](ai-generators-markdown.md) |
 | `src.ai.integrations.salesforce` | [`ai-integrations-salesforce.md`](ai-integrations-salesforce.md) |
 | `src.ai.integrations.trailhead` | [`ai-integrations-trailhead.md`](ai-integrations-trailhead.md) |
+| `src.ai.llm.client` | [`ai-llm-client.md`](ai-llm-client.md) |
+| `src.ai.orchestrator` | [`ai-orchestrator.md`](ai-orchestrator.md) |
 | `src.ai.prompts.classification` | [`ai-prompts-classification.md`](ai-prompts-classification.md) |
 | `src.ai.prompts.enrichment` | [`ai-prompts-enrichment.md`](ai-prompts-enrichment.md) |
 | `src.ai.prompts.reporting` | [`ai-prompts-reporting.md`](ai-prompts-reporting.md) |
 | `src.ai.prompts.validation` | [`ai-prompts-validation.md`](ai-prompts-validation.md) |
+| `src.ai.schemas.change` | [`ai-schemas-change.md`](ai-schemas-change.md) |
+| `src.ai.schemas.change_classifier` | [`ai-schemas-change_classifier.md`](ai-schemas-change_classifier.md) |
+| `src.ai.schemas.change_reviewer` | [`ai-schemas-change_reviewer.md`](ai-schemas-change_reviewer.md) |
+| `src.ai.schemas.llm_input` | [`ai-schemas-llm_input.md`](ai-schemas-llm_input.md) |
 | `src.ai_automation` | [`ai_automation.md`](ai_automation.md) |
 | `src.analytics` | [`analytics.md`](analytics.md) |
 | `src.api` | [`api.md`](api.md) |

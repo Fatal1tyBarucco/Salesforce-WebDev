@@ -98,6 +98,13 @@ nav:
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
       - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
   - API Reference:
+    - Ai Collectors Change Collector: api/ai-collectors-change_collector.md
+    - Ai Llm Client: api/ai-llm-client.md
+    - Ai Orchestrator: api/ai-orchestrator.md
+    - Ai Schemas Change: api/ai-schemas-change.md
+    - Ai Schemas Change Classifier: api/ai-schemas-change_classifier.md
+    - Ai Schemas Change Reviewer: api/ai-schemas-change_reviewer.md
+    - Ai Schemas Llm Input: api/ai-schemas-llm_input.md
     - Impact Propagation Engine: api/impact_propagation-engine.md
     - Impact Propagation Graph Builder: api/impact_propagation-graph_builder.md
     - Impact Propagation Heuristic Fallback: api/impact_propagation-heuristic_fallback.md
