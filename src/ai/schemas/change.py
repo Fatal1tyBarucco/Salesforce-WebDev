@@ -19,3 +19,10 @@ class ChangeEntry(BaseModel):
 class ChangeClassification(BaseModel):
     changes: list[ChangeEntry] = Field(default_factory=list)
     review_needed: list[ChangeEntry] = Field(default_factory=list)
+
+    def populate_review_needed(self) -> None:
+        self.review_needed = [c for c in self.changes if c.confidence < 0.5]
+        self.changes = [c for c in self.changes if c.confidence >= 0.5]
+        for entry in self.review_needed:
+            entry.needs_review = True
+            entry.review_note = "Baixa confiança — ser revisado pela equipe."
