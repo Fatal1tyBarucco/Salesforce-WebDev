@@ -8,6 +8,8 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
+from src.ai.generators.markdown import MarkdownGenerator
+
 from .collectors.change_collector import collect_changes
 from .llm.client import ExistingLLMClient
 
@@ -51,9 +53,8 @@ class AIDocOrchestrator:
             payload = self._payload_from(classified)
             # Render with existing generators (preserve layout)
             docs = self._render_documents(classified)
-            # Persist ref
-            with open("docs/.last-processed-ref", "w") as f:
-                f.write(os.getenv("GITHUB_SHA", "HEAD"))
+            # Persist ref (chamada síncrona fora do contexto async)
+            self._persist_ref_sync()
             changes: list[dict[str, Any]] = payload.get("changes", []) if payload else []
             return PipelineResult(changes=changes, documents=docs, errors=[], status="completed")
         except Exception as exc:
@@ -71,6 +72,13 @@ class AIDocOrchestrator:
             return None
         return parsed if isinstance(parsed, dict) else None
 
+    def _persist_ref_sync(self) -> None:
+        try:
+            with open("docs/.last-processed-ref", "w") as f:
+                f.write(os.getenv("GITHUB_SHA", "HEAD"))
+        except Exception:
+            pass
+
     def _build_classify_prompt(self, raw: dict[str, Any]) -> str:
         return (
             f"Você é arquiteto de software responsável por analisar mudanças.\n\n"
@@ -87,8 +95,6 @@ class AIDocOrchestrator:
             except Exception:
                 return ["<!-- erro: LLM retornou texto, não JSON -->"]
             classified = parsed
-        from src.ai.generators.markdown import MarkdownGenerator
-
         if not isinstance(classified, dict):
             return ["<!-- erro: classificação não é dict -->"]
         data_dict: dict[str, Any] = classified
