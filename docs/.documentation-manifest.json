@@ -721,7 +721,7 @@
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
     "tests/test_ai_docs.py": "b651a0d2d2d04e8cbcd0bf328799c5b5e600d033",
-    "tests/test_ai_docs_coverage.py": "ac22c718f0fdadf07f07cc60b4b0e8101876d053",
+    "tests/test_ai_docs_coverage.py": "a3a7a4d798e11681867983b9921651f03e096544",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
     "tests/test_ai_integration.py": "d303720cdc3f5b9b954f0d3d3bfbbf3dd006549d",
     "tests/test_ai_integration_salesforce_coverage.py": "0c1e9e7874eaa2b3404ae128ad8bea37bba8dac4",
@@ -795,6 +795,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T03:30:34.995560+00:00",
-  "repository_sha": "9e52167a51a1b06eff09df98645b038f13a7432a"
+  "generated_at": "2026-10-18T03:34:32.794592+00:00",
+  "repository_sha": "b13270ed73f21670f618305df85a93832de0eb58"
 }
