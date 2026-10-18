@@ -316,9 +316,13 @@ Pattern reutilizável para chamadas externas:
 
 Salesforce-WebDev/
   ├── ai/
+      ├── collectors/
       ├── generators/
       ├── integrations/
+      ├── llm/
       ├── prompts/
+      ├── schemas/
+      └── orchestrator.py
   ├── automation/
       ├── ledger/
       ├── badge.py
