@@ -311,6 +311,7 @@
     "CHANGELOG.md": "975cfa9d62a81ce59b6a2776a32cf1c8a8448fa3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
+    "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
     "README.en.md": "254e8d2b62c1aa31e71fb2c8dc01d82a11e1259d",
     "README.md": "a53dd609a4d217c4987dcb1ccde65012951a6e1e",
@@ -403,7 +404,7 @@
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "docs/assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
-    "docs/assets/javascripts/banner.js": "0583ca67054a1acb350cf04645a1323705671ac5",
+    "docs/assets/javascripts/banner.js": "3e45483c5a6d5f59b8ef191cf158613791ed7d88",
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
@@ -413,7 +414,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "82c38d845077f555063ccff99cdf1cd28e510338",
+    "docs/index.md": "19a0785e83e7820215446e234f8d5184d78358f0",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -618,6 +619,9 @@
     "releases/winter_27/pt_BR/servico.md": "1f05994a77858081ae72351b5f39551d87a21ee9",
     "releases/winter_27/pt_BR/setores.md": "bdde8a183a22f72edc278ef5ac84f60bdcc09d0c",
     "releases/winter_27/pt_BR/vendas.md": "8de6229100322d6f71ab949ce00688c157254a53",
+    "report_parts/part_aa": "26d7f64984ca78ff939cd67389e00c5986c062bb",
+    "report_parts/part_ab": "959e14eadc6f2f7bedf85ff4439463ace6a53437",
+    "report_parts/part_ac": "7c8f3ba7fa6addd50112a3a3cc1917a085fd9004",
     "scripts/quality-check-local.sh": "f4939848de13928460b8caa13cd3d71098c5aaa5",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
@@ -805,6 +809,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T06:17:27.947204+00:00",
-  "repository_sha": "e24e91b0a9fb24a093e99dd3fddef8fd742b524a"
+  "generated_at": "2026-10-18T06:22:53.296230+00:00",
+  "repository_sha": "18afe4a956ac84760255e44c767b1c0393baabd3"
 }

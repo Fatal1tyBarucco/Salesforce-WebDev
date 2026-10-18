@@ -381,6 +381,7 @@ Salesforce-WebDev/
   ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
   ├── releases/                  # Artefatos Markdown por release
+  ├── report_parts/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
   ├── .python-version
@@ -388,6 +389,7 @@ Salesforce-WebDev/
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
   ├── Dockerfile                 # Imagem Docker de runtime
+  ├── IA_AUDIT_REPORT.md
   ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
