@@ -404,7 +404,7 @@ def test_render_documents_with_changes(tmp_path, monkeypatch):
     assert "X" in docs[0]
 
 
-async def test_orchestrator_run_completed(tmp_path, monkeypatch):
+def test_orchestrator_run_completed(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "docs").mkdir()
     payload = (
@@ -417,13 +417,15 @@ async def test_orchestrator_run_completed(tmp_path, monkeypatch):
     ):
         mock_collect.return_value = {"commits": ["feat(x): new"]}
         orch = AIDocOrchestrator(since_ref="HEAD~1")
-        result = await orch.run()
+        import asyncio
+
+        result = asyncio.run(orch.run())
     assert result.status == "completed"
     assert len(result.changes) == 1
     assert (tmp_path / "docs" / ".last-processed-ref").exists()
 
 
-async def test_orchestrator_run_completed_with_dict_payload(tmp_path, monkeypatch):
+def test_orchestrator_run_completed_with_dict_payload(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "docs").mkdir()
     with (
@@ -436,16 +438,20 @@ async def test_orchestrator_run_completed_with_dict_payload(tmp_path, monkeypatc
     ):
         mock_collect.return_value = {"commits": ["fix(z): bug"]}
         orch = AIDocOrchestrator(since_ref="HEAD~1")
-        result = await orch.run()
+        import asyncio
+
+        result = asyncio.run(orch.run())
     assert result.status == "completed"
     assert len(result.changes) == 1
 
 
-async def test_orchestrator_run_failure_path(monkeypatch, tmp_path):
+def test_orchestrator_run_failure_path(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     with patch("src.ai.orchestrator.collect_changes", side_effect=RuntimeError("collector boom")):
         orch = AIDocOrchestrator(since_ref="HEAD~1")
-        result = await orch.run()
+        import asyncio
+
+        result = asyncio.run(orch.run())
     assert result.status == "failed"
     assert "collector boom" in result.errors[0]
 
