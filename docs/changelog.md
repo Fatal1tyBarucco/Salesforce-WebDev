@@ -4,7 +4,7 @@
 
 ---
 
-# Histórico oficial (CHANGELOG.md — raiz)
+## Histórico oficial (CHANGELOG.md — raiz)
 
 ## 2026-10-17 — Python 3.14 upgrade
 
@@ -15,7 +15,7 @@
 
 ---
 
-# Melhorias principais (grande impacto — refatorações + features)
+## Melhorias principais (grande impacto — refatorações + features)
 
 ### 3.14 Upgrade (Python + Tooling)
 
@@ -74,8 +74,3 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `4f88fd6` — feat(automation): changelog automático para atualizações de grande impacto
 - `54d4696` — docs(changelog): inclui todas as melhorias grandes — refatorações e features
 
----
-
-## Atualizações automáticas (grande impacto)
-
-- `b8a594e` — docs(changelog): fundir raiz (CHANGELOG.md) + melhorias grandes
