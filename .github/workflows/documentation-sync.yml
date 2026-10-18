@@ -202,6 +202,24 @@ jobs:
           python3 .github/scripts/docs_sync_engine.py reconcile | tee /tmp/reconcile_summary.md
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # AUTO-UPDATE CHANGELOG (grande impacto): detecta commits novos
+      # de grande impacto e atualiza docs/changelog.md automaticamente.
+      # Idempotente: só modifica se houver impacto real.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Atualizar changelog automático (grande impacto)
+        if: steps.guard.outputs.skip != 'true'
+        id: changelog-auto
+        run: |
+          python3 .github/scripts/update_changelog_auto.py
+          if [ -n "$(git status --porcelain docs/changelog.md)" ]; then
+            git add docs/changelog.md
+            echo "changelog_updated=true" >> "$GITHUB_OUTPUT"
+            echo "✅ docs/changelog.md atualizado automaticamente (grande impacto)."
+          else
+            echo "changelog_updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # AUTO-FIX MARKDOWN — CAMADA 1 + CAMADA 2
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # Camada 1: fix_markdown.py — corrige MD022, MD024 (duplicate
