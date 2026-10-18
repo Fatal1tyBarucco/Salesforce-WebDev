@@ -29,6 +29,46 @@
 
 ---
 
+# Pipeline de Documentação Dinâmica por IA (Free Tier Providers)
+
+Este repositório usa um pipeline automatizado (`.github/workflows/ai-docs.yml`) que detecta mudanças e atualiza a documentação via LLM. Os provedores utilizados são os já existentes no projeto (cadeia free tier do `LLMService`):
+
+- **OpenRouter** (`OPENROUTER_API_KEY`) — principal, tier gratuito
+- **OpenCode** (`OPENCODE_API_KEY`) — secundário
+- **Gemini** (`GOOGLE_API_KEY`) — terciário (quota protegida ~20 req/dia)
+
+## Variáveis de ambiente e secrets necessários
+
+| Variável / Secret | Uso | Valor padrão |
+|---|---|---|
+| `OPENROUTER_API_KEY` | Provedor principal (free tier) | — |
+| `OPENCODE_API_KEY` | Provedor secundário (free tier) | — |
+| `GOOGLE_API_KEY` | Provedor terciário (free tier) | — |
+| `LLM_PROVIDER` | Provedor padrão (`openrouter` / `opencode` / `gemini`) | `openrouter` |
+| `AI_DOCS_SELF_REVIEW` | Ativar auto-revisão pelo LLM (`true`/`false`) | `false` |
+| `AI_DOCS_REVIEWERS` | Lista de revisores para PR (`user1,user2`) | — |
+| `PUBLISH_MODE` | Modo de publicação (`commit` ou `pr`) | `commit` |
+
+## Arquitetura dos entregáveis
+
+- `.github/workflows/ai-docs.yml` — workflow completo com triggers (`push`, `workflow_dispatch`, `workflow_call`), concorrência e retry com backoff exponencial.
+- `src/ai/llm/client.py` — `ExistingLLMClient` que delega ao `LLMService` existente (não cria nova abstração).
+- `src/ai/collectors/change_collector.py` — coleta determinística (`git log`, `git diff --stat`, diffs truncados, conventional commits, PRs mesclados via `gh` CLI).
+- `src/ai/prompts/` — prompts versionados (`release_notes.prompt`, `changelog.prompt`, `leadership.prompt`, `roadmap.prompt`) com instruções explícitas para não inventar fatos e preservar histórico.
+- `src/ai/schemas/` — modelos Pydantic (`change.py`, `llm_input.py`, `change_classifier.py`, `change_reviewer.py`) para validação de entrada/saída.
+- `src/ai/orchestrator.py` — pipeline (`AIDocOrchestrator`) que usa `ExistingLLMClient` e alimenta os geradores visuais existentes (`MarkdownGenerator.impact_table()`, `impact_distribution()`, `badges.py`).
+- `tests/test_ai_docs.py` — testes unitários com mocks para o cliente LLM e git CLI.
+
+## Regras de qualidade
+
+- Nenhuma chave API é logada ou exposta no código (`LLMService` lê apenas variáveis de ambiente).
+- Prompts não induzem execução: diffs são tratados como dados, nunca como instruções (mitigação de prompt injection).
+- Resposta inválida do LLM = retry (3 tentativas) → erro explícito. Nunca publica documentação parcial ou vazia.
+- Todo arquivo gerado contém o comentário HTML discreto: `<!-- gerado por IA em <data> — revisar antes de publicar -->`.
+- Changelog preserva histórico existente; apenas novas entradas são adicionadas no topo.
+- `ruff check .` e `mypy src/` passam sem erros em todo código novo.
+
+
 
 
 
