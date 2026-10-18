@@ -1,9 +1,11 @@
 """Second-pass self-review of classification by the LLM."""
 
 from __future__ import annotations
+
 import json
-import re
 import logging
+import re
+
 from pydantic import BaseModel, Field
 
 from .change import ChangeClassification

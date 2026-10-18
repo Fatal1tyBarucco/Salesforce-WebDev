@@ -1,20 +1,22 @@
 """Extended unit tests for AI documentation pipeline (free tier / LLMService)."""
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock, patch
+
+import pytest
+
+# Collector
+from src.ai.collectors.change_collector import IGNORE_GLOBS, collect_changes, run_cmd
 
 # Client / LLM
 from src.ai.llm.client import ExistingLLMClient
-
-# Collector
-from src.ai.collectors.change_collector import collect_changes, IGNORE_GLOBS, run_cmd
 
 # Orchestrator
 from src.ai.orchestrator import AIDocOrchestrator
 
 # Schemas
-from src.ai.schemas.change import ChangeEntry, ChangeClassification
+from src.ai.schemas.change import ChangeClassification, ChangeEntry
 from src.ai.schemas.change_classifier import validate_and_annotate
 from src.ai.schemas.change_reviewer import SelfReviewResponse, _json_extract, review_classification
 from src.ai.schemas.llm_input import RawContext
@@ -44,7 +46,7 @@ def test_existing_llm_client_generate_success():
         MockSvc.return_value = mock_inst
         client = ExistingLLMClient()
         result = client.generate("test prompt")
-        assert isinstance(result, dict) or isinstance(result, str)
+        assert isinstance(result, (dict, str))
 
 
 def test_existing_llm_client_generate_empty_raises():
@@ -232,8 +234,8 @@ def test_raw_context_default():
 
 
 def test_prompts_files_exist():
-    import pathlib
     import os
+    import pathlib
 
     base = pathlib.Path(__file__).resolve().parents[2] / "src" / "ai" / "prompts"
     # Fallback: resolve via cwd if resolve produces wrong path

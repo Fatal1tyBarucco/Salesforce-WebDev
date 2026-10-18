@@ -1,9 +1,10 @@
 """Deterministic change collector — no LLM used; provides raw context to LLM."""
 
 from __future__ import annotations
-import subprocess
-import re
+
 import logging
+import re
+import subprocess
 from typing import Any
 
 logger = logging.getLogger(__name__)

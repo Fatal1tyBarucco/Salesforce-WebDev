@@ -1,8 +1,9 @@
 """LLM client abstraction — delegates to existing LLMService (free tier chain)."""
 
 from __future__ import annotations
-import logging
+
 import json
+import logging
 import re
 from typing import Any, Protocol
 
@@ -10,8 +11,8 @@ from typing import Any, Protocol
 try:
     from src.llm_service import LLMService
 except ImportError:
-    import sys
     import pathlib
+    import sys
 
     root = pathlib.Path(__file__).resolve().parents[3]
     sys.path.insert(0, str(root))

@@ -1,7 +1,9 @@
 """First-pass classification of LLM output."""
 
 from __future__ import annotations
+
 import logging
+
 from .change import ChangeEntry
 
 logger = logging.getLogger(__name__)
