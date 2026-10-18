@@ -1,0 +1,10 @@
+# Arquivos ignorados pelo coletor de mudanças AI-docs (determinístico, sem IA)
+# Referenciado por src/ai/collectors/change_collector.py (IGNORE_GLOBS)
+.lock
+package-lock.json
+uv.lock
+.gitignore
+.gitignore
+NOTIFICATION_DIGEST.md
+DIFF_REPORT.md
+*.md
