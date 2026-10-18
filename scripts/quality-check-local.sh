@@ -21,3 +21,6 @@ if python3 -m ruff --version >/dev/null 2>&1; then
 else
     echo "[BLOQUEIO REAL] ruff não disponível neste ambiente (Termux/Android — timeout de instalação). Documentado em AGENTS.md e MEMORY.md."
 fi
+# NOTA RUFF (atualizado): ruff 0.17.1 existe via apt Termux, mas a versão
+# moderna (>=0.5) não pode ser instalada (timeout 420s no Termux aarch64).
+# O script usa black + mypy + pytest; ruff reportado como bloqueio direto.
