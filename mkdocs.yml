@@ -161,6 +161,7 @@ nav:
     - Workflow: api/workflow.md
     - Visão Geral: api/index.md
     - Pipeline Principal: api/main.md
+    - AGENT Directive: internal/AGENT_DIRECTIVE.md
     - Scraper: api/scraper.md
     - Parser: api/parser.md
     - LLM Service: api/llm_service.md
