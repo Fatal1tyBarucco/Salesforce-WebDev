@@ -41,12 +41,12 @@ jobs:
       PUBLISH_MODE: ${{ github.event.inputs.publish_mode || 'commit' }}
 
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0  # Needed for git diff since last ref
 
       - name: Setup Python (3.14 via uv)
-        uses: actions/setup-python@0b93645e9fea731ce31601cb75cbf0769bccc6bb # v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.14'
 
@@ -78,7 +78,7 @@ jobs:
 
       - name: Upload audit artifacts (prompts, raw LLM output, validated schemas, diff)
         if: always()
-        uses: actions/upload-artifact@4cec3d8aa74aeb955ef31e5334f3df34eedeed2 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ai-docs-audit-${{ github.run_id }}
           path: docs/.ai-logs/
