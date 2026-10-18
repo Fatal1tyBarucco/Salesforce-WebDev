@@ -1,7 +1,11 @@
 """Orchestrator for AI-driven documentation pipeline (uses existing LLMService)."""
+<<<<<<< HEAD
 
 from __future__ import annotations
 import json
+=======
+from __future__ import annotations
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
 import logging
 import os
 from dataclasses import dataclass
@@ -14,7 +18,11 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class PipelineResult:
+<<<<<<< HEAD
     changes: list[dict[str, Any]]
+=======
+    changes: list[dict]
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
     documents: list[str]
     errors: list[str]
     status: str = "completed"
@@ -46,18 +54,26 @@ class AIDocOrchestrator:
             # Classification via existing LLMService free-tier chain
             prompt = self._build_classify_prompt(raw)
             classified = self.llm.generate(prompt, schema=dict)
+<<<<<<< HEAD
             payload = self._payload_from(classified)
+=======
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
             # Render with existing generators (preserve layout)
             docs = self._render_documents(classified)
             # Persist ref
             with open("docs/.last-processed-ref", "w") as f:
                 f.write(os.getenv("GITHUB_SHA", "HEAD"))
+<<<<<<< HEAD
             changes: list[dict[str, Any]] = payload.get("changes", []) if payload else []
             return PipelineResult(changes=changes, documents=docs, errors=[], status="completed")
+=======
+            return PipelineResult(changes=classified.get("changes", []), documents=docs, errors=[], status="completed")
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
         except Exception as exc:
             logger.error("Pipeline error: %s", exc)
             return PipelineResult(changes=[], documents=[], errors=[str(exc)], status="failed")
 
+<<<<<<< HEAD
     @staticmethod
     def _payload_from(result: dict[str, Any] | str) -> dict[str, Any] | None:
         """Normalize LLM output into a dict payload (parses JSON strings)."""
@@ -70,6 +86,9 @@ class AIDocOrchestrator:
         return parsed if isinstance(parsed, dict) else None
 
     def _build_classify_prompt(self, raw: dict[str, Any]) -> str:
+=======
+    def _build_classify_prompt(self, raw: dict) -> str:
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
         return (
             f"Você é arquiteto de software responsável por analisar mudanças.\n\n"
             f"Contexto (git log, diffs, PRs): {raw}\n\n"
@@ -78,6 +97,7 @@ class AIDocOrchestrator:
             f"Responda com JSON estrito."
         )
 
+<<<<<<< HEAD
     def _render_documents(self, classified: dict[str, Any] | str) -> list[str]:
         if isinstance(classified, str):
             try:
@@ -90,6 +110,22 @@ class AIDocOrchestrator:
         if not isinstance(classified, dict):
             return ["<!-- erro: classificação não é dict -->"]
         data_dict: dict[str, Any] = classified
+=======
+    def _render_documents(self, classified: dict | str) -> list[str]:
+        if isinstance(classified, str):
+            try:
+                import json
+                classified = json.loads(classified)
+            except Exception:
+                return ["<!-- erro: LLM retornou texto, não JSON -->"]
+        from src.ai.generators.markdown import MarkdownGenerator
+        from src.ai.generators.badges import impact_badge, type_badge, priority_badge
+        data_dict: dict = {}
+        if isinstance(classified, dict):
+            data_dict = classified
+        else:
+            return ["<!-- erro: classificação não é dict -->"]
+>>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
         changes = data_dict.get("changes", [])
         if not changes:
             return []
