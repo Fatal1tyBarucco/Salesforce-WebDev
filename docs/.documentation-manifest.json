@@ -318,7 +318,7 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/api/ai-collectors-change_collector.md": "8e34d2d59fb7993ebeacf530448497dd906aba30",
+    "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
     "docs/api/ai-generators-code.md": "ca91c83974278c114cd8b4245730bf871373fd59",
     "docs/api/ai-generators-markdown.md": "dc7ac6c3c69321da49715702b9576df0388dd2d4",
@@ -439,7 +439,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "16eaf5532ea33cecfecb96e4d3f7390adf85be5d",
+    "mkdocs.yml": "bf45949e01408e839933e6c262c1908f017466a1",
     "pyproject.toml": "84655888bc51f85db6447680a9c698bb36dc19bc",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -618,6 +618,7 @@
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
     "src/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/ai/__init__.py": "cba658f480078219a19b0b41e79272b997278790",
+    "src/ai/collectors/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/ai/collectors/change_collector.py": "b1d4f28bdb65e146f77ed67e5a1471e4be11fa69",
     "src/ai/generators/__init__.py": "5ab9d99fb21d6731656b5ed040bda325134bfcf3",
     "src/ai/generators/badges.py": "21bb22b6ebb83a36c4905e942d2c8cdd97cf32e5",
@@ -626,6 +627,7 @@
     "src/ai/integrations/__init__.py": "7dddfaa16c89a53d047c236220754d79a5fe5a0e",
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
+    "src/ai/llm/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/ai/llm/client.py": "8736a1483dddb2fe6010fb2ae2dd41a7da6a0756",
     "src/ai/orchestrator.py": "69c36812302aaa1c63518bb831c66101489ee76f",
     "src/ai/prompts/__init__.py": "69c96756d3b9a2933f2ba03fb0078a88a7d13a11",
@@ -637,6 +639,7 @@
     "src/ai/prompts/reporting.py": "d6a64376489f3a65d18a4968ac4f89505725c625",
     "src/ai/prompts/roadmap.prompt": "1d0d79a316fc39ab54dfc0cf1e5e0372099b41ee",
     "src/ai/prompts/validation.py": "153fc65a6f62600ea3812dc2dfb08116b196a9f0",
+    "src/ai/schemas/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "src/ai/schemas/change.py": "ff061cab63adbc95a18ba14325d7ccf919595a9a",
     "src/ai/schemas/change_classifier.py": "af3ba09b301119ec444c66dafbc768f6ac59a71e",
     "src/ai/schemas/change_reviewer.py": "fb33bf7a0c6398bdfe2692b01664ea95f8cd24fc",
@@ -797,6 +800,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T03:59:28.432274+00:00",
-  "repository_sha": "c9e2cd25a484c8191850af2d79d4efab42976f9e"
+  "generated_at": "2026-10-18T04:03:08.679690+00:00",
+  "repository_sha": "609caf07f0f2aeb9bcc8ba5ee630a69ac5daf252"
 }
