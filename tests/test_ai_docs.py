@@ -1,12 +1,13 @@
 """Unit tests for AI documentation pipeline (existing LLMService / free tier)."""
+
 from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock, patch
 
 from src.ai.llm.client import ExistingLLMClient
 from src.ai.orchestrator import AIDocOrchestrator
-from src.ai.schemas.change import ChangeClassification
-from src.ai.collectors.change_collector import collect_changes, IGNORE_GLOBS
+from src.ai.schemas.change import ChangeEntry
+from src.ai.collectors.change_collector import collect_changes
 
 
 def test_existing_llm_client_uses_llm_service():
@@ -27,13 +28,15 @@ def test_existing_llm_client_generate_raises_on_empty():
             client.generate("")
 
 
-def test_orchestrator_no_op_on_empty_changes():
+async def test_orchestrator_no_op_on_empty_changes():
     with patch.object(AIDocOrchestrator, "_build_classify_prompt", return_value="{}"):
-        with patch("src.ai.orchestrator.collect_changes", return_value={"commits": [], "git_diff_stat": ""}):
+        with patch(
+            "src.ai.orchestrator.collect_changes", return_value={"commits": [], "git_diff_stat": ""}
+        ):
             orch = AIDocOrchestrator(since_ref="HEAD~1")
-            result = orch.run()
-            # Since run is async, we test the init/config only here for sync test
-            assert result is not None or True  # basic sanity
+            result = await orch.run()
+            assert result.status == "no-op"
+            assert result.changes == []
 
 
 def test_change_collector_ignores_irrelevant():
@@ -46,9 +49,9 @@ def test_change_collector_ignores_irrelevant():
 
 
 def test_change_classification_low_confidence():
-    entry = ChangeClassification(
+    entry = ChangeEntry(
         title="Test",
-        description="Desc",
+        description="Descrição detalhada da mudança para validação.",
         type="feature",
         impact="low",
         impact_justification="Test justification",
@@ -64,5 +67,20 @@ def test_change_classification_low_confidence():
 class MockLLMClient:
     def __init__(self):
         pass
+
     def generate(self, prompt, schema=None):
-        return {"changes": [{"title":"feat: new api", "description":"API update", "type":"feature", "impact":"high", "impact_justification":"Breaks old clients", "priority":"P0", "affected_components":["core"], "source_refs":["abc123"], "confidence":0.95}]}
+        return {
+            "changes": [
+                {
+                    "title": "feat: new api",
+                    "description": "API update",
+                    "type": "feature",
+                    "impact": "high",
+                    "impact_justification": "Breaks old clients",
+                    "priority": "P0",
+                    "affected_components": ["core"],
+                    "source_refs": ["abc123"],
+                    "confidence": 0.95,
+                }
+            ]
+        }

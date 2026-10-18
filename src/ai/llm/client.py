@@ -1,15 +1,18 @@
 """LLM client abstraction — delegates to existing LLMService (free tier chain)."""
+
 from __future__ import annotations
 import logging
 import json
 import re
-from typing import Protocol
+from typing import Any, Protocol
 
 # Use the project's existing LLMService (free tier: OpenRouter -> OpenCode -> Gemini)
 try:
     from src.llm_service import LLMService
 except ImportError:
-    import sys, pathlib
+    import sys
+    import pathlib
+
     root = pathlib.Path(__file__).resolve().parents[3]
     sys.path.insert(0, str(root))
     from src.llm_service import LLMService
@@ -19,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 class LLMClient(Protocol):
     """Protocol for clients that use the existing free-tier provider chain."""
-    def generate(self, prompt: str, schema: type | None = None) -> dict | str:
-        ...
+
+    def generate(self, prompt: str, schema: type | None = None) -> dict[str, Any] | str: ...
 
 
 class ExistingLLMClient:
@@ -48,7 +51,7 @@ class ExistingLLMClient:
         self,
         prompt: str,
         schema: type | None = None,
-    ) -> dict | str:
+    ) -> dict[str, Any] | str:
         if not prompt or not prompt.strip():
             raise ValueError("Prompt cannot be empty.")
         try:
@@ -67,12 +70,14 @@ class ExistingLLMClient:
                     clean = re.sub(r"^```(?:json)?\s*", "", clean)
                     clean = re.sub(r"\s*```$", "", clean)
                 data = json.loads(clean)
-                if isinstance(schema, type) and hasattr(schema, "model_validate"):
-                    return schema.model_validate(data)
-                return data  # type: ignore[no-any-return]
+                if isinstance(data, dict):
+                    if isinstance(schema, type) and hasattr(schema, "model_validate"):
+                        validated = schema.model_validate(data)
+                        if isinstance(validated, dict):
+                            return validated
+                    return data
+                return raw
             except Exception as exc:
-                logger.warning(
-                    "Schema validation failed after LLM response: %s", exc
-                )
+                logger.warning("Schema validation failed after LLM response: %s", exc)
                 return raw
         return raw

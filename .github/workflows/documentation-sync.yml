@@ -26,6 +26,17 @@
 #      quando has_fixes=true), garantindo que fixes sejam validados.
 #   4. pipefail adicionado ao step de reconciliação LLM (| tee pipe).
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# Correções aplicadas (v2.2):
+#   5. pull_request: checkout usa o branch de origem do PR (github.head_ref)
+#      quando o PR é do mesmo repositório. Antes, o checkout usava o merge
+#      ref efêmero (refs/pull/N/merge) e o push tentava "199/merge" via
+#      GITHUB_REF_NAME — fetch inexistente e push impossível.
+#   6. Push alvo calculado como GITHUB_HEAD_REF (PR) ou GITHUB_REF_NAME
+#      (push/schedule/dispatch) — nunca um ref de merge temporário.
+#   7. PRs de forks: step de commit/push é pulado (GITHUB_TOKEN é
+#      read-only; push falharia após 3 tentativas).
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 name: Documentation Sync
 
@@ -78,12 +89,17 @@ jobs:
       # CHECKOUT: fetch-depth: 0 para que o script de drift
       # possa analisar o histórico de blobs e calcular diffs.
       # Token padrão GITHUB_TOKEN com escopo contents: write.
+      # PRs do mesmo repositório: check out do branch de origem (não do
+      # merge ref efêmero refs/pull/N/merge), permitindo commit + push
+      # de volta no branch do PR. Forks/events: ref padrão do evento
+      # (ref vazio = fallback documentado do actions/checkout).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || '' }}
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # GUARD ANTI-LOOP: previne execução recursiva quando o
@@ -318,28 +334,33 @@ jobs:
       # Push sem force; em rejeição/transiente, atualiza e rebaseia até
       # três vezes. Conflitos de conteúdo falham explicitamente.
       # Timestamp no commit message para rastreabilidade.
+      # Branch alvo: GITHUB_HEAD_REF (PR do mesmo repo — checkout já está
+      # no branch do PR) ou GITHUB_REF_NAME (push/schedule/dispatch).
+      # PRs de forks são pulados: GITHUB_TOKEN é read-only no fork.
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: Commit and push reconciled documentation
         id: commit-push
         if: |
           steps.guard.outputs.skip != 'true' &&
-          steps.changes.outputs.has_changes == 'true'
+          steps.changes.outputs.has_changes == 'true' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          TARGET_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
           git add docs/ README.md README.en.md mkdocs.yml
           # Só faz commit se houver arquivos stageados (evita commit vazio)
           if ! git diff --cached --quiet; then
             git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
 
             for attempt in 1 2 3; do
-              if ! git fetch origin "$GITHUB_REF_NAME"; then
+              if ! git fetch origin "$TARGET_BRANCH"; then
                 echo "⚠️ Fetch falhou (tentativa $attempt/3)."
               elif ! git rebase FETCH_HEAD; then
                 git rebase --abort || true
                 echo "❌ Rebase encontrou conflito; push cancelado sem sobrescrever o remoto." >&2
                 exit 1
-              elif git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+              elif git push origin "HEAD:refs/heads/${TARGET_BRANCH}"; then
                 echo "✅ Push concluído na tentativa $attempt/3."
                 exit 0
               else

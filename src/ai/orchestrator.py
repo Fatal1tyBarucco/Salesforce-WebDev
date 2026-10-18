@@ -1,5 +1,7 @@
 """Orchestrator for AI-driven documentation pipeline (uses existing LLMService)."""
+
 from __future__ import annotations
+import json
 import logging
 import os
 from dataclasses import dataclass
@@ -12,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class PipelineResult:
-    changes: list[dict]
+    changes: list[dict[str, Any]]
     documents: list[str]
     errors: list[str]
     status: str = "completed"
@@ -44,17 +46,30 @@ class AIDocOrchestrator:
             # Classification via existing LLMService free-tier chain
             prompt = self._build_classify_prompt(raw)
             classified = self.llm.generate(prompt, schema=dict)
+            payload = self._payload_from(classified)
             # Render with existing generators (preserve layout)
             docs = self._render_documents(classified)
             # Persist ref
             with open("docs/.last-processed-ref", "w") as f:
                 f.write(os.getenv("GITHUB_SHA", "HEAD"))
-            return PipelineResult(changes=classified.get("changes", []), documents=docs, errors=[], status="completed")
+            changes: list[dict[str, Any]] = payload.get("changes", []) if payload else []
+            return PipelineResult(changes=changes, documents=docs, errors=[], status="completed")
         except Exception as exc:
             logger.error("Pipeline error: %s", exc)
             return PipelineResult(changes=[], documents=[], errors=[str(exc)], status="failed")
 
-    def _build_classify_prompt(self, raw: dict) -> str:
+    @staticmethod
+    def _payload_from(result: dict[str, Any] | str) -> dict[str, Any] | None:
+        """Normalize LLM output into a dict payload (parses JSON strings)."""
+        if isinstance(result, dict):
+            return result
+        try:
+            parsed: Any = json.loads(result)
+        except Exception:
+            return None
+        return parsed if isinstance(parsed, dict) else None
+
+    def _build_classify_prompt(self, raw: dict[str, Any]) -> str:
         return (
             f"Você é arquiteto de software responsável por analisar mudanças.\n\n"
             f"Contexto (git log, diffs, PRs): {raw}\n\n"
@@ -63,20 +78,18 @@ class AIDocOrchestrator:
             f"Responda com JSON estrito."
         )
 
-    def _render_documents(self, classified: dict | str) -> list[str]:
+    def _render_documents(self, classified: dict[str, Any] | str) -> list[str]:
         if isinstance(classified, str):
             try:
-                import json
-                classified = json.loads(classified)
+                parsed: Any = json.loads(classified)
             except Exception:
                 return ["<!-- erro: LLM retornou texto, não JSON -->"]
+            classified = parsed
         from src.ai.generators.markdown import MarkdownGenerator
-        from src.ai.generators.badges import impact_badge, type_badge, priority_badge
-        data_dict: dict = {}
-        if isinstance(classified, dict):
-            data_dict = classified
-        else:
+
+        if not isinstance(classified, dict):
             return ["<!-- erro: classificação não é dict -->"]
+        data_dict: dict[str, Any] = classified
         changes = data_dict.get("changes", [])
         if not changes:
             return []
