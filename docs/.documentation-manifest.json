@@ -307,7 +307,7 @@
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
-    "AGENTS.md": "4fe7376ab11af4f1b0b02d986d847496a1d02176",
+    "AGENTS.md": "17ac8a7204bd162b2a8fe7056dfdd1706918a515",
     "CHANGELOG.md": "975cfa9d62a81ce59b6a2776a32cf1c8a8448fa3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -809,6 +809,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T22:44:40.942428+00:00",
-  "repository_sha": "56d85559d4acbf48af54a94f577026fd75e71d0c"
+  "generated_at": "2026-10-18T22:46:04.308999+00:00",
+  "repository_sha": "5f7ca50718dcca408523ea6cd83ac470e6dafedd"
 }
