@@ -210,3 +210,12 @@ The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on eve
   CI installs deps with `uv sync --frozen --extra dev --group dev` (ruff/black jobs) or `uv sync --frozen --extra dev --extra healing --group dev` (mypy/tests jobs). Syrupy is added separately via `uv pip install "syrupy>=4.9.0,<5"`.
 
 All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).
+
+## Atualização de conclusão — Auditoria de IA (2026-10-18 — Renato / Termux)
+- `MEMORY.md` atualizado (não versionado) com registro completo da auditoria e envio para canais de mensagem.
+- `AGENTS.md` atualizado (versionado): esta seção documenta que auditorias de IA exigem inspeção real (`read_file` + `search_files` + `execute_code`), sem suposições; que `reconcile` obrigatório continua válido para docs; que `push` obrigatório para commits; que bloqueios devem ser reportados honestamente (ex: `opencode` bionic no Termux aarch64, `python3.13` indisponível, `ruff` 0.17.1 não linkado, `mkdocs` best-effort bloqueado por `playwright` sem wheel ARM64).
+- Artefato de auditoria (`IA_AUDIT_REPORT.md`) produzido no workspace, enviado via `hermes send` para Telegram (`8523376387`, msg IDs 25, 26, 29) e WhatsApp (`3105680842754@lid`, msg IDs `3EB0CB8A...`, `3EB055B2...`, `3EB03B37...`). WhatsApp self-chat não notifica — documentado honestamente, não inventado.
+- Convenção reforçada: ao finalizar qualquer tarefa, atualizar obrigatoriamente `MEMORY.md` (fatos duráveis, não sensíveis) e `AGENTS.md` (convenções atualizadas, versionado). Nenhum resultado de push, entrega ou execução deve ser inventado; se falhar, reportar o bloqueio real.
+
+## Atualização automática (gatilho) — 2026-10-18T03:06:47-03:00
+- Gatilho executado: `scripts/auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.

@@ -82,3 +82,4 @@ PLANO_AJUSTES.md
 # Termux local environment overrides (unversioned)
 .termux-env.sh
 restore_init_files.py
+scripts/auto_complete_memory_agents.sh
