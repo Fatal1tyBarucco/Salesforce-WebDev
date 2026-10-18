@@ -74,3 +74,10 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `4f88fd6` — feat(automation): changelog automático para atualizações de grande impacto
 - `54d4696` — docs(changelog): inclui todas as melhorias grandes — refatorações e features
 
+---
+
+## Atualizações automáticas (grande impacto) 1
+
+- `160aede` — docs(changelog): fix MD001/MD025/MD024/MD032 lint errors
+- `f722d2c` — docs(changelog): fix markdown lint errors (MD022/MD032)
+- `b8a594e` — docs(changelog): fundir raiz (CHANGELOG.md) + melhorias grandes
