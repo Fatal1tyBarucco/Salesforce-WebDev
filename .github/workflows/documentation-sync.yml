@@ -182,7 +182,7 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         id: drift
         env:
-          DRIFT_REPORT: /tmp/drift_report.json
+          DRIFT_REPORT: ./drift_report.json
         run: |
           python3 .github/scripts/docs_sync_engine.py audit
 
@@ -199,7 +199,7 @@ jobs:
         id: reconcile
         run: |
           set -o pipefail
-          python3 .github/scripts/docs_sync_engine.py reconcile | tee /tmp/reconcile_summary.md
+          python3 .github/scripts/docs_sync_engine.py reconcile | tee ./reconcile_summary.md
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # AUTO-UPDATE CHANGELOG (grande impacto): detecta commits novos
@@ -429,8 +429,8 @@ jobs:
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [ -f /tmp/reconcile_summary.md ]; then
-            cat /tmp/reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f ./reconcile_summary.md ]; then
+            cat ./reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "$MODE" = "reconcile" ]; then
