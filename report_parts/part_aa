@@ -1,0 +1,105 @@
+# Relatório de Auditoria de Inteligência Artificial — Salesforce-WebDev
+
+> Auditoria técnica do repositório `Fatal1tyBarucco/Salesforce-WebDev` (Python 3.14, uv, FastAPI, Playwright, BeautifulSoup, Pydantic, OpenAI/Google GenAI).
+> Baseado em inspeção direta dos arquivos do branch `main` (HEAD: 160aede) e módulos `src/`, `.github/`, `tests/`, `docs/`.
+
+---
+
+## 1. Resumo Executivo
+
+O projeto `Salesforce-WebDev` integra IA como componente arquitetural central, não como plugin opcional. A cadeia de LLM (`LLMService`) opera com três provedores (OpenRouter → OpenCode → Gemini 3.6-flash) e implementa fallback automático com backoff exponencial, retries (`tenacity`) e timeouts (`LLM_CALL_TIMEOUT_S`).
+
+A IA está presente em:
+- **Serviços de núcleo**: classificação de features (`feature_classifier`), enriquecimento (`feature_enricher`), sumarização de release notes (`release_summarizer`), triagem de issues (`issue_triage`), análise de impacto (`impact_analyzer`, `impact_propagation`), tradução (`translator`), notificações inteligentes (`smart_notifications`), busca semântica (`nl_search`).
+- **Orquestração**: `src/ai/orchestrator.py` e `ai_automation.py` coordenam pipelines.
+- **Geração**: geradores de badges, código markdown, documentação (`ai/generators/`).
+- **Integrações**: `salesforce.py`, `trailhead.py`, `llm/client.py`.
+- **CI/CD**: `.github/workflows/opencode.yml`, `python-quality.yml`, `ai-docs.yml`, `release_notes_pipeline.yml`; scripts `.github/scripts/llm_fallback.py`, `select_free_model.py`, `build_failure_issue.py`; hooks (`.hooks/pytest-pre-push.sh`).
+- **Documentação & Docs Sync**: `docs_sync_engine.py`, `documentation_reconcile.py`, `update_changelog_auto.py`; ADRs (`adr-002`, `adr-003`, `adr-004`, `adr-005`, `adr-006`).
+- **Observabilidade & Qualidade**: `circuit_breaker`, `health`, `analytics`, `dashboard`, `cache_manager`.
+- **Kubernetes**: `k8s/cronjob.yaml`, `k8s/deployment.yaml` referenciam `LLM_PROVIDER`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`.
+- **Testes**: testes de cobertura específicos para cada módulo AI (`tests/test_ai_automation.py`, `tests/test_llm_service.py`, `tests/test_feature_classifier.py`, `tests/test_impact_analyzer.py`, etc.).
+
+A cobertura de IA no ecossistema é alta: praticamente todos os módulos críticos de pipeline (`parser`, `scraper`, `release_docs`, `workflow`) possuem ramificações ou chamadas diretas a `LLMService`. Não há componente de processamento de notas de lançamento que funcione sem a cadeia LLM.
+
+---
+
+## 2. Matriz de Utilização de IA
+
+| Módulo / Script | Tipo de Ação | Modelo / API Utilizada | Objetivo Crítico |
+|---|---|---|---|
+| `src/llm_service.py` | Serviço de núcleo / Fallback em cadeia | OpenRouter (`openrouter/free`, `google/gemma-4-31b-it`, `meta-llama/llama-4-scout`, etc.), OpenCode (`gemini-3.6-flash`), Gemini (`gemini-3.6-flash`) | Geração de texto, classificação, enriquecimento, sumarização com retry automático e fallback entre provedores |
+| `src/ai/llm/client.py` | Cliente LLM | OpenAI-compatible (`openai`), `google.genai` | Abstração de chamadas com timeout e concorrência (`ThreadPoolExecutor`) |
+| `src/ai/orchestrator.py` | Orquestração | `LLMService` (proxy para provedores) | Coordenação de fluxos multi-etapas no pipeline |
+| `src/ai/prompts/classification.py` | Prompts de classificação | LLM generativo (via `LLMService`) | Classificação de tópicos de release notes |
+| `src/ai/prompts/enrichment.py` | Prompts de enriquecimento | LLM generativo | Adição de detalhes semânticos a features |
+| `src/ai/prompts/reporting.py` | Prompts de relatório | LLM generativo | Geração de relatórios de impacto |
+| `src/ai/prompts/validation.py` | Prompts de validação | LLM generativo | Validação de conteúdo gerado |
+| `src/ai/generators/badges.py` | Geração visual | LLM generativo | Criação de badges de release |
+| `src/ai/generators/code.py` | Geração de código | LLM generativo | Geração de snippets e exemplos |
+| `src/ai/generators/markdown.py` | Geração de documentação | LLM generativo | Produção de arquivos `.md` para releases |
+| `src/ai/collectors/change_collector.py` | Coleta de mudanças | LLM generativo | Extração e agregação de alterações de release |
+| `src/ai/integrations/salesforce.py` | Integração com Salesforce | LLM generativo (via `LLMService`) | Processamento de notas de lançamento da plataforma |
+| `src/ai/integrations/trailhead.py` | Integração Trailhead | LLM generativo | Enriquecimento de conteúdo educacional |
+| `src/ai_automation.py` | Automação de pipeline | `LLMService` | Automação de tarefas repetitivas com IA |
+| `src/feature_classifier.py` | Classificação | `LLMService` (`classify_text`) | Classificação automática de features por categoria |
+| `src/feature_enricher.py` | Enriquecimento | `LLMService` (`enrich_feature`) | Adição de contexto semântico a funcionalidades |
+| `src/impact_analyzer.py` | Análise de impacto | `LLMService` | Avaliação de impacto de mudanças |
+| `src/impact_propagation/engine.py` | Propagação de impacto | LLM generativo (`LLMService`) | Cálculo de propagação de impacto em grafo |
+| `src/release_summarizer.py` | Sumarização | `LLMService` (`summarize`) | Resumo de notas de lançamento |
+| `src/issue_triage.py` | Triagem | `LLMService` (`classify_text`) | Classificação e roteamento de issues |
+| `src/translator.py` | Tradução | `LLMService` (`generate_completion`) | Tradução automática de conteúdo (`i18n`) |
+| `src/smart_notifications.py` | Notificações inteligentes | `LLMService` | Geração de mensagens contextuais para alertas |
+| `src/heuristic_classifier.py` | Classificação heurística + LLM | `LLMService` | Modelo híbrido (heurística + LLM) |
+| `src/automation/service.py` | Serviço de automação | `LLMService` | Execução de rotinas automatizadas |
+| `src/automation/impact.py` | Impacto automatizado | `LLMService` | Relatórios automáticos de impacto |
+| `src/automation/ledger/service.py` | Ledger de automação | `LLMService` | Registro de decisões e ações automáticas |
+| `src/automation/reporting.py` | Relatórios automáticos | `LLMService` | Produção periódica de relatórios |
+| `.github/workflows/opencode.yml` | CI/CD — agente OpenCode | `opencode/mimo-v2.6-flash-free`, `gemini-3.6-flash` | Correção automática de código (`/oc fix`) em PRs quando `python-quality.yml` falha |
+| `.github/workflows/python-quality.yml` | CI/CD — qualidade + OpenCode | `opencode` (trigger de PR automático) | Gatilho para correção automática via `opencode.yml` |
+| `.github/workflows/ai-docs.yml` | CI/CD — documentação AI | `LLMService` / Gemini | Geração/reconciliação de documentação automatizada |
+| `.github/workflows/release_notes_pipeline.yml` | CI/CD — pipeline de release | `LLMService` + `select_free_model` | Seleção dinâmica de modelo livre + execução do pipeline |
+| `.github/scripts/llm_fallback.py` | Script de fallback | `LLMService` | Execução manual de fallback de provedores |
+| `.github/scripts/select_free_model.py` | Seleção de modelo | `LLMService` / `openrouter` | Seleção dinâmica do modelo livre mais saudável |
+| `.github/scripts/build_failure_issue.py` | Criação de issue | `LLMService` (`gemini`), `opencode` | Criação automática de issue no GitHub com análise AI quando build falha |
+| `tests/test_llm_service.py` | Testes de integração LLM | Mock (`openai`, `google.genai`) + `LLMService` | Cobertura de fallback, timeout, mock response |
+| `tests/test_ai_automation.py` | Testes de automação AI | `LLMService` | Cobertura de automação de pipeline |
+
+---
+
+## 3. Gráficos Visuais Modernos
+
+### 3.1 Diagrama de Fluxo — Arquitetura AI no Repositório (Mermaid.js)
+
+```mermaid
+flowchart TB
+    subgraph EXTERNAL["Provedores Externos (API)"]
+        OR["OpenRouter<br/>free tier"]
+        OC["OpenCode<br/>gemini-3.6-flash"]
+        GM["Google Gemini<br/>3.6-flash (20 req/d)"]
+    end
+
+    subgraph SERVICE["LLMService (src/llm_service.py)"]
+        CHAIN["Cadeia: OpenRouter → OpenCode → Gemini"]
+        RETRY["Retry @tenacity (3x, exp backoff)"]
+        TIMEOUT["Timeout 60s (LLM_CALL_TIMEOUT_S)"]
+        FALLBACK["Fallback automático"]
+    end
+
+    subgraph CORE_MODULES["Módulos de Núcleo AI (src/ai/)"]
+        CLIENT["ai/llm/client.py"]
+        ORCH["ai/orchestrator.py"]
+        PROMPTS["ai/prompts/<br/>class/enrich/report/val"]
+        GEN["ai/generators/<br/>badges/code/markdown"]
+        COLLECT["ai/collectors/<br/>change_collector"]
+        INTEG["ai/integrations/<br/>salesforce / trailhead"]
+    end
+
+    subgraph PIPELINE["Pipeline ETL e Automação"]
+        SCRAP["scraper.py"]
+        PARSE["parser.py"]
+        CLASSIFY["feature_classifier.py"]
+        ENRICH["feature_enricher.py"]
+        IMPACT["impact_analyzer.py<br/>+ propagation/"]
+        SUMMAR["release_summarizer.py"]
+        TRIAGE["issue_triage.py"]

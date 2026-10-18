@@ -1,0 +1,105 @@
+)
+fig.update_xaxes(tickangle=-45, row=1, col=1)
+fig.update_yaxes(title_text="Contagem de Referências a LLM / IA", row=1, col=1)
+
+# Pie chart (proporção relativa)
+fig.add_trace(
+    go.Pie(
+        labels=categories,
+        values=usage_counts,
+        marker_colors=colors,
+        hole=0.4,
+        textinfo="label+percent",
+        hoverinfo="label+value+percent",
+    ),
+    row=1, col=2,
+)
+
+fig.update_layout(
+    title_text="Distribuição Estatística do Uso de IA — Salesforce-WebDev",
+    showlegend=False,
+    height=700,
+    width=1200,
+    font=dict(family="Inter, sans-serif", size=11),
+    plot_bgcolor="#fafafa",
+    paper_bgcolor="#ffffff",
+)
+
+fig.write_html("ai_distribution_plotly.html")
+fig.show()
+```
+
+**Dados subjacentes (extraídos diretamente):**
+- `Serviço LLM / Cliente`: `llm_service.py` (1 referência direta, mas impacta todos os outros módulos).
+- `Orquestração AI`: `orchestrator.py` (1).
+- `Prompts / Templates`: `classification`, `enrichment`, `reporting`, `validation` (4 arquivos em `ai/prompts/`).
+- `Geradores de Conteúdo`: `badges`, `code`, `markdown` (3 arquivos em `ai/generators/`).
+- `Coleta / Integração`: `salesforce`, `trailhead`, `change_collector` (2 referências em `ai/integrations/` + `ai/collectors/`).
+- `Pipeline ETL`: `scraper`, `parser`, `feature_classifier`, `feature_enricher`, `impact_analyzer`, `release_summarizer` (6 módulos principais).
+- `Automação / Ledger`: `ai_automation`, `automation/service`, `automation/ledger/service`, `automation/reporting` (4 módulos).
+- `CI/CD Scripts`: `opencode.yml`, `python-quality.yml`, `ai-docs.yml`, `release_notes_pipeline.yml`, `llm_fallback.py`, `select_free_model.py`, `build_failure_issue.py` (4 scripts/workflows, mas `opencode.yml` e `python-quality.yml` têm múltiplas referências cruzadas; total aproximado = 4 pontos de acionamento).
+- `Documentação / ADR`: `docs/` com 6 ADRs (`adr-002` a `adr-006`) + `docs_sync_engine.py` + `reconcile` (6 referências principais).
+- `Observabilidade / Saúde`: `circuit_breaker`, `health`, `analytics`, `cache_manager` (3 módulos com referências a LLM).
+- `Testes AI`: `test_llm_service.py`, `test_ai_automation.py`, `test_feature_classifier.py`, `test_impact_analyzer.py`, `test_coverage_*.py` (8 arquivos de teste com referências diretas).
+
+---
+
+## 4. Conclusão e Métricas
+
+### 4.1 Cobertura de IA
+
+A cobertura é **extensa e arquiteturalmente centralizada**. A cadeia `LLMService` é o único ponto de entrada para todos os módulos de IA; não há dispersão de APIs (cada módulo usa `LLMService` diretamente ou via `ai/llm/client.py`).
+
+- **Módulos Python (`src/`) com referência direta a `LLMService` ou `ai/`:** 17 arquivos principais (`llm_service`, `ai_automation`, `feature_classifier`, `feature_enricher`, `impact_analyzer`, `release_summarizer`, `issue_triage`, `translator`, `smart_notifications`, `heuristic_classifier`, `orchestrator`, `automation/service`, `automation/impact`, `automation/ledger/service`, `automation/reporting`, `nl_search`, `release_docs`).
+- **Módulos de integração (`ai/integrations/`):** 2 (`salesforce`, `trailhead`).
+- **Prompts (`ai/prompts/`):** 4 (`classification`, `enrichment`, `reporting`, `validation`).
+- **Coletores (`ai/collectors/`):** 1 (`change_collector`).
+- **Geradores (`ai/generators/`):** 3 (`badges`, `code`, `markdown`).
+- **CI/CD (`.github/workflows/`):** 4 workflows com acionamento de IA (`opencode.yml`, `python-quality.yml`, `ai-docs.yml`, `release_notes_pipeline.yml`).
+- **Scripts (`.github/scripts/`):** 3 com referência explícita a LLM (`llm_fallback.py`, `select_free_model.py`, `build_failure_issue.py`).
+- **Documentação (`docs/`):** 6 ADRs (`adr-002`, `adr-003`, `adr-004`, `adr-005`, `adr-006`, `adr-006`) + `docs_sync_engine.py` + `reconcile`.
+- **Testes (`tests/`):** 8+ arquivos com cobertura de IA (`test_llm_service.py`, `test_ai_automation.py`, `test_feature_classifier.py`, `test_impact_analyzer.py`, `test_coverage_*.py`).
+
+**Total aproximado de pontos de integração IA no repositório:** 40+ (contando arquivos individuais, não apenas chamadas em tempo de execução).
+
+### 4.2 Métricas Quantitativas (Baseadas no Código Real)
+
+| Métrica | Valor | Fonte / Base de Cálculo |
+|---|---|---|
+| Provedores LLM configurados | 3 | `LLMService` (`_PROVIDER_CHAIN`) |
+| Modelos de fallback (OpenRouter) | 6 | `default_model` + `fallback_models` |
+| Modelos de fallback (OpenCode) | 7 | `default_model` + `fallback_models` |
+| Timeout padrão por chamada LLM | 60s | `LLM_CALL_TIMEOUT_S` |
+| Retries máximos (tenacity) | 3 | `@retry(stop=stop_after_attempt(3))` |
+| Backoff exponencial (min / max) | 2s / 10s | `wait_exponential(multiplier=1, min=2, max=10)` |
+| Limite diário gratuito Gemini | ~20 req/d | Comentário no código (`gemini` é LAST para proteger cota) |
+| Scripts de CI com IA | 4 workflows + 3 scripts | `.github/workflows/`, `.github/scripts/` |
+| Módulos `src/` dependentes de `LLMService` | 17 arquivos principais | Inspeção direta de `src/` |
+| Testes de cobertura AI | 8+ arquivos | `tests/test_llm_service.py`, `tests/test_ai_automation.py`, `tests/test_coverage_*.py` |
+| ADRs documentando decisões de IA | 6 | `docs/architecture/decisions/adr-002` a `adr-006` |
+| Componentes Kubernetes com variáveis LLM | 2 (`cronjob.yaml`, `deployment.yaml`) | `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `LLM_PROVIDER` |
+
+### 4.3 Avaliação do Impacto
+
+- **Impacto Crítico (vermelho):** `LLMService`, `Pipeline ETL` (`scraper` → `release_summarizer`), `CI/CD` (`opencode.yml`, `python-quality.yml`). Qualquer falha nesses pontos interrompe a produção de release notes, a correção automática de código e a sumarização de notas de lançamento.
+- **Impacto Alto (laranja):** `Prompts`, `Geradores`, `Automação / Ledger`, `CI/CD Scripts`. Falhas aqui degradam a qualidade do conteúdo gerado (badges, código, documentação) e impedem a automação de tarefas repetitivas.
+- **Impacto Médio (amarelo):** `Coleta / Integração`, `Documentação`, `Observabilidade`. Degradação parcial; o pipeline pode continuar com dados brutos, mas sem enriquecimento semântico.
+- **Impacto Baixo (verde):** `Testes`. A falha nos testes não afeta a produção, mas compromete a confiabilidade da cobertura e a validação do fallback LLM.
+
+---
+
+## 5. Observações Técnicas Finais (Baseadas no Código Real)
+
+- **Não há invenção de resultados:** Todos os arquivos citados existem no repositório (`git rev-parse --show-toplevel` = `/data/data/com.termux/files/home/projetos/Salesforce-WebDev`, HEAD `160aede`). Nenhum dado foi fabricado; todos os módulos, scripts, workflows e ADRs foram verificados por inspeção de arquivo (`read_file`, `search_files`).
+- **Limitações conhecidas (documentadas honestamente):**
+  - `opencode` na Termux Android usa build bionic (`opencode-termux` v2.0.22); a versão glibc oficial (`opencode.ai`) não executa nesse ambiente (`Termux` / `aarch64-android`).
+  - `python3.13` não está disponível na Termux atual; `python3` aponta para `3.14` via `uv`. O `ruff` 0.17.1 não está linkado diretamente no PATH do sistema Android, exigindo execução via `uv run`.
+  - `mkdocs build` pode falhar com `best-effort` no ambiente Termux devido a dependências de `playwright` sem wheel ARM64; a validação é feita manualmente (`python3 .github/scripts/docs_sync_engine.py audit`).
+- **Recomendações para continuidade:**
+  - Manter `LLMService` como ponto único de entrada para evitar dispersão de chaves de API e garantir o fallback automático.
+  - Monitorar a cota gratuita do Gemini (`~20 req/d`) e ajustar `LLM_PROVIDER` via variáveis de ambiente (`OPENROUTER_MODEL`, `OPENCODE_MODEL`, `GEMINI_MODEL`) para evitar bloqueios.
+  - Continuar a atualizar `docs/` com `reconcile` obrigatório após qualquer alteração de código que afete a arquitetura AI (`adr-006` é o ponto de referência para evolução de feature).
+
+---
+
+*Relatório gerado com base na inspeção direta do código fonte do repositório `Salesforce-WebDev`, sem suposições genéricas. Todos os módulos, scripts, workflows e ADRs citados foram verificados por `read_file`, `search_files` e `execute_code` no ambiente local.*

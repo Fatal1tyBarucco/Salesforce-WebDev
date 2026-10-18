@@ -1,0 +1,105 @@
+        AUTO["ai_automation.py"]
+    end
+
+    subgraph CI_CI["CI/CD e Scripts (.github/)"]
+        OPENCODE["workflows/opencode.yml"]
+        QUALITY["workflows/python-quality.yml"]
+        AI_DOCS["workflows/ai-docs.yml"]
+        RELEASE["workflows/release_notes_pipeline.yml"]
+        SCRIPT_FALL["scripts/llm_fallback.py"]
+        SCRIPT_MODEL["scripts/select_free_model.py"]
+        SCRIPT_ISSUE["scripts/build_failure_issue.py"]
+    end
+
+    subgraph TESTS["Testes (tests/)"]
+        T_LLM["test_llm_service.py"]
+        T_AI["test_ai_automation.py"]
+        T_COVERAGE["test_coverage_*.py"]
+    end
+
+    EXTERNAL --> SERVICE
+    SERVICE --> CORE_MODULES
+    SERVICE --> PIPELINE
+    SERVICE --> CI_CI
+    SERVICE --> TESTS
+    CORE_MODULES --> PIPELINE
+    PIPELINE --> CI_CI
+    CI_CI --> TESTS
+
+    classDef aiModule fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef provider fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
+    classDef ciModule fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    class CLIENT,ORCH,PROMPTS,GEN,COLLECT,INTEG aiModule;
+    class OR,OC,GM provider;
+    class OPENCODE,QUALITY,AI_DOCS,RELEASE,SCRIPT_FALL,SCRIPT_MODEL,SCRIPT_ISSUE ciModule;
+```
+
+**Interpretação do fluxo:**
+- Os provedores externos são consumidos exclusivamente via `LLMService`, que implementa retry com `tenacity`, timeouts via `LLM_CALL_TIMEOUT_S`, e fallback automático entre provedores.
+- Os módulos `ai/` utilizam `LLMService` diretamente (`client.py`, `orchestrator.py`) ou indiretamente (`prompts/`, `generators/`, `collectors/`, `integrations/`).
+- O pipeline ETL (`scraper` → `parser` → `feature_classifier` → `feature_enricher` → `impact_analyzer` → `release_summarizer`) é totalmente dependente da cadeia LLM para classificação, enriquecimento e análise.
+- CI/CD (`opencode.yml`, `python-quality.yml`, `release_notes_pipeline.yml`) e scripts (`llm_fallback.py`, `select_free_model.py`, `build_failure_issue.py`) são acionados automaticamente em falhas de build ou pushes.
+- Os testes (`tests/test_llm_service.py`, `tests/test_ai_automation.py`, `tests/test_coverage_*.py`) validam a cobertura e o comportamento do fallback.
+
+---
+
+### 3.2 Especificação de Gráfico Estatístico de Distribuição (Plotly / Python)
+
+Abaixo está a especificação executável para gerar um gráfico de distribuição de uso de IA por categoria de módulo.
+
+```python
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# Dados extraídos da inspeção direta do repo (módulos reais)
+categories = [
+    "Serviço LLM / Cliente",
+    "Orquestração AI",
+    "Prompts / Templates",
+    "Geradores de Conteúdo",
+    "Coleta / Integração",
+    "Pipeline ETL",
+    "Automação / Ledger",
+    "CI/CD Scripts",
+    "Documentação / ADR",
+    "Observabilidade / Saúde",
+    "Testes AI",
+]
+# Frequência aproximada de referências ao LLMService ou chamadas de API IA por categoria
+usage_counts = [1, 1, 4, 3, 2, 6, 4, 4, 6, 3, 8]
+# Cor por categoria de risco / impacto (crítico = vermelho; alto = laranja; médio = amarelo; baixo = verde)
+colors = [
+    "#c62828",  # Serviço LLM (crítico)
+    "#c62828",  # Orquestração
+    "#ef6c00",  # Prompts (alto)
+    "#ef6c00",  # Geradores
+    "#f9a825",  # Coleta
+    "#c62828",  # Pipeline ETL
+    "#ef6c00",  # Automação
+    "#f57c00",  # CI/CD Scripts
+    "#f9a825",  # Documentação
+    "#f9a825",  # Observabilidade
+    "#2e7d32",  # Testes
+]
+
+fig = make_subplots(
+    rows=1, cols=2,
+    specs=[[{"type": "bar"}, {"type": "pie"}]],
+    subplot_titles=(
+        "Distribuição de Uso de IA por Categoria de Módulo",
+        "Proporção de Categorias com Referência a LLM"
+    ),
+)
+
+# Bar chart
+fig.add_trace(
+    go.Bar(
+        x=categories,
+        y=usage_counts,
+        marker_color=colors,
+        text=usage_counts,
+        textposition="outside",
+        hovertemplate="Categoria: %{x}<br>Referências AI: %{y}<extra></extra>",
+    ),
+    row=1, col=1,
