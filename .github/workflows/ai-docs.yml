@@ -82,6 +82,7 @@ jobs:
         with:
           name: ai-docs-audit-${{ github.run_id }}
           path: docs/.ai-logs/
+          if-no-files-found: ignore
 
       - name: Commit or open PR (controlled by PUBLISH_MODE)
         if: steps.pipeline.outcome == 'success'
