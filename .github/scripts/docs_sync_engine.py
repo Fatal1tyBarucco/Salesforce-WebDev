@@ -248,7 +248,10 @@ def docs_not_in_nav(tracked_docs: list[str], nav_set: set[str]) -> list[str]:
 def stale_manifest(inventory: dict[str, str], manifest: dict) -> list[dict]:
     findings: list[dict] = []
     old_files: dict[str, str] = manifest.get("files", {})
+    ignore_path = MANIFEST_REL  # evita loop infinito do manifest
     for path, sha in inventory.items():
+        if path == ignore_path:
+            continue
         if path in old_files and old_files[path] != sha:
             findings.append(
                 {
