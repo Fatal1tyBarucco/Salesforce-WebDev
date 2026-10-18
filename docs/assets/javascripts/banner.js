@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const banners = [
-    "../assets/banner1.png",
-    "../assets/banner2.png",
+    "assets/banner1.png",
+    "assets/banner2.png",
   ];
 
   const chosen = banners[Math.floor(Math.random() * banners.length)];
