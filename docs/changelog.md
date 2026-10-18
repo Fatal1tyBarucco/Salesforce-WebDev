@@ -62,3 +62,6 @@
 ## Atualizações automáticas (grande impacto)
 
 Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos commits de grande impacto são detectados.
+
+- `4f88fd6` — feat(automation): changelog automático para atualizações de grande impacto
+- `54d4696` — docs(changelog): inclui todas as melhorias grandes — refatorações e features

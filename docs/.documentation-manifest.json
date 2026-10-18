@@ -290,12 +290,13 @@
     ".github/scripts/llm_fallback.py": "3ff9f3af317e746772e85b4e585bf510c6ed17f8",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
+    ".github/scripts/update_changelog_auto.py": "c7d047afc3be829e724dbbe05dcb438ab5023bfe",
     ".github/workflows/ai-docs.yml": "e1d4b4a0b2f788fd46897e14cbe31c35a3f4623b",
     ".github/workflows/copilot-setup-steps.yml": "5f72d484df396c45cb5a3a586aacdaf009ecc4ce",
     ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
     ".github/workflows/documentation-build.yml": "7bdb0240a23d94d6de522df5b3e5fa2db55e51dd",
-    ".github/workflows/documentation-sync.yml": "76e4021859d24aad63f174a077529a663e3e1a7e",
+    ".github/workflows/documentation-sync.yml": "6ea80a986cf2e2b562547fb7e0fbce492532d5ec",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
     ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
@@ -405,7 +406,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "71c3fdc639b650155ebf78cbc12706275228c1d6",
+    "docs/changelog.md": "ab8fad867ff067f2e490799bc46735a87cc78810",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "09febb51ced41f0e828d0adcab215176de4e54af",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -803,6 +804,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T05:09:19.525425+00:00",
-  "repository_sha": "523463fd0b3dd8034101ae753139ddb40a8db46f"
+  "generated_at": "2026-10-18T05:15:39.207156+00:00",
+  "repository_sha": "4f88fd6c70a8dfa15683cab0ffcb60debfc1840a"
 }
