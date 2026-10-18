@@ -612,6 +612,7 @@
     "releases/winter_27/pt_BR/servico.md": "1f05994a77858081ae72351b5f39551d87a21ee9",
     "releases/winter_27/pt_BR/setores.md": "bdde8a183a22f72edc278ef5ac84f60bdcc09d0c",
     "releases/winter_27/pt_BR/vendas.md": "8de6229100322d6f71ab949ce00688c157254a53",
+    "scripts/quality-check-local.sh": "354b119e03098db01699c902f01e8d0e38317fec",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
     "src/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
@@ -795,6 +796,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T03:34:32.794592+00:00",
-  "repository_sha": "b13270ed73f21670f618305df85a93832de0eb58"
+  "generated_at": "2026-10-18T03:46:54.563290+00:00",
+  "repository_sha": "36752070356f480bda6c1d8454f7061d43737794"
 }
