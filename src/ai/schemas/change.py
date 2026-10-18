@@ -51,8 +51,11 @@ class ChangeClassification(BaseModel):
         for entry in self.review_needed:
             entry.needs_review = True
             entry.review_note = "Baixa confiança — ser revisado pela equipe."
+<<<<<<< HEAD
 =======
 class ChangeClassification(BaseModel):
     changes: list[ChangeEntry] = Field(default_factory=list)
     review_needed: list[ChangeEntry] = Field(default_factory=list)
 >>>>>>> f3bb032 (feat(ai-docs): pipeline dinâmico de documentação por IA via GitHub Actions)
+=======
+>>>>>>> 4279e73 (fix(ai-docs): corrige change_reviewer (import + logger), change_classifier (retorno), e prompts path)
