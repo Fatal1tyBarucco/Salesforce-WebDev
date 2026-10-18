@@ -402,7 +402,8 @@
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
-    "docs/assets/javascripts/banner.js": "8a301034e76890dd856fb4717b21a4353631dd38",
+    "docs/assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
+    "docs/assets/javascripts/banner.js": "0583ca67054a1acb350cf04645a1323705671ac5",
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
@@ -412,7 +413,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "0c2fbdc5e1724cace89f89e1d3d470e356190011",
+    "docs/index.md": "82c38d845077f555063ccff99cdf1cd28e510338",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
@@ -804,6 +805,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-18T05:51:19.462085+00:00",
-  "repository_sha": "160aedef61d1afeb9697defc0290fbbdef0661c2"
+  "generated_at": "2026-10-18T06:17:27.947204+00:00",
+  "repository_sha": "e24e91b0a9fb24a093e99dd3fddef8fd742b524a"
 }
