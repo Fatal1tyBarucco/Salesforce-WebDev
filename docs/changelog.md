@@ -64,3 +64,9 @@ Formatado para leitura direta: cada seção com título claro, breve descrição
 
 - `4f88fd6` — feat(automation): changelog automático para atualizações de grande impacto
 - `54d4696` — docs(changelog): inclui todas as melhorias grandes — refatorações e features
+
+---
+
+## Atualizações automáticas (grande impacto) 1
+
+- `b8a594e` — docs(changelog): fundir raiz (CHANGELOG.md) + melhorias grandes
