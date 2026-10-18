@@ -377,27 +377,39 @@ Salesforce-WebDev/
   ├── translator.py
   └── workflow.py
   ├── .github/                   # Workflows e scripts do GitHub
+  ├── cache/
   ├── docs/                      # Documentação MkDocs
   ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
+  ├── logs/
+  ├── references/
   ├── releases/                  # Artefatos Markdown por release
   ├── report_parts/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
+  ├── .coverage
   ├── .python-version
+  ├── .termux-env.sh
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── DIFF_REPORT.md
   ├── Dockerfile                 # Imagem Docker de runtime
   ├── IA_AUDIT_REPORT.md
+  ├── IMPACT_REPORT.md
+  ├── MEMORY.md
+  ├── NOTIFICATION_DIGEST.md
   ├── PROPOSTA_FEATURE_RIPE.md
+  ├── QUALITY_REPORT.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
+  ├── REGRESSION_REPORT.md
   ├── SECURITY.md                # Política de segurança
+  ├── coverage.xml
+  ├── drift_report.json
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código

@@ -218,4 +218,4 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 - Convenção reforçada: ao finalizar qualquer tarefa, atualizar obrigatoriamente `MEMORY.md` (fatos duráveis, não sensíveis) e `AGENTS.md` (convenções atualizadas, versionado). Nenhum resultado de push, entrega ou execução deve ser inventado; se falhar, reportar o bloqueio real.
 
 ## Atualização automática (gatilho) — 2026-10-18T03:06:47-03:00
-- Gatilho executado: `scripts/auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.
+- Gatilho executado: `auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.
