@@ -7,6 +7,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 import subprocess
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -510,12 +511,43 @@ def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str,
     return bounded
 
 
+_HEADING_PATTERN = re.compile(r"^(#{1,6})\s+\S")
+
+
+def _normalize_heading_levels(text: str, base_level: int) -> str:
+    """Keep heading levels inside ``text`` from jumping more than one level.
+
+    Generated deltas may start deeper than the section that contains them
+    (e.g. ``###`` right after the document ``#`` title), which markdownlint
+    rejects with MD001. Headings inside fenced code blocks are left untouched.
+    """
+    lines = text.splitlines()
+    previous = base_level
+    in_fence = False
+    for index, line in enumerate(lines):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        match = _HEADING_PATTERN.match(line)
+        if match is None:
+            continue
+        level = len(match.group(1))
+        if level > previous + 1:
+            level = previous + 1
+            lines[index] = "#" * level + line[len(match.group(1)) :]
+        previous = level
+    result = "\n".join(lines)
+    return result + "\n" if text.endswith("\n") else result
+
+
 def _prepend_document_delta(path: Path, marker: str, title: str, delta: str, language: str) -> str:
     """Insert a new document section while keeping earlier generated content intact."""
     current = path.read_text(encoding="utf-8") if path.exists() else ""
     heading = f"# {title}"
     if not current:
-        return f"{marker}\n\n{heading}\n\n{delta.strip()}\n"
+        return f"{marker}\n\n{heading}\n\n{_normalize_heading_levels(delta.strip(), 1)}\n"
     if current.startswith("<!-- gerado por IA"):
         _, _, current = current.partition("\n")
         current = current.lstrip()
@@ -524,7 +556,8 @@ def _prepend_document_delta(path: Path, marker: str, title: str, delta: str, lan
     else:
         previous_content = current
     update_heading = "## Nova atualização" if language == "pt-BR" else "## New update"
-    updated = f"{marker}\n\n{heading}\n\n{update_heading}\n\n{delta.strip()}"
+    delta = _normalize_heading_levels(delta.strip(), 2)
+    updated = f"{marker}\n\n{heading}\n\n{update_heading}\n\n{delta}"
     if previous_content:
         updated += f"\n\n---\n\n{previous_content.rstrip()}"
     return updated + "\n"
