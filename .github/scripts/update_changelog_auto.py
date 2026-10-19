@@ -57,17 +57,20 @@ def already_in_changelog(msg: str) -> bool:
 def append_to_changelog(commits):
     if not commits:
         return False
-    lines = ["\n---\n\n## Atualizações automáticas (grande impacto)\n"]
-    added = False
-    for sha, msg in commits:
-        if already_in_changelog(msg):
-            continue
-        lines.append(f"- `{sha}` — {msg}\n")
-        added = True
-    if added:
-        with open(CHANGELOG, "a", encoding="utf-8") as f:
-            f.writelines(lines)
-    return added
+
+    new_entries = [f"- `{sha}` — {msg}\n" for sha, msg in commits if not already_in_changelog(msg)]
+    if not new_entries:
+        return False
+
+    content = CHANGELOG.read_text(encoding="utf-8") if CHANGELOG.exists() else ""
+    section = "## Atualizações automáticas (grande impacto)"
+    if section in content:
+        content = content.rstrip() + "\n" + "".join(new_entries)
+    else:
+        content = content.rstrip() + f"\n\n---\n\n{section}\n\n" + "".join(new_entries)
+
+    CHANGELOG.write_text(content.rstrip() + "\n", encoding="utf-8")
+    return True
 
 
 if __name__ == "__main__":
