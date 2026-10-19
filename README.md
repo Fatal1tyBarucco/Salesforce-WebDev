@@ -41,7 +41,9 @@ Configure no repositório GitHub:
 - Variável `AI_DOCS_MODEL` (opcional): identificador de modelo OpenRouter `:free`; o padrão está em `src/ai/config/models.py`. Valores sem sufixo `:free` são rejeitados.
 - Variável `AI_DOCS_SELF_REVIEW` (opcional): `true` ativa uma chamada adicional de revisão; padrão `false`.
 - Variável `AI_DOCS_REVIEWERS` (opcional): logins separados por vírgula, aplicados ao PR no modo `pr`.
-- Variável `AI_DOCS_MAX_CONTEXT_TOKENS` (opcional): orçamento máximo estimado para o contexto de mudanças; padrão `12000`. A estimativa conservadora usa bytes UTF-8 e não substitui o tokenizer específico do modelo.
+- Variável `AI_DOCS_MAX_CONTEXT_TOKENS` (opcional): orçamento máximo estimado para o contexto de mudanças serializado (`<change_data>`); padrão `12000`. A estimativa conservadora usa bytes UTF-8 (≈2,5 bytes/token) e não substitui o tokenizer específico do modelo. O orçamento não inclui o prompt de sistema, os templates de prompt nem os trechos de documentos existentes; quando o `prompt_tokens` real reportado pelo OpenRouter excede o orçamento, o pipeline registra um aviso e registra o valor no artefato de auditoria, sem interromper a execução.
+- Variável `AI_DOCS_MAX_OUTPUT_TOKENS` (opcional): orçamento inicial de tokens de conclusão por chamada; padrão `3000`.
+- Variável `AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT` (opcional): teto para o reajuste do orçamento de conclusão; padrão `8000`. Quando o OpenRouter devolve completion vazia ou `finish_reason=length` (tokens de raciocínio ocultos consomem o orçamento), cada retry dobra o orçamento até esse teto antes de desistir.
 
 O coletor inclui PRs mesclados, labels dos PRs e metadados de issues fechadas no intervalo desde `since_ref`, limitando corpos longos. O job fornece `GITHUB_TOKEN` ao GitHub CLI para essas consultas.
 
