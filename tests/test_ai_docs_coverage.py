@@ -493,10 +493,16 @@ def test_language_specific_render_and_document_prompts(tmp_path: Path, monkeypat
     )
     (out / "leadership.md").write_text("The service and the client work.", encoding="utf-8")
     (out / "roadmap.md").write_text("The team should evaluate this next.", encoding="utf-8")
+    Path("CHANGELOG.md").write_text(
+        "# Changelog" + chr(10) * 2 + "## [1.0.0]" + chr(10) * 2 + "- Historical fact.",
+        encoding="utf-8",
+    )
     orchestrator = AIDocOrchestrator(since_ref="HEAD~1", output_dir=out)
     prompt = orchestrator._documents_prompt(ChangeClassification(changes=[_entry()]))
     assert "Idioma obrigatório: en" in prompt
-    assert "<current_changelog>" in prompt
+    assert "<existing_document>" in prompt
+    assert "The service and the client work with this feature." in prompt
+    assert "Historical fact." in prompt
     docs = GeneratedDocuments(
         release_notes="A change is ready.",
         changelog_entry="## [Unreleased]"
