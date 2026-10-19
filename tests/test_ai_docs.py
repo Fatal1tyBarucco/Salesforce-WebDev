@@ -40,6 +40,26 @@ def _completion(text: str) -> MagicMock:
     return response
 
 
+def _completion_with(
+    text: str | None,
+    finish_reason: str | None = None,
+    *,
+    refusal: str | None = None,
+    error: object | None = None,
+    choices: list[object] | None = None,
+) -> MagicMock:
+    """Build an HTTP-200 completion with diagnostic fields the client must surface."""
+    if choices is None:
+        message = SimpleNamespace(content=text, refusal=refusal)
+        choices = [SimpleNamespace(message=message, finish_reason=finish_reason)]
+    response = MagicMock()
+    response.choices = choices
+    response.usage = None
+    if error is not None:
+        response.error = error
+    return response
+
+
 def _entry(confidence: float = 0.9) -> dict[str, object]:
     return make_ai_change(confidence)
 
@@ -244,6 +264,151 @@ def test_client_failure_diagnostics_redact_credentials(
     assert "abc123.token" not in logged
     assert "Bearer [REDACTED]" in message
     assert "[REDACTED]" in logged
+
+
+def test_client_empty_content_diagnostics_report_finish_reason() -> None:
+    client = _diagnostic_client(
+        _completion_with(None, "stop"),
+        _completion_with("   ", "stop"),
+        _completion_with(None, "stop"),
+    )
+    with pytest.raises(RuntimeError) as excinfo:
+        client.generate("prompt")
+    message = str(excinfo.value)
+    assert "phase=empty-completion" in message
+    assert "empty completion" in message
+    assert "choices=1" in message
+    assert "finish_reason=stop" in message
+    requests = client._client.chat.completions.create.call_args_list
+    assert len(requests) == 3
+    assert "veio vazia" in requests[1].kwargs["messages"][1]["content"]
+    assert "veio vazia" in requests[2].kwargs["messages"][1]["content"]
+
+
+def test_client_missing_choices_reports_empty_completion() -> None:
+    client = _diagnostic_client(
+        _completion_with(None, choices=[]),
+        _completion_with(None, choices=[]),
+        _completion_with(None, choices=[]),
+    )
+    with pytest.raises(RuntimeError) as excinfo:
+        client.generate("prompt")
+    message = str(excinfo.value)
+    assert "phase=empty-completion" in message
+    assert "no choices" in message
+    assert "choices=0" in message
+
+
+def test_client_empty_completion_drops_json_mode_and_accepts_fenced_json() -> None:
+    fenced = '```json\n{"required_value":"fenced"}\n```'
+    client = _diagnostic_client(
+        _completion_with(None, "stop"),
+        _completion_with(fenced, "stop"),
+    )
+    assert client.generate("prompt", StrictObject) == {"required_value": "fenced"}
+    requests = client._client.chat.completions.create.call_args_list
+    assert requests[0].kwargs["response_format"] == {"type": "json_object"}
+    assert requests[1].kwargs["response_format"] is None
+    assert "veio vazia" in requests[1].kwargs["messages"][1]["content"]
+
+
+def test_client_invalid_json_diagnoses_preview_and_finish_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-v1-leaked-preview-key")
+    text = "Desculpe, não posso gerar o JSON. sk-or-v1-leaked-preview-key"
+    client = _diagnostic_client(
+        _completion_with(text, "stop"),
+        _completion_with(text, "stop"),
+        _completion_with(text, "stop"),
+    )
+    with pytest.raises(ValueError) as excinfo:
+        client.generate("prompt", StrictObject)
+    message = str(excinfo.value)
+    assert "invalid after 3 attempts" in message
+    assert "phase=output-validation" in message
+    assert "issue=invalid-json" in message
+    assert "finish_reason=stop" in message
+    assert "output=Desculpe" in message
+    assert "sk-or-v1-leaked-preview-key" not in message
+    assert "[REDACTED]" in message
+
+
+def test_client_truncated_output_retries_with_concise_guidance(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    client = _diagnostic_client(
+        _completion_with('{"required_value": "trunca', "length"),
+        _completion_with('{"required_value":"ok"}', "stop"),
+    )
+    with caplog.at_level(logging.WARNING, logger="src.ai.llm.client"):
+        assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "issue=truncated-output" in logged
+    requests = client._client.chat.completions.create.call_args_list
+    assert "truncada" in requests[1].kwargs["messages"][1]["content"]
+
+
+def test_client_provider_refusal_output_is_diagnosed() -> None:
+    blocked = _completion_with("resposta bloqueada pelo provedor", "content_filter")
+    client = _diagnostic_client(blocked, blocked, blocked)
+    with pytest.raises(ValueError) as excinfo:
+        client.generate("prompt", StrictObject)
+    message = str(excinfo.value)
+    assert "invalid after 3 attempts" in message
+    assert "issue=provider-refusal" in message
+    assert "finish_reason=content_filter" in message
+
+
+def test_client_empty_completion_surfaces_refusal_text() -> None:
+    refused = _completion_with(None, "stop", refusal="I cannot assist with that request.")
+    client = _diagnostic_client(refused, refused, refused)
+    with pytest.raises(RuntimeError) as excinfo:
+        client.generate("prompt")
+    message = str(excinfo.value)
+    assert "phase=empty-completion" in message
+    assert "refusal=I cannot assist with that request." in message
+
+
+def test_client_embedded_provider_error_is_surfaced() -> None:
+    error_payload = {
+        "code": 402,
+        "message": "Quota temporarily exhausted",
+        "metadata": {"error_type": "rate_limit"},
+    }
+    failing = _completion_with(None, "stop", error=error_payload)
+    client = _diagnostic_client(failing, failing, failing)
+    with pytest.raises(RuntimeError) as excinfo:
+        client.generate("prompt")
+    message = str(excinfo.value)
+    assert "phase=empty-completion" in message
+    assert "error=402 | Quota temporarily exhausted" in message
+    assert "rate_limit" in message
+
+
+def test_pipeline_empty_completion_failure_writes_diagnostic_audit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
+    )
+    client = _diagnostic_client(
+        _completion_with(None, "stop"),
+        _completion_with(None, "stop"),
+        _completion_with(None, "stop"),
+    )
+    result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1", llm=client).run())
+    assert result.status == "failed"
+    assert "empty completion" in result.errors[0]
+    failure = next((tmp_path / "docs/.ai-logs").glob("*-failed.json"))
+    record = json.loads(failure.read_text(encoding="utf-8"))
+    chain = record["error"]["chain"]
+    assert "phase=empty-completion" in chain[0]
+    assert "empty completion" in chain[0]
+    assert chain[1].startswith("error=ValueError")
+    assert "finish_reason=stop" in chain[1]
 
 
 def test_diagnostic_helpers_bound_and_describe_odd_failures(
