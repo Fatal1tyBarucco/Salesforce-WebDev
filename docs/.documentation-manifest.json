@@ -650,7 +650,7 @@
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
     "src/ai/llm/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "src/ai/llm/client.py": "318eeb7efdbf39f41df6e9508b4abf9cf4618d5c",
+    "src/ai/llm/client.py": "ffb200607c8753b409e13825b096395319f46573",
     "src/ai/orchestrator.py": "8e43b807f390f9886b17e2a6bcd8f58dfc0a7360",
     "src/ai/prompts/__init__.py": "69c96756d3b9a2933f2ba03fb0078a88a7d13a11",
     "src/ai/prompts/changelog.prompt": "075b60188a602f6fa6517f708e1479014da2184b",
@@ -750,7 +750,7 @@
     "tests/factories.py": "baed65a16b37e21ecb33688fab91f347f3809220",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
-    "tests/test_ai_docs.py": "f42eb6e82e5459574f13ef18d14d29f5e48318c4",
+    "tests/test_ai_docs.py": "6217bfa55ac42ec0ab06f626a77c69a987e3ede4",
     "tests/test_ai_docs_coverage.py": "4460308576aea01b0a7aa8f3647fc4778719b241",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
     "tests/test_ai_integration.py": "d303720cdc3f5b9b954f0d3d3bfbbf3dd006549d",
@@ -825,6 +825,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-19T02:51:44.746262+00:00",
-  "repository_sha": "41b67e41ed198ac08fbf20daa501f0ffa7b50089"
+  "generated_at": "2026-10-19T03:39:01.826822+00:00",
+  "repository_sha": "0b4014515666afba7922678124627ed76e8b5bc0"
 }
