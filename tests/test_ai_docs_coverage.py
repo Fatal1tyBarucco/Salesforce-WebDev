@@ -525,6 +525,13 @@ def test_context_truncates_to_configured_token_budget(monkeypatch: pytest.Monkey
     assert len(serialized) < len(json.dumps(raw, ensure_ascii=False))
 
 
+def test_estimate_tokens_uses_conservative_two_point_five_bytes_per_token() -> None:
+    assert _estimate_tokens("x" * 300) == 120
+    assert _estimate_tokens("") == 1
+    assert _estimate_tokens("é") == 1
+    assert _estimate_tokens("çã") == 2
+
+
 def test_language_detection_defaults_to_portuguese_and_detects_english() -> None:
     assert _detect_language("") == "pt-BR"
     assert _detect_language("The service and the client work with this data.") == "en"

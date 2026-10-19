@@ -211,6 +211,13 @@ The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on eve
 
 All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).
 
+## Codebase Pitfalls (learned the hard way — do not re-introduce)
+
+- **Black 26.10.0 with `target-version = ["py314"]` removes the parentheses from `except (A, B):` clauses that have no `as` binding, producing invalid Python.** Never write `except (A, B):` without `as` in any `.py` file — use `except Exception:` in defensive best-effort wrappers or `except (A, B) as exc:` when the binding is needed. `except (A, B) as e:` is black-stable.
+- **`actions/upload-artifact` ≥ v4.4 excludes hidden files/directories by default.** Any artifact path starting with a dot (e.g. `docs/.ai-logs/`) requires `include-hidden-files: true`, otherwise the step succeeds with `total_count: 0`. Use `if-no-files-found: warn` (not `ignore`) so missing artifacts are visible.
+- **Tests must never write repo-root files.** `src/main.py` `generate_ai_reports_async` writes `CHANGELOG.md`, `QUALITY_REPORT.md`, `REGRESSION_REPORT.md`, `DIFF_REPORT.md` relative to cwd; tests invoking it need a temp cwd (see autouse `isolated_cwd` fixture in `tests/test_main_coverage.py`).
+- **`.github/scripts/docs_sync_engine.py` must stay runnable** (`python3` stdlib-only, no third-party deps); after editing it, verify with `python3 -m py_compile` and `python3 .github/scripts/docs_sync_engine.py audit`. Docs changes require `reconcile` → validate → commit + push.
+
 ## Atualização de conclusão — Auditoria de IA (2026-10-18 — Renato / Termux)
 - `MEMORY.md` atualizado (não versionado) com registro completo da auditoria e envio para canais de mensagem.
 - `AGENTS.md` atualizado (versionado): esta seção documenta que auditorias de IA exigem inspeção real (`read_file` + `search_files` + `execute_code`), sem suposições; que `reconcile` obrigatório continua válido para docs; que `push` obrigatório para commits; que bloqueios devem ser reportados honestamente (ex: `opencode` bionic no Termux aarch64, `python3.13` indisponível, `ruff` 0.17.1 não linkado, `mkdocs` best-effort bloqueado por `playwright` sem wheel ARM64).

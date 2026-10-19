@@ -160,6 +160,7 @@ class AIDocOrchestrator:
             total_tokens = sum(
                 item.get("total_tokens") or 0 for item in usage if isinstance(item, dict)
             )
+            _warn_prompt_overrun(usage)
             return PipelineResult(
                 changes=changes,
                 documents=list(rendered.values()),
@@ -168,13 +169,13 @@ class AIDocOrchestrator:
             )
         except Exception as exc:
             logger.error("AI-doc pipeline failed: %s", " -> ".join(_exception_chain(exc)))
-            if len(run_prompts) > 1:
-                try:
-                    self._write_failure_audit(run_prompts, raw_log, exc, classification, generated)
-                except Exception as audit_error:
-                    logger.error(
-                        "Could not persist AI-doc failure audit: %s", type(audit_error).__name__
-                    )
+            try:
+                self._write_failure_audit(run_prompts, raw_log, exc, classification, generated)
+            except Exception as audit_error:
+                logger.error(
+                    "Could not persist AI-doc failure audit: %s", type(audit_error).__name__
+                )
+            _warn_prompt_overrun(getattr(self.llm, "usage", None))
             return PipelineResult(changes=[], documents=[], errors=[str(exc)], status="failed")
 
     @staticmethod
@@ -340,6 +341,7 @@ class AIDocOrchestrator:
                 self.llm, "model", os.getenv("AI_DOCS_MODEL", "configured-free-model")
             ),
             "usage": getattr(self.llm, "usage", []),
+            "context_budget_tokens": _context_budget_tokens(),
             "prompts": prompts,
             "raw_output": raw_output,
             "validated_classification": (
@@ -381,6 +383,7 @@ class AIDocOrchestrator:
                 self.llm, "model", os.getenv("AI_DOCS_MODEL", "configured-free-model")
             ),
             "usage": getattr(self.llm, "usage", []),
+            "context_budget_tokens": _context_budget_tokens(),
             "prompts": prompts,
             "raw_output": raw_output,
             "validated_classification": classification.model_dump(mode="json"),
@@ -425,9 +428,47 @@ def _existing_language(path: Path) -> str:
 
 
 def _estimate_tokens(text: str) -> int:
-    """Conservatively estimate prompt tokens from UTF-8 bytes (about 3 bytes/token)."""
+    """Conservatively estimate prompt tokens from UTF-8 bytes (about 2.5 bytes/token).
+
+    Real tokenizers regularly produce more tokens than a 3-bytes/token rule for
+    this repository's mix of Portuguese prose, code, and JSON; a 2.5-bytes/token
+    ratio keeps the serialized change context safely inside the configured
+    ``AI_DOCS_MAX_CONTEXT_TOKENS`` budget.
+    """
     byte_count = len(text.encode("utf-8"))
-    return max(1, (byte_count + 2) // 3)
+    return max(1, (byte_count * 2 + 4) // 5)
+
+
+def _context_budget_tokens() -> int:
+    """Configured estimate budget for the serialized change context only."""
+    try:
+        return max(1, int(os.getenv("AI_DOCS_MAX_CONTEXT_TOKENS", "12000")))
+    except ValueError:
+        return 12000
+
+
+def _warn_prompt_overrun(usage: Any) -> None:
+    """Warn when the provider's actual prompt_tokens exceed the context budget.
+
+    The budget bounds only the serialized ``<change_data>`` context; the system
+    prompt, prompt templates, and existing-document excerpts add overhead, and
+    the byte-based estimate can undercount versus the model tokenizer. A warning
+    (not an error) keeps the divergence visible in run logs and audit output.
+    """
+    budget = _context_budget_tokens()
+    if not isinstance(usage, list):
+        return
+    for item in usage:
+        actual = item.get("prompt_tokens") if isinstance(item, dict) else None
+        if isinstance(actual, int) and actual > budget:
+            logger.warning(
+                "prompt_tokens=%s exceeded AI_DOCS_MAX_CONTEXT_TOKENS=%s "
+                "(budget bounds change context only; templates, system prompt, "
+                "and existing-document excerpts add overhead)",
+                actual,
+                budget,
+            )
+            return
 
 
 def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str, Any]:
@@ -443,10 +484,7 @@ def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str,
         "closed_issues",
     )
     bounded: dict[str, Any] = {key: raw[key] for key in ("since_ref", "to_ref") if key in raw}
-    try:
-        max_tokens = max(1, int(os.getenv("AI_DOCS_MAX_CONTEXT_TOKENS", "12000")))
-    except ValueError:
-        max_tokens = 12000
+    max_tokens = _context_budget_tokens()
 
     def fits(key: str, value: Any) -> bool:
         candidate = dict(bounded)
@@ -469,7 +507,9 @@ def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str,
                         low = middle
                     else:
                         high = middle - 1
-                bounded[key] = value[:low] + "…" if low else ""
+                truncated = value[:low] + "…" if low else ""
+                if fits(key, truncated):
+                    bounded[key] = truncated
         elif isinstance(value, list):
             selected: list[Any] = []
             for item in value:
