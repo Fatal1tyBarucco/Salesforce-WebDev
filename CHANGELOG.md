@@ -1,5 +1,28 @@
 # Changelog
 
+<!-- gerado por IA em 2026-10-19T14:57:56+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Fixed
+- Fixed GitHub Pages deployment by adding site build job, artifact upload, and separate deploy step, restoring publication of release artifacts.
+- Adjusted Markdown headers for MD001/MD036 compliance in impact report generator.
+- Changed ai-docs workflow to warn on missing files and include hidden files in AI log artifact upload.
+
+### Added
+- Added output token budget management in LLM client with environment variables and exponential max_tokens scaling on retries.
+- Added coverage tests for AI and documentation modules.
+
+### Changed
+- Simplified exception handling in docs_sync_engine by replacing specific OSError/ValueError blocks with a generic Exception catch.
+- Updated documentation manifest with references to new AI-generated artifacts.
+
+### Breaking Changes
+- None
+
+### Security
+- None
+
 <!-- gerado por IA em 2026-10-19T03:48:57+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
