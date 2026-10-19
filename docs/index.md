@@ -317,6 +317,7 @@ Pattern reutilizável para chamadas externas:
 Salesforce-WebDev/
   ├── ai/
       ├── collectors/
+      ├── config/
       ├── generators/
       ├── integrations/
       ├── llm/
@@ -394,12 +395,9 @@ Salesforce-WebDev/
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança
-  ├── drift_report.json
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
-  ├── reconcile_summary.md
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código

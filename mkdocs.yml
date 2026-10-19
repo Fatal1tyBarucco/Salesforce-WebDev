@@ -98,6 +98,8 @@ nav:
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
       - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
   - API Reference:
+    - Ai Config Models: api/ai-config-models.md
+    - Ai Schemas Generated Docs: api/ai-schemas-generated_docs.md
     - Ai Collectors Change Collector: api/ai-collectors-change_collector.md
     - Ai Llm Client: api/ai-llm-client.md
     - Ai Orchestrator: api/ai-orchestrator.md
@@ -183,6 +185,7 @@ nav:
   - Manutenção:
     - Visão Geral: maintenance/index.md
     - Operações de Workflow: maintenance/workflow-operations.md
+    - Auditoria AI Docs: maintenance/ai-docs-audit-logs.md
     - Desenvolvimento Local: maintenance/local-development.md
     - Cache Management: maintenance/cache-management.md
     - Troubleshooting: maintenance/troubleshooting.md

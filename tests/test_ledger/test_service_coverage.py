@@ -320,11 +320,11 @@ def test_load_all_metas_skips_invalid_json(
 # ── Service: _load_all_metas_sorted com diretório vazio ──────────────────
 
 
-def test_load_all_metas_empty_directory() -> None:
+def test_load_all_metas_empty_directory(tmp_path: Path) -> None:
     """Diretório sem releases → lista vazia."""
     svc = FeatureEvolutionLedgerService(
-        releases_dir="/tmp/nonexistent_ledger_test_dir",
-        cache_dir="/tmp/cache_ledger_test",
+        releases_dir=str(tmp_path / "nonexistent_ledger_test_dir"),
+        cache_dir=str(tmp_path / "cache_ledger_test"),
     )
     metas = svc._load_all_metas_sorted()
     assert metas == []

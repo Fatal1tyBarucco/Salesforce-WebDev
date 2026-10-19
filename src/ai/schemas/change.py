@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ChangeEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
     title: str = Field(..., min_length=1, max_length=200)
     description: str = Field(..., min_length=10, max_length=2000)
     type: Literal[
@@ -30,12 +32,20 @@ class ChangeEntry(BaseModel):
 
 
 class ChangeClassification(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
     changes: list[ChangeEntry] = Field(default_factory=list)
     review_needed: list[ChangeEntry] = Field(default_factory=list)
 
     def populate_review_needed(self) -> None:
-        self.review_needed = [c for c in self.changes if c.confidence < 0.5]
-        self.changes = [c for c in self.changes if c.confidence >= 0.5]
-        for entry in self.review_needed:
+        low_confidence = [entry for entry in self.changes if entry.confidence < 0.5]
+        self.changes = [entry for entry in self.changes if entry.confidence >= 0.5]
+        candidates = [*self.review_needed, *low_confidence]
+        unique: dict[tuple[str, tuple[str, ...]], ChangeEntry] = {}
+        for entry in candidates:
+            key = (entry.title, tuple(entry.source_refs))
             entry.needs_review = True
-            entry.review_note = "Baixa confiança — ser revisado pela equipe."
+            if not entry.review_note:
+                entry.review_note = "Baixa confiança ou sinalizada pelo classificador."
+            unique[key] = entry
+        self.review_needed = list(unique.values())

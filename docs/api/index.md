@@ -17,6 +17,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | Módulo | Evocador |
 |--------|----------|
 | `src.ai.collectors.change_collector` | [`ai-collectors-change_collector.md`](ai-collectors-change_collector.md) |
+| `src.ai.config.models` | [`ai-config-models.md`](ai-config-models.md) |
 | `src.ai.generators.badges` | [`ai-generators-badges.md`](ai-generators-badges.md) |
 | `src.ai.generators.code` | [`ai-generators-code.md`](ai-generators-code.md) |
 | `src.ai.generators.markdown` | [`ai-generators-markdown.md`](ai-generators-markdown.md) |
@@ -31,6 +32,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.ai.schemas.change` | [`ai-schemas-change.md`](ai-schemas-change.md) |
 | `src.ai.schemas.change_classifier` | [`ai-schemas-change_classifier.md`](ai-schemas-change_classifier.md) |
 | `src.ai.schemas.change_reviewer` | [`ai-schemas-change_reviewer.md`](ai-schemas-change_reviewer.md) |
+| `src.ai.schemas.generated_docs` | [`ai-schemas-generated_docs.md`](ai-schemas-generated_docs.md) |
 | `src.ai.schemas.llm_input` | [`ai-schemas-llm_input.md`](ai-schemas-llm_input.md) |
 | `src.ai_automation` | [`ai_automation.md`](ai_automation.md) |
 | `src.analytics` | [`analytics.md`](analytics.md) |

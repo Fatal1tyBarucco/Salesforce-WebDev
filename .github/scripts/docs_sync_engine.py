@@ -515,8 +515,7 @@ def obsolete_content(inventory: dict[str, str]) -> list[dict]:
         if not text:
             continue
         if not (
-            path.startswith("docs/")
-            or path.startswith(".github/")
+            path.startswith(("docs/", ".github/"))
             or path
             in ("README.md", "README.en.md", ".gitignore", ".github/ISSUE_TEMPLATE/bug_report.md")
         ):
@@ -941,12 +940,10 @@ _TREE_SKIP_FILES = frozenset(
 
 
 def _top_level_tree_lines() -> list[str]:
-    """Dynamically enumerate real top-level repo entries for the directory tree.
+    """Enumerate tracked top-level repository entries for the directory tree.
 
-    Replaces the previously hardcoded list so the tree never goes stale as
-    files/dirs are added. Curated inline comments are attached where a
-    meaningful label exists; new entries are emitted without a comment rather
-    than silently omitted. Never raises.
+    Git-index membership keeps machine-local or generated workspace artifacts
+    out of user-facing documentation while retaining deterministic project paths.
     """
     try:
         items = sorted(
@@ -955,9 +952,12 @@ def _top_level_tree_lines() -> list[str]:
         )
     except OSError:
         return []
+    tracked_top_level = {path.split("/", 1)[0] for path in tracked_inventory()}
     visible: list[str] = []
     for p in items:
         if p.name in _TREE_SKIP_DIRS or p.name in _TREE_SKIP_FILES:
+            continue
+        if p.name not in tracked_top_level:
             continue
         visible.append(p.name)
     if not visible:

@@ -1,512 +1,648 @@
-"""Extended unit tests for AI documentation pipeline (free tier / LLMService)."""
+"""Edge-case tests for the AI documentation integration."""
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+import asyncio
+import json
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 import pytest
+from pydantic import BaseModel
 
-# Collector
-from src.ai.collectors.change_collector import IGNORE_GLOBS, collect_changes, run_cmd
-
-# Client / LLM
-from src.ai.llm.client import ExistingLLMClient
-
-# Orchestrator
-from src.ai.orchestrator import AIDocOrchestrator
-
-# Schemas
-from src.ai.schemas.change import ChangeClassification, ChangeEntry
-from src.ai.schemas.change_classifier import validate_and_annotate
+from src.ai.collectors import change_collector
+from src.ai.llm.client import ExistingLLMClient, _retry_delay
+from src.ai.orchestrator import (
+    AIDocOrchestrator,
+    PipelineResult,
+    _as_jsonable,
+    _atomic_write_many,
+    _detect_language,
+    _git_head,
+    _prepend_changelog,
+    _simple_diff,
+    _truncate_context,
+    main,
+)
+from src.ai.schemas.change import ChangeClassification
 from src.ai.schemas.change_reviewer import SelfReviewResponse, _json_extract, review_classification
-from src.ai.schemas.llm_input import RawContext
+from src.ai.schemas.generated_docs import GeneratedDocuments
 
-# ---------------------------------------------------------
-# Client (LLMService / ExistingLLMClient)
-# ---------------------------------------------------------
 
+class ResultModel(BaseModel):
+    value: int
 
-def test_existing_llm_client_init_with_provider():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.provider = "opencode"
-        mock_inst.model_name = "gemini-3.6-flash"
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient(provider="opencode")
-        assert client.provider == "opencode"
-        assert client.model == "gemini-3.6-flash"
 
+def _raw(text: str, headers: dict[str, str] | None = None) -> MagicMock:
+    response = MagicMock()
+    response.choices = [SimpleNamespace(message=SimpleNamespace(content=text))]
+    response.usage = None
+    return response
 
-def test_existing_llm_client_generate_success():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.side_effect = (
-            lambda **kwargs: '{"changes":[{"title":"t","description":"d","type":"feature","impact":"high","impact_justification":"j","priority":"P1","affected_components":["c"],"source_refs":["r"],"confidence":0.9}]}'
-        )
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        result = client.generate("test prompt")
-        assert isinstance(result, (dict, str))
 
-
-def test_existing_llm_client_generate_empty_raises():
-    with patch("src.ai.llm.client.LLMService"):
-        client = ExistingLLMClient()
-        with pytest.raises(ValueError):
-            client.generate("")
-        with pytest.raises(ValueError):
-            client.generate("   ")
-
-
-def test_existing_llm_client_generate_invalid_json_fallback():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.side_effect = lambda **kwargs: "not json"
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        result = client.generate("test", schema=dict)
-        assert result == "not json"
-
-
-# ---------------------------------------------------------
-# Collector
-# ---------------------------------------------------------
-
-
-def test_run_cmd_success():
-    out = run_cmd(["echo", "hello"])
-    assert "hello" in out
-
-
-def test_run_cmd_failure_graceful():
-    out = run_cmd(["false"])
-    assert out == ""
-
-
-def test_ignore_globs_not_empty():
-    assert len(IGNORE_GLOBS) > 0
-    assert any(".md" in g for g in IGNORE_GLOBS)
-
-
-def test_collect_changes_returns_dict():
-    result = collect_changes()
-    assert isinstance(result, dict)
-    for key in [
-        "commits",
-        "git_diff_stat",
-        "diff_snippets",
-        "conventional_commits",
-        "merged_prs",
-        "since_ref",
-        "to_ref",
-    ]:
-        assert key in result
-
-
-def test_collect_changes_conventional_filter():
-    # Just verify conventional parsing doesn't crash
-    result = collect_changes()
-    assert isinstance(result.get("conventional_commits", []), list)
-
-
-# ---------------------------------------------------------
-# Orchestrator
-# ---------------------------------------------------------
-
-
-@patch("src.ai.orchestrator.collect_changes")
-def test_orchestrator_run_no_op(mock_collect):
-    mock_collect.return_value = {"commits": [], "git_diff_stat": "", "merged_prs": []}
-    orch = AIDocOrchestrator(since_ref="HEAD~1", publish_mode="commit")
-    # We test the init/config only; async run would need event loop.
-    assert orch.since_ref == "HEAD~1"
-    assert orch.publish_mode == "commit"
-
-
-@patch("src.ai.orchestrator.collect_changes")
-def test_orchestrator_build_classify_prompt(mock_collect):
-    mock_collect.return_value = {"commits": ["feat(x): new"], "git_diff_stat": "", "merged_prs": []}
-    orch = AIDocOrchestrator(since_ref="HEAD")
-    prompt = orch._build_classify_prompt(mock_collect.return_value)
-    assert "arquiteto" in prompt
-    assert "JSON" in prompt
-
-
-# ---------------------------------------------------------
-# Schemas
-# ---------------------------------------------------------
-
-
-def test_change_entry_valid():
-    entry = ChangeEntry(
-        title="New feature",
-        description="Adds a new endpoint for user data.",
-        type="feature",
-        impact="high",
-        impact_justification="Breaks backward compatibility.",
-        priority="P0",
-        affected_components=["api", "core"],
-        source_refs=["commit-123", "pr-456"],
-        confidence=0.95,
-    )
-    assert entry.title == "New feature"
-    assert entry.confidence == 0.95
-
-
-def test_change_classification_low_confidence_review():
-    low = ChangeEntry(
-        title="Minor",
-        description="Small fix.",
-        type="bugfix",
-        impact="low",
-        impact_justification="No major impact.",
-        priority="P2",
-        affected_components=["core"],
-        source_refs=["abc"],
-        confidence=0.3,
-    )
-    cls = ChangeClassification(changes=[low])
-    cls.populate_review_needed()
-    assert len(cls.review_needed) == 1
-    assert len(cls.changes) == 0
-
-
-def test_change_classifier_validate_and_annotate():
-    entry = ChangeEntry(
-        title="Fix",
-        description="Fixes a bug.",
-        type="bugfix",
-        impact="medium",
-        impact_justification="Fixes crash.",
-        priority="P1",
-        affected_components=["ui"],
-        source_refs=["r"],
-        confidence=0.4,
-    )
-    result = validate_and_annotate(entry)
-    assert result.needs_review is True
-    assert "revisado" in result.review_note
-
-
-# ---------------------------------------------------------
-# Change Reviewer (self-review feature flag)
-# ---------------------------------------------------------
-
-
-def test_self_review_response_validation():
-    sr = SelfReviewResponse(
-        valid=True,
-        inconsistencies=["missing component"],
-        corrected_fields={"type": "feature"},
-        note="ok",
-    )
-    assert sr.valid is True
-
-
-def test_json_extract_valid():
-    text = '{"valid": true, "note":"ok"}'
-    result = _json_extract(text)
-    assert result is not None
-    assert result.get("valid") is True
-
-
-def test_json_extract_with_fences():
-    text = '```json\n{"valid": false}\n```'
-    result = _json_extract(text)
-    assert result is not None
-    assert result.get("valid") is False
-
-
-# ---------------------------------------------------------
-# LLM Input Schema
-# ---------------------------------------------------------
-
-
-def test_raw_context_default():
-    ctx = RawContext()
-    assert ctx.git_commits == []
-    assert ctx.diff_snippets == []
-
-
-# ---------------------------------------------------------
-# Prompts (basic presence)
-# ---------------------------------------------------------
-
-
-def test_prompts_files_exist():
-    import os
-    import pathlib
-
-    base = pathlib.Path(__file__).resolve().parents[2] / "src" / "ai" / "prompts"
-    # Fallback: resolve via cwd if resolve produces wrong path
-    if not base.exists():
-        cwd_path = pathlib.Path(os.getcwd()) / "src" / "ai" / "prompts"
-        if cwd_path.exists():
-            base = cwd_path
-    for name in ["release_notes.prompt", "changelog.prompt", "leadership.prompt", "roadmap.prompt"]:
-        p = base / name
-        assert p.exists(), f"Prompt file missing: {p}"
-        content = p.read_text(encoding="utf-8")
-        assert len(content) > 50
-        assert (
-            ("LLMService" in content)
-            or ("free" in content.lower())
-            or ("prompt" in content.lower())
-        )
-
-
-# ---------------------------------------------------------
-# Extended coverage: client.generate paths
-# ---------------------------------------------------------
-
-
-def test_generate_with_dict_schema_parses_json():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.return_value = '{"changes": []}'
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        result = client.generate("p", schema=dict)
-        assert result == {"changes": []}
-
-
-def test_generate_strips_code_fences_before_parse():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.return_value = '```json\n{"a": 1}\n```'
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        assert client.generate("p", schema=dict) == {"a": 1}
-
-
-def test_generate_with_model_validate_schema_returns_raw_dict():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.return_value = '{"valid": true, "note": "ok"}'
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        # model_validate returns a BaseModel (non-dict) -> falls back to raw data dict
-        result = client.generate("p", schema=SelfReviewResponse)
-        assert result == {"valid": True, "note": "ok"}
-
-
-def test_generate_non_dict_json_returns_raw_string():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.return_value = "[1, 2, 3]"
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        assert client.generate("p", schema=dict) == "[1, 2, 3]"
-
-
-def test_generate_propagates_service_error():
-    with patch("src.ai.llm.client.LLMService") as MockSvc:
-        mock_inst = MagicMock()
-        mock_inst.generate_completion.side_effect = RuntimeError("provider down")
-        MockSvc.return_value = mock_inst
-        client = ExistingLLMClient()
-        with pytest.raises(RuntimeError):
-            client.generate("p")
-
-
-# ---------------------------------------------------------
-# Extended coverage: collector edge cases
-# ---------------------------------------------------------
-
-
-def test_run_cmd_exception_returns_empty(monkeypatch):
-    def boom(*args, **kwargs):
-        raise RuntimeError("subprocess exploded")
-
-    monkeypatch.setattr("src.ai.collectors.change_collector.subprocess.run", boom)
-    assert run_cmd(["git", "status"]) == ""
-
-
-def test_collect_changes_empty_pr_output(monkeypatch):
-    def fake_run_cmd(cmd):
-        if cmd[0] == "gh":
-            return ""
-        if "diff" in cmd:
-            return ""
-        return ""
-
-    monkeypatch.setattr("src.ai.collectors.change_collector.run_cmd", fake_run_cmd)
-    result = collect_changes(since_ref="HEAD~1")
-    assert result["merged_prs"] == []
-    assert result["conventional_commits"] == []
-
-
-def test_collect_changes_invalid_pr_json_and_filters(monkeypatch):
-    def fake_run_cmd(cmd):
-        if cmd[0] == "gh":
-            return "not-json"
-        if "diff" in cmd:
-            return "src/main.py | 10 ++\ndocs/readme.md | 2 +\nuv.lock | 5 +++"
-        return "feat(x): add feature\nchore(y): other\n"
-
-    monkeypatch.setattr("src.ai.collectors.change_collector.run_cmd", fake_run_cmd)
-    result = collect_changes(since_ref="HEAD~2")
-    assert result["merged_prs"] == []
-    assert len(result["conventional_commits"]) == 2
-    assert any("main.py" in s for s in result["diff_snippets"])
-    assert all(".md" not in s and "uv.lock" not in s for s in result["diff_snippets"])
-
-
-def test_collect_changes_valid_pr_json(monkeypatch):
-    def fake_run_cmd(cmd):
-        if cmd[0] == "gh":
-            return '[{"title": "t", "body": "b", "labels": [], "number": 7}]'
-        return ""
-
-    monkeypatch.setattr("src.ai.collectors.change_collector.run_cmd", fake_run_cmd)
-    result = collect_changes(since_ref="HEAD~1")
-    assert result["merged_prs"][0]["number"] == 7
-
-
-# ---------------------------------------------------------
-# Extended coverage: orchestrator (run / payload / render)
-# ---------------------------------------------------------
-
-
-def test_last_ref_reads_file_and_fallback(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    docs = tmp_path / "docs"
-    docs.mkdir()
-    (docs / ".last-processed-ref").write_text("abc123\n", encoding="utf-8")
-    orch = AIDocOrchestrator()
-    assert orch._last_ref() == "abc123"
-
-    empty = tmp_path / "empty"
-    empty.mkdir()
-    monkeypatch.chdir(empty)
-    orch2 = AIDocOrchestrator()
-    assert orch2._last_ref() == "HEAD~10"
-
-
-def test_payload_from_variants():
-    assert AIDocOrchestrator._payload_from({"a": 1}) == {"a": 1}
-    assert AIDocOrchestrator._payload_from('{"a": 1}') == {"a": 1}
-    assert AIDocOrchestrator._payload_from("not json") is None
-    assert AIDocOrchestrator._payload_from("[1, 2]") is None
-
-
-def test_render_documents_error_and_empty_paths(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    orch = AIDocOrchestrator(since_ref="HEAD~1")
-    assert orch._render_documents("not json at all")[0].startswith("<!-- erro")
-    assert orch._render_documents('["list", "not", "dict"]')[0].startswith("<!-- erro")
-    assert orch._render_documents({"changes": []}) == []
-
-
-def test_render_documents_with_changes(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    orch = AIDocOrchestrator(since_ref="HEAD~1")
-    docs = orch._render_documents({"changes": [{"impact": "high", "name": "X"}]})
-    assert len(docs) == 2
-    assert "X" in docs[0]
-
-
-def test_orchestrator_run_completed(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    (tmp_path / "docs").mkdir()
-    payload = (
-        '{"changes": [{"impact": "high", "name": "API", "description": "d",'
-        ' "audience": "devs"}]}'
-    )
-    with (
-        patch("src.ai.orchestrator.collect_changes") as mock_collect,
-        patch.object(ExistingLLMClient, "generate", return_value=payload),
-    ):
-        mock_collect.return_value = {"commits": ["feat(x): new"]}
-        orch = AIDocOrchestrator(since_ref="HEAD~1")
-        import asyncio
-
-        result = asyncio.run(orch.run())
-    assert result.status == "completed"
-    assert len(result.changes) == 1
-    assert (tmp_path / "docs" / ".last-processed-ref").exists()
-
-
-def test_orchestrator_run_completed_with_dict_payload(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    (tmp_path / "docs").mkdir()
-    with (
-        patch("src.ai.orchestrator.collect_changes") as mock_collect,
-        patch.object(
-            ExistingLLMClient,
-            "generate",
-            return_value={"changes": [{"impact": "low", "name": "Y"}]},
-        ),
-    ):
-        mock_collect.return_value = {"commits": ["fix(z): bug"]}
-        orch = AIDocOrchestrator(since_ref="HEAD~1")
-        import asyncio
-
-        result = asyncio.run(orch.run())
-    assert result.status == "completed"
-    assert len(result.changes) == 1
-
-
-def test_orchestrator_run_failure_path(monkeypatch, tmp_path):
-    monkeypatch.chdir(tmp_path)
-    with patch("src.ai.orchestrator.collect_changes", side_effect=RuntimeError("collector boom")):
-        orch = AIDocOrchestrator(since_ref="HEAD~1")
-        import asyncio
-
-        result = asyncio.run(orch.run())
-    assert result.status == "failed"
-    assert "collector boom" in result.errors[0]
-
-
-# ---------------------------------------------------------
-# Extended coverage: change_reviewer + classifier branches
-# ---------------------------------------------------------
-
-
-def _make_entry(**overrides):
-    base = {
+def _entry(confidence: float = 0.9) -> dict[str, object]:
+    return {
         "title": "Feature X",
-        "description": "Descrição longa o suficiente para o schema.",
+        "description": "Descrição detalhada suficiente para validar a mudança.",
         "type": "feature",
         "impact": "high",
-        "impact_justification": "Justificativa longa o suficiente aqui.",
+        "impact_justification": "Impacto relevante descrito com evidência suficiente.",
         "priority": "P1",
         "affected_components": ["core"],
-        "source_refs": ["abc"],
-        "confidence": 0.9,
+        "source_refs": ["commit-abc"],
+        "confidence": confidence,
     }
-    base.update(overrides)
-    return ChangeEntry(**base)
 
 
-def test_review_classification_valid():
-    cls = ChangeClassification(changes=[_make_entry()])
-    result = review_classification(cls)
-    assert result.valid is True
-    assert result.inconsistencies == []
+def _client(*responses: MagicMock) -> ExistingLLMClient:
+    client = object.__new__(ExistingLLMClient)
+    client.model = "vendor/model:free"
+    client.usage = []
+    client._sleep = lambda _: None
+    client._client = MagicMock()
+    client._client.chat.completions.create.side_effect = list(responses)
+    return client
 
 
-def test_review_classification_flags_low_confidence_and_missing_components():
-    cls = ChangeClassification(changes=[_make_entry(affected_components=[], confidence=0.4)])
-    result = review_classification(cls)
-    assert result.valid is False
-    assert any("confiança baixa" in i for i in result.inconsistencies)
-    assert any("componentes" in i for i in result.inconsistencies)
+def test_free_model_config_rejects_non_free(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.ai.config.models import get_openrouter_free_model
+
+    monkeypatch.setenv("AI_DOCS_MODEL", "provider/paid")
+    with pytest.raises(ValueError, match=":free"):
+        get_openrouter_free_model()
 
 
-def test_review_classification_empty_classification():
-    result = review_classification(ChangeClassification())
-    assert result.valid is False
-    assert any("vazia" in i for i in result.inconsistencies)
+def test_client_sends_json_mode_only_for_schema() -> None:
+    client = _client(_raw("plain response"), _raw('{"value":2}'))
+    assert client.generate("plain") == "plain response"
+    assert client.generate("json", ResultModel) == {"value": 2}
+    assert client.usage[-1]["cost_usd"] == 0.0
+    requests = client._client.chat.completions.create.call_args_list
+    assert requests[0].kwargs["response_format"] is None
+    assert requests[1].kwargs["response_format"] == {"type": "json_object"}
 
 
-def test_json_extract_non_dict_returns_none():
-    assert _json_extract("[1, 2, 3]") is None
-    assert _json_extract('"just a string"') is None
+def test_client_retries_api_error_with_rate_limit_header() -> None:
+    client = _client(_raw('{"value":3}'))
+    first = RuntimeError("rate limited")
+    first.response = SimpleNamespace(headers={"retry-after": "6"})
+    client._client.chat.completions.create.side_effect = [first, _raw('{"value":3}')]
+    delays: list[float] = []
+    client._sleep = delays.append
+    assert client.generate("p", ResultModel) == {"value": 3}
+    assert delays == [6]
 
 
-def test_validate_and_annotate_high_confidence_unchanged():
-    entry = _make_entry(confidence=0.9)
-    result = validate_and_annotate(entry)
-    assert result.needs_review is False
-    assert result.review_note == ""
+def test_client_empty_response_retries_then_fails() -> None:
+    client = _client(_raw(""), _raw(""), _raw(""))
+    with pytest.raises(RuntimeError, match="after 3 attempts"):
+        client.generate("prompt")
+
+
+def test_retry_delay_handles_epoch_and_bad_headers(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 100)
+    assert _retry_delay(None, "110", 1) == 110
+    assert _retry_delay("not-a-number", None, 1) == 2
+    assert _retry_delay(None, None, 8) == 30
+
+
+def test_client_rejects_empty_prompt_and_non_model_schema() -> None:
+    client = _client(_raw('{"value":4}'))
+    with pytest.raises(ValueError, match="Prompt cannot be empty"):
+        client.generate("  ")
+    assert client.generate("prompt", dict) == {"value": 4}
+
+
+def test_client_retries_non_object_and_fails_after_api_retries() -> None:
+    client = _client(_raw("[]"), _raw('{"value":5}'))
+    assert client.generate("prompt", dict) == {"value": 5}
+    delays: list[float] = []
+    client._sleep = delays.append
+    client._client.chat.completions.create.side_effect = [
+        RuntimeError("temporary"),
+        RuntimeError("temporary"),
+        RuntimeError("temporary"),
+    ]
+    with pytest.raises(RuntimeError, match="request failed after 3 attempts"):
+        client.generate("prompt")
+    assert delays == [2.0, 4.0]
+
+
+def test_retry_delay_converts_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
+    assert _retry_delay(None, "1700000012", 1) == 12
+
+
+def test_collector_patterns_and_invalid_pr_payload(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    Path(".github").mkdir()
+    Path(".github/ai-docs-ignore").write_text("# comment\nsecret.txt\n", encoding="utf-8")
+    patterns = change_collector._ignore_patterns()
+    assert change_collector._is_ignored("secret.txt", patterns)
+    assert change_collector._is_ignored("README.md", patterns)
+    assert not change_collector._is_ignored("src/main.py", patterns)
+    monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: "not-json")
+    assert change_collector._collect_merged_prs() == []
+
+
+def test_collector_pr_metadata_is_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    body = "x" * (change_collector.MAX_PR_BODY_CHARS + 20)
+    monkeypatch.setattr(
+        change_collector,
+        "run_cmd",
+        lambda cmd: json.dumps([{"number": 7, "body": body}, None]),
+    )
+    prs = change_collector._collect_merged_prs()
+    assert len(prs) == 1
+    assert len(prs[0]["body"]) == change_collector.MAX_PR_BODY_CHARS
+
+
+def test_collector_invalid_ref_and_empty_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    with pytest.raises(ValueError):
+        change_collector.collect_changes("")
+    monkeypatch.setattr(
+        change_collector.subprocess,
+        "run",
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("unavailable")),
+    )
+    assert change_collector.run_cmd(["git", "status"]) == ""
+
+
+def test_payload_parser_handles_none_invalid_and_json() -> None:
+    assert AIDocOrchestrator._payload_from(None) is None
+    assert AIDocOrchestrator._payload_from("invalid") is None
+    assert AIDocOrchestrator._payload_from('["x"]') is None
+    assert AIDocOrchestrator._payload_from('{"x":1}') == {"x": 1}
+
+
+def test_changelog_delta_requires_heading_and_preserves_old_history(tmp_path: Path) -> None:
+    path = tmp_path / "CHANGELOG.md"
+    path.write_text("# Changelog\n\n## [1.0]\nold\n", encoding="utf-8")
+    updated = _prepend_changelog(path, "<!-- marker -->", "## [Unreleased]\nnew")
+    assert updated.startswith("# Changelog\n\n<!-- marker -->")
+    assert updated.index("[Unreleased]") < updated.index("[1.0]")
+    with pytest.raises(ValueError, match="Unreleased"):
+        _prepend_changelog(path, "<!-- marker -->", "not a heading")
+
+
+def test_low_confidence_is_retained_for_manual_review() -> None:
+    classification = ChangeClassification(changes=[_entry(0.3)])
+    classification.populate_review_needed()
+    assert not classification.changes
+    assert len(classification.review_needed) == 1
+    assert classification.review_needed[0].needs_review is True
+
+
+def test_render_adds_low_confidence_section_and_visuals(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    orchestrator = AIDocOrchestrator(since_ref="HEAD~1", llm=object())  # type: ignore[arg-type]
+    classification = ChangeClassification(changes=[_entry()])
+    classification.review_needed = [ChangeClassification(changes=[_entry(0.2)]).changes[0]]
+    docs = GeneratedDocuments(
+        release_notes="Release text",
+        changelog_entry="## [Unreleased]\n\n### Added\n- x",
+        leadership_summary="Executive text",
+        roadmap_suggestions="SUGESTÃO — futuro",
+    )
+    rendered = orchestrator._render_documents(classification, docs)
+    assert "Revisão Necessária" in rendered["release_notes"]
+    assert "Distribuição de Impacto" in rendered["release_notes"]
+    assert "gerado por IA em" in rendered["leadership_summary"]
+
+
+class SelfReviewLLM:
+    model = "vendor/model:free"
+
+    def __init__(self) -> None:
+        self.responses = [
+            {"changes": [_entry()], "review_needed": []},
+            {
+                "valid": False,
+                "inconsistencies": ["inconsistent"],
+                "corrected_fields": {},
+                "note": "review",
+            },
+            {
+                "release_notes": "Release",
+                "changelog_entry": "## [Unreleased]\n\n### Changed\n- x",
+                "leadership_summary": "Summary",
+                "roadmap_suggestions": "Sugestão",
+            },
+        ]
+
+    def generate(self, prompt: str, schema: type | None = None) -> dict[str, object]:
+        return self.responses.pop(0)
+
+
+def test_self_review_marks_changes_without_dropping_them(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_SHA", "test-sha")
+    monkeypatch.setenv("AI_DOCS_SELF_REVIEW", "true")
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
+    )
+    result = asyncio.run(
+        AIDocOrchestrator(
+            since_ref="HEAD~1", llm=SelfReviewLLM(), output_dir=tmp_path / "docs" / "generated"
+        ).run()  # type: ignore[arg-type]
+    )
+    assert result.status == "completed"
+    assert result.changes[0]["needs_review"] is True
+    audit = next((tmp_path / "docs" / ".ai-logs").glob("run-*.json"))
+    record = json.loads(audit.read_text(encoding="utf-8"))
+    assert record["raw_output"]["self_review"]["valid"] is False
+    assert record["model"] == "vendor/model:free"
+
+
+def test_failed_generation_does_not_write_partial_artifacts(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
+    )
+
+    class FailLLM:
+        def generate(self, prompt: str, schema: type | None = None) -> dict[str, object]:
+            raise RuntimeError("request failed")
+
+    result = asyncio.run(
+        AIDocOrchestrator(since_ref="HEAD~1", llm=FailLLM()).run()  # type: ignore[arg-type]
+    )
+    assert result.status == "failed"
+    assert not Path("CHANGELOG.md").exists()
+
+
+def test_artifact_write_persists_document_diff_and_ref(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_SHA", "test-sha")
+    (tmp_path / "docs/ai-generated").mkdir(parents=True)
+    (tmp_path / "docs/ai-generated/release-notes.md").write_text("old", encoding="utf-8")
+    class_llm = SimpleNamespace(model="vendor/model:free")
+    orchestrator = AIDocOrchestrator(
+        since_ref="HEAD~1", llm=class_llm, output_dir=tmp_path / "docs/ai-generated"  # type: ignore[arg-type]
+    )
+    classification = ChangeClassification(changes=[_entry()])
+    rendered = {key: "new" for key in orchestrator.output_paths}
+    generated = GeneratedDocuments(
+        release_notes="Release",
+        changelog_entry="## [Unreleased]",
+        leadership_summary="Summary",
+        roadmap_suggestions="Suggestion: evaluate",
+    )
+    orchestrator._write_artifacts(
+        rendered, {"prompt": "test"}, {"raw": "{}"}, classification, generated
+    )
+    audit = next((tmp_path / "docs/.ai-logs").glob("run-*.json"))
+    record = json.loads(audit.read_text(encoding="utf-8"))
+    assert "documentation_diff" in record
+    assert record["validated_documents"]["release_notes"] == "Release"
+    assert (tmp_path / "docs/.last-processed-ref").exists()
+
+
+def test_generated_docs_schema_rejects_missing_fields() -> None:
+    with pytest.raises(Exception):
+        GeneratedDocuments.model_validate({"release_notes": "missing others"})
+
+
+def test_review_response_requires_validity() -> None:
+    with pytest.raises(Exception):
+        SelfReviewResponse.model_validate({"note": "missing valid"})
+
+
+def test_context_truncates_diffs_before_pr_bodies() -> None:
+    context = {
+        "conventional_commits": ["feat(api): keep this first"],
+        "git_diff_stat": "stat" * 3,
+        "diff_snippets": ["diff" * 30],
+        "merged_prs": [{"title": "PR", "body": "body" * 30}],
+    }
+    bounded = _truncate_context(context, max_chars=120)
+    assert bounded["conventional_commits"] == context["conventional_commits"]
+    assert len(json.dumps(bounded, ensure_ascii=False)) <= 120
+    assert len(bounded.get("merged_prs", [])) <= 1
+    stat_bounded = _truncate_context({"git_diff_stat": "s" * 200}, max_chars=60)
+    assert len(json.dumps(stat_bounded, ensure_ascii=False)) <= 60
+    pr_bounded = _truncate_context(
+        {"merged_prs": [{"number": 3, "body": "pr body " * 80}]}, max_chars=100
+    )
+    assert len(json.dumps(pr_bounded, ensure_ascii=False)) <= 100
+    assert len(pr_bounded["merged_prs"][0]["body"]) < len("pr body " * 80)
+
+
+def test_language_detection_defaults_to_portuguese_and_detects_english() -> None:
+    assert _detect_language("") == "pt-BR"
+    assert _detect_language("The service and the client work with this data.") == "en"
+    assert (
+        _detect_language("A mudança não altera o contrato e permite que a equipe evolua.")
+        == "pt-BR"
+    )
+
+
+def test_atomic_multi_file_write_rolls_back_on_replace_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first = tmp_path / "first.txt"
+    second = tmp_path / "second.txt"
+    first.write_text("old first", encoding="utf-8")
+    original_replace = Path.replace
+    failed = False
+
+    def fail_second_once(path: Path, target: Path) -> Path:
+        nonlocal failed
+        if target == second and not failed:
+            failed = True
+            raise OSError("simulated replace failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_second_once)
+    with pytest.raises(OSError, match="simulated replace failure"):
+        _atomic_write_many({first: "new first", second: "new second"})
+    assert first.read_text(encoding="utf-8") == "old first"
+    assert not second.exists()
+
+
+def test_merged_prs_filter_to_commit_range(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        change_collector,
+        "run_cmd",
+        lambda cmd: json.dumps(
+            [
+                {"number": 1, "mergeCommit": {"oid": "in-range"}, "body": "included"},
+                {"number": 2, "mergeCommit": {"oid": "outside"}, "body": "excluded"},
+            ]
+        ),
+    )
+    prs = change_collector._collect_merged_prs({"in-range"})
+    assert [item["number"] for item in prs] == [1]
+
+
+def test_collector_subprocess_failures_return_empty(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        change_collector.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=3, stdout="secret output"),
+    )
+    assert change_collector.run_cmd(["git", "status"]) == ""
+
+    def timeout(*args, **kwargs):
+        raise change_collector.subprocess.TimeoutExpired("git", 30)
+
+    monkeypatch.setattr(change_collector.subprocess, "run", timeout)
+    assert change_collector.run_cmd(["git", "status"]) == ""
+    monkeypatch.setattr(
+        change_collector.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0, stdout="ok"),
+    )
+    assert change_collector.run_cmd(["git", "status"]) == "ok"
+
+
+def test_collector_rejects_unresolvable_ref_and_handles_empty_diff(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: "" if "--verify" in cmd else "")
+    with pytest.raises(ValueError, match="does not resolve"):
+        change_collector.collect_changes("missing-ref")
+
+    def no_change(cmd: list[str]) -> str:
+        if "--verify" in cmd:
+            return "valid-sha"
+        if cmd[0] == "gh":
+            return "[]"
+        if any(arg.startswith("--format=%H") for arg in cmd):
+            return "legacy commit subject without a hash field"
+        return ""
+
+    monkeypatch.setattr(change_collector, "run_cmd", no_change)
+    result = change_collector.collect_changes("HEAD~1")
+    assert result["changed_files"] == []
+    assert result["commits"] == ["legacy commit subject without a hash field"]
+    assert result["git_diff_stat"] == ""
+    assert result["merged_prs"] == []
+
+
+def test_collector_parses_breaking_change_footer(monkeypatch: pytest.MonkeyPatch) -> None:
+    body = chr(10) + "BREAKING CHANGE: removes the old field"
+
+    def fake_run(cmd: list[str]) -> str:
+        if "--verify" in cmd:
+            return "commit-sha"
+        if any(arg.startswith("--format=%H") for arg in cmd):
+            return (
+                "commit-sha" + chr(9) + "refactor(api): reshape response" + chr(9) + body + chr(30)
+            )
+        if cmd[0] == "gh":
+            return "[]"
+        return ""
+
+    monkeypatch.setattr(change_collector, "run_cmd", fake_run)
+    result = change_collector.collect_changes("HEAD~1")
+    assert "BREAKING CHANGE: removes the old field" in result["conventional_commits"][0]
+    assert result["commit_details"][0]["body"].startswith("BREAKING CHANGE:")
+
+
+def test_merged_prs_handles_bad_and_non_list_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: "not-json")
+    assert change_collector._collect_merged_prs() == []
+    monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: json.dumps({"number": 1}))
+    assert change_collector._collect_merged_prs() == []
+
+
+def test_self_review_deterministic_validation_and_json_extract() -> None:
+    valid = ChangeClassification(changes=[_entry()])
+    assert review_classification(valid).valid is True
+    invalid = ChangeClassification(changes=[_entry(0.4)])
+    assert review_classification(invalid).valid is False
+    assert "confiança baixa" in review_classification(invalid).inconsistencies[0]
+    missing_components = _entry()
+    missing_components["affected_components"] = []
+    component_review = review_classification(ChangeClassification(changes=[missing_components]))
+    assert any("sem componentes" in item for item in component_review.inconsistencies)
+    assert not review_classification(ChangeClassification()).valid
+    assert _json_extract('{"valid":true}') == {"valid": True}
+    assert _json_extract("```json" + chr(10) + '{"valid":true}' + chr(10) + "```") == {
+        "valid": True
+    }
+    assert _json_extract("not json") is None
+    assert _json_extract("[]") is None
+
+
+def test_changelog_without_standard_title_and_simple_diff(tmp_path: Path) -> None:
+    path = tmp_path / "plain.md"
+    path.write_text("existing content", encoding="utf-8")
+    updated = _prepend_changelog(
+        path, "<!-- marker -->", "## [Unreleased]" + chr(10) + chr(10) + "- New"
+    )
+    assert updated.endswith("existing content")
+    assert "<!-- marker -->" in updated
+    assert "-old" in _simple_diff("old" + chr(10), "new" + chr(10))
+    assert "+new" in _simple_diff("old" + chr(10), "new" + chr(10))
+
+
+def test_language_specific_render_and_document_prompts(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    out = tmp_path / "docs/ai-generated"
+    out.mkdir(parents=True)
+    (out / "release-notes.md").write_text(
+        "The service and the client work with this feature.", encoding="utf-8"
+    )
+    (out / "leadership.md").write_text("The service and the client work.", encoding="utf-8")
+    (out / "roadmap.md").write_text("The team should evaluate this next.", encoding="utf-8")
+    orchestrator = AIDocOrchestrator(since_ref="HEAD~1", output_dir=out)
+    prompt = orchestrator._documents_prompt(ChangeClassification(changes=[_entry()]))
+    assert "Idioma obrigatório: en" in prompt
+    assert "<current_changelog>" in prompt
+    docs = GeneratedDocuments(
+        release_notes="A change is ready.",
+        changelog_entry="## [Unreleased]"
+        + chr(10)
+        + ""
+        + chr(10)
+        + "### Added"
+        + chr(10)
+        + "- New feature",
+        leadership_summary="The release improves the service.",
+        roadmap_suggestions="Consider another integration.",
+    )
+    rendered = orchestrator._render_documents(ChangeClassification(changes=[_entry()]), docs)
+    assert "# Release Notes" in rendered["release_notes"]
+    assert "The service and the client work with this feature." in rendered["release_notes"]
+    assert "# Executive Summary" in rendered["leadership_summary"]
+    assert "# Roadmap Suggestions" in rendered["roadmap_suggestions"]
+    assert "Suggestion:" in rendered["roadmap_suggestions"]
+    assert "📋 feature" in rendered["release_notes"]
+    assert "P1" in rendered["release_notes"]
+
+
+def test_orchestrator_invalid_mode_and_last_ref(tmp_path: Path, monkeypatch) -> None:
+    with pytest.raises(ValueError, match="publish_mode"):
+        AIDocOrchestrator(publish_mode="invalid")
+    monkeypatch.chdir(tmp_path)
+    assert AIDocOrchestrator().since_ref == "HEAD~10"
+    Path("docs").mkdir()
+    Path("docs/.last-processed-ref").write_text("abc123" + chr(10), encoding="utf-8")
+    assert AIDocOrchestrator().since_ref == "abc123"
+
+
+def test_pipeline_noop_after_empty_classification(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["chore: no actionable change"], "merged_prs": []},
+    )
+
+    class EmptyLLM:
+        def generate(self, prompt: str, schema: type | None = None) -> dict[str, object]:
+            return {"changes": [], "review_needed": []}
+
+    result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1", llm=EmptyLLM()).run())
+    assert result.status == "no-op"
+    assert not Path("CHANGELOG.md").exists()
+
+
+def test_pipeline_self_review_valid_keeps_changes(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_SHA", "valid-sha")
+    monkeypatch.setenv("AI_DOCS_SELF_REVIEW", "true")
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: safe"], "merged_prs": []},
+    )
+
+    class GoodReviewLLM:
+        model = "vendor/model:free"
+
+        def __init__(self) -> None:
+            self.usage = [{"total_tokens": 25}]
+            self.results = [
+                {"changes": [_entry()], "review_needed": []},
+                {"valid": True, "inconsistencies": [], "corrected_fields": {}, "note": "ok"},
+                {
+                    "release_notes": "Release",
+                    "changelog_entry": (
+                        "## [Unreleased]" + chr(10) * 2 + "### Added" + chr(10) + "- Safe"
+                    ),
+                    "leadership_summary": "Summary",
+                    "roadmap_suggestions": "Sugestão: revisar",
+                },
+            ]
+
+        def generate(self, prompt: str, schema: type | None = None) -> dict[str, object]:
+            return self.results.pop(0)
+
+    result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1", llm=GoodReviewLLM()).run())
+    assert result.status == "completed"
+    assert result.total_tokens == 25
+    assert not result.changes[0]["needs_review"]
+
+
+def test_atomic_write_staging_error_leaves_targets_untouched(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first.write_text("before", encoding="utf-8")
+    original_write_text = Path.write_text
+
+    def fail_second(path: Path, data: str, *args, **kwargs):
+        if path.name.startswith(".second."):
+            raise OSError("staging failed")
+        return original_write_text(path, data, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", fail_second)
+    with pytest.raises(OSError, match="staging failed"):
+        _atomic_write_many({first: "after", second: "new"})
+    assert first.read_text(encoding="utf-8") == "before"
+    assert not second.exists()
+    assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_atomic_write_rolls_back_new_file_after_later_replace_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    second.write_text("old second", encoding="utf-8")
+    original_replace = Path.replace
+
+    def fail_second(source: Path, target: Path) -> Path:
+        if target == second:
+            raise OSError("replace failed")
+        return original_replace(source, target)
+
+    monkeypatch.setattr(Path, "replace", fail_second)
+    with pytest.raises(OSError, match="replace failed"):
+        _atomic_write_many({first: "new first", second: "new second"})
+    assert not first.exists()
+    assert second.read_text(encoding="utf-8") == "old second"
+
+
+def test_git_head_and_jsonable_helpers(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "src.ai.orchestrator.subprocess.run",
+        lambda *args, **kwargs: SimpleNamespace(stdout="abc123" + chr(10)),
+    )
+    assert _git_head() == "abc123"
+    model = ChangeClassification(changes=[_entry()])
+    assert _as_jsonable(model)["changes"][0]["title"] == "Feature X"
+    assert _as_jsonable("plain") == "plain"
+
+
+def test_cli_exit_status(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sys.argv", ["ai-docs", "--since-ref", "HEAD~1", "--publish-mode", "pr"])
+
+    async def failed_run(self):
+        return PipelineResult([], [], ["bad"], status="failed")
+
+    async def successful_run(self):
+        return PipelineResult([], [], [])
+
+    monkeypatch.setattr(AIDocOrchestrator, "run", failed_run)
+    assert main() == 1
+    monkeypatch.setattr(AIDocOrchestrator, "run", successful_run)
+    assert main() == 0

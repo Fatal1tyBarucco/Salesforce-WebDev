@@ -6,7 +6,7 @@ import json
 import logging
 import re
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .change import ChangeClassification
 
@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class SelfReviewResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
     valid: bool = Field(..., description="Whether classification is consistent")
     inconsistencies: list[str] = Field(default_factory=list)
     corrected_fields: dict[str, str] = Field(default_factory=dict)
@@ -40,8 +42,6 @@ def review_classification(classification: ChangeClassification) -> SelfReviewRes
             inconsistencies.append(f"{entry.title}: confiança baixa ({entry.confidence:.2f})")
         if not entry.affected_components:
             inconsistencies.append(f"{entry.title}: sem componentes afetados")
-        if not entry.source_refs:
-            inconsistencies.append(f"{entry.title}: sem referências de origem")
     if not classification.changes and not classification.review_needed:
         inconsistencies.append("Classificação vazia — nenhuma mudança processada")
     return SelfReviewResponse(

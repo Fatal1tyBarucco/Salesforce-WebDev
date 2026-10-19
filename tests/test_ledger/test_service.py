@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from pathlib import Path
 
 from src.automation.ledger.models import (
     LedgerDiff,
@@ -109,39 +109,51 @@ def test_extract_features_skips_dot_files(ledger_service: FeatureEvolutionLedger
 # ── _normalize_name ─────────────────────────────────────────────────────
 
 
-def test_normalize_lowercases() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_normalize_lowercases(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     assert svc._normalize_name("Flow Builder") == "flow builder"
 
 
-def test_normalize_strips_punctuation() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_normalize_strips_punctuation(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     assert svc._normalize_name("Flow Builder.") == "flow builder"
     assert svc._normalize_name("Flow Builder!") == "flow builder"
 
 
-def test_normalize_strips_trailing_whitespace() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_normalize_strips_trailing_whitespace(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     assert svc._normalize_name("  Flow Builder  ") == "flow builder"
 
 
 # ── _extract_category ───────────────────────────────────────────────────
 
 
-def test_extract_category_from_h2() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_extract_category_from_h2(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     content = "# Título\n\n## Plataforma\n\n- Flow Builder"
     assert svc._extract_category(content) == "Plataforma"
 
 
-def test_extract_category_ignores_emoji_h2() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_extract_category_ignores_emoji_h2(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     content = "## 🔗 Links\n\n## Plataforma\n\n- Flow Builder"
     assert svc._extract_category(content) == "Plataforma"
 
 
-def test_extract_category_fallback() -> None:
-    svc = FeatureEvolutionLedgerService(releases_dir="/tmp/nonexistent")
+def test_extract_category_fallback(tmp_path: Path) -> None:
+    svc = FeatureEvolutionLedgerService(
+        releases_dir=str(tmp_path / "nonexistent"), cache_dir=str(tmp_path / "cache")
+    )
     assert svc._extract_category("sem cabeçalho") == "geral"
 
 

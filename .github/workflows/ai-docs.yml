@@ -1,11 +1,8 @@
-name: AI Documentation Pipeline (Dynamic — Free Tier Providers)
-# Uses the project's existing LLMService provider chain:
-# OpenRouter (free) -> OpenCode (free) -> Gemini (free tier, ~20 req/day protected).
-# All secrets already configured by the existing pipeline.
+name: AI Documentation Pipeline (OpenRouter Free)
 
 on:
   push:
-    branches: [main, release/*]
+    branches: [main, 'release/*']
     paths:
       - 'src/**'
       - 'force-app/**'
@@ -15,88 +12,147 @@ on:
       since_ref:
         description: 'Git ref to start from (optional)'
         required: false
+        type: string
         default: ''
+      publish_mode:
+        description: 'How to publish generated documentation'
+        required: true
+        type: choice
+        options: [commit, pr]
+        default: pr
   workflow_call:
+    inputs:
+      since_ref:
+        description: 'Git ref to start from (optional)'
+        required: false
+        type: string
+        default: ''
+      publish_mode:
+        description: 'How to publish generated documentation'
+        required: false
+        type: string
+        default: commit
+    secrets:
+      OPENROUTER_API_KEY:
+        required: true
 
 concurrency:
   group: ai-docs-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  ai-docs:
+  generate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
-      pull-requests: write
+    outputs:
+      head_branch: ${{ steps.publish.outputs.head_branch }}
+      has_changes: ${{ steps.publish.outputs.has_changes }}
     env:
-      # Existing free-tier provider chain (LLMService reads these automatically)
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      # Pipeline config
-      LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openrouter' }}
+      AI_DOCS_MODEL: ${{ vars.AI_DOCS_MODEL || 'google/gemma-4-31b-it:free' }}
       AI_DOCS_SELF_REVIEW: ${{ vars.AI_DOCS_SELF_REVIEW || 'false' }}
+      PUBLISH_MODE: ${{ inputs.publish_mode || 'commit' }}
       AI_DOCS_REVIEWERS: ${{ vars.AI_DOCS_REVIEWERS || '' }}
-      PUBLISH_MODE: ${{ github.event.inputs.publish_mode || 'commit' }}
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0  # Needed for git diff since last ref
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Setup Python (3.14 via uv)
+      - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.14'
 
-      - name: Install dependencies (existing uv + free-tier chain)
+      - name: Install project dependencies
         run: |
           pip install uv
-          uv sync --frozen --extra dev --extra healing --group dev
-          # LLMService uses openai + google-genai already in pyproject.toml
+          uv sync --frozen --extra dev --group dev
 
-      - name: Read last processed ref
-        id: last_ref
+      - name: Resolve incremental base ref
+        id: since
+        env:
+          INPUT_SINCE_REF: ${{ inputs.since_ref }}
         run: |
-          if [ -f docs/.last-processed-ref ]; then
-            echo "ref=$(cat docs/.last-processed-ref)" >> $GITHUB_OUTPUT
+          if [ -n "$INPUT_SINCE_REF" ]; then
+            echo "ref=$INPUT_SINCE_REF" >> "$GITHUB_OUTPUT"
+          elif [ -f docs/.last-processed-ref ]; then
+            echo "ref=$(cat docs/.last-processed-ref)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=HEAD~10" >> $GITHUB_OUTPUT
+            echo "ref=HEAD~10" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Run AI-doc pipeline (uses ExistingLLMClient / LLMService)
+      - name: Run documentation generation
         id: pipeline
         env:
-          SINCE_REF: ${{ github.event.inputs.since_ref || steps.last_ref.outputs.ref }}
-          PUBLISH_MODE: ${{ env.PUBLISH_MODE }}
-        run: |
-          # Pipeline delegates to LLMService (free-tier chain: openrouter -> opencode -> gemini)
-          uv run python -m src.ai.orchestrator \
-            --since-ref "$SINCE_REF" \
-            --publish-mode "$PUBLISH_MODE"
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          SINCE_REF: ${{ steps.since.outputs.ref }}
+        run: uv run python -m src.ai.orchestrator --since-ref "$SINCE_REF" --publish-mode "$PUBLISH_MODE"
 
-      - name: Upload audit artifacts (prompts, raw LLM output, validated schemas, diff)
+      - name: Upload AI audit artifacts
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ai-docs-audit-${{ github.run_id }}
           path: docs/.ai-logs/
           if-no-files-found: ignore
+          retention-days: 30
 
-      - name: Commit or open PR (controlled by PUBLISH_MODE)
+      - name: Commit or push review branch
+        id: publish
         if: steps.pipeline.outcome == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config user.name "AI-Docs Bot"
+          git config user.email "ai-docs-bot@users.noreply.github.com"
+          git add CHANGELOG.md docs/ai-generated/ docs/.last-processed-ref
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No generated documentation changes; no commit created."
+            exit 0
+          fi
+          git commit -m "docs: atualização automática via IA [skip ci]"
           if [ "$PUBLISH_MODE" = "pr" ]; then
-            gh pr create --title "docs: atualização automática via IA [skip ci]" \
-              --body "Resumo gerado pelo pipeline AI-docs. Verificar antes de mesclar." \
-              --base main --head ai-docs/${{ github.run_id }}
+            branch="ai-docs/${GITHUB_RUN_ID}"
+            git push origin "HEAD:$branch"
+            echo "head_branch=$branch" >> "$GITHUB_OUTPUT"
           else
-            git config user.name "AI-Docs Bot"
-            git config user.email "ai-docs-bot@users.noreply.github.com"
-            git add docs/ src/ai/ .github/ai-docs-ignore
-            git commit -m "docs: atualização automática via IA [skip ci]" || echo "No changes to commit"
-            git push
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+  open-review-pr:
+    needs: generate
+    if: needs.generate.result == 'success' && needs.generate.outputs.has_changes == 'true' && inputs.publish_mode == 'pr'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AI_DOCS_REVIEWERS: ${{ vars.AI_DOCS_REVIEWERS || '' }}
+      HEAD_BRANCH: ${{ needs.generate.outputs.head_branch }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.generate.outputs.head_branch }}
+          fetch-depth: 1
+
+      - name: Open review PR
+        run: |
+          gh pr create \
+            --title "docs: atualização automática via IA [skip ci]" \
+            --body-file docs/ai-generated/leadership.md \
+            --base "${GITHUB_REF_NAME}" \
+            --head "$HEAD_BRANCH"
+          if [ -n "$AI_DOCS_REVIEWERS" ]; then
+            IFS=',' read -ra reviewers <<< "$AI_DOCS_REVIEWERS"
+            for reviewer in "${reviewers[@]}"; do
+              reviewer="$(echo "$reviewer" | xargs)"
+              [ -z "$reviewer" ] || gh pr edit "$HEAD_BRANCH" --add-reviewer "$reviewer"
+            done
           fi

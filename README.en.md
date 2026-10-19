@@ -35,6 +35,16 @@ Automated pipeline for extraction, classificação e versionamento das **Salesfo
 
 Este repositório contém um pipeline ETL assíncrono para scraping das *Salesforce Release Notes*, processamento local para classificação e sumarização, e geração de documentação estática via **MkDocs**.
 
+## AI-Generated Documentation Pipeline
+
+The reusable `.github/workflows/ai-docs.yml` workflow classifies changes and generates release notes, a Keep a Changelog entry, an executive summary, and roadmap suggestions. It calls OpenRouter only and rejects every model ID that does not end in `:free`; there is no paid-model or alternate-provider fallback.
+
+Configure the repository secret `OPENROUTER_API_KEY`. Optional repository variables are `AI_DOCS_MODEL` (a configured OpenRouter `:free` model), `AI_DOCS_SELF_REVIEW` (`true`/`false`), and `AI_DOCS_REVIEWERS` (comma-separated GitHub usernames for PR mode). Manual runs accept `since_ref` and `publish_mode` (`pr` or `commit`); reusable callers must pass `OPENROUTER_API_KEY` as a workflow secret.
+
+Generated files are `docs/ai-generated/{release-notes,leadership,roadmap}.md` and the top `Unreleased` entry in `CHANGELOG.md`; new sections are inserted without deleting earlier content, and prior changelog history is retained. Generated files carry a human-review marker. Successful and failed LLM runs save prompts, raw responses when available, model/usage data, and documentation diffs under `docs/.ai-logs/`; Actions uploads that directory as a restricted run artifact. API, quota, and validation failures fail the job without publishing partial documentation.
+
+Use `commit` to push a separate documentation commit to the triggering branch, or `pr` to push `ai-docs/<run_id>` and open a review PR. To undo a direct update, revert the generated commit; close a PR without merging to discard a proposed update. Model configuration is centralized in `src/ai/config/models.py` and versioned prompts/schemas live under `src/ai/prompts/` and `src/ai/schemas/`.
+
 ## 🏗️ System Architecture
 
 ```mermaid
