@@ -29,6 +29,9 @@
       "docs/changelog.md",
       "docs/plans/auto-opencode-issue.md"
     ],
+    ".github/workflows/salesforce_release_intelligence_hub.yml": [
+      "docs/ai-generated/release-notes.md"
+    ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
     ],
@@ -50,6 +53,7 @@
       "docs/api/ai-generators-code.md"
     ],
     "src/ai/generators/markdown.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-generators-markdown.md"
     ],
     "src/ai/integrations/salesforce.py": [
@@ -329,7 +333,7 @@
     ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     "AGENTS.md": "bbcc1192e98facba5d5f27d509323a7716298fb6",
-    "CHANGELOG.md": "a6bc8518dd7a87f7971ac944fb4f93dc8e7d520b",
+    "CHANGELOG.md": "7a5934535f39ea8996943bebeb1a37874f059433",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
@@ -342,11 +346,11 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "0f2a393a2a42c44c57c692b325051c04606f263a",
+    "docs/.last-processed-ref": "39136939e1f5426da18d4ac9d9c85c13ae2f1142",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "5f4384681c74f90e162f9910db59c23544559f14",
-    "docs/ai-generated/release-notes.md": "f5b7b29c44e3b9b9c569a0d30298c5fdbad99cde",
-    "docs/ai-generated/roadmap.md": "91c67f4d3eb7a7851162df605bdb852967019e31",
+    "docs/ai-generated/leadership.md": "27ede6ad6d6e40ffbe743cf0e875fd0d3626d5fc",
+    "docs/ai-generated/release-notes.md": "b8e80a39419af2a8d8d3bca109465d12d24f3b36",
+    "docs/ai-generated/roadmap.md": "7050c2affaf5ceec38a13f9cee40335e0f57e251",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -841,6 +845,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "d14d68173350d4d83b25b3133251792b14f8464c"
   },
-  "generated_at": "2026-10-19T14:57:01.588624+00:00",
-  "repository_sha": "f8dba5424f1f17e357f1612b6e2f963a9a18c3fc"
+  "generated_at": "2026-10-19T15:03:48.659582+00:00",
+  "repository_sha": "4e76705f32ca2e169584c1edd56e5a2b9eb0f310"
 }
