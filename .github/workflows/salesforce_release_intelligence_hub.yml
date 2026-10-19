@@ -91,15 +91,23 @@ jobs:
           readiness_document = builder_engine.compile_release_readiness_action_document()
           org_prep_engine = SalesforceOrgPreparationGuideDefensiveBuilder(release_identifier_string="${RELEASE_NUMBER}")
           org_prep_document = org_prep_engine.generate_org_preparation_guide()
-          # Escrita defensiva de arquivos auxiliares
+          # Escrita defensiva de arquivos auxiliares (cria diretório pai idempotente)
           import json, os
-          for file_path, content in [
+          from pathlib import Path
+          artifact_paths = [
               ("intelligence/intelligence_hub/deploy_manuals/Release_"+"${RELEASE_NUMBER}"+"_Deploy_Guide.json", deploy_document),
               ("intelligence/intelligence_hub/sandbox_preview_schedules/Release_"+"${RELEASE_NUMBER}"+"_Sandbox.json", sandbox_document),
               ("intelligence/intelligence_hub/release_readiness/Release_"+"${RELEASE_NUMBER}"+"_Readiness.json", readiness_document),
               ("intelligence/intelligence_hub/org_preparation_guides/Release_"+"${RELEASE_NUMBER}"+"_Org_Prep.json", org_prep_document),
-          ]:
+          ]
+          for file_path, content in artifact_paths:
+              Path(file_path).parent.mkdir(parents=True, exist_ok=True)
               with open(file_path, "w") as f: json.dump(content, f, indent=2)
+          # Verificação pós-escrita: garante que os quatro artefatos existem antes de prosseguir
+          missing = [fp for fp, _ in artifact_paths if not Path(fp).is_file()]
+          if missing:
+              sys.exit(f"Falha na verificação de artefatos: {missing}")
+          print("[BUILD] Quatro artefatos JSON verificados com sucesso.")
           PYTHON_BUILD_BLOCK
 
       - name: Inject links defensively into READMEs (SoC — isolado)
