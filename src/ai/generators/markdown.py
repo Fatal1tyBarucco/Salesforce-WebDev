@@ -104,11 +104,11 @@ class MarkdownGenerator:
         l_bar = "🟢" * min(low, 20)
 
         lines = [
-            "### 📊 Distribuição de Impacto\n",
+            "## 📊 Distribuição de Impacto\n",
             f"🔴 Alto: **{high}** ({high * 100 // total}%) {h_bar}",
             f"🟡 Médio: **{medium}** ({medium * 100 // total}%) {m_bar}",
             f"🟢 Baixo: **{low}** ({low * 100 // total}%) {l_bar}",
-            f"\n**Total: {total} features**\n",
+            f"\nTotal: **{total} features**\n",
         ]
         return "\n".join(lines)
 
@@ -178,7 +178,7 @@ class MarkdownGenerator:
         max_val = max(max(vals) for vals in data.values() if vals) or 1
         bar_width = 30
 
-        lines = [f"### {title}\n", "```"]
+        lines = [f"## {title}\n", "```text"]
 
         for cat, vals in sorted(data.items()):
             if not vals:
