@@ -97,21 +97,35 @@ class ExistingLLMClient:
                 last_error = exc
                 status_code = getattr(exc, "status_code", None)
                 response_obj = getattr(exc, "response", None)
-                headers = getattr(response_obj, "headers", {}) or {}
+                headers = {
+                    str(name).lower(): str(value)
+                    for name, value in (getattr(response_obj, "headers", {}) or {}).items()
+                }
                 message = str(exc).lower()
-                if status_code == 402 or any(
-                    marker in message
-                    for marker in (
-                        "daily limit",
-                        "free-models-per-day",
-                        "requests per day",
-                        "quota exceeded",
-                        "insufficient credits",
-                        "credits exhausted",
+                reset_seconds = _rate_reset_seconds(headers.get("x-ratelimit-reset"))
+                rate_remaining = headers.get("x-ratelimit-remaining")
+                exhausted_rate_limit = (
+                    status_code == 429
+                    and rate_remaining == "0"
+                    and (reset_seconds is None or reset_seconds > 120)
+                )
+                if (
+                    status_code == 402
+                    or exhausted_rate_limit
+                    or any(
+                        marker in message
+                        for marker in (
+                            "daily limit",
+                            "free-models-per-day",
+                            "requests per day",
+                            "quota exceeded",
+                            "insufficient credits",
+                            "credits exhausted",
+                        )
                     )
                 ):
                     raise OpenRouterQuotaError(
-                        "OpenRouter free-tier quota exhausted; refusing paid-provider fallback."
+                        "OpenRouter free-tier quota/rate limit exhausted; refusing paid-provider fallback."
                     ) from exc
                 if attempt == MAX_ATTEMPTS:
                     break
@@ -169,6 +183,19 @@ class ExistingLLMClient:
         raise RuntimeError(
             f"OpenRouter request failed after {MAX_ATTEMPTS} attempts."
         ) from last_error
+
+
+def _rate_reset_seconds(value: str | None) -> float | None:
+    """Parse a relative or epoch reset hint without applying the retry cap."""
+    if not value:
+        return None
+    try:
+        seconds = float(value)
+    except ValueError:
+        return None
+    if seconds > 1_000_000_000:
+        seconds -= time.time()
+    return float(max(0.0, seconds))
 
 
 def _retry_delay(retry_after: str | None, rate_reset: str | None, attempt: int) -> float:

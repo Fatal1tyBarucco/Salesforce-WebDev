@@ -16,6 +16,7 @@ from src.ai.llm.client import ExistingLLMClient, OpenRouterQuotaError, _retry_de
 from src.ai.orchestrator import AIDocOrchestrator
 from src.ai.schemas.change import ChangeClassification
 from src.ai.schemas.generated_docs import GeneratedDocuments
+from tests.factories import make_ai_change
 
 
 class StrictObject(BaseModel):
@@ -30,17 +31,7 @@ def _completion(text: str) -> MagicMock:
 
 
 def _entry(confidence: float = 0.9) -> dict[str, object]:
-    return {
-        "title": "Novo endpoint",
-        "description": "Adiciona endpoint documentado para consultar dados.",
-        "type": "feature",
-        "impact": "medium",
-        "impact_justification": "Amplia a superfície disponível sem remover compatibilidade.",
-        "priority": "P2",
-        "affected_components": ["api"],
-        "source_refs": ["feat(api): endpoint"],
-        "confidence": confidence,
-    }
+    return make_ai_change(confidence)
 
 
 class FakeLLM:

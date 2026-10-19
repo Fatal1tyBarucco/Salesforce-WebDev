@@ -31,6 +31,21 @@ def _next_release_id() -> int:
     return 900 + _RELEASE_SEQUENCE
 
 
+def make_ai_change(confidence: float = 0.9) -> dict[str, Any]:
+    """Create a valid AI documentation classification payload for tests."""
+    return {
+        "title": "Novo endpoint",
+        "description": "Adiciona endpoint documentado para consultar dados.",
+        "type": "feature",
+        "impact": "medium",
+        "impact_justification": "Amplia a superfície disponível sem remover compatibilidade.",
+        "priority": "P2",
+        "affected_components": ["api"],
+        "source_refs": ["feat(api): endpoint"],
+        "confidence": confidence,
+    }
+
+
 def make_release(
     name: str | None = None,
     release_id: int | None = None,

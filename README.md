@@ -41,6 +41,9 @@ Configure no repositório GitHub:
 - Variável `AI_DOCS_MODEL` (opcional): identificador de modelo OpenRouter `:free`; o padrão está em `src/ai/config/models.py`. Valores sem sufixo `:free` são rejeitados.
 - Variável `AI_DOCS_SELF_REVIEW` (opcional): `true` ativa uma chamada adicional de revisão; padrão `false`.
 - Variável `AI_DOCS_REVIEWERS` (opcional): logins separados por vírgula, aplicados ao PR no modo `pr`.
+- Variável `AI_DOCS_MAX_CONTEXT_TOKENS` (opcional): orçamento máximo estimado para o contexto de mudanças; padrão `12000`. A estimativa conservadora usa bytes UTF-8 e não substitui o tokenizer específico do modelo.
+
+O coletor inclui PRs mesclados, labels dos PRs e metadados de issues fechadas no intervalo desde `since_ref`, limitando corpos longos. O job fornece `GITHUB_TOKEN` ao GitHub CLI para essas consultas.
 
 Execuções manuais aceitam `since_ref` para escolher a ref inicial e `publish_mode` (`pr` ou `commit`). O workflow também pode ser chamado por outro workflow, que deve fornecer `OPENROUTER_API_KEY` como secret. O modo manual padrão é `pr`; push e chamadas reutilizáveis usam `commit` por padrão.
 

@@ -7,6 +7,7 @@ import json
 import logging
 import re
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -115,6 +116,7 @@ def collect_changes(since_ref: str = "HEAD~10") -> dict[str, Any]:
         if diff:
             diff_snippets.append(f"--- {path}\n{diff[:MAX_DIFF_CHARS]}")
 
+    commit_hashes = {row["sha"] for row in commit_rows if row["sha"]}
     return {
         "commits": commits,
         "commit_details": commit_rows,
@@ -122,10 +124,62 @@ def collect_changes(since_ref: str = "HEAD~10") -> dict[str, Any]:
         "changed_files": changed_paths[:MAX_DIFF_FILES],
         "diff_snippets": diff_snippets,
         "conventional_commits": conventional,
-        "merged_prs": _collect_merged_prs({row["sha"] for row in commit_rows if row["sha"]}),
+        "merged_prs": _collect_merged_prs(commit_hashes),
+        "closed_issues": _collect_closed_issues(since_ref),
         "since_ref": since_ref,
         "to_ref": "HEAD",
     }
+
+
+def _collect_closed_issues(since_ref: str) -> list[dict[str, Any]]:
+    """Collect closed issue metadata in the requested commit range."""
+    base_timestamp = run_cmd(["git", "show", "-s", "--format=%cI", since_ref]).strip()
+    if not base_timestamp:
+        return []
+    base_date = base_timestamp[:10]
+    output = run_cmd(
+        [
+            "gh",
+            "issue",
+            "list",
+            "--state",
+            "closed",
+            "--limit",
+            "1000",
+            "--search",
+            f"closed:>={base_date}",
+            "--json",
+            "title,body,labels,number,closedAt,url",
+        ]
+    )
+    if not output:
+        return []
+    try:
+        issues = json.loads(output)
+    except json.JSONDecodeError:
+        logger.warning("gh returned invalid issue JSON; skipping issue metadata.")
+        return []
+    if not isinstance(issues, list):
+        return []
+    normalized: list[dict[str, Any]] = []
+    for issue in issues:
+        if not isinstance(issue, dict):
+            continue
+        closed_at = issue.get("closedAt")
+        if not isinstance(closed_at, str):
+            continue
+        try:
+            closed_datetime = datetime.fromisoformat(closed_at)
+            base_datetime = datetime.fromisoformat(base_timestamp)
+        except TypeError, ValueError:
+            continue
+        if closed_datetime < base_datetime:
+            continue
+        body = issue.get("body")
+        if isinstance(body, str):
+            issue["body"] = body[:MAX_PR_BODY_CHARS]
+        normalized.append(issue)
+    return normalized
 
 
 def _collect_merged_prs(commit_hashes: set[str] | None = None) -> list[dict[str, Any]]:

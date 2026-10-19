@@ -12,13 +12,14 @@ import pytest
 from pydantic import BaseModel
 
 from src.ai.collectors import change_collector
-from src.ai.llm.client import ExistingLLMClient, _retry_delay
+from src.ai.llm.client import ExistingLLMClient, OpenRouterQuotaError, _retry_delay
 from src.ai.orchestrator import (
     AIDocOrchestrator,
     PipelineResult,
     _as_jsonable,
     _atomic_write_many,
     _detect_language,
+    _estimate_tokens,
     _git_head,
     _prepend_changelog,
     _simple_diff,
@@ -28,6 +29,16 @@ from src.ai.orchestrator import (
 from src.ai.schemas.change import ChangeClassification
 from src.ai.schemas.change_reviewer import SelfReviewResponse, _json_extract, review_classification
 from src.ai.schemas.generated_docs import GeneratedDocuments
+
+
+class FakeHTTPError(RuntimeError):
+    status_code: int
+    response: SimpleNamespace
+
+    def __init__(self, status_code: int, headers: dict[str, str]) -> None:
+        super().__init__("rate limited")
+        self.status_code = status_code
+        self.response = SimpleNamespace(headers=headers)
 
 
 class ResultModel(BaseModel):
@@ -132,6 +143,59 @@ def test_client_retries_non_object_and_fails_after_api_retries() -> None:
 def test_retry_delay_converts_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
     assert _retry_delay(None, "1700000012", 1) == 12
+
+
+def test_rate_limit_exhaustion_is_not_retried_as_transient(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
+    client = _client(_raw('{"value":3}'))
+    error = FakeHTTPError(429, {"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": "1700003600"})
+    client._client.chat.completions.create.side_effect = error
+    with pytest.raises(OpenRouterQuotaError, match="quota/rate limit exhausted"):
+        client.generate("prompt")
+    assert client._client.chat.completions.create.call_count == 1
+
+
+def test_rate_limit_headers_case_insensitive_and_retry_after() -> None:
+    client = _client(_raw('{"value":3}'))
+    error = RuntimeError("temporary limit")
+    error.status_code = 429
+    error.response = SimpleNamespace(headers={"Retry-After": "6", "X-RateLimit-Remaining": "2"})
+    client._client.chat.completions.create.side_effect = [error, _raw('{"value":3}')]
+    delays: list[float] = []
+    client._sleep = delays.append
+    assert client.generate("prompt", ResultModel) == {"value": 3}
+    assert delays == [6]
+
+
+def test_closed_issue_metadata_is_filtered_and_bounded(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    issue = {
+        "number": 17,
+        "title": "Closed in range",
+        "body": "x" * (change_collector.MAX_PR_BODY_CHARS + 20),
+        "labels": [{"name": "bug"}],
+        "closedAt": "2026-10-19T12:00:00Z",
+        "url": "https://github.com/example/repo/issues/17",
+    }
+    commands: list[list[str]] = []
+
+    def fake_run(cmd: list[str]) -> str:
+        commands.append(cmd)
+        if cmd[:3] == ["git", "show", "-s"]:
+            return "2026-10-18T01:00:00+02:00\n"
+        if cmd[:3] == ["gh", "issue", "list"]:
+            return json.dumps([issue, {**issue, "number": 18, "closedAt": "2026-10-17T00:00:00Z"}])
+        return ""
+
+    monkeypatch.setattr(change_collector, "run_cmd", fake_run)
+    results = change_collector._collect_closed_issues("base-ref")
+    assert [item["number"] for item in results] == [17]
+    assert len(results[0]["body"]) == change_collector.MAX_PR_BODY_CHARS
+    assert results[0]["labels"] == [{"name": "bug"}]
+    assert "labels" in commands[-1][-1] and "closedAt" in commands[-1][-1]
 
 
 def test_collector_patterns_and_invalid_pr_payload(
@@ -331,6 +395,22 @@ def test_context_truncates_diffs_before_pr_bodies() -> None:
     )
     assert len(json.dumps(pr_bounded, ensure_ascii=False)) <= 100
     assert len(pr_bounded["merged_prs"][0]["body"]) < len("pr body " * 80)
+
+
+def test_context_truncates_to_configured_token_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("AI_DOCS_MAX_CONTEXT_TOKENS", "35")
+    raw = {
+        "conventional_commits": ["feat(api): preserve this high-priority change"],
+        "git_diff_stat": "stat data " * 100,
+        "diff_snippets": ["diff data " * 200],
+        "merged_prs": [{"title": "PR details", "body": "body " * 200}],
+        "closed_issues": [{"title": "Issue details", "body": "issue " * 100}],
+    }
+    bounded = _truncate_context(raw)
+    serialized = json.dumps(bounded, ensure_ascii=False)
+    assert _estimate_tokens(serialized) <= 35
+    assert bounded["conventional_commits"] == raw["conventional_commits"]
+    assert len(serialized) < len(json.dumps(raw, ensure_ascii=False))
 
 
 def test_language_detection_defaults_to_portuguese_and_detects_english() -> None:

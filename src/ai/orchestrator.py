@@ -77,7 +77,11 @@ class AIDocOrchestrator:
         generated: GeneratedDocuments | None = None
         try:
             raw = collect_changes(since_ref=self.since_ref)
-            if not raw.get("commits") and not raw.get("merged_prs"):
+            if (
+                not raw.get("commits")
+                and not raw.get("merged_prs")
+                and not raw.get("closed_issues")
+            ):
                 logger.info("No relevant changes — no-op; no files written.")
                 return PipelineResult(changes=[], documents=[], errors=[], status="no-op")
 
@@ -400,8 +404,14 @@ def _existing_language(path: Path) -> str:
     return _detect_language(path.read_text(encoding="utf-8")) if path.exists() else "pt-BR"
 
 
+def _estimate_tokens(text: str) -> int:
+    """Conservatively estimate prompt tokens from UTF-8 bytes (about 3 bytes/token)."""
+    byte_count = len(text.encode("utf-8"))
+    return max(1, (byte_count + 2) // 3)
+
+
 def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str, Any]:
-    """Keep high-signal context first and spend remaining space on diffs, then PR bodies."""
+    """Bound context by chars and a conservative token estimate, preserving priority order."""
     keys = (
         "conventional_commits",
         "commits",
@@ -410,13 +420,19 @@ def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str,
         "changed_files",
         "diff_snippets",
         "merged_prs",
+        "closed_issues",
     )
     bounded: dict[str, Any] = {key: raw[key] for key in ("since_ref", "to_ref") if key in raw}
+    try:
+        max_tokens = max(1, int(os.getenv("AI_DOCS_MAX_CONTEXT_TOKENS", "12000")))
+    except ValueError:
+        max_tokens = 12000
 
     def fits(key: str, value: Any) -> bool:
         candidate = dict(bounded)
         candidate[key] = value
-        return len(json.dumps(candidate, ensure_ascii=False)) <= max_chars
+        serialized = json.dumps(candidate, ensure_ascii=False)
+        return len(serialized) <= max_chars and _estimate_tokens(serialized) <= max_tokens
 
     for key in keys:
         if key not in raw:
@@ -451,7 +467,7 @@ def _truncate_context(raw: dict[str, Any], max_chars: int = 50_000) -> dict[str,
                             high = middle - 1
                     if low:
                         selected.append(item[:low] + "…")
-                elif key == "merged_prs" and isinstance(item, dict):
+                elif key in {"merged_prs", "closed_issues"} and isinstance(item, dict):
                     pr_item = dict(item)
                     body = pr_item.get("body")
                     if isinstance(body, str):
