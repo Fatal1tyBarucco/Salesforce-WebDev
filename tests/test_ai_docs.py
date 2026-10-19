@@ -64,13 +64,13 @@ def test_client_requires_key_and_free_model(monkeypatch: pytest.MonkeyPatch) -> 
         ExistingLLMClient(api_key="test-key", provider="gemini")
 
 
-def test_client_uses_only_openrouter_free_model(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_client_uses_openrouter_free_alias(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
-    monkeypatch.setenv("AI_DOCS_MODEL", "provider/model:free")
+    monkeypatch.setenv("AI_DOCS_MODEL", "openrouter/free")
     with patch("src.ai.llm.client.OpenAI") as openai:
         client = ExistingLLMClient()
     assert client.provider == "openrouter"
-    assert client.model == "provider/model:free"
+    assert client.model == "openrouter/free"
     assert openai.call_args.kwargs["base_url"] == "https://openrouter.ai/api/v1"
     assert openai.call_args.kwargs["max_retries"] == 0
 

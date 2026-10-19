@@ -76,6 +76,13 @@ def _client(*responses: MagicMock) -> ExistingLLMClient:
     return client
 
 
+def test_free_model_config_defaults_to_openrouter_free(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.ai.config.models import get_openrouter_free_model
+
+    monkeypatch.delenv("AI_DOCS_MODEL", raising=False)
+    assert get_openrouter_free_model() == "openrouter/free"
+
+
 def test_free_model_config_rejects_non_free(monkeypatch: pytest.MonkeyPatch) -> None:
     from src.ai.config.models import get_openrouter_free_model
 

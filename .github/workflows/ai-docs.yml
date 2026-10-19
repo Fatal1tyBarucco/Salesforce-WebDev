@@ -55,7 +55,7 @@ jobs:
       head_branch: ${{ steps.publish.outputs.head_branch }}
       has_changes: ${{ steps.publish.outputs.has_changes }}
     env:
-      AI_DOCS_MODEL: ${{ vars.AI_DOCS_MODEL || 'google/gemma-4-31b-it:free' }}
+      AI_DOCS_MODEL: ${{ vars.AI_DOCS_MODEL || 'openrouter/free' }}
       AI_DOCS_SELF_REVIEW: ${{ vars.AI_DOCS_SELF_REVIEW || 'false' }}
       AI_DOCS_MAX_CONTEXT_TOKENS: ${{ vars.AI_DOCS_MAX_CONTEXT_TOKENS || '12000' }}
       PUBLISH_MODE: ${{ inputs.publish_mode || 'commit' }}

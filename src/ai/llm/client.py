@@ -50,8 +50,10 @@ class ExistingLLMClient:
         if provider not in (None, "openrouter"):
             raise ValueError("AI documentation supports OpenRouter only.")
         selected_model = model or get_openrouter_free_model()
-        if not selected_model.endswith(":free"):
-            raise ValueError("AI documentation requires an OpenRouter :free model.")
+        if selected_model != "openrouter/free" and not selected_model.endswith(":free"):
+            raise ValueError(
+                "AI documentation requires openrouter/free or an OpenRouter :free model."
+            )
         key = api_key or os.getenv("OPENROUTER_API_KEY", "").strip()
         if not key:
             raise RuntimeError(
