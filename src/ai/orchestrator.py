@@ -15,7 +15,13 @@ from typing import Any
 
 from src.ai.collectors.change_collector import collect_changes
 from src.ai.generators.markdown import MarkdownGenerator
-from src.ai.llm.client import SYSTEM_PROMPT, ExistingLLMClient, LLMClient
+from src.ai.llm.client import (
+    SYSTEM_PROMPT,
+    ExistingLLMClient,
+    LLMClient,
+    describe_exception,
+    sanitize_diagnostic,
+)
 from src.ai.schemas.change import ChangeClassification
 from src.ai.schemas.change_reviewer import SelfReviewResponse
 from src.ai.schemas.generated_docs import GeneratedDocuments
@@ -160,7 +166,7 @@ class AIDocOrchestrator:
                 total_tokens=total_tokens,
             )
         except Exception as exc:
-            logger.error("AI-doc pipeline failed: %s", exc)
+            logger.error("AI-doc pipeline failed: %s", " -> ".join(_exception_chain(exc)))
             if len(run_prompts) > 1:
                 try:
                     self._write_failure_audit(run_prompts, raw_log, exc, classification, generated)
@@ -326,10 +332,7 @@ class AIDocOrchestrator:
         generated: GeneratedDocuments | None,
     ) -> None:
         timestamp = datetime.now(UTC)
-        error_message = str(error)
-        api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
-        if api_key:
-            error_message = error_message.replace(api_key, "[REDACTED]")
+        error_message = sanitize_diagnostic(str(error), limit=None)
         record = {
             "timestamp": timestamp.isoformat(timespec="seconds"),
             "model": getattr(
@@ -345,7 +348,11 @@ class AIDocOrchestrator:
                 generated.model_dump(mode="json") if generated is not None else None
             ),
             "documentation_diff": "",
-            "error": {"type": type(error).__name__, "message": error_message},
+            "error": {
+                "type": type(error).__name__,
+                "message": error_message,
+                "chain": _exception_chain(error),
+            },
         }
         path = Path("docs/.ai-logs") / f"run-{timestamp.strftime('%Y%m%dT%H%M%S%fZ')}-failed.json"
         _atomic_write_many({path: json.dumps(record, ensure_ascii=False, indent=2) + chr(10)})
@@ -386,6 +393,18 @@ class AIDocOrchestrator:
             Path("docs/.last-processed-ref"): ref + "\n",
         }
         _atomic_write_many(pending_files)
+
+
+def _exception_chain(error: BaseException) -> list[str]:
+    """Sanitized descriptions for an exception and every cause/context link."""
+    chain: list[str] = []
+    seen: set[int] = set()
+    current: BaseException | None = error
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        chain.append(describe_exception(current))
+        current = current.__cause__ if current.__cause__ is not None else current.__context__
+    return chain
 
 
 def _detect_language(text: str) -> str:

@@ -114,8 +114,11 @@ def test_client_retries_api_error_with_rate_limit_header() -> None:
 
 def test_client_empty_response_retries_then_fails() -> None:
     client = _client(_raw(""), _raw(""), _raw(""))
-    with pytest.raises(RuntimeError, match="after 3 attempts"):
+    with pytest.raises(RuntimeError) as excinfo:
         client.generate("prompt")
+    assert "after 3 attempts" in str(excinfo.value)
+    assert "phase=empty-completion" in str(excinfo.value)
+    assert "error=ValueError" in str(excinfo.value)
 
 
 def test_retry_delay_handles_epoch_and_bad_headers(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -150,6 +153,25 @@ def test_client_retries_non_object_and_fails_after_api_retries() -> None:
 def test_retry_delay_converts_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
     assert _retry_delay(None, "1700000012", 1) == 12
+
+
+def test_retry_delay_converts_millisecond_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
+    assert _retry_delay(None, "1700000012000", 1) == 12
+
+
+def test_rate_limit_reset_in_milliseconds_is_retried(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
+    client = _client(_raw('{"value":3}'))
+    reset = str((1_700_000_000 + 60) * 1000)
+    error = FakeHTTPError(429, {"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": reset})
+    client._client.chat.completions.create.side_effect = [error, _raw('{"value":3}')]
+    delays: list[float] = []
+    client._sleep = delays.append
+    assert client.generate("p", ResultModel) == {"value": 3}
+    assert delays == [60.0]
 
 
 def test_rate_limit_exhaustion_is_not_retried_as_transient(

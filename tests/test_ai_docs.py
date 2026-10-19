@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -12,7 +13,16 @@ import pytest
 from pydantic import BaseModel
 
 from src.ai.collectors.change_collector import collect_changes
-from src.ai.llm.client import ExistingLLMClient, OpenRouterQuotaError, _retry_delay
+from src.ai.llm.client import (
+    MAX_DIAGNOSTIC_CHARS,
+    ExistingLLMClient,
+    OpenRouterQuotaError,
+    _provider_error,
+    _retry_delay,
+    _retry_delay_with_source,
+    describe_exception,
+    sanitize_diagnostic,
+)
 from src.ai.orchestrator import AIDocOrchestrator
 from src.ai.schemas.change import ChangeClassification
 from src.ai.schemas.generated_docs import GeneratedDocuments
@@ -112,8 +122,11 @@ def test_client_aborts_after_three_invalid_responses() -> None:
         _completion("{}"),
         _completion("{}"),
     ]
-    with pytest.raises(ValueError, match="invalid after 3 attempts"):
+    with pytest.raises(ValueError) as excinfo:
         client.generate("prompt", StrictObject)
+    assert "invalid after 3 attempts" in str(excinfo.value)
+    assert "phase=output-validation" in str(excinfo.value)
+    assert "error=ValidationError" in str(excinfo.value)
 
 
 def test_client_retries_http_errors_and_detects_quota() -> None:
@@ -136,6 +149,144 @@ def test_retry_delay_prefers_server_headers() -> None:
     assert _retry_delay("7", None, 1) == 7
     assert _retry_delay(None, "invalid", 2) == 4
     assert _retry_delay("9999", None, 1) == 120
+
+
+def test_retry_delay_reports_delay_source() -> None:
+    assert _retry_delay_with_source("7", None, 1) == (7.0, "retry-after")
+    assert _retry_delay_with_source(None, "9", 1) == (9.0, "x-ratelimit-reset")
+    assert _retry_delay_with_source("soon", None, 2) == (4.0, "exponential-backoff")
+
+
+def _diagnostic_client(*effects: object) -> ExistingLLMClient:
+    client = object.__new__(ExistingLLMClient)
+    client.model = "provider/model:free"
+    client.usage = []
+    client._sleep = lambda _: None
+    client._client = MagicMock()
+    client._client.chat.completions.create.side_effect = list(effects)
+    return client
+
+
+def test_client_final_transport_failure_reports_root_cause(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    transport_error = ConnectionError("connection reset by peer")
+    client = _diagnostic_client(transport_error, transport_error, transport_error)
+    with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
+        with pytest.raises(RuntimeError) as excinfo:
+            client.generate("prompt")
+    message = str(excinfo.value)
+    assert "OpenRouter request failed after 3 attempts" in message
+    assert "phase=request" in message
+    assert "error=ConnectionError" in message
+    assert "connection reset by peer" in message
+    assert excinfo.value.__cause__ is transport_error
+    logged = [record.getMessage() for record in caplog.records]
+    assert any(
+        "attempt 1/3" in entry and "delay_source=exponential-backoff" in entry for entry in logged
+    )
+    assert any("attempt 3/3" in entry and "giving up" in entry for entry in logged)
+
+
+def test_client_final_http_failure_reports_status_and_provider_error(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    class HTTPStatusError(RuntimeError):
+        def __init__(self, status_code: int, payload: object, headers: dict[str, str]) -> None:
+            super().__init__(f"HTTP {status_code} returned by provider")
+            self.status_code = status_code
+            self.response = SimpleNamespace(headers=headers, json=lambda: payload)
+
+    failure = HTTPStatusError(
+        503,
+        {
+            "error": {
+                "code": 503,
+                "message": "Provider temporarily unavailable",
+                "metadata": {"error_type": "provider_overloaded"},
+            }
+        },
+        {"retry-after": "5"},
+    )
+    client = _diagnostic_client(failure, failure, failure)
+    delays: list[float] = []
+    client._sleep = delays.append
+    with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
+        with pytest.raises(RuntimeError) as excinfo:
+            client.generate("prompt")
+    message = str(excinfo.value)
+    assert "phase=request" in message
+    assert "error=HTTPStatusError" in message
+    assert "status=503" in message
+    assert "provider_error=503 | Provider temporarily unavailable" in message
+    assert "provider_overloaded" in message
+    assert delays == [5.0, 5.0]
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "delay_source=retry-after" in logged
+    assert "attempt 3/3" in logged
+
+
+def test_client_failure_diagnostics_redact_credentials(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-v1-super-secret-key")
+    failure = RuntimeError(
+        "401 unauthorized: key sk-or-v1-super-secret-key via Bearer abc123.token"
+    )
+    client = _diagnostic_client(failure, failure, failure)
+    with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
+        with pytest.raises(RuntimeError) as excinfo:
+            client.generate("prompt")
+    message = str(excinfo.value)
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "sk-or-v1-super-secret-key" not in message
+    assert "sk-or-v1-super-secret-key" not in logged
+    assert "abc123.token" not in logged
+    assert "Bearer [REDACTED]" in message
+    assert "[REDACTED]" in logged
+
+
+def test_diagnostic_helpers_bound_and_describe_odd_failures(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-abcdef123456")
+    assert sanitize_diagnostic("bad key sk-or-abcdef123456") == "bad key [REDACTED]"
+    long_detail = "x" * (MAX_DIAGNOSTIC_CHARS + 50)
+    sanitized = sanitize_diagnostic(long_detail)
+    assert len(sanitized) == MAX_DIAGNOSTIC_CHARS
+    assert sanitized.endswith("…")
+    assert len(sanitize_diagnostic(long_detail, limit=None)) == len(long_detail)
+    assert describe_exception(ValueError()) == "error=ValueError"
+
+    assert _provider_error(RuntimeError("plain failure")) is None
+
+    without_body = RuntimeError("failure without body")
+    without_body.response = SimpleNamespace(headers={})
+    assert _provider_error(without_body) is None
+
+    broken_body = RuntimeError("failure with unreadable body")
+
+    def boom() -> object:
+        raise ValueError("no body")
+
+    broken_body.response = SimpleNamespace(headers={}, json=boom)
+    assert _provider_error(broken_body) is None
+
+    listed_body = RuntimeError("list body")
+    listed_body.response = SimpleNamespace(headers={}, json=lambda: ["body"])
+    assert _provider_error(listed_body) is None
+
+    empty_body = RuntimeError("empty error body")
+    empty_body.response = SimpleNamespace(headers={}, json=lambda: {"error": {}})
+    assert _provider_error(empty_body) is None
+
+    missing_body = RuntimeError("missing error body")
+    missing_body.response = SimpleNamespace(headers={}, json=lambda: {"detail": "bad request"})
+    assert _provider_error(missing_body) is None
+
+    quoted_body = RuntimeError("string error body")
+    quoted_body.response = SimpleNamespace(headers={}, json=lambda: {"error": "quota hit"})
+    assert _provider_error(quoted_body) == "quota hit"
 
 
 def test_collector_ignores_markdown_and_returns_real_diff(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -229,6 +380,40 @@ def test_pipeline_fails_without_publishing_invalid_classification(
     failure_record = json.loads(failure_audit.read_text(encoding="utf-8"))
     assert failure_record["error"]["type"] == "ValidationError"
     assert "classification" in failure_record["prompts"]
+
+
+def test_pipeline_failure_logs_and_audits_exception_cause_chain(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
+    )
+    root = OSError("upstream connection reset")
+    root.status_code = 502
+
+    class RootCauseLLM:
+        model = "vendor/model:free"
+
+        def generate(self, prompt: str, schema: type | None = None) -> dict[str, object]:
+            raise RuntimeError("documentation generation failed") from root
+
+    with caplog.at_level(logging.ERROR, logger="src.ai.orchestrator"):
+        result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1", llm=RootCauseLLM()).run())
+    assert result.status == "failed"
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "AI-doc pipeline failed" in logged
+    assert "error=RuntimeError, detail=documentation generation failed" in logged
+    assert "error=OSError, status=502, detail=upstream connection reset" in logged
+    failure_audit = next((tmp_path / "docs/.ai-logs").glob("*-failed.json"))
+    record = json.loads(failure_audit.read_text(encoding="utf-8"))
+    assert record["error"]["type"] == "RuntimeError"
+    assert record["error"]["message"] == "documentation generation failed"
+    assert record["error"]["chain"][0].startswith("error=RuntimeError")
+    assert record["error"]["chain"][1] == (
+        "error=OSError, status=502, detail=upstream connection reset"
+    )
 
 
 def test_prompts_are_versioned_and_present() -> None:
