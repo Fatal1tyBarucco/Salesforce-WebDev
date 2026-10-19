@@ -5,14 +5,20 @@
     ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md",
+      "docs/ai-generated/release-notes.md",
       "docs/changelog.md",
       "docs/runbooks/documentation-sync-failure.md"
     ],
+    ".github/scripts/update_changelog_auto.py": [
+      "docs/ai-generated/release-notes.md"
+    ],
     ".github/workflows/ai-docs.yml": [
       "README.en.md",
-      "README.md"
+      "README.md",
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/documentation-sync.yml": [
+      "docs/ai-generated/release-notes.md",
       "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
     ],
     ".github/workflows/opencode.yml": [
@@ -28,11 +34,13 @@
     ],
     "src/ai/collectors/change_collector.py": [
       "README.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-collectors-change_collector.md"
     ],
     "src/ai/config/models.py": [
       "README.en.md",
       "README.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-config-models.md"
     ],
     "src/ai/generators/badges.py": [
@@ -52,10 +60,12 @@
     ],
     "src/ai/llm/client.py": [
       "README.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-llm-client.md"
     ],
     "src/ai/orchestrator.py": [
       "README.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-orchestrator.md"
     ],
     "src/ai/prompts/classification.py": [
@@ -71,6 +81,7 @@
       "docs/api/ai-prompts-validation.md"
     ],
     "src/ai/schemas/change.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/ai-schemas-change.md"
     ],
     "src/ai/schemas/change_classifier.py": [
@@ -220,6 +231,7 @@
       "docs/runbooks/index.md"
     ],
     "src/main.py": [
+      "AGENTS.md",
       "README.en.md",
       "README.md",
       "docs/api/main.md",
@@ -292,7 +304,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "885c3753f638820ac937b5d3778eb9a78f438f25",
-    ".github/scripts/docs_sync_engine.py": "408043ee0df1316825d4489cd532b550c8685dea",
+    ".github/scripts/docs_sync_engine.py": "1c86971adf4a911a6264db6062020915c0251505",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "36265306b1cd6b095e2deb0953483c66f3fa06dd",
     ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
@@ -300,7 +312,7 @@
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
-    ".github/workflows/ai-docs.yml": "fade2bc24f6ac250d78338cfb57ed37fc6bf0a7c",
+    ".github/workflows/ai-docs.yml": "6d9de5d461f53f54a5e9615fb03154a47d8e8a6a",
     ".github/workflows/copilot-setup-steps.yml": "5f72d484df396c45cb5a3a586aacdaf009ecc4ce",
     ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
@@ -309,28 +321,32 @@
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
     ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
-    ".github/workflows/salesforce_release_intelligence_hub.yml": "4c75c73d6c3d4ebf34325b7e7f9a8773ae6c1e61",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "6e5f3ed79bdd222decf101abf587a377ccfed00b",
     ".gitignore": "c31f51ed9b8d7423514f612f92d09127dad98b96",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
-    "AGENTS.md": "17ac8a7204bd162b2a8fe7056dfdd1706918a515",
-    "CHANGELOG.md": "975cfa9d62a81ce59b6a2776a32cf1c8a8448fa3",
+    "AGENTS.md": "bbcc1192e98facba5d5f27d509323a7716298fb6",
+    "CHANGELOG.md": "a6bc8518dd7a87f7971ac944fb4f93dc8e7d520b",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "fefcbc690a4726acd4ec5a98f1e55fe5809c2e93",
-    "README.md": "803f86b440e402fa1801f80620221e1e3d20261b",
+    "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
+    "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
+    "docs/.last-processed-ref": "0f2a393a2a42c44c57c692b325051c04606f263a",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
+    "docs/ai-generated/leadership.md": "5f4384681c74f90e162f9910db59c23544559f14",
+    "docs/ai-generated/release-notes.md": "f5b7b29c44e3b9b9c569a0d30298c5fdbad99cde",
+    "docs/ai-generated/roadmap.md": "91c67f4d3eb7a7851162df605bdb852967019e31",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -418,7 +434,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "3747cbc4202e082dde1a366b32abad5e32d7a57e",
+    "docs/changelog.md": "d23ec4b85d925427a21c210b44b77d1f40bedb34",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "09febb51ced41f0e828d0adcab215176de4e54af",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -645,13 +661,13 @@
     "src/ai/generators/__init__.py": "5ab9d99fb21d6731656b5ed040bda325134bfcf3",
     "src/ai/generators/badges.py": "21bb22b6ebb83a36c4905e942d2c8cdd97cf32e5",
     "src/ai/generators/code.py": "427fa116b2aac7da1daef025c91697d047563304",
-    "src/ai/generators/markdown.py": "3350602479e5fc7489cf744e3accd0ceae401313",
+    "src/ai/generators/markdown.py": "a9d9c83a16424c139059d64365906c818171e63f",
     "src/ai/integrations/__init__.py": "7dddfaa16c89a53d047c236220754d79a5fe5a0e",
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
     "src/ai/llm/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "src/ai/llm/client.py": "ffb200607c8753b409e13825b096395319f46573",
-    "src/ai/orchestrator.py": "8e43b807f390f9886b17e2a6bcd8f58dfc0a7360",
+    "src/ai/llm/client.py": "57574d3f1ab7f25144cc1325646f39c8fdc9aa7c",
+    "src/ai/orchestrator.py": "4a5b89a18799a53a1a25f6428c5fc179d8a60ace",
     "src/ai/prompts/__init__.py": "69c96756d3b9a2933f2ba03fb0078a88a7d13a11",
     "src/ai/prompts/changelog.prompt": "075b60188a602f6fa6517f708e1479014da2184b",
     "src/ai/prompts/classification.prompt": "a58fae003d0faa39653670e5e0b51c2a3251c986",
@@ -749,9 +765,9 @@
     "tests/conftest.py": "da39f92632e0f730a89d8a153483819b646dfcbc",
     "tests/factories.py": "baed65a16b37e21ecb33688fab91f347f3809220",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
-    "tests/test_ai_coverage.py": "adf910023201b383cac6f62467473b931529dd72",
-    "tests/test_ai_docs.py": "6217bfa55ac42ec0ab06f626a77c69a987e3ede4",
-    "tests/test_ai_docs_coverage.py": "4460308576aea01b0a7aa8f3647fc4778719b241",
+    "tests/test_ai_coverage.py": "33d42251243e96b619514fc3aa0fb5620eb30930",
+    "tests/test_ai_docs.py": "e0a728ea32665678bbfd921197f528c4d98553ff",
+    "tests/test_ai_docs_coverage.py": "835e19c78d6dd23ec9ea813bdcf441d6ee00e62b",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
     "tests/test_ai_integration.py": "d303720cdc3f5b9b954f0d3d3bfbbf3dd006549d",
     "tests/test_ai_integration_salesforce_coverage.py": "0c1e9e7874eaa2b3404ae128ad8bea37bba8dac4",
@@ -798,7 +814,7 @@
     "tests/test_logger.py": "82990c20a102d7447441551938186d35e2366b13",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
-    "tests/test_main_coverage.py": "1dbd1fc1ab48ae1f6310122dcd27fd250cdf1868",
+    "tests/test_main_coverage.py": "caf5fd014e7e8d0fc70ffec817f3cb8bc95644cb",
     "tests/test_main_coverage_push.py": "63fe00a92649db5230d99ed5deeca270d1f9fcce",
     "tests/test_main_extra.py": "35c93e0b061430073a65890735026da48d5b9913",
     "tests/test_nl_search.py": "0bb49e3b046d80ae5446b15eb7b80e31c620352b",
@@ -825,6 +841,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-19T03:39:01.826822+00:00",
-  "repository_sha": "0b4014515666afba7922678124627ed76e8b5bc0"
+  "generated_at": "2026-10-19T14:51:55.497390+00:00",
+  "repository_sha": "7d006056f365597a11fa21bef551a505e4e58fde"
 }

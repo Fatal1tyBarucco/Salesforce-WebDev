@@ -349,6 +349,60 @@ def test_client_truncated_output_retries_with_concise_guidance(
     assert "truncada" in requests[1].kwargs["messages"][1]["content"]
 
 
+def test_client_empty_length_completion_escalates_max_tokens(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    client = _diagnostic_client(
+        _completion_with(None, "length"),
+        _completion_with('{"required_value":"ok"}', "stop"),
+    )
+    with caplog.at_level(logging.INFO, logger="src.ai.llm.client"):
+        assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
+    requests = client._client.chat.completions.create.call_args_list
+    assert requests[0].kwargs["max_tokens"] == 3000
+    assert requests[1].kwargs["max_tokens"] == 6000
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "raising max_tokens to 6000" in logged
+
+
+def test_client_truncated_output_escalates_max_tokens() -> None:
+    client = _diagnostic_client(
+        _completion_with('{"required_value": "trunca', "length"),
+        _completion_with('{"required_value":"ok"}', "stop"),
+    )
+    assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
+    requests = client._client.chat.completions.create.call_args_list
+    assert requests[0].kwargs["max_tokens"] == 3000
+    assert requests[1].kwargs["max_tokens"] == 6000
+
+
+def test_client_output_budget_env_override_and_cap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AI_DOCS_MAX_OUTPUT_TOKENS", "500")
+    monkeypatch.setenv("AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT", "1000")
+    client = _diagnostic_client(
+        _completion_with(None, "length"),
+        _completion_with(None, "length"),
+        _completion_with('{"required_value":"capped"}', "stop"),
+    )
+    assert client.generate("prompt", StrictObject) == {"required_value": "capped"}
+    budgets = [
+        call.kwargs["max_tokens"] for call in client._client.chat.completions.create.call_args_list
+    ]
+    assert budgets == [500, 1000, 1000]
+
+
+def test_client_output_budget_invalid_env_falls_back_to_defaults(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AI_DOCS_MAX_OUTPUT_TOKENS", "not-a-number")
+    monkeypatch.setenv("AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT", "0")
+    client = _diagnostic_client(_completion('{"required_value":"ok"}'))
+    assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
+    assert client._client.chat.completions.create.call_args.kwargs["max_tokens"] == 3000
+
+
 def test_client_provider_refusal_output_is_diagnosed() -> None:
     blocked = _completion_with("resposta bloqueada pelo provedor", "content_filter")
     client = _diagnostic_client(blocked, blocked, blocked)
@@ -579,6 +633,56 @@ def test_pipeline_failure_logs_and_audits_exception_cause_chain(
     assert record["error"]["chain"][1] == (
         "error=OSError, status=502, detail=upstream connection reset"
     )
+
+
+def test_pipeline_collect_failure_still_writes_failure_audit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    def boom(since_ref: str) -> dict[str, object]:
+        raise RuntimeError("collector exploded")
+
+    monkeypatch.setattr("src.ai.orchestrator.collect_changes", boom)
+    result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1").run())
+    assert result.status == "failed"
+    assert "collector exploded" in result.errors[0]
+    failure = next((tmp_path / "docs/.ai-logs").glob("*-failed.json"))
+    record = json.loads(failure.read_text(encoding="utf-8"))
+    assert record["error"]["type"] == "RuntimeError"
+    assert record["context_budget_tokens"] == 12000
+
+
+def test_pipeline_warns_when_prompt_tokens_exceed_context_budget(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("AI_DOCS_MAX_CONTEXT_TOKENS", "12000")
+    monkeypatch.setattr(
+        "src.ai.orchestrator.collect_changes",
+        lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
+    )
+
+    class UsageLLM(FakeLLM):
+        def __init__(self) -> None:
+            super().__init__()
+            self.usage = [
+                {
+                    "prompt_tokens": 13774,
+                    "completion_tokens": 10,
+                    "total_tokens": 13784,
+                    "cost_usd": 0.0,
+                }
+            ]
+
+    with caplog.at_level(logging.WARNING, logger="src.ai.orchestrator"):
+        result = asyncio.run(AIDocOrchestrator(since_ref="HEAD~1", llm=UsageLLM()).run())
+    assert result.status == "completed"
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "prompt_tokens=13774 exceeded AI_DOCS_MAX_CONTEXT_TOKENS=12000" in logged
+    audit = next((tmp_path / "docs/.ai-logs").glob("run-*.json"))
+    record = json.loads(audit.read_text(encoding="utf-8"))
+    assert record["context_budget_tokens"] == 12000
 
 
 def test_prompts_are_versioned_and_present() -> None:

@@ -22,6 +22,9 @@ concurrency:
 jobs:
   extract-and-build-defensive:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository (defensive)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -91,15 +94,23 @@ jobs:
           readiness_document = builder_engine.compile_release_readiness_action_document()
           org_prep_engine = SalesforceOrgPreparationGuideDefensiveBuilder(release_identifier_string="${RELEASE_NUMBER}")
           org_prep_document = org_prep_engine.generate_org_preparation_guide()
-          # Escrita defensiva de arquivos auxiliares
+          # Escrita defensiva de arquivos auxiliares (cria diretório pai idempotente)
           import json, os
-          for file_path, content in [
+          from pathlib import Path
+          artifact_paths = [
               ("intelligence/intelligence_hub/deploy_manuals/Release_"+"${RELEASE_NUMBER}"+"_Deploy_Guide.json", deploy_document),
               ("intelligence/intelligence_hub/sandbox_preview_schedules/Release_"+"${RELEASE_NUMBER}"+"_Sandbox.json", sandbox_document),
               ("intelligence/intelligence_hub/release_readiness/Release_"+"${RELEASE_NUMBER}"+"_Readiness.json", readiness_document),
               ("intelligence/intelligence_hub/org_preparation_guides/Release_"+"${RELEASE_NUMBER}"+"_Org_Prep.json", org_prep_document),
-          ]:
+          ]
+          for file_path, content in artifact_paths:
+              Path(file_path).parent.mkdir(parents=True, exist_ok=True)
               with open(file_path, "w") as f: json.dump(content, f, indent=2)
+          # Verificação pós-escrita: garante que os quatro artefatos existem antes de prosseguir
+          missing = [fp for fp, _ in artifact_paths if not Path(fp).is_file()]
+          if missing:
+              sys.exit(f"Falha na verificação de artefatos: {missing}")
+          print("[BUILD] Quatro artefatos JSON verificados com sucesso.")
           PYTHON_BUILD_BLOCK
 
       - name: Inject links defensively into READMEs (SoC — isolado)
@@ -121,15 +132,50 @@ jobs:
           )
           PYTHON_INJECT_BLOCK
 
+      - name: Build GitHub Pages site (index with artifact links)
+        run: |
+          RELEASE_NUMBER=$(head -n1 intelligence/intelligence_hub/.release_control_defensive.txt)
+          PAGES_DIR="intelligence/intelligence_hub/assets/pages"
+          mkdir -p "$PAGES_DIR"
+          BASE_URL="https://github.com/${{ github.repository }}/tree/main/intelligence/intelligence_hub"
+          cat > "$PAGES_DIR/index.html" << HTML_EOF
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Salesforce Release Intelligence Hub — Release ${RELEASE_NUMBER}</title>
+          </head>
+          <body>
+            <h1>Salesforce Release Intelligence Hub</h1>
+            <p>Release <strong>${RELEASE_NUMBER}</strong> — artefatos defensivos gerados automaticamente.</p>
+            <ul>
+              <li><a href="${BASE_URL}/deploy_manuals/Release_${RELEASE_NUMBER}_Deploy_Guide.json">Deploy Manual</a></li>
+              <li><a href="${BASE_URL}/sandbox_preview_schedules/Release_${RELEASE_NUMBER}_Sandbox.json">Sandbox Preview Schedule</a></li>
+              <li><a href="${BASE_URL}/release_readiness/Release_${RELEASE_NUMBER}_Readiness.json">Release Readiness</a></li>
+              <li><a href="${BASE_URL}/org_preparation_guides/Release_${RELEASE_NUMBER}_Org_Prep.json">Org Preparation Guide</a></li>
+            </ul>
+            <p>Gerado em: $(date -u +"%Y-%m-%dT%H:%M:%SZ")</p>
+          </body>
+          </html>
+          HTML_EOF
+          echo "[PAGES] index.html gerado em ${PAGES_DIR}"
+
+      - name: Upload GitHub Pages artifact
+        if: success()
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: intelligence/intelligence_hub/assets/pages
+
       - name: Deploy to GitHub Pages (defensive — only if build passes)
         if: success()
-        uses: actions/deploy-pages@v5
-        with:
-          folder: intelligence/intelligence_hub/assets/pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
 
       - name: Commit defensively updated READMEs and artifacts
         if: success()
         run: |
+          RELEASE_NUMBER=$(head -n1 intelligence/intelligence_hub/.release_control_defensive.txt)
           git config user.name "Salesforce-Intelligence-Hub-Automation"
           git config user.email "automation@fatal1tybarucco.dev"
           git add README.md README-us.md intelligence/intelligence_hub/

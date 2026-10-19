@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
@@ -21,6 +22,7 @@ from src.ai.orchestrator import (
     _detect_language,
     _estimate_tokens,
     _git_head,
+    _normalize_heading_levels,
     _prepend_changelog,
     _simple_diff,
     _truncate_context,
@@ -306,6 +308,87 @@ def test_render_adds_low_confidence_section_and_visuals(tmp_path: Path, monkeypa
     assert "gerado por IA em" in rendered["leadership_summary"]
 
 
+def _heading_levels(text: str) -> list[int]:
+    levels: list[int] = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        match = re.match(r"^(#{1,6})\s+\S", line)
+        if match:
+            levels.append(len(match.group(1)))
+    return levels
+
+
+def _assert_sequential(levels: list[int]) -> None:
+    assert levels, "expected at least one heading"
+    assert all(later <= previous + 1 for previous, later in zip(levels, levels[1:]))
+
+
+def test_normalize_heading_levels_demotes_deep_headings() -> None:
+    text = "### Seção profunda\n\ntexto\n\n#### Subseção\n"
+    assert _normalize_heading_levels(text, 1) == "## Seção profunda\n\ntexto\n\n### Subseção\n"
+
+
+def test_normalize_heading_levels_keeps_valid_and_plain_text() -> None:
+    text = "## Seção\n\nparágrafo comum sem títulos\n"
+    assert _normalize_heading_levels(text, 2) == text
+
+
+def test_normalize_heading_levels_ignores_fenced_code() -> None:
+    text = "### Título\n\n```python\n# comentário que não é heading\n#### outro\n```\n"
+    result = _normalize_heading_levels(text, 1)
+    assert result.startswith("## Título")
+    assert "# comentário que não é heading" in result
+    assert "#### outro" in result
+
+
+def test_render_new_document_has_sequential_headings_and_lint_safe_total(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    orchestrator = AIDocOrchestrator(since_ref="HEAD~1", llm=object())  # type: ignore[arg-type]
+    classification = ChangeClassification(changes=[_entry()])
+    docs = GeneratedDocuments(
+        release_notes="### Seção profunda gerada pelo LLM\n\nTexto do release.",
+        changelog_entry="## [Unreleased]\n\n### Added\n- x",
+        leadership_summary="Executive text",
+        roadmap_suggestions="Sugestão — futuro",
+    )
+    rendered = orchestrator._render_documents(classification, docs)
+    release_notes = rendered["release_notes"]
+    _assert_sequential(_heading_levels(release_notes))
+    assert not re.search(r"^\*\*[^*\n]+\*\*$", release_notes, re.MULTILINE)
+    assert "Total: **1 features**" in release_notes
+
+
+def test_render_existing_document_keeps_delta_headings_sequential(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    docs_dir = tmp_path / "docs" / "ai-generated"
+    docs_dir.mkdir(parents=True)
+    (docs_dir / "release-notes.md").write_text(
+        "# Notas de Release\n\nHistórico anterior.\n", encoding="utf-8"
+    )
+    orchestrator = AIDocOrchestrator(since_ref="HEAD~1", llm=object())  # type: ignore[arg-type]
+    classification = ChangeClassification(changes=[_entry()])
+    docs = GeneratedDocuments(
+        release_notes="### Seção gerada\n\nTexto do release.",
+        changelog_entry="## [Unreleased]\n\n### Added\n- x",
+        leadership_summary="Executive text",
+        roadmap_suggestions="Sugestão — futuro",
+    )
+    rendered = orchestrator._render_documents(classification, docs)
+    release_notes = rendered["release_notes"]
+    assert "## Nova atualização" in release_notes
+    assert "Histórico anterior." in release_notes
+    _assert_sequential(_heading_levels(release_notes))
+
+
 class SelfReviewLLM:
     model = "vendor/model:free"
 
@@ -440,6 +523,13 @@ def test_context_truncates_to_configured_token_budget(monkeypatch: pytest.Monkey
     assert _estimate_tokens(serialized) <= 35
     assert bounded["conventional_commits"] == raw["conventional_commits"]
     assert len(serialized) < len(json.dumps(raw, ensure_ascii=False))
+
+
+def test_estimate_tokens_uses_conservative_two_point_five_bytes_per_token() -> None:
+    assert _estimate_tokens("x" * 300) == 120
+    assert _estimate_tokens("") == 1
+    assert _estimate_tokens("é") == 1
+    assert _estimate_tokens("çã") == 2
 
 
 def test_language_detection_defaults_to_portuguese_and_detects_english() -> None:

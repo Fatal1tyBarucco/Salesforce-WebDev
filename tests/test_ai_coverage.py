@@ -82,6 +82,14 @@ class TestMarkdownGenerator:
         result = MarkdownGenerator.impact_distribution(50, 30, 20)
         assert "50" in result
 
+    def test_impact_distribution_heading_and_total_are_lint_safe(self) -> None:
+        from src.ai.generators.markdown import MarkdownGenerator
+
+        result = MarkdownGenerator.impact_distribution(5, 3, 2)
+        assert result.startswith("## 📊 Distribuição de Impacto")
+        assert "Total: **10 features**" in result
+        assert "**Total:" not in result
+
     def test_type_badge_known(self) -> None:
         from src.ai.generators.markdown import MarkdownGenerator
 
@@ -134,6 +142,12 @@ class TestMarkdownGenerator:
         assert "Security" in result
         assert "AI" in result
         assert "↗" in result or "↘" in result or "→" in result
+
+    def test_trend_chart_title_uses_h2(self) -> None:
+        from src.ai.generators.markdown import MarkdownGenerator
+
+        result = MarkdownGenerator.trend_chart({"Security": [10]}, "Test Chart")
+        assert result.startswith("## Test Chart\n\n```text\n")
 
     def test_trend_chart_single_value(self) -> None:
         from src.ai.generators.markdown import MarkdownGenerator

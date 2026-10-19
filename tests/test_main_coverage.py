@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -18,6 +19,17 @@ from src.main import (
     update_readme_all,
 )
 from src.parser import FeatureImpactCategory, FeatureImpactEntry
+
+
+@pytest.fixture(autouse=True)
+def isolated_cwd(tmp_path: Path) -> Iterator[Path]:
+    """Run every test in a temp cwd so pipeline report writes never touch the repo."""
+    original = Path.cwd()
+    os.chdir(tmp_path)
+    try:
+        yield tmp_path
+    finally:
+        os.chdir(original)
 
 
 def _make_ai_service() -> MagicMock:

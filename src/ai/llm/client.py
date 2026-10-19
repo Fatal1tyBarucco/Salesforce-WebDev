@@ -19,6 +19,8 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 MAX_ATTEMPTS = 3
 MAX_DIAGNOSTIC_CHARS = 300
 OUTPUT_PREVIEW_CHARS = 120
+DEFAULT_OUTPUT_TOKENS = 3000
+DEFAULT_OUTPUT_TOKENS_CAP = 8000
 REDACTED = "[REDACTED]"
 _BEARER_PATTERN = re.compile(r"(?i)bearer\s+[A-Za-z0-9._~+/=-]+")
 _API_KEY_PATTERN = re.compile(r"sk-[A-Za-z0-9_-]{6,}")
@@ -119,6 +121,30 @@ def describe_failure(error: BaseException, phase: str) -> str:
     return f"phase={phase}, {describe_exception(error)}"
 
 
+def _positive_int_env(name: str, default: int) -> int:
+    """Read a positive integer budget from the environment, falling back to default."""
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return default
+    try:
+        value = int(raw)
+    except ValueError:
+        return default
+    return value if value > 0 else default
+
+
+def _output_token_budget() -> tuple[int, int]:
+    """(starting budget, hard cap) for completion tokens, both env-overridable.
+
+    Free OpenRouter models may spend the whole ``max_tokens`` budget on hidden
+    reasoning tokens and return an empty completion with ``finish_reason=length``.
+    Retries therefore escalate from the starting budget up to the cap.
+    """
+    start = _positive_int_env("AI_DOCS_MAX_OUTPUT_TOKENS", DEFAULT_OUTPUT_TOKENS)
+    cap = _positive_int_env("AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT", DEFAULT_OUTPUT_TOKENS_CAP)
+    return start, max(start, cap)
+
+
 def _first_choice(completion: Any) -> Any | None:
     choices = getattr(completion, "choices", None)
     if isinstance(choices, (list, tuple)) and choices:
@@ -200,6 +226,13 @@ def _empty_correction(prompt: str) -> str:
     )
 
 
+def _escalate_output_budget(current: int, cap: int) -> tuple[int, bool]:
+    """Double the completion-token budget up to the cap; report whether it changed."""
+    if current >= cap:
+        return current, False
+    return min(current * 2, cap), True
+
+
 class ExistingLLMClient:
     """Compatibility name for a client that calls OpenRouter and nothing else."""
 
@@ -248,6 +281,7 @@ class ExistingLLMClient:
         last_phase = "request"
         completion: Any = None
         drop_json_mode = False
+        output_tokens, output_cap = _output_token_budget()
         for attempt in range(1, MAX_ATTEMPTS + 1):
             phase = "request"
             try:
@@ -258,7 +292,7 @@ class ExistingLLMClient:
                         {"role": "user", "content": request_prompt},
                     ],
                     temperature=0.2,
-                    max_tokens=3000,
+                    max_tokens=output_tokens,
                     response_format=(
                         {"type": "json_object"}
                         if schema is not None and not drop_json_mode
@@ -341,6 +375,15 @@ class ExistingLLMClient:
                             MAX_ATTEMPTS,
                         )
                     request_prompt = _empty_correction(prompt)
+                    output_tokens, escalated = _escalate_output_budget(output_tokens, output_cap)
+                    if escalated:
+                        logger.info(
+                            "OpenRouter empty completion; raising max_tokens to %s "
+                            "(attempt %s/%s) so reasoning tokens cannot starve the answer",
+                            output_tokens,
+                            attempt,
+                            MAX_ATTEMPTS,
+                        )
                 delay, delay_source = _retry_delay_with_source(
                     headers.get("retry-after"), headers.get("x-ratelimit-reset"), attempt
                 )
@@ -408,6 +451,16 @@ class ExistingLLMClient:
                     diagnosis,
                 )
                 request_prompt = f"{prompt}\n\n{guidance}"
+                if issue == "issue=truncated-output":
+                    output_tokens, escalated = _escalate_output_budget(output_tokens, output_cap)
+                    if escalated:
+                        logger.info(
+                            "OpenRouter output truncated by max_tokens; raising max_tokens "
+                            "to %s (attempt %s/%s)",
+                            output_tokens,
+                            attempt,
+                            MAX_ATTEMPTS,
+                        )
         assert last_error is not None
         raise RuntimeError(
             f"OpenRouter request failed after {MAX_ATTEMPTS} attempts "
