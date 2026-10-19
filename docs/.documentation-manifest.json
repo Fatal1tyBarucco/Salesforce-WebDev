@@ -320,7 +320,7 @@
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
     ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
-    ".github/workflows/salesforce_release_intelligence_hub.yml": "efce0b6e8fab9902ba7f997967419ded46066d8c",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "6e5f3ed79bdd222decf101abf587a377ccfed00b",
     ".gitignore": "c31f51ed9b8d7423514f612f92d09127dad98b96",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
@@ -840,6 +840,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-19T12:56:44.498955+00:00",
-  "repository_sha": "8b975224919b08a3f4cd59a9ad081b11a7dc01bc"
+  "generated_at": "2026-10-19T13:26:31.634257+00:00",
+  "repository_sha": "134cf4b080e639c46dcee505ef3a6d1b524332ce"
 }
