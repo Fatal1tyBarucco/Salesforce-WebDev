@@ -76,3 +76,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `160aede` — docs(changelog): fix MD001/MD025/MD024/MD032 lint errors
 - `f722d2c` — docs(changelog): fix markdown lint errors (MD022/MD032)
 - `b8a594e` — docs(changelog): fundir raiz (CHANGELOG.md) + melhorias grandes
+- `825cd48` — feat(ai-docs): complete change context and rate-limit handling
+- `c88626d` — feat(ai-docs): add OpenRouter free documentation pipeline

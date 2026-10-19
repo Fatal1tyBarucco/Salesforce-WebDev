@@ -418,13 +418,13 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "c3bc322d2b8cec1f6b30698a6c46a91c177cb4b4",
+    "docs/changelog.md": "3747cbc4202e082dde1a366b32abad5e32d7a57e",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "09febb51ced41f0e828d0adcab215176de4e54af",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "561d31c06d7a2e42a6981e3d76772b6fa545ea62",
+    "docs/index.md": "b279143e1f6bd84fb50ca79a1ed52fab2fcb5778",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "f7445e2a9b7d2c35693f9cc9e47060807aafc726",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -825,6 +825,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "3e7ab68602df747e7b33fc04133acb0f11a83ca1"
   },
-  "generated_at": "2026-10-19T01:50:47.578098+00:00",
-  "repository_sha": "77b964d0445da4c03489105e90e9e83df32f15a8"
+  "generated_at": "2026-10-19T02:01:32.697047+00:00",
+  "repository_sha": "53e47211b9505a1d62daa0bac5297b08b1a03a90"
 }
