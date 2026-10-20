@@ -338,7 +338,7 @@
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "b16bbd41eab24c9f716d9ef641980868204fcb55",
+    "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
     "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -843,8 +843,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "d14d68173350d4d83b25b3133251792b14f8464c"
+    "uv.lock": "1d120e1c2b937f21b8fa9fc80d3ab2c9ed317f98"
   },
-  "generated_at": "2026-10-19T22:23:16.098447+00:00",
-  "repository_sha": "f5daf2e5408f287e29a4a76519d5a65299d7c77d"
+  "generated_at": "2026-10-20T05:08:27.353500+00:00",
+  "repository_sha": "f2f1071e8e507cc40baafa0e4694ebcc306acc04"
 }
