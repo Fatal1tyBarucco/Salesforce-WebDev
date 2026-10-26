@@ -317,14 +317,14 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/workflows/ai-docs.yml": "6d9de5d461f53f54a5e9615fb03154a47d8e8a6a",
-    ".github/workflows/copilot-setup-steps.yml": "5f72d484df396c45cb5a3a586aacdaf009ecc4ce",
-    ".github/workflows/dependabot-lock-refresh.yml": "d40002aac6c9459ec5ab9a4ac517bd9632094627",
+    ".github/workflows/copilot-setup-steps.yml": "df940891f7959620d786c0e55a6f7ba7157db39a",
+    ".github/workflows/dependabot-lock-refresh.yml": "e5a87300b7d15a2fdef4566a6a6397e7cd207e6f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
-    ".github/workflows/documentation-build.yml": "7bdb0240a23d94d6de522df5b3e5fa2db55e51dd",
-    ".github/workflows/documentation-sync.yml": "52dcf8e99aae3cb1b33cd336b0f47dae509707ff",
+    ".github/workflows/documentation-build.yml": "4d3e708dd15326e9870e87208da889795ef14064",
+    ".github/workflows/documentation-sync.yml": "c207a81160ef2b63d7f2294d137528ee0330ad87",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
-    ".github/workflows/python-quality.yml": "80f73711c590e0b5619817059e9560fffe1de751",
-    ".github/workflows/release_notes_pipeline.yml": "0bd4d4cd0e3af5b158f29aa8fe51660fa30cff22",
+    ".github/workflows/python-quality.yml": "607ea3da301ebe1ca8d64c26179e316782de33ab",
+    ".github/workflows/release_notes_pipeline.yml": "746c6f7d3245684e5e45e44aca9a18be757b59a3",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "6e5f3ed79bdd222decf101abf587a377ccfed00b",
     ".gitignore": "c31f51ed9b8d7423514f612f92d09127dad98b96",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -338,7 +338,7 @@
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "b16bbd41eab24c9f716d9ef641980868204fcb55",
+    "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
     "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -845,6 +845,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "d14d68173350d4d83b25b3133251792b14f8464c"
   },
-  "generated_at": "2026-10-19T22:23:16.098447+00:00",
-  "repository_sha": "f5daf2e5408f287e29a4a76519d5a65299d7c77d"
+  "generated_at": "2026-10-26T03:55:36.059584+00:00",
+  "repository_sha": "cd11cba8735fd6478c6b1b7f7639886896725ecb"
 }
