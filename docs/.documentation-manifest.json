@@ -316,16 +316,16 @@
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
-    ".github/workflows/ai-docs.yml": "812aef3675bb9a77ef4226eb352c81bc8afcf830",
-    ".github/workflows/copilot-setup-steps.yml": "a83ea6f17df6e10bf64c0bc1cfe6652599a20cb9",
-    ".github/workflows/dependabot-lock-refresh.yml": "a065afd91f71202a21b3699fe0926c780e6f2e52",
+    ".github/workflows/ai-docs.yml": "6d9de5d461f53f54a5e9615fb03154a47d8e8a6a",
+    ".github/workflows/copilot-setup-steps.yml": "df940891f7959620d786c0e55a6f7ba7157db39a",
+    ".github/workflows/dependabot-lock-refresh.yml": "e5a87300b7d15a2fdef4566a6a6397e7cd207e6f",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
-    ".github/workflows/documentation-build.yml": "38be33fee7f2889903f096d30596f23aefd37931",
-    ".github/workflows/documentation-sync.yml": "a80df4d9ba257443b4ac3be22fdb44a1edbeec04",
+    ".github/workflows/documentation-build.yml": "4d3e708dd15326e9870e87208da889795ef14064",
+    ".github/workflows/documentation-sync.yml": "c207a81160ef2b63d7f2294d137528ee0330ad87",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
-    ".github/workflows/python-quality.yml": "f1fba451ba55c580060ec987c4cff3a5eaf0d6fb",
-    ".github/workflows/release_notes_pipeline.yml": "a9abc887646f865b7f62ea51a227406ae670948e",
-    ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
+    ".github/workflows/python-quality.yml": "607ea3da301ebe1ca8d64c26179e316782de33ab",
+    ".github/workflows/release_notes_pipeline.yml": "746c6f7d3245684e5e45e44aca9a18be757b59a3",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "6e5f3ed79bdd222decf101abf587a377ccfed00b",
     ".gitignore": "c31f51ed9b8d7423514f612f92d09127dad98b96",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
@@ -843,8 +843,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "d14d68173350d4d83b25b3133251792b14f8464c"
+    "uv.lock": "1d120e1c2b937f21b8fa9fc80d3ab2c9ed317f98"
   },
-  "generated_at": "2026-10-26T03:56:53.315220+00:00",
-  "repository_sha": "345176168de009d2b088218f4d951ba5e0367cc0"
+  "generated_at": "2026-10-20T05:08:27.353500+00:00",
+  "repository_sha": "f2f1071e8e507cc40baafa0e4694ebcc306acc04"
 }
