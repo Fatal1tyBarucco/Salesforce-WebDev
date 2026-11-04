@@ -111,7 +111,7 @@ curl -s https://<usuario>.github.io/<repo>/ | head -20
 # Últimos deploys de cada workflow dono do Pages
 gh run list --workflow=documentation-build.yml --limit 5
 gh run list --workflow=salesforce_release_intelligence_hub.yml --limit 5
-```
+```text
 
 **Ação:**
 

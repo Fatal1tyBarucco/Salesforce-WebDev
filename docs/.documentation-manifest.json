@@ -465,7 +465,7 @@
     "docs/runbooks/documentation-sync-failure.md": "4fb1967b45c0b4db9298d506eacaa39d1f2cb683",
     "docs/runbooks/github-actions-failure.md": "07eee0365d40986d8692fa7b6a6016746fa8cfd2",
     "docs/runbooks/index.md": "a267cf5c71ad14f310433cb669f110ae9b7f6e60",
-    "docs/runbooks/mkdocs-build-failure.md": "256f43ce7c51833fd8774961a257db9de98d41a0",
+    "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
@@ -845,6 +845,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "56cf695e18d39671c1e2118008b72731af57a023"
   },
-  "generated_at": "2026-11-04T22:34:50.586262+00:00",
-  "repository_sha": "23955a878427f19468a247491d63c7abf42922cb"
+  "generated_at": "2026-11-04T22:35:41.009080+00:00",
+  "repository_sha": "b8d4cfcb668c949aad4d4a823e5561c3db542843"
 }
