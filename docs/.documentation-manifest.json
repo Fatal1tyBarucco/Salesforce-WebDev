@@ -311,7 +311,7 @@
     ".github/scripts/docs_sync_engine.py": "1c86971adf4a911a6264db6062020915c0251505",
     ".github/scripts/documentation_reconcile.py": "9f68c223724fc1c3809abcdd070daf0a45cdba64",
     ".github/scripts/documentation_sync.py": "36265306b1cd6b095e2deb0953483c66f3fa06dd",
-    ".github/scripts/fix_markdown.py": "b38397e643bcef0f3bf0301a63156f10a08d47aa",
+    ".github/scripts/fix_markdown.py": "cd25e849234a357d98817281529b6dd3c90e0e62",
     ".github/scripts/llm_fallback.py": "3ff9f3af317e746772e85b4e585bf510c6ed17f8",
     ".github/scripts/progress.sh": "e52296f53cb317b8dfd589d31d63b251751d6f88",
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
@@ -845,6 +845,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "56cf695e18d39671c1e2118008b72731af57a023"
   },
-  "generated_at": "2026-11-04T22:35:41.009080+00:00",
-  "repository_sha": "b8d4cfcb668c949aad4d4a823e5561c3db542843"
+  "generated_at": "2026-11-04T22:42:47.400211+00:00",
+  "repository_sha": "427bd81d238c58b5225ed5d15616505d4ba6e3af"
 }
