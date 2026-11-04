@@ -98,6 +98,27 @@ O Material for MkDocs não consegue carregar um template customizado.
 - Verificar se `custom_dir` no mkdocs.yml aponta para um diretório existente
 - Se usar template customizado, confirmar que os arquivos necessários existem
 
+### 7. Site publicado sobrescrito por outro workflow
+
+O GitHub Pages serve um único artefato por deploy: qualquer workflow que execute `actions/deploy-pages` substitui inteiramente o site MkDocs publicado. Se a raiz do site passa a servir uma página que não é do MkDocs (ex.: índice de outro pipeline) e páginas como `/architecture/overview/` retornam 404, outro workflow sobrescreveu o Pages.
+
+**Diagnóstico:**
+
+```bash
+# Conteúdo atual da raiz do site publicado
+curl -s https://<usuario>.github.io/<repo>/ | head -20
+
+# Últimos deploys de cada workflow dono do Pages
+gh run list --workflow=documentation-build.yml --limit 5
+gh run list --workflow=salesforce_release_intelligence_hub.yml --limit 5
+```
+
+**Ação:**
+
+- Manter apenas `documentation-build.yml` como publicador do Pages: remover os steps `upload-pages-artifact` e `deploy-pages` de outros workflows. Exige permissão `workflows` no GitHub App ou edição manual do arquivo na UI.
+- Reexecutar `documentation-build.yml` (ou fazer push alterando `docs/`) para restaurar o site MkDocs.
+- Confirmar com `curl -s -o /dev/null -w "%{http_code}" https://<usuario>.github.io/<repo>/architecture/overview/` (esperado `200`).
+
 ## Verificação Pós-Correction
 
 ```bash
