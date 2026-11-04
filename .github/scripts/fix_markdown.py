@@ -171,43 +171,53 @@ def fix_md032_lists(lines):
 
 
 def fix_md040_fence_language(lines):
-    """Add language identifier to opening fences that lack one."""
+    """Add language identifier to opening fences that lack one.
+
+    Fence state is tracked so only true opening fences are rewritten; a bare
+    closing fence inside a block must never receive a detected language.
+    """
     out = []
     i = 0
+    in_fence = False
     while i < len(lines):
         line = lines[i]
         stripped = line.strip()
-        # Opening fence: starts with ``` followed by optional language/token
+        # Opening/closing fence: starts with ``` followed by optional language
         if stripped.startswith("```"):
             indent = line[: len(line) - len(line.lstrip())]
-            # Check if it has a language (```text,```python,etc.)
             m = re.match(r"^(\s*)`{3}(\w+)?(\s*)$", line)
-            if m:
-                lang = m.group(2) or ""
-                if not lang:
-                    # Find closing fence
-                    j = i + 1
-                    while j < len(lines) and not lines[j].strip().startswith("```"):
-                        j += 1
-                    if j < len(lines):
-                        # Extract content lines (excluding fences)
-                        content_lines = lines[i + 1 : j]
-                        lang = detect_language(content_lines)
-                        out.append(f"{indent}```{lang}")
-                        # Copy content lines
-                        for k in range(i + 1, j):
-                            out.append(lines[k])
-                        out.append(lines[j])  # closing fence (unchanged)
-                        i = j + 1
-                    else:
-                        out.append(line)
-                        i += 1
+            if not m:
+                out.append(line)
+                i += 1
+                continue
+            if in_fence:
+                # Closing fence — copy unchanged
+                out.append(line)
+                in_fence = False
+                i += 1
+                continue
+            lang = m.group(2) or ""
+            if not lang:
+                # Opening fence without language: detect from block content
+                j = i + 1
+                while j < len(lines) and not lines[j].strip().startswith("```"):
+                    j += 1
+                if j < len(lines):
+                    content_lines = lines[i + 1 : j]
+                    lang = detect_language(content_lines)
+                    out.append(f"{indent}```{lang}")
+                    for k in range(i + 1, j):
+                        out.append(lines[k])
+                    out.append(lines[j])  # closing fence (unchanged)
+                    i = j + 1
                 else:
                     out.append(line)
                     i += 1
-            else:
-                out.append(line)
-                i += 1
+                in_fence = False
+                continue
+            out.append(line)
+            in_fence = True
+            i += 1
         else:
             out.append(line)
             i += 1

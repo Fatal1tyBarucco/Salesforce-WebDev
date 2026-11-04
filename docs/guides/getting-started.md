@@ -113,5 +113,5 @@ Salesforce-WebDev/
 
 - [Executando o Pipeline](running-pipeline.md) — Detalhes do fluxo completo
 - [Desenvolvimento Local](local-development.md) — Configuração avançada
-- [Arquitetura](https://fatal1tybarucco.github.io/Salesforce-WebDev/architecture/overview/) — Visão geral do sistema
+- [Arquitetura](../architecture/overview.md) — Visão geral do sistema
 - [Runbooks](../runbooks/index.md) — Procedimentos de resposta a falhas
