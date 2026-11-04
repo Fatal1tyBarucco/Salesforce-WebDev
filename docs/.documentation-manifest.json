@@ -440,7 +440,7 @@
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
     "docs/changelog.md": "d23ec4b85d925427a21c210b44b77d1f40bedb34",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
-    "docs/guides/getting-started.md": "09febb51ced41f0e828d0adcab215176de4e54af",
+    "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
@@ -845,6 +845,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "56cf695e18d39671c1e2118008b72731af57a023"
   },
-  "generated_at": "2026-11-04T22:03:30.417192+00:00",
-  "repository_sha": "48f6e206935d0a131622fbc68dbfba1b38685da8"
+  "generated_at": "2026-11-04T22:12:23.732421+00:00",
+  "repository_sha": "0895691efe95d4ef4bc528a76051cf183d908987"
 }
