@@ -398,7 +398,6 @@ Salesforce-WebDev/
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código
