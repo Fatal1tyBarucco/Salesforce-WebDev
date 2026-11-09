@@ -341,7 +341,7 @@
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
     "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
-    "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
+    "README.en.md": "b16bbd41eab24c9f716d9ef641980868204fcb55",
     "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -848,6 +848,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "a1ecc39155f228b85332538555a433e84000556f"
   },
-  "generated_at": "2026-11-04T23:39:29.069584+00:00",
-  "repository_sha": "05f18c602967cf2dc15a7368725176b3ccfd974b"
+  "generated_at": "2026-11-09T22:24:22.436193+00:00",
+  "repository_sha": "9d6921abbdfe0b1a745d5884326dd7c8a73d4087"
 }
