@@ -1,5 +1,23 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Added design system to the dashboard with dark mode support and accessibility features (high impact).
+
+### Fixed
+- Fixed fence state tracking in fix_markdown.py to correctly distinguish opening and closing markdown fences.
+
+### Changed
+- Updated actions/setup-python to v7.1.0.
+- Updated astral-sh/setup-uv to v10.3.3.
+- Updated pyasn1 to 0.6.5.
+- Updated uv group dependencies (certifi, filelock, langgraph-sdk, virtualenv).
+- Updated aiohttp to 3.14.4.
+- Updated black to 26.10.1.
+
 <!-- gerado por IA em 2026-10-19T14:57:56+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

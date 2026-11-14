@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-10-19T14:57:56+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Revisar a implementação do design system para possíveis expansões, como componentes adicionais e integração com mais temas. Sugestão: Continuar monitorando as atualizações de dependências para manter a estabilidade do CI. Sugestão: Realizar testes de acessibilidade no dashboard para garantir conformidade com as normas.
+
+---
 
 ## Nova atualização
 

@@ -1,6 +1,41 @@
-<!-- gerado por IA em 2026-10-19T14:57:56+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta release introduz o design system no dashboard com suporte a dark mode e recursos de acessibilidade, além de corrigir o rastreamento de estado de fences no fix_markdown.py e atualizar diversas dependências de ferramentas e bibliotecas para as versões mais recentes.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Aplicar design system ao dashboard com suporte a dark mode e acessibilidade — 📋 feature** | Extração de tokens e componentes reutilizáveis em src/design-system/, migração do dashboard_templ… | 🔴 high | src/dashboard_template.html, src/design-system/ · Prioridade: 💡 P0 |
+| **Corrigir rastreamento de estado de fences em fix_markdown.py — 📋 bugfix** | Script passa a rastrear in_fence para distinguir abertura e fechamento de blocos markdown, evitan… | 🟢 low | .github/scripts/fix_markdown.py · Prioridade: 💡 P2 |
+| **Atualizar actions/setup-python para v7.1.0 — ⚡ Performance** | Bump da ação actions/setup-python de 7.0.0 para 7.1.0 em workflows de CI. | 🟢 low | .github/workflows/ai-docs.yml, .github/workflows/dependabot-lock-refresh.yml · Prioridade: 💡 P3 |
+| **Atualizar astral-sh/setup-uv para v10.3.3 — ⚡ Performance** | Bump da ação astral-sh/setup-uv para versão 10.3.3 em múltiplos workflows. | 🟢 low | .github/workflows/copilot-setup-steps.yml, .github/workflows/dependabot-lock-refresh.yml · Prioridade: 💡 P3 |
+| **Atualizar pyasn1 para 0.6.5 — ⚡ Performance** | Bump da dependência indireta pyasn1 de 0.6.4 para 0.6.5 no grupo uv. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
+| **Atualizar grupo uv com certifi, filelock, langgraph-sdk e virtualenv — ⚡ Performance** | Bump de quatro dependências indiretas do grupo uv para versões mais recentes. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
+| **Atualizar aiohttp para 3.14.4 — ⚡ Performance** | Bump da dependência direta aiohttp de 3.14.3 para 3.14.4. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
+| **Atualizar black para 26.10.1 — ⚡ Performance** | Bump da dependência de desenvolvimento black de 26.10.0 para 26.10.1. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (12%) 🔴
+🟡 Médio: **0** (0%) 
+🟢 Baixo: **7** (87%) 🟢🟢🟢🟢🟢🟢🟢
+
+Total: **8 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+⚡ Performance        │██████████████████████████████│    6 →
+📋 bugfix             │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 feature            │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▁ █
+
+---
 
 ## Nova atualização
 
