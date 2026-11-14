@@ -1,0 +1,90 @@
+/**
+ * Input / Select Components — Salesforce Release Intelligence Design System
+ */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.form-field label {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.input,
+select {
+  width: 100%;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  font-family: var(--font-family);
+  font-size: var(--input-font-size);
+  line-height: var(--line-height-body);
+  background: var(--input-bg);
+  color: var(--input-color);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: var(--color-on-surface-variant);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+.input:focus,
+select:focus {
+  outline: none;
+  border: var(--input-focus-border);
+  box-shadow: var(--input-focus-ring);
+}
+
+.input:disabled,
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Search input variant (full width, no label needed when aria-label used) */
+.search-input {
+  width: 100%;
+}
+
+/* Inline field group (for filter bars) */
+.field-group {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.field-group .form-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* Select with native arrow — increased touch target (44px minimum) */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2379747E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-sm) center;
+  padding: 12px 40px 12px 16px; /* 12px vertical = ~40px height with 16px font */
+  min-height: 44px; /* WCAG AA SC 2.5.8 touch target minimum */
+}
+
+select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236750A4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* Reduced motion: remove transitions */
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  select {
+    transition: none;
+  }
+}

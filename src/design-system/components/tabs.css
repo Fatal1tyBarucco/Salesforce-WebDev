@@ -1,0 +1,60 @@
+/**
+ * Tabs Component — Salesforce Release Intelligence Design System
+ * Segmented control: inactive in surface-variant, active in primary
+ */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--tab-padding);
+  border: none;
+  border-radius: var(--tab-radius);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--tab-font-size);
+  font-weight: var(--tab-font-weight);
+  text-transform: var(--tab-text-transform);
+  letter-spacing: var(--tab-letter-spacing);
+  line-height: 1;
+  background: var(--tab-inactive-bg);
+  color: var(--tab-inactive-color);
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab:hover:not(.active):not(:disabled) {
+  background: var(--color-surface-container-high);
+}
+
+.tab.active {
+  background: var(--tab-active-bg);
+  color: var(--tab-active-color);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+/* Vertical variant for mobile stacked layout */
+.tabs-vertical {
+  flex-direction: column;
+}
+
+.tabs-vertical .tab {
+  width: 100%;
+  text-align: left;
+}
