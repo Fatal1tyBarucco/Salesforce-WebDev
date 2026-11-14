@@ -18,7 +18,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", Path(__file__).resolve().parents[2]))
@@ -164,7 +164,7 @@ def build_drift(mode: str) -> dict:
         "mode": mode,
         "repository_sha": current_sha,
         "previous_manifest_sha": (manifest or {}).get("repository_sha"),
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "changed_files": [],
         "added_files": [],
         "deleted_files": [],
@@ -250,7 +250,7 @@ def write_manifest() -> int:
     inventory = tracked_inventory()
     manifest = {
         "repository_sha": head_sha(),
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "files": inventory,
         "documentation_map": build_documentation_map(inventory),
     }

@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 
 def test_main_exit_path() -> None:
-    import src.main as main
+    from src import main
 
     with patch.object(main, "sys"):
         try:

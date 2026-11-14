@@ -210,11 +210,11 @@ class TestSetupLoggerWithFile:
     """setup_logger with log_file parameter."""
 
     def test_with_log_file(self) -> None:
-        from src.logger import setup_logger
-
         import os
         import tempfile
         import uuid
+
+        from src.logger import setup_logger
 
         tmp_fd, tmp = tempfile.mkstemp(suffix=".log")
         os.close(tmp_fd)

@@ -8,11 +8,12 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from src.config import RELEASES_DIR
+
 from .models import DependencyEdge, DependencyGraphResponse
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class DependencyHeuristicFallback:
             nodes=features,
             edges=edges,
             graph_statistics={"nodes": len(features), "edges": len(edges)},
-            generated_at=datetime.now(timezone.utc).isoformat(),
+            generated_at=datetime.now(UTC).isoformat(),
             source="heuristic",
         )
 
@@ -93,10 +94,10 @@ class DependencyHeuristicFallback:
         in_table = False
         for line in content.splitlines():
             stripped = line.strip()
-            if stripped.startswith("| Recurso") or stripped.startswith("| Feature"):
+            if stripped.startswith(("| Recurso", "| Feature")):
                 in_table = True
                 continue
-            if in_table and (stripped.startswith("|--") or stripped.startswith("---")):
+            if in_table and (stripped.startswith(("|--", "---"))):
                 in_table = False
                 continue
             if in_table and stripped.startswith("|"):

@@ -241,7 +241,7 @@ def main() -> int:
         for f in batch:
             print(f"- 🔍 [{f.get('type')}] {f.get('detail')}")
         return 0
-    except Exception as exc:  # noqa: BLE001 — any provider failure must not break CI
+    except Exception as exc:
         print(f"⚠️ Falha do LLM ({exc}); nenhuma alteração aplicada.")
         return 0
 

@@ -1,9 +1,10 @@
 """Coverage push for src/ai/integrations/salesforce.py (lines 73, 188-191)."""
 
-import pytest
 from unittest.mock import AsyncMock, patch
 
-from src.ai.integrations.salesforce import SalesforceAnalyzer, OrgMetadata, AdoptionSuggestion
+import pytest
+
+from src.ai.integrations.salesforce import AdoptionSuggestion, OrgMetadata, SalesforceAnalyzer
 
 
 @pytest.mark.asyncio

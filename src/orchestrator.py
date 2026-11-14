@@ -176,8 +176,8 @@ class PipelineOrchestrator:
         self, releases: list[ReleaseInfo], llm: Any, result: PipelineResult
     ) -> None:
         """Generate AI reports and update README."""
-        from .main import generate_ai_reports_async
         from .documentation_service import DocumentationService
+        from .main import generate_ai_reports_async
 
         await DocumentationService().update_readme_all()
 

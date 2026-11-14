@@ -79,10 +79,13 @@ RELEASES_DIR: str = os.getenv("RELEASES_DIR", "releases")
 _KNOWN_SLUGS = {"summer_26", "spring_26", "winter_26"}
 
 
+from pydantic import Field
+
+
 class TriageRequest(BaseModel):  # type: ignore[misc]
     title: str
     description: str
-    labels: list[str] = []
+    labels: list[str] = Field(default_factory=list)
 
 
 class TriageResponse(BaseModel):  # type: ignore[misc]

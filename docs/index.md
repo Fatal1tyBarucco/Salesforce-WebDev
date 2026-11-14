@@ -336,6 +336,8 @@ Salesforce-WebDev/
       ├── notifications.py
       ├── reporting.py
       └── service.py
+  ├── design-system/
+      ├── components/
   ├── impact_propagation/
       ├── engine.py
       ├── graph_builder.py
@@ -389,8 +391,10 @@ Salesforce-WebDev/
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── DESIGN.md
   ├── Dockerfile                 # Imagem Docker de runtime
   ├── IA_AUDIT_REPORT.md
+  ├── PRODUCT.md
   ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
@@ -398,7 +402,6 @@ Salesforce-WebDev/
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código

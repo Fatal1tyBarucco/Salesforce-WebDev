@@ -193,27 +193,37 @@ def _classify_output_failure(error: BaseException, completion: Any) -> tuple[str
     if finish_reason == "length":
         return (
             "issue=truncated-output",
-            "Sua resposta anterior foi truncada pelo limite de tokens; retorne um JSON "
-            "mais conciso, porém completo e fechado, sem comentários nem cercas de código.",
+            (
+                "Sua resposta anterior foi truncada pelo limite de tokens; "
+                "retorne um JSON mais conciso, porém completo e fechado, "
+                "sem comentários nem cercas de código."
+            ),
         )
     if finish_reason == "content_filter" or (isinstance(refusal, str) and refusal.strip()):
         return (
             "issue=provider-refusal",
-            "O provedor sinalizou recusa ou filtragem na resposta anterior; responda "
-            "somente com o objeto JSON derivado dos dados fornecidos, sem recusar e sem "
-            "comentários.",
+            (
+                "O provedor sinalizou recusa ou filtragem na resposta anterior; "
+                "responda somente com o objeto JSON derivado dos dados fornecidos, "
+                "sem recusar e sem comentários."
+            ),
         )
     if isinstance(error, json.JSONDecodeError):
         return (
             "issue=invalid-json",
-            f"Sua resposta anterior falhou na validação ({error}). Corrija o JSON e "
-            "retorne somente o objeto solicitado, sem comentários nem cercas de código.",
+            (
+                f"Sua resposta anterior falhou na validação ({error}). "
+                "Corrija o JSON e retorne somente o objeto solicitado, "
+                "sem comentários nem cercas de código."
+            ),
         )
     return (
         "issue=schema-mismatch",
-        f"Sua resposta anterior falhou na validação ({error}). Corrija o JSON e retorne "
-        "somente o objeto solicitado, sem comentários nem cercas de código, e nunca com "
-        "conteúdo vazio.",
+        (
+            f"Sua resposta anterior falhou na validação ({error}). "
+            "Corrija o JSON e retorne somente o objeto solicitado, "
+            "sem comentários nem cercas de código, e nunca com conteúdo vazio."
+        ),
     )
 
 

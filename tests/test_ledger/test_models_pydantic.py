@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from pydantic import ValidationError  # type: ignore[import-not-found]
 
 from src.automation.ledger.models import (

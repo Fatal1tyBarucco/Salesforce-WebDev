@@ -254,7 +254,9 @@ class TestLLMOpenAICompatible:
         def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("Error code: 403 - only available on agentic harness")
+                raise Exception(  # noqa: TRY002 - test simulates external API error
+                    "Error code: 403 - only available on agentic harness"
+                )
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -276,7 +278,7 @@ class TestLLMOpenAICompatible:
         def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception(
+                raise Exception(  # noqa: TRY002 - test simulates external API error
                     "Error code: 401 - {'type': 'error', 'error': {'type': 'ModelError', 'message': 'Model not supported'}}"
                 )
             return fake_resp
@@ -300,7 +302,7 @@ class TestLLMOpenAICompatible:
         def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("Error code: 429 - rate limit exceeded")
+                raise Exception("Error code: 429 - rate limit exceeded")  # noqa: TRY002
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -342,7 +344,7 @@ class TestLLMOpenAICompatible:
         def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("RESOURCE_EXHAUSTED - quota exceeded for metric")
+                raise Exception("RESOURCE_EXHAUSTED - quota exceeded for metric")  # noqa: TRY002
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -421,6 +423,7 @@ class TestLLMGemini:
     def test_gemini_timeout_raises_runtime_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Lines 305-307: ThreadPoolExecutor TimeoutError → RuntimeError."""
         import concurrent.futures
+
         import src.llm_service as ls
 
         fake_client = MagicMock()
@@ -522,6 +525,7 @@ class TestLLMModuleIntegrity:
 
     def test_llm_call_timeout_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         import importlib
+
         import src.llm_service as ls
 
         monkeypatch.setenv("LLM_CALL_TIMEOUT_S", "30")
@@ -533,6 +537,7 @@ class TestLLMModuleIntegrity:
 
     def test_llm_call_timeout_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
         import importlib
+
         import src.llm_service as ls
 
         monkeypatch.delenv("LLM_CALL_TIMEOUT_S", raising=False)

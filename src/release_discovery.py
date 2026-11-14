@@ -26,7 +26,7 @@ import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, ClassVar, Protocol, runtime_checkable
 
 from .config import (
     FEATURE_IMPACT_URL,
@@ -90,7 +90,7 @@ class ReleaseDiscoveryService:
     """
 
     #: Release-ID increments to probe (in order of preference)
-    DEFAULT_PROBE_IDS: list[int] = [2, 4, 6]
+    DEFAULT_PROBE_IDS: ClassVar[list[int]] = [2, 4, 6]
 
     def __init__(
         self,

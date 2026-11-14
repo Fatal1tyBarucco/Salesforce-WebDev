@@ -3,7 +3,6 @@
 
 import os
 import re
-from typing import List, Dict
 from datetime import datetime
 
 
@@ -27,7 +26,7 @@ class ReadmeDefensiveLinkInjectorEngine:
     def inject_intelligence_index_into_readme_files(
         self,
         release_identifier_string: str,
-        generated_link_entries: List[Dict[str, str]],
+        generated_link_entries: list[dict[str, str]],
     ) -> None:
         """Injeta índices defensivos nos dois READMEs."""
         for file_path_string in [

@@ -3,11 +3,7 @@
 Provides type annotations for the SnapshotAssertion fixture used in tests.
 """
 
-from __future__ import annotations
-
-from typing import Any, TypeVar
-
-T = TypeVar("T")
+from typing import Any
 
 class SnapshotAssertion:
     """Type stub for the syrupy snapshot assertion object."""
@@ -16,4 +12,3 @@ class SnapshotAssertion:
 
 def snapshot(*args: Any, **kwargs: Any) -> SnapshotAssertion:
     """Fixture that provides a SnapshotAssertion for comparing against saved snapshots."""
-    ...

@@ -178,6 +178,10 @@ nav:
     - Falha no Document Sync: runbooks/documentation-sync-failure.md
     - Falha no MkDocs Build: runbooks/mkdocs-build-failure.md
     - Falha na Geração de Release: runbooks/release-generation-failure.md
+  - Documentação Gerada por IA:
+    - Release Notes: ai-generated/release-notes.md
+    - Resumo Executivo: ai-generated/leadership.md
+    - Sugestões de Roadmap: ai-generated/roadmap.md
   - Observabilidade:
     - Visão Geral: observability/index.md
     - Logging: observability/logging.md
