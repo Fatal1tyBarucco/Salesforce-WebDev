@@ -83,3 +83,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `24c46ea` — feat(phase1): comprehensive test coverage for 95% target (#229)
 - `cdabb37` — feat(phase1): add comprehensive test coverage for 95% target
 - `406e877` — merge: resolve conflicts with main (Phase 1 quality gates)
+- `c698ab5` — docs: fix MD024 duplicate headings in AI-generated docs
+- `a9ae928` — docs: reconcile documentation manifest
