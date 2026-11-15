@@ -263,7 +263,7 @@ GitHub Issues / Email / Slack / CHANGELOG / Dashboard
 | **E1.3** | **Consolidar exceções** — `src/exceptions.py` única hierarquia; padronizar `except (A, B) as exc:` | 3h | E1.1 | `src/exceptions.py` + uso consistente |
 | **E1.4** | **Separar camadas Clean Architecture** — mover domínio para `src/core/`, adapters para `src/infrastructure/`, models para `src/models/`, services para `src/services/` | 8h | E1.3 | Estrutura alinhada, imports unidirecionais |
 | **E1.5** | **Extrair `infrastructure/llm.py`** — Strategy pattern: `LLMClient` interface + adapters `OpenRouterClient`, `OpenCodeClient`, `GeminiClient`; remover god object | 6h | E1.4 | `src/infrastructure/llm/` (pacote) |
-| **E1.6** | **Unificar orquestradores** — `src/orchestrator.py` (pipeline ETL) + `src/ai/orchestrator.py` (AI docs) → `src/core/pipeline/orchestrator.py` + `src/services/ai_docs_orchestrator.py` | 4h | E1.4 | 2 serviços claros, sem duplicação |
+| **E1.6** | **Unificar orquestradores** — `src/orchestrator.py` (pipeline ETL) + `src/ai/orchestrator.py` (AI docs) → `src/core/pipeline/orchestrator.py` + `ai_docs_orchestrator.py` | 4h | E1.4 | 2 serviços claros, sem duplicação |
 | **E1.7** | **Slim `main.py`** — delegar para `PipelineOrchestrator` + `CLIHandler` + `ReportGenerator`; < 500 linhas | 4h | E1.6 | `src/main.py` enxuto |
 | **E1.8** | **Slim `scraper.py`** — separar `PlaywrightScraper` + `CircuitBreaker` + `RateLimiter` + `CacheManager` em adapters | 4h | E1.4 | `src/infrastructure/scraping/` modular |
 | **E1.9** | **Slim `release_docs.py`** — `MarkdownGenerator` + `I18nRenderer` + `MetaWriter` em `src/infrastructure/generation/` | 3h | E1.4 | Geração desacoplada |
