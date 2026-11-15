@@ -1,6 +1,7 @@
 {
   "documentation_map": {
     ".github/scripts/build_failure_issue.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/plans/auto-opencode-issue.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
@@ -8,6 +9,12 @@
       "docs/ai-generated/release-notes.md",
       "docs/changelog.md",
       "docs/runbooks/documentation-sync-failure.md"
+    ],
+    ".github/scripts/documentation_reconcile.py": [
+      "docs/ai-generated/release-notes.md"
+    ],
+    ".github/scripts/documentation_sync.py": [
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/scripts/fix_markdown.py": [
       "AGENTS.md",
@@ -120,6 +127,7 @@
     ],
     "src/api.py": [
       "README.en.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/api.md"
     ],
     "src/automation/badge.py": [
@@ -243,7 +251,12 @@
     "src/impact_propagation/models.py": [
       "docs/api/impact_propagation-models.md"
     ],
+    "src/infrastructure/api/__init__.py": [
+      "CHANGELOG.md",
+      "docs/ai-generated/release-notes.md"
+    ],
     "src/infrastructure/api/graphql.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-api-graphql.md"
     ],
     "src/infrastructure/api/routes.py": [
@@ -256,6 +269,7 @@
       "docs/api/infrastructure-github.md"
     ],
     "src/infrastructure/llm.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm.md"
     ],
     "src/infrastructure/messaging.py": [
@@ -299,6 +313,7 @@
       "AGENTS.md",
       "README.en.md",
       "README.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/main.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md",
       "docs/architecture/overview.md",
@@ -336,6 +351,7 @@
       "docs/api/notifications.md"
     ],
     "src/orchestrator.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/orchestrator.md"
     ],
     "src/parser.py": [
@@ -346,6 +362,7 @@
       "docs/architecture/decisions/adr-007-clean-architecture.md"
     ],
     "src/release_discovery.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/release_discovery.md"
     ],
     "src/release_docs.py": [
@@ -412,7 +429,7 @@
     ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     "AGENTS.md": "3202496ac954f7910d863583e4be2dfd9640d5b9",
-    "CHANGELOG.md": "f049c46a49928a3e6dce56c1c942fce126c74b8a",
+    "CHANGELOG.md": "34c7c0154e4c4d1cb5c959d2431893e02e7e4227",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -428,11 +445,11 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "eb92e441b05959553c9ad5e964e16995967d94e7",
+    "docs/.last-processed-ref": "903c0b85bff4e50201da154da6c7b122f8bd717c",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "60ac7caaead2dd70b808cf1dd0600c6ed6fcca48",
-    "docs/ai-generated/release-notes.md": "b06f0224131d175ddbd832a234c6bc1cf9aca047",
-    "docs/ai-generated/roadmap.md": "3b59b044b7e9b06d8a75bd6862141cc4af1f2647",
+    "docs/ai-generated/leadership.md": "d15ade8498e2ab5c89e2f14076391b1d7aa2eb51",
+    "docs/ai-generated/release-notes.md": "a17f6083772559cc095cc1a8cf3c8d70aadfd50e",
+    "docs/ai-generated/roadmap.md": "6b3c98ac066a87a8f02b374336a16eb9066b24be",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -581,7 +598,7 @@
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
     "mkdocs.yml": "0a31505db6f4fef6063f0ea8cc5a3d6e7ec1cf12",
-"pyproject.toml": "8d2a66870b56ff99f24c4b0c9dea084d430285d3",
+    "pyproject.toml": "db366ba2bd97bbe49cfa4b4782aee035683b7002",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -852,7 +869,7 @@
     "src/impact_propagation/heuristic_fallback.py": "43d79672926e0becfdf60c98f69a8a8a52cff9f4",
     "src/impact_propagation/models.py": "aded3087eed1b7211e58b6b2ab5474a7af9c27cd",
     "src/infrastructure/__init__.py": "b3b626a867e38cf78394b3b02ec7f3d6f5fad2fc",
-"src/infrastructure/api/__init__.py": "24114d8e4b94cf684655e5fd13def7b16b17319a",
+    "src/infrastructure/api/__init__.py": "7d300a61e81f74b3da53b1e93a21ddbb6ea7783f",
     "src/infrastructure/api/graphql.py": "eab134c514fad74876295a4941905daa9341499d",
     "src/infrastructure/api/routes.py": "1ad1715f0a43197efbcd90c83e47dc61e02ee10b",
     "src/infrastructure/generation.py": "b16b259d0a85a835cecfa0328873a028a048a556",
@@ -908,7 +925,7 @@
     "stubs/tenacity/py.typed": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "tests/__snapshots__/test_snapshot.ambr": "5cbfeb7b448f5fe7ab139fb6b3bf4e5fc2411d8b",
-    "tests/conftest.py": "da39f92632e0f730a89d8a153483819b646dfcbc",
+    "tests/conftest.py": "998cdc5cdbd0687e17adab403e21a5acc12ae4ae",
     "tests/factories.py": "baed65a16b37e21ecb33688fab91f347f3809220",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "33d42251243e96b619514fc3aa0fb5620eb30930",
@@ -1004,8 +1021,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-"uv.lock": "9489907fd4bafbdd06923a2656935f8d8b6d06c2"
+    "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
   },
-  "generated_at": "2026-11-15T06:57:16.906070+00:00",
-  "repository_sha": "dcc5019f2f0494da0efc21d18e9396da285bf18b"
+  "generated_at": "2026-11-15T14:32:24.567320+00:00",
+  "repository_sha": "e8519804b7c7a48f197bc66d2d5fc70a7b5b4563"
 }
