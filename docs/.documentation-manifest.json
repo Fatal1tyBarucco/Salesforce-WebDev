@@ -430,9 +430,9 @@
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
     "docs/.last-processed-ref": "eb92e441b05959553c9ad5e964e16995967d94e7",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "57c27ae6478fa41ea6e43a86fdcdaaf114f64e11",
-    "docs/ai-generated/release-notes.md": "563cd82ae936349577402207ee06538537c96a2f",
-    "docs/ai-generated/roadmap.md": "45689782ab32289ccc27d52257b599ffcae7739c",
+    "docs/ai-generated/leadership.md": "60ac7caaead2dd70b808cf1dd0600c6ed6fcca48",
+    "docs/ai-generated/release-notes.md": "b06f0224131d175ddbd832a234c6bc1cf9aca047",
+    "docs/ai-generated/roadmap.md": "3b59b044b7e9b06d8a75bd6862141cc4af1f2647",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -533,7 +533,7 @@
     "docs/architecture/decisions/adr-004-auto-healing.md": "04b40d512bc7a5eed78848ade93527e11bfbec9a",
     "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "939d7a55b2d046315b6486b6c11cad0d1c0b35bf",
     "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "f19c0b74c4db19849ea593153751df05a27c9a5f",
-    "docs/architecture/decisions/adr-007-clean-architecture.md": "ab543a2b1375cc81b070ffe6818cbbdd7177f79d",
+    "docs/architecture/decisions/adr-007-clean-architecture.md": "4e2da5b64c17a38576633db8c19474fd0c68fe94",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -1000,6 +1000,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "df10b42736b3e5e756090c1583fa63088c75ceac"
   },
-  "generated_at": "2026-11-15T03:47:43.889300+00:00",
-  "repository_sha": "746bb402feb01b3e82377a2ad9e3a928d471bf6c"
+  "generated_at": "2026-11-15T03:55:44.097044+00:00",
+  "repository_sha": "b523cd746a214fe27a6263a3551406bb4d24a245"
 }
