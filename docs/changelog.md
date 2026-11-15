@@ -80,3 +80,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c88626d` — feat(ai-docs): add OpenRouter free documentation pipeline
 - `5288e02` — docs: atualização automática via IA [skip ci]
 - `eab530d` — feat(design-system): extract and apply design system to dashboard
+- `24c46ea` — feat(phase1): comprehensive test coverage for 95% target (#229)
+- `cdabb37` — feat(phase1): add comprehensive test coverage for 95% target

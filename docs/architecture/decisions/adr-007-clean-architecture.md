@@ -4,7 +4,7 @@ Reorganização do projeto em arquitetura limpa com camadas e dependências unid
 
 ## Status
 
-**Aceito** — Implementado em `src/models/`, `src/core/`, `src/infrastructure/`, `src/main_clean.py`.
+**Aceito** — Implementado em `src/models/`, `src/core/`, `src/infrastructure/`, `main_clean.py`.
 
 ## Contexto
 
@@ -18,6 +18,7 @@ O código base acumulou acoplamento entre camadas ao longo do tempo:
 - Testes difíceis de isolar devido a dependências de I/O (rede, filesystem, LLM)
 
 Problemas resultantes:
+
 - Mudar o parser exige mexer no orquestrador
 - Testar classificação exige LLM real ou mocks complexos
 - Adicionar novo provedor de LLM toca múltiplos arquivos
@@ -27,7 +28,7 @@ Problemas resultantes:
 
 Adotar **Clean Architecture** com 4 camadas e dependências unidirecionais (apenas para dentro):
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    Application (Orchestration)               │
 │  src/main_clean.py  — PipelineFactory, wiring de dependências│
@@ -99,7 +100,7 @@ Adotar **Clean Architecture** com 4 camadas e dependências unidirecionais (apen
 - **Mais arquivos**: ~25 novos arquivos vs. monolito anterior; exige navegação entre camadas
 - **Boilerplate Inicial**: Interfaces (`PipelineStep`, `StorageAdapter`, etc.) + factory wiring
 - **Curva de Aprendizado**: Time precisa entender fluxo Domain → Core → Infra → App
-- **Duplicação Temporária**: `src/main.py` (legacy) coexiste com `src/main_clean.py` durante migração incremental
+- **Duplicação Temporária**: `src/main.py` (legacy) coexiste com `main_clean.py` durante migração incremental
 
 ## Migração Incremental (Próximos Passos)
 
