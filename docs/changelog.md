@@ -82,3 +82,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `eab530d` — feat(design-system): extract and apply design system to dashboard
 - `24c46ea` — feat(phase1): comprehensive test coverage for 95% target (#229)
 - `cdabb37` — feat(phase1): add comprehensive test coverage for 95% target
+- `406e877` — merge: resolve conflicts with main (Phase 1 quality gates)
