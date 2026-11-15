@@ -16,7 +16,6 @@ from src.infrastructure.llm import (
     UnifiedLLMClient,
     HeuristicClassificationAdapter,
     _ProviderConfig,
-    _PROVIDER_CHAIN,
     _env_model_override,
     GeminiLLMAdapter,
     GeminiClassificationAdapter,
@@ -153,7 +152,9 @@ class TestUnifiedLLMClientCoverage:
         """Lines 336-342: _dispatch_to_provider routes to _generate_openai_compatible."""
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         client = UnifiedLLMClient(provider="openrouter", api_key="or-key")
-        with patch.object(client, "_generate_openai_compatible", return_value="openai-result") as mock:
+        with patch.object(
+            client, "_generate_openai_compatible", return_value="openai-result"
+        ) as mock:
             result = client.generate_completion("test")
         assert result == "openai-result"
         mock.assert_called_once()
@@ -171,9 +172,7 @@ class TestUnifiedLLMClientCoverage:
             with pytest.raises(ValueError, match="Unsupported LLM provider"):
                 client.generate_completion("test")
 
-    def test_generate_completion_fallback_chain(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_generate_completion_fallback_chain(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Lines 297-319: generate_completion falls back on failure."""
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
@@ -192,9 +191,7 @@ class TestUnifiedLLMClientCoverage:
                 result = client.generate_completion("test")
         assert result == "fallback-success"
 
-    def test_generate_completion_all_providers_fail(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_generate_completion_all_providers_fail(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Lines 319: all providers fail raises last error."""
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         client = UnifiedLLMClient(provider="openrouter", api_key="or-key")
@@ -374,7 +371,9 @@ class TestUnifiedLLMClientCoverage:
         fake_client.chat.completions.create.side_effect = side_effect
 
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        client = UnifiedLLMClient(provider="openrouter", api_key="or-key", model_name="unsupported:free")
+        client = UnifiedLLMClient(
+            provider="openrouter", api_key="or-key", model_name="unsupported:free"
+        )
 
         with patch("openai.OpenAI", return_value=fake_client):
             result = client._generate_openai_compatible("prompt", None, 0.7, 100)
@@ -401,7 +400,9 @@ class TestUnifiedLLMClientCoverage:
         fake_client.chat.completions.create.side_effect = side_effect
 
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        client = UnifiedLLMClient(provider="openrouter", api_key="or-key", model_name="rate-limited:free")
+        client = UnifiedLLMClient(
+            provider="openrouter", api_key="or-key", model_name="rate-limited:free"
+        )
 
         with patch("openai.OpenAI", return_value=fake_client):
             with patch("time.sleep") as mock_sleep:
@@ -414,7 +415,9 @@ class TestUnifiedLLMClientCoverage:
     ) -> None:
         """Lines 454-456: 429 on last model raises."""
         fake_client = MagicMock()
-        fake_client.chat.completions.create.side_effect = Exception("Error code: 429 - quota exceeded")
+        fake_client.chat.completions.create.side_effect = Exception(
+            "Error code: 429 - quota exceeded"
+        )
 
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         client = UnifiedLLMClient(provider="opencode", api_key="oc-key", model_name="only-model")
@@ -446,7 +449,9 @@ class TestUnifiedLLMClientCoverage:
         fake_client.chat.completions.create.side_effect = side_effect
 
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        client = UnifiedLLMClient(provider="openrouter", api_key="or-key", model_name="quota-model:free")
+        client = UnifiedLLMClient(
+            provider="openrouter", api_key="or-key", model_name="quota-model:free"
+        )
 
         with patch("openai.OpenAI", return_value=fake_client):
             with patch("time.sleep") as mock_sleep:
@@ -541,9 +546,7 @@ class TestOpenRouterLLMAdapterCoverage:
         assert mock_adapter.call_count == 1
 
     @pytest.mark.asyncio
-    async def test_enrich_category_success(
-        self, mock_adapter: MockOpenRouterLLMAdapter
-    ) -> None:
+    async def test_enrich_category_success(self, mock_adapter: MockOpenRouterLLMAdapter) -> None:
         """Lines 643-651: enrich_category parses response."""
         mock_adapter.responses = [
             json.dumps(
@@ -589,9 +592,7 @@ class TestOpenRouterLLMAdapterCoverage:
         assert result.category_name == "Test Category"
 
     @pytest.mark.asyncio
-    async def test_enrich_release_success(
-        self, mock_adapter: MockOpenRouterLLMAdapter
-    ) -> None:
+    async def test_enrich_release_success(self, mock_adapter: MockOpenRouterLLMAdapter) -> None:
         """Lines 673-681: enrich_release parses response."""
         mock_adapter.responses = [
             json.dumps(
@@ -619,9 +620,7 @@ class TestOpenRouterLLMAdapterCoverage:
         assert isinstance(result, ReleaseEnrichment)
         assert result.release_slug == "summer_26"
 
-    def test_parse_category_enrichment_full(
-        self, mock_adapter: MockOpenRouterLLMAdapter
-    ) -> None:
+    def test_parse_category_enrichment_full(self, mock_adapter: MockOpenRouterLLMAdapter) -> None:
         """Lines 696-731: _parse_category_enrichment parses all fields."""
         data = {
             "overview": "Overview",
@@ -655,9 +654,7 @@ class TestOpenRouterLLMAdapterCoverage:
         assert feat.feature_name == "Feature 1"
         assert feat.confidence == 0.8
 
-    def test_parse_release_enrichment_full(
-        self, mock_adapter: MockOpenRouterLLMAdapter
-    ) -> None:
+    def test_parse_release_enrichment_full(self, mock_adapter: MockOpenRouterLLMAdapter) -> None:
         """Lines 733-747: _parse_release_enrichment parses all fields."""
         cat_enrichment = CategoryEnrichment(
             category_name="Test",
@@ -756,9 +753,7 @@ class TestHeuristicClassificationAdapterCoverage:
             assert results[0]["type"] == expected_type
 
     @pytest.mark.asyncio
-    async def test_classify_case_insensitive(
-        self, adapter: HeuristicClassificationAdapter
-    ) -> None:
+    async def test_classify_case_insensitive(self, adapter: HeuristicClassificationAdapter) -> None:
         """Keywords should be case insensitive."""
         features = ["SECURITY FIX", "Security Fix", "security fix"]
         for feat in features:
@@ -783,9 +778,7 @@ class TestHeuristicClassificationAdapterCoverage:
         assert results[0]["priority"] == "opcional"
 
     @pytest.mark.asyncio
-    async def test_classify_audience_both(
-        self, adapter: HeuristicClassificationAdapter
-    ) -> None:
+    async def test_classify_audience_both(self, adapter: HeuristicClassificationAdapter) -> None:
         """All classifications have audience='ambos'."""
         results = await adapter.classify(["New feature"])
         assert results[0]["audience"] == "ambos"

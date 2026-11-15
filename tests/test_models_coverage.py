@@ -273,9 +273,7 @@ class TestFeatureCategory:
         data = {
             "name": "Test",
             "locale": "en_US",
-            "features": [
-                {"name": "Feature 1", "description": "Desc", "status": "raw"}
-            ],
+            "features": [{"name": "Feature 1", "description": "Desc", "status": "raw"}],
         }
         cat = FeatureCategory.from_dict(data)
 
@@ -405,9 +403,7 @@ class TestFeatureCategoryAdditionalCoverage:
         data = {
             "name": "Test",
             "locale": "en_US",
-            "features": [
-                {"name": "Feature 1", "description": "Desc", "status": "raw"}
-            ],
+            "features": [{"name": "Feature 1", "description": "Desc", "status": "raw"}],
         }
         cat = FeatureCategory.from_dict(data)
 

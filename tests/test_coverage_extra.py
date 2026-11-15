@@ -71,11 +71,11 @@ from src.logger import (
 from src.models import (
     DiffResponse,
     ErrorResponse,
-    FeatureCategory,
     FeatureClassificationRequest,
     FeatureClassificationResponse,
     ReleaseResponse,
 )
+from src.models.api import FeatureCategory
 from src.release_summarizer import ReleaseSummarizer
 
 # ── models.py ────────────────────────────────────────────────────

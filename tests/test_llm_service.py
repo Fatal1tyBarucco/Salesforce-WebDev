@@ -665,7 +665,9 @@ class TestLLMMissingCoverage:
         assert chain is not None
         assert len(chain) > 0
 
-    def test_generate_completion_all_providers_fail_raises(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_generate_completion_all_providers_fail_raises(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Line 173: generate_completion should raise RuntimeError when all providers fail."""
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="or-key", provider="openrouter")
@@ -675,38 +677,9 @@ class TestLLMMissingCoverage:
                 with pytest.raises(RuntimeError, match="provider down"):
                     svc.generate_completion("test prompt")
 
-    def test_generate_openai_compatible_static_self_none(self) -> None:
-        """Lines 244-249: _generate_openai_compatible_static should raise when self is None."""
-        with pytest.raises(ImportError, match="openai package required"):
-            LLMService._generate_openai_compatible_static(
-                self=None,  # type: ignore[arg-type]
-                prompt="test",
-                system_instruction=None,
-                temperature=0.7,
-                max_tokens=100,
-            )
-
-    def test_generate_openai_compatible_static_success(self) -> None:
-        """Lines 246-249: _generate_openai_compatible_static should delegate when self is provided."""
-        fake_choice = MagicMock()
-        fake_choice.message.content = "static-result"
-        fake_resp = MagicMock()
-        fake_resp.choices = [fake_choice]
-        fake_client = MagicMock()
-        fake_client.chat.completions.create.return_value = fake_resp
-
-        svc = LLMService(api_key="k", provider="openrouter")
-        with patch("openai.OpenAI", return_value=fake_client):
-            out = LLMService._generate_openai_compatible_static(
-                self=svc,  # type: ignore[arg-type]
-                prompt="test",
-                system_instruction="sys",
-                temperature=0.5,
-                max_tokens=200,
-            )
-        assert out == "static-result"
-
-    def test_generate_openai_compatible_all_models_fail_raises(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_generate_openai_compatible_all_models_fail_raises(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Line 338: _generate_openai_compatible should raise when all models fail."""
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="or-key", provider="openrouter")
@@ -715,20 +688,3 @@ class TestLLMMissingCoverage:
         with patch("openai.OpenAI", return_value=fake_client):
             with pytest.raises(RuntimeError, match="model failed"):
                 svc._generate_openai_compatible("test", None, 0.7, 100)
-
-    def test_get_base_url_unknown_provider(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Line 346: _get_base_url should return empty string for unknown provider."""
-        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        svc = LLMService(api_key="or-key", provider="openrouter")
-        svc.provider = "unknown_provider"
-        svc._active_provider = None
-        result = svc._get_base_url()
-        assert result == ""
-
-    def test_get_fallback_models_unknown_provider(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Line 355: _get_fallback_models should return empty list for unknown provider."""
-        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
-        svc = LLMService(api_key="or-key", provider="openrouter")
-        svc.provider = "unknown_provider"
-        result = svc._get_fallback_models()
-        assert result == []

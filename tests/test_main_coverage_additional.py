@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-import tempfile
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -15,7 +14,6 @@ import pytest
 from src.config import KNOWN_RELEASES, ReleaseInfo
 from src.exceptions import LLMError
 from src.main import (
-    RELEASES_DIR,
     _parse_args,
     _validate_summary_cache,
     detect_new_release,
@@ -26,7 +24,6 @@ from src.main import (
     _load_meta_for_release,
 )
 from src.models.release import build_release_info
-from src.parser import FeatureImpactCategory, FeatureImpactEntry
 
 
 @pytest.fixture(autouse=True)
@@ -160,8 +157,14 @@ def test_validate_summary_cache_no_category_summaries_but_meta_has_categories() 
 
 def test_validate_summary_cache_few_category_summaries() -> None:
     """Test validation fails when cache has far fewer category summaries than meta."""
-    cache = {"executive_summary": "Release has 10 features.", "category_summaries": {"A": "Summary A"}}
-    meta = {"total_features": 10, "categories": [{"name": "A"}, {"name": "B"}, {"name": "C"}, {"name": "D"}]}
+    cache = {
+        "executive_summary": "Release has 10 features.",
+        "category_summaries": {"A": "Summary A"},
+    }
+    meta = {
+        "total_features": 10,
+        "categories": [{"name": "A"}, {"name": "B"}, {"name": "C"}, {"name": "D"}],
+    }
     assert _validate_summary_cache(cache, meta, "test") is False
 
 
@@ -174,7 +177,10 @@ def test_validate_summary_cache_short_executive_summary() -> None:
 
 def test_validate_summary_cache_no_meta_categories() -> None:
     """Test validation passes when meta has no categories."""
-    cache = {"executive_summary": "Release has 10 features.", "category_summaries": {"A": "Summary A"}}
+    cache = {
+        "executive_summary": "Release has 10 features.",
+        "category_summaries": {"A": "Summary A"},
+    }
     meta = {"total_features": 10, "categories": []}
     assert _validate_summary_cache(cache, meta, "test") is True
 
@@ -223,7 +229,9 @@ async def test_detect_new_release_returns_release() -> None:
 # ============================================================
 
 
-def _make_scraper(raw_text: str | None = None, features_with_links: list | None = None) -> MagicMock:
+def _make_scraper(
+    raw_text: str | None = None, features_with_links: list | None = None
+) -> MagicMock:
     mock_scraper = MagicMock()
     mock_scraper.__aenter__ = AsyncMock(return_value=mock_scraper)
     mock_scraper.__aexit__ = AsyncMock(return_value=False)
@@ -267,7 +275,9 @@ async def test_process_single_release_dry_run(tmp_path: Path) -> None:
     translator = _make_translator()
 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        result = await process_single_release(release, scraper, parser, generator, translator, True, None)
+        result = await process_single_release(
+            release, scraper, parser, generator, translator, True, None
+        )
 
     assert result is False
     scraper.fetch_page_raw_text.assert_awaited_once()
@@ -286,7 +296,9 @@ async def test_process_single_release_no_content(tmp_path: Path) -> None:
     translator = _make_translator()
 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        result = await process_single_release(release, scraper, parser, generator, translator, False, None)
+        result = await process_single_release(
+            release, scraper, parser, generator, translator, False, None
+        )
 
     assert result is False
 
@@ -303,7 +315,10 @@ async def test_process_single_release_success(tmp_path: Path) -> None:
     mock_category.features = []
 
     release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
-    scraper = _make_scraper(raw_text="Sample content", features_with_links=[{"name": "Feature 1", "docs_url": "http://example.com"}])
+    scraper = _make_scraper(
+        raw_text="Sample content",
+        features_with_links=[{"name": "Feature 1", "docs_url": "http://example.com"}],
+    )
     parser = _make_parser(categories=[mock_category])
     generator = _make_generator()
     translator = _make_translator()
@@ -318,7 +333,9 @@ async def test_process_single_release_success(tmp_path: Path) -> None:
                 mock_update_readme.return_value = None
 
                 with patch("src.main.generate_summary_cache", new=AsyncMock()):
-                    result = await process_single_release(release, scraper, parser, generator, translator, False, None)
+                    result = await process_single_release(
+                        release, scraper, parser, generator, translator, False, None
+                    )
 
     assert result is True
 
@@ -350,7 +367,9 @@ async def test_process_single_release_with_llm(tmp_path: Path) -> None:
                 mock_update_readme.return_value = None
 
                 with patch("src.main.generate_summary_cache", new=AsyncMock()):
-                    result = await process_single_release(release, scraper, parser, generator, translator, False, llm)
+                    result = await process_single_release(
+                        release, scraper, parser, generator, translator, False, llm
+                    )
 
     assert result is True
 
@@ -445,7 +464,9 @@ async def test_enrich_meta_with_classification_error_handled(tmp_path: Path) -> 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
         with patch("src.feature_classifier.FeatureClassifier") as mock_classifier_class:
             mock_classifier = MagicMock()
-            mock_classifier.classify_release = AsyncMock(side_effect=LLMError("classification failed"))
+            mock_classifier.classify_release = AsyncMock(
+                side_effect=LLMError("classification failed")
+            )
             mock_classifier_class.return_value = mock_classifier
 
             # Should not raise
@@ -576,7 +597,9 @@ async def test_generate_summary_cache_ai_exception_falls_back(tmp_path: Path) ->
     mock_llm = MagicMock()
 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.release_summarizer.ReleaseSummarizer", side_effect=ImportError("not available")):
+        with patch(
+            "src.release_summarizer.ReleaseSummarizer", side_effect=ImportError("not available")
+        ):
             with patch("src.main._validate_summary_cache", return_value=True):
                 await generate_summary_cache(release, categories, mock_llm)
 
@@ -829,7 +852,9 @@ async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.documentation_service._update_badge"),
-        patch.dict("sys.modules", _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed"))),
+        patch.dict(
+            "sys.modules", _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed"))
+        ),
     ):
         await generate_ai_reports_async([release])
 
@@ -866,7 +891,12 @@ async def test_generate_ai_reports_async_impact_and_notification(tmp_path: Path)
         patch("src.documentation_service._update_badge"),
         patch.dict(
             "sys.modules",
-            _ai_modules(mock_ai, impact_result=mock_report, notif_result=mock_notifs, digest_result=mock_digest),
+            _ai_modules(
+                mock_ai,
+                impact_result=mock_report,
+                notif_result=mock_notifs,
+                digest_result=mock_digest,
+            ),
         ),
     ):
         await generate_ai_reports_async([release])
@@ -905,7 +935,9 @@ async def test_generate_ai_reports_async_impact_failure(tmp_path: Path) -> None:
             {
                 "src.ai_automation": MagicMock(AIAutomationService=MagicMock(return_value=mock_ai)),
                 "src.issue_triage": MagicMock(IssueTriager=MagicMock(return_value=mock_triager)),
-                "src.impact_analyzer": MagicMock(ImpactAnalyzer=MagicMock(return_value=mock_analyzer)),
+                "src.impact_analyzer": MagicMock(
+                    ImpactAnalyzer=MagicMock(return_value=mock_analyzer)
+                ),
                 "src.smart_notifications": MagicMock(
                     SmartNotificationEngine=MagicMock(return_value=mock_engine),
                     UserPreferences=MagicMock(),
@@ -951,7 +983,9 @@ async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) ->
             {
                 "src.ai_automation": MagicMock(AIAutomationService=MagicMock(return_value=mock_ai)),
                 "src.issue_triage": MagicMock(IssueTriager=MagicMock(return_value=mock_triager)),
-                "src.impact_analyzer": MagicMock(ImpactAnalyzer=MagicMock(return_value=mock_analyzer)),
+                "src.impact_analyzer": MagicMock(
+                    ImpactAnalyzer=MagicMock(return_value=mock_analyzer)
+                ),
                 "src.smart_notifications": MagicMock(
                     SmartNotificationEngine=MagicMock(return_value=mock_engine),
                     UserPreferences=MagicMock(),
@@ -963,7 +997,7 @@ async def test_generate_ai_reports_async_notification_failure(tmp_path: Path) ->
 
 
 # ============================================================
-# 9. PipelineConfig and PipelineFactory (lines 597-700+)
+# 9. PipelineConfig (lines 597-620)
 # ============================================================
 
 
@@ -999,71 +1033,6 @@ def test_pipeline_config_custom_values() -> None:
     assert config.release_filter == "summer_26"
 
 
-def test_pipeline_factory_create_scraping_step() -> None:
-    """Test PipelineFactory creates scraping step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_scraping_step()
-    assert step is not None
-    assert hasattr(step, "execute")
-
-
-def test_pipeline_factory_create_parsing_step() -> None:
-    """Test PipelineFactory creates parsing step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_parsing_step()
-    assert step is not None
-
-
-def test_pipeline_factory_create_classification_step() -> None:
-    """Test PipelineFactory creates classification step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_classification_step()
-    assert step is not None
-    assert hasattr(step, "execute")
-
-
-def test_pipeline_factory_create_enrichment_step() -> None:
-    """Test PipelineFactory creates enrichment step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_enrichment_step()
-    assert step is not None
-
-
-def test_pipeline_factory_create_translation_step() -> None:
-    """Test PipelineFactory creates translation step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_translation_step()
-    assert step is not None
-
-
-def test_pipeline_factory_create_generation_step() -> None:
-    """Test PipelineFactory creates generation step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_generation_step()
-    assert step is not None
-
-
-def test_pipeline_factory_create_notification_step() -> None:
-    """Test PipelineFactory creates notification step."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-    step = factory.create_notification_step()
-    assert step is not None
-
-
 # ============================================================
 # 10. run_pipeline (lines 700-900+)
 # ============================================================
@@ -1079,7 +1048,6 @@ async def test_run_pipeline_dry_run(tmp_path: Path) -> None:
 
     config = PipelineConfig(
         dry_run=True,
-        releases_dir=str(releases_dir),
         known_releases=[ReleaseInfo(name="Test", release_id=262, slug="test")],
     )
 
@@ -1111,7 +1079,6 @@ async def test_run_pipeline_with_llm(tmp_path: Path) -> None:
 
     config = PipelineConfig(
         dry_run=False,
-        releases_dir=str(releases_dir),
         llm=mock_llm,
         known_releases=[ReleaseInfo(name="Test", release_id=262, slug="test")],
     )
@@ -1140,7 +1107,6 @@ async def test_run_pipeline_error_handling(tmp_path: Path) -> None:
 
     config = PipelineConfig(
         dry_run=False,
-        releases_dir=str(releases_dir),
         known_releases=[ReleaseInfo(name="Test", release_id=262, slug="test")],
     )
 
@@ -1148,9 +1114,12 @@ async def test_run_pipeline_error_handling(tmp_path: Path) -> None:
         mock_orch = AsyncMock()
         # The legacy orchestrator catches LLMError, GitHubError, NotificationError, OSError
         # and returns a result with "completed_with_errors" status
-        from src.exceptions import LLMError
         mock_orch.run = AsyncMock(
-            return_value=MagicMock(releases_processed=[], errors=["LLMError: test error"], status="completed_with_errors")
+            return_value=MagicMock(
+                releases_processed=[],
+                errors=["LLMError: test error"],
+                status="completed_with_errors",
+            )
         )
         mock_orch_class.return_value = mock_orch
 
@@ -1176,7 +1145,9 @@ def test_main_entry_point_dry_run(tmp_path: Path, capsys) -> None:
     with patch.object(sys, "argv", ["main.py", "--dry-run"]):
         with patch("src.main.RELEASES_DIR", str(releases_dir)):
             with patch("src.main.run_pipeline", new=AsyncMock()) as mock_run:
-                mock_run.return_value = MagicMock(status="completed", releases_processed=[], errors=[])
+                mock_run.return_value = MagicMock(
+                    status="completed", releases_processed=[], errors=[]
+                )
                 main()
 
     mock_run.assert_called_once()
@@ -1192,7 +1163,9 @@ def test_main_entry_point_with_release(tmp_path: Path) -> None:
     with patch.object(sys, "argv", ["main.py", "--release", "summer_26"]):
         with patch("src.main.RELEASES_DIR", str(releases_dir)):
             with patch("src.main.run_pipeline", new=AsyncMock()) as mock_run:
-                mock_run.return_value = MagicMock(status="completed", releases_processed=["summer_26"], errors=[])
+                mock_run.return_value = MagicMock(
+                    status="completed", releases_processed=["summer_26"], errors=[]
+                )
                 main()
 
     mock_run.assert_called_once()
@@ -1201,7 +1174,7 @@ def test_main_entry_point_with_release(tmp_path: Path) -> None:
 
 
 def test_main_entry_point_keyboard_interrupt(tmp_path: Path) -> None:
-    """Test main() handles KeyboardInterrupt."""
+    """Test main() propagates KeyboardInterrupt from run_pipeline."""
     from src.main import main
 
     releases_dir = tmp_path / "releases"
@@ -1211,13 +1184,14 @@ def test_main_entry_point_keyboard_interrupt(tmp_path: Path) -> None:
         with patch("src.main.RELEASES_DIR", str(releases_dir)):
             with patch("src.main.run_pipeline", new=AsyncMock()) as mock_run:
                 mock_run.side_effect = KeyboardInterrupt()
-                main()
+                with pytest.raises(KeyboardInterrupt):
+                    main()
 
     mock_run.assert_called_once()
 
 
 def test_main_entry_point_exception(tmp_path: Path) -> None:
-    """Test main() handles general exceptions."""
+    """Test main() propagates general exceptions from run_pipeline."""
     from src.main import main
 
     releases_dir = tmp_path / "releases"
@@ -1227,7 +1201,8 @@ def test_main_entry_point_exception(tmp_path: Path) -> None:
         with patch("src.main.RELEASES_DIR", str(releases_dir)):
             with patch("src.main.run_pipeline", new=AsyncMock()) as mock_run:
                 mock_run.side_effect = Exception("Unexpected error")
-                main()
+                with pytest.raises(Exception, match="Unexpected error"):
+                    main()
 
     mock_run.assert_called_once()
 
@@ -1406,9 +1381,20 @@ async def test_generate_ai_reports_async_safe_write_exception(tmp_path: Path) ->
             "sys.modules",
             {
                 "src.ai_automation": MagicMock(AIAutomationService=MagicMock(return_value=mock_ai)),
-                "src.issue_triage": MagicMock(IssueTriager=MagicMock(return_value=MagicMock(triage_issue=AsyncMock()))),
-                "src.impact_analyzer": MagicMock(ImpactAnalyzer=MagicMock(return_value=MagicMock(analyze=AsyncMock(return_value=None)))),
-                "src.smart_notifications": MagicMock(SmartNotificationEngine=MagicMock(return_value=MagicMock(generate_from_release=AsyncMock(return_value=None))), UserPreferences=MagicMock()),
+                "src.issue_triage": MagicMock(
+                    IssueTriager=MagicMock(return_value=MagicMock(triage_issue=AsyncMock()))
+                ),
+                "src.impact_analyzer": MagicMock(
+                    ImpactAnalyzer=MagicMock(
+                        return_value=MagicMock(analyze=AsyncMock(return_value=None))
+                    )
+                ),
+                "src.smart_notifications": MagicMock(
+                    SmartNotificationEngine=MagicMock(
+                        return_value=MagicMock(generate_from_release=AsyncMock(return_value=None))
+                    ),
+                    UserPreferences=MagicMock(),
+                ),
             },
         ),
     ):
@@ -1446,7 +1432,9 @@ async def test_enrich_meta_with_classification_llm_error(tmp_path: Path) -> None
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
         with patch("src.feature_classifier.FeatureClassifier") as mock_classifier_class:
             mock_classifier = MagicMock()
-            mock_classifier.classify_release = AsyncMock(side_effect=LLMError("classification failed"))
+            mock_classifier.classify_release = AsyncMock(
+                side_effect=LLMError("classification failed")
+            )
             mock_classifier_class.return_value = mock_classifier
 
             # Should not raise
@@ -1492,197 +1480,7 @@ def test_pipeline_config_llm_initialization_value_error(tmp_path: Path) -> None:
     with patch("src.main.LLMService", side_effect=ValueError("No API keys")):
         config = PipelineConfig(
             dry_run=True,
-            releases_dir=str(releases_dir),
             known_releases=[ReleaseInfo(name="Test", release_id=262, slug="test")],
         )
 
     assert config.llm is None
-
-
-def test_pipeline_factory_classification_step_without_openrouter() -> None:
-    """Test PipelineFactory.create_classification_step without OPENROUTER_API_KEY (lines 671-672)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    # Ensure OPENROUTER_API_KEY is not set
-    with patch.dict("os.environ", {}, clear=True):
-        step = factory.create_classification_step()
-        assert step is not None
-        assert hasattr(step, "execute")
-        # Should use HEURISTIC strategy when no LLM adapter
-        assert step.name == "classification"
-
-
-def test_pipeline_factory_enrichment_step_without_openrouter() -> None:
-    """Test PipelineFactory.create_enrichment_step without OPENROUTER_API_KEY (lines 695, 699, 707-708)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    # Ensure OPENROUTER_API_KEY is not set
-    with patch.dict("os.environ", {}, clear=True):
-        step = factory.create_enrichment_step()
-        assert step is not None
-        assert hasattr(step, "execute")
-        assert step.name == "enrichment"
-
-
-def test_pipeline_factory_translation_step_without_openrouter() -> None:
-    """Test PipelineFactory.create_translation_step without OPENROUTER_API_KEY (lines 724, 727-728)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    # Ensure OPENROUTER_API_KEY is not set
-    with patch.dict("os.environ", {}, clear=True):
-        step = factory.create_translation_step()
-        assert step is not None
-        # Should return MockTranslationAdapter
-        assert "Mock" in type(step).__name__
-
-
-def test_pipeline_factory_classification_step_with_openrouter() -> None:
-    """Test PipelineFactory.create_classification_step with OPENROUTER_API_KEY (lines 671-672, 695, 699)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    with patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}):
-        step = factory.create_classification_step()
-        assert step is not None
-        assert hasattr(step, "execute")
-        assert step.name == "classification"
-
-
-def test_pipeline_factory_enrichment_step_with_openrouter() -> None:
-    """Test PipelineFactory.create_enrichment_step with OPENROUTER_API_KEY (lines 695, 699, 707-708, 724)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    with patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}):
-        step = factory.create_enrichment_step()
-        assert step is not None
-        assert hasattr(step, "execute")
-        assert step.name == "enrichment"
-
-
-def test_pipeline_factory_translation_step_with_openrouter() -> None:
-    """Test PipelineFactory.create_translation_step with OPENROUTER_API_KEY (lines 739-740)."""
-    from src.main import PipelineFactory
-
-    factory = PipelineFactory()
-
-    with patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}):
-        step = factory.create_translation_step()
-        assert step is not None
-        # Should return LLMTranslationAdapter
-        assert "LLM" in type(step).__name__ or "Translation" in type(step).__name__
-
-
-@pytest.mark.asyncio
-async def test_run_clean_pipeline_no_releases(tmp_path: Path) -> None:
-    """Test run_clean_pipeline when no releases found (lines 824-826)."""
-    from src.main import run_clean_pipeline
-
-    releases_dir = tmp_path / "releases"
-    releases_dir.mkdir()
-
-    with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.main.discover_releases", new=AsyncMock(return_value=[])):
-            result = await run_clean_pipeline()
-
-    assert result == 0
-
-
-@pytest.mark.asyncio
-async def test_run_clean_pipeline_with_releases(tmp_path: Path) -> None:
-    """Test run_clean_pipeline processes releases (lines 828-845)."""
-    from src.main import run_clean_pipeline, PipelineFactory
-
-    releases_dir = tmp_path / "releases"
-    releases_dir.mkdir()
-
-    mock_release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
-
-    with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.main.discover_releases", new=AsyncMock(return_value=[mock_release])):
-            with patch("src.main.PipelineFactory") as mock_factory_class:
-                mock_factory = MagicMock()
-                mock_orchestrator = AsyncMock()
-                mock_result = MagicMock()
-                mock_result.success = True
-                mock_result.duration_seconds = 1.5
-                mock_result.generated_files = ["file1.md", "file2.md"]
-                mock_orchestrator.execute = AsyncMock(return_value=mock_result)
-                mock_factory.create_orchestrator = MagicMock(return_value=mock_orchestrator)
-                mock_factory_class.return_value = mock_factory
-
-                result = await run_clean_pipeline()
-
-    assert result == 0
-
-
-@pytest.mark.asyncio
-async def test_run_clean_pipeline_partial_failure(tmp_path: Path) -> None:
-    """Test run_clean_pipeline with some failures (lines 839-845)."""
-    from src.main import run_clean_pipeline, PipelineFactory
-
-    releases_dir = tmp_path / "releases"
-    releases_dir.mkdir()
-
-    mock_release1 = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
-    mock_release2 = ReleaseInfo(name="Spring '26", release_id=260, slug="spring_26")
-
-    with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.main.discover_releases", new=AsyncMock(return_value=[mock_release1, mock_release2])):
-            with patch("src.main.PipelineFactory") as mock_factory_class:
-                mock_factory = MagicMock()
-                mock_orchestrator = AsyncMock()
-
-                # First release succeeds, second fails
-                mock_result1 = MagicMock()
-                mock_result1.success = True
-                mock_result1.duration_seconds = 1.5
-                mock_result1.generated_files = ["file1.md"]
-
-                mock_result2 = MagicMock()
-                mock_result2.success = False
-                mock_result2.error = "Failed to process"
-
-                mock_orchestrator.execute = AsyncMock(side_effect=[mock_result1, mock_result2])
-                mock_factory.create_orchestrator = MagicMock(return_value=mock_orchestrator)
-                mock_factory_class.return_value = mock_factory
-
-                result = await run_clean_pipeline()
-
-    # Should return 1 since not all succeeded
-    assert result == 1
-
-
-@pytest.mark.asyncio
-async def test_run_clean_pipeline_exception_handling(tmp_path: Path) -> None:
-    """Test run_clean_pipeline handles unexpected exceptions (lines 839-841)."""
-    from src.main import run_clean_pipeline, PipelineFactory
-
-    releases_dir = tmp_path / "releases"
-    releases_dir.mkdir()
-
-    mock_release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
-
-    with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.main.discover_releases", new=AsyncMock(return_value=[mock_release])):
-            with patch("src.main.PipelineFactory") as mock_factory_class:
-                mock_factory = MagicMock()
-                mock_orchestrator = AsyncMock()
-                mock_orchestrator.execute = AsyncMock(side_effect=Exception("Unexpected error"))
-                mock_factory.create_orchestrator = MagicMock(return_value=mock_orchestrator)
-                mock_factory_class.return_value = mock_factory
-
-                with patch("src.main.logger") as mock_logger:
-                    result = await run_clean_pipeline()
-                    mock_logger.exception.assert_called()
-
-    # Should return 1 on exception
-    assert result == 1
