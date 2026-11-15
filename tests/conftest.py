@@ -5,6 +5,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+# Ensure syrupy snapshot fixture is available globally
+# This is needed when running with pytest-cov which can interfere with plugin fixture registration
+# The pytest_plugins declaration forces syrupy to load before pytest-cov
+pytest_plugins = ["syrupy"]
+
 # LLM provider keys exported by the host shell (opencode runs, release pipeline
 # steps, local dev) must never leak into the test session: LLMService
 # auto-detects a provider from these vars, which defeats mock mode and fails
