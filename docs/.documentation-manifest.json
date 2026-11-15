@@ -581,7 +581,7 @@
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
     "mkdocs.yml": "0a31505db6f4fef6063f0ea8cc5a3d6e7ec1cf12",
-    "pyproject.toml": "9a2e572bff8f7c3ee147943c4cb6aefb21ecd047",
+    "pyproject.toml": "8d2a66870b56ff99f24c4b0c9dea084d430285d3",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1003,8 +1003,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "df10b42736b3e5e756090c1583fa63088c75ceac"
+    "uv.lock": "9489907fd4bafbdd06923a2656935f8d8b6d06c2"
   },
-  "generated_at": "2026-11-15T05:31:07.150362+00:00",
-  "repository_sha": "a85756b1a4fd9d232d210fd16f7dba92f1ca4025"
+  "generated_at": "2026-11-15T06:00:15.907582+00:00",
+  "repository_sha": "33d3322962f7acf8b22e5ff390d1a479c4a27e0f"
 }
