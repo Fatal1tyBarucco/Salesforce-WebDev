@@ -72,24 +72,51 @@ def fix_md022_headings(lines):
 
 
 def fix_md024_duplicate_headings(lines):
-    """Rename duplicate headings with incrementing suffix."""
-    seen = {}
-    out = []
-    for line in lines:
+    """Rename duplicate headings with incrementing suffix.
+
+    First pass: collect all headings and count occurrences.
+    Second pass: rename duplicates with sequential numbers, accounting
+    for headings that already have numeric suffixes.
+    """
+    # First pass: collect all heading texts and their line indices
+    heading_infos = []  # list of (line_idx, level, original_text)
+    for i, line in enumerate(lines):
         stripped = line.strip()
         if stripped and stripped.startswith("#") and len(stripped) > 1 and stripped[1] == "#":
             match = re.match(r"^(#{2,6})\s+(.+)", line)
             if match:
                 level = match.group(1)
                 text = match.group(2).strip()
-                if text in seen:
-                    seen[text] += 1
-                    out.append(f"{level} {text} {seen[text]}")
-                else:
-                    seen[text] = 0
-                    out.append(line)
-                continue
-        out.append(line)
+                heading_infos.append((i, level, text))
+
+    # Count occurrences of each base heading text (without trailing numbers)
+    # e.g., "Nova atualização" and "Nova atualização 1" both count as "Nova atualização"
+    base_counts = {}
+    for _, _, text in heading_infos:
+        # Extract base text by removing trailing " N" where N is a number
+        base_match = re.match(r"^(.+?)(?:\s+\d+)?$", text)
+        base_text = base_match.group(1) if base_match else text
+        base_counts[base_text] = base_counts.get(base_text, 0) + 1
+
+    # Determine which base texts have duplicates
+    duplicate_bases = {base for base, count in base_counts.items() if count > 1}
+
+    # Second pass: rename duplicates with sequential numbers
+    # Track how many times we've seen each base text
+    base_seen = {}
+    out = list(lines)  # Start with copy
+
+    for line_idx, level, text in heading_infos:
+        base_match = re.match(r"^(.+?)(?:\s+\d+)?$", text)
+        base_text = base_match.group(1) if base_match else text
+
+        if base_text in duplicate_bases:
+            base_seen[base_text] = base_seen.get(base_text, 0) + 1
+            if base_seen[base_text] > 1:
+                # This is a duplicate, rename it
+                new_text = f"{base_text} {base_seen[base_text]}"
+                out[line_idx] = f"{level} {new_text}"
+
     return out
 
 

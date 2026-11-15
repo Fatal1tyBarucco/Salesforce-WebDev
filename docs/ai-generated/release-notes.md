@@ -10,12 +10,12 @@ Impacto: baixo. Risco: baixo. Não há breaking change identificado.
 
 | Feature | Descrição | Impacto | Público |
 | :--- | :--- | :---: | :--- |
-| **Correção de newline no EOF do src/infrastructure/api/__init__.py — 📋 refactor** | Adiciona nova linha ausente no final do arquivo src/infrastructure/api/__init__.py para atender a… | 🟢 low | src/infrastructure/api/__init__.py · Prioridade: 💡 P3 |
+| **Correção de newline no EOF do src/infrastructure/api/**init**.py — 📋 refactor** | Adiciona nova linha ausente no final do arquivo src/infrastructure/api/**init**.py para atender a… | 🟢 low | src/infrastructure/api/**init**.py · Prioridade: 💡 P3 |
 
 ## 📊 Distribuição de Impacto
 
-🔴 Alto: **0** (0%) 
-🟡 Médio: **0** (0%) 
+🔴 Alto: **0** (0%)
+🟡 Médio: **0** (0%)
 🟢 Baixo: **1** (100%) 🟢
 
 Total: **1 features**
@@ -30,25 +30,25 @@ Sparkline da distribuição alto/médio/baixo:   █
 
 ---
 
-## Nova atualização
+## Nova atualização 2
 
 Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError em 11 testes, restaurando a capacidade de build e elevando a cobertura para 95,35%; atualização de baixo impacto do manifesto de documentação com novos checksums; e adição do plugin syrupy ao conftest.py para corrigir erros de registro de fixture.
 
 | Feature | Descrição | Impacto | Público |
 | :--- | :--- | :---: | :--- |
-| **Corrige erro de importação do strawberry-graphql que causava falhas nos testes — 📋 bugfix** | Adiciona strawberry-graphql[fastapi] ao extra healing e implementa exportação lazy do graphql_rou… | 🔴 high | src/infrastructure/api/__init__.py, pyproject.toml, tests/test_infrastructure_api_graphql.py · Prioridade: 💡 P0 |
+| **Corrige erro de importação do strawberry-graphql que causava falhas nos testes — 📋 bugfix** | Adiciona strawberry-graphql[fastapi] ao extra healing e implementa exportação lazy do graphql_rou… | 🔴 high | src/infrastructure/api/**init**.py, pyproject.toml, tests/test_infrastructure_api_graphql.py · Prioridade: 💡 P0 |
 | **Atualiza o manifesto de documentação com novos checksums de arquivos — 📋 documentation** | Reconcilia o docs/.documentation-manifest.json com checksums atualizados para pyproject.toml, src… | 🟢 low | docs/.documentation-manifest.json · Prioridade: 💡 P3 |
 | **Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture — 📋 refactor** | Adiciona pytest_plugins = ["syrupy"] ao conftest.py, garantindo que o plugin syrupy seja carregad… | 🟢 low | tests/conftest.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 2
 
 🔴 Alto: **1** (33%) 🔴
-🟡 Médio: **0** (0%) 
+🟡 Médio: **0** (0%)
 🟢 Baixo: **2** (66%) 🟢🟢
 
 Total: **3 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 2
 
 ```text
 📋 bugfix             │██████████████████████████████│    1 →
@@ -58,7 +58,6 @@ Total: **3 features**
 
 Sparkline da distribuição alto/médio/baixo: ▄ █
 
-
 ## Revisão Necessária
 
 - **Corrige erro de importação do strawberry-graphql que causava falhas nos testes** — Revisão necessária devido a alterações em dependências e exportação lazy; garantir que o GraphQL funcione corretamente. (0.95)
@@ -67,7 +66,7 @@ Sparkline da distribuição alto/médio/baixo: ▄ █
 
 ---
 
-## Nova atualização
+## Nova atualização 3
 
 Esta release implementa uma refatoração para Clean Architecture em src/core e src/infrastructure, com módulos de core, infrastructure e models organizados em camadas desacopladas. Refatoração estrutural de alto impacto pode exigir atualização de imports e deve ser validada quanto a compatibilidade com consumidores existentes. A correção no fallback do LLMService visa preservar a disponibilidade do serviço em falhas de provedores. Ajustes no schema GraphQL com tipos Strawberry e ChangeType podem alterar contratos de API para consumidores externos. A ampliação da cobertura de testes, correções de quality gates, atualizações de dependências e reconciliação documental também foram incluídas. Riscos principais: possíveis imports desatualizados após a refatoração, necessidade de revisão de compatibilidade do schema GraphQL e fallback do LLM.
 
@@ -76,14 +75,14 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 | **Implementação da Clean Architecture em src/core e src/infrastructure — 📋 refactor** | Adição de módulos core (classification, enrichment, pipeline, summarization) e infrastructure (ap… | 🔴 high | src/core, src/infrastructure, src/models, src/orchestrator.py, src/main.py · Prioridade: 💡 P1 |
 | **Adição de cobertura de teste abrangente (95% meta) — 📋 feature** | Criação de 14 novos arquivos de teste cobrindo core (classification, enrichment, pipeline, summar… | 🟡 medium | tests/test_core_classification_service.py, tests/test_core_enrichment_service.py, tests/test_core_pipeline_orchestrator.py, tests/test_core_summarization_service.py, tests/test_infrastructure_generation.py, tests/test_infrastructure_github.py, tests/test_infrastructure_llm.py, tests/test_infrastructure_llm_coverage.py, tests/test_infrastructure_messaging.py, tests/test_infrastructure_notification_step.py, tests/test_infrastructure_parsing.py, tests/test_infrastructure_routes.py, tests/test_infrastructure_scraping.py, tests/test_infrastructure_storage.py, tests/test_infrastructure_translation.py, tests/test_main_coverage_additional.py, tests/test_models_coverage.py, tests/test_orchestrator_coverage.py · Prioridade: 💡 P2 |
 | **Correção de quality gates (ruff, black, mypy, mkdocs) — 📋 bugfix** | Correção de múltiplos problemas de linting e formatação: ISC004 (concatenação implícita de string… | 🟢 low | .github/scripts/build_failure_issue.py, .github/scripts/documentation_reconcile.py, .github/scripts/documentation_sync.py, .github/scripts/fix_markdown.py, .github/scripts/update_changelog_auto.py, src/ai/llm/client.py, src/api.py, src/release_discovery.py, tests/test_ai_docs.py, tests/test_llm_service.py, stubs/openai, stubs/prometheus_client, stubs/syrupy · Prioridade: 💡 P3 |
-| **Correção do schema GraphQL com Strawberry types — 📋 bugfix** | Substituição de dict[str, Any] por ChangeType (Strawberry type) no schema GraphQL em src/infrastr… | 🟡 medium | src/infrastructure/api/graphql.py, src/infrastructure/api/__init__.py, pyproject.toml · Prioridade: 💡 P2 |
+| **Correção do schema GraphQL com Strawberry types — 📋 bugfix** | Substituição de dict[str, Any] por ChangeType (Strawberry type) no schema GraphQL em src/infrastr… | 🟡 medium | src/infrastructure/api/graphql.py, src/infrastructure/api/**init**.py, pyproject.toml · Prioridade: 💡 P2 |
 | **Adição da dependência strawberry-graphql — 📋 bugfix** | Adição do pacote strawberry-graphql às dependências core em pyproject.toml e atualização do uv.lo… | 🟡 medium | pyproject.toml, uv.lock, src/infrastructure/api/graphql.py · Prioridade: 💡 P1 |
 | **Fix do chain de fallback do LLMService — 📋 bugfix** | Correção de bug no chain de fallback do LLMService (linhas 147, 158-163 do src/infrastructure/llm… | 🔴 high | src/infrastructure/llm.py, tests/test_infrastructure_llm_coverage.py · Prioridade: 💡 P0 |
 | **Atualização de dependência soupsieve (2.9 para 4.0) — ⚡ Performance** | Upgrade da dependência indireta soupsieve de versão 2.9 para 4.0 no grupo uv, aplicado em 1 diret… | 🟢 low | uv.lock, pyproject.toml · Prioridade: 💡 P3 |
 | **Atualização de testes para novos limites de retry e tokens — 📋 bugfix** | Ajuste das expectativas de teste em test_ai_docs.py e test_ai_docs_coverage.py para coincidir com… | 🟢 low | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P3 |
 | **Reconciliação de documentação e atualização do manifest — 📋 documentation** | Atualização do docs/.documentation-manifest.json com novos mapeamentos entre código e documentaçã… | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml, docs/api/core-classification-service.md, docs/api/core-enrichment-service.md, docs/api/core-pipeline-orchestrator.md, docs/api/core-pipeline-steps.md, docs/api/core-summarization-service.md, docs/architecture/decisions/adr-007-clean-architecture.md · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 3
 
 🔴 Alto: **2** (22%) 🔴🔴
 🟡 Médio: **3** (33%) 🟡🟡🟡
@@ -91,7 +90,7 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 
 Total: **9 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 3
 
 ```text
 ⚡ Performance        │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -103,8 +102,7 @@ Total: **9 features**
 
 Sparkline da distribuição alto/médio/baixo: ▄▆█
 
-
-## Revisão Necessária
+## Revisão Necessária 2
 
 - **Verificação de backwards compatibility da arquitetura** — Executar análise estática de dependências para identificar todos os imports que precisam ser atualizados (0.80)
 - **Revisão do schema GraphQL para consumers externos** — Verificar versão do schema GraphQL e comunicar mudanças para consumidores externos se necessário (0.75)
@@ -113,7 +111,7 @@ Sparkline da distribuição alto/médio/baixo: ▄▆█
 
 ---
 
-## Nova atualização
+## Nova atualização 4
 
 Esta release introduz o design system no dashboard com suporte a dark mode e recursos de acessibilidade, além de corrigir o rastreamento de estado de fences no fix_markdown.py e atualizar diversas dependências de ferramentas e bibliotecas para as versões mais recentes.
 
@@ -128,7 +126,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 | **Atualizar aiohttp para 3.14.4 — ⚡ Performance** | Bump da dependência direta aiohttp de 3.14.3 para 3.14.4. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 | **Atualizar black para 26.10.1 — ⚡ Performance** | Bump da dependência de desenvolvimento black de 26.10.0 para 26.10.1. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 4
 
 🔴 Alto: **1** (12%) 🔴
 🟡 Médio: **0** (0%)
@@ -136,7 +134,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 4
 
 ```text
 ⚡ Performance        │██████████████████████████████│    6 →
@@ -148,7 +146,7 @@ Sparkline da distribuição alto/médio/baixo: ▁ █
 
 ---
 
-## Nova atualização 1
+## Nova atualização 5
 
 Esta release corrige a falha de deploy no GitHub Pages que impedia a publicação de artefatos de release e afetava a entrega contínua do Intelligence Hub. Ajusta cabeçalhos Markdown para conformidade com lint MD001/MD036 e melhora o upload de artefatos de logs de IA no workflow ai-docs. Introduz gestão de orçamento de tokens de saída no cliente LLM, com variáveis de ambiente e escalonamento exponencial em retentativas para reduzir completions vazias ou truncadas. Adiciona novos testes de cobertura para módulos de IA e documentação. Simplifica o tratamento de exceções no docs_sync_engine, substituindo blocos específicos por captura genérica de Exception, o que pode mascarar erros específicos e requer atenção. Atualiza o manifesto de documentação com novos artefatos gerados por IA. Um import não utilizado em orchestrator.py está sob revisão.
 
@@ -162,7 +160,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 | **Novos testes de cobertura para módulos IA e docs — 📋 feature** | Adição de test_ai_docs.py, test_ai_docs_coverage.py, test_ai_coverage.py e atualização de test_ma… | 🟡 medium | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py, tests/test_ai_coverage.py, tests/test_main_coverage.py · Prioridade: 💡 P2 |
 | **Ajuste no workflow ai-docs para upload de artefatos ocultos — 📋 bugfix** | Mudança de if-no-files-found: ignore para warn e adição de include-hidden-files: true no upload d… | 🟢 low | .github/workflows/ai-docs.yml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 1
+## 📊 Distribuição de Impacto 5
 
 🔴 Alto: **1** (14%) 🔴
 🟡 Médio: **2** (28%) 🟡🟡
@@ -170,7 +168,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 1
+## Mudanças por tipo nesta execução 5
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
@@ -181,7 +179,7 @@ Total: **7 features**
 
 Sparkline da distribuição alto/médio/baixo: ▂▄█
 
-## Revisão Necessária
+## Revisão Necessária 3
 
 - **Importação de re no orchestrator.py sem uso aparente** — Baixa confiança ou sinalizada pelo classificador. (0.40)
 
@@ -217,7 +215,7 @@ Total: **7 features**
 
 Sparkline da distribuição alto/médio/baixo: ██▂
 
-## Revisão Necessária 1
+## Revisão Necessária 4
 
 - **Revisão de alterações no change_collector.py** — Baixa confiança ou sinalizada pelo classificador. (0.70)
 - **Validação de novos prompts de IA** — Baixa confiança ou sinalizada pelo classificador. (0.65)
