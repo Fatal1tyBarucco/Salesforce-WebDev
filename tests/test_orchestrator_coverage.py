@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 from typing import Any
@@ -84,7 +83,6 @@ class TestPipelineOrchestratorInit:
         orch = PipelineOrchestrator(config)
         assert orch._config is config
         assert orch._bus is not None
-        assert orch._storage is not None
 
 
 class TestPipelineOrchestratorRun:
@@ -218,8 +216,11 @@ class TestPipelineOrchestratorRun:
         with patch.object(orch, "_detect_releases", new=AsyncMock(return_value=[mock_release])):
             with patch.object(orch, "_process_release", new=AsyncMock()):
                 with patch("src.orchestrator.set_pipeline_status", new=AsyncMock()):
-                    with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
-                        with patch("src.main.generate_ai_reports_async", new=AsyncMock(side_effect=LLMError("AI reports failed"))):
+                    with patch.object(orch._bus, "emit", new=AsyncMock()):
+                        with patch(
+                            "src.main.generate_ai_reports_async",
+                            new=AsyncMock(side_effect=LLMError("AI reports failed")),
+                        ):
                             result = await orch.run()
 
         assert result.status == "completed_with_errors"
@@ -255,7 +256,7 @@ class TestPipelineOrchestratorDetectReleases:
         orch = PipelineOrchestrator(config)
         mock_scraper = _make_scraper()
 
-        with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
+        with patch.object(orch._bus, "emit", new=AsyncMock()):
             releases = await orch._detect_releases(mock_scraper)
 
         assert releases == []
@@ -267,7 +268,7 @@ class TestPipelineOrchestratorDetectReleases:
         orch = PipelineOrchestrator(config)
         mock_scraper = _make_scraper()
 
-        with patch("src.orchestrator.ReleaseDiscoveryService") as mock_service_class:
+        with patch("src.release_discovery.ReleaseDiscoveryService") as mock_service_class:
             mock_service = MagicMock()
             mock_service.discover = AsyncMock(return_value=[])
             mock_service_class.return_value = mock_service
@@ -295,8 +296,10 @@ class TestPipelineOrchestratorProcessRelease:
 
         with patch("src.main.process_single_release", new=AsyncMock()) as mock_process:
             with patch("src.main.enrich_meta_with_classification", new=AsyncMock()) as mock_enrich:
-                with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
-                    await orch._process_release(release, scraper, impact_parser, generator, translator, llm)
+                with patch.object(orch._bus, "emit", new=AsyncMock()):
+                    await orch._process_release(
+                        release, scraper, impact_parser, generator, translator, llm
+                    )
 
         mock_process.assert_awaited_once_with(
             release, scraper, impact_parser, generator, translator, False, llm
@@ -318,8 +321,10 @@ class TestPipelineOrchestratorProcessRelease:
 
         with patch("src.main.process_single_release", new=AsyncMock()) as mock_process:
             with patch("src.main.enrich_meta_with_classification", new=AsyncMock()) as mock_enrich:
-                with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
-                    await orch._process_release(release, scraper, impact_parser, generator, translator, llm)
+                with patch.object(orch._bus, "emit", new=AsyncMock()):
+                    await orch._process_release(
+                        release, scraper, impact_parser, generator, translator, llm
+                    )
 
         mock_process.assert_awaited_once()
         mock_enrich.assert_not_awaited()
@@ -378,9 +383,12 @@ class TestPipelineOrchestratorRunAiReports:
 
         with patch("src.documentation_service.DocumentationService") as mock_doc:
             mock_doc.return_value.update_readme_all = AsyncMock()
-            with patch("src.main.generate_ai_reports_async", new=AsyncMock(side_effect=LLMError("LLM failed"))):
-                with patch("src.orchestrator.logger") as mock_logger:
-                    with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
+            with patch(
+                "src.main.generate_ai_reports_async",
+                new=AsyncMock(side_effect=LLMError("LLM failed")),
+            ):
+                with patch("src.orchestrator.logger"):
+                    with patch.object(orch._bus, "emit", new=AsyncMock()):
                         await orch._run_ai_reports(releases, llm, result)
 
         assert result.status == "completed_with_errors"
@@ -399,8 +407,11 @@ class TestPipelineOrchestratorRunAiReports:
 
         with patch("src.documentation_service.DocumentationService") as mock_doc:
             mock_doc.return_value.update_readme_all = AsyncMock()
-            with patch("src.main.generate_ai_reports_async", new=AsyncMock(side_effect=GitHubError("GitHub failed"))):
-                with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
+            with patch(
+                "src.main.generate_ai_reports_async",
+                new=AsyncMock(side_effect=GitHubError("GitHub failed")),
+            ):
+                with patch.object(orch._bus, "emit", new=AsyncMock()):
                     await orch._run_ai_reports(releases, llm, result)
 
         assert result.status == "completed_with_errors"
@@ -417,8 +428,11 @@ class TestPipelineOrchestratorRunAiReports:
 
         with patch("src.documentation_service.DocumentationService") as mock_doc:
             mock_doc.return_value.update_readme_all = AsyncMock()
-            with patch("src.main.generate_ai_reports_async", new=AsyncMock(side_effect=NotificationError("Notif failed"))):
-                with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
+            with patch(
+                "src.main.generate_ai_reports_async",
+                new=AsyncMock(side_effect=NotificationError("Notif failed")),
+            ):
+                with patch.object(orch._bus, "emit", new=AsyncMock()):
                     await orch._run_ai_reports(releases, llm, result)
 
         assert result.status == "completed_with_errors"
@@ -435,8 +449,11 @@ class TestPipelineOrchestratorRunAiReports:
 
         with patch("src.documentation_service.DocumentationService") as mock_doc:
             mock_doc.return_value.update_readme_all = AsyncMock()
-            with patch("src.main.generate_ai_reports_async", new=AsyncMock(side_effect=OSError("OS failed"))):
-                with patch.object(orch._bus, "emit", new=AsyncMock()) as mock_emit:
+            with patch(
+                "src.main.generate_ai_reports_async",
+                new=AsyncMock(side_effect=OSError("OS failed")),
+            ):
+                with patch.object(orch._bus, "emit", new=AsyncMock()):
                     await orch._run_ai_reports(releases, llm, result)
 
         assert result.status == "completed_with_errors"
