@@ -774,11 +774,11 @@
     "src/ai/integrations/salesforce.py": "d87697cd928d01f253f345a0861743a9dfa60ac5",
     "src/ai/integrations/trailhead.py": "6bd18cf1a9c9c1514aea5a52216528feb5dbed6e",
     "src/ai/llm/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "src/ai/llm/client.py": "ccabc35b9ffb3fc0955fca8d8dee6c048d418253",
+    "src/ai/llm/client.py": "c669075282f7d117bf64a619ef5ee178c47d4e4b",
     "src/ai/orchestrator.py": "4a5b89a18799a53a1a25f6428c5fc179d8a60ace",
     "src/ai/prompts/__init__.py": "69c96756d3b9a2933f2ba03fb0078a88a7d13a11",
     "src/ai/prompts/changelog.prompt": "075b60188a602f6fa6517f708e1479014da2184b",
-    "src/ai/prompts/classification.prompt": "a58fae003d0faa39653670e5e0b51c2a3251c986",
+    "src/ai/prompts/classification.prompt": "67fe86e0fb5f4cc17e9970ee1a65b0493463f7ac",
     "src/ai/prompts/classification.py": "bc5ff4851227f8fa3bfbdbc0459e926953514570",
     "src/ai/prompts/enrichment.py": "c301fdffa16427fb377e5d42cb7f000239bac510",
     "src/ai/prompts/leadership.prompt": "f4c043263af8f53b6b3d974069e62d434baf0382",
@@ -912,8 +912,8 @@
     "tests/factories.py": "baed65a16b37e21ecb33688fab91f347f3809220",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "33d42251243e96b619514fc3aa0fb5620eb30930",
-    "tests/test_ai_docs.py": "a34a8335cf4b46c7cdd8a66ae3b6e2f88a068452",
-    "tests/test_ai_docs_coverage.py": "37d7a69204ded7cb6a0d731a8818e1a0e820494c",
+    "tests/test_ai_docs.py": "8d16c019fbc82dd37bf0703f6e923a57944420bf",
+    "tests/test_ai_docs_coverage.py": "89f71290e85f433b4e56f0269ec3afe05d4c43e2",
     "tests/test_ai_enrichment.py": "5902dacc235ce91f77d74b34341041791294f01d",
     "tests/test_ai_integration.py": "d303720cdc3f5b9b954f0d3d3bfbbf3dd006549d",
     "tests/test_ai_integration_salesforce_coverage.py": "e7d66dc08dfd40a563c6ac2eb50296400ef610f9",
@@ -1005,6 +1005,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "9489907fd4bafbdd06923a2656935f8d8b6d06c2"
   },
-  "generated_at": "2026-11-15T06:00:15.907582+00:00",
-  "repository_sha": "33d3322962f7acf8b22e5ff390d1a479c4a27e0f"
+  "generated_at": "2026-11-15T06:57:16.906070+00:00",
+  "repository_sha": "dcc5019f2f0494da0efc21d18e9396da285bf18b"
 }
