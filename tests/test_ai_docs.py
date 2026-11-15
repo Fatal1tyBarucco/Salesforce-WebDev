@@ -131,7 +131,7 @@ def test_client_retries_invalid_json_with_correction() -> None:
     assert "falhou na validação" in endpoint.call_args.kwargs["messages"][1]["content"]
 
 
-def test_client_aborts_after_three_invalid_responses() -> None:
+def test_client_aborts_after_four_invalid_responses() -> None:
     client = object.__new__(ExistingLLMClient)
     client.model = "provider/model:free"
     client.usage = []
@@ -141,10 +141,11 @@ def test_client_aborts_after_three_invalid_responses() -> None:
         _completion("{}"),
         _completion("{}"),
         _completion("{}"),
+        _completion("{}"),
     ]
     with pytest.raises(ValueError) as excinfo:
         client.generate("prompt", StrictObject)
-    assert "invalid after 3 attempts" in str(excinfo.value)
+    assert "invalid after 4 attempts" in str(excinfo.value)
     assert "phase=output-validation" in str(excinfo.value)
     assert "error=ValidationError" in str(excinfo.value)
 
@@ -191,21 +192,21 @@ def test_client_final_transport_failure_reports_root_cause(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     transport_error = ConnectionError("connection reset by peer")
-    client = _diagnostic_client(transport_error, transport_error, transport_error)
+    client = _diagnostic_client(transport_error, transport_error, transport_error, transport_error)
     with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
         with pytest.raises(RuntimeError) as excinfo:
             client.generate("prompt")
     message = str(excinfo.value)
-    assert "OpenRouter request failed after 3 attempts" in message
+    assert "OpenRouter request failed after 4 attempts" in message
     assert "phase=request" in message
     assert "error=ConnectionError" in message
     assert "connection reset by peer" in message
     assert excinfo.value.__cause__ is transport_error
     logged = [record.getMessage() for record in caplog.records]
     assert any(
-        "attempt 1/3" in entry and "delay_source=exponential-backoff" in entry for entry in logged
+        "attempt 1/4" in entry and "delay_source=exponential-backoff" in entry for entry in logged
     )
-    assert any("attempt 3/3" in entry and "giving up" in entry for entry in logged)
+    assert any("attempt 4/4" in entry and "giving up" in entry for entry in logged)
 
 
 def test_client_final_http_failure_reports_status_and_provider_error(
@@ -228,7 +229,7 @@ def test_client_final_http_failure_reports_status_and_provider_error(
         },
         {"retry-after": "5"},
     )
-    client = _diagnostic_client(failure, failure, failure)
+    client = _diagnostic_client(failure, failure, failure, failure)
     delays: list[float] = []
     client._sleep = delays.append
     with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
@@ -240,10 +241,10 @@ def test_client_final_http_failure_reports_status_and_provider_error(
     assert "status=503" in message
     assert "provider_error=503 | Provider temporarily unavailable" in message
     assert "provider_overloaded" in message
-    assert delays == [5.0, 5.0]
+    assert delays == [5.0, 5.0, 5.0]
     logged = " ".join(record.getMessage() for record in caplog.records)
     assert "delay_source=retry-after" in logged
-    assert "attempt 3/3" in logged
+    assert "attempt 4/4" in logged
 
 
 def test_client_failure_diagnostics_redact_credentials(
@@ -253,7 +254,7 @@ def test_client_failure_diagnostics_redact_credentials(
     failure = RuntimeError(
         "401 unauthorized: key sk-or-v1-super-secret-key via Bearer abc123.token"
     )
-    client = _diagnostic_client(failure, failure, failure)
+    client = _diagnostic_client(failure, failure, failure, failure)
     with caplog.at_level(logging.DEBUG, logger="src.ai.llm.client"):
         with pytest.raises(RuntimeError) as excinfo:
             client.generate("prompt")
@@ -271,6 +272,7 @@ def test_client_empty_content_diagnostics_report_finish_reason() -> None:
         _completion_with(None, "stop"),
         _completion_with("   ", "stop"),
         _completion_with(None, "stop"),
+        _completion_with(None, "stop"),
     )
     with pytest.raises(RuntimeError) as excinfo:
         client.generate("prompt")
@@ -280,13 +282,15 @@ def test_client_empty_content_diagnostics_report_finish_reason() -> None:
     assert "choices=1" in message
     assert "finish_reason=stop" in message
     requests = client._client.chat.completions.create.call_args_list
-    assert len(requests) == 3
+    assert len(requests) == 4
     assert "veio vazia" in requests[1].kwargs["messages"][1]["content"]
     assert "veio vazia" in requests[2].kwargs["messages"][1]["content"]
+    assert "veio vazia" in requests[3].kwargs["messages"][1]["content"]
 
 
 def test_client_missing_choices_reports_empty_completion() -> None:
     client = _diagnostic_client(
+        _completion_with(None, choices=[]),
         _completion_with(None, choices=[]),
         _completion_with(None, choices=[]),
         _completion_with(None, choices=[]),
@@ -321,11 +325,12 @@ def test_client_invalid_json_diagnoses_preview_and_finish_reason(
         _completion_with(text, "stop"),
         _completion_with(text, "stop"),
         _completion_with(text, "stop"),
+        _completion_with(text, "stop"),
     )
     with pytest.raises(ValueError) as excinfo:
         client.generate("prompt", StrictObject)
     message = str(excinfo.value)
-    assert "invalid after 3 attempts" in message
+    assert "invalid after 4 attempts" in message
     assert "phase=output-validation" in message
     assert "issue=invalid-json" in message
     assert "finish_reason=stop" in message
@@ -359,10 +364,10 @@ def test_client_empty_length_completion_escalates_max_tokens(
     with caplog.at_level(logging.INFO, logger="src.ai.llm.client"):
         assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
     requests = client._client.chat.completions.create.call_args_list
-    assert requests[0].kwargs["max_tokens"] == 3000
-    assert requests[1].kwargs["max_tokens"] == 6000
+    assert requests[0].kwargs["max_tokens"] == 6000
+    assert requests[1].kwargs["max_tokens"] == 12000
     logged = " ".join(record.getMessage() for record in caplog.records)
-    assert "raising max_tokens to 6000" in logged
+    assert "raising max_tokens to 12000" in logged
 
 
 def test_client_truncated_output_escalates_max_tokens() -> None:
@@ -372,8 +377,8 @@ def test_client_truncated_output_escalates_max_tokens() -> None:
     )
     assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
     requests = client._client.chat.completions.create.call_args_list
-    assert requests[0].kwargs["max_tokens"] == 3000
-    assert requests[1].kwargs["max_tokens"] == 6000
+    assert requests[0].kwargs["max_tokens"] == 6000
+    assert requests[1].kwargs["max_tokens"] == 12000
 
 
 def test_client_output_budget_env_override_and_cap(
@@ -400,23 +405,23 @@ def test_client_output_budget_invalid_env_falls_back_to_defaults(
     monkeypatch.setenv("AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT", "0")
     client = _diagnostic_client(_completion('{"required_value":"ok"}'))
     assert client.generate("prompt", StrictObject) == {"required_value": "ok"}
-    assert client._client.chat.completions.create.call_args.kwargs["max_tokens"] == 3000
+    assert client._client.chat.completions.create.call_args.kwargs["max_tokens"] == 6000
 
 
 def test_client_provider_refusal_output_is_diagnosed() -> None:
     blocked = _completion_with("resposta bloqueada pelo provedor", "content_filter")
-    client = _diagnostic_client(blocked, blocked, blocked)
+    client = _diagnostic_client(blocked, blocked, blocked, blocked)
     with pytest.raises(ValueError) as excinfo:
         client.generate("prompt", StrictObject)
     message = str(excinfo.value)
-    assert "invalid after 3 attempts" in message
+    assert "invalid after 4 attempts" in message
     assert "issue=provider-refusal" in message
     assert "finish_reason=content_filter" in message
 
 
 def test_client_empty_completion_surfaces_refusal_text() -> None:
     refused = _completion_with(None, "stop", refusal="I cannot assist with that request.")
-    client = _diagnostic_client(refused, refused, refused)
+    client = _diagnostic_client(refused, refused, refused, refused)
     with pytest.raises(RuntimeError) as excinfo:
         client.generate("prompt")
     message = str(excinfo.value)
@@ -431,7 +436,7 @@ def test_client_embedded_provider_error_is_surfaced() -> None:
         "metadata": {"error_type": "rate_limit"},
     }
     failing = _completion_with(None, "stop", error=error_payload)
-    client = _diagnostic_client(failing, failing, failing)
+    client = _diagnostic_client(failing, failing, failing, failing)
     with pytest.raises(RuntimeError) as excinfo:
         client.generate("prompt")
     message = str(excinfo.value)
@@ -449,6 +454,7 @@ def test_pipeline_empty_completion_failure_writes_diagnostic_audit(
         lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
     )
     client = _diagnostic_client(
+        _completion_with(None, "stop"),
         _completion_with(None, "stop"),
         _completion_with(None, "stop"),
         _completion_with(None, "stop"),

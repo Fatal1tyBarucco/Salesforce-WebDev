@@ -1,5 +1,24 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Added comprehensive test coverage for core, infrastructure, models, and main modules.
+- Added Strawberry GraphQL types using ChangeType and added strawberry-graphql dependency to resolve CI test failures.
+
+### Changed
+- Refactored the application into Clean Architecture layers in src/core and src/infrastructure, with core, infrastructure, and models modules.
+- Updated the documentation manifest and mkdocs navigation for new API and architecture decision documents.
+
+### Fixed
+- Fixed the LLMService fallback chain.
+- Fixed the GraphQL schema by replacing the generic dict type with ChangeType and corrected API module exports.
+
+### Breaking Changes
+- The Clean Architecture refactor may break imports referencing legacy modules.
+
 <!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

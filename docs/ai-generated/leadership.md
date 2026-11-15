@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Com base nas mudanças classificadas, a refatoração para Clean Architecture em src/core e src/infrastructure apresenta alto impacto e pode exigir atualização de imports, com risco de breaking change. A correção no fallback do LLMService é crítica para a disponibilidade do serviço. Ajustes no schema GraphQL com ChangeType podem impactar consumidores externos. A ampliação da cobertura de testes e correções de quality gates melhoram qualidade e confiança. Riscos principais: imports desatualizados, contratos GraphQL e fallback LLM. Próximos passos: validar compatibilidade, revisar fallback e schema, confirmar documentação.
+
+---
 
 ## Nova atualização
 

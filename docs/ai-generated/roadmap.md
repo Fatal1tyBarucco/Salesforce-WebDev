@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões de roadmap: revisar a refatoração para Clean Architecture e validar compatibilidade de imports antes de adotar os novos módulos. Sugestão: revisar o schema GraphQL com ChangeType e avaliar impactos para consumidores externos. Sugestão: revisar a lógica de fallback do LLMService. Sugestão: validar os novos documentos de API em relação à implementação. Sugestão: monitorar dependências e quality gates.
+
+---
 
 ## Nova atualização
 
