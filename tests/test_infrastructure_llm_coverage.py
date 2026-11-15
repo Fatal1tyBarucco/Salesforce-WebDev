@@ -10,15 +10,15 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.infrastructure.llm import (
+    GeminiClassificationAdapter,
+    GeminiLLMAdapter,
+    HeuristicClassificationAdapter,
     OpenRouterClassificationAdapter,
     OpenRouterEnrichmentAdapter,
     OpenRouterLLMAdapter,
     UnifiedLLMClient,
-    HeuristicClassificationAdapter,
-    _ProviderConfig,
     _env_model_override,
-    GeminiLLMAdapter,
-    GeminiClassificationAdapter,
+    _ProviderConfig,
 )
 from src.models.enrichment import CategoryEnrichment, ReleaseEnrichment
 

@@ -20,8 +20,8 @@ from src.core.summarization.service import SummarizationService
 from src.infrastructure.llm import HeuristicClassificationAdapter
 from src.infrastructure.storage import FileSystemStorageAdapter, StorageAdapter
 from src.models.api import (
-    FeatureCategory,
     DiffResponse,
+    FeatureCategory,
     FeatureClassificationRequest,
     FeatureClassificationResponse,
     ReleaseResponse,

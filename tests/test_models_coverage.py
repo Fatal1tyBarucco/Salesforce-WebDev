@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
-from src.models.release import ReleaseCategory, ReleaseMetadata, build_release_info
+from src.models.classification import (
+    Audience,
+    ClassificationResult,
+    ClassifiedFeature,
+    FeatureType,
+    ImpactLevel,
+    Priority,
+)
 from src.models.feature import (
     Feature,
     FeatureCategory,
     FeatureImpact,
-    FeatureStatus,
     FeatureImpactCategory,
+    FeatureStatus,
 )
-from src.models.classification import (
-    ClassifiedFeature,
-    ClassificationResult,
-    ImpactLevel,
-    FeatureType,
-    Audience,
-    Priority,
-)
+from src.models.release import ReleaseCategory, ReleaseMetadata, build_release_info
 
 
 class TestReleaseCategory:

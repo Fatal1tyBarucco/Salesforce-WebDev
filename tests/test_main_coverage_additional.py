@@ -14,6 +14,7 @@ import pytest
 from src.config import KNOWN_RELEASES, ReleaseInfo
 from src.exceptions import LLMError
 from src.main import (
+    _load_meta_for_release,
     _parse_args,
     _validate_summary_cache,
     detect_new_release,
@@ -21,7 +22,6 @@ from src.main import (
     generate_ai_reports_async,
     generate_summary_cache,
     process_single_release,
-    _load_meta_for_release,
 )
 from src.models.release import build_release_info
 
@@ -1014,9 +1014,9 @@ def test_pipeline_config_post_init_defaults() -> None:
 
 def test_pipeline_config_custom_values() -> None:
     """Test PipelineConfig accepts custom values."""
-    from src.main import PipelineConfig
     from src.cache_manager import CacheManager
     from src.events import EventBus
+    from src.main import PipelineConfig
 
     custom_cache = CacheManager(cache_dir=Path("custom"), ttl_seconds=100)
     custom_bus = EventBus()
@@ -1444,8 +1444,8 @@ async def test_enrich_meta_with_classification_llm_error(tmp_path: Path) -> None
 @pytest.mark.asyncio
 async def test_process_release_analytics_notification_error(tmp_path: Path) -> None:
     """Test _process_release_analytics handles NotificationError (line 475)."""
-    from src.main import _process_release_analytics
     from src.exceptions import NotificationError
+    from src.main import _process_release_analytics
 
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()

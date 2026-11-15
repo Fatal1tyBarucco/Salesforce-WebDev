@@ -6,7 +6,6 @@ Provides a GraphQL endpoint for flexible querying of release data.
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 import strawberry
 from strawberry.fastapi import GraphQLRouter
@@ -38,9 +37,15 @@ class ReleaseType:
 
 
 @strawberry.type
+class ChangeType:
+    category: str
+    delta: int
+
+
+@strawberry.type
 class DiffType:
     total_delta: int
-    changes: list[dict[str, Any]]
+    changes: list[ChangeType]
 
 
 @strawberry.type
@@ -132,7 +137,10 @@ class Query:
         all_cats = sorted(set(cur_cats) | set(prev_cats))
 
         changes = [
-            {"category": name, "delta": cur_cats.get(name, 0) - prev_cats.get(name, 0)}
+            ChangeType(  # type: ignore[call-arg]
+                category=name,
+                delta=cur_cats.get(name, 0) - prev_cats.get(name, 0),
+            )
             for name in all_cats
         ]
 

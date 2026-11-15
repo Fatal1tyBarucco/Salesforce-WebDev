@@ -7,13 +7,13 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from src.core.classification.service import ClassificationResult, ClassifiedFeature
 from src.core.enrichment.service import (
     EnrichmentAdapter,
     EnrichmentConfig,
     EnrichmentService,
     EnrichmentStrategy,
 )
-from src.core.classification.service import ClassificationResult, ClassifiedFeature
 from src.models.classification import FeatureType, ImpactLevel
 from src.models.enrichment import CategoryEnrichment, FeatureEnrichment, ReleaseEnrichment
 from src.models.feature import FeatureCategory

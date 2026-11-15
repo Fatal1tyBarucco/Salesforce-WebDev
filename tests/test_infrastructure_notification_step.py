@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-
 import pytest
 
+from src.infrastructure.messaging import NotificationAdapter
 from src.infrastructure.notification_step import (
     NotificationStepAdapter,
     create_notification_step,
 )
-from src.infrastructure.messaging import NotificationAdapter
 from src.models.enrichment import ReleaseEnrichment
 
 

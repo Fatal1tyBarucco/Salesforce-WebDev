@@ -16,11 +16,11 @@ from src.ai.config.models import get_openrouter_free_model
 
 logger = logging.getLogger(__name__)
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-MAX_ATTEMPTS = 3
+MAX_ATTEMPTS = 4
 MAX_DIAGNOSTIC_CHARS = 300
 OUTPUT_PREVIEW_CHARS = 120
-DEFAULT_OUTPUT_TOKENS = 3000
-DEFAULT_OUTPUT_TOKENS_CAP = 8000
+DEFAULT_OUTPUT_TOKENS = 6000
+DEFAULT_OUTPUT_TOKENS_CAP = 16000
 REDACTED = "[REDACTED]"
 _BEARER_PATTERN = re.compile(r"(?i)bearer\s+[A-Za-z0-9._~+/=-]+")
 _API_KEY_PATTERN = re.compile(r"sk-[A-Za-z0-9_-]{6,}")
@@ -194,9 +194,10 @@ def _classify_output_failure(error: BaseException, completion: Any) -> tuple[str
         return (
             "issue=truncated-output",
             (
-                "Sua resposta anterior foi truncada pelo limite de tokens; "
-                "retorne um JSON mais conciso, porém completo e fechado, "
-                "sem comentários nem cercas de código."
+                "Sua resposta anterior foi truncada pelo limite de tokens. "
+                "Retorne um JSON completo e bem-fechado, sem comentários nem cercas de código. "
+                "Certifique-se de que todos os campos obrigatórios estejam presentes, "
+                "especialmente 'review_needed' como array (lista) e não boolean."
             ),
         )
     if finish_reason == "content_filter" or (isinstance(refusal, str) and refusal.strip()):
@@ -214,7 +215,18 @@ def _classify_output_failure(error: BaseException, completion: Any) -> tuple[str
             (
                 f"Sua resposta anterior falhou na validação ({error}). "
                 "Corrija o JSON e retorne somente o objeto solicitado, "
-                "sem comentários nem cercas de código."
+                "sem comentários nem cercas de código. Lembre-se: 'review_needed' deve ser uma lista (array), nunca boolean."
+            ),
+        )
+    # Schema validation error - provide specific guidance for common issues
+    error_str = str(error).lower()
+    if "review_needed" in error_str and ("list" in error_str or "array" in error_str):
+        return (
+            "issue=schema-mismatch",
+            (
+                "Erro de validação: o campo 'review_needed' deve ser uma lista (array) de objetos, "
+                "não um boolean. Use 'review_needed': [] para lista vazia ou uma lista de objetos ChangeEntry. "
+                "Corrija e retorne somente o objeto JSON solicitado."
             ),
         )
     return (
@@ -222,7 +234,8 @@ def _classify_output_failure(error: BaseException, completion: Any) -> tuple[str
         (
             f"Sua resposta anterior falhou na validação ({error}). "
             "Corrija o JSON e retorne somente o objeto solicitado, "
-            "sem comentários nem cercas de código, e nunca com conteúdo vazio."
+            "sem comentários nem cercas de código, e nunca com conteúdo vazio. "
+            "Verifique se 'review_needed' é uma lista (array)."
         ),
     )
 

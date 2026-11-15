@@ -296,8 +296,8 @@ class TestCachedScrapingAdapter:
         self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
     ) -> None:
         """Should refetch when cache is expired."""
-        import time
         import tempfile
+        import time
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cached_adapter._cache_dir = tmpdir
@@ -336,9 +336,9 @@ class TestCachedScrapingAdapter:
         self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
     ) -> None:
         """Cache key should be deterministic for same URL."""
+        import hashlib
         import tempfile
         from pathlib import Path
-        import hashlib
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cached_adapter._cache_dir = tmpdir
@@ -347,7 +347,7 @@ class TestCachedScrapingAdapter:
             await cached_adapter.execute("https://example.com/page1")
 
             # Check cache file exists with expected name
-            cache_key = hashlib.sha256("https://example.com/page1".encode()).hexdigest()[:16]
+            cache_key = hashlib.sha256(b"https://example.com/page1").hexdigest()[:16]
             cache_path = Path(tmpdir) / f"{cache_key}.html"
 
             assert cache_path.exists()
