@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: revisar o repositório para identificar outros arquivos sem newline final no fim do arquivo e aplicar o mesmo critério de formatação. Sugestão: monitorar o gate de formatação Black em novas adições de código.
+
+---
 
 ## Nova atualização
 

@@ -1,6 +1,34 @@
-<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Correção de newline no final do arquivo `src/infrastructure/api/__init__.py` para atender ao gate de formatação Black. A alteração não introduz mudança de lógica ou comportamento.
+
+Impacto: baixo. Risco: baixo. Não há breaking change identificado.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Correção de newline no EOF do src/infrastructure/api/__init__.py — 📋 refactor** | Adiciona nova linha ausente no final do arquivo src/infrastructure/api/__init__.py para atender a… | 🟢 low | src/infrastructure/api/__init__.py · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **0** (0%) 
+🟡 Médio: **0** (0%) 
+🟢 Baixo: **1** (100%) 🟢
+
+Total: **1 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo:   █
+
+---
 
 ## Nova atualização
 

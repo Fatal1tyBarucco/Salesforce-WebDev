@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+A alteração trata apenas de formatação no arquivo `src/infrastructure/api/__init__.py`, adicionando newline final no final do arquivo para atender ao gate de formatação. Não há mudança de lógica ou comportamento. Impacto de negócio é baixo; risco é baixo; não há breaking change identificado. Próximos passos: validar a conformidade com o gate de formatação.
+
+---
 
 ## Nova atualização
 

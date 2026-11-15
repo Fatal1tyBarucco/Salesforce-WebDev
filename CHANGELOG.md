@@ -1,5 +1,12 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Changed
+- Refactored `src/infrastructure/api/__init__.py` by adding the missing newline at end of file to satisfy the Black formatting gate; no logic or behavior changes were made.
+
 <!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
