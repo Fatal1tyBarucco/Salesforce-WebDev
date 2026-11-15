@@ -97,7 +97,29 @@ nav:
       - ADR-004 Auto-Healing: architecture/decisions/adr-004-auto-healing.md
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
       - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
+      - ADR-007 Clean Architecture Migration: architecture/decisions/adr-007-clean-architecture.md
   - API Reference:
+    - Core Classification Service: api/core-classification-service.md
+    - Core Enrichment Service: api/core-enrichment-service.md
+    - Core Pipeline Orchestrator: api/core-pipeline-orchestrator.md
+    - Core Pipeline Steps: api/core-pipeline-steps.md
+    - Core Summarization Service: api/core-summarization-service.md
+    - Infrastructure Api Graphql: api/infrastructure-api-graphql.md
+    - Infrastructure Api Routes: api/infrastructure-api-routes.md
+    - Infrastructure Generation: api/infrastructure-generation.md
+    - Infrastructure Github: api/infrastructure-github.md
+    - Infrastructure Llm: api/infrastructure-llm.md
+    - Infrastructure Messaging: api/infrastructure-messaging.md
+    - Infrastructure Notification Step: api/infrastructure-notification_step.md
+    - Infrastructure Parsing: api/infrastructure-parsing.md
+    - Infrastructure Scraping: api/infrastructure-scraping.md
+    - Infrastructure Storage: api/infrastructure-storage.md
+    - Infrastructure Translation: api/infrastructure-translation.md
+    - Models Api: api/models-api.md
+    - Models Classification: api/models-classification.md
+    - Models Enrichment: api/models-enrichment.md
+    - Models Feature: api/models-feature.md
+    - Models Release: api/models-release.md
     - Ai Config Models: api/ai-config-models.md
     - Ai Schemas Generated Docs: api/ai-schemas-generated_docs.md
     - Ai Collectors Change Collector: api/ai-collectors-change_collector.md
