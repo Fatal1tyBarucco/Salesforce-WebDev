@@ -79,3 +79,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `825cd48` — feat(ai-docs): complete change context and rate-limit handling
 - `c88626d` — feat(ai-docs): add OpenRouter free documentation pipeline
 - `5288e02` — docs: atualização automática via IA [skip ci]
+- `eab530d` — feat(design-system): extract and apply design system to dashboard

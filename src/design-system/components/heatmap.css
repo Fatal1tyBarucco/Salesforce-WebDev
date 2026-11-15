@@ -1,0 +1,109 @@
+/**
+ * Heatmap Component — Salesforce Release Intelligence Design System
+ * Signature component: confidence grid with HSL interpolation
+ */
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--heatmap-cell-min-size), 1fr));
+  gap: var(--space-xs);
+  margin: var(--space-md) 0;
+}
+
+.heat-cell {
+  aspect-ratio: 1;
+  border-radius: var(--heatmap-cell-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--heatmap-cell-font-family);
+  font-size: var(--heatmap-cell-font-size);
+  font-weight: var(--heatmap-cell-font-weight);
+  color: var(--heatmap-cell-color);
+  cursor: pointer;
+  position: relative;
+  /* Accessibility: border for colorblind differentiation */
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.heat-cell:hover {
+  border-color: var(--color-outline);
+}
+
+.heat-cell::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-on-surface);
+  color: var(--color-surface);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-bottom: var(--space-xs);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.heat-cell:hover::after,
+.heat-cell:focus::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.heat-cell:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+  z-index: 5;
+}
+
+/* Heatmap Legend — for accessibility (colorblind, screen readers) */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-label);
+  color: var(--color-on-surface-variant);
+  flex-wrap: wrap;
+}
+
+.heatmap-legend__label {
+  font-weight: var(--font-weight-medium);
+}
+
+.heatmap-legend__swatches {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.heatmap-legend__swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-outline-variant);
+}
+
+/* Utility: Generate heatmap cell background from confidence (0-100) */
+.heat-cell[data-confidence] {
+  --hue: calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * (attr(data-confidence) / 100));
+  background: hsl(var(--hue), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .heat-cell::after {
+    transition: none;
+  }
+  .heat-cell {
+    transition: none;
+  }
+}

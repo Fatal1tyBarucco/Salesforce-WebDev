@@ -1,0 +1,320 @@
+/**
+ * Salesforce Release Intelligence — Design Tokens
+ * Generated from DESIGN.md (Material 3 Tonal Palette)
+ * Do not edit directly — update DESIGN.md and regenerate
+ */
+
+:root {
+  /* ========================================================================
+     COLOR TOKENS — Material 3 Tonal Palette
+     ======================================================================== */
+
+  /* Primary — Deep Technical Purple */
+  --color-primary: #6750A4;
+  --color-primary-container: #EADDFF;
+  --color-on-primary: #FFFFFF;
+  --color-on-primary-container: #21005D;
+
+  /* Secondary — Muted Purple-Gray */
+  --color-secondary: #625B71;
+  --color-secondary-container: #E8DEF8;
+  --color-on-secondary: #FFFFFF;
+  --color-on-secondary-container: #1D192B;
+
+  /* Tertiary — Warm Berry */
+  --color-tertiary: #7D5260;
+  --color-tertiary-container: #FFD8E4;
+  --color-on-tertiary: #FFFFFF;
+  --color-on-tertiary-container: #31111D;
+
+  /* Error */
+  --color-error: #BA1A1A;
+  --color-error-container: #FFDAD6;
+  --color-on-error: #FFFFFF;
+  --color-on-error-container: #410002;
+
+  /* Neutral — Light Mode */
+  --color-background: #FDF7FF;
+  --color-on-background: #1C1B1F;
+  --color-surface: #FDF7FF;
+  --color-on-surface: #1C1B1F;
+  --color-surface-variant: #E7E0EC;
+  --color-on-surface-variant: #49454F;
+  --color-outline: #79747E;
+  --color-outline-variant: #CAC4D0;
+  --color-shadow: #000000;
+  --color-scrim: #000000;
+  --color-inverse-surface: #313033;
+  --color-inverse-on-surface: #F4EFF4;
+  --color-inverse-primary: #D0BCFF;
+
+  /* Fixed Variants (for hover/active states) */
+  --color-primary-fixed: #EADDFF;
+  --color-primary-fixed-dim: #D0BCFF;
+  --color-on-primary-fixed: #21005D;
+  --color-on-primary-fixed-variant: #4F378B;
+  --color-secondary-fixed: #E8DEF8;
+  --color-secondary-fixed-dim: #CCC2DC;
+  --color-on-secondary-fixed: #1D192B;
+  --color-on-secondary-fixed-variant: #4A4458;
+  --color-tertiary-fixed: #FFD8E4;
+  --color-tertiary-fixed-dim: #EFB8C8;
+  --color-on-tertiary-fixed: #31111D;
+  --color-on-tertiary-fixed-variant: #633B48;
+
+  /* Surface Containers (elevation layers) */
+  --color-surface-dim: #DDD8DE;
+  --color-surface-bright: #FDF7FF;
+  --color-surface-container-low: #F5EEFA;
+  --color-surface-container: #EFE9F5;
+  --color-surface-container-high: #E9E3EF;
+  --color-surface-container-highest: #E4DEEA;
+
+  /* ========================================================================
+     SEMANTIC DATA VISUALIZATION COLORS
+     Independent of UI palette — for charts, heatmaps, deltas
+     ======================================================================== */
+
+  /* Delta/Comparison: Green positive, Red negative, Gray neutral */
+  --color-delta-positive: #16A34A;
+  --color-delta-negative: #DC2626;
+  --color-delta-neutral: var(--color-on-surface-variant);
+
+  /* Heatmap: HSL hue interpolation (red→green) — confidence scale */
+  --color-heatmap-hue-min: 0;   /* 0% confidence = red */
+  --color-heatmap-hue-max: 120; /* 100% confidence = green */
+  --color-heatmap-saturation: 70%;
+  --color-heatmap-lightness: 45%;
+  --color-heatmap-text: var(--color-on-primary);
+
+  /* ========================================================================
+     ROUNDED TOKENS
+     ======================================================================== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ========================================================================
+     SPACING TOKENS (8px base unit)
+     ======================================================================== */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* ========================================================================
+     TYPOGRAPHY TOKENS
+     ======================================================================== */
+  --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'Roboto Mono', 'Fira Code', 'JetBrains Mono', monospace;
+
+  /* Type Scale */
+  --font-size-display: 3.5rem;    /* 56px — Page hero only */
+  --font-size-headline: 2.5rem;   /* 40px — Section headers */
+  --font-size-title: 1.75rem;     /* 28px — Card titles, category names */
+  --font-size-body: 1rem;         /* 16px — All prose, table cells */
+  --font-size-label: 0.875rem;    /* 14px — Buttons, tabs, filters */
+  --font-size-mono: 0.875rem;     /* 14px — Code, data tables */
+  --font-size-heatmap: 0.625rem;  /* 10px — Heatmap cell values */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --line-height-display: 1.1;
+  --line-height-headline: 1.2;
+  --line-height-title: 1.3;
+  --line-height-body: 1.5;
+  --line-height-label: 1.5;
+  --line-height-mono: 1.6;
+
+  --letter-spacing-display: -0.02em;
+  --letter-spacing-headline: 0em;
+  --letter-spacing-title: 0em;
+  --letter-spacing-body: 0.01em;
+  --letter-spacing-label: 0.05em;
+  --letter-spacing-mono: 0em;
+
+  /* ========================================================================
+     SHADOW TOKENS
+     ======================================================================== */
+  --shadow-card-rest: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.12);
+  --shadow-banner: 0 2px 8px rgba(0,0,0,0.15);
+  --shadow-focus-ring: 0 0 0 3px var(--color-primary-container);
+  --shadow-dropdown: 0 8px 24px rgba(0,0,0,0.16);
+
+  /* ========================================================================
+     COMPONENT TOKEN REFERENCES (Semantic aliases)
+     ======================================================================== */
+
+  /* Card */
+  --card-bg: var(--color-surface);
+  --card-radius: var(--radius-lg);
+  --card-padding: var(--space-md);
+  --card-shadow: var(--shadow-card-rest);
+
+  /* Navigation Tabs */
+  --tab-inactive-bg: var(--color-surface-variant);
+  --tab-inactive-color: var(--color-on-surface-variant);
+  --tab-active-bg: var(--color-primary);
+  --tab-active-color: var(--color-on-primary);
+  --tab-radius: var(--radius-md);
+  --tab-padding: var(--space-sm) var(--space-md);
+  --tab-font-size: var(--font-size-label);
+  --tab-font-weight: var(--font-weight-medium);
+  --tab-text-transform: uppercase;
+  --tab-letter-spacing: var(--letter-spacing-label);
+
+  /* Buttons */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-color: var(--color-on-primary);
+  --btn-primary-hover-bg: var(--color-primary-fixed-dim);
+  --btn-primary-hover-color: var(--color-on-primary-fixed);
+  --btn-radius: var(--radius-md);
+  --btn-padding: 10px 24px;
+  --btn-font-size: var(--font-size-label);
+  --btn-font-weight: var(--font-weight-medium);
+  --btn-text-transform: uppercase;
+  --btn-letter-spacing: var(--letter-spacing-label);
+
+  /* Inputs / Selects */
+  --input-bg: var(--color-surface);
+  --input-color: var(--color-on-surface);
+  --input-radius: var(--radius-md);
+  --input-padding: 12px 16px;
+  --input-border: 1px solid var(--color-outline);
+  --input-font-size: var(--font-size-body);
+  --input-focus-border: 2px solid var(--color-primary);
+  --input-focus-ring: var(--shadow-focus-ring);
+
+  /* Tables */
+  --table-header-bg: var(--color-surface-variant);
+  --table-header-color: var(--color-on-surface-variant);
+  --table-header-font-weight: var(--font-weight-medium);
+  --table-cell-padding: var(--space-sm) 10px;
+  --table-cell-font-size: var(--font-size-body);
+  --table-divider: 1px solid var(--color-outline);
+  --table-row-hover-bg: var(--color-surface-container-low);
+
+  /* Heatmap Cells */
+  --heatmap-cell-radius: var(--radius-sm);
+  --heatmap-cell-min-size: 40px;
+  --heatmap-cell-font-size: var(--font-size-heatmap);
+  --heatmap-cell-font-family: var(--font-family-mono);
+  --heatmap-cell-font-weight: var(--font-weight-bold);
+  --heatmap-cell-color: var(--color-heatmap-text);
+
+  /* Stat Cards */
+  --stat-card-radius: var(--radius-lg);
+  --stat-card-padding: var(--space-md);
+  --stat-number-font-size: 1.5rem; /* 24px */
+  --stat-number-font-weight: var(--font-weight-bold);
+  --stat-number-color: var(--color-primary);
+  --stat-label-font-size: var(--font-size-label);
+  --stat-label-color: var(--color-on-surface-variant);
+  --stat-gap: var(--space-md);
+
+  /* Banner Hero */
+  --banner-radius: var(--radius-md);
+  --banner-shadow: var(--shadow-banner);
+  --banner-max-width: 960px;
+  --banner-transition: opacity 0.4s ease-in-out;
+}
+
+/* ========================================================================
+   DARK MODE — Material 3 Tonal Palette Inversion
+   Full parity via prefers-color-scheme; no manual overrides needed
+   ======================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Primary */
+    --color-primary: #D0BCFF;
+    --color-primary-container: #4F378B;
+    --color-on-primary: #381E72;
+    --color-on-primary-container: #EADDFF;
+
+    /* Secondary */
+    --color-secondary: #CCC2DC;
+    --color-secondary-container: #4A4458;
+    --color-on-secondary: #332D41;
+    --color-on-secondary-container: #E8DEF8;
+
+    /* Tertiary */
+    --color-tertiary: #EFB8C8;
+    --color-tertiary-container: #633B48;
+    --color-on-tertiary: #4A2530;
+    --color-on-tertiary-container: #FFD8E4;
+
+    /* Error */
+    --color-error: #FFB4AB;
+    --color-error-container: #93000A;
+    --color-on-error: #690005;
+    --color-on-error-container: #FFDAD6;
+
+    /* Neutral */
+    --color-background: #1C1B1F;
+    --color-on-background: #F4EFF4;
+    --color-surface: #1C1B1F;
+    --color-on-surface: #F4EFF4;
+    --color-surface-variant: #49454F;
+    --color-on-surface-variant: #CAC4D0;
+    --color-outline: #938F99;
+    --color-outline-variant: #49454F;
+    --color-shadow: #000000;
+    --color-scrim: #000000;
+    --color-inverse-surface: #F4EFF4;
+    --color-inverse-on-surface: #313033;
+    --color-inverse-primary: #6750A4;
+
+    /* Fixed Variants */
+    --color-primary-fixed: #EADDFF;
+    --color-primary-fixed-dim: #D0BCFF;
+    --color-on-primary-fixed: #21005D;
+    --color-on-primary-fixed-variant: #4F378B;
+    --color-secondary-fixed: #E8DEF8;
+    --color-secondary-fixed-dim: #CCC2DC;
+    --color-on-secondary-fixed: #1D192B;
+    --color-on-secondary-fixed-variant: #4A4458;
+    --color-tertiary-fixed: #FFD8E4;
+    --color-tertiary-fixed-dim: #EFB8C8;
+    --color-on-tertiary-fixed: #31111D;
+    --color-on-tertiary-fixed-variant: #633B48;
+
+    /* Surface Containers */
+    --color-surface-dim: #1C1B1F;
+    --color-surface-bright: #49454F;
+    --color-surface-container-low: #262528;
+    --color-surface-container: #2B2A2E;
+    --color-surface-container-high: #363539;
+    --color-surface-container-highest: #403F43;
+
+    /* Component Adjustments */
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --table-row-hover-bg: var(--color-surface-container-high);
+    --shadow-banner: 0 2px 8px rgba(0,0,0,0.4);
+  }
+}
+
+/* ========================================================================
+   MOTION REDUCTION
+   Respect prefers-reduced-motion for accessibility
+   ======================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --banner-transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

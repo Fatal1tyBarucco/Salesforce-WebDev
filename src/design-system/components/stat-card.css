@@ -1,0 +1,58 @@
+/**
+ * Stat Card Component — Salesforce Release Intelligence Design System
+ * KPI display: large number + label
+ */
+
+.stats {
+  display: flex;
+  gap: var(--stat-gap);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--stat-card-radius);
+  padding: var(--stat-card-padding);
+  box-shadow: var(--card-shadow);
+  flex: 1;
+  min-width: 120px;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.stat-number {
+  font-size: var(--stat-number-font-size);
+  font-weight: var(--stat-number-font-weight);
+  color: var(--stat-number-color);
+  line-height: 1.2;
+  margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+  font-size: var(--stat-label-font-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--stat-label-color);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .stats {
+    gap: var(--space-sm);
+  }
+  .stat-number {
+    font-size: 1.25rem;
+  }
+  .stat-card {
+    min-width: 100px;
+    padding: var(--space-sm);
+  }
+}

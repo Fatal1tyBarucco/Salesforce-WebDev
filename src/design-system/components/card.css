@@ -1,0 +1,54 @@
+/**
+ * Card Component — Salesforce Release Intelligence Design System
+ * Variants: elevated (shadow), outlined (border)
+ */
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Outlined variant — border instead of shadow */
+.card-outlined {
+  box-shadow: none;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.card-outlined:hover {
+  box-shadow: none;
+  border-color: var(--color-outline);
+}
+
+/* Interactive card (clickable) */
+.card-interactive {
+  cursor: pointer;
+}
+
+/* Card with no internal padding (table fills card) */
+.card-table-wrapper {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-table-wrapper table {
+  width: 100%;
+}
+
+.card-table-wrapper th,
+.card-table-wrapper td {
+  padding: var(--table-cell-padding);
+}
+
+/* Responsive card */
+@media (max-width: 600px) {
+  .card {
+    padding: var(--space-sm);
+  }
+}

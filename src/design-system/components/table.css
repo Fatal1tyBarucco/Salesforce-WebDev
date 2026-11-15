@@ -1,0 +1,106 @@
+/**
+ * Table Component — Salesforce Release Intelligence Design System
+ * High-density data tables with sticky headers
+ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--table-cell-font-size);
+  font-family: var(--font-family);
+}
+
+.table th,
+.table td {
+  padding: var(--table-cell-padding);
+  text-align: left;
+  border-bottom: var(--table-divider);
+}
+
+.table th {
+  background: var(--table-header-bg);
+  font-weight: var(--table-header-font-weight);
+  color: var(--table-header-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background: var(--table-row-hover-bg);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Scrollable table wrapper */
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Compare table delta colors */
+.delta-positive {
+  color: var(--color-delta-positive);
+  font-weight: var(--font-weight-bold);
+}
+
+.delta-negative {
+  color: var(--color-delta-negative);
+  font-weight: var(--font-weight-bold);
+}
+
+.delta-neutral {
+  color: var(--color-delta-neutral);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Empty state in table */
+.table-empty {
+  text-align: center;
+  color: var(--color-on-surface-variant);
+  padding: var(--space-xl);
+  font-size: var(--font-size-body);
+}
+
+/* Loading state in table */
+.table-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  color: var(--color-on-surface-variant);
+}
+
+.table-loading::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  margin-left: var(--space-sm);
+  border: 2px solid var(--color-outline-variant);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table-loading::after {
+    animation: none;
+    border-top-color: var(--color-primary);
+  }
+}
+
+/* Responsive: smaller padding on mobile */
+@media (max-width: 600px) {
+  .table th,
+  .table td {
+    padding: 6px 8px;
+  }
+}
