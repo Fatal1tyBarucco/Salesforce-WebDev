@@ -339,10 +339,10 @@ class TestCreateRestRouter:
     ) -> None:
         """POST /classify should classify feature text."""
         from src.models.classification import (
-            ClassifiedFeature,
-            ImpactLevel,
-            FeatureType,
             Audience,
+            ClassifiedFeature,
+            FeatureType,
+            ImpactLevel,
             Priority,
         )
 

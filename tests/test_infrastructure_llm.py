@@ -8,14 +8,14 @@ from unittest.mock import patch
 import pytest
 
 from src.infrastructure.llm import (
+    _PROVIDER_CHAIN,
+    HeuristicClassificationAdapter,
     OpenRouterClassificationAdapter,
     OpenRouterEnrichmentAdapter,
     OpenRouterLLMAdapter,
     UnifiedLLMClient,
-    HeuristicClassificationAdapter,
-    _ProviderConfig,
-    _PROVIDER_CHAIN,
     _env_model_override,
+    _ProviderConfig,
 )
 from src.models.enrichment import CategoryEnrichment, ReleaseEnrichment
 
