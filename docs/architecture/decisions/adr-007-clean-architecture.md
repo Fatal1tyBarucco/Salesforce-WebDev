@@ -18,6 +18,7 @@ O código base acumulou acoplamento entre camadas ao longo do tempo:
 - Testes difíceis de isolar devido a dependências de I/O (rede, filesystem, LLM)
 
 Problemas resultantes:
+
 - Mudar o parser exige mexer no orquestrador
 - Testar classificação exige LLM real ou mocks complexos
 - Adicionar novo provedor de LLM toca múltiplos arquivos
@@ -27,7 +28,7 @@ Problemas resultantes:
 
 Adotar **Clean Architecture** com 4 camadas e dependências unidirecionais (apenas para dentro):
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    Application (Orchestration)               │
 │  src/main_clean.py  — PipelineFactory, wiring de dependências│

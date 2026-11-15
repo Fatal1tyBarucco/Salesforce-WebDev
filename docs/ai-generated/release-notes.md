@@ -20,7 +20,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 ## 📊 Distribuição de Impacto
 
 🔴 Alto: **1** (12%) 🔴
-🟡 Médio: **0** (0%) 
+🟡 Médio: **0** (0%)
 🟢 Baixo: **7** (87%) 🟢🟢🟢🟢🟢🟢🟢
 
 Total: **8 features**
@@ -37,7 +37,7 @@ Sparkline da distribuição alto/médio/baixo: ▁ █
 
 ---
 
-## Nova atualização
+## Nova atualização 1
 
 Esta release corrige a falha de deploy no GitHub Pages que impedia a publicação de artefatos de release e afetava a entrega contínua do Intelligence Hub. Ajusta cabeçalhos Markdown para conformidade com lint MD001/MD036 e melhora o upload de artefatos de logs de IA no workflow ai-docs. Introduz gestão de orçamento de tokens de saída no cliente LLM, com variáveis de ambiente e escalonamento exponencial em retentativas para reduzir completions vazias ou truncadas. Adiciona novos testes de cobertura para módulos de IA e documentação. Simplifica o tratamento de exceções no docs_sync_engine, substituindo blocos específicos por captura genérica de Exception, o que pode mascarar erros específicos e requer atenção. Atualiza o manifesto de documentação com novos artefatos gerados por IA. Um import não utilizado em orchestrator.py está sob revisão.
 
@@ -51,7 +51,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 | **Novos testes de cobertura para módulos IA e docs — 📋 feature** | Adição de test_ai_docs.py, test_ai_docs_coverage.py, test_ai_coverage.py e atualização de test_ma… | 🟡 medium | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py, tests/test_ai_coverage.py, tests/test_main_coverage.py · Prioridade: 💡 P2 |
 | **Ajuste no workflow ai-docs para upload de artefatos ocultos — 📋 bugfix** | Mudança de if-no-files-found: ignore para warn e adição de include-hidden-files: true no upload d… | 🟢 low | .github/workflows/ai-docs.yml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 1
 
 🔴 Alto: **1** (14%) 🔴
 🟡 Médio: **2** (28%) 🟡🟡
@@ -59,7 +59,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 1
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
@@ -88,7 +88,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 | **Expansão significativa do change collector — 📋 feature** | Reescrita completa do change_collector.py com novas funcionalidades de coleta de mudanças Git/Git… | 🔴 high | src/ai/collectors/change_collector.py, src/ai/schemas/change.py, tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P1 |
 | **Exposição de diagnóstico de falha com testes validados — 📋 feature** | Implementa exposição de diagnóstico de falhas com cobertura de testes validada. | 🟡 medium | src/ai/orchestrator.py, tests/test_ledger/test_service.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 1
+## 📊 Distribuição de Impacto 1 1
 
 🔴 Alto: **3** (42%) 🔴🔴🔴
 🟡 Médio: **3** (42%) 🟡🟡🟡
@@ -96,7 +96,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 1
+## Mudanças por tipo nesta execução 1 1
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
