@@ -36,24 +36,32 @@ PATTERNS: list[tuple[str, str, str, str, str]] = [
         "Falha de conexão com provedor de LLM",
         "Endpoint (`base_url`) incorreto/indisponível, DNS ou instabilidade de rede no runner.",
         "`OPENCODE_API_KEY=<key> uv run python -m src.main --dry-run`",
-        "Conferir `base_url` de cada provider em `_PROVIDER_CHAIN` (`src/llm_service.py`) e em `_call_opencode` "
-        "(`.github/scripts/llm_fallback.py`). Endpoint correto do OpenCode Zen: `https://opencode.ai/zen/v1`.",
+        (
+            "Conferir `base_url` de cada provider em `_PROVIDER_CHAIN` (`src/llm_service.py`) "
+            "e em `_call_opencode` (`.github/scripts/llm_fallback.py`). "
+            "Endpoint correto do OpenCode Zen: `https://opencode.ai/zen/v1`."
+        ),
     ),
     (
         r"429[^\n]*RESOURCE_EXHAUSTED|RESOURCE_EXHAUSTED",
         "Quota diária do Gemini esgotada (HTTP 429)",
         "O free tier do Gemini permite ~20 requisições/dia; o limite foi atingido.",
         "—",
-        "O circuit breaker já desativa o provider pelo resto do run. Aguardar reset diário da cota ou reforçar o "
-        "pool gratuito OpenCode/OpenRouter em `_opencode_models()` / `_openrouter_models()`.",
+        (
+            "O circuit breaker já desativa o provider pelo resto do run. "
+            "Aguardar reset diário da cota ou reforçar o "
+            "pool gratuito OpenCode/OpenRouter em `_opencode_models()` / `_openrouter_models()`."
+        ),
     ),
     (
         r"\b503\b[^\n]*(upstream|Service Unavailable)|Service Unavailable",
         "Modelo gratuito indisponível (503 upstream)",
         "Modelos free oscilam ao longo do dia (503 um dia, stalls noutro).",
         "—",
-        "Confirmar nos logs que o sweep varreu os modelos alternativos do pool antes de falhar; se todos caíram, "
-        "considerar adicionar um novo modelo free à lista.",
+        (
+            "Confirmar nos logs que o sweep varreu os modelos alternativos do pool "
+            "antes de falhar; se todos caíram, considerar adicionar um novo modelo free à lista."
+        ),
     ),
     (
         r"Traceback \(most recent call last\)",
@@ -67,8 +75,10 @@ PATTERNS: list[tuple[str, str, str, str, str]] = [
         "Cache de resumos (.summary_cache.json) inconsistente com .meta.json",
         "A geração de resumos foi interrompida antes de gravar todos os caches, ou gravou estado vazio.",
         "`uv run python -m src.main --release <slug>` e conferir `releases/<slug>/.summary_cache.json`",
-        "Reexecutar a geração da(s) release(s) apontada(s) na validação de caches; investigar falha parcial do "
-        "provedor de LLM durante a geração de summaries.",
+        (
+            "Reexecutar a geração da(s) release(s) apontada(s) na validação de caches; "
+            "investigar falha parcial do provedor de LLM durante a geração de summaries."
+        ),
     ),
     (
         r"failed to push some refs|!\s*\[remote rejected\]|fetch first",
@@ -220,8 +230,11 @@ def build_body(findings: list[dict[str, object]]) -> str:
         parts += [
             "### 🔍 Diagnóstico",
             "",
-            "Nenhum padrão conhecido foi identificado nos logs capturados. Os arquivos completos estão nos "
-            "artifacts do run (ver links abaixo) — inspecioná-los manualmente para classificar a falha.",
+            (
+                "Nenhum padrão conhecido foi identificado nos logs capturados. "
+                "Os arquivos completos estão nos artifacts do run (ver links abaixo) "
+                "— inspecioná-los manualmente para classificar a falha."
+            ),
             "",
         ]
     else:

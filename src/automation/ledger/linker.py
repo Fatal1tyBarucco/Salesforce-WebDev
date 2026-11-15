@@ -16,8 +16,8 @@ from typing import Any
 from .models import (
     FeatureLink,
     FeatureSnapshot,
-    LinkageMethod,
     LifecycleStatus,
+    LinkageMethod,
 )
 
 logger = logging.getLogger(__name__)

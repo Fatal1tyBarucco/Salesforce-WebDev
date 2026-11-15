@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from pydantic import Field
+
 try:
     from fastapi import Depends, FastAPI, Header, HTTPException, status  # type: ignore[import-not-found]
     from pydantic import BaseModel
@@ -82,7 +84,7 @@ _KNOWN_SLUGS = {"summer_26", "spring_26", "winter_26"}
 class TriageRequest(BaseModel):  # type: ignore[misc]
     title: str
     description: str
-    labels: list[str] = []
+    labels: list[str] = Field(default_factory=list)
 
 
 class TriageResponse(BaseModel):  # type: ignore[misc]

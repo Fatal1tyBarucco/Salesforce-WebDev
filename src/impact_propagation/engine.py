@@ -9,14 +9,15 @@ from __future__ import annotations
 import json
 import logging
 from collections import defaultdict, deque
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Self, Literal, cast
+from typing import Any, Literal, Self, cast
 
 from src.cache_manager import CacheManager
 from src.circuit_breaker import CircuitBreaker
 from src.config import RELEASES_DIR
 from src.llm_service import LLMService
+
 from .graph_builder import DependencyGraphBuilder
 from .heuristic_fallback import DependencyHeuristicFallback
 from .models import (
@@ -85,7 +86,7 @@ class ImpactPropagationEngine:
             edges=graph.edges,
             graph_statistics=graph.graph_statistics,
             source=cast(Literal["llm", "heuristic"], source),
-            generated_at=datetime.now(timezone.utc).isoformat(),
+            generated_at=datetime.now(UTC).isoformat(),
         )
 
     async def compute_blast_radius(
@@ -113,7 +114,7 @@ class ImpactPropagationEngine:
             nodes_affected=len(nodes_affected),
             total_impact_score=round(total_score, 2),
             nodes=nodes_affected,
-            computed_at=datetime.now(timezone.utc).isoformat(),
+            computed_at=datetime.now(UTC).isoformat(),
             cache_hit=False,
         )
         self._cache.set(cache_key, response.model_dump(), namespace="blast_radius")
@@ -131,7 +132,7 @@ class ImpactPropagationEngine:
             critical_path_length=max((len(s.dependency_chain) for s in steps), default=0),
             steps=steps,
             dependency_graph_summary=self._summarize_edges(graph.edges),
-            generated_at=datetime.now(timezone.utc).isoformat(),
+            generated_at=datetime.now(UTC).isoformat(),
             fallback_used=graph.source == "heuristic",
         )
 

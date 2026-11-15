@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -101,7 +101,7 @@ class FeatureEvolutionLedgerService:
             category = self._extract_category(content)
             for line in content.split("\n"):
                 stripped = line.strip()
-                if not (stripped.startswith("- ") or stripped.startswith("* ")):
+                if not (stripped.startswith(("- ", "* "))):
                     continue
                 raw_name = stripped[2:].strip()
                 if len(raw_name) < 4:
@@ -175,7 +175,7 @@ class FeatureEvolutionLedgerService:
         current_features = self._extract_features(current_slug)
         previous_features = self._extract_features(previous_slug)
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
 
         # Converte para FeatureSnapshot
         current_snaps = [
@@ -604,4 +604,4 @@ class FeatureEvolutionLedgerService:
 
 def now_iso() -> str:
     """Retorna timestamp ISO atual com timezone UTC."""
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()

@@ -2,25 +2,25 @@
 # Gera manuais, cronogramas, guias de preparação de Orgs.
 # Nenhum acesso direto a URLs de extração; recebe dados já validos.
 
-from typing import Optional, Dict, Any
 from datetime import datetime
+from typing import Any
 
 
 class SalesforceReleaseManualBuilderDefensive:
     """Construtor defensivo de manuais de processo (Deploy, Sandbox Preview, Readiness)."""
 
     def __init__(
-        self, release_identifier_string: str, release_name_string: Optional[str] = None
+        self, release_identifier_string: str, release_name_string: str | None = None
     ) -> None:
         if not release_identifier_string:
             raise ValueError("release_identifier_string é obrigatório.")
         self.release_identifier_string: str = release_identifier_string
-        self.release_name_string: Optional[str] = (
+        self.release_name_string: str | None = (
             release_name_string if release_name_string else f"Release {release_identifier_string}"
         )
         self.generation_timestamp: datetime = datetime.now()
 
-    def generate_deployment_manual_document(self) -> Dict[str, Any]:
+    def generate_deployment_manual_document(self) -> dict[str, Any]:
         """Compila manual de implantação/deploy com ações recomendadas."""
         return {
             "document_title": f"Manual de Implantação — {self.release_name_string}",
@@ -35,7 +35,7 @@ class SalesforceReleaseManualBuilderDefensive:
             "generation_timestamp": self.generation_timestamp.isoformat(),
         }
 
-    def compile_sandbox_preview_schedule_document(self) -> Dict[str, Any]:
+    def compile_sandbox_preview_schedule_document(self) -> dict[str, Any]:
         """Cronograma defensivo de Sandbox Preview."""
         return {
             "document_title": f"Cronograma Sandbox Preview — {self.release_name_string}",
@@ -49,7 +49,7 @@ class SalesforceReleaseManualBuilderDefensive:
             "generation_timestamp": self.generation_timestamp.isoformat(),
         }
 
-    def compile_release_readiness_action_document(self) -> Dict[str, Any]:
+    def compile_release_readiness_action_document(self) -> dict[str, Any]:
         """Ações do Release Readiness baseadas no Change Log."""
         return {
             "document_title": f"Ações de Release Readiness — {self.release_name_string}",
@@ -70,7 +70,7 @@ class SalesforceOrgPreparationGuideDefensiveBuilder:
     def __init__(self, release_identifier_string: str) -> None:
         self.release_identifier_string: str = release_identifier_string
 
-    def generate_org_preparation_guide(self) -> Dict[str, Any]:
+    def generate_org_preparation_guide(self) -> dict[str, Any]:
         return {
             "guide_title": f"Guia de Preparação de Orgs — Release {self.release_identifier_string}",
             "mitigation_focus": "Redução de impacto por atualizações de API, alterações de permissão e manutenção.",

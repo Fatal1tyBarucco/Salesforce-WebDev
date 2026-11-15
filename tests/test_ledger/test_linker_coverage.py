@@ -5,8 +5,8 @@ from __future__ import annotations
 from src.automation.ledger.linker import FeatureLinker
 from src.automation.ledger.models import (
     FeatureSnapshot,
-    LinkageMethod,
     LifecycleStatus,
+    LinkageMethod,
 )
 
 

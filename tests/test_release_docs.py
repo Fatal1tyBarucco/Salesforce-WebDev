@@ -3,7 +3,7 @@
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.config import ReleaseInfo, BILINGUAL_TEMPLATES
+from src.config import BILINGUAL_TEMPLATES, ReleaseInfo
 
 
 class TestBuildReleaseName:
@@ -326,8 +326,8 @@ class TestUpdateSingleReadmeIdempotent:
         import asyncio
 
         from src.release_docs import (
-            _update_single_readme,
             RELEASE_SECTION_HEADING,
+            _update_single_readme,
         )
 
         readme_text = (
@@ -365,8 +365,8 @@ class TestUpdateSingleReadmeIdempotent:
         import asyncio
 
         from src.release_docs import (
-            _update_single_readme,
             RELEASE_SECTION_HEADING,
+            _update_single_readme,
         )
 
         readme_text = f"{RELEASE_SECTION_HEADING}\n\n" "OLD CONTENT\n\n" "## Next Section\n"
@@ -415,7 +415,7 @@ class TestUpdateSingleReadmeIdempotent:
     def test_no_next_heading_after_release_section_warns(self, tmp_path: Path) -> None:
         import asyncio
 
-        from src.release_docs import _update_single_readme, RELEASE_SECTION_HEADING
+        from src.release_docs import RELEASE_SECTION_HEADING, _update_single_readme
 
         readme = tmp_path / "README.md"
         readme.write_text(
@@ -457,7 +457,7 @@ class TestUpdateBadge:
             mock_readme.write_text.assert_not_called()
 
     def test_updates_badge_when_marker_present(self, tmp_path: Path, monkeypatch) -> None:
-        from src.release_docs import _update_badge, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _update_badge
 
         existing = (
             "# Title\n"
@@ -489,7 +489,7 @@ class TestUpdateBadge:
         assert "old-badge" not in result
 
     def test_inserts_badge_after_marker_when_no_image(self, tmp_path: Path, monkeypatch) -> None:
-        from src.release_docs import _update_badge, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _update_badge
 
         existing = "# Title\n" f"\n{RELEASE_BADGE_MARKER}\n" "\n## Releases\n"
         readme = tmp_path / "README.md"
@@ -515,7 +515,7 @@ class TestUpdateBadge:
         assert "inserted" in result
 
     def test_no_latest_meta_returns(self, tmp_path: Path, monkeypatch) -> None:
-        from src.release_docs import _update_badge, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _update_badge
 
         readme = tmp_path / "README.md"
         readme.write_text(f"# Title\n{RELEASE_BADGE_MARKER}\n", encoding="utf-8")
@@ -667,7 +667,7 @@ class TestUpdateReadmeSingle:
     def test_en_file_from_pt_recreated(self, tmp_path: Path, monkeypatch) -> None:
         import asyncio
 
-        from src.release_docs import update_readme_all, RELEASE_SECTION_HEADING
+        from src.release_docs import RELEASE_SECTION_HEADING, update_readme_all
 
         (tmp_path / "summer_26").mkdir()
         (tmp_path / "summer_26" / ".meta.json").write_text(
@@ -885,8 +885,8 @@ class TestGenerateReleaseFiles:
     def test_en_us_path_with_translator(self, tmp_path: Path) -> None:
         import asyncio
 
+        from src.parser import FeatureImpactCategory, FeatureImpactEntry
         from src.release_docs import _generate_release_files
-        from src.parser import FeatureImpactEntry, FeatureImpactCategory
 
         release = ReleaseInfo(name="Spring '26", release_id=260, slug="spring_26")
 
@@ -928,8 +928,8 @@ class TestGenerateReleaseFiles:
     def test_en_us_translation_deepcopy(self, tmp_path: Path) -> None:
         import asyncio
 
+        from src.parser import FeatureImpactCategory, FeatureImpactEntry
         from src.release_docs import _generate_release_files
-        from src.parser import FeatureImpactEntry, FeatureImpactCategory
 
         release = ReleaseInfo(name="Spring '26", release_id=260, slug="spring_26")
 
@@ -1091,8 +1091,8 @@ class TestUpdateSingleReadmeLimitAndArchive:
         import asyncio
 
         from src.release_docs import (
-            _update_single_readme,
             RELEASE_SECTION_HEADING,
+            _update_single_readme,
         )
 
         readme = tmp_path / "README.md"
@@ -1130,8 +1130,8 @@ class TestUpdateSingleReadmeLimitAndArchive:
         import asyncio
 
         from src.release_docs import (
-            _update_single_readme,
             RELEASE_SECTION_HEADING,
+            _update_single_readme,
         )
 
         readme = tmp_path / "README.en.md"
@@ -1164,8 +1164,8 @@ class TestUpdateSingleReadmeLimitAndArchive:
         import asyncio
 
         from src.release_docs import (
-            _update_single_readme,
             RELEASE_SECTION_HEADING,
+            _update_single_readme,
         )
 
         readme = tmp_path / "README.md"
@@ -1215,7 +1215,7 @@ class TestUpdateReadmeAll:
     def test_en_missing_heading_recreated(self, tmp_path: Path, monkeypatch) -> None:
         import asyncio
 
-        from src.release_docs import update_readme_all, RELEASE_SECTION_HEADING
+        from src.release_docs import RELEASE_SECTION_HEADING, update_readme_all
 
         (tmp_path / "summer_26").mkdir()
         (tmp_path / "summer_26" / ".meta.json").write_text(
@@ -1243,7 +1243,7 @@ class TestUpdateReadmeAll:
     def test_pt_readme_called(self, tmp_path: Path, monkeypatch) -> None:
         import asyncio
 
-        from src.release_docs import update_readme_all, RELEASE_SECTION_HEADING
+        from src.release_docs import RELEASE_SECTION_HEADING, update_readme_all
 
         (tmp_path / "summer_26").mkdir()
         (tmp_path / "summer_26" / ".meta.json").write_text(
@@ -1268,7 +1268,7 @@ class TestUpdateReadmeAll:
     def test_en_heading_present_calls_update(self, tmp_path: Path, monkeypatch) -> None:
         import asyncio
 
-        from src.release_docs import update_readme_all, RELEASE_SECTION_HEADING
+        from src.release_docs import RELEASE_SECTION_HEADING, update_readme_all
 
         (tmp_path / "summer_26").mkdir()
         (tmp_path / "summer_26" / ".meta.json").write_text(
@@ -1299,19 +1299,19 @@ class TestFindReleaseHeading:
     """_find_release_heading: detects heading variants and fallback."""
 
     def test_finds_known_variant(self) -> None:
-        from src.release_docs import _find_release_heading, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _find_release_heading
 
         text = f"intro\n{RELEASE_BADGE_MARKER}\n## 📋 Releases Disponíveis\nbody"
         assert _find_release_heading(text) == "## 📋 Releases Disponíveis"
 
     def test_finds_known_variant_alternative(self) -> None:
-        from src.release_docs import _find_release_heading, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _find_release_heading
 
         text = f"intro\n{RELEASE_BADGE_MARKER}\n## 📦 Available Releases\nbody"
         assert _find_release_heading(text) == "## 📦 Available Releases"
 
     def test_fallback_regex_match(self) -> None:
-        from src.release_docs import _find_release_heading, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _find_release_heading
 
         text = f"intro\n{RELEASE_BADGE_MARKER}\n" "## Custom Releases Header\nbody"
         assert _find_release_heading(text) == "## Custom Releases Header"
@@ -1322,7 +1322,7 @@ class TestFindReleaseHeading:
         assert _find_release_heading("plain text without anything") is None
 
     def test_no_heading_after_marker(self) -> None:
-        from src.release_docs import _find_release_heading, RELEASE_BADGE_MARKER
+        from src.release_docs import RELEASE_BADGE_MARKER, _find_release_heading
 
         text = f"{RELEASE_BADGE_MARKER}\njust text no heading"
         assert _find_release_heading(text) is None

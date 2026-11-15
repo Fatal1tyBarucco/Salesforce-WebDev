@@ -153,11 +153,7 @@ def fix_md032_lists(lines):
     out = []
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if (
-            stripped.startswith("- ")
-            or stripped.startswith("* ")
-            or re.match(r"^\d+\.\s", stripped)
-        ):
+        if stripped.startswith(("- ", "* ")) or re.match(r"^\d+\.\s", stripped):
             if (
                 i > 0
                 and lines[i - 1].strip() != ""

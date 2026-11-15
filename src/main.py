@@ -16,7 +16,7 @@ import json
 import logging
 import sys
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -259,7 +259,7 @@ async def generate_summary_cache(
                     "business_impact": summary.business_impact,
                     "strategic_themes": summary.strategic_themes,
                     "migration_notes": summary.migration_notes,
-                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                    "generated_at": datetime.now(UTC).isoformat(),
                     "fallback": False,
                 }
 
@@ -320,7 +320,7 @@ async def generate_summary_cache(
         fallback_cache: dict[str, Any] = {
             "executive_summary": executive_summary,
             "category_summaries": basic_summaries,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "fallback": True,
         }
 

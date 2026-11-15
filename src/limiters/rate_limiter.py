@@ -13,7 +13,7 @@ class RateLimiter:
 
     def __init__(self, min_interval: float = 0.5) -> None:
         if min_interval <= 0:
-            raise ValueError("RateLimiter min_interval must be positive, got %s" % min_interval)
+            raise ValueError(f"RateLimiter min_interval must be positive, got {min_interval}")
         self._min_interval = float(min_interval)
         self._last_request: float = 0.0
 

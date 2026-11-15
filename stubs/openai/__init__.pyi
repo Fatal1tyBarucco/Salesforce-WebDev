@@ -7,8 +7,6 @@ mypy strict mode without requiring the package at typecheck time.
 Only the symbols actually used in this project are declared here.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 class _Message:
@@ -72,6 +70,3 @@ class OpenAI:
     ) -> None: ...
 
     chat: _Chat
-
-# Re-export the symbols that the real openai package exposes at module level.
-OpenAI = OpenAI

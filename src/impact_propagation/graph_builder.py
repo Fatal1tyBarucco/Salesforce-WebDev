@@ -11,9 +11,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from src.circuit_breaker import CircuitBreaker
 from src.config import RELEASES_DIR
 from src.llm_service import LLMService
-from src.circuit_breaker import CircuitBreaker
+
 from .models import DependencyEdge, DependencyGraphResponse
 
 logger = logging.getLogger(__name__)

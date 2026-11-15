@@ -22,16 +22,18 @@ import logging
 from typing import Any
 
 from .config import RELEASES_DIR, ReleaseInfo
+from .feature_enricher import CategoryEnrichment
 from .parser import FeatureImpactCategory
 from .release_docs import (
-    _generate_release_files,
     _format_impact_report,
     _format_notification_digest,
+    _generate_release_files,
     _update_badge,
     _update_readme_single,
+)
+from .release_docs import (
     update_readme_all as _update_readme_all,
 )
-from .feature_enricher import CategoryEnrichment
 
 logger = logging.getLogger(__name__)
 

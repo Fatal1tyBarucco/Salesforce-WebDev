@@ -193,8 +193,9 @@ def test_get_cached_ledger_validation_error_branch(
         cache_dir=str(releases_dir_fake.parent / "cache_val_err_test"),
     )
 
-    from src.cache_manager import CacheManager
     import hashlib
+
+    from src.cache_manager import CacheManager
 
     cm = CacheManager(
         cache_dir=Path(str(svc._cache._cache_dir)),
@@ -222,8 +223,9 @@ def test_get_cached_stats_validation_error_branch(
         cache_dir=str(releases_dir_fake.parent / "cache_stats_val_err_test"),
     )
 
-    from src.cache_manager import CacheManager
     import hashlib
+
+    from src.cache_manager import CacheManager
 
     cm = CacheManager(
         cache_dir=Path(str(svc._cache._cache_dir)),

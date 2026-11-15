@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import itertools
 import json
 import re
 from pathlib import Path
@@ -325,7 +326,7 @@ def _heading_levels(text: str) -> list[int]:
 
 def _assert_sequential(levels: list[int]) -> None:
     assert levels, "expected at least one heading"
-    assert all(later <= previous + 1 for previous, later in zip(levels, levels[1:]))
+    assert all(later <= previous + 1 for previous, later in itertools.pairwise(levels))
 
 
 def test_normalize_heading_levels_demotes_deep_headings() -> None:

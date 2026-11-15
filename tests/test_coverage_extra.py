@@ -35,6 +35,7 @@ from src.ai.integrations.salesforce import (
     SalesforceAnalyzer,
 )
 from src.api import (
+    HTTPException,  # type: ignore[attr-defined]
     SearchRequest,
     TriageRequest,
     _build_diff,
@@ -49,7 +50,6 @@ from src.api import (
     natural_language_search,
     triage_issue,
     verify_api_key,
-    HTTPException,  # type: ignore[attr-defined]
 )
 from src.automation.comparison import (
     calculate_quality_metrics,

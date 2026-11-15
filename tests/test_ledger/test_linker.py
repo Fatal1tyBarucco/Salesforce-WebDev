@@ -5,8 +5,8 @@ from __future__ import annotations
 from src.automation.ledger.linker import FeatureLinker, _jaccard, _tokenize_name
 from src.automation.ledger.models import (
     FeatureSnapshot,
-    LinkageMethod,
     LifecycleStatus,
+    LinkageMethod,
 )
 
 # ── Helpers de snapshot ─────────────────────────────────────────────────

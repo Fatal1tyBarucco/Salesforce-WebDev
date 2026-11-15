@@ -2,8 +2,8 @@
 # Este módulo NÃO injeta README. Apenas extrai, valida e converte.
 # Nomes completos. Nenhuma abreviação.
 
-from typing import Optional, Dict, List, Any
-from urllib.parse import urlparse, parse_qs
+from typing import Any
+from urllib.parse import parse_qs, urlparse
 
 # Defensivo: importações opcionais tratadas com None
 try:
@@ -24,14 +24,14 @@ class SalesforceStatusScraperEngineDefensive:
         if not target_status_url or not isinstance(target_status_url, str):
             raise ValueError("target_status_url deve ser string não nula.")
         self.target_status_url: str = target_status_url
-        self.parsed_release_number: Optional[str] = None
+        self.parsed_release_number: str | None = None
 
-    def extract_release_identifier_from_url(self) -> Optional[str]:
+    def extract_release_identifier_from_url(self) -> str | None:
         """Identifica dinamicamente o número da release a partir de query params."""
         try:
             parsed_url = urlparse(self.target_status_url)
             # Para status.salesforce.com não temos release, mas mantemos a validação defensiva
-            query_dictionary: Dict[str, List[str]] = parse_qs(parsed_url.query)
+            query_dictionary: dict[str, list[str]] = parse_qs(parsed_url.query)
             # Se houver parâmetro release, retornamos; senão None defensivo
             release_list = query_dictionary.get("release", [])
             if release_list and len(release_list) > 0 and release_list[0] is not None:
@@ -42,7 +42,7 @@ class SalesforceStatusScraperEngineDefensive:
             pass
         return None
 
-    def retrieve_html_content_defensive(self, connection_timeout: int = 30) -> Optional[str]:
+    def retrieve_html_content_defensive(self, connection_timeout: int = 30) -> str | None:
         """Recupera HTML com tratamento defensivo de Timeout e HTTPError."""
         if requests is None:
             print("[DEFENSIVO] requests não disponível.")
@@ -70,7 +70,7 @@ class ChangeLogDefensiveParserEngine:
 
     def __init__(self, change_log_source_url: str) -> None:
         self.change_log_source_url: str = change_log_source_url
-        self.release_identifier: Optional[str] = None
+        self.release_identifier: str | None = None
         self._perform_defensive_extraction()
 
     def _perform_defensive_extraction(self) -> None:
@@ -84,10 +84,10 @@ class ChangeLogDefensiveParserEngine:
             self.release_identifier = None
 
     def parse_change_log_document_nodes(
-        self, html_content_string: Optional[str]
-    ) -> List[Dict[str, Any]]:
+        self, html_content_string: str | None
+    ) -> list[dict[str, Any]]:
         """Parseia nós HTML sem gerar exceções obstrutivas."""
-        results_list: List[Dict[str, Any]] = []
+        results_list: list[dict[str, Any]] = []
         if html_content_string is None:
             return results_list
         if BeautifulSoup is None:
@@ -114,8 +114,8 @@ class ReleaseNotesHomeDefensiveParserEngine:
 
     def __init__(self, release_notes_home_url_string: str) -> None:
         self.release_notes_home_url_string: str = release_notes_home_url_string
-        self.release_identifier: Optional[str] = None
-        self.language_parameter: Optional[str] = None
+        self.release_identifier: str | None = None
+        self.language_parameter: str | None = None
         self._perform_defensive_extraction()
 
     def _perform_defensive_extraction(self) -> None:

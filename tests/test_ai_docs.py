@@ -658,6 +658,7 @@ def test_pipeline_warns_when_prompt_tokens_exceed_context_budget(
 ) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("AI_DOCS_MAX_CONTEXT_TOKENS", "12000")
+    monkeypatch.setenv("GITHUB_SHA", "abc123")
     monkeypatch.setattr(
         "src.ai.orchestrator.collect_changes",
         lambda since_ref: {"commits": ["feat: x"], "merged_prs": []},
