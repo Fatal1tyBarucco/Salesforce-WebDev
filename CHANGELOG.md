@@ -1,5 +1,18 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Added `syrupy` plugin registration in `conftest.py` to resolve fixture snapshot errors.
+
+### Changed
+- Updated `docs/.documentation-manifest.json` with new checksums for `pyproject.toml`, `src/infrastructure/api/__init__.py`, `uv.lock`, and added entry for `test_infrastructure_api_graphql.py`.
+
+### Fixed
+- Fixed `strawberry-graphql` import error that caused `ModuleNotFoundError` in 11 tests, restoring build capacity and increasing test coverage to 95.35%.
+
 <!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

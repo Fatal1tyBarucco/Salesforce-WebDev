@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Correção crítica do strawberry-graphql restaura o pipeline de builds e aumenta a cobertura de testes, reduzindo risco de falhas em CI. Atualização do manifesto de documentação mantém precisão de versionamento. Adição do plugin syrupy melhora confiabilidade dos testes. Risco principal: validação da exportação lazy do GraphQL. Próximos passos: verificar integração do GraphQL, confirmar checksums e testar registro do plugin.
+
+---
 
 ## Nova atualização
 

@@ -1,6 +1,43 @@
-<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError em 11 testes, restaurando a capacidade de build e elevando a cobertura para 95,35%; atualização de baixo impacto do manifesto de documentação com novos checksums; e adição do plugin syrupy ao conftest.py para corrigir erros de registro de fixture.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Corrige erro de importação do strawberry-graphql que causava falhas nos testes — 📋 bugfix** | Adiciona strawberry-graphql[fastapi] ao extra healing e implementa exportação lazy do graphql_rou… | 🔴 high | src/infrastructure/api/__init__.py, pyproject.toml, tests/test_infrastructure_api_graphql.py · Prioridade: 💡 P0 |
+| **Atualiza o manifesto de documentação com novos checksums de arquivos — 📋 documentation** | Reconcilia o docs/.documentation-manifest.json com checksums atualizados para pyproject.toml, src… | 🟢 low | docs/.documentation-manifest.json · Prioridade: 💡 P3 |
+| **Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture — 📋 refactor** | Adiciona pytest_plugins = ["syrupy"] ao conftest.py, garantindo que o plugin syrupy seja carregad… | 🟢 low | tests/conftest.py · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (33%) 🔴
+🟡 Médio: **0** (0%) 
+🟢 Baixo: **2** (66%) 🟢🟢
+
+Total: **3 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    1 →
+📋 documentation      │██████████████████████████████│    1 →
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▄ █
+
+
+## Revisão Necessária
+
+- **Corrige erro de importação do strawberry-graphql que causava falhas nos testes** — Revisão necessária devido a alterações em dependências e exportação lazy; garantir que o GraphQL funcione corretamente. (0.95)
+- **Atualiza o manifesto de documentação com novos checksums de arquivos** — Revisão para garantir que os checksums estejam corretos. (0.90)
+- **Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture** — Revisão para confirmar a ordem de registro do plugin. (0.80)
+
+---
 
 ## Nova atualização
 

@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T14:23:21+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Validar a exportação lazy do graphql_router para garantir compatibilidade com consumidores. Sugestão: Revisar o manifesto de documentação periodicamente. Sugestão: Automatizar atualização de checksums. Sugestão: Expandir testes de cobertura para GraphQL. Sugestão: Monitorar estabilidade dos testes após adição do plugin syrupy.
+
+---
 
 ## Nova atualização
 
