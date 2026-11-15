@@ -657,3 +657,39 @@ class TestLLMEnvSelection:
         assert svc._switch_to_next_provider() is True
         assert svc.provider == "openrouter"
         assert svc.model_name == "qwen/qwen-3-coder:free"
+
+
+class TestLLMMissingCoverage:
+    """Tests for missing coverage lines in llm_service.py."""
+
+    def test_provider_chain_property(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Line 95: _provider_chain property should return provider chain."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        chain = svc._provider_chain
+        assert chain is not None
+        assert len(chain) > 0
+
+    def test_generate_completion_all_providers_fail_raises(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Line 173: generate_completion should raise RuntimeError when all providers fail."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        # Mock _dispatch_to_provider to always fail
+        with patch.object(svc, "_dispatch_to_provider", side_effect=RuntimeError("provider down")):
+            with patch.object(svc, "_switch_to_next_provider", return_value=False):
+                with pytest.raises(RuntimeError, match="provider down"):
+                    svc.generate_completion("test prompt")
+
+    def test_generate_openai_compatible_all_models_fail_raises(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Line 338: _generate_openai_compatible should raise when all models fail."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+        svc = LLMService(api_key="or-key", provider="openrouter")
+        fake_client = MagicMock()
+        fake_client.chat.completions.create.side_effect = RuntimeError("model failed")
+        with patch("openai.OpenAI", return_value=fake_client):
+            with pytest.raises(RuntimeError, match="model failed"):
+                svc._generate_openai_compatible("test", None, 0.7, 100)

@@ -336,6 +336,11 @@ Salesforce-WebDev/
       ├── notifications.py
       ├── reporting.py
       └── service.py
+  ├── core/
+      ├── classification/
+      ├── enrichment/
+      ├── pipeline/
+      ├── summarization/
   ├── design-system/
       ├── components/
   ├── impact_propagation/
@@ -343,8 +348,25 @@ Salesforce-WebDev/
       ├── graph_builder.py
       ├── heuristic_fallback.py
       └── models.py
+  ├── infrastructure/
+      ├── api/
+      ├── generation.py
+      ├── github.py
+      ├── llm.py
+      ├── messaging.py
+      ├── notification_step.py
+      ├── parsing.py
+      ├── scraping.py
+      ├── storage.py
+      └── translation.py
   ├── limiters/
       └── rate_limiter.py
+  ├── models/
+      ├── api.py
+      ├── classification.py
+      ├── enrichment.py
+      ├── feature.py
+      └── release.py
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
@@ -394,6 +416,7 @@ Salesforce-WebDev/
   ├── DESIGN.md
   ├── Dockerfile                 # Imagem Docker de runtime
   ├── IA_AUDIT_REPORT.md
+  ├── PLANO_DE_MODERNIZACAO.md
   ├── PRODUCT.md
   ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês

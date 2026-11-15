@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from pydantic import Field
+
 try:
     from fastapi import Depends, FastAPI, Header, HTTPException, status  # type: ignore[import-not-found]
     from pydantic import BaseModel
@@ -77,9 +79,6 @@ API_KEY_ENV_VAR = "API_SECRET_KEY"
 _API_KEY: str = os.getenv(API_KEY_ENV_VAR, "")
 RELEASES_DIR: str = os.getenv("RELEASES_DIR", "releases")
 _KNOWN_SLUGS = {"summer_26", "spring_26", "winter_26"}
-
-
-from pydantic import Field
 
 
 class TriageRequest(BaseModel):  # type: ignore[misc]
