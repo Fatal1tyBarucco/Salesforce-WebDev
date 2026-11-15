@@ -1,6 +1,52 @@
-<!-- gerado por IA em 2026-11-14T06:19:14+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-15T12:47:38+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta release implementa uma refatoração para Clean Architecture em src/core e src/infrastructure, com módulos de core, infrastructure e models organizados em camadas desacopladas. Refatoração estrutural de alto impacto pode exigir atualização de imports e deve ser validada quanto a compatibilidade com consumidores existentes. A correção no fallback do LLMService visa preservar a disponibilidade do serviço em falhas de provedores. Ajustes no schema GraphQL com tipos Strawberry e ChangeType podem alterar contratos de API para consumidores externos. A ampliação da cobertura de testes, correções de quality gates, atualizações de dependências e reconciliação documental também foram incluídas. Riscos principais: possíveis imports desatualizados após a refatoração, necessidade de revisão de compatibilidade do schema GraphQL e fallback do LLM.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Implementação da Clean Architecture em src/core e src/infrastructure — 📋 refactor** | Adição de módulos core (classification, enrichment, pipeline, summarization) e infrastructure (ap… | 🔴 high | src/core, src/infrastructure, src/models, src/orchestrator.py, src/main.py · Prioridade: 💡 P1 |
+| **Adição de cobertura de teste abrangente (95% meta) — 📋 feature** | Criação de 14 novos arquivos de teste cobrindo core (classification, enrichment, pipeline, summar… | 🟡 medium | tests/test_core_classification_service.py, tests/test_core_enrichment_service.py, tests/test_core_pipeline_orchestrator.py, tests/test_core_summarization_service.py, tests/test_infrastructure_generation.py, tests/test_infrastructure_github.py, tests/test_infrastructure_llm.py, tests/test_infrastructure_llm_coverage.py, tests/test_infrastructure_messaging.py, tests/test_infrastructure_notification_step.py, tests/test_infrastructure_parsing.py, tests/test_infrastructure_routes.py, tests/test_infrastructure_scraping.py, tests/test_infrastructure_storage.py, tests/test_infrastructure_translation.py, tests/test_main_coverage_additional.py, tests/test_models_coverage.py, tests/test_orchestrator_coverage.py · Prioridade: 💡 P2 |
+| **Correção de quality gates (ruff, black, mypy, mkdocs) — 📋 bugfix** | Correção de múltiplos problemas de linting e formatação: ISC004 (concatenação implícita de string… | 🟢 low | .github/scripts/build_failure_issue.py, .github/scripts/documentation_reconcile.py, .github/scripts/documentation_sync.py, .github/scripts/fix_markdown.py, .github/scripts/update_changelog_auto.py, src/ai/llm/client.py, src/api.py, src/release_discovery.py, tests/test_ai_docs.py, tests/test_llm_service.py, stubs/openai, stubs/prometheus_client, stubs/syrupy · Prioridade: 💡 P3 |
+| **Correção do schema GraphQL com Strawberry types — 📋 bugfix** | Substituição de dict[str, Any] por ChangeType (Strawberry type) no schema GraphQL em src/infrastr… | 🟡 medium | src/infrastructure/api/graphql.py, src/infrastructure/api/__init__.py, pyproject.toml · Prioridade: 💡 P2 |
+| **Adição da dependência strawberry-graphql — 📋 bugfix** | Adição do pacote strawberry-graphql às dependências core em pyproject.toml e atualização do uv.lo… | 🟡 medium | pyproject.toml, uv.lock, src/infrastructure/api/graphql.py · Prioridade: 💡 P1 |
+| **Fix do chain de fallback do LLMService — 📋 bugfix** | Correção de bug no chain de fallback do LLMService (linhas 147, 158-163 do src/infrastructure/llm… | 🔴 high | src/infrastructure/llm.py, tests/test_infrastructure_llm_coverage.py · Prioridade: 💡 P0 |
+| **Atualização de dependência soupsieve (2.9 para 4.0) — ⚡ Performance** | Upgrade da dependência indireta soupsieve de versão 2.9 para 4.0 no grupo uv, aplicado em 1 diret… | 🟢 low | uv.lock, pyproject.toml · Prioridade: 💡 P3 |
+| **Atualização de testes para novos limites de retry e tokens — 📋 bugfix** | Ajuste das expectativas de teste em test_ai_docs.py e test_ai_docs_coverage.py para coincidir com… | 🟢 low | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P3 |
+| **Reconciliação de documentação e atualização do manifest — 📋 documentation** | Atualização do docs/.documentation-manifest.json com novos mapeamentos entre código e documentaçã… | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml, docs/api/core-classification-service.md, docs/api/core-enrichment-service.md, docs/api/core-pipeline-orchestrator.md, docs/api/core-pipeline-steps.md, docs/api/core-summarization-service.md, docs/architecture/decisions/adr-007-clean-architecture.md · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **2** (22%) 🔴🔴
+🟡 Médio: **3** (33%) 🟡🟡🟡
+🟢 Baixo: **4** (44%) 🟢🟢🟢🟢
+
+Total: **9 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+⚡ Performance        │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 bugfix             │██████████████████████████████│    5 →
+📋 documentation      │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 feature            │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▄▆█
+
+
+## Revisão Necessária
+
+- **Verificação de backwards compatibility da arquitetura** — Executar análise estática de dependências para identificar todos os imports que precisam ser atualizados (0.80)
+- **Revisão do schema GraphQL para consumers externos** — Verificar versão do schema GraphQL e comunicar mudanças para consumidores externos se necessário (0.75)
+- **Revisão da lógica de fallback do LLMService** — Revisar todos os caminhos de fallback e testes de integração com providers reais (0.85)
+- **Validação dos novos documentos de API** — Comparar documentação com código-fonte para verificar consistência (0.70)
+
+---
 
 ## Nova atualização
 
