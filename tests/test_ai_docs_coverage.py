@@ -116,10 +116,10 @@ def test_client_retries_api_error_with_rate_limit_header() -> None:
 
 
 def test_client_empty_response_retries_then_fails() -> None:
-    client = _client(_raw(""), _raw(""), _raw(""))
+    client = _client(_raw(""), _raw(""), _raw(""), _raw(""))
     with pytest.raises(RuntimeError) as excinfo:
         client.generate("prompt")
-    assert "after 3 attempts" in str(excinfo.value)
+    assert "after 4 attempts" in str(excinfo.value)
     assert "phase=empty-completion" in str(excinfo.value)
     assert "error=ValueError" in str(excinfo.value)
 
@@ -147,10 +147,11 @@ def test_client_retries_non_object_and_fails_after_api_retries() -> None:
         RuntimeError("temporary"),
         RuntimeError("temporary"),
         RuntimeError("temporary"),
+        RuntimeError("temporary"),
     ]
-    with pytest.raises(RuntimeError, match="request failed after 3 attempts"):
+    with pytest.raises(RuntimeError, match="request failed after 4 attempts"):
         client.generate("prompt")
-    assert delays == [2.0, 4.0]
+    assert delays == [2.0, 4.0, 8.0]
 
 
 def test_retry_delay_converts_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
