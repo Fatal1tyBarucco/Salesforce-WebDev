@@ -1100,7 +1100,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "4716228bbd85483cea8845e5bf5211a00cb82fe5",
     "src/infrastructure/mcp/__init__.py": "60de6875842d2cc3e5329254fc823c01e23b799d",
-    "src/infrastructure/mcp/knowledge_server.py": "909e06e1e7376d596b18bb27aad8683c0564a420",
+    "src/infrastructure/mcp/knowledge_server.py": "77eca9c58ab821464f18d5791591555b0a1fcd85",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1215,12 +1215,12 @@
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
     "tests/golden/summarizer/readme_block_en.md": "8a15534f5f736469e11c77db0c7909b8653876a2",
     "tests/golden/summarizer/readme_block_pt.md": "c1b2ef1604b7ec4c1f676701a6bde322809ddb19",
-    "tests/golden/summarizer/readme_pt_updated.md": "73e659686dd4f2c205edd3fe7e1664c795dbffaa",
+    "tests/golden/summarizer/readme_pt_updated.md": "b215dc3053ed0864a33758577d8b2b9cb2cc0374",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
     "tests/infrastructure/llm_adapters/test_unified_client.py": "f1cb6dbf519e2a1c02d8abc7970cb90145c82e1f",
-    "tests/infrastructure/mcp/test_knowledge_server.py": "231141f3c2ef111df79dbf36ea030e53fdd6961c",
+    "tests/infrastructure/mcp/test_knowledge_server.py": "ebead98d7c66930335fa1c162a680655fc713e76",
     "tests/infrastructure/scraping/test_cache_adapter.py": "ac57723379776eea698e9bd08d48f8a0fc5eb34b",
     "tests/infrastructure/scraping/test_playwright_scraper_adapter.py": "014aab3bf69163d69d891c46b830b794a6c30fa7",
     "tests/infrastructure/scraping/test_scraping_observability.py": "a8b0d268c717e1e732b4e33100d1c088f5c7e1a1",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-  "generated_at": "2026-11-16T14:08:53.678171+00:00",
-  "repository_sha": "e8e99875e40f7faad18a92657c2b3c4e7b48cf7a"
+  "generated_at": "2026-11-16T14:09:38.235416+00:00",
+  "repository_sha": "2dca2010547c124b676c739f0d1629a556955303"
 }
