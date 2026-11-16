@@ -93,3 +93,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `9cd8d75` — docs: sync with remote reconcile
 - `e1b30a8` — docs: fix test file links
 - `bf45058` — fix: resolve Python Quality gate failures
+- `544edf1` — docs: resolve merge conflicts in manifest

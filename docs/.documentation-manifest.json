@@ -775,13 +775,13 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "c7e86f1b2ab72a9a769fc7725aa62d2b5789a4dd",
+    "docs/changelog.md": "7b096a0355f18c1fe7634a2ee79ebdb6d8d9b8c0",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "6a606b9a180dda3093d6ee28efa92cc11c709e99",
+    "docs/index.md": "575c175efe837b46ecfce0d18bb8919da6b5e2de",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -1220,9 +1220,9 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "8a15534f5f736469e11c77db0c7909b8653876a2",
-    "tests/golden/summarizer/readme_block_pt.md": "c1b2ef1604b7ec4c1f676701a6bde322809ddb19",
-    "tests/golden/summarizer/readme_pt_updated.md": "b215dc3053ed0864a33758577d8b2b9cb2cc0374",
+    "tests/golden/summarizer/readme_block_en.md": "7c39d500a48272caefe784f26e389663faf453af",
+    "tests/golden/summarizer/readme_block_pt.md": "c1810a074edc01aa25b22bf6d9a982aa50aa6db5",
+    "tests/golden/summarizer/readme_pt_updated.md": "90fe2bbbd43b24ebc36687e24ed0423f1299eec7",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
@@ -1335,6 +1335,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "a6c359fd6ba8262993cbfb78935d8b21c19d020f"
   },
-  "generated_at": "2026-11-16T14:48:54.394287+00:00",
-  "repository_sha": "70084fb7af3b8489076ac4522f92bf93be8cb2da"
+  "generated_at": "2026-11-16T14:51:11.907964+00:00",
+  "repository_sha": "dad5a49d3866257fc97788c8bc0d794cef0e4e27"
 }
