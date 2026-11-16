@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+As mudanças classificadas têm impacto alto na navegação da documentação em inglês, pela correção da geração de links de release com slugs de categoria em inglês, e impacto médio na infraestrutura de testes do servidor MCP, com a migração para a API de baixo nível do SDK. Não há breaking change identificado nas mudanças classificadas. O risco principal está na compatibilidade dos testes MCP com a versão do SDK e na validade das asserções de erro, além da necessidade de validar a geração de links e a regeneração dos testes de ouro. Próximos passos: validar a geração de links e os testes de ouro; revisar a compatibilidade e as asserções dos testes MCP; confirmar que a migração dos testes não reduz a cobertura relevante.
+
+---
 
 ## Nova atualização
 

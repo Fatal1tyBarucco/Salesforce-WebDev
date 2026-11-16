@@ -1,6 +1,45 @@
-<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+## Nova atualização
+
+Esta atualização corrige a geração de links de release para a documentação em inglês, passando a usar slugs de categoria em inglês definidos para o locale en_US e montando o link antes do bloco de exibição. A correção tem impacto alto na navegação da documentação em inglês, pois evita links apontando para slugs em português inexistentes.
+
+Também foi feita a migração dos testes do servidor MCP Knowledge Server para a API de baixo nível do SDK, com registro de handlers para ListToolsRequest e CallToolRequest e uso de métodos internos como _build_tools, _search_release_notes, _get_release_summary, _list_releases e _compare_releases. Essa mudança tem impacto médio na infraestrutura de testes, sem alteração de comportamento de produção.
+
+Não há breaking change identificado nas mudanças classificadas. O risco concentra-se na compatibilidade dos testes MCP com a versão do SDK e na validade das asserções de erro, além da necessidade de validar a geração de links e a regeneração dos testes de ouro.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Corrigir slugs de categorias em inglês para links de release — 📋 bugfix** | A correção ajusta a construção de links para arquivos de release ao localizar categorias em inglê… | 🔴 high | src/release_docs.py · Prioridade: 💡 P1 |
+| **Migrar testes do MCP knowledge server para API de baixo nível — 📋 refactor** | Os testes do MCP knowledge server foram ajustados para usar o Server de baixo nível do SDK, regis… | 🟡 medium | tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (50%) 🔴
+🟡 Médio: **1** (50%) 🟡
+🟢 Baixo: **0** (0%) 
+
+Total: **2 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    1 →
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ██ 
+
+
+## Revisão Necessária
+
+- **Migrar testes do MCP knowledge server para API de baixo nível** — Revisar compatibilidade com a versão do SDK MCP e se as asserções de erro continuam válidas. (0.85)
+
+---
 
 ## Nova atualização
 

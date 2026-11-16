@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: avaliar validação automatizada de links de release por locale, incluindo slugs de categoria; considerar testes de regressão para a geração de links e para os testes de ouro; revisar a compatibilidade dos testes do servidor MCP com a versão do SDK e a validade das asserções de erro; monitorar a cobertura e a confiabilidade dos testes após a migração para a API de baixo nível.
+
+---
 
 ## Nova atualização
 

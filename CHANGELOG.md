@@ -1,5 +1,15 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Fixed
+- Fixed release link generation for English documentation by using English category slugs for the en_US locale and building the link before the display block, preventing links to nonexistent Portuguese slugs.
+
+### Changed
+- Updated MCP knowledge server tests to use the low-level SDK Server, registering handlers for ListToolsRequest and CallToolRequest and calling internal methods such as _build_tools, _search_release_notes, _get_release_summary, _list_releases, and _compare_releases; assertions were updated for result format and dictionary-based queries.
+
 <!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
