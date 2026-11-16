@@ -7,14 +7,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server
+from mcp.server import Server, ServerRequestContext
 from mcp.types import (
-    CallToolRequest,
     CallToolRequestParams,
     CallToolResult,
     ContentBlock,
-    ListToolsRequest,
     ListToolsResult,
+    PaginatedRequestParams,
     TextContent,
     Tool,
 )
@@ -44,30 +43,36 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.server: Server[Any, Any] = Server("salesforce-release-notes")
+        self.server: Server[Any] = Server("salesforce-release-notes")
         self._register_handlers()
 
     def _register_handlers(self) -> None:
-        """Register MCP tool handlers using decorators."""
+        """Register the ``tools/list`` and ``tools/call`` request handlers."""
+        self.server.add_request_handler(
+            "tools/list", PaginatedRequestParams, self._handle_list_tools
+        )
+        self.server.add_request_handler("tools/call", CallToolRequestParams, self._handle_call_tool)
 
-        @self.server.list_tools()  # type: ignore[untyped-decorator, assignment, no-untyped-call]
-        async def handle_list_tools(
-            request: ListToolsRequest | None = None,
-        ) -> ListToolsResult:
-            """MCP SDK v2 handler for ``tools/list``."""
-            del request  # unused, but kept for signature compatibility
-            return ListToolsResult(tools=self._build_tools())
+    async def _handle_list_tools(
+        self,
+        ctx: ServerRequestContext[Any],
+        params: PaginatedRequestParams,
+    ) -> ListToolsResult:
+        """MCP ``tools/list`` handler."""
+        del ctx, params  # unused, but required by the MCP request-handler signature
+        return ListToolsResult(tools=self._build_tools())
 
-        @self.server.call_tool()  # type: ignore[untyped-decorator, assignment]
-        async def handle_call_tool(
-            request: CallToolRequest,
-        ) -> CallToolResult:
-            """MCP SDK v2 handler for ``tools/call``."""
-            params: CallToolRequestParams = request.params
-            blocks: list[ContentBlock] = []
-            # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
-            blocks.extend(await self.call_tool(params.name, params.arguments or {}))
-            return CallToolResult(content=blocks)
+    async def _handle_call_tool(
+        self,
+        ctx: ServerRequestContext[Any],
+        params: CallToolRequestParams,
+    ) -> CallToolResult:
+        """MCP ``tools/call`` handler."""
+        del ctx  # unused, but required by the MCP request-handler signature
+        blocks: list[ContentBlock] = []
+        # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
+        blocks.extend(await self.call_tool(params.name, params.arguments or {}))
+        return CallToolResult(content=blocks)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -75,12 +80,12 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="search_release_notes",
                 description="Search Salesforce Release Notes by release, category, or feature name",
-                inputSchema=ReleaseNotesQuery.model_json_schema(),
+                input_schema=ReleaseNotesQuery.model_json_schema(),
             ),
             Tool(
                 name="get_release_summary",
                 description="Get executive summary for a specific release",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "release_slug": {
@@ -95,7 +100,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="list_releases",
                 description="List all available releases",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {},
                 },
@@ -103,7 +108,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="compare_releases",
                 description="Compare two releases - what's new, changed, removed",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "from_slug": {"type": "string", "description": "Base release slug"},
