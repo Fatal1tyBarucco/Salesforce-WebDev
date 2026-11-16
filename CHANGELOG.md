@@ -1,5 +1,18 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Breaking Changes
+- Migrated the MCP server from FastMCP to the MCP Server API v2, replacing decorators with request handlers (`Server`, `CallToolRequest`, `ListToolsRequest`, `CallToolResult`). Consumers relying on the previous FastMCP API may require updates.
+
+### Changed
+- Refactored MCP server tests to use a `_decode` helper for extracting JSON payloads, removing direct `call_tool` integration tests in favor of low-level tests for internal methods (`_search_release_notes`, `_get_release_summary`, `_list_releases`, `_compare_releases`).
+
+### Fixed
+- Fixed link generation in `release_docs.py` by correcting the order of operations, ensuring English category slugs are applied before building the link, preventing broken links to nonexistent Portuguese slugs.
+
 <!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

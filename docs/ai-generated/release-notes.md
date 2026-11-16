@@ -1,6 +1,46 @@
-<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+## Nova atualização
+
+Esta atualização traz uma migração crítica de arquitetura do FastMCP para a API do Servidor MCP v2, que altera a assinatura de `create_server` e a forma de registro de ferramentas, gerando um impacto alto devido à quebra de compatibilidade com clientes que dependiam da API anterior. También corrige a ordem de cálculo de links em `release_docs.py` para garantir que slugs de categorias em inglês sejam aplicados corretamente, evitando links quebrados na documentação (impacto médio). Por fim, refatora os testes do MCP Server, introduzindo a função `_decode` e removendo testes de chamada direta de ferramentas (`call_tool`), o que reduz a cobertura de integração mas simplifica a manutenção (impacto médio).
+
+Riscos principais: quebra de integração com consumidores que utilizavam a API antiga do FastMCP, e a necessidade de verificar se a remoção de testes de integração não mascarou falhas de extremidade a extremidade. Próximos passos: validar a compatibilidade dos consumidores com a nova API, confirmar o registro correto de todos os handlers e avaliar a necessidade de testes de integração alternativos.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Migração do FastMCP para MCP Server API v2 — 💥 Breaking Change** | Substitui a implementação baseada em FastMCP por uma nova arquitetura utilizando Server, CallTool… | 🔴 high | src/infrastructure/mcp/knowledge_server.py, MCP Server Client · Prioridade: 💡 P0 |
+| **Correção de ordem de link em release_docs.py — 📋 bugfix** | A variável `link` era calculada antes de ser redefinida para idioma en_US, gerando links incorret… | 🟡 medium | src/release_docs.py, Documentação Gerada · Prioridade: 💡 P1 |
+| **Refatoração e simplificação de testes do MCP Server — 📋 refactor** | Testes foram refatorados para usar uma função auxiliar `_decode` que extrai o payload JSON do úni… | 🟡 medium | tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (33%) 🔴
+🟡 Médio: **2** (66%) 🟡🟡
+🟢 Baixo: **0** (0%) 
+
+Total: **3 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+💥 Breaking Change    │██████████████████████████████│    1 →
+📋 bugfix             │██████████████████████████████│    1 →
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▄█ 
+
+
+## Revisão Necessária
+
+- **Migração do FastMCP para MCP Server API v2** — Migração crítica de arquitetura. Requer validação de compatibilidade com consumidores externos e verificação de que todos os handlers estão corretamente registrados. (0.95)
+- **Refatoração e simplificação de testes do MCP Server** — Verificar se a remoção de testes de call_tool é intencional e se há testes de integração alternativos. A cobertura de handlers pode ter diminuído. (0.85)
+
+---
 
 ## Nova atualização
 

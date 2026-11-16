@@ -1,6 +1,14 @@
-<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: ## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: mapear os consumidores do servidor MCP e validar a compatibilidade com a nova API v2 antes de ampliar a adoção; avaliar a inclusão de testes de contrato ou de integração para a interface do servidor MCP, considerando a remoção recente de testes de `call_tool`; revisar a ordem de lógica em `release_docs.py` para garantir que a correção de links não introduza regressões em outros idiomas; monitorar a cobertura dos testes de baixo nível e verificar se a refatoração afetou a confiabilidade dos testes de integração.
+
+---
 
 ## Nova atualização
 

@@ -1,6 +1,16 @@
-<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+## Nova atualização
+
+As mudanças desta execução apresentam impacto alto na arquitetura do servidor MCP, devido à migração do FastMCP para a API do Servidor MCP v2, que altera a assinatura de `create_server` e o método de registro de ferramentas, podendo quebrar a compatibilidade com consumidores externos. O impacto médio concentra-se na correção de links em `release_docs.py` (evita links quebrados em documentação em inglês) e na refatoração dos testes, que remove testes de integração direta em favor de testes de baixo nível.
+
+Riscos principais: quebra de integração com clientes que dependiam da API anterior do FastMCP, e a possibilidade de que a remoção de testes de `call_tool` tenha reduzido a cobertura de integração, mascarando falhas de extremidade a extremidade. Próximos passos: validar a compatibilidade dos consumidores com a nova API, confirmar o registro correto de todos os handlers e avaliar a necessidade de testes de integração alternativos.
+
+---
 
 ## Nova atualização
 
