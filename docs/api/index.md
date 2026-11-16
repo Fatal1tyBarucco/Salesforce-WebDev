@@ -61,6 +61,8 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.core.summarization.service` | [`core-summarization-service.md`](core-summarization-service.md) |
 | `src.dashboard` | [`dashboard.md`](dashboard.md) |
 | `src.documentation_service` | [`documentation_service.md`](documentation_service.md) |
+| `src.domain.llm` | [`domain-llm.md`](domain-llm.md) |
+| `src.domain.scraper` | [`domain-scraper.md`](domain-scraper.md) |
 | `src.events` | [`events.md`](events.md) |
 | `src.exceptions` | [`exceptions.md`](exceptions.md) |
 | `src.feature_classifier` | [`feature_classifier.md`](feature_classifier.md) |
@@ -79,9 +81,18 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.infrastructure.generation` | [`infrastructure-generation.md`](infrastructure-generation.md) |
 | `src.infrastructure.github` | [`infrastructure-github.md`](infrastructure-github.md) |
 | `src.infrastructure.llm` | [`infrastructure-llm.md`](infrastructure-llm.md) |
+| `src.infrastructure.llm_adapters.cache` | [`infrastructure-llm_adapters-cache.md`](infrastructure-llm_adapters-cache.md) |
+| `src.infrastructure.llm_adapters.observability` | [`infrastructure-llm_adapters-observability.md`](infrastructure-llm_adapters-observability.md) |
+| `src.infrastructure.llm_adapters.rate_limiter` | [`infrastructure-llm_adapters-rate_limiter.md`](infrastructure-llm_adapters-rate_limiter.md) |
+| `src.infrastructure.llm_adapters.unified_client` | [`infrastructure-llm_adapters-unified_client.md`](infrastructure-llm_adapters-unified_client.md) |
+| `src.infrastructure.mcp.knowledge_server` | [`infrastructure-mcp-knowledge_server.md`](infrastructure-mcp-knowledge_server.md) |
 | `src.infrastructure.messaging` | [`infrastructure-messaging.md`](infrastructure-messaging.md) |
 | `src.infrastructure.notification_step` | [`infrastructure-notification_step.md`](infrastructure-notification_step.md) |
 | `src.infrastructure.parsing` | [`infrastructure-parsing.md`](infrastructure-parsing.md) |
+| `src.infrastructure.scraping.cache_adapter` | [`infrastructure-scraping-cache_adapter.md`](infrastructure-scraping-cache_adapter.md) |
+| `src.infrastructure.scraping.observability` | [`infrastructure-scraping-observability.md`](infrastructure-scraping-observability.md) |
+| `src.infrastructure.scraping.playwright_adapter` | [`infrastructure-scraping-playwright_adapter.md`](infrastructure-scraping-playwright_adapter.md) |
+| `src.infrastructure.scraping.rate_limiter` | [`infrastructure-scraping-rate_limiter.md`](infrastructure-scraping-rate_limiter.md) |
 | `src.infrastructure.scraping` | [`infrastructure-scraping.md`](infrastructure-scraping.md) |
 | `src.infrastructure.storage` | [`infrastructure-storage.md`](infrastructure-storage.md) |
 | `src.infrastructure.translation` | [`infrastructure-translation.md`](infrastructure-translation.md) |

@@ -17,6 +17,7 @@ O pipeline usa LLMs em múltiplos estágios (classificação, enriquecimento, su
 - Rollback quando uma mudança degrada qualidade
 
 Problemas observados:
+
 - Mudança em `system_prompt` quebrou parsing JSON de resposta
 - Temperature alta gerava alucinações em classificação
 - Sem baseline de qualidade, não dava para saber se "estava melhor"
@@ -25,7 +26,7 @@ Problemas observados:
 
 ### 1. Estrutura de Prompts como YAML Versionado
 
-```
+```text
 prompts/
 ├── classification/
 │   └── v1.yaml
@@ -37,6 +38,7 @@ prompts/
 ```
 
 Cada arquivo YAML contém:
+
 ```yaml
 ---
 version: "1.0"              # SemVer do prompt
@@ -62,10 +64,12 @@ schema:
     ...
 
 test_cases:
+
   - name: "security_feature"
     vars:
       feature_text: "Nova autenticação MFA obrigatória..."
     expected_contains:
+
       - "security"
       - "high"
       - "admins"
@@ -89,6 +93,7 @@ uv run promptfoo eval -c prompts/promptfooconfig.yaml
 ```
 
 Configuração `promptfooconfig.yaml` define:
+
 - Providers (OpenRouter free, Gemini, etc.)
 - Prompts a avaliar (descobertos automaticamente)
 - Test cases (extraídos do próprio YAML do prompt)
@@ -97,6 +102,7 @@ Configuração `promptfooconfig.yaml` define:
 ### 4. Gate no CI
 
 Workflow `prompt-eval.yml` roda em PRs que tocam `prompts/**`:
+
 1. Carrega prompts modificados
 2. Executa test cases contra modelo configurado
 3. Falha se coverage de assertions < 90% ou regressão detectada
@@ -104,7 +110,8 @@ Workflow `prompt-eval.yml` roda em PRs que tocam `prompts/**`:
 
 ### 5. Guardrails em Runtime
 
-`src/ai/prompts/loader.py` (carregador):
+`loader.py` (carregador):
+
 - Valida schema Pydantic ao carregar
 - Injeta variáveis via `str.format(**vars)`
 - Loga versão do prompt usado em cada chamada (observabilidade)

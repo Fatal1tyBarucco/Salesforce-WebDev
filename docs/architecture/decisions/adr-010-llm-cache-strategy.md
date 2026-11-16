@@ -18,6 +18,7 @@ O pipeline faz centenas de chamadas LLM por release (classificação por feature
 | Reprocessamento | Re-run pipeline = re-chamar LLM para mesmas features |
 
 Soluções parciais existentes:
+
 - `src/cache_manager.py` — genérico, TTL-based, key-value
 - `src/llm_service.py` — cache inline com chave `hash(prompt)`
 
@@ -27,7 +28,7 @@ Necessário: estratégia unificada, observável, com invalidação semântica.
 
 ### Dupla Camada de Cache
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                      LLM Client (Unified)                        │
 ├─────────────────────────────────────────────────────────────────┤
@@ -63,6 +64,7 @@ class LLMCacheAdapter:
 ```
 
 **Chave determinística** (`LLMPrompt.cache_key()` em `src/domain/llm.py`):
+
 ```python
 def cache_key(self) -> str:
     """SHA256 de todos parâmetros que afetam output."""
@@ -95,6 +97,7 @@ class SemanticCacheAdapter:
 ```
 
 **Embedding centrado** (discriminativo para cosine similarity):
+
 ```python
 def _get_embedding(self, text: str) -> list[float]:
     hash_bytes = hashlib.md5(text.encode()).digest()

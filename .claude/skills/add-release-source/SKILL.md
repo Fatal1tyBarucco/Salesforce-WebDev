@@ -35,7 +35,7 @@ CHAR_GOLDEN_UPDATE=1 uv run pytest tests/test_characterization_parser.py -q
 uv run pytest tests/test_characterization_parser.py -q
 ```
 
-### 4. Atualizar Scraper se Necessário (`src/scraper.py` ou `src/infrastructure/scraping.py`)
+### 4. Atualizar Scraper se Necessário (`src/scraper.py` ou `scraping.py`)
 - Novos waits/timeouts se SPA diferente
 - Nova expansão de TOC se estrutura diferente
 - Circuit breaker threshold ajustado

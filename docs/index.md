@@ -343,6 +343,9 @@ Salesforce-WebDev/
       ├── summarization/
   ├── design-system/
       ├── components/
+  ├── domain/
+      ├── llm.py
+      └── scraper.py
   ├── impact_propagation/
       ├── engine.py
       ├── graph_builder.py
@@ -350,13 +353,15 @@ Salesforce-WebDev/
       └── models.py
   ├── infrastructure/
       ├── api/
+      ├── llm_adapters/
+      ├── mcp/
+      ├── scraping/
       ├── generation.py
       ├── github.py
       ├── llm.py
       ├── messaging.py
       ├── notification_step.py
       ├── parsing.py
-      ├── scraping.py
       ├── storage.py
       └── translation.py
   ├── limiters/
@@ -388,7 +393,6 @@ Salesforce-WebDev/
   ├── llm_service.py
   ├── logger.py
   ├── main.py
-  ├── models.py
   ├── nl_search.py
   ├── notifications.py
   ├── orchestrator.py
@@ -401,21 +405,30 @@ Salesforce-WebDev/
   ├── smart_notifications.py
   ├── translator.py
   └── workflow.py
+  ├── .claude/
+  ├── .devcontainer/
   ├── .github/                   # Workflows e scripts do GitHub
   ├── docs/                      # Documentação MkDocs
   ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
+  ├── prompts/
   ├── releases/                  # Artefatos Markdown por release
   ├── report_parts/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
+  ├── .mcp.json
+  ├── .mutmut-cache
+  ├── .promptfoo.yaml
   ├── .python-version
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
+  ├── CLAUDE.md
   ├── CONTRIBUTING.md            # Guia de contribuição
   ├── DESIGN.md
   ├── Dockerfile                 # Imagem Docker de runtime
+  ├── FASE5_COMPLETION_REPORT.md
   ├── IA_AUDIT_REPORT.md
+  ├── MUTATION_TESTING_REPORT.md
   ├── PLANO_DE_MODERNIZACAO.md
   ├── PRODUCT.md
   ├── PROPOSTA_FEATURE_RIPE.md
@@ -423,6 +436,7 @@ Salesforce-WebDev/
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança
   ├── mkdocs.yml                 # Configuração MkDocs
+  ├── mutmut_config.toml
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
 

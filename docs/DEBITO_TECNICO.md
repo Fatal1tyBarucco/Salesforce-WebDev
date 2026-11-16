@@ -1,8 +1,8 @@
 # Relatório de Débito Técnico — Fase 0: Diagnóstico
 
-> **Versão**: 1.0 (2026-11-15)  
-> **Base**: inspeção estática de `src/`, `tests/`, `.github/workflows/`, `.github/scripts/`, `pyproject.toml`, `.pre-commit-config.yaml`.  
-> **Método**: análise de código (grep/read), comparação `tests/` vs `src/`, leitura de workflows e scripts. **NÃO** rodou pytest/cobertura.  
+> **Versão**: 1.0 (2026-11-15)
+> **Base**: inspeção estática de `src/`, `tests/`, `.github/workflows/`, `.github/scripts/`, `pyproject.toml`, `.pre-commit-config.yaml`.
+> **Método**: análise de código (grep/read), comparação `tests/` vs `src/`, leitura de workflows e scripts. **NÃO** rodou pytest/cobertura.
 > **Convenção**: cada item cita `arquivo:linha` como evidência. "Não verificado" = não consegui confirmar no código.
 
 ---

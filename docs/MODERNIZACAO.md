@@ -52,7 +52,7 @@
 
 ## 3. Arquitetura de Automação (Resumo)
 
-```
+```bash
 ┌─────────────────────────────────────────────────────────────────┐
 │                    CI/CD AUTOMATION LAYER                       │
 ├─────────────────────────────────────────────────────────────────┤
@@ -103,6 +103,7 @@
 ## 5. Fase 4 — Pipeline de Dados e LLM de Última Geração (PRÓXIMA)
 
 **Escopo aprovado no plano original**:
+
 1. **Scraper Playwright resiliente**: retries com backoff exponencial + jitter, circuit breaker preservado, timeouts explícitos, detecção de mudança de layout (contrato do parser testado com HTML fixtures), observabilidade estruturada (structlog com correlation id), métricas por execução, tracing OpenTelemetry opcional.
 2. **`llm_service` provider-agnostic**: ports/adapters, fallback em cascata, cache semântico/por hash de prompt, rate limiting adaptativo, saída estruturada validada por schema Pydantic, registro de custo/tokens por execução em relatório JSON/MD. Prompt caching dos providers que suportam.
 3. **Prompts versionados em `prompts/`**: um arquivo por prompt com metadados e versão, avaliados automaticamente (promptfoo ou equivalente) com conjunto de casos e gate no CI.

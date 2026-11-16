@@ -1,7 +1,7 @@
 # Arquitetura do Salesforce-WebDev — Fase 0: Diagnóstico
 
-> **Versão**: 1.0 (2026-11-15)  
-> **Base**: inspeção direta do branch `feat/fase-0-diagnostico` (HEAD: 93cf8c2) e módulos `src/`, `.github/`, `tests/`.  
+> **Versão**: 1.0 (2026-11-15)
+> **Base**: inspeção direta do branch `feat/fase-0-diagnostico` (HEAD: 93cf8c2) e módulos `src/`, `.github/`, `tests/`.
 > **Objetivo**: Visão completa da arquitetura atual com diagramas Mermaid válidos, sem placeholders.
 
 ---

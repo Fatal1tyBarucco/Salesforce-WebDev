@@ -31,8 +31,8 @@ docs/prompt-eval/        # Resultados versionados
 ## Fluxo
 
 ### 1. Criar Novo Prompt (`/prompt-eval create classification_v2`)
-- Scaffold em `src/ai/prompts/classification_v2.py`
-- Schema em `src/ai/schemas/classification_v2.py`
+- Scaffold em `classification_v2.py`
+- Schema em `classification_v2.py`
 - Casos de teste em `tests/prompts/test_classification_v2.yaml`
 - Entry em `.promptfoo.yaml`
 
@@ -46,7 +46,7 @@ uvx promptfoo eval -c .promptfoo.yaml -p openrouter:openrouter/free
 ```
 
 ### 3. Gate no CI
-Workflow `.github/workflows/prompt-eval.yml`:
+Workflow `prompt-eval.yml`:
 ```yaml
 on: [push, pull_request]
 jobs:

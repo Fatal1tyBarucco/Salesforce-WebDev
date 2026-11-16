@@ -24,7 +24,7 @@ Antes: lógica de retry/spread em `src/scraper.py` monolítica, sem observabilid
 
 ### Arquitetura em Camadas (Defense in Depth)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    PlaywrightScraperAdapter                  │
 │  (implementa ScraperPort — interface do Domain)             │

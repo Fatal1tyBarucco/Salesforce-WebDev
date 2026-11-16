@@ -6,7 +6,9 @@
     "node_modules/**",
     "site/**",
     "package.json",
-    "package-lock.json"
+    "package-lock.json",
+    "docs/ai-generated/**",
+    "docs/architecture/decisions/*.md"
   ],
   "heading-style": "setext",
   "first-line-h1": false,
