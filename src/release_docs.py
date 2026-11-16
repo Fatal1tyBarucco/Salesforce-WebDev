@@ -516,7 +516,7 @@ async def _build_release_block(
     """
     _ = existing_text  # Kept for signature compatibility; not consulted.
 
-    lines: list[str] = []
+    lines: list[str] = [""]
     if limit is not None and limit > 0:
         metas = metas[:limit]
 
