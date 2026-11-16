@@ -76,6 +76,12 @@ FENCE_RE = re.compile(r"^```")
 # treat dead image references symmetrically.
 MD_LINK_RE = re.compile(r"(?<!\\)!?\[([^\]]*)\]\(([^)\s]*)\)")
 
+# Test fixtures (tests/**, e.g. tests/golden/*.md) are frozen snapshots of
+# generated output whose relative links resolve against the repository root,
+# not against the fixture's own directory.  They are data, not prose docs:
+# rewriting or flagging them corrupts golden tests.
+FIXTURE_PREFIX = "tests/"
+
 
 # --------------------------------------------------------------------------- #
 # Safe low-level helpers
@@ -585,7 +591,10 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    findings += broken_internal_links(
+        sorted(p for p in inv_set if p.endswith(".md") and not p.startswith(FIXTURE_PREFIX)),
+        inv_set,
+    )
 
     for mod in missing_api_evokers():
         findings.append(
@@ -1013,11 +1022,12 @@ def strip_dead_refs() -> list[str]:
        shortened to their stem so prose stays readable without pointing at a
        dead path.
 
-    Idempotent: a second run is a no-op.  Never raises.
+    Idempotent: a second run is a no-op.  Never raises.  Files under ``tests/``
+    (frozen fixtures) are skipped entirely.
     """
     inventory = set(tracked_inventory().keys())
     root_resolved = REPO_ROOT.resolve()
-    docs = sorted(p for p in inventory if p.endswith(".md"))
+    docs = sorted(p for p in inventory if p.endswith(".md") and not p.startswith(FIXTURE_PREFIX))
     actions: list[str] = []
     for doc in docs:
         text = read_text(doc)

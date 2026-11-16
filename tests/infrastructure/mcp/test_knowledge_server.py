@@ -7,7 +7,13 @@ from pathlib import Path
 
 import pytest
 from mcp.server import Server
-from mcp.types import CallToolRequestParams, CallToolResult, ListToolsResult
+from mcp.types import (
+    CallToolRequest,
+    CallToolRequestParams,
+    CallToolResult,
+    ListToolsRequest,
+    ListToolsResult,
+)
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -124,8 +130,31 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_server_registers_sdk_handlers(self, server):
         """The lowlevel Server should have tools/list and tools/call registered."""
-        assert server.server.get_request_handler("tools/list") is not None
-        assert server.server.get_request_handler("tools/call") is not None
+        assert server.server.request_handlers.get(ListToolsRequest) is not None
+        assert server.server.request_handlers.get(CallToolRequest) is not None
+
+    @pytest.mark.asyncio
+    async def test_registered_list_tools_handler_dispatches(self, server):
+        """The registered tools/list handler should return the four tool definitions."""
+        handler = server.server.request_handlers[ListToolsRequest]
+
+        result = await handler(None)
+
+        assert isinstance(result.root, ListToolsResult)
+        assert len(result.root.tools) == 4
+
+    @pytest.mark.asyncio
+    async def test_registered_call_tool_handler_dispatches(self, server):
+        """The registered tools/call handler should route through the adapters."""
+        handler = server.server.request_handlers[CallToolRequest]
+        request = CallToolRequest(params=CallToolRequestParams(name="list_releases", arguments={}))
+
+        result = await handler(request)
+
+        assert isinstance(result.root, CallToolResult)
+        assert not result.root.isError
+        data = json.loads(result.root.content[0].text)
+        assert len(data) == 2
 
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):
@@ -639,8 +668,8 @@ class TestCreateServer:
         server = create_server()
 
         assert isinstance(server, Server)
-        assert server.get_request_handler("tools/list") is not None
-        assert server.get_request_handler("tools/call") is not None
+        assert server.request_handlers.get(ListToolsRequest) is not None
+        assert server.request_handlers.get(CallToolRequest) is not None
 
     def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""

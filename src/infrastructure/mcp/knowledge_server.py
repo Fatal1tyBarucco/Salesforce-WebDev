@@ -7,8 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server  # type: ignore[attr-defined]  # ServerRequestContext moved in v1.30.0
-from mcp.server.lowlevel import ServerRequestContext  # type: ignore[attr-defined]  # moved in v1.30.0
+from mcp.server import Server
 from mcp.types import (
     CallToolRequestParams,
     CallToolResult,
@@ -45,9 +44,8 @@ class ReleaseNotesMCPServer:
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
         self.server: Server[Any] = Server("salesforce-release-notes")
-        # Register handlers using the low-level API
-        self.server.on_list_tools(self._on_list_tools)
-        self.server.on_call_tool(self._on_call_tool)
+        self.server.list_tools()(self._handle_list_tools)  # type: ignore[no-untyped-call]
+        self.server.call_tool(validate_input=False)(self._handle_call_tool)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -126,6 +124,15 @@ class ReleaseNotesMCPServer:
         # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
         blocks.extend(await self.call_tool(params.name, params.arguments or {}))
         return CallToolResult(content=blocks)
+
+    async def _handle_list_tools(self) -> ListToolsResult:
+        """Registerable ``tools/list`` handler — the lowlevel SDK calls it with no arguments."""
+        return await self._on_list_tools(None, None)
+
+    async def _handle_call_tool(self, name: str, arguments: dict[str, Any]) -> CallToolResult:
+        """Registerable ``tools/call`` handler — the lowlevel SDK passes name and arguments."""
+        params = CallToolRequestParams(name=name, arguments=arguments)
+        return await self._on_call_tool(None, params)
 
     async def _search_release_notes(self, args: dict[str, Any]) -> list[TextContent]:
         from pydantic import ValidationError
