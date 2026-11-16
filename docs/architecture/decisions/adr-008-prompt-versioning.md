@@ -104,7 +104,7 @@ Workflow `prompt-eval.yml` roda em PRs que tocam `prompts/**`:
 
 ### 5. Guardrails em Runtime
 
-`src/ai/prompts/loader.py` (carregador):
+`loader.py` (carregador):
 - Valida schema Pydantic ao carregar
 - Injeta variáveis via `str.format(**vars)`
 - Loga versão do prompt usado em cada chamada (observabilidade)

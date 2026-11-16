@@ -6,6 +6,7 @@
     ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md",
+      "docs/ARQUITETURA.md",
       "docs/ai-generated/release-notes.md",
       "docs/changelog.md",
       "docs/runbooks/documentation-sync-failure.md"
@@ -18,7 +19,11 @@
     ],
     ".github/scripts/fix_markdown.py": [
       "AGENTS.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md"
+    ],
+    ".github/scripts/select_free_model.py": [
+      "docs/ARQUITETURA.md"
     ],
     ".github/scripts/update_changelog_auto.py": [
       "docs/ai-generated/release-notes.md"
@@ -27,6 +32,15 @@
       "README.en.md",
       "README.md",
       "docs/ai-generated/release-notes.md"
+    ],
+    ".github/workflows/ai-pr-review.yml": [
+      "docs/MODERNIZACAO.md"
+    ],
+    ".github/workflows/ai-triage.yml": [
+      "docs/MODERNIZACAO.md"
+    ],
+    ".github/workflows/ci-repair.yml": [
+      "docs/MODERNIZACAO.md"
     ],
     ".github/workflows/copilot-setup-steps.yml": [
       "docs/ai-generated/release-notes.md"
@@ -43,11 +57,26 @@
     ],
     ".github/workflows/python-quality.yml": [
       "AGENTS.md",
+      "docs/ARQUITETURA.md",
+      "docs/MODERNIZACAO.md",
       "docs/changelog.md",
       "docs/plans/auto-opencode-issue.md"
     ],
+    ".github/workflows/release_notes_pipeline.yml": [
+      "docs/ARQUITETURA.md",
+      "docs/MODERNIZACAO.md"
+    ],
     ".github/workflows/salesforce_release_intelligence_hub.yml": [
       "docs/ai-generated/release-notes.md"
+    ],
+    ".github/workflows/scheduled-pipeline.yml": [
+      "docs/MODERNIZACAO.md"
+    ],
+    "scripts/detect_release.py": [
+      "docs/MODERNIZACAO.md"
+    ],
+    "scripts/generate_pr_body.py": [
+      "docs/MODERNIZACAO.md"
     ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
@@ -74,6 +103,7 @@
       "docs/api/ai-generators-markdown.md"
     ],
     "src/ai/integrations/salesforce.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/ai-integrations-salesforce.md"
     ],
     "src/ai/integrations/trailhead.py": [
@@ -81,15 +111,18 @@
     ],
     "src/ai/llm/client.py": [
       "README.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/ai-llm-client.md"
     ],
     "src/ai/orchestrator.py": [
       "README.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/ai-orchestrator.md"
     ],
     "src/ai/prompts/classification.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/ai-prompts-classification.md"
     ],
     "src/ai/prompts/enrichment.py": [
@@ -119,34 +152,45 @@
     ],
     "src/ai_automation.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/ai_automation.md"
     ],
     "src/analytics.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/analytics.md"
     ],
     "src/api.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/api.md"
     ],
     "src/automation/badge.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-badge.md"
     ],
     "src/automation/comparison.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-comparison.md"
     ],
     "src/automation/content.py": [
       "docs/api/automation-content.md"
     ],
     "src/automation/export.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-export.md"
     ],
     "src/automation/github_ops.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-github_ops.md"
     ],
     "src/automation/impact.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-impact.md"
+    ],
+    "src/automation/ledger/__init__.py": [
+      "docs/DEBITO_TECNICO.md"
     ],
     "src/automation/ledger/linker.py": [
       "docs/api/automation-ledger-linker.md"
@@ -164,72 +208,106 @@
       "docs/api/automation-models.md"
     ],
     "src/automation/notifications.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-notifications.md"
     ],
     "src/automation/reporting.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-reporting.md"
     ],
     "src/automation/service.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/automation-service.md"
     ],
     "src/cache_manager.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/cache_manager.md",
-      "docs/architecture/c4_container.md"
+      "docs/architecture/c4_container.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
     "src/circuit_breaker.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/circuit_breaker.md",
-      "docs/architecture/c4_container.md"
+      "docs/architecture/c4_container.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/config.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/config.md"
     ],
     "src/core/classification/service.py": [
-      "docs/api/core-classification-service.md"
+      "docs/DEBITO_TECNICO.md",
+      "docs/api/core-classification-service.md",
+      "docs/architecture/decisions/adr-008-prompt-versioning.md"
     ],
     "src/core/enrichment/service.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/core-enrichment-service.md"
     ],
     "src/core/pipeline/orchestrator.py": [
       "docs/api/core-pipeline-orchestrator.md"
     ],
     "src/core/pipeline/steps.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/core-pipeline-steps.md"
     ],
     "src/core/summarization/service.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/core-summarization-service.md"
     ],
     "src/dashboard.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/dashboard.md"
     ],
     "src/documentation_service.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/documentation_service.md"
     ],
+    "src/domain/llm.py": [
+      "docs/api/domain-llm.md",
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+    ],
+    "src/domain/scraper.py": [
+      "docs/api/domain-scraper.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+    ],
     "src/events.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/events.md"
     ],
     "src/exceptions.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/exceptions.md"
     ],
     "src/feature_classifier.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/feature_classifier.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md"
     ],
     "src/feature_enricher.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/feature_enricher.md"
     ],
     "src/generator.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/generator.md"
     ],
     "src/health.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/health.md",
       "docs/architecture/c4_container.md"
     ],
     "src/heuristic_classifier.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/heuristic_classifier.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md"
     ],
@@ -237,18 +315,24 @@
       "docs/api/i18n.md"
     ],
     "src/impact_analyzer.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/impact_analyzer.md"
     ],
     "src/impact_propagation/engine.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/impact_propagation-engine.md"
     ],
     "src/impact_propagation/graph_builder.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/impact_propagation-graph_builder.md"
     ],
     "src/impact_propagation/heuristic_fallback.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/impact_propagation-heuristic_fallback.md"
     ],
     "src/impact_propagation/models.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/impact_propagation-models.md"
     ],
     "src/infrastructure/api/__init__.py": [
@@ -264,48 +348,95 @@
       "docs/api/infrastructure-api-routes.md"
     ],
     "src/infrastructure/generation.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-generation.md"
     ],
     "src/infrastructure/github.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-github.md"
     ],
     "src/infrastructure/llm.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
+      "docs/MODERNIZACAO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm.md"
     ],
+    "src/infrastructure/llm_adapters/cache.py": [
+      "docs/api/infrastructure-llm_adapters-cache.md",
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+    ],
+    "src/infrastructure/llm_adapters/observability.py": [
+      "docs/api/infrastructure-llm_adapters-observability.md"
+    ],
+    "src/infrastructure/llm_adapters/rate_limiter.py": [
+      "docs/api/infrastructure-llm_adapters-rate_limiter.md"
+    ],
+    "src/infrastructure/llm_adapters/unified_client.py": [
+      "docs/api/infrastructure-llm_adapters-unified_client.md",
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+    ],
+    "src/infrastructure/mcp/knowledge_server.py": [
+      "docs/api/infrastructure-mcp-knowledge_server.md"
+    ],
     "src/infrastructure/messaging.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-messaging.md"
     ],
     "src/infrastructure/notification_step.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-notification_step.md"
     ],
     "src/infrastructure/parsing.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-parsing.md"
     ],
-    "src/infrastructure/scraping.py": [
-      "docs/api/infrastructure-scraping.md"
+    "src/infrastructure/scraping/cache_adapter.py": [
+      "docs/api/infrastructure-scraping-cache_adapter.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+    ],
+    "src/infrastructure/scraping/observability.py": [
+      "docs/api/infrastructure-scraping-observability.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+    ],
+    "src/infrastructure/scraping/playwright_adapter.py": [
+      "docs/api/infrastructure-scraping-playwright_adapter.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+    ],
+    "src/infrastructure/scraping/rate_limiter.py": [
+      "docs/api/infrastructure-scraping-rate_limiter.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/storage.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-storage.md"
     ],
     "src/infrastructure/translation.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/infrastructure-translation.md"
     ],
     "src/issue_triage.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/issue_triage.md"
     ],
     "src/limiters/rate_limiter.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/limiters-rate_limiter.md",
       "docs/architecture/c4_container.md"
     ],
     "src/llm_service.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/llm_service.md",
       "docs/architecture/c4_container.md",
-      "docs/architecture/decisions/adr-007-clean-architecture.md"
+      "docs/architecture/decisions/adr-007-clean-architecture.md",
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
     "src/logger.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/logger.md",
       "docs/observability/logging.md",
       "docs/runbooks/index.md"
@@ -314,6 +445,9 @@
       "AGENTS.md",
       "README.en.md",
       "README.md",
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
+      "docs/MODERNIZACAO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/main.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md",
@@ -326,25 +460,28 @@
       "docs/runbooks/release-generation-failure.md",
       "docs/runbooks/scraper-failure.md"
     ],
-    "src/models.py": [
-      "docs/api/models.md"
-    ],
     "src/models/api.py": [
+      "docs/ARQUITETURA.md",
       "docs/api/models-api.md"
     ],
     "src/models/classification.py": [
+      "docs/ARQUITETURA.md",
       "docs/api/models-classification.md"
     ],
     "src/models/enrichment.py": [
+      "docs/ARQUITETURA.md",
       "docs/api/models-enrichment.md"
     ],
     "src/models/feature.py": [
+      "docs/ARQUITETURA.md",
       "docs/api/models-feature.md"
     ],
     "src/models/release.py": [
+      "docs/ARQUITETURA.md",
       "docs/api/models-release.md"
     ],
     "src/nl_search.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/nl_search.md"
     ],
     "src/notifications.py": [
@@ -352,48 +489,90 @@
       "docs/api/notifications.md"
     ],
     "src/orchestrator.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/orchestrator.md"
     ],
     "src/parser.py": [
       "README.en.md",
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/parser.md",
       "docs/architecture/c4_container.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md"
     ],
     "src/release_discovery.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/release_discovery.md"
     ],
     "src/release_docs.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/release_docs.md"
     ],
     "src/release_summarizer.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/release_summarizer.md"
     ],
     "src/salesforce.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/salesforce.md"
     ],
     "src/scraper.py": [
       "README.en.md",
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/scraper.md",
-      "docs/architecture/decisions/adr-007-clean-architecture.md"
+      "docs/architecture/decisions/adr-007-clean-architecture.md",
+      "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/smart_notifications.py": [
+      "docs/ARQUITETURA.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/smart_notifications.md"
     ],
     "src/translator.py": [
+      "docs/DEBITO_TECNICO.md",
       "docs/api/translator.md"
     ],
     "src/workflow.py": [
       "README.en.md",
+      "docs/DEBITO_TECNICO.md",
       "docs/api/workflow.md"
     ]
   },
   "files": {
+    ".claude/agents/architect.md": "bcf0ad0a3708c78429b2e11ffcaa6b41112eedc5",
+    ".claude/agents/code-reviewer.md": "99c2ba3cca002b8006681434003a7d87006b843e",
+    ".claude/agents/docs-writer.md": "9db29180110894d19eca27ba2b838aaab83dc577",
+    ".claude/agents/python-engineer.md": "6d2263abe13d6ce8755ea6b0241d0a017d4518be",
+    ".claude/agents/release-manager.md": "4968a480fdb866d5565c27c540d4a55230256c43",
+    ".claude/agents/security-auditor.md": "2344d7420c777c7bc82ce3f8dc420c5884af7b1e",
+    ".claude/agents/test-engineer.md": "958b0aa6ec52fee48e11b13e98e993cb0fe6d6a1",
+    ".claude/commands/audit.md": "7010ae8e9d3881936931e25e3bcc882a59155a48",
+    ".claude/commands/diag.md": "a4cba338c030b597eedd6e8c23b82636e14979f4",
+    ".claude/commands/prompt-eval.md": "6f141fc982cf3d492ea542b1ae8f20c2c8e04828",
+    ".claude/commands/refactor.md": "ab3df7f85177d23dca426b505596156661bca5cd",
+    ".claude/commands/release.md": "f6b21bd7550f01117f7641b1f7cc10039261384f",
+    ".claude/commands/triage.md": "94e588e86532b67ebc00bbcc83599c63040d8d13",
+    ".claude/settings.json": "123d61306df96f4d45e74570665ba09e90e4f6d0",
+    ".claude/skills/add-release-source/SKILL.md": "eaf5fe3f1927b9266cb9de9ad5926b66ad432a03",
+    ".claude/skills/bump-quality/SKILL.md": "4d2b36cf419e94cd01bee272722251e94a32960b",
+    ".claude/skills/debug-ci/SKILL.md": "1d144d9f47d5d3621cee25e08e4c95831e9b8f0a",
+    ".claude/skills/knowledge-as-code-update/SKILL.md": "368d20974afeb50cf2882d1da24f79ab6d8d3e6a",
+    ".claude/skills/new-llm-provider/SKILL.md": "89b42a814ba195e305aad8d8915a13b596f58770",
+    ".claude/skills/prompt-eval/SKILL.md": "dda7f0f156dd3a2b9e1c744e78444c805b853a96",
+    ".devcontainer/Dockerfile": "2bc0f8da25b1f48a991ff4a4505083dfb23c0199",
+    ".devcontainer/devcontainer.json": "b6e0122bc530ce7504a32cce432e5b3b801bd1c3",
+    ".devcontainer/post-create.sh": "6b85d704b70cd10473ea158b8bbf1d6dcddf63fb",
+    ".devcontainer/post-start.sh": "b697df82e11d9adc01cc5ef1e0fc29cb66693a93",
     ".dockerignore": "ff195031ebf5efbe5dcef3ed56a4c11a04d4269c",
     ".github/CODEOWNERS": "92640178382e5e61384bef6fd19a31bf0cb67d1f",
     ".github/ISSUE_TEMPLATE/bug_report.md": "7bff8dccde6a73cfbed3cf71d272aa50ff00fdc7",
@@ -405,7 +584,7 @@
     ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "0041672260b12759121d41d62fec6e764d89bfbc",
-    ".github/scripts/docs_sync_engine.py": "1c86971adf4a911a6264db6062020915c0251505",
+    ".github/scripts/docs_sync_engine.py": "4398be8145a9638cc64bc4b3399c0c4ed4115a3a",
     ".github/scripts/documentation_reconcile.py": "9d65b68af90802501030594f7aa984206e6b1d73",
     ".github/scripts/documentation_sync.py": "54ca4220be6f37b99c107a084c751b9c5d6754d4",
     ".github/scripts/fix_markdown.py": "99cd8b21b685f7db3778da1eed18fe7af5aef0f5",
@@ -414,6 +593,9 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/workflows/ai-docs.yml": "812aef3675bb9a77ef4226eb352c81bc8afcf830",
+    ".github/workflows/ai-pr-review.yml": "46aaebd9c71eab0f42aba27803929c18e378901a",
+    ".github/workflows/ai-triage.yml": "2c3f1a025d6f8ceb112b8d4cd658f5ea4d7a2060",
+    ".github/workflows/ci-repair.yml": "02de673b5afb9cff470eb03321775b4b2bb1cb26",
     ".github/workflows/copilot-setup-steps.yml": "b3cbd8339ec635e56270e3e6aea0157df6dd92c0",
     ".github/workflows/dependabot-lock-refresh.yml": "a63fa6464942a7ef348f7c3f85c62885c8f7d63d",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
@@ -421,23 +603,31 @@
     ".github/workflows/documentation-sync.yml": "9602b66a4c295961a55577108256ca2009a59034",
     ".github/workflows/opencode.yml": "4956807241992f7582abca06b6f4186ff4ecd78f",
     ".github/workflows/python-quality.yml": "10fb4b78981c081b6aadc3db7482311f289fc111",
+    ".github/workflows/release-please.yml": "a4247493247010de05a57657b1ea1ba77237ea82",
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
+    ".github/workflows/scheduled-pipeline.yml": "84f3514bcda985d7eda7c9bb619457b502f1c9c0",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
+    ".mcp.json": "407d29e33acd3d0d0af075ce80127d5f9bef955c",
+    ".mutmut-cache": "af3eb1d1c8c3b7dd9e40fd5668b1535968912b25",
     ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
+    ".promptfoo.yaml": "678cb8bae6c531c1091274f2cb366a46a8d9e6b1",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     "AGENTS.md": "3202496ac954f7910d863583e4be2dfd9640d5b9",
-    "CHANGELOG.md": "da52a798c0d4db7c7f308fbbd5305bcdbfe09984",
+    "CHANGELOG.md": "91c1910f5a5fa25cd93f37274394411174cf614f",
+    "CLAUDE.md": "f8b1ef28244762098e2b8d004722585aba1ec0ca",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
+    "FASE5_COMPLETION_REPORT.md": "982bb96e434e666d27329a42def0ae832a6b8174",
     "IA_AUDIT_REPORT.md": "44f2d6a8784b85e3c20524139a5a5d27e6526cb0",
+    "MUTATION_TESTING_REPORT.md": "8abef2b0c300d69353222853e4e0cc9f1bd78493",
     "PLANO_DE_MODERNIZACAO.md": "e410c7458abbdf230a9c68d1048f54e89b670127",
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
-    "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
+    "PROPOSTA_FEATURE_RIPE.md": "e3d095dbc9a652590b0e4722db4530ef31037081",
     "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
     "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
@@ -446,11 +636,14 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "4dc0b04e935b7262e17403072eb20e8489123062",
+    "docs/.last-processed-ref": "5c4e4fbf971d72729f50a636e9ddc2253c7d7c2d",
+    "docs/ARQUITETURA.md": "e9f8dde203e990e55c33e9a5e78955995185a6a6",
+    "docs/DEBITO_TECNICO.md": "9c96aa3a1c4f77388c00b4944cd08c3fb2ffa91a",
+    "docs/MODERNIZACAO.md": "0fe5e79eb3a7bc504e1caa82067a36a6e255e941",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "b5a53063f9270511ccdacb7fe0a071747dbd826f",
-    "docs/ai-generated/release-notes.md": "c06a825baaa04a1c06c68ac042afbc1be29b2d90",
-    "docs/ai-generated/roadmap.md": "86047f29fd0dde993d50908591e4a0abf20d5214",
+    "docs/ai-generated/leadership.md": "f5db9dd38db07c557ba14faeedf15b0863106cdf",
+    "docs/ai-generated/release-notes.md": "e1f0957f2c2ee5ec1ffafccaf344ae1eb8013095",
+    "docs/ai-generated/roadmap.md": "fc1bd326ca0ad56997e464483ddbdfabe8d8fca2",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -496,6 +689,8 @@
     "docs/api/core-summarization-service.md": "e9462cb62474f27ef4310865696df8bab95256bc",
     "docs/api/dashboard.md": "2f1c89f362acc1bbddd1796bb9b6b3a27abe4a07",
     "docs/api/documentation_service.md": "7d1415f082d58afe8f19c6c4d7514816628230f3",
+    "docs/api/domain-llm.md": "3a6d0bb718e5e00ebccab829df8fe59cdcaad170",
+    "docs/api/domain-scraper.md": "f0b69f942ae40230e644c364eb9b7a81369fd7cb",
     "docs/api/events.md": "12b7d6dbfafaec48faa1c813b828c4a3563019ff",
     "docs/api/exceptions.md": "396e65ade40d1225ea70376994128ace314a869c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -509,15 +704,24 @@
     "docs/api/impact_propagation-graph_builder.md": "2bd7de938b1f6173945709f1a113973b91f3d6c7",
     "docs/api/impact_propagation-heuristic_fallback.md": "d4bdbf701363fa2b457a0b7b6dd1cf608702581c",
     "docs/api/impact_propagation-models.md": "c07f35c6a02e40e8b3736925ab1c5fb4fa92c5de",
-    "docs/api/index.md": "767a4f9ee86653f0d8fe66bab5b2800a0eac6e5f",
+    "docs/api/index.md": "d31dfc10968c1689458e7b71404cbadf6d741d68",
     "docs/api/infrastructure-api-graphql.md": "76628da936f4aaea1aee1e23d603ab79bb8d3782",
     "docs/api/infrastructure-api-routes.md": "ff1613e8b3d9dcd23f4eeb8fa7d713f512f3acb9",
     "docs/api/infrastructure-generation.md": "b6f1978b1590a44c438224ddff6363c8b67fb0d1",
     "docs/api/infrastructure-github.md": "3862e73efc7958377a2e58e4a9b6c40a3ff26add",
     "docs/api/infrastructure-llm.md": "de7f873e915e999d486e062ebc613a20495ffbff",
+    "docs/api/infrastructure-llm_adapters-cache.md": "be587dd94a2c5ca75cb3c40fdc88a0fb48f18dae",
+    "docs/api/infrastructure-llm_adapters-observability.md": "98879a43538eae533668ca78bc2ebfc7716e4bbb",
+    "docs/api/infrastructure-llm_adapters-rate_limiter.md": "12c7909499583d5c034924f8fa672de276e3a7f2",
+    "docs/api/infrastructure-llm_adapters-unified_client.md": "23bf71c9be2d75747fab80e4d9384001eb231805",
+    "docs/api/infrastructure-mcp-knowledge_server.md": "6d3d86e8b3b529da5b63cbb252c43872a604e7d9",
     "docs/api/infrastructure-messaging.md": "68f797b3bad25092a26040d551b152a806f58868",
     "docs/api/infrastructure-notification_step.md": "72016137a7112640b749b10f3966673deca369dc",
     "docs/api/infrastructure-parsing.md": "42c197562c0188e91e74255c7e1985406e88d3f5",
+    "docs/api/infrastructure-scraping-cache_adapter.md": "636b59528f3c8da2ee23c070db78e59460cd85c6",
+    "docs/api/infrastructure-scraping-observability.md": "b3dc70c95e5e18a311bfe245bbc120864f0375b5",
+    "docs/api/infrastructure-scraping-playwright_adapter.md": "ac98a1949d6e1a3275e4882862edc78cf9478709",
+    "docs/api/infrastructure-scraping-rate_limiter.md": "3ddb62e118475cf0b0b1dad19695d7d63a51e65d",
     "docs/api/infrastructure-scraping.md": "bd60e97b4ffa31ae1fe4378eea1e5ca5d296c9a4",
     "docs/api/infrastructure-storage.md": "3ec8a22921a51697c449429cd1af8ffed685c5bb",
     "docs/api/infrastructure-translation.md": "7ad6c46b3c993b3c76adb873ac0397b1c15cba82",
@@ -552,6 +756,9 @@
     "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "939d7a55b2d046315b6486b6c11cad0d1c0b35bf",
     "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "f19c0b74c4db19849ea593153751df05a27c9a5f",
     "docs/architecture/decisions/adr-007-clean-architecture.md": "4e2da5b64c17a38576633db8c19474fd0c68fe94",
+    "docs/architecture/decisions/adr-008-prompt-versioning.md": "6595adb073b121b2d876cf1acbb640f520cdabf3",
+    "docs/architecture/decisions/adr-009-scraper-resilience.md": "7ce2fff122d1b055a61c26a70cc2147f81cb2844",
+    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "65fd610a09e23f2d11e98e065f4ae7eb58b2cee7",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -566,7 +773,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "41f65560b4d8cca97e0e1754489c6933bb2e6492",
+    "docs/index.md": "f191d979a69b9a58cdd69a33b763205d5baef6bd",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -598,8 +805,12 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "0a31505db6f4fef6063f0ea8cc5a3d6e7ec1cf12",
-    "pyproject.toml": "db366ba2bd97bbe49cfa4b4782aee035683b7002",
+    "mkdocs.yml": "3bf9fafae1d0ae30c0d7bdd6caca3fb6d363ca93",
+    "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
+    "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
+    "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
+    "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
+    "pyproject.toml": "bc3f965df060de5b24732388c632f1b3bf985b32",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -775,6 +986,8 @@
     "report_parts/part_aa": "26d7f64984ca78ff939cd67389e00c5986c062bb",
     "report_parts/part_ab": "959e14eadc6f2f7bedf85ff4439463ace6a53437",
     "report_parts/part_ac": "7c8f3ba7fa6addd50112a3a3cc1917a085fd9004",
+    "scripts/detect_release.py": "01e743d85fff924d2e27ae59c65ba505eaf021df",
+    "scripts/generate_pr_body.py": "dfb85d1c9395c2fe8f95f1860d6e6704d1b51bf8",
     "scripts/quality-check-local.sh": "f4939848de13928460b8caa13cd3d71098c5aaa5",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
@@ -836,6 +1049,7 @@
     "src/core/__init__.py": "f4eb34a39dc1fe877826c57323625c2b366b85e8",
     "src/core/classification/__init__.py": "730b5919edf08d762f904a6ab26d1c6032a7cd14",
     "src/core/classification/service.py": "4bfbfd1359ca2d8aaaf35e678551954bd41d6ad8",
+    "src/core/classification/service.py.bak": "4bfbfd1359ca2d8aaaf35e678551954bd41d6ad8",
     "src/core/enrichment/__init__.py": "7d31f3c47fb2224559a4380f107bba6caca1fb5f",
     "src/core/enrichment/service.py": "6a18c0c439eb289d9374930d227134ed9b7e8870",
     "src/core/pipeline/__init__.py": "3a8b54863149cae348d329a9dd2f65b937f3bb62",
@@ -855,6 +1069,9 @@
     "src/design-system/index.css": "ce50c97f915972f403bbf70ed2c864546978fc1b",
     "src/design-system/tokens.css": "d4fc70f0ce1d66745f006106c50a7acadb3cb0b1",
     "src/documentation_service.py": "0078ae0c104b441dc293c728dce2662ea9912dc9",
+    "src/domain/__init__.py": "31e5e5b1664c9b197902b384218ad35d3dd6163e",
+    "src/domain/llm.py": "9a92f8865c1d40009d957dc89b39bb551d43f933",
+    "src/domain/scraper.py": "d2ba482b93c56ad0bb02d18d28e940c83eee1229",
     "src/events.py": "5d5d804d89dcb2ae11de3fcd49a30d20159264c2",
     "src/exceptions.py": "782997996ef0b0ee7588d0ec915635a37c1be893",
     "src/feature_classifier.py": "b65e1b4af9d9fe6ff10fd6afb83244a3d8730467",
@@ -876,10 +1093,21 @@
     "src/infrastructure/generation.py": "b16b259d0a85a835cecfa0328873a028a048a556",
     "src/infrastructure/github.py": "7d003c5a7e7d795fd93ea343f1e551cb1143b1ac",
     "src/infrastructure/llm.py": "eb21a0a63953ad1e5c571a0a7a864fde913ba817",
+    "src/infrastructure/llm_adapters/__init__.py": "28efd9c857e7aff30575a4d75a79f3986335a070",
+    "src/infrastructure/llm_adapters/cache.py": "c6a41db2690acb153dbdf5718bf4c5ab70033234",
+    "src/infrastructure/llm_adapters/observability.py": "91db05cff9bc01fde3b4928e70216ed914435af5",
+    "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
+    "src/infrastructure/llm_adapters/unified_client.py": "4716228bbd85483cea8845e5bf5211a00cb82fe5",
+    "src/infrastructure/mcp/__init__.py": "60de6875842d2cc3e5329254fc823c01e23b799d",
+    "src/infrastructure/mcp/knowledge_server.py": "9804ba602e4f6dec6eef0cddd6f05ae32b977720",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
-    "src/infrastructure/scraping.py": "b677b99ca0d775446fb82fa050a3ee45f8fd6b04",
+    "src/infrastructure/scraping/__init__.py": "4d99885eecec92f43d87433013b8fcbaa081e03d",
+    "src/infrastructure/scraping/cache_adapter.py": "29c4d23b90d90509c8315c6895a807a569316a81",
+    "src/infrastructure/scraping/observability.py": "4ae144a0180409e3570d6b043cd25246963e00da",
+    "src/infrastructure/scraping/playwright_adapter.py": "0c85ff0c81fd766100875e53c9a43868b7f7455b",
+    "src/infrastructure/scraping/rate_limiter.py": "2e4c8678cfa505256d5ae8ca6635b59683972a4d",
     "src/infrastructure/storage.py": "c637702a1591f1d0662766b7a4b7bfaa8056bba6",
     "src/infrastructure/translation.py": "a905903d3f8ecc6b99278c4b41e25675764b9d26",
     "src/issue_triage.py": "4dc314e15f9183fc250931fe30293532bc928ff0",
@@ -889,7 +1117,6 @@
     "src/llm_service.py": "8c6a4b6a408b27366d5e7147f6e2b29e30b6f39b",
     "src/logger.py": "1e0c0c804d5b1de2f9afab65016d89d4851ded0a",
     "src/main.py": "34953f172b1fe205583be174103682fbe929f94c",
-    "src/models.py": "56d66cc465befe230342bba24776f50246f84b0d",
     "src/models/__init__.py": "f032c84a171628178727d0ef71f573a9a1117398",
     "src/models/api.py": "dc39bb8f2d1ab8a6437fd42e5864227d589e5c93",
     "src/models/classification.py": "931467d49fe55bfab5fc81d259533df54b3c42fe",
@@ -928,6 +1155,75 @@
     "tests/__snapshots__/test_snapshot.ambr": "5cbfeb7b448f5fe7ab139fb6b3bf4e5fc2411d8b",
     "tests/conftest.py": "998cdc5cdbd0687e17adab403e21a5acc12ae4ae",
     "tests/factories.py": "baed65a16b37e21ecb33688fab91f347f3809220",
+    "tests/fixtures/golden/.meta.json": "d97ed7b99514e8953706496d6279162995c147bf",
+    "tests/fixtures/golden/.summary_cache.json": "b5a9d43d5e46a47836fdc371daeacb052dce42e2",
+    "tests/fixtures/golden/winter_27_en_US/agentforce.md": "e854265767c6b0ee4aeaa358ab95c661b37dad2a",
+    "tests/fixtures/golden/winter_27_en_US/automation.md": "017fbaaba6d9d571dd65397a35ab8da55b3ccf35",
+    "tests/fixtures/golden/winter_27_en_US/data-360.md": "c8ba2ca1b806b860e0367d03c558f825357264e3",
+    "tests/fixtures/golden/winter_27_en_US/data-analysis.md": "220dbe0320936d81b1048267829f4ba989cc8ad1",
+    "tests/fixtures/golden/winter_27_en_US/experience-cloud.md": "f8983a56e2463d5318a05af53f70abf4689b5d6e",
+    "tests/fixtures/golden/winter_27_en_US/field-service.md": "609c49e099777cfcd50446b5f535cf32d921e90f",
+    "tests/fixtures/golden/winter_27_en_US/hyperforce.md": "bc77c1945620b824300c8f6aa31bf23fe3ee4c20",
+    "tests/fixtures/golden/winter_27_en_US/industries.md": "b1afd48698b4e1c38bd6d02ed97e773949235d1a",
+    "tests/fixtures/golden/winter_27_en_US/legal-documentation.md": "e5f5e71cade819b1cd206a8c5619ce63ea1bd762",
+    "tests/fixtures/golden/winter_27_en_US/marketing.md": "66ff4c7fa52ca972bfd9ac3ab5a61e0f3a7ff9ea",
+    "tests/fixtures/golden/winter_27_en_US/mulesoft.md": "6654f18460e0d156d3df09643b9d822bbc937f46",
+    "tests/fixtures/golden/winter_27_en_US/omnistudio.md": "1caa75da7dd9e84da0724e766c830cf6065a7f0c",
+    "tests/fixtures/golden/winter_27_en_US/partner-cloud.md": "72f82f38930326d1c4bfc8f13d6b3f1041da09a2",
+    "tests/fixtures/golden/winter_27_en_US/revenue-management.md": "1178c32c3f8702559871173f836bc4f527b0fb77",
+    "tests/fixtures/golden/winter_27_en_US/sales.md": "4ba46c017810d9c77993b750d3cfbf9827284b35",
+    "tests/fixtures/golden/winter_27_en_US/salesforce-general.md": "c3420b05c78976cfcfd1d8db32cff40d7b8dacb5",
+    "tests/fixtures/golden/winter_27_en_US/salesforce-slack-integrations.md": "877999abde15b755c21e98c83f8f1b537501ea13",
+    "tests/fixtures/golden/winter_27_en_US/security-identity-privacy.md": "e322153f4e128bff5d6b80560fbf74232a9b89a3",
+    "tests/fixtures/golden/winter_27_en_US/service.md": "220eb15bb6cda5e245c4e4bb898b6c2ae83b672b",
+    "tests/fixtures/golden/winter_27_pt_BR/agentforce.md": "e12808f0c877c81d9c84b58ebd596715b958d268",
+    "tests/fixtures/golden/winter_27_pt_BR/analise_de_dados.md": "359f775e32426bbe161971f45e4ab31ddf13ac04",
+    "tests/fixtures/golden/winter_27_pt_BR/automacao.md": "48a2d43e270f12b9dd3076ad216d906c5a4da9ec",
+    "tests/fixtures/golden/winter_27_pt_BR/data_360.md": "1640feb6fb619642076e0aa17ba2357ae65e87bc",
+    "tests/fixtures/golden/winter_27_pt_BR/documentacao_legal.md": "7a46987c17391dc5a4c2d02b4235dcc507efb37b",
+    "tests/fixtures/golden/winter_27_pt_BR/experience_cloud.md": "8efeddfeb41e3e08ed21b4d88d7ae4a25933b5e9",
+    "tests/fixtures/golden/winter_27_pt_BR/field_service.md": "da28ef3a02291eb83ca26019630c9220ead3562d",
+    "tests/fixtures/golden/winter_27_pt_BR/gerenciamento_de_receita.md": "846e96158e7d3aadc31205579fc2e2a0d8809fb4",
+    "tests/fixtures/golden/winter_27_pt_BR/hyperforce.md": "9a700f8c9773ecab093bceef9c54bc445625228b",
+    "tests/fixtures/golden/winter_27_pt_BR/integracoes_do_salesforce_para_slack.md": "be4f568c7648ea83bd845cc3bb25057fb3fa464f",
+    "tests/fixtures/golden/winter_27_pt_BR/marketing.md": "47dc761240246b905021a3abfefb3db9a2585c92",
+    "tests/fixtures/golden/winter_27_pt_BR/mulesoft.md": "52e9bce9d1b4f126722b1d2a66e6a025cdb8591b",
+    "tests/fixtures/golden/winter_27_pt_BR/omnistudio.md": "47530ae4d389a26df11941001edf6bddd462f226",
+    "tests/fixtures/golden/winter_27_pt_BR/partner_cloud.md": "e7472d1dee3bfe19ff23bc45826eec71f5274ef7",
+    "tests/fixtures/golden/winter_27_pt_BR/salesforce_geral.md": "696f1a7c89a3c68fdf508e235aa24734fa36dc1f",
+    "tests/fixtures/golden/winter_27_pt_BR/seguranca_identidade_e_privacidade.md": "af2b686957ecdb09b094773093cfe25339be12bc",
+    "tests/fixtures/golden/winter_27_pt_BR/servico.md": "1f05994a77858081ae72351b5f39551d87a21ee9",
+    "tests/fixtures/golden/winter_27_pt_BR/setores.md": "bdde8a183a22f72edc278ef5ac84f60bdcc09d0c",
+    "tests/fixtures/golden/winter_27_pt_BR/vendas.md": "8de6229100322d6f71ab949ce00688c157254a53",
+    "tests/golden/classifier/heuristic_labels.json": "fb2641a26c99f5c6105e6d026cc7b3b75aac62eb",
+    "tests/golden/generator/topic_files.json": "55d0403a606ce139c94ef9bead9f33f595a1e571",
+    "tests/golden/main/load_meta_cases.json": "b2d6eb9a99d8eb331509f5bcd7c16b892407f99e",
+    "tests/golden/main/summary_cache_validation.json": "fbf975a69c3ffa258f92ceeda423c258402c6916",
+    "tests/golden/parser/article_summary.json": "1ab981acda28cc3a879f9f3c14e507c13ba34ce4",
+    "tests/golden/parser/feature_impact_crafted.json": "0f0ca06b4de0778b9d7c96e5c29fae365335df70",
+    "tests/golden/parser/feature_impact_factory.json": "1484293cfbb217b757a40b42ca02886621619915",
+    "tests/golden/parser/toc_trees.json": "8de406eb76ea6aa38b19d261b89e5ee2f6f4bb23",
+    "tests/golden/release_docs/category_files.json": "a7db44280b3825b49004720f1f585e83672ed3c6",
+    "tests/golden/release_docs/meta_history.json": "8436c3f19491024d6c7b28c8771f019d3f13ca07",
+    "tests/golden/release_docs/naming.json": "d19acef4e7f52d144f60c8aff4edfbfc91161278",
+    "tests/golden/summarizer/cache_hit.md": "e462a78380cfb69b68a8321ce36c65df34c08add",
+    "tests/golden/summarizer/cache_hit_summary.json": "a47c56c89945b27e8c94c98f7558afdd1c6a1a37",
+    "tests/golden/summarizer/fallback.md": "92cfcbf0c5172bcd73e7b229c9ff27591ed2e580",
+    "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
+    "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
+    "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
+    "tests/golden/summarizer/readme_block_en.md": "b30fe77a716e83c4234eba06ceb11c95871262ac",
+    "tests/golden/summarizer/readme_block_pt.md": "454598c196f5cb0ecdeeea803958da322e91fcf9",
+    "tests/golden/summarizer/readme_pt_updated.md": "9797c2d97ebeed80871edd52845f2390cf5412e8",
+    "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
+    "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
+    "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
+    "tests/infrastructure/llm_adapters/test_unified_client.py": "f1cb6dbf519e2a1c02d8abc7970cb90145c82e1f",
+    "tests/infrastructure/mcp/test_knowledge_server.py": "95535dcb466b0310c29ed7a67f28f97103406021",
+    "tests/infrastructure/scraping/test_cache_adapter.py": "ac57723379776eea698e9bd08d48f8a0fc5eb34b",
+    "tests/infrastructure/scraping/test_playwright_scraper_adapter.py": "014aab3bf69163d69d891c46b830b794a6c30fa7",
+    "tests/infrastructure/scraping/test_scraping_observability.py": "a8b0d268c717e1e732b4e33100d1c088f5c7e1a1",
+    "tests/infrastructure/scraping/test_scraping_rate_limiter.py": "a07f5337c0b2f8f0df53be8c4e5f53944b7c3064",
     "tests/test_ai_automation.py": "bd9885355e59681740a2f335cf17a6282953b1e6",
     "tests/test_ai_coverage.py": "33d42251243e96b619514fc3aa0fb5620eb30930",
     "tests/test_ai_docs.py": "8d16c019fbc82dd37bf0703f6e923a57944420bf",
@@ -946,6 +1242,13 @@
     "tests/test_automation_reporting.py": "436872ff305d1349de8fb8d508fc676b672617b9",
     "tests/test_benchmarks.py": "92bc9797aed573e1b3b649d3dc64b00a404ae0d3",
     "tests/test_cache_manager.py": "76fe83c75e436c3b8c790fd18af43e5d0c99a59c",
+    "tests/test_characterization.py": "e386fb3c3090ca437ba446ab0a406968f05c4e99",
+    "tests/test_characterization_classifier.py": "3d8aa7c50e2fbfc52b92c6171669373ef7cf7a43",
+    "tests/test_characterization_generator.py": "ff96381799e5de26d348760e926453513eaf70fd",
+    "tests/test_characterization_golden.py": "c586d81d220a0eb363c901a8313b81314b4ad957",
+    "tests/test_characterization_parser.py": "dbd589be65dc4a6e90a2ebaa1a7e477247166310",
+    "tests/test_characterization_release_docs.py": "b688682e878ddd39177dc4a210e737b340cd2fbd",
+    "tests/test_characterization_summarizer.py": "677949e6b15b6d048a7a84eae916856af3d58ba3",
     "tests/test_circuit_breaker.py": "ef93deeaa513018258ab86f10bf0ddae4b1ca696",
     "tests/test_config.py": "30e2cadec4f798724605038f894668e92f36c40a",
     "tests/test_core_classification_service.py": "79a2866151f2bd95d64be5730a3c8d50d5b3ab74",
@@ -1022,8 +1325,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
+    "uv.lock": "4670f30646ef277269df356a2ee09bf28ade5269"
   },
-  "generated_at": "2026-11-15T15:23:21.590358+00:00",
-  "repository_sha": "c698ab54e6382c73db4d97a687b87a780212d11e"
+  "generated_at": "2026-11-16T12:01:23.950401+00:00",
+  "repository_sha": "7a51bb2a63bd28c40877d1679e5b3a5857f25669"
 }

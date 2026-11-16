@@ -1,6 +1,6 @@
 [project]
 name = "salesforce-release-notes"
-version = "3.1.0"
+dynamic = ["version"]
 description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes"
 requires-python = ">=3.14,<3.15"
 dependencies = [
@@ -13,6 +13,8 @@ dependencies = [
     "aiohttp>=3.9.0",
     "pydantic>=2.0.0",
     "prometheus-client>=0.25.0",
+    "structlog>=24.0.0",
+    "mcp>=2.0.0,<3",
 ]
 
 [project.optional-dependencies]

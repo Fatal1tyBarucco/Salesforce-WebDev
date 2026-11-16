@@ -99,6 +99,17 @@ nav:
       - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
       - ADR-007 Clean Architecture Migration: architecture/decisions/adr-007-clean-architecture.md
   - API Reference:
+    - Domain Llm: api/domain-llm.md
+    - Domain Scraper: api/domain-scraper.md
+    - Infrastructure Llm Adapters Cache: api/infrastructure-llm_adapters-cache.md
+    - Infrastructure Llm Adapters Observability: api/infrastructure-llm_adapters-observability.md
+    - Infrastructure Llm Adapters Rate Limiter: api/infrastructure-llm_adapters-rate_limiter.md
+    - Infrastructure Llm Adapters Unified Client: api/infrastructure-llm_adapters-unified_client.md
+    - Infrastructure Mcp Knowledge Server: api/infrastructure-mcp-knowledge_server.md
+    - Infrastructure Scraping Cache Adapter: api/infrastructure-scraping-cache_adapter.md
+    - Infrastructure Scraping Observability: api/infrastructure-scraping-observability.md
+    - Infrastructure Scraping Playwright Adapter: api/infrastructure-scraping-playwright_adapter.md
+    - Infrastructure Scraping Rate Limiter: api/infrastructure-scraping-rate_limiter.md
     - Core Classification Service: api/core-classification-service.md
     - Core Enrichment Service: api/core-enrichment-service.md
     - Core Pipeline Orchestrator: api/core-pipeline-orchestrator.md

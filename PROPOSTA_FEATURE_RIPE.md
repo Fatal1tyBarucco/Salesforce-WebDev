@@ -70,7 +70,7 @@ src/
 
 **Modificações em arquivos existentes:**
 
-- `src/models.py` → adicionar `DependencyGraphResponse`, `BlastRadiusRequest`, `MigrationReportResponse`
+- `models.py` → adicionar `DependencyGraphResponse`, `BlastRadiusRequest`, `MigrationReportResponse`
 - `src/api.py` → adicionar endpoints `/v1/propagation/graph`, `/v1/propagation/blast-radius`, `/v1/propagation/migration-report`
 - `src/main.py` → (opcional, fase 2) chamar `ImpactPropagationEngine.build_for_release()` como etapa pós-classificação no pipeline
 - `src/config.py` → adicionar constante `IMPACT_PROPAGATION_CACHE_TTL = 86400`, `IMPACT_PROPAGATION_MAX_DEPTH = 3`
@@ -197,7 +197,7 @@ class DependencyGraphResponse(BaseModel):  # type: ignore[misc]
     source: Literal["llm", "heuristic"] = "llm"
 ```
 
-### 4.2 Extensão de `src/models.py` (adicionais)
+### 4.2 Extensão de `models.py` (adicionais)
 
 ```python
 class DependencyGraphRequest(BaseModel):  # type: ignore[misc]

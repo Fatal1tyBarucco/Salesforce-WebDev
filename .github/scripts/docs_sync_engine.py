@@ -585,7 +585,13 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    # Test fixtures under tests/ are excluded: their relative links resolve
+    # from the fixture's own directory, so they are not site documents (they
+    # are also skipped by strip_dead_refs during reconcile).
+    findings += broken_internal_links(
+        sorted(p for p in inv_set if p.endswith(".md") and not p.startswith("tests/")),
+        inv_set,
+    )
 
     for mod in missing_api_evokers():
         findings.append(
@@ -1013,11 +1019,16 @@ def strip_dead_refs() -> list[str]:
        shortened to their stem so prose stays readable without pointing at a
        dead path.
 
+    Files under ``tests/`` are skipped: they are generated fixtures asserted
+    verbatim by the golden/characterization suite, and their relative links
+    resolve from the fixture's own location rather than the repo root, so
+    "dead" there does not mean dead in the rendered document.
+
     Idempotent: a second run is a no-op.  Never raises.
     """
     inventory = set(tracked_inventory().keys())
     root_resolved = REPO_ROOT.resolve()
-    docs = sorted(p for p in inventory if p.endswith(".md"))
+    docs = sorted(p for p in inventory if p.endswith(".md") and not p.startswith("tests/"))
     actions: list[str] = []
     for doc in docs:
         text = read_text(doc)
