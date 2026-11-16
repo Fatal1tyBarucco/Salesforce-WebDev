@@ -1328,10 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-<<<<<<< HEAD
-  "generated_at": "2026-11-16T13:21:22.960686+00:00",
-=======
-  "generated_at": "2026-11-16T13:21:49.228522+00:00",
->>>>>>> eca6b8221186013ae386853b2a8647c8eb35e5a8
+"generated_at": "2026-11-16T13:21:49.228522+00:00",
   "repository_sha": "1793c352399e43133dda8ff9b586510310eeb723"
 }
