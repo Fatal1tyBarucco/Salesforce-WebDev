@@ -798,7 +798,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "fix_md.py": "ba7d85a7b159ba333ed7f40d77f1acbdba945444",
+    "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
@@ -1326,8 +1326,8 @@
     "tests/test_src_pipeline_components.py": "c5798a017639e4e4c004429bdfd9a8744c93be51",
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
-    "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
+    "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-  "generated_at": "2026-11-16T13:10:35.565269+00:00",
-  "repository_sha": "b19d9b1e1d5e9897a8bb9160d33f705dd5744c3c"
+  "generated_at": "2026-11-16T13:21:22.960686+00:00",
+  "repository_sha": "1793c352399e43133dda8ff9b586510310eeb723"
 }
