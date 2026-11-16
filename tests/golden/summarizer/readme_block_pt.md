@@ -1,3 +1,4 @@
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 ### ☀️ Summer '26
 
@@ -31,6 +32,7 @@
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
+
 
 <details>
 <summary><h3>❄️ Winter '26</h3></summary>
@@ -67,3 +69,4 @@
 </details>
 
 </details>
+

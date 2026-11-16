@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server.fastmcp import FastMCP
+from mcp.server import FastMCP
+from mcp.server.fastmcp.exceptions import ToolError
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -43,6 +44,11 @@ class TestReleaseNotesQuery:
         assert query.feature_name == "New Feature"
         assert query.locale == "en-US"
         assert query.limit == 5
+
+    def test_extra_field_forbidden(self):
+        """Should reject unknown fields (extra='forbid')."""
+        with pytest.raises(ValueError, match="extra_forbidden"):
+            ReleaseNotesQuery(invalid_field="value")  # type: ignore[call-arg]
 
 
 class TestReleaseNotesMCPServer:
@@ -92,16 +98,11 @@ class TestReleaseNotesMCPServer:
         """Create MCP server with temp directory."""
         return ReleaseNotesMCPServer(releases_dir=temp_releases_dir)
 
-    def test_server_has_mcp_attribute(self, server):
-        """Should have mcp attribute (FastMCP instance)."""
-        assert hasattr(server, "mcp")
-        assert isinstance(server.mcp, FastMCP)
-
     @pytest.mark.asyncio
-    async def test_server_registers_four_tools(self, server):
-        """Should register four tools with FastMCP."""
+    async def test_server_has_four_tools(self, server):
+        """Should expose exactly four tools through the FastMCP server."""
         tools = await server.mcp.list_tools()
-        assert len(tools) == 4
+
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
@@ -182,16 +183,6 @@ class TestReleaseNotesMCPServer:
         assert len(data) == 1
 
     @pytest.mark.asyncio
-    async def test_search_release_notes_invalid_query(self, server):
-        """Should handle invalid query gracefully."""
-        with pytest.raises(Exception) as exc_info:
-            ReleaseNotesQuery(invalid_field="value")  # type: ignore[call-arg]
-        assert (
-            "extra_forbidden" in str(exc_info.value).lower()
-            or "extra inputs" in str(exc_info.value).lower()
-        )
-
-    @pytest.mark.asyncio
     async def test_get_release_summary_exists(self, server):
         """Should return summary for existing release."""
         result = await server._get_release_summary("winter_27", "pt-BR")
@@ -243,6 +234,7 @@ class TestReleaseNotesMCPServer:
 
         data = json.loads(result)
 
+        # sorted(reverse=True): "winter_27" > "spring_27" lexicographically
         assert data[0]["slug"] == "winter_27"
         assert data[1]["slug"] == "spring_27"
 
@@ -443,6 +435,88 @@ class TestReleaseNotesMCPServer:
         content = "No header"
         category = server._extract_category(content)
         assert category == "Unknown"
+
+
+class TestToolDispatch:
+    """Tests for the registered FastMCP tool wrappers."""
+
+    @pytest.fixture
+    def temp_releases_dir(self, tmp_path):
+        """Create temporary releases directory structure."""
+        releases_dir = tmp_path / "releases"
+        winter_dir = releases_dir / "winter_27"
+        pt_dir = winter_dir / "pt-BR"
+        pt_dir.mkdir(parents=True)
+        (pt_dir / "feature1.md").write_text(
+            "# Feature 1\n## Categoria: Lightning Experience\nContent 1"
+        )
+        return releases_dir
+
+    @pytest.fixture
+    def server(self, temp_releases_dir):
+        """Create MCP server with temp directory."""
+        return ReleaseNotesMCPServer(releases_dir=temp_releases_dir)
+
+    @staticmethod
+    def _tool_text(result) -> str:
+        """Extract the text payload from a FastMCP call_tool result."""
+        content, _structured = result
+        block = content[0]
+        return block.text
+
+    @pytest.mark.asyncio
+    async def test_call_tool_search(self, server):
+        """Should dispatch search_release_notes through FastMCP."""
+        result = await server.mcp.call_tool(
+            "search_release_notes",
+            {"release_slug": "winter_27", "locale": "pt-BR", "limit": 5},
+        )
+
+        data = json.loads(self._tool_text(result))
+
+        assert len(data) == 1
+        assert data[0]["feature"] == "feature1"
+
+    @pytest.mark.asyncio
+    async def test_call_tool_summary(self, server):
+        """Should dispatch get_release_summary through FastMCP."""
+        result = await server.mcp.call_tool(
+            "get_release_summary",
+            {"release_slug": "winter_27", "locale": "pt-BR"},
+        )
+
+        data = json.loads(self._tool_text(result))
+
+        assert data["release"] == "winter_27"
+        assert data["total_features"] == 1
+
+    @pytest.mark.asyncio
+    async def test_call_tool_list(self, server):
+        """Should dispatch list_releases through FastMCP."""
+        result = await server.mcp.call_tool("list_releases", {})
+
+        data = json.loads(self._tool_text(result))
+
+        assert [r["slug"] for r in data] == ["winter_27"]
+
+    @pytest.mark.asyncio
+    async def test_call_tool_compare(self, server):
+        """Should dispatch compare_releases through FastMCP."""
+        result = await server.mcp.call_tool(
+            "compare_releases",
+            {"from_slug": "winter_27", "to_slug": "winter_27", "locale": "pt-BR"},
+        )
+
+        data = json.loads(self._tool_text(result))
+
+        assert data["from_release"] == "winter_27"
+        assert data["summary"]["added_count"] == 0
+
+    @pytest.mark.asyncio
+    async def test_call_tool_unknown(self, server):
+        """Should raise ToolError for an unknown tool name."""
+        with pytest.raises(ToolError, match="Unknown tool"):
+            await server.mcp.call_tool("unknown_tool", {})
 
 
 class TestCreateServer:

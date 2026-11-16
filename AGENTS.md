@@ -100,6 +100,21 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 
 - `NOTIFICATION_DIGEST.md` is an artifact from test runs — do not commit.
 - `datetime.utcnow()` was deprecated — use `datetime.now()` instead.
+- **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
+  project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
+  Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
+- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
+  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
+  variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
+  `get_request_handler`, `server._build_tools`) do not exist in that version. Tool results come
+  from `await server.mcp.call_tool(...)` (returns `(content, structured)`) and
+  `await server.mcp.list_tools()`; unknown tools raise `mcp.server.fastmcp.exceptions.ToolError`.
+- **`_build_release_block` output is frozen by `tests/golden/summarizer/readme_block_{pt,en}.md`
+  and `readme_pt_updated.md`.** The leading `lines = [""]` and the blank separators after each
+  `</details>` are intentional (they match the committed `README.md`/`README.en.md`) — the
+  2026-11-16 "docs: reconcile" commits stripped them and desynced the goldens. If that function
+  changes, regenerate the goldens with `CHAR_GOLDEN_UPDATE=1 uv run pytest
+  tests/test_characterization_summarizer.py`.
 
 ## GitHub Project Integration
 

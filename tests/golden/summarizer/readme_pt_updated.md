@@ -2,6 +2,7 @@
 
 Intro anterior à seção de releases.
 ## 📋 Releases Disponíveis
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 ### ☀️ Summer '26
 
@@ -35,6 +36,7 @@ Intro anterior à seção de releases.
 > 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
+
 
 <div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Arquivo de Releases:</strong> Mostrando 1 de 2 releases. <a href="./releases/ARCHIVE.md">Ver todas as releases →</a></div>
 
