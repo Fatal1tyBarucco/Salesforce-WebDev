@@ -1,5 +1,21 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Added `structlog` and `mcp` dependencies to `pyproject.toml`, required by infrastructure observability modules and the MCP knowledge server.
+- Added `fix_md.py` script for markdown correction.
+
+### Changed
+- Reconciled the documentation manifest, MkDocs navigation, and documentation files (inventory, links, and generated content), including merge conflict resolution in documentation files.
+- Expanded `markdownlint` exclusions for generated documentation directories and ADRs.
+
+### Fixed
+- Fixed test collection errors by adding the required `structlog` and `mcp` dependencies.
+- Resolved merge conflicts in `src/infrastructure/mcp/knowledge_server.py` and `tests/infrastructure/mcp/test_knowledge_server.py`.
+
 <!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
