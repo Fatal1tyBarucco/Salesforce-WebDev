@@ -88,3 +88,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `dfb6631` — docs: sync documentation and fix markdown
 - `5f59e28` — docs: reconcile navigation and inventory
 - `34c8c19` — docs: fix markdown lint errors in DEBITO_TECNICO.md
+- `2762747` — docs: final reconcile navigation and inventory
