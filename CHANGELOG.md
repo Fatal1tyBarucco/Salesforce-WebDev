@@ -1,5 +1,28 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Breaking Changes
+
+- Migrated the MCP knowledge server to the FastMCP v2 API, replacing the previous `Server.on_list_tools`/`on_call_tool` interface with `@tool` decorators; consumers relying on the old API may require updates.
+- Bumped the `mcp` dependency to `>=2.0.0,<3`.
+- Project version in `pyproject.toml` was reverted from 3.1.0 to 0.1.0; flagged for human review to confirm intent.
+
+### Changed
+
+- Updated MCP server tests to the asynchronous API and removed unused imports.
+- Restricted documentation engine rewriting (`strip_dead_refs` and broken-link audit) to `docs/` and `DOC_ROOT_FILES` so test fixtures are no longer modified.
+- Updated `docs/.documentation-manifest.json` hashes and references, adding CHANGELOG.md and docs/ai-generated/ entries.
+
+### Fixed
+
+- Fixed invisible badge label text by setting the default label color to white, added impact emojis (high/medium/low), and replaced hardcoded colors with constants, including `labelColor` and `logo` parameters in `to_markdown()`.
+- Restored golden characterization test files that had been manually edited and were breaking tests.
+- Fixed broken relative links in golden test files.
+- Fixed Python Quality gate failures: `uv.lock` sync, Black formatting, and mypy errors in the migrated `knowledge_server.py`.
+
 <!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
 
 ## 0.1.0 (2026-11-16)

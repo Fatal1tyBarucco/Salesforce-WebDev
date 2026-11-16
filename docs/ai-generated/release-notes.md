@@ -1,6 +1,51 @@
-<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização concentra-se na migração do servidor MCP para a FastMCP API v2, com reescrita do knowledge_server.py para uso de decoradores @tool no lugar da API anterior baseada em Server.on_list_tools/on_call_tool, além da atualização dos testes para a API assíncrona, correção de erros de mypy e remoção de importações não utilizadas. A dependência mcp passa a exigir a faixa >=2.0.0,<3.
+
+Atenção — breaking change: a mudança de API principal do servidor MCP pode afetar consumidores que ainda utilizem a interface antiga, e a versão declarada no pyproject.toml foi revertida de 3.1.0 para 0.1.0, o que pode impactar consumidores que dependam da versão semântica. Ambos os pontos estão marcados para revisão humana.
+
+Também foram corrigidas a cor padrão da label dos badges, que deixava o texto ilegível, com adição de emojis de impacto e padronização de constantes de cor; a restauração dos arquivos golden dos testes de caracterização, com o escopo da engine de documentação restrito a docs/ e DOC_ROOT_FILES para não reescrever fixtures de teste; correções de qualidade (sincronização do uv.lock, formatação Black e erros de mypy); e atualização do manifesto de documentação com correção de links quebrados.
+
+Impacto: alto para a migração do MCP e para a reversão de versão; médio para as correções de badges e de golden files; baixo para qualidade de código e documentação. Risco: alto a médio, concentrado na compatibilidade de consumidores do MCP e na confirmação da reversão de versão. Ponto de atenção: confirmar se a reversão de versão foi intencional e validar a integração dos consumidores com a nova API do servidor MCP.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Migrar servidor MCP para FastMCP API v2 — 📋 refactor** | Rewrite do knowledge_server.py para utilizar FastMCP com decoradores @tool, substituindo a API an… | 🔴 high | src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py, pyproject.toml · Prioridade: 💡 P1 |
+| **Corrigir cor padrão de label dos badges e adicionar emojis de impacto — 📋 bugfix** | Corrige texto invisível em badges HTML alterando a cor padrão da label para branco (_DEFAULT_FG =… | 🟡 medium | src/ai/generators/badges.py · Prioridade: 💡 P2 |
+| **Restaurar golden files e escopar engine de docs fora de tests/ — 📋 bugfix** | Regenera arquivos golden de characterization tests (readme_block_en.md, readme_block_pt.md, readm… | 🟡 medium | .github/scripts/docs_sync_engine.py, tests/golden/summarizer/readme_block_en.md, tests/golden/summarizer/readme_block_pt.md, tests/golden/summarizer/readme_pt_updated.md, docs/.documentation-manifest.json · Prioridade: 💡 P2 |
+| **Reverter versão para 0.1.0 e atualizar dependência mcp — 💥 Breaking Change** | Versão do projeto é revertida de 3.1.0 para 0.1.0 no pyproject.toml, sinalizando uma mudança de c… | 🔴 high | pyproject.toml · Prioridade: 💡 P0 |
+| **Corrigir falhas do Python Quality gate — 📋 bugfix** | Corrige problemas de qualidade de código detectados pelo pipeline: sincronização de uv.lock (Ruff… | 🟢 low | uv.lock, pyproject.toml · Prioridade: 💡 P3 |
+| **Atualizar manifest e corrigir links em documentação — 📋 documentation** | Atualiza docs/.documentation-manifest.json com novos hashes de arquivos, adiciona referências a C… | 🟢 low | docs/.documentation-manifest.json, .github/scripts/docs_sync_engine.py · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **2** (33%) 🔴🔴
+🟡 Médio: **2** (33%) 🟡🟡
+🟢 Baixo: **2** (33%) 🟢🟢
+
+Total: **6 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+💥 Breaking Change    │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 bugfix             │██████████████████████████████│    3 →
+📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ███
+
+
+## Revisão Necessária
+
+- **Reverter versão para 0.1.0 e atualizar dependência mcp** — Reversão inesperada de versão (3.1.0 → 0.1.0) requer investigação se foi intencional ou se houve erro de versionamento. (0.85)
+
+---
 
 ## Nova atualização
 

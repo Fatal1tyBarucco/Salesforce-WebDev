@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: investigar se a reversão de versão de 3.1.0 para 0.1.0 foi intencional ou resultado de erro de versionamento, e definir o critério de versionamento a ser seguido. Mapear os consumidores do servidor MCP e validar a compatibilidade com a FastMCP API v2 antes de ampliar a adoção. Avaliar a inclusão de testes de contrato para a interface do servidor MCP, de modo a detectar quebras em futuras migrações de API. Considerar verificação automatizada de legibilidade dos badges gerados (contraste de cor) para evitar regressões visuais. Avaliar a manutenção de um teste que garanta que a engine de documentação não reescreva fixtures de teste. Monitorar a estabilidade do gate de qualidade Python após a sincronização do uv.lock e as correções de formatação e tipagem.
+
+---
 
 ## Nova atualização
 

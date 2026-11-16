@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+As mudanças desta execução têm impacto alto em dois pontos: a migração do servidor MCP para a FastMCP API v2, que altera a interface principal do serviço e a faixa de dependência mcp (>=2.0.0,<3), e a reversão da versão declarada no pyproject.toml de 3.1.0 para 0.1.0. As demais mudanças são de impacto médio (correção de legibilidade dos badges e restauração dos arquivos golden com escopo da engine de documentação restrito a docs/) ou baixo (correções do gate de qualidade Python e atualização do manifesto de documentação com correção de links). Impacto de negócio: a migração pode exigir adaptação de consumidores do servidor MCP, e a reversão de versão pode afetar quem depende de versionamento semântico. Riscos principais: quebra de integração com consumidores que usem a API antiga do MCP e a confirmação de que a reversão de versão foi intencional — ambos sinalizados para revisão humana. Próximos passos: validar a compatibilidade dos consumidores com a nova API, confirmar a intenção da reversão de versão, verificar a cobertura dos testes MCP atualizados e confirmar que o novo escopo da engine de documentação não deixa de auditar conteúdo relevante.
+
+---
 
 ## Nova atualização
 
