@@ -49,12 +49,12 @@ class ReleaseNotesMCPServer:
             """Get executive summary for a specific release."""
             return await self._get_release_summary(release_slug, locale)
 
-        @self.mcp.tool()
+        @self.mcp.tool()  # type: ignore[no-untyped-call]
         async def list_releases() -> str:
             """List all available releases."""
             return await self._list_releases()
 
-        @self.mcp.tool()
+        @self.mcp.tool()  # type: ignore[no-untyped-call]
         async def compare_releases(
             from_slug: str, to_slug: str, locale: str = "pt-BR"
         ) -> str:
