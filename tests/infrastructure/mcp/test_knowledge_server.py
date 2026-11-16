@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -91,9 +92,10 @@ class TestReleaseNotesMCPServer:
         """Create MCP server with temp directory."""
         return ReleaseNotesMCPServer(releases_dir=temp_releases_dir)
 
-    def test_mcp_has_four_tools(self, server):
+    @pytest.mark.asyncio
+    async def test_mcp_has_four_tools(self, server):
         """Should have four tools registered."""
-        tools = server.mcp.list_tools()
+        tools = await server.mcp.list_tools()
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
@@ -180,14 +182,13 @@ class TestReleaseNotesMCPServer:
 
     @pytest.mark.asyncio
     async def test_search_release_notes_invalid_query(self, server):
-        """Should handle invalid query gracefully."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                invalid_field="value",  # type: ignore[call-arg]
-            )
-        )
+        """Should reject unknown query fields (extra='forbid')."""
+        with pytest.raises(ValidationError):
+            ReleaseNotesQuery(invalid_field="value")  # type: ignore[call-arg]
 
-        assert "Invalid query" in result
+        result = await server._search_release_notes(ReleaseNotesQuery(locale="pt-BR", limit=1))
+
+        assert isinstance(json.loads(result), list)
 
     @pytest.mark.asyncio
     async def test_get_release_summary_exists(self, server):
@@ -450,12 +451,13 @@ class TestReleaseNotesMCPServer:
 class TestCreateServer:
     """Tests for create_server function."""
 
-    def test_creates_server_with_default_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_default_dir(self):
         """Should create server with default releases directory."""
         server = create_server()
 
         # FastMCP server has list_tools method
-        tools = server.list_tools()
+        tools = await server.list_tools()
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
@@ -464,11 +466,12 @@ class TestCreateServer:
             "compare_releases",
         }
 
-    def test_creates_server_with_custom_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
-        tools = server.list_tools()
+        tools = await server.list_tools()
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
