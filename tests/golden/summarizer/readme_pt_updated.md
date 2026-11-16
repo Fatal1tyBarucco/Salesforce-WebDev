@@ -23,7 +23,7 @@ Intro anterior à seção de releases.
 > Resumo por categoria (summer pt) de Desenvolvimento.
 
 
-> 📄 Detalhes completos: ./releases/summer_26/pt_BR/desenvolvimento.md
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
 
 </details>
 
@@ -33,7 +33,7 @@ Intro anterior à seção de releases.
 > Resumo por categoria (summer pt) de Vendas.
 
 
-> 📄 Detalhes completos: ./releases/summer_26/pt_BR/vendas.md
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
 

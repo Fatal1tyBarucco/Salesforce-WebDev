@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server, ServerRequestContext
+from mcp.server import Server
 from mcp.types import (
     CallToolRequestParams,
     CallToolResult,
@@ -43,11 +43,18 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.server: Server[Any] = Server(
-            "salesforce-release-notes",
-            on_list_tools=self._on_list_tools,
-            on_call_tool=self._on_call_tool,
-        )
+        self.server: Server[Any] = Server("salesforce-release-notes")
+
+        # Upstream mcp ships list_tools/call_tool without annotations, so mypy
+        # strict flags both the call and the resulting untyped decorator.
+        @self.server.list_tools()  # type: ignore[no-untyped-call, untyped-decorator]
+        async def handle_list_tools() -> list[Tool]:
+            return (await self._on_list_tools(None, None)).tools
+
+        @self.server.call_tool()  # type: ignore[no-untyped-call, untyped-decorator]
+        async def handle_call_tool(name: str, arguments: dict[str, Any]) -> CallToolResult:
+            params = CallToolRequestParams(name=name, arguments=arguments)
+            return await self._on_call_tool(None, params)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -55,12 +62,12 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="search_release_notes",
                 description="Search Salesforce Release Notes by release, category, or feature name",
-                input_schema=ReleaseNotesQuery.model_json_schema(),
+                inputSchema=ReleaseNotesQuery.model_json_schema(),
             ),
             Tool(
                 name="get_release_summary",
                 description="Get executive summary for a specific release",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "release_slug": {
@@ -75,7 +82,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="list_releases",
                 description="List all available releases",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {},
                 },
@@ -83,7 +90,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="compare_releases",
                 description="Compare two releases - what's new, changed, removed",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "from_slug": {"type": "string", "description": "Base release slug"},
@@ -97,10 +104,10 @@ class ReleaseNotesMCPServer:
 
     async def _on_list_tools(
         self,
-        ctx: ServerRequestContext[Any],
+        ctx: Any,
         params: PaginatedRequestParams | None,
     ) -> ListToolsResult:
-        """MCP SDK v2 handler for ``tools/list`` (signature from installed SDK)."""
+        """Lowlevel ``tools/list`` handler; ctx/params are unused by this server."""
         return ListToolsResult(tools=self._build_tools())
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> list[TextContent]:
@@ -118,10 +125,10 @@ class ReleaseNotesMCPServer:
 
     async def _on_call_tool(
         self,
-        ctx: ServerRequestContext[Any],
+        ctx: Any,
         params: CallToolRequestParams,
     ) -> CallToolResult:
-        """MCP SDK v2 handler for ``tools/call`` (signature from installed SDK)."""
+        """Lowlevel ``tools/call`` handler; ctx is unused by this server."""
         blocks: list[ContentBlock] = []
         # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
         blocks.extend(await self.call_tool(params.name, params.arguments or {}))
