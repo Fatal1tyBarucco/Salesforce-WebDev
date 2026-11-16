@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Impacto de negócio: baixo, mudanças concentradas em documentação e testes, sem alterações funcionais diretas. Riscos: possíveis regressões de formatação no bloco de release docs e necessidade de validar comportamento do servidor MCP após adaptação de testes. Próximos passos: revisar comportamento esperado da geração do bloco antes de liberar; confirmar que a API testada corresponde ao contrato publicado do MCP.
+
+---
 
 ## Nova atualização
 

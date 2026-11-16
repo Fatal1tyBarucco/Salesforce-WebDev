@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: validar a consistência do inventário do manifesto de documentação com o gerador de documentação; revisar o comportamento esperado da geração do bloco antes de liberar, confirmando formatação esperada; confirmar que a API testada corresponde ao contrato publicado do MCP após adaptação dos testes.
+
+---
 
 ## Nova atualização
 

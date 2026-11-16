@@ -1,5 +1,17 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Changed
+- Sincronização do manifesto de documentação com novas referências, hashes e metadados de geração.
+- Correção na inicialização de linhas do bloco de release docs, ajustando formatação esperada.
+- Adaptação de testes do servidor MCP de release notes para API atual.
+
+### Fixed
+- Ajuste de inicialização de linhas no bloco de release docs para restaurar formatação esperada.
+
 <!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

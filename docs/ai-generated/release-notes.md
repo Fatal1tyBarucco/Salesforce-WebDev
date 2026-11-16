@@ -1,6 +1,42 @@
-<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Sincronização do manifesto de documentação com atualização de referências, hashes e metadados de geração, impactando arquivos de documentação associadas, risco baixo de alteração de comportamento funcional. Correção na inicialização de linhas do bloco de release docs, ajustando lista de inicialização de vazia para linha em branco para restaurar formatação esperada, impacto médio na formatação gerada. Adaptação de testes do servidor MCP de release notes para API atual, incluindo objetos query, retorno JSON string e registro de ferramentas via FastMCP; maior parte do impacto na suíte de testes, comportamento pode necessitar de validação adicional.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Sincronização do manifesto de documentação — 📋 documentation** | Atualizou o manifesto de documentação com novas referências, hashes e metadados de geração, inclu… | 🟢 low | docs/.documentation-manifest.json, docs · Prioridade: 💡 P3 |
+| **Correção na inicialização de linhas do bloco de release docs — 📋 bugfix** | Ajustou a inicialização da lista de linhas do bloco de release docs, passando de lista vazia para… | 🟡 medium | src/release_docs.py, src/release_summarizer.py · Prioridade: 💡 P2 |
+| **Adaptação de testes do servidor MCP de release notes — 📋 refactor** | Reescreveu os testes do MCP knowledge server para usar a API atual, incluindo objetos query, reto… | 🟢 low | tests/infrastructure/mcp/test_knowledge_server.py, src/infrastructure/mcp/knowledge_server.py · Prioridade: 💡 P2 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **0** (0%) 
+🟡 Médio: **1** (33%) 🟡
+🟢 Baixo: **2** (66%) 🟢🟢
+
+Total: **3 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    1 →
+📋 documentation      │██████████████████████████████│    1 →
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo:  ▄█
+
+
+## Revisão Necessária
+
+- **Correção na inicialização de linhas do bloco de release docs** — Revisar o comportamento esperado da geração do bloco antes de liberar. (0.85)
+- **Adaptação de testes do servidor MCP de release notes** — Confirmar que a API testada corresponde ao contrato publicado do MCP. (0.90)
+
+---
 
 ## Nova atualização
 
