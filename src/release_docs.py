@@ -624,9 +624,14 @@ async def _build_release_block(
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
+            if lang == "en_US":
+                # en_US category files are written with English slugs
+                # (see _generate_release_files); mirror that here so README
+                # links resolve instead of pointing at Portuguese filenames.
+                cat_slug = ENGLISH_CATEGORY_SLUGS.get(cat_name, cat_slug)
+            link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
             if lang == "en_US":
-                cat_slug = ENGLISH_CATEGORY_SLUGS.get(cat_name, cat_slug)
                 display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
                 count_label = "features"
                 details_label = "Full details"
@@ -634,8 +639,6 @@ async def _build_release_block(
                 display_name = cat_name
                 count_label = "recursos"
                 details_label = "Detalhes completos"
-
-            link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
             cat_summary_text = ""
             if cat_name in cat_summaries:
