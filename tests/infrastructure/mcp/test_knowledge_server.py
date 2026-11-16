@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 from mcp import types as mcp_types
+from mcp.server import ServerRequestContext
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -22,11 +23,22 @@ def _decode(result: list[Any]) -> Any:
     return json.loads(result[0].text)
 
 
+def _make_ctx(method: str) -> ServerRequestContext[Any]:
+    """Minimal per-request context for invoking a lowlevel handler directly."""
+    return ServerRequestContext(
+        session=None,
+        lifespan_context={},
+        protocol_version="2025-06-18",
+        method=method,
+    )
+
+
 async def _tool_names_from_server(server: Any) -> set[str]:
     """Invoca o handler registrado de ``tools/list`` e retorna os nomes."""
-    handler = server.request_handlers[mcp_types.ListToolsRequest]
-    response = await handler(mcp_types.ListToolsRequest(method="tools/list"))
-    return {tool.name for tool in response.root.tools}
+    entry = server.get_request_handler("tools/list")
+    assert entry is not None
+    response = await entry.handler(_make_ctx("tools/list"), mcp_types.PaginatedRequestParams())
+    return {tool.name for tool in response.tools}
 
 
 class TestReleaseNotesQuery:
