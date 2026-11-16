@@ -768,7 +768,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "f6dfe722761db17ee3fe7305b408856e63dbed51",
+    "docs/changelog.md": "a6fb92c0d47e4c08dd8e695db0a5bb5381456ba0",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -1100,7 +1100,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "4716228bbd85483cea8845e5bf5211a00cb82fe5",
     "src/infrastructure/mcp/__init__.py": "60de6875842d2cc3e5329254fc823c01e23b799d",
-    "src/infrastructure/mcp/knowledge_server.py": "9804ba602e4f6dec6eef0cddd6f05ae32b977720",
+    "src/infrastructure/mcp/knowledge_server.py": "9987136306d1513828bcfdb6d2e0a3abcdfe7bd2",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1213,14 +1213,14 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "2f77cb9aa995b06aaa4399dcdceccc820ca109f1",
+    "tests/golden/summarizer/readme_block_en.md": "e2c1e4bdd4cb09fca0b02538fc7d092964cb76f5",
     "tests/golden/summarizer/readme_block_pt.md": "1910eda19946216ad46495048a3536501242393c",
     "tests/golden/summarizer/readme_pt_updated.md": "e650147ecfe7442392027b0c698d22b215f3b692",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
     "tests/infrastructure/llm_adapters/test_unified_client.py": "f1cb6dbf519e2a1c02d8abc7970cb90145c82e1f",
-    "tests/infrastructure/mcp/test_knowledge_server.py": "95535dcb466b0310c29ed7a67f28f97103406021",
+    "tests/infrastructure/mcp/test_knowledge_server.py": "45f4822628703708ee2d92a7ca89580107df1344",
     "tests/infrastructure/scraping/test_cache_adapter.py": "ac57723379776eea698e9bd08d48f8a0fc5eb34b",
     "tests/infrastructure/scraping/test_playwright_scraper_adapter.py": "014aab3bf69163d69d891c46b830b794a6c30fa7",
     "tests/infrastructure/scraping/test_scraping_observability.py": "a8b0d268c717e1e732b4e33100d1c088f5c7e1a1",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-"generated_at": "2026-11-16T13:21:49.228522+00:00",
-  "repository_sha": "1793c352399e43133dda8ff9b586510310eeb723"
+  "generated_at": "2026-11-16T13:43:43.422117+00:00",
+  "repository_sha": "20341a97add733e932dabb0c74fd528ec0b460b0"
 }
