@@ -369,7 +369,7 @@ class TestUpdateSingleReadmeIdempotent:
             _update_single_readme,
         )
 
-        readme_text = f"{RELEASE_SECTION_HEADING}\n\n" "OLD CONTENT\n\n" "## Next Section\n"
+        readme_text = f"{RELEASE_SECTION_HEADING}\n\nOLD CONTENT\n\n## Next Section\n"
         readme = tmp_path / "README.md"
         readme.write_text(readme_text, encoding="utf-8")
 
@@ -491,7 +491,7 @@ class TestUpdateBadge:
     def test_inserts_badge_after_marker_when_no_image(self, tmp_path: Path, monkeypatch) -> None:
         from src.release_docs import RELEASE_BADGE_MARKER, _update_badge
 
-        existing = "# Title\n" f"\n{RELEASE_BADGE_MARKER}\n" "\n## Releases\n"
+        existing = f"# Title\n\n{RELEASE_BADGE_MARKER}\n\n## Releases\n"
         readme = tmp_path / "README.md"
         readme.write_text(existing, encoding="utf-8")
 
@@ -1313,7 +1313,7 @@ class TestFindReleaseHeading:
     def test_fallback_regex_match(self) -> None:
         from src.release_docs import RELEASE_BADGE_MARKER, _find_release_heading
 
-        text = f"intro\n{RELEASE_BADGE_MARKER}\n" "## Custom Releases Header\nbody"
+        text = f"intro\n{RELEASE_BADGE_MARKER}\n## Custom Releases Header\nbody"
         assert _find_release_heading(text) == "## Custom Releases Header"
 
     def test_no_marker_no_heading(self) -> None:

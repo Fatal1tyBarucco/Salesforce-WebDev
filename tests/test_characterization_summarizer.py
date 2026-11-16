@@ -141,11 +141,14 @@ def _write_release_dir(
     """Materializa releases/{slug}/ com .meta.json, caches e .md de categoria.
 
     `md_features` mapeia nome de categoria pt_BR → features; o arquivo segue o
-    padrão de produção (`{slug}.md` com heading `## {nome}`).
+    padrão de produção (pt_BR: slugified pt_BR, en_US: ENGLISH_CATEGORY_SLUGS).
     """
+    from src.config import ENGLISH_CATEGORY_SLUGS
+
     slug = str(meta["slug"])
     release_dir = releases_dir / slug
     (release_dir / "pt_BR").mkdir(parents=True, exist_ok=True)
+    (release_dir / "en_US").mkdir(parents=True, exist_ok=True)
     (release_dir / ".meta.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -158,8 +161,16 @@ def _write_release_dir(
             json.dumps(cache_en, ensure_ascii=False, indent=2), encoding="utf-8"
         )
     for category_name, features in (md_features or {}).items():
-        file_name = f"{_slugify_category(category_name)}.md"
-        (release_dir / "pt_BR" / file_name).write_text(
+        # pt_BR file with slugified Portuguese name
+        pt_slug = f"{_slugify_category(category_name)}.md"
+        (release_dir / "pt_BR" / pt_slug).write_text(
+            _category_md(category_name, features), encoding="utf-8"
+        )
+        # en_US file with English slug
+        en_slug = (
+            f"{ENGLISH_CATEGORY_SLUGS.get(category_name, _slugify_category(category_name))}.md"
+        )
+        (release_dir / "en_US" / en_slug).write_text(
             _category_md(category_name, features), encoding="utf-8"
         )
     return release_dir
@@ -300,8 +311,8 @@ def _block_fixtures(releases_dir: Path) -> list[dict[str, Any]]:
             cache=_valid_cache(f"{prefix} pt"),
             cache_en=_valid_cache(f"{prefix} en"),
             md_features={
-                "development.md": ["Recurso Um", "Recurso Dois"],
-                "sales.md": ["Venda Feature 1", "Venda Feature 2"],
+                "Desenvolvimento": ["Recurso Um", "Recurso Dois"],
+                "Vendas": ["Venda Feature 1", "Venda Feature 2"],
             },
         )
     return [summer_meta, winter_meta]

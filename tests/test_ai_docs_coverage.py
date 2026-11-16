@@ -461,7 +461,9 @@ def test_artifact_write_persists_document_diff_and_ref(tmp_path: Path, monkeypat
     (tmp_path / "docs/ai-generated/release-notes.md").write_text("old", encoding="utf-8")
     class_llm = SimpleNamespace(model="vendor/model:free")
     orchestrator = AIDocOrchestrator(
-        since_ref="HEAD~1", llm=class_llm, output_dir=tmp_path / "docs/ai-generated"  # type: ignore[arg-type]
+        since_ref="HEAD~1",
+        llm=class_llm,
+        output_dir=tmp_path / "docs/ai-generated",  # type: ignore[arg-type]
     )
     classification = ChangeClassification(changes=[_entry()])
     rendered = {key: "new" for key in orchestrator.output_paths}

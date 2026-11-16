@@ -526,7 +526,11 @@ class APIHandler(BaseHTTPRequestHandler):
                 self.send_response(401)
                 self.end_headers()
                 return
-        clen = self.headers.get("Content-Length", "") if isinstance(self.headers, dict) else self.headers.get("Content-Length", "")  # type: ignore[union-attr]
+        clen = (
+            self.headers.get("Content-Length", "")
+            if isinstance(self.headers, dict)
+            else self.headers.get("Content-Length", "")
+        )  # type: ignore[union-attr]
         try:
             n = int(str(clen).strip()) if str(clen).strip() else 0
         except ValueError:

@@ -668,8 +668,7 @@ def write_manifest() -> dict[str, str]:
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return {
-        "manifest": f"regenerated baseline ({len(inventory)} files, "
-        f"{len(doc_map)} map entries)",
+        "manifest": f"regenerated baseline ({len(inventory)} files, {len(doc_map)} map entries)",
         "changed": True,
     }
 

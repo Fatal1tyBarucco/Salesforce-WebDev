@@ -127,7 +127,7 @@ class FeatureLinker:
                             status=LifecycleStatus.CATEGORY_CHANGED,
                             linkage_method=LinkageMethod.EXACT,
                             similarity_score=1.0,
-                            notes=(f"Categoria mudou de " f"'{ps.category}' para '{cs.category}'."),
+                            notes=(f"Categoria mudou de '{ps.category}' para '{cs.category}'."),
                         )
                     )
                     used_current.add(ci)
@@ -161,8 +161,7 @@ class FeatureLinker:
                         linkage_method=LinkageMethod.FUZZY,
                         similarity_score=best_score,
                         notes=(
-                            f"Match fuzzy (Jaccard={best_score:.2f}) "
-                            f"na categoria '{cs.category}'."
+                            f"Match fuzzy (Jaccard={best_score:.2f}) na categoria '{cs.category}'."
                         ),
                     )
                 )
@@ -192,7 +191,7 @@ class FeatureLinker:
                             status=LifecycleStatus.RENAMED,
                             linkage_method=LinkageMethod.HEURISTIC,
                             similarity_score=h_best_score,
-                            notes=("Match heurístico por categoria e " "similaridade parcial."),
+                            notes=("Match heurístico por categoria e similaridade parcial."),
                         )
                     )
                     used_current.add(ci)

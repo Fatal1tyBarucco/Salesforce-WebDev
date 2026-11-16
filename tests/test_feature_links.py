@@ -203,9 +203,7 @@ class TestExtractFeaturesFromHtml:
         from src.scraper import SalesforceReleaseScraper
 
         html = (
-            "<ul>"
-            '<li><a href="https://example.com/release-notes.x.htm">NonSF Feature</a></li>'
-            "</ul>"
+            '<ul><li><a href="https://example.com/release-notes.x.htm">NonSF Feature</a></li></ul>'
         )
         features = SalesforceReleaseScraper._extract_features_from_html(html)
         # Strategy 2 fails (non-salesforce), Strategy 3 picks it up
