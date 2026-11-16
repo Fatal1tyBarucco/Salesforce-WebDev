@@ -23,6 +23,15 @@ _IMPACT_COLORS: dict[str, tuple[str, str]] = {
     "low": ("#43A047", "#FFFFFF"),
 }
 
+_IMPACT_EMOJIS: dict[str, str] = {
+    "alto": "🔴",
+    "médio": "🟡",
+    "baixo": "🟢",
+    "high": "🔴",
+    "medium": "🟡",
+    "low": "🟢",
+}
+
 _STATUS_COLORS: dict[str, tuple[str, str]] = {
     "active": ("#43A047", "#FFFFFF"),
     "deprecated": ("#FB8C00", "#FFFFFF"),
@@ -38,6 +47,10 @@ _RELEASE_COLORS: dict[str, tuple[str, str]] = {
     "winter": ("#2196F3", "#FFFFFF"),  # Blue
 }
 
+# Default badge colors (dark bg, light text for contrast)
+_DEFAULT_BG = "#555555"
+_DEFAULT_FG = "#FFFFFF"
+
 
 @dataclass
 class Badge:
@@ -45,8 +58,8 @@ class Badge:
 
     label: str
     message: str
-    color: str = "#555555"
-    label_color: str = "#555555"
+    color: str = _DEFAULT_BG
+    label_color: str = _DEFAULT_FG
     style: Literal["flat", "flat-square", "plastic", "for-the-badge"] = "flat"
     logo: str = ""
 
@@ -75,7 +88,18 @@ class Badge:
         Returns:
             Markdown string with badge image.
         """
-        return f"![{self.label}](https://img.shields.io/badge/{self.label.replace(' ', '%20')}-{self.message.replace(' ', '%20')}-{self.color.lstrip('#')}?style={self.style})"
+        label_enc = self.label.replace(" ", "%20").replace("-", "--")
+        message_enc = self.message.replace(" ", "%20").replace("-", "--")
+        color_clean = self.color.lstrip("#")
+        label_clean = self.label_color.lstrip("#")
+
+        url = f"https://img.shields.io/badge/{label_enc}-{message_enc}-{color_clean}"
+        params = [f"style={self.style}"]
+        if label_clean != "555555":
+            params.append(f"labelColor={label_clean}")
+        if self.logo:
+            params.append(f"logo={self.logo}")
+        return f"![{self.label}]({url}?{'&'.join(params)})"
 
     def to_html(self) -> str:
         """Generate an inline HTML badge (no external dependency).
@@ -107,8 +131,8 @@ def impact_badge(impact: str) -> Badge:
     Returns:
         Badge instance with appropriate colors.
     """
-    bg, fg = _IMPACT_COLORS.get(impact.lower(), ("#9E9E9E", "#FFFFFF"))
-    emoji = {"alto": "🔴", "médio": "🟡", "baixo": "🟢"}.get(impact.lower(), "⚪")
+    bg, fg = _IMPACT_COLORS.get(impact.lower(), (_DEFAULT_BG, _DEFAULT_FG))
+    emoji = _IMPACT_EMOJIS.get(impact.lower(), "⚪")
     return Badge(label="Impacto", message=f"{emoji} {impact}", color=bg, label_color=fg)
 
 
@@ -147,7 +171,7 @@ def release_badge(release_name: str) -> Badge:
         Badge instance with season-appropriate color.
     """
     season = release_name.split()[0].lower() if release_name else ""
-    bg, fg = _RELEASE_COLORS.get(season, ("#555555", "#FFFFFF"))
+    bg, fg = _RELEASE_COLORS.get(season, (_DEFAULT_BG, _DEFAULT_FG))
     return Badge(label="Release", message=release_name, color=bg, label_color=fg)
 
 
@@ -174,7 +198,7 @@ def status_badge(status: str) -> Badge:
     Returns:
         Badge instance.
     """
-    bg, fg = _STATUS_COLORS.get(status.lower(), ("#9E9E9E", "#FFFFFF"))
+    bg, fg = _STATUS_COLORS.get(status.lower(), (_DEFAULT_BG, _DEFAULT_FG))
     return Badge(label="Status", message=status, color=bg, label_color=fg)
 
 
@@ -253,16 +277,13 @@ def category_header_badges(
     badges = [category_badge(name, count)]
 
     if high > 0:
-        badges.append(
-            Badge(label="Alto", message=str(high), color="#E53935", label_color="#FFFFFF")
-        )
+        bg, fg = _IMPACT_COLORS.get("high", ("#E53935", "#FFFFFF"))
+        badges.append(Badge(label="Alto", message=str(high), color=bg, label_color=fg))
     if medium > 0:
-        badges.append(
-            Badge(label="Médio", message=str(medium), color="#FB8C00", label_color="#FFFFFF")
-        )
+        bg, fg = _IMPACT_COLORS.get("medium", ("#FB8C00", "#FFFFFF"))
+        badges.append(Badge(label="Médio", message=str(medium), color=bg, label_color=fg))
     if low > 0:
-        badges.append(
-            Badge(label="Baixo", message=str(low), color="#43A047", label_color="#FFFFFF")
-        )
+        bg, fg = _IMPACT_COLORS.get("low", ("#43A047", "#FFFFFF"))
+        badges.append(Badge(label="Baixo", message=str(low), color=bg, label_color=fg))
 
     return " ".join(b.to_shields_url() for b in badges)
