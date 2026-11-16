@@ -1,5 +1,5 @@
 
-<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
+<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="../../../../README.md">🇧🇷 Português</a></div>
 ### ☀️ Summer '26
 
 > 📊 **Executive Summary:** Resumo executativo determinístico (summer en): a release consolida automação, segurança, inteligência artificial e experiência do desenvolvedor no ecossistema Salesforce para administradores, desenvolvedores e times de vendas.
@@ -19,7 +19,7 @@
 > Resumo por categoria (summer en) de Desenvolvimento.
 
 
-> 📄 Full details: ./releases/summer_26/en_US/desenvolvimento.md
+> 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
 
 </details>
 
@@ -29,7 +29,7 @@
 > Resumo por categoria (summer en) de Vendas.
 
 
-> 📄 Full details: ./releases/summer_26/en_US/vendas.md
+> 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
 
 </details>
 
@@ -54,7 +54,7 @@
 > Resumo por categoria (winter en) de Desenvolvimento.
 
 
-> 📄 Full details: ./releases/winter_26/en_US/desenvolvimento.md
+> 📄 Full details: [./releases/winter_26/en_US/desenvolvimento.md](./releases/winter_26/en_US/desenvolvimento.md)
 
 </details>
 
@@ -64,7 +64,7 @@
 > Resumo por categoria (winter en) de Vendas.
 
 
-> 📄 Full details: ./releases/winter_26/en_US/vendas.md
+> 📄 Full details: [./releases/winter_26/en_US/vendas.md](./releases/winter_26/en_US/vendas.md)
 
 </details>
 

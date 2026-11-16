@@ -466,34 +466,28 @@ class TestReleaseNotesMCPServer:
             await server.call_tool("unknown_tool", {})
 
     @pytest.mark.asyncio
-    async def test_on_call_tool_handler_dispatches_by_name(self, server):
-        """SDK v2 handler should dispatch tools/call params and wrap in CallToolResult."""
-        params = CallToolRequestParams(name="list_releases")
-        # ctx não é usado pelo handler; None é seguro em runtime.
-        result = await server._on_call_tool(None, params)  # type: ignore[arg-type]
+    async def test_call_tool_dispatches_by_name(self, server):
+        """Public call_tool should dispatch tools by name and return TextContent list."""
+        result = await server.call_tool("list_releases", {})
 
-        assert isinstance(result, CallToolResult)
-        data = json.loads(result.content[0].text)
+        assert isinstance(result, list)
+        assert len(result) == 1
+        data = json.loads(result[0].text)
         assert len(data) == 2
 
     @pytest.mark.asyncio
-    async def test_on_call_tool_handler_with_arguments(self, server):
-        """SDK v2 handler should pass tool arguments through to the business logic."""
-        params = CallToolRequestParams(
-            name="get_release_summary",
-            arguments={"release_slug": "winter_27"},
-        )
-        result = await server._on_call_tool(None, params)  # type: ignore[arg-type]
+    async def test_call_tool_with_arguments(self, server):
+        """Public call_tool should pass tool arguments through to the business logic."""
+        result = await server.call_tool("get_release_summary", {"release_slug": "winter_27"})
 
-        data = json.loads(result.content[0].text)
+        data = json.loads(result[0].text)
         assert data["release"] == "winter_27"
 
     @pytest.mark.asyncio
-    async def test_on_call_tool_handler_unknown_tool(self, server):
-        """SDK v2 handler should raise ValueError for unknown tool names."""
-        params = CallToolRequestParams(name="unknown_tool")
+    async def test_call_tool_unknown_tool_raises(self, server):
+        """Public call_tool should raise ValueError for unknown tool names."""
         with pytest.raises(ValueError, match="Unknown tool"):
-            await server._on_call_tool(None, params)  # type: ignore[arg-type]
+            await server.call_tool("unknown_tool", {})
 
     @pytest.mark.asyncio
     async def test_search_release_notes_missing_locale(self, server):
@@ -639,8 +633,6 @@ class TestCreateServer:
         server = create_server()
 
         assert isinstance(server, Server)
-        assert server.get_request_handler("tools/list") is not None
-        assert server.get_request_handler("tools/call") is not None
 
     def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""
