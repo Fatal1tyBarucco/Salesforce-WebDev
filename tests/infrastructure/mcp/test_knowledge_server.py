@@ -186,7 +186,10 @@ class TestReleaseNotesMCPServer:
         """Should handle invalid query gracefully."""
         with pytest.raises(Exception) as exc_info:
             ReleaseNotesQuery(invalid_field="value")  # type: ignore[call-arg]
-        assert "extra_forbidden" in str(exc_info.value).lower() or "extra inputs" in str(exc_info.value).lower()
+        assert (
+            "extra_forbidden" in str(exc_info.value).lower()
+            or "extra inputs" in str(exc_info.value).lower()
+        )
 
     @pytest.mark.asyncio
     async def test_get_release_summary_exists(self, server):
