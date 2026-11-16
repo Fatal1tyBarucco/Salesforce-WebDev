@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -93,13 +93,13 @@ class TestReleaseNotesMCPServer:
         return ReleaseNotesMCPServer(releases_dir=temp_releases_dir)
 
     def test_server_has_mcp_attribute(self, server):
-        """Should have mcp attribute (FastMCP instance)."""
+        """Should have mcp attribute (MCPServer instance)."""
         assert hasattr(server, "mcp")
-        assert isinstance(server.mcp, FastMCP)
+        assert isinstance(server.mcp, MCPServer)
 
     @pytest.mark.asyncio
     async def test_server_registers_four_tools(self, server):
-        """Should register four tools with FastMCP."""
+        """Should register four tools with MCPServer."""
         tools = await server.mcp.list_tools()
         assert len(tools) == 4
         tool_names = {t.name for t in tools}
@@ -453,7 +453,7 @@ class TestCreateServer:
         """Should create server with default releases directory."""
         server = create_server()
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
 
@@ -462,6 +462,6 @@ class TestCreateServer:
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
