@@ -85,3 +85,6 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `406e877` — merge: resolve conflicts with main (Phase 1 quality gates)
 - `c698ab5` — docs: fix MD024 duplicate headings in AI-generated docs
 - `a9ae928` — docs: reconcile documentation manifest
+- `dfb6631` — docs: sync documentation and fix markdown
+- `5f59e28` — docs: reconcile navigation and inventory
+- `34c8c19` — docs: fix markdown lint errors in DEBITO_TECNICO.md

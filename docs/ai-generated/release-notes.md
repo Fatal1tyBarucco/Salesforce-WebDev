@@ -4,7 +4,7 @@
 
 ## Nova atualização
 
-## Nova atualização
+## Nova atualização 2
 
 Esta atualização inclui uma correção de formatação de código com Black 26.10.0 em unified_client e nos testes relacionados, ajustando expressões ternárias e asserts multilinha para atender aos padrões de estilo e resolver uma falha no workflow de qualidade Python. A alteração é apenas de reformatação, sem mudança de lógica ou comportamento. Também há uma atualização automática de documentação via ferramenta de IA, sem impacto funcional.
 
@@ -19,8 +19,8 @@ Ponto de atenção: a remoção das definições das variáveis de ambiente TEST
 
 ## 📊 Distribuição de Impacto
 
-🔴 Alto: **0** (0%) 
-🟡 Médio: **0** (0%) 
+🔴 Alto: **0** (0%)
+🟡 Médio: **0** (0%)
 🟢 Baixo: **2** (100%) 🟢🟢
 
 Total: **2 features**
@@ -34,14 +34,13 @@ Total: **2 features**
 
 Sparkline da distribuição alto/médio/baixo:   █
 
-
 ## Revisão Necessária
 
 - **Revisão de remoção de variáveis de ambiente nos testes** — Verificar se a remoção das variáveis de ambiente não quebra a execução dos testes. (0.80)
 
 ---
 
-## Nova atualização
+## Nova atualização 3
 
 Implementação da Fase 5 concluída com mutation testing, devcontainer e documentação; criação de workflows de CI/CD com IA; arquitetura de adaptadores LLM e scraping; MCP Knowledge Server; expansão de testes e fixtures golden; configuração de ambiente e qualidade. Correção de headings duplicados em documentação gerada por IA; reconciliação do manifest. Riscos: score de mutation testing abaixo do limiar; arquivo .bak pendente; secrets e permissões nos workflows com placeholder. Possíveis impactos em consumidores devido à remoção do módulo de scraping. Nenhum breaking change confirmado sem suporte.
 
@@ -56,7 +55,7 @@ Implementação da Fase 5 concluída com mutation testing, devcontainer e docume
 | **Expansão de testes e fixtures golden files — 📋 feature** | Adição de 28 novos arquivos de teste cobrindo os componentes de infraestrutura: test_cache.py, te… | 🔴 high | testes, qualidade de código · Prioridade: 💡 P0 |
 | **Configuração de ambiente de desenvolvimento e ferramentas de qualidade — 📋 refactor** | Adição de .claude/settings.json com configuração de permissões e hooks para automação de qualidad… | 🟡 medium | infraestrutura de desenvolvimento, ferramentas de qualidade, scripts · Prioridade: 💡 P1 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 2
 
 🔴 Alto: **4** (50%) 🔴🔴🔴🔴
 🟡 Médio: **3** (37%) 🟡🟡🟡
@@ -64,7 +63,7 @@ Implementação da Fase 5 concluída com mutation testing, devcontainer e docume
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 2
 
 ```text
 📋 bugfix             │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -75,7 +74,7 @@ Total: **8 features**
 
 Sparkline da distribuição alto/médio/baixo: █▆▂
 
-## Revisão Necessária
+## Revisão Necessária 2
 
 - **Arquivo service.py.bak pendente de remoção** — Verificar se o arquivo .bak é intencional ou se deve ser removido do repositório. (0.80)
 - **Configuração de secrets e permissões nos workflows de IA** — Substituir placeholder do SHA da ação anthropics/claude-code-action por SHA real e revisar configuração de permissões e secrets. (0.75)
@@ -84,7 +83,7 @@ Sparkline da distribuição alto/médio/baixo: █▆▂
 
 ---
 
-## Nova atualização 2
+## Nova atualização 4
 
 Correção de newline no final do arquivo `src/infrastructure/api/__init__.py` para atender ao gate de formatação Black. A alteração não introduz mudança de lógica ou comportamento.
 
@@ -94,7 +93,7 @@ Impacto: baixo. Risco: baixo. Não há breaking change identificado.
 | :--- | :--- | :---: | :--- |
 | **Correção de newline no EOF do src/infrastructure/api/**init**.py — 📋 refactor** | Adiciona nova linha ausente no final do arquivo src/infrastructure/api/**init**.py para atender a… | 🟢 low | src/infrastructure/api/**init**.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 2
+## 📊 Distribuição de Impacto 3
 
 🔴 Alto: **0** (0%)
 🟡 Médio: **0** (0%)
@@ -102,7 +101,7 @@ Impacto: baixo. Risco: baixo. Não há breaking change identificado.
 
 Total: **1 features**
 
-## Mudanças por tipo nesta execução 2
+## Mudanças por tipo nesta execução 3
 
 ```text
 📋 refactor           │██████████████████████████████│    1 →
@@ -112,7 +111,7 @@ Sparkline da distribuição alto/médio/baixo:   █
 
 ---
 
-## Nova atualização 3
+## Nova atualização 5
 
 Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError em 11 testes, restaurando a capacidade de build e elevando a cobertura para 95,35%; atualização de baixo impacto do manifesto de documentação com novos checksums; e adição do plugin syrupy ao conftest.py para corrigir erros de registro de fixture.
 
@@ -122,7 +121,7 @@ Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError
 | **Atualiza o manifesto de documentação com novos checksums de arquivos — 📋 documentation** | Reconcilia o docs/.documentation-manifest.json com checksums atualizados para pyproject.toml, src… | 🟢 low | docs/.documentation-manifest.json · Prioridade: 💡 P3 |
 | **Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture — 📋 refactor** | Adiciona pytest_plugins = ["syrupy"] ao conftest.py, garantindo que o plugin syrupy seja carregad… | 🟢 low | tests/conftest.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 3
+## 📊 Distribuição de Impacto 4
 
 🔴 Alto: **1** (33%) 🔴
 🟡 Médio: **0** (0%)
@@ -130,7 +129,7 @@ Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError
 
 Total: **3 features**
 
-## Mudanças por tipo nesta execução 3
+## Mudanças por tipo nesta execução 4
 
 ```text
 📋 bugfix             │██████████████████████████████│    1 →
@@ -140,7 +139,7 @@ Total: **3 features**
 
 Sparkline da distribuição alto/médio/baixo: ▄ █
 
-## Revisão Necessária 2
+## Revisão Necessária 3
 
 - **Corrige erro de importação do strawberry-graphql que causava falhas nos testes** — Revisão necessária devido a alterações em dependências e exportação lazy; garantir que o GraphQL funcione corretamente. (0.95)
 - **Atualiza o manifesto de documentação com novos checksums de arquivos** — Revisão para garantir que os checksums estejam corretos. (0.90)
@@ -148,7 +147,7 @@ Sparkline da distribuição alto/médio/baixo: ▄ █
 
 ---
 
-## Nova atualização 4
+## Nova atualização 6
 
 Esta release implementa uma refatoração para Clean Architecture em src/core e src/infrastructure, com módulos de core, infrastructure e models organizados em camadas desacopladas. Refatoração estrutural de alto impacto pode exigir atualização de imports e deve ser validada quanto a compatibilidade com consumidores existentes. A correção no fallback do LLMService visa preservar a disponibilidade do serviço em falhas de provedores. Ajustes no schema GraphQL com tipos Strawberry e ChangeType podem alterar contratos de API para consumidores externos. A ampliação da cobertura de testes, correções de quality gates, atualizações de dependências e reconciliação documental também foram incluídas. Riscos principais: possíveis imports desatualizados após a refatoração, necessidade de revisão de compatibilidade do schema GraphQL e fallback do LLM.
 
@@ -164,7 +163,7 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 | **Atualização de testes para novos limites de retry e tokens — 📋 bugfix** | Ajuste das expectativas de teste em test_ai_docs.py e test_ai_docs_coverage.py para coincidir com… | 🟢 low | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P3 |
 | **Reconciliação de documentação e atualização do manifest — 📋 documentation** | Atualização do docs/.documentation-manifest.json com novos mapeamentos entre código e documentaçã… | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml, docs/api/core-classification-service.md, docs/api/core-enrichment-service.md, docs/api/core-pipeline-orchestrator.md, docs/api/core-pipeline-steps.md, docs/api/core-summarization-service.md, docs/architecture/decisions/adr-007-clean-architecture.md · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 4
+## 📊 Distribuição de Impacto 5
 
 🔴 Alto: **2** (22%) 🔴🔴
 🟡 Médio: **3** (33%) 🟡🟡🟡
@@ -172,7 +171,7 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 
 Total: **9 features**
 
-## Mudanças por tipo nesta execução 4
+## Mudanças por tipo nesta execução 5
 
 ```text
 ⚡ Performance        │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -184,7 +183,7 @@ Total: **9 features**
 
 Sparkline da distribuição alto/médio/baixo: ▄▆█
 
-## Revisão Necessária 3
+## Revisão Necessária 4
 
 - **Verificação de backwards compatibility da arquitetura** — Executar análise estática de dependências para identificar todos os imports que precisam ser atualizados (0.80)
 - **Revisão do schema GraphQL para consumers externos** — Verificar versão do schema GraphQL e comunicar mudanças para consumidores externos se necessário (0.75)
@@ -193,7 +192,7 @@ Sparkline da distribuição alto/médio/baixo: ▄▆█
 
 ---
 
-## Nova atualização 5
+## Nova atualização 7
 
 Esta release introduz o design system no dashboard com suporte a dark mode e recursos de acessibilidade, além de corrigir o rastreamento de estado de fences no fix_markdown.py e atualizar diversas dependências de ferramentas e bibliotecas para as versões mais recentes.
 
@@ -208,7 +207,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 | **Atualizar aiohttp para 3.14.4 — ⚡ Performance** | Bump da dependência direta aiohttp de 3.14.3 para 3.14.4. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 | **Atualizar black para 26.10.1 — ⚡ Performance** | Bump da dependência de desenvolvimento black de 26.10.0 para 26.10.1. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 5
+## 📊 Distribuição de Impacto 6
 
 🔴 Alto: **1** (12%) 🔴
 🟡 Médio: **0** (0%)
@@ -216,7 +215,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução 5
+## Mudanças por tipo nesta execução 6
 
 ```text
 ⚡ Performance        │██████████████████████████████│    6 →
@@ -228,7 +227,7 @@ Sparkline da distribuição alto/médio/baixo: ▁ █
 
 ---
 
-## Nova atualização 6
+## Nova atualização 8
 
 Esta release corrige a falha de deploy no GitHub Pages que impedia a publicação de artefatos de release e afetava a entrega contínua do Intelligence Hub. Ajusta cabeçalhos Markdown para conformidade com lint MD001/MD036 e melhora o upload de artefatos de logs de IA no workflow ai-docs. Introduz gestão de orçamento de tokens de saída no cliente LLM, com variáveis de ambiente e escalonamento exponencial em retentativas para reduzir completions vazias ou truncadas. Adiciona novos testes de cobertura para módulos de IA e documentação. Simplifica o tratamento de exceções no docs_sync_engine, substituindo blocos específicos por captura genérica de Exception, o que pode mascarar erros específicos e requer atenção. Atualiza o manifesto de documentação com novos artefatos gerados por IA. Um import não utilizado em orchestrator.py está sob revisão.
 
@@ -242,7 +241,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 | **Novos testes de cobertura para módulos IA e docs — 📋 feature** | Adição de test_ai_docs.py, test_ai_docs_coverage.py, test_ai_coverage.py e atualização de test_ma… | 🟡 medium | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py, tests/test_ai_coverage.py, tests/test_main_coverage.py · Prioridade: 💡 P2 |
 | **Ajuste no workflow ai-docs para upload de artefatos ocultos — 📋 bugfix** | Mudança de if-no-files-found: ignore para warn e adição de include-hidden-files: true no upload d… | 🟢 low | .github/workflows/ai-docs.yml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 6
+## 📊 Distribuição de Impacto 7
 
 🔴 Alto: **1** (14%) 🔴
 🟡 Médio: **2** (28%) 🟡🟡
@@ -250,7 +249,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 6
+## Mudanças por tipo nesta execução 7
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
@@ -261,7 +260,7 @@ Total: **7 features**
 
 Sparkline da distribuição alto/médio/baixo: ▂▄█
 
-## Revisão Necessária 4
+## Revisão Necessária 5
 
 - **Importação de re no orchestrator.py sem uso aparente** — Baixa confiança ou sinalizada pelo classificador. (0.40)
 
@@ -297,7 +296,7 @@ Total: **7 features**
 
 Sparkline da distribuição alto/médio/baixo: ██▂
 
-## Revisão Necessária 5
+## Revisão Necessária 6
 
 - **Revisão de alterações no change_collector.py** — Baixa confiança ou sinalizada pelo classificador. (0.70)
 - **Validação de novos prompts de IA** — Baixa confiança ou sinalizada pelo classificador. (0.65)

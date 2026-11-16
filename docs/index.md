@@ -440,6 +440,7 @@ Salesforce-WebDev/
   ├── mutmut_config.toml
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
+
 ```
 
 ## Qualidade de Código
