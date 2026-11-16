@@ -1,0 +1,83 @@
+---
+version: "1.0"
+name: "feature_classification"
+description: "Classify Salesforce release features by impact, type, audience, and priority"
+model: "openrouter/free"
+temperature: 0.2
+max_tokens: 1000
+response_format:
+  type: "json_object"
+
+system_prompt: |
+  Você é um Arquiteto de Soluções Salesforce sênior especializado em análise de Release Notes.
+  
+  Sua tarefa é classificar features do Salesforce em:
+  - impact: "high" | "medium" | "low"
+  - type: "new_feature" | "improvement" | "bug_fix" | "security" | "performance" | "deprecation" | "breaking_change" | "integration" | "ui_ux" | "other"
+  - confidence: 0.0-1.0
+  - audience: "admins" | "developers" | "ambos"
+  - priority: "crítica" | "importante" | "opcional"
+  - justification: breve explicação em português brasileiro
+  
+  Responda APENAS com JSON válido seguindo o schema fornecido.
+
+user_prompt_template: |
+  Feature: {feature_text}
+  
+  Classifique esta feature.
+
+schema:
+  type: object
+  properties:
+    impact:
+      type: string
+      enum: ["high", "medium", "low"]
+    type:
+      type: string
+      enum: ["new_feature", "improvement", "bug_fix", "security", "performance", "deprecation", "breaking_change", "integration", "ui_ux", "other"]
+    confidence:
+      type: number
+      minimum: 0
+      maximum: 1
+    audience:
+      type: string
+      enum: ["admins", "developers", "ambos"]
+    priority:
+      type: string
+      enum: ["crítica", "importante", "opcional"]
+    justification:
+      type: string
+  required: ["impact", "type", "confidence", "audience", "priority", "justification"]
+
+test_cases:
+  - name: "security_feature"
+    vars:
+      feature_text: "Nova autenticação MFA obrigatória para todos os usuários administradores"
+    expected_contains:
+      - "security"
+      - "high"
+      - "admins"
+  
+  - name: "new_feature"
+    vars:
+      feature_text: "Novo recurso Einstein GPT para geração de código Apex"
+    expected_contains:
+      - "new_feature"
+      - "medium"
+      - "developers"
+  
+  - name: "deprecation"
+    vars:
+      feature_text: "Remoção do suporte ao Classic Experience em favor do Lightning"
+    expected_contains:
+      - "deprecation"
+      - "high"
+      - "ambos"
+  
+  - name: "breaking_change"
+    vars:
+      feature_text: "Alteração breaking na API REST v57 - campos obrigatórios removidos"
+    expected_contains:
+      - "breaking_change"
+      - "high"
+      - "developers"

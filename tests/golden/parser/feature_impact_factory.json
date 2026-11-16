@@ -1,0 +1,158 @@
+{
+  "without_link_map": {
+    "categories": [
+      {
+        "name": "Desenvolvimento",
+        "description": "Desenvolvimento Feature 1\tYes\tYes\tNo\tNo",
+        "entries": [
+          {
+            "name": "Desenvolvimento Feature 2",
+            "available_users": true,
+            "available_admins": true,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          },
+          {
+            "name": "Desenvolvimento Feature 3",
+            "available_users": true,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          }
+        ],
+        "subcategories": {},
+        "avg_confidence": 1.0,
+        "total_features": 2
+      },
+      {
+        "name": "Vendas",
+        "description": "Vendas Feature 1\tYes\tYes\tNo\tNo",
+        "entries": [
+          {
+            "name": "Vendas Feature 2",
+            "available_users": true,
+            "available_admins": true,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          },
+          {
+            "name": "Vendas Feature 3",
+            "available_users": true,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          },
+          {
+            "name": "Total de Recursos: 9",
+            "available_users": false,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 0.5,
+            "docs_url": ""
+          }
+        ],
+        "subcategories": {},
+        "avg_confidence": 0.8333333333333334,
+        "total_features": 3
+      }
+    ],
+    "parse_stats": {
+      "total_lines": 15,
+      "parsed": 5,
+      "skipped": 5
+    },
+    "classification_quality": {
+      "categories": 2,
+      "total_features": 5,
+      "avg_confidence": 0.9,
+      "low_confidence_count": 1
+    }
+  },
+  "with_link_map": {
+    "categories": [
+      {
+        "name": "Desenvolvimento",
+        "description": "Desenvolvimento Feature 1\tYes\tYes\tNo\tNo",
+        "entries": [
+          {
+            "name": "Desenvolvimento Feature 2",
+            "available_users": true,
+            "available_admins": true,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          },
+          {
+            "name": "Desenvolvimento Feature 3",
+            "available_users": true,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          }
+        ],
+        "subcategories": {},
+        "avg_confidence": 1.0,
+        "total_features": 2
+      },
+      {
+        "name": "Vendas",
+        "description": "Vendas Feature 1\tYes\tYes\tNo\tNo",
+        "entries": [
+          {
+            "name": "Vendas Feature 2",
+            "available_users": true,
+            "available_admins": true,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": "https://help.salesforce.com/s/articleView?id=vendas2.htm"
+          },
+          {
+            "name": "Vendas Feature 3",
+            "available_users": true,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          },
+          {
+            "name": "Total de Recursos: 9",
+            "available_users": false,
+            "available_admins": false,
+            "requires_config": false,
+            "contact_sf": false,
+            "confidence": 0.5,
+            "docs_url": ""
+          }
+        ],
+        "subcategories": {},
+        "avg_confidence": 0.8333333333333334,
+        "total_features": 3
+      }
+    ],
+    "parse_stats": {
+      "total_lines": 15,
+      "parsed": 5,
+      "skipped": 5
+    },
+    "classification_quality": {
+      "categories": 2,
+      "total_features": 5,
+      "avg_confidence": 0.9,
+      "low_confidence_count": 1
+    }
+  }
+}

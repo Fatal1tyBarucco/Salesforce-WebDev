@@ -1,0 +1,18 @@
+{
+  "files": {
+    "rn_desenvolvimento_parent.md": "# Desenvolvimento — Summer '26\n\n> **Release:** Summer '26\n> **Gerado em:** 2026-06-01 09:00 UTC\n> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=262&type=5&language=pt_BR\n\n---\n\n## Desenvolvimento\n\n\n\n### Desenvolvimento Article 1\n\n\n\n[🔗 Leia mais no conteúdo original](/test/desenvolvimento/article1)\n\n\n\n### Desenvolvimento Article 2\n\n\n\n[🔗 Leia mais no conteúdo original](/test/desenvolvimento/article2)\n\n\n",
+    "rn_vazio.md": "# Vazio — Summer '26\n\n> **Release:** Summer '26\n> **Gerado em:** 2026-06-01 09:00 UTC\n> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=262&type=5&language=pt_BR\n\n---\n\n_Nenhum conteúdo relevante identificado para este tópico nesta release._\n",
+    "rn_com_resumo.md": "# Com Resumo — Summer '26\n\n> **Release:** Summer '26\n> **Gerado em:** 2026-06-01 09:00 UTC\n> **Fonte:** https://help.salesforce.com/s/articleView?id=release-notes.rn_release_notes.htm&release=262&type=5&language=pt_BR\n\n---\n\n## Com Resumo\n\n\n\n### Artigo com resumo\n\n\n\nResumo do artigo congelado para caracterização.\n\n\n\n[🔗 Leia mais no conteúdo original](https://help.salesforce.com/s/articleView?id=resumo.htm)\n\n\n"
+  },
+  "list_generated_releases": [
+    [
+      "summer_26",
+      [
+        "rn_com_resumo",
+        "rn_desenvolvimento_parent",
+        "rn_vazio"
+      ]
+    ]
+  ],
+  "release_header_with_badges": "# Summer '26\n\nhttps://img.shields.io/badge/Release-Summer%20'26-FF9800?style=flat&labelColor=FFFFFF https://img.shields.io/badge/Features-42-43A047?style=flat&labelColor=FFFFFF https://img.shields.io/badge/Categorias-3-7B1FA2?style=flat&labelColor=FFFFFF\n\n---\n\n"
+}

@@ -1,0 +1,49 @@
+{
+  "rich_fixture": [
+    {
+      "slug": "development",
+      "display_name": "Desenvolvimento",
+      "level": 2,
+      "url": "",
+      "children": [],
+      "articles": [
+        {
+          "title": "Apex Overview",
+          "url": "https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_overview.htm"
+        },
+        {
+          "title": "Field Service",
+          "url": "https://help.salesforce.com/s/articleView?id=service.htm"
+        }
+      ]
+    },
+    {
+      "slug": "flow",
+      "display_name": "Fluxo",
+      "level": 2,
+      "url": "https://help.salesforce.com/flow",
+      "children": [],
+      "articles": [
+        {
+          "title": "Flow Article 1",
+          "url": "https://help.salesforce.com/flow/article1"
+        }
+      ]
+    },
+    {
+      "slug": "platform",
+      "display_name": "Platform LeafPlatform Child",
+      "level": 2,
+      "url": "https://help.salesforce.com/platform",
+      "children": [],
+      "articles": [
+        {
+          "title": "Platform Child",
+          "url": "https://help.salesforce.com/platform/child"
+        }
+      ]
+    }
+  ],
+  "factory_toc_html": [],
+  "missing_container": []
+}

@@ -1,0 +1,186 @@
+# Scheduled Pipeline — Knowledge-as-Code Update
+
+name: Scheduled Pipeline (Knowledge-as-Code)
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      release_slug:
+        description: "Release slug to process (e.g., winter_27)"
+        required: false
+        type: string
+      dry_run:
+        description: "Dry-run (does not write to releases/)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull_requests: write
+  issues: write
+
+concurrency:
+  group: scheduled-pipeline-${{ github.ref }}-${{ github.event.inputs.release_slug || 'auto' }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.14"
+  UV_CACHE_DIR: /tmp/uv-cache
+
+jobs:
+  detect:
+    name: Detect New Release
+    runs-on: ubuntu-latest
+    outputs:
+      has-new-release: ${{ steps.check.outputs.has-new-release }}
+      release-slug: ${{ steps.check.outputs.release-slug }}
+      release-name: ${{ steps.check.outputs.release-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Setup Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev --extra healing --group dev
+
+      - name: Check for new release
+        id: check
+        env:
+          TARGET_SLUG: ${{ github.event.inputs.release_slug }}
+        run: |
+          python3 scripts/detect_release.py >> $GITHUB_OUTPUT
+
+  process:
+    name: Process Release
+    needs: detect
+    if: needs.detect.outputs.has-new-release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Setup Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('uv.lock') }}
+          restore-keys: ${{ runner.os }}-playwright-
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev --extra healing --group dev
+
+      - name: Run pipeline
+        id: pipeline
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
+          DRY_RUN_FLAG=""
+          if [ "$DRY_RUN" = "true" ]; then
+            DRY_RUN_FLAG="--dry-run"
+          fi
+          echo "Processing release: $RELEASE_SLUG (dry-run: $DRY_RUN)"
+          uv run python -m src.main --release "$RELEASE_SLUG" $DRY_RUN_FLAG
+          
+          if git diff --quiet; then
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+            git status --short
+          fi
+
+      - name: Generate PR body
+        if: steps.pipeline.outputs.has-changes == 'true'
+        id: diff
+        env:
+          RELEASE_SLUG: ${{ needs.detect.outputs.release-slug }}
+          RELEASE_NAME: ${{ needs.detect.outputs.release-name }}
+        run: |
+          python3 scripts/generate_pr_body.py
+          echo "pr_body_file=/tmp/pr_body.md" >> $GITHUB_OUTPUT
+
+      - name: Create PR
+        if: steps.pipeline.outputs.has-changes == 'true'
+        id: create-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add -A
+          git commit -m "feat(pipeline): $RELEASE_SLUG release notes"
+          
+          BRANCH="pipeline/$RELEASE_SLUG-$(date +%Y%m%d-%H%M)"
+          git push origin HEAD:$BRANCH --force-with-lease
+          
+          PR_URL=$(gh pr create \
+            --title "feat(pipeline): $RELEASE_SLUG release notes" \
+            --body-file /tmp/pr_body.md \
+            --base main \
+            --head $BRANCH \
+            --label "pipeline,release-notes,knowledge-as-code")
+          
+          echo "pr-url=$PR_URL" >> $GITHUB_OUTPUT
+
+      - name: Create issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
+          gh issue create \
+            --title "Pipeline failed for release $RELEASE_SLUG" \
+            --body "Scheduled pipeline failed for \`$RELEASE_SLUG\`.\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label "pipeline,failure,needs-investigation" || true
+
+  summary:
+    name: Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [detect, process]
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          echo "## Scheduled Pipeline" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.detect.outputs.has-new-release }}" = "true" ]; then
+            echo "Release: \`${{ needs.detect.outputs.release-slug }}\`" >> $GITHUB_STEP_SUMMARY
+            if [ "${{ needs.process.outputs.has-changes }}" = "true" ]; then
+              echo "PR created: ${{ needs.process.outputs.pr-url }}" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "No changes detected" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "No new release detected" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,35 @@
+{
+  "release_slug": "winter_26",
+  "release_name": "Winter '26",
+  "total_features": 8,
+  "total_categories": 2,
+  "executive_summary": "Resumo executativo vindo do contrato LLM (stub): a release Winter '26 aporta automação e segurança para administradores e desenvolvedores.",
+  "business_impact": "Impacto de negócio vindo do contrato LLM (stub): redução de tarefas manuais e maior adoção de fluxos automatizados.",
+  "strategic_themes": [
+    "AI-First",
+    "Automação",
+    "Compliance & Security"
+  ],
+  "top_categories": [
+    {
+      "name": "Desenvolvimento",
+      "feature_count": 2,
+      "percentage": 50.0,
+      "top_feature": "Recurso Um",
+      "theme": "Ferramentas de desenvolvimento"
+    },
+    {
+      "name": "Vendas",
+      "feature_count": 2,
+      "percentage": 50.0,
+      "top_feature": "Venda Feature 1",
+      "theme": "Automação de vendas"
+    }
+  ],
+  "migration_notes": "Notas de migração do contrato LLM: revisar fluxos antigos.",
+  "category_summaries": {
+    "Desenvolvimento": "Resumo autoral do contrato LLM para Desenvolvimento.",
+    "Vendas": "Resumo autoral do contrato LLM para Vendas."
+  },
+  "confidence": 0.95
+}

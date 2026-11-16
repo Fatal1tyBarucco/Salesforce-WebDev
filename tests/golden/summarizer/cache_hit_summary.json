@@ -1,0 +1,20 @@
+{
+  "release_slug": "summer_26",
+  "release_name": "Summer '26",
+  "total_features": 8,
+  "total_categories": 2,
+  "executive_summary": "Resumo executativo determinístico (pt): a release consolida automação, segurança, inteligência artificial e experiência do desenvolvedor no ecossistema Salesforce para administradores, desenvolvedores e times de vendas.",
+  "business_impact": "Impacto de negócio determinístico (pt).",
+  "strategic_themes": [
+    "AI-First",
+    "Automação",
+    "Segurança"
+  ],
+  "top_categories": [],
+  "migration_notes": "Migrar fluxos antigos para a API nova antes do upgrade.",
+  "category_summaries": {
+    "Desenvolvimento": "Resumo por categoria (pt) de Desenvolvimento.",
+    "Vendas": "Resumo por categoria (pt) de Vendas."
+  },
+  "confidence": 0.95
+}

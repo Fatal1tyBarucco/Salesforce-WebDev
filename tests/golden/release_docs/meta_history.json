@@ -1,0 +1,64 @@
+{
+  "first_run": {
+    "meta": {
+      "name": "Summer '26",
+      "slug": "summer_26",
+      "release_id": 262,
+      "version": "2.1.0",
+      "total_features": 5,
+      "avg_confidence": 0.9,
+      "generated_at": "2026-06-01T09:00:00+00:00",
+      "categories": [
+        {
+          "name": "Desenvolvimento",
+          "count": 2
+        },
+        {
+          "name": "Vendas",
+          "count": 3
+        }
+      ]
+    },
+    "history": [
+      {
+        "slug": "summer_26",
+        "name": "Summer '26",
+        "release_id": 262,
+        "total_features": 5,
+        "category_count": 2,
+        "processed_at": "2026-06-01T09:00:00+00:00"
+      }
+    ]
+  },
+  "second_run": {
+    "meta": {
+      "name": "Summer '26",
+      "slug": "summer_26",
+      "release_id": 262,
+      "version": "2.1.1",
+      "total_features": 5,
+      "avg_confidence": 0.9,
+      "generated_at": "2026-06-01T09:00:00+00:00",
+      "categories": [
+        {
+          "name": "Desenvolvimento",
+          "count": 2
+        },
+        {
+          "name": "Vendas",
+          "count": 3
+        }
+      ]
+    },
+    "history": [
+      {
+        "slug": "summer_26",
+        "name": "Summer '26",
+        "release_id": 262,
+        "total_features": 5,
+        "category_count": 2,
+        "processed_at": "2026-06-01T09:00:00+00:00"
+      }
+    ]
+  }
+}
