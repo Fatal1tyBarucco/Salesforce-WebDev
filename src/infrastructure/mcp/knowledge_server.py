@@ -55,9 +55,7 @@ class ReleaseNotesMCPServer:
             return await self._list_releases()
 
         @self.mcp.tool()  # type: ignore[no-untyped-call]
-        async def compare_releases(
-            from_slug: str, to_slug: str, locale: str = "pt-BR"
-        ) -> str:
+        async def compare_releases(from_slug: str, to_slug: str, locale: str = "pt-BR") -> str:
             """Compare two releases - what's new, changed, removed."""
             return await self._compare_releases(from_slug, to_slug, locale)
 
@@ -187,9 +185,7 @@ class ReleaseNotesMCPServer:
 
         return json.dumps(releases, ensure_ascii=False, indent=2)
 
-    async def _compare_releases(
-        self, from_slug: str, to_slug: str, locale: str = "pt-BR"
-    ) -> str:
+    async def _compare_releases(self, from_slug: str, to_slug: str, locale: str = "pt-BR") -> str:
         from_dir = self.releases_dir / from_slug / locale
         to_dir = self.releases_dir / to_slug / locale
 
@@ -234,13 +230,9 @@ def create_server(releases_dir: Path = Path("releases")) -> FastMCP:
 
 if __name__ == "__main__":  # pragma: no cover
     import asyncio
-    from mcp.server.stdio import stdio_server
 
     async def main() -> None:
         server = create_server()
-        async with stdio_server() as (read_stream, write_stream):
-            await server.run(
-                read_stream, write_stream, server.create_initialization_options()
-            )
+        await server.run_stdio_async()
 
     asyncio.run(main())
