@@ -1110,7 +1110,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "cd843e5cfb761b387293b64f0d2ffe60f7f0ee9e",
     "src/infrastructure/mcp/__init__.py": "178b1d0da0234841a1e1f808b1c26787d69ecfe0",
-    "src/infrastructure/mcp/knowledge_server.py": "6817b96e3d4ca840359bc266b3bec71d4bfc0f35",
+    "src/infrastructure/mcp/knowledge_server.py": "013a566689ae56db1121fc175d0bbbcc72c251bf",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1223,9 +1223,9 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "b30fe77a716e83c4234eba06ceb11c95871262ac",
+    "tests/golden/summarizer/readme_block_en.md": "312ba19f9950ede0aeea8c9a773e33221813671b",
     "tests/golden/summarizer/readme_block_pt.md": "454598c196f5cb0ecdeeea803958da322e91fcf9",
-    "tests/golden/summarizer/readme_pt_updated.md": "6cc12b0fbda42cca192cec061d35ab3dcfa65a44",
+    "tests/golden/summarizer/readme_pt_updated.md": "9797c2d97ebeed80871edd52845f2390cf5412e8",
     "tests/infrastructure/llm_adapters/test_cache.py": "dd7925ff21111a2a236dee8ca4aacf70df0e3dd2",
     "tests/infrastructure/llm_adapters/test_observability.py": "b4ee82c4dc61d101f0bbdbd19506d2da3d7de324",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "0f0f1b7d68ff6ba798ff354921dc05a3c99612db",
@@ -1339,6 +1339,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "54eb7c061638b4cea3e9a2e716a463a2fc75e0f1"
   },
-  "generated_at": "2026-11-16T17:51:12.536664+00:00",
-  "repository_sha": "02153e355ecdbce346178b5fc2fb10ea3d8e7fcc"
+  "generated_at": "2026-11-16T18:01:51.892599+00:00",
+  "repository_sha": "4c37fca55d85d092ecfe9940f0f8cbcffd40e06c"
 }
