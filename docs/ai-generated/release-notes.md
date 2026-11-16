@@ -1,6 +1,50 @@
-<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Implementação da Fase 5 concluída com mutation testing, devcontainer e documentação; criação de workflows de CI/CD com IA; arquitetura de adaptadores LLM e scraping; MCP Knowledge Server; expansão de testes e fixtures golden; configuração de ambiente e qualidade. Correção de headings duplicados em documentação gerada por IA; reconciliação do manifest. Riscos: score de mutation testing abaixo do limiar; arquivo .bak pendente; secrets e permissões nos workflows com placeholder. Possíveis impactos em consumidores devido à remoção do módulo de scraping. Nenhum breaking change confirmado sem suporte.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Finalização da Fase 5 - Mutation testing, devcontainer e documentação — 📋 feature** | Configuração completa do mutmut 2.5.1 para mutation testing com score de 66.67% (limiar de 80% do… | 🔴 high | testes, infraestrutura de desenvolvimento, documentação, qualidade de código · Prioridade: 💡 P0 |
+| **Correção de headings duplicados em documentação gerada por IA — 📋 bugfix** | Reescrita da função fix_md024_duplicate_headings em .github/scripts/fix_markdown.py para lidar co… | 🟡 medium | documentação, scripts de automação · Prioridade: 💡 P2 |
+| **Reconciliação do manifest de documentação — 📋 documentation** | Atualização do arquivo docs/.documentation-manifest.json com os mapeamentos mais recentes de docu… | 🟢 low | documentação · Prioridade: 💡 P3 |
+| **Implementação de workflows de CI/CD com IA e automação — 📋 feature** | Criação de cinco novos workflows GitHub Actions: AI PR Review (revisão automática de PRs via Clau… | 🔴 high | CI/CD, segurança, automação de desenvolvimento · Prioridade: 💡 P0 |
+| **Implementação de arquitura de adaptadores LLM e scraping — 📋 refactor** | Criação de uma camada de infraestrutura modular para integração com LLMs, incluindo unified_clien… | 🔴 high | infraestrutura, domínio de dados, integração com LLM · Prioridade: 💡 P0 |
+| **Implementação do MCP Knowledge Server — 📋 feature** | Criação do knowledge_server.py em src/infrastructure/mcp/, um servidor MCP (Model Context Protoco… | 🟡 medium | infraestrutura, ferramentas de IA · Prioridade: 💡 P1 |
+| **Expansão de testes e fixtures golden files — 📋 feature** | Adição de 28 novos arquivos de teste cobrindo os componentes de infraestrutura: test_cache.py, te… | 🔴 high | testes, qualidade de código · Prioridade: 💡 P0 |
+| **Configuração de ambiente de desenvolvimento e ferramentas de qualidade — 📋 refactor** | Adição de .claude/settings.json com configuração de permissões e hooks para automação de qualidad… | 🟡 medium | infraestrutura de desenvolvimento, ferramentas de qualidade, scripts · Prioridade: 💡 P1 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **4** (50%) 🔴🔴🔴🔴
+🟡 Médio: **3** (37%) 🟡🟡🟡
+🟢 Baixo: **1** (12%) 🟢
+
+Total: **8 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 documentation      │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 feature            │██████████████████████████████│    4 →
+📋 refactor           │███████████████░░░░░░░░░░░░░░░│    2 →
+```
+
+Sparkline da distribuição alto/médio/baixo: █▆▂
+
+
+## Revisão Necessária
+
+- **Arquivo service.py.bak pendente de remoção** — Verificar se o arquivo .bak é intencional ou se deve ser removido do repositório. (0.80)
+- **Configuração de secrets e permissões nos workflows de IA** — Substituir placeholder do SHA da ação anthropics/claude-code-action por SHA real e revisar configuração de permissões e secrets. (0.75)
+- **Score de mutation testing abaixo do limiar estabelecido** — Avaliar necessidade de adicionar testes para elevar o score de mutation testing acima de 80% ou ajustar o limiar. (0.85)
+- **Prompts de IA em YAML para classificação, enrichment e reporting** — Revisar prompts para garantir que estão protegidos contra injection e que as instruções são claras e consistentes. (0.70)
+
+---
 
 ## Nova atualização
 

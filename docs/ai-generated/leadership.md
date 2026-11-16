@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+As mudanças classificadas indicam impacto alto na qualidade, automação e infraestrutura. A Finalização da Fase 5, os workflows de CI/CD com IA e a arquitetura de adaptadores LLM e scraping elevam a complexidade e exigem validação. A correção de headings duplicados e a reconciliação do manifest são de menor risco. Riscos principais: score de mutation testing abaixo do limiar, arquivo .bak pendente e secrets/permissoes com placeholder. Próximos passos: validar mutation testing, remover ou confirmar o arquivo .bak, revisar workflows e secrets, e validar a nova arquitetura.
+
+---
 
 ## Nova atualização
 

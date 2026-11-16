@@ -1,5 +1,25 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Added complete Phase 5 setup with mutation testing, devcontainer, and documentation.
+- Added five GitHub Actions workflows for AI PR Review, AI Triage, CI Repair, Scheduled Pipeline, and Release Please.
+- Added MCP Knowledge Server for project knowledge.
+- Added 28 new test files and golden fixtures for infrastructure components.
+
+### Changed
+- Refactored LLM integration and scraping into modular adapters.
+- Updated development environment and quality tooling configuration.
+
+### Fixed
+- Fixed duplicate headings in AI-generated documentation.
+
+### Breaking Changes
+- Removed legacy scraping module in favor of new adapter architecture.
+
 <!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-15T14:30:24+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões de roadmap: revisar e elevar o score de mutation testing acima do limiar; avaliar a remoção do arquivo .bak; revisar secrets e permissões nos workflows de IA; validar a arquitetura de adaptadores LLM e scraping; expandir testes e fixtures golden; monitorar a qualidade dos prompts de IA.
+
+---
 
 ## Nova atualização
 
