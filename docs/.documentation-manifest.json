@@ -759,7 +759,7 @@
     "docs/architecture/decisions/adr-007-clean-architecture.md": "4e2da5b64c17a38576633db8c19474fd0c68fe94",
     "docs/architecture/decisions/adr-008-prompt-versioning.md": "05c67c3beaa4c9e46873780bbbda08286aa13968",
     "docs/architecture/decisions/adr-009-scraper-resilience.md": "4f50cc40c38a1970dda6f78dd9f57233d296a329",
-    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "a5d1f99c00a1e794b19ee9cb4e357970e17a68d4",
+    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "701d0f51108f82c87645ace64cfdaa765c851a31",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -798,7 +798,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "fix_md.py": "417f463af080d3fbe9fb3a103b0f0b755a8e6062",
+    "fix_md.py": "ba7d85a7b159ba333ed7f40d77f1acbdba945444",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
@@ -812,7 +812,7 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "db366ba2bd97bbe49cfa4b4782aee035683b7002",
+    "pyproject.toml": "a5084d838a1ad09af50db5060f005ca16bb3aeff",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1213,9 +1213,9 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "b30fe77a716e83c4234eba06ceb11c95871262ac",
-    "tests/golden/summarizer/readme_block_pt.md": "454598c196f5cb0ecdeeea803958da322e91fcf9",
-    "tests/golden/summarizer/readme_pt_updated.md": "9797c2d97ebeed80871edd52845f2390cf5412e8",
+    "tests/golden/summarizer/readme_block_en.md": "2f77cb9aa995b06aaa4399dcdceccc820ca109f1",
+    "tests/golden/summarizer/readme_block_pt.md": "1910eda19946216ad46495048a3536501242393c",
+    "tests/golden/summarizer/readme_pt_updated.md": "e650147ecfe7442392027b0c698d22b215f3b692",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
   },
-  "generated_at": "2026-11-16T12:53:44.337744+00:00",
-  "repository_sha": "27627472060a5a400482293034d79fe4f18b42d8"
+  "generated_at": "2026-11-16T13:10:35.565269+00:00",
+  "repository_sha": "b19d9b1e1d5e9897a8bb9160d33f705dd5744c3c"
 }
