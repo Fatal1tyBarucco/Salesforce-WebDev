@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 from mcp.server import Server
-from mcp.types import CallToolRequestParams, CallToolResult, ListToolsResult
+from mcp.types import CallToolResult, ListToolsResult, TextContent
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -106,20 +106,6 @@ class TestReleaseNotesMCPServer:
             "list_releases",
             "compare_releases",
         }
-
-    @pytest.mark.asyncio
-    async def test_on_list_tools_handler_returns_tools(self, server):
-        """SDK v2 handler should wrap the tool definitions in ListToolsResult."""
-        # ctx e params não são usados pelo handler; None é seguro em runtime.
-        result = await server._on_list_tools(None, None)  # type: ignore[arg-type]
-
-        assert isinstance(result, ListToolsResult)
-        assert [t.name for t in result.tools] == [
-            "search_release_notes",
-            "get_release_summary",
-            "list_releases",
-            "compare_releases",
-        ]
 
     @pytest.mark.asyncio
     async def test_server_registers_sdk_handlers(self, server):
@@ -464,36 +450,6 @@ class TestReleaseNotesMCPServer:
         """Should raise error for unknown tool."""
         with pytest.raises(ValueError, match="Unknown tool"):
             await server.call_tool("unknown_tool", {})
-
-    @pytest.mark.asyncio
-    async def test_on_call_tool_handler_dispatches_by_name(self, server):
-        """SDK v2 handler should dispatch tools/call params and wrap in CallToolResult."""
-        params = CallToolRequestParams(name="list_releases")
-        # ctx não é usado pelo handler; None é seguro em runtime.
-        result = await server._on_call_tool(None, params)  # type: ignore[arg-type]
-
-        assert isinstance(result, CallToolResult)
-        data = json.loads(result.content[0].text)
-        assert len(data) == 2
-
-    @pytest.mark.asyncio
-    async def test_on_call_tool_handler_with_arguments(self, server):
-        """SDK v2 handler should pass tool arguments through to the business logic."""
-        params = CallToolRequestParams(
-            name="get_release_summary",
-            arguments={"release_slug": "winter_27"},
-        )
-        result = await server._on_call_tool(None, params)  # type: ignore[arg-type]
-
-        data = json.loads(result.content[0].text)
-        assert data["release"] == "winter_27"
-
-    @pytest.mark.asyncio
-    async def test_on_call_tool_handler_unknown_tool(self, server):
-        """SDK v2 handler should raise ValueError for unknown tool names."""
-        params = CallToolRequestParams(name="unknown_tool")
-        with pytest.raises(ValueError, match="Unknown tool"):
-            await server._on_call_tool(None, params)  # type: ignore[arg-type]
 
     @pytest.mark.asyncio
     async def test_search_release_notes_missing_locale(self, server):

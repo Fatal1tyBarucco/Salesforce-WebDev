@@ -1100,7 +1100,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "4716228bbd85483cea8845e5bf5211a00cb82fe5",
     "src/infrastructure/mcp/__init__.py": "60de6875842d2cc3e5329254fc823c01e23b799d",
-    "src/infrastructure/mcp/knowledge_server.py": "9804ba602e4f6dec6eef0cddd6f05ae32b977720",
+    "src/infrastructure/mcp/knowledge_server.py": "9987136306d1513828bcfdb6d2e0a3abcdfe7bd2",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-"generated_at": "2026-11-16T13:21:49.228522+00:00",
-  "repository_sha": "1793c352399e43133dda8ff9b586510310eeb723"
+  "generated_at": "2026-11-16T13:40:28.998708+00:00",
+  "repository_sha": "365ef2531fa2175231ecca4f4b41e5a28796fe14"
 }
