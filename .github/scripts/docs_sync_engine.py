@@ -295,11 +295,25 @@ def _iter_doc_lines(rel: str):
             yield line
 
 
-def dead_references(inventory: set[str]) -> list[dict]:
-    findings: list[dict] = []
-    docs = sorted(
+def rewritable_markdown(inventory: set[str] | list[str] | dict[str, str]) -> list[str]:
+    """Markdown prose surfaces this engine is allowed to rewrite/audit.
+
+    Restricted to ``docs/`` plus the root-level prose files in ``DOC_ROOT_FILES``
+    -- the same surface for the detector and the fixer, so they stay symmetric.
+    Everything else is content, not documentation: ``tests/`` (byte-exact
+    golden fixtures), ``releases/`` (pipeline output), ``.claude/`` /
+    ``.github/`` (tooling config) are never touched.  Rewriting a golden
+    fixture would silently change the expected bytes of a characterization
+    test and fail CI on the next run.
+    """
+    return sorted(
         p for p in inventory if p.endswith(".md") and (p.startswith("docs/") or p in DOC_ROOT_FILES)
     )
+
+
+def dead_references(inventory: set[str]) -> list[dict]:
+    findings: list[dict] = []
+    docs = rewritable_markdown(inventory)
     for doc in docs:
         for line in _iter_doc_lines(doc):
             for m in PATH_REF_RE.findall(line):
@@ -585,7 +599,7 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    findings += broken_internal_links(rewritable_markdown(inv_set), inv_set)
 
     for mod in missing_api_evokers():
         findings.append(
@@ -997,8 +1011,9 @@ def fix_directory_tree() -> list[str]:
 def strip_dead_refs() -> list[str]:
     """Remove references to files/asset paths that no longer exist in the repo.
 
-    Applied to *prose* lines only (code fences preserved).  Two deterministic
-    transforms:
+    Applied to *prose* lines only (code fences preserved).  Only files returned
+    by :func:`rewritable_markdown` are considered; fixtures and generated
+    content are out of scope.  Two deterministic transforms:
 
     1. Markdown links/images ``[text](./rel/path)`` (or ``![alt](...)``) whose
        relative target resolves to nothing on disk and is absent from the git
@@ -1017,7 +1032,7 @@ def strip_dead_refs() -> list[str]:
     """
     inventory = set(tracked_inventory().keys())
     root_resolved = REPO_ROOT.resolve()
-    docs = sorted(p for p in inventory if p.endswith(".md"))
+    docs = rewritable_markdown(inventory)
     actions: list[str] = []
     for doc in docs:
         text = read_text(doc)

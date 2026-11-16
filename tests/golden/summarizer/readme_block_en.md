@@ -18,42 +18,22 @@
 > Resumo por categoria (summer en) de Desenvolvimento.
 
 
-> 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md
+> 📄 Full details: [./releases/summer_26/en_US/development.md](./releases/summer_26/en_US/development.md)
 
 </details>
 
 <details>
-<summary><b>📄\](./releases/summer_26/en_US/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄)(./releases/summer_26/en_US/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄) Sales (4 features)</b></summary>
+<summary><b>📄 Sales (4 features)</b></summary>
 
 > Resumo por categoria (summer en) de Vendas.
 
 
-> 📄 Full details: [./releases/summer_26/en_US/vendas.md
+> 📄 Full details: [./releases/summer_26/en_US/sales.md](./releases/summer_26/en_US/sales.md)
 
 </details>
 
 <details>
-<summary><h3>❄️\](./releases/summer_26/en_US/vendas.md
-
-</details>
-
-<details>
-<summary><h3>❄️)(./releases/summer_26/en_US/vendas.md
-
-</details>
-
-<details>
-<summary><h3>❄️) Winter '26</h3></summary>
+<summary><h3>❄️ Winter '26</h3></summary>
 
 > 📊 **Executive Summary:** Resumo executativo determinístico (winter en): a release consolida automação, segurança, inteligência artificial e experiência do desenvolvedor no ecossistema Salesforce para administradores, desenvolvedores e times de vendas.
 
@@ -72,36 +52,18 @@
 > Resumo por categoria (winter en) de Desenvolvimento.
 
 
-> 📄 Full details: [./releases/winter_26/en_US/desenvolvimento.md
+> 📄 Full details: [./releases/winter_26/en_US/development.md](./releases/winter_26/en_US/development.md)
 
 </details>
 
 <details>
-<summary><b>📄\](./releases/winter_26/en_US/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄)(./releases/winter_26/en_US/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄) Sales (4 features)</b></summary>
+<summary><b>📄 Sales (4 features)</b></summary>
 
 > Resumo por categoria (winter en) de Vendas.
 
 
-> 📄 Full details: [./releases/winter_26/en_US/vendas.md
+> 📄 Full details: [./releases/winter_26/en_US/sales.md](./releases/winter_26/en_US/sales.md)
 
 </details>
 
-</details>\](./releases/winter_26/en_US/vendas.md
-
 </details>
-
-</details>)(./releases/winter_26/en_US/vendas.md
-
-</details>
-
-</details>)
