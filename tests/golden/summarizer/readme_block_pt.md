@@ -18,42 +18,22 @@
 > Resumo por categoria (summer pt) de Desenvolvimento.
 
 
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/desenvolvimento.md](./releases/summer_26/pt_BR/desenvolvimento.md)
 
 </details>
 
 <details>
-<summary><b>📄\](./releases/summer_26/pt_BR/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄)(./releases/summer_26/pt_BR/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄) Vendas (4 recursos)</b></summary>
+<summary><b>📄 Vendas (4 recursos)</b></summary>
 
 > Resumo por categoria (summer pt) de Vendas.
 
 
-> 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md
+> 📄 Detalhes completos: [./releases/summer_26/pt_BR/vendas.md](./releases/summer_26/pt_BR/vendas.md)
 
 </details>
 
 <details>
-<summary><h3>❄️\](./releases/summer_26/pt_BR/vendas.md
-
-</details>
-
-<details>
-<summary><h3>❄️)(./releases/summer_26/pt_BR/vendas.md
-
-</details>
-
-<details>
-<summary><h3>❄️) Winter '26</h3></summary>
+<summary><h3>❄️ Winter '26</h3></summary>
 
 > 📊 **Resumo Executivo:** Resumo executativo determinístico (winter pt): a release consolida automação, segurança, inteligência artificial e experiência do desenvolvedor no ecossistema Salesforce para administradores, desenvolvedores e times de vendas.
 
@@ -72,36 +52,18 @@
 > Resumo por categoria (winter pt) de Desenvolvimento.
 
 
-> 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/desenvolvimento.md](./releases/winter_26/pt_BR/desenvolvimento.md)
 
 </details>
 
 <details>
-<summary><b>📄\](./releases/winter_26/pt_BR/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄)(./releases/winter_26/pt_BR/desenvolvimento.md
-
-</details>
-
-<details>
-<summary><b>📄) Vendas (4 recursos)</b></summary>
+<summary><b>📄 Vendas (4 recursos)</b></summary>
 
 > Resumo por categoria (winter pt) de Vendas.
 
 
-> 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md
+> 📄 Detalhes completos: [./releases/winter_26/pt_BR/vendas.md](./releases/winter_26/pt_BR/vendas.md)
 
 </details>
 
-</details>\](./releases/winter_26/pt_BR/vendas.md
-
 </details>
-
-</details>)(./releases/winter_26/pt_BR/vendas.md
-
-</details>
-
-</details>)
