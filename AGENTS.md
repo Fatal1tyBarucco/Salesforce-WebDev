@@ -103,12 +103,20 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 - **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
   project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
   Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
-- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
-  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
-  variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
-  `get_request_handler`, `server._build_tools`) do not exist in that version. Tool results come
-  from `await server.mcp.call_tool(...)` (returns `(content, structured)`) and
-  `await server.mcp.list_tools()`; unknown tools raise `mcp.server.fastmcp.exceptions.ToolError`.
+- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the `MCPServer` API** of
+  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp>=2.0.0,<3` (resolved `mcp==2.3.0`):
+  in 2.x `FastMCP` was renamed to `MCPServer` (`from mcp.server import MCPServer`) and
+  `mcp.server.fastmcp` raises `ModuleNotFoundError` on import, so nothing may import it. The
+  low-level `Server` (`mcp.server.lowlevel`) has no `list_tools()`/`call_tool()` decorators in 2.x
+  either — registering tools goes through `@mcp.tool(name=..., description=...)` on `MCPServer`.
+  Tests reach tools via `await server.mcp.call_tool(name, args)` (returns `CallToolResult`; read
+  `result.content[0].text`) and `await server.mcp.list_tools()`; unknown tools raise
+  `mcp.server.mcpserver.exceptions.ToolError`.
+- **`tests/golden/summarizer/readme_block_en.md` must keep English category slugs**
+  (`development.md`, `sales.md`) for the `en_US` links: `_build_release_block` maps them through
+  `ENGLISH_CATEGORY_SLUGS` on purpose so links match the files written by `_generate_release_files`.
+  Resolving the 2026-11-16 merge by editing the golden to Portuguese filenames broke
+  `test_build_release_block_matches_golden`.
 - **`_build_release_block` output is frozen by `tests/golden/summarizer/readme_block_{pt,en}.md`
   and `readme_pt_updated.md`.** The leading `lines = [""]` and the blank separators after each
   `</details>` are intentional (they match the committed `README.md`/`README.en.md`) — the
