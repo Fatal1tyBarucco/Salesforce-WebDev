@@ -435,11 +435,11 @@ Salesforce-WebDev/
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança
+  ├── fix_md.py
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── mutmut_config.toml
   ├── pyproject.toml             # Configuração do projeto
   └── uv.lock                    # Lockfile determinístico
-
 ```
 
 ## Qualidade de Código

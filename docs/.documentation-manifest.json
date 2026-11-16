@@ -269,9 +269,11 @@
       "docs/api/documentation_service.md"
     ],
     "src/domain/llm.py": [
+      "docs/api/domain-llm.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
     "src/domain/scraper.py": [
+      "docs/api/domain-scraper.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/events.py": [
@@ -361,10 +363,21 @@
       "docs/api/infrastructure-llm.md"
     ],
     "src/infrastructure/llm_adapters/cache.py": [
+      "docs/api/infrastructure-llm_adapters-cache.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
+    "src/infrastructure/llm_adapters/observability.py": [
+      "docs/api/infrastructure-llm_adapters-observability.md"
+    ],
+    "src/infrastructure/llm_adapters/rate_limiter.py": [
+      "docs/api/infrastructure-llm_adapters-rate_limiter.md"
+    ],
     "src/infrastructure/llm_adapters/unified_client.py": [
+      "docs/api/infrastructure-llm_adapters-unified_client.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+    ],
+    "src/infrastructure/mcp/knowledge_server.py": [
+      "docs/api/infrastructure-mcp-knowledge_server.md"
     ],
     "src/infrastructure/messaging.py": [
       "docs/DEBITO_TECNICO.md",
@@ -379,15 +392,19 @@
       "docs/api/infrastructure-parsing.md"
     ],
     "src/infrastructure/scraping/cache_adapter.py": [
+      "docs/api/infrastructure-scraping-cache_adapter.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/scraping/observability.py": [
+      "docs/api/infrastructure-scraping-observability.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/scraping/playwright_adapter.py": [
+      "docs/api/infrastructure-scraping-playwright_adapter.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/scraping/rate_limiter.py": [
+      "docs/api/infrastructure-scraping-rate_limiter.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/storage.py": [
@@ -541,12 +558,12 @@
     ".claude/agents/test-engineer.md": "958b0aa6ec52fee48e11b13e98e993cb0fe6d6a1",
     ".claude/commands/audit.md": "7010ae8e9d3881936931e25e3bcc882a59155a48",
     ".claude/commands/diag.md": "a4cba338c030b597eedd6e8c23b82636e14979f4",
-    ".claude/commands/prompt-eval.md": "a846eab3d5afc9f197025444e604c353203250ce",
+    ".claude/commands/prompt-eval.md": "6f141fc982cf3d492ea542b1ae8f20c2c8e04828",
     ".claude/commands/refactor.md": "ab3df7f85177d23dca426b505596156661bca5cd",
     ".claude/commands/release.md": "f6b21bd7550f01117f7641b1f7cc10039261384f",
     ".claude/commands/triage.md": "94e588e86532b67ebc00bbcc83599c63040d8d13",
     ".claude/settings.json": "123d61306df96f4d45e74570665ba09e90e4f6d0",
-    ".claude/skills/add-release-source/SKILL.md": "5259979735a2b1b57e4edb970480b8ce14e030c6",
+    ".claude/skills/add-release-source/SKILL.md": "eaf5fe3f1927b9266cb9de9ad5926b66ad432a03",
     ".claude/skills/bump-quality/SKILL.md": "4d2b36cf419e94cd01bee272722251e94a32960b",
     ".claude/skills/debug-ci/SKILL.md": "1d144d9f47d5d3621cee25e08e4c95831e9b8f0a",
     ".claude/skills/knowledge-as-code-update/SKILL.md": "368d20974afeb50cf2882d1da24f79ab6d8d3e6a",
@@ -592,7 +609,7 @@
     ".github/workflows/scheduled-pipeline.yml": "84f3514bcda985d7eda7c9bb619457b502f1c9c0",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
-    ".markdownlint.json": "d01ff6fad8ee9f3440799df7b2ac20188d4b0b58",
+    ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".mcp.json": "407d29e33acd3d0d0af075ce80127d5f9bef955c",
     ".mutmut-cache": "af3eb1d1c8c3b7dd9e40fd5668b1535968912b25",
@@ -610,7 +627,7 @@
     "MUTATION_TESTING_REPORT.md": "8abef2b0c300d69353222853e4e0cc9f1bd78493",
     "PLANO_DE_MODERNIZACAO.md": "e410c7458abbdf230a9c68d1048f54e89b670127",
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
-    "PROPOSTA_FEATURE_RIPE.md": "b797259e37758f5364eb91de8bb8e9551f1ac6fa",
+    "PROPOSTA_FEATURE_RIPE.md": "e3d095dbc9a652590b0e4722db4530ef31037081",
     "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
     "README.md": "bea6c3b5639797fb3eab20a6dd972eb3cc999bed",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
@@ -620,13 +637,13 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
     "docs/.last-processed-ref": "5c4e4fbf971d72729f50a636e9ddc2253c7d7c2d",
-    "docs/ARQUITETURA.md": "e9f8dde203e990e55c33e9a5e78955995185a6a6",
-    "docs/DEBITO_TECNICO.md": "658c1202f5b6d6dea3c31b37d5178b47b46eb60f",
-    "docs/MODERNIZACAO.md": "0fe5e79eb3a7bc504e1caa82067a36a6e255e941",
+    "docs/ARQUITETURA.md": "89977724ac7efbc6add7f04c035928df35cfceaa",
+    "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
+    "docs/MODERNIZACAO.md": "e55877d77caec006676d5a69c6bf222979cb357a",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "f5db9dd38db07c557ba14faeedf15b0863106cdf",
-    "docs/ai-generated/release-notes.md": "e1f0957f2c2ee5ec1ffafccaf344ae1eb8013095",
-    "docs/ai-generated/roadmap.md": "fc1bd326ca0ad56997e464483ddbdfabe8d8fca2",
+    "docs/ai-generated/leadership.md": "fc68bf380074e8df3578de88f15e4c9e90279624",
+    "docs/ai-generated/release-notes.md": "728bd82eaa212a859294426999e9eea3e93dc0ab",
+    "docs/ai-generated/roadmap.md": "6896836b989fbe580ef4807eb342d7cc865a18ab",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -672,6 +689,8 @@
     "docs/api/core-summarization-service.md": "e9462cb62474f27ef4310865696df8bab95256bc",
     "docs/api/dashboard.md": "2f1c89f362acc1bbddd1796bb9b6b3a27abe4a07",
     "docs/api/documentation_service.md": "7d1415f082d58afe8f19c6c4d7514816628230f3",
+    "docs/api/domain-llm.md": "3a6d0bb718e5e00ebccab829df8fe59cdcaad170",
+    "docs/api/domain-scraper.md": "f0b69f942ae40230e644c364eb9b7a81369fd7cb",
     "docs/api/events.md": "12b7d6dbfafaec48faa1c813b828c4a3563019ff",
     "docs/api/exceptions.md": "396e65ade40d1225ea70376994128ace314a869c",
     "docs/api/feature_classifier.md": "0d6f6d4f749f2ae32d9affde6495adc4f341b7b4",
@@ -685,15 +704,24 @@
     "docs/api/impact_propagation-graph_builder.md": "2bd7de938b1f6173945709f1a113973b91f3d6c7",
     "docs/api/impact_propagation-heuristic_fallback.md": "d4bdbf701363fa2b457a0b7b6dd1cf608702581c",
     "docs/api/impact_propagation-models.md": "c07f35c6a02e40e8b3736925ab1c5fb4fa92c5de",
-    "docs/api/index.md": "767a4f9ee86653f0d8fe66bab5b2800a0eac6e5f",
+    "docs/api/index.md": "d31dfc10968c1689458e7b71404cbadf6d741d68",
     "docs/api/infrastructure-api-graphql.md": "76628da936f4aaea1aee1e23d603ab79bb8d3782",
     "docs/api/infrastructure-api-routes.md": "ff1613e8b3d9dcd23f4eeb8fa7d713f512f3acb9",
     "docs/api/infrastructure-generation.md": "b6f1978b1590a44c438224ddff6363c8b67fb0d1",
     "docs/api/infrastructure-github.md": "3862e73efc7958377a2e58e4a9b6c40a3ff26add",
     "docs/api/infrastructure-llm.md": "de7f873e915e999d486e062ebc613a20495ffbff",
+    "docs/api/infrastructure-llm_adapters-cache.md": "be587dd94a2c5ca75cb3c40fdc88a0fb48f18dae",
+    "docs/api/infrastructure-llm_adapters-observability.md": "98879a43538eae533668ca78bc2ebfc7716e4bbb",
+    "docs/api/infrastructure-llm_adapters-rate_limiter.md": "12c7909499583d5c034924f8fa672de276e3a7f2",
+    "docs/api/infrastructure-llm_adapters-unified_client.md": "23bf71c9be2d75747fab80e4d9384001eb231805",
+    "docs/api/infrastructure-mcp-knowledge_server.md": "6d3d86e8b3b529da5b63cbb252c43872a604e7d9",
     "docs/api/infrastructure-messaging.md": "68f797b3bad25092a26040d551b152a806f58868",
     "docs/api/infrastructure-notification_step.md": "72016137a7112640b749b10f3966673deca369dc",
     "docs/api/infrastructure-parsing.md": "42c197562c0188e91e74255c7e1985406e88d3f5",
+    "docs/api/infrastructure-scraping-cache_adapter.md": "636b59528f3c8da2ee23c070db78e59460cd85c6",
+    "docs/api/infrastructure-scraping-observability.md": "b3dc70c95e5e18a311bfe245bbc120864f0375b5",
+    "docs/api/infrastructure-scraping-playwright_adapter.md": "ac98a1949d6e1a3275e4882862edc78cf9478709",
+    "docs/api/infrastructure-scraping-rate_limiter.md": "3ddb62e118475cf0b0b1dad19695d7d63a51e65d",
     "docs/api/infrastructure-scraping.md": "bd60e97b4ffa31ae1fe4378eea1e5ca5d296c9a4",
     "docs/api/infrastructure-storage.md": "3ec8a22921a51697c449429cd1af8ffed685c5bb",
     "docs/api/infrastructure-translation.md": "7ad6c46b3c993b3c76adb873ac0397b1c15cba82",
@@ -728,9 +756,9 @@
     "docs/architecture/decisions/adr-005-documentation-reconciliation.md": "939d7a55b2d046315b6486b6c11cad0d1c0b35bf",
     "docs/architecture/decisions/adr-006-feature-evolution-ledger.md": "f19c0b74c4db19849ea593153751df05a27c9a5f",
     "docs/architecture/decisions/adr-007-clean-architecture.md": "4e2da5b64c17a38576633db8c19474fd0c68fe94",
-    "docs/architecture/decisions/adr-008-prompt-versioning.md": "9244fedde3069a14e737e78ab68bd60469e8b72e",
-    "docs/architecture/decisions/adr-009-scraper-resilience.md": "7ce2fff122d1b055a61c26a70cc2147f81cb2844",
-    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "65fd610a09e23f2d11e98e065f4ae7eb58b2cee7",
+    "docs/architecture/decisions/adr-008-prompt-versioning.md": "05c67c3beaa4c9e46873780bbbda08286aa13968",
+    "docs/architecture/decisions/adr-009-scraper-resilience.md": "4f50cc40c38a1970dda6f78dd9f57233d296a329",
+    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "701d0f51108f82c87645ace64cfdaa765c851a31",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -745,7 +773,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "41f65560b4d8cca97e0e1754489c6933bb2e6492",
+    "docs/index.md": "881cb58b912c492b419b04a199a5d98439c82d24",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -769,6 +797,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
+    "fix_md.py": "417f463af080d3fbe9fb3a103b0f0b755a8e6062",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
@@ -777,7 +806,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "0a31505db6f4fef6063f0ea8cc5a3d6e7ec1cf12",
+    "mkdocs.yml": "3bf9fafae1d0ae30c0d7bdd6caca3fb6d363ca93",
     "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
@@ -1183,9 +1212,9 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "b30fe77a716e83c4234eba06ceb11c95871262ac",
-    "tests/golden/summarizer/readme_block_pt.md": "454598c196f5cb0ecdeeea803958da322e91fcf9",
-    "tests/golden/summarizer/readme_pt_updated.md": "9797c2d97ebeed80871edd52845f2390cf5412e8",
+    "tests/golden/summarizer/readme_block_en.md": "2f77cb9aa995b06aaa4399dcdceccc820ca109f1",
+    "tests/golden/summarizer/readme_block_pt.md": "1910eda19946216ad46495048a3536501242393c",
+    "tests/golden/summarizer/readme_pt_updated.md": "e650147ecfe7442392027b0c698d22b215f3b692",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
@@ -1298,6 +1327,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
   },
-  "generated_at": "2026-11-16T12:34:27.195754+00:00",
-  "repository_sha": "34c8c1990205af1242f86c90e9f3dd34281ff158"
+  "generated_at": "2026-11-16T12:35:45.981014+00:00",
+  "repository_sha": "5f59e28bf588b243aea219029e8d00c651a39bef"
 }
