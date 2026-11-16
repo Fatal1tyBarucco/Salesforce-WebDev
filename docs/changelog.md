@@ -90,3 +90,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `34c8c19` — docs: fix markdown lint errors in DEBITO_TECNICO.md
 - `2762747` — docs: final reconcile navigation and inventory
 - `b183939` — docs: resolve manifest merge conflict
+- `9cd8d75` — docs: sync with remote reconcile
+- `e1b30a8` — docs: fix test file links
