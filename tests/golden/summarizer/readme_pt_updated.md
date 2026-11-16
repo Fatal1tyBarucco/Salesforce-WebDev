@@ -23,7 +23,7 @@ Intro anterior à seção de releases.
 > Resumo por categoria (summer pt) de Desenvolvimento.
 
 
-> 📄 Detalhes completos: ./releases/summer_26/pt_BR/desenvolvimento.md
+> 📄 Detalhes completos: ../../../../releases/summer_26/pt_BR/desenvolvimento.md
 
 </details>
 
@@ -33,12 +33,12 @@ Intro anterior à seção de releases.
 > Resumo por categoria (summer pt) de Vendas.
 
 
-> 📄 Detalhes completos: ./releases/summer_26/pt_BR/vendas.md
+> 📄 Detalhes completos: ../../../../releases/summer_26/pt_BR/vendas.md
 
 </details>
 
 
-<div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Arquivo de Releases:</strong> Mostrando 1 de 2 releases. <a href="./releases/ARCHIVE.md">Ver todas as releases →</a></div>
+<div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Arquivo de Releases:</strong> Mostrando 1 de 2 releases. <a href="../../../../releases/ARCHIVE.md">Ver todas as releases →</a></div>
 
 
 ## 📌 Como Contribuir

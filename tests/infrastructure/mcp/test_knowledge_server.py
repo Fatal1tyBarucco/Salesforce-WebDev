@@ -93,7 +93,7 @@ class TestReleaseNotesMCPServer:
 
     def test_mcp_has_four_tools(self, server):
         """Should have four tools registered."""
-        tools = server.mcp.list_tools()
+        tools = server._build_tools()
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
@@ -106,14 +106,14 @@ class TestReleaseNotesMCPServer:
     async def test_search_release_notes_by_release(self, server):
         """Should search notes by release slug."""
         result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                release_slug="winter_27",
-                locale="pt-BR",
-                limit=10,
-            )
+            {
+                "release_slug": "winter_27",
+                "locale": "pt-BR",
+                "limit": 10,
+            }
         )
 
-        data = json.loads(result)
+        data = json.loads(result[0].text)
 
         assert len(data) == 2
         assert all(r["release"] == "winter_27" for r in data)
@@ -122,14 +122,14 @@ class TestReleaseNotesMCPServer:
     async def test_search_release_notes_by_category(self, server):
         """Should search notes by category."""
         result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                category="Lightning Experience",
-                locale="pt-BR",
-                limit=10,
-            )
+            {
+                "category": "Lightning Experience",
+                "locale": "pt-BR",
+                "limit": 10,
+            }
         )
 
-        data = json.loads(result)
+        data = json.loads(result[0].text)
 
         assert len(data) == 1
         assert data[0]["category"] == "Lightning Experience"
@@ -138,14 +138,14 @@ class TestReleaseNotesMCPServer:
     async def test_search_release_notes_by_feature(self, server):
         """Should search notes by feature name."""
         result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                feature_name="Feature 1",
-                locale="pt-BR",
-                limit=10,
-            )
+            {
+                "feature_name": "Feature 1",
+                "locale": "pt-BR",
+                "limit": 10,
+            }
         )
 
-        data = json.loads(result)
+        data = json.loads(result[0].text)
 
         assert len(data) == 1
         assert data[0]["feature"] == "feature1"

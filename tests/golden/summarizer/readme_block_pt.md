@@ -53,7 +53,7 @@
 > Resumo por categoria (winter pt) de Desenvolvimento.
 
 
-> 📄 Detalhes completos: ./releases/winter_26/pt_BR/desenvolvimento.md
+> 📄 Detalhes completos: ../../../../releases/winter_26/pt_BR/desenvolvimento.md
 
 </details>
 
@@ -63,7 +63,7 @@
 > Resumo por categoria (winter pt) de Vendas.
 
 
-> 📄 Detalhes completos: ./releases/winter_26/pt_BR/vendas.md
+> 📄 Detalhes completos: ../../../../releases/winter_26/pt_BR/vendas.md
 
 </details>
 

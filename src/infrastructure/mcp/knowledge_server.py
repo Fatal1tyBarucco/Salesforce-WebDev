@@ -5,10 +5,8 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 from mcp.server import FastMCP
-from mcp.types import Tool
 from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
