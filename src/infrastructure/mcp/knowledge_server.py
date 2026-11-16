@@ -7,8 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server  # type: ignore[attr-defined]  # ServerRequestContext moved in v1.30.0
-from mcp.server.lowlevel import ServerRequestContext  # type: ignore[attr-defined]  # moved in v1.30.0
+from mcp.server import Server  # type: ignore[attr-defined]
 from mcp.types import (
     CallToolRequestParams,
     CallToolResult,
@@ -45,9 +44,18 @@ class ReleaseNotesMCPServer:
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
         self.server: Server[Any] = Server("salesforce-release-notes")
-        # Register handlers using the low-level API
-        self.server.on_list_tools(self._on_list_tools)
-        self.server.on_call_tool(self._on_call_tool)
+        # MCP SDK >=1.30 exposes decorator factories: list_tools() / call_tool().
+        self.server.list_tools()(self._handle_list_tools)  # type: ignore[no-untyped-call]
+        self.server.call_tool()(self._handle_call_tool)
+
+    async def _handle_list_tools(self) -> ListToolsResult:
+        """Adapter for the SDK ``tools/list`` handler (no request argument)."""
+        return await self._on_list_tools(None, None)
+
+    async def _handle_call_tool(self, name: str, arguments: dict[str, Any]) -> CallToolResult:
+        """Adapter for the SDK ``tools/call`` handler (receives name + arguments)."""
+        params = CallToolRequestParams(name=name, arguments=arguments)
+        return await self._on_call_tool(None, params)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""

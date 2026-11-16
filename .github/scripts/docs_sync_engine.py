@@ -585,7 +585,9 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    findings += broken_internal_links(
+        sorted(p for p in inv_set if p.endswith(".md") and not p.startswith("tests/")), inv_set
+    )
 
     for mod in missing_api_evokers():
         findings.append(
@@ -1013,11 +1015,15 @@ def strip_dead_refs() -> list[str]:
        shortened to their stem so prose stays readable without pointing at a
        dead path.
 
+    Test fixtures under ``tests/`` are excluded: golden/fixture ``.md`` files
+    are byte-exact captures of generator output, not documentation -- rewriting
+    them here would silently break characterization tests.
+
     Idempotent: a second run is a no-op.  Never raises.
     """
     inventory = set(tracked_inventory().keys())
     root_resolved = REPO_ROOT.resolve()
-    docs = sorted(p for p in inventory if p.endswith(".md"))
+    docs = sorted(p for p in inventory if p.endswith(".md") and not p.startswith("tests/"))
     actions: list[str] = []
     for doc in docs:
         text = read_text(doc)
