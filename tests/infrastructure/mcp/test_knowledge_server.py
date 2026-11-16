@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pytest
 from mcp.server import Server
-from mcp.types import CallToolResult, ListToolsResult, TextContent
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
