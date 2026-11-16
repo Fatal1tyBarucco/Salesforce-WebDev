@@ -1,6 +1,14 @@
-<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: ## Nova atualização
+
+Sugestão: revisar a remoção das variáveis de ambiente TEST_OPENROUTER_KEY e TEST_OPENCODE_KEY nos testes de infraestrutura para confirmar que a configuração e a execução dos testes permanecem corretas. Sugestão: monitorar o gate de formatação Black em novas alterações de código para evitar falhas recorrentes no workflow de qualidade. Sugestão: avaliar a padronização e a revisão da geração automática de documentação via IA.
+
+---
 
 ## Nova atualização
 

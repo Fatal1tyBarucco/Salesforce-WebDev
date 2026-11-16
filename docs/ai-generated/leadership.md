@@ -1,6 +1,14 @@
-<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+## Nova atualização
+
+As mudanças desta execução são de baixo impacto: uma correção de formatação de código (Black) que restaura o workflow de qualidade Python e uma atualização automática de documentação via IA, ambas sem alteração de lógica ou comportamento. O impacto de negócio é baixo e não há breaking change identificado. O risco principal está na remoção das definições de variáveis de ambiente (TEST_OPENROUTER_KEY e TEST_OPENCODE_KEY) nos testes de infraestrutura, que precisa de revisão para confirmar que a execução dos testes não foi afetada. Próximos passos: validar a remoção das variáveis de ambiente nos testes e confirmar a conformidade com o gate de formatação.
+
+---
 
 ## Nova atualização
 

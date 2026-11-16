@@ -1,5 +1,13 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Changed
+- Reformatted `unified_client` and related tests with Black 26.10.0, adjusting ternary expressions and multiline asserts to meet style standards and resolve the Python quality workflow failure; no logic or behavior changes.
+- Updated documentation automatically via AI tooling (marked `[skip ci]`); no functional changes.
+
 <!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
