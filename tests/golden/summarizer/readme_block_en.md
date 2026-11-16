@@ -18,7 +18,7 @@
 > Resumo por categoria (summer en) de Desenvolvimento.
 
 
-> 📄 Full details: ./releases/summer_26/en_US/desenvolvimento.md
+> 📄 Full details: ../../../../releases/summer_26/en_US/development.md
 
 </details>
 
@@ -28,9 +28,10 @@
 > Resumo por categoria (summer en) de Vendas.
 
 
-> 📄 Full details: ./releases/summer_26/en_US/vendas.md
+> 📄 Full details: ../../../../releases/summer_26/en_US/sales.md
 
 </details>
+
 
 <details>
 <summary><h3>❄️ Winter '26</h3></summary>
@@ -52,7 +53,7 @@
 > Resumo por categoria (winter en) de Desenvolvimento.
 
 
-> 📄 Full details: ./releases/winter_26/en_US/desenvolvimento.md
+> 📄 Full details: ../../../../releases/winter_26/en_US/development.md
 
 </details>
 
@@ -62,7 +63,7 @@
 > Resumo por categoria (winter en) de Vendas.
 
 
-> 📄 Full details: ./releases/winter_26/en_US/vendas.md
+> 📄 Full details: ../../../../releases/winter_26/en_US/sales.md
 
 </details>
 
