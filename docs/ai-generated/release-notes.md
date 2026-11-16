@@ -1,6 +1,45 @@
-<!-- gerado por IA em 2026-11-16T10:57:34+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+## Nova atualização
+
+Esta atualização inclui uma correção de formatação de código com Black 26.10.0 em unified_client e nos testes relacionados, ajustando expressões ternárias e asserts multilinha para atender aos padrões de estilo e resolver uma falha no workflow de qualidade Python. A alteração é apenas de reformatação, sem mudança de lógica ou comportamento. Também há uma atualização automática de documentação via ferramenta de IA, sem impacto funcional.
+
+Impacto: baixo. Risco: baixo. Não há breaking change identificado.
+
+Ponto de atenção: a remoção das definições das variáveis de ambiente TEST_OPENROUTER_KEY e TEST_OPENCODE_KEY nos testes de infraestrutura requer revisão para confirmar que a execução dos testes permanece correta.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Style fix: Black formatting in unified_client and tests — 📋 refactor** | Correção de formatação de código usando Black 26.10.0, ajustando expressões ternárias e assert mu… | 🟢 low | src/infrastructure/llm_adapters/unified_client.py, tests/infrastructure/llm_adapters/test_unified_client.py, tests/test_characterization.py · Prioridade: 💡 P2 |
+| **Documentação: atualização automática via IA — 📋 documentation** | Atualização da documentação via ferramenta de IA, sem alterações funcionais, marcadas com [skip c… | 🟢 low | documentation · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **0** (0%) 
+🟡 Médio: **0** (0%) 
+🟢 Baixo: **2** (100%) 🟢🟢
+
+Total: **2 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 documentation      │██████████████████████████████│    1 →
+📋 refactor           │██████████████████████████████│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo:   █
+
+
+## Revisão Necessária
+
+- **Revisão de remoção de variáveis de ambiente nos testes** — Verificar se a remoção das variáveis de ambiente não quebra a execução dos testes. (0.80)
+
+---
 
 ## Nova atualização
 
