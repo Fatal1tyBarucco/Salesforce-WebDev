@@ -585,7 +585,11 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    # Test fixtures (tests/**) embed README/release-note content whose links are
+    # resolved from a simulated repo-root document, not from the fixture path —
+    # checking them here would only produce false positives.
+    linkable_md = sorted(p for p in inv_set if p.endswith(".md") and not p.startswith("tests/"))
+    findings += broken_internal_links(linkable_md, inv_set)
 
     for mod in missing_api_evokers():
         findings.append(

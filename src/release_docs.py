@@ -624,6 +624,9 @@ async def _build_release_block(
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
+            if lang == "en_US":
+                # Mirror _generate_release_files so README links point at real files.
+                cat_slug = ENGLISH_CATEGORY_SLUGS.get(cat_name, cat_slug)
             link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
             if lang == "en_US":

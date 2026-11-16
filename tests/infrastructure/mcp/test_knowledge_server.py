@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 from mcp.server import Server
-from mcp.types import CallToolResult, ListToolsResult, TextContent
+from mcp.types import CallToolRequest, CallToolRequestParams, ListToolsRequest
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -110,8 +110,39 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_server_registers_sdk_handlers(self, server):
         """The lowlevel Server should have tools/list and tools/call registered."""
-        assert server.server.get_request_handler("tools/list") is not None
-        assert server.server.get_request_handler("tools/call") is not None
+        assert ListToolsRequest in server.server.request_handlers
+        assert CallToolRequest in server.server.request_handlers
+
+    @pytest.mark.asyncio
+    async def test_registered_list_tools_handler_returns_tools(self, server):
+        """Invoking the registered tools/list handler should expose four tools."""
+        handler = server.server.request_handlers[ListToolsRequest]
+
+        result = await handler(None)
+
+        assert len(result.root.tools) == 4
+
+    @pytest.mark.asyncio
+    async def test_registered_call_tool_handler_dispatches(self, server):
+        """Invoking the registered tools/call handler should dispatch the tool."""
+        handler = server.server.request_handlers[CallToolRequest]
+        request = CallToolRequest(params=CallToolRequestParams(name="list_releases", arguments={}))
+
+        result = await handler(request)
+
+        assert result.root.isError is False
+        assert json.loads(result.root.content[0].text)
+
+    @pytest.mark.asyncio
+    async def test_registered_call_tool_handler_unknown_tool(self, server):
+        """The registered tools/call handler should report unknown tools as errors."""
+        handler = server.server.request_handlers[CallToolRequest]
+        request = CallToolRequest(params=CallToolRequestParams(name="unknown_tool", arguments={}))
+
+        result = await handler(request)
+
+        assert result.root.isError is True
+        assert "Unknown tool" in result.root.content[0].text
 
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):
@@ -595,8 +626,8 @@ class TestCreateServer:
         server = create_server()
 
         assert isinstance(server, Server)
-        assert server.get_request_handler("tools/list") is not None
-        assert server.get_request_handler("tools/call") is not None
+        assert ListToolsRequest in server.request_handlers
+        assert CallToolRequest in server.request_handlers
 
     def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""
