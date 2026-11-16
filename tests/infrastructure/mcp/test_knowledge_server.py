@@ -316,7 +316,7 @@ class TestReleaseNotesMCPServer:
         (v2 / "shared.md").write_text("# Shared\nNew content")
 
         srv = ReleaseNotesMCPServer(releases_dir=releases_dir)
-        result = await srv._compare_releases("v1", "v2")
+        result = await srv._compare_releases("v1", "v2", "pt-BR")
 
         data = json.loads(result)
 
@@ -338,7 +338,7 @@ class TestReleaseNotesMCPServer:
         (v2 / "new.md").write_text("# New\nBrand new content")
 
         srv = ReleaseNotesMCPServer(releases_dir=releases_dir)
-        result = await srv._compare_releases("v1", "v2")
+        result = await srv._compare_releases("v1", "v2", "pt-BR")
 
         data = json.loads(result)
 
