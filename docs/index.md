@@ -439,7 +439,9 @@ Salesforce-WebDev/
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── mutmut_config.toml
   ├── pyproject.toml             # Configuração do projeto
+  ├── update
   └── uv.lock                    # Lockfile determinístico
+
 ```
 
 ## Qualidade de Código
