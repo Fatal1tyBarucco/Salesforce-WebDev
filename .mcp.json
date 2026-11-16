@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub API access for issues, PRs, repos, workflows"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "description": "Playwright for browser automation debugging (scraper)"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/barucco/projetos/Salesforce-WebDev"],
+      "description": "Local filesystem access (read-only by default)"
+    },
+    "python-docs": {
+      "command": "python3",
+      "args": ["-m", "mcp.server.python_docs"],
+      "description": "Python standard library documentation"
+    },
+    "salesforce-knowledge": {
+      "command": "python3",
+      "args": ["-m", "src.infrastructure.mcp.knowledge_server"],
+      "description": "Salesforce Release Notes Knowledge-as-Code MCP Server",
+      "env": {
+        "RELEASES_DIR": "releases"
+      }
+    }
+  }
+}

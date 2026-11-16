@@ -1,0 +1,81 @@
+{
+  "categories": [
+    {
+      "name": "Desenvolvimento",
+      "description": "Categoria de desenvolvimento de aplicações e automações.",
+      "entries": [
+        {
+          "name": "Recurso Um",
+          "available_users": true,
+          "available_admins": true,
+          "requires_config": false,
+          "contact_sf": false,
+          "confidence": 1.0,
+          "docs_url": "https://help.salesforce.com/s/articleView?id=recurso_um.htm"
+        },
+        {
+          "name": "Recurso Parcial",
+          "available_users": true,
+          "available_admins": false,
+          "requires_config": false,
+          "contact_sf": false,
+          "confidence": 0.7,
+          "docs_url": ""
+        },
+        {
+          "name": "Recurso Extra",
+          "available_users": true,
+          "available_admins": false,
+          "requires_config": false,
+          "contact_sf": true,
+          "confidence": 1.0,
+          "docs_url": ""
+        }
+      ],
+      "subcategories": {
+        "Fluxos": [
+          {
+            "name": "Recurso Dois",
+            "available_users": true,
+            "available_admins": false,
+            "requires_config": true,
+            "contact_sf": false,
+            "confidence": 1.0,
+            "docs_url": ""
+          }
+        ]
+      },
+      "avg_confidence": 0.925,
+      "total_features": 4
+    },
+    {
+      "name": "Agentforce",
+      "description": "Recurso Agente\tYes\tYes\tYes\tNo",
+      "entries": [
+        {
+          "name": "Total de Recursos: 4",
+          "available_users": false,
+          "available_admins": false,
+          "requires_config": false,
+          "contact_sf": false,
+          "confidence": 0.5,
+          "docs_url": ""
+        }
+      ],
+      "subcategories": {},
+      "avg_confidence": 0.5,
+      "total_features": 1
+    }
+  ],
+  "parse_stats": {
+    "total_lines": 13,
+    "parsed": 5,
+    "skipped": 0
+  },
+  "classification_quality": {
+    "categories": 2,
+    "total_features": 5,
+    "avg_confidence": 0.84,
+    "low_confidence_count": 1
+  }
+}

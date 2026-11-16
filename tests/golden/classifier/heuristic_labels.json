@@ -1,0 +1,114 @@
+[
+  {
+    "text": "",
+    "result": {
+      "impact": "low",
+      "type": "other",
+      "confidence": 0.1
+    }
+  },
+  {
+    "text": "   ",
+    "result": {
+      "impact": "low",
+      "type": "other",
+      "confidence": 0.1
+    }
+  },
+  {
+    "text": "Critical security vulnerability CVE-2026-1234 authentication bypass",
+    "result": {
+      "impact": "high",
+      "type": "security",
+      "confidence": 0.8
+    }
+  },
+  {
+    "text": "Performance optimization reduces latency in the cache layer",
+    "result": {
+      "impact": "high",
+      "type": "performance",
+      "confidence": 0.7
+    }
+  },
+  {
+    "text": "Deprecated feature removal triggers breaking change migration",
+    "result": {
+      "impact": "high",
+      "type": "deprecation",
+      "confidence": 0.8
+    }
+  },
+  {
+    "text": "Bug fix patch for reported issue",
+    "result": {
+      "impact": "medium",
+      "type": "bug_fix",
+      "confidence": 0.6
+    }
+  },
+  {
+    "text": "Fresh new feature launch introduction",
+    "result": {
+      "impact": "medium",
+      "type": "new_feature",
+      "confidence": 0.6
+    }
+  },
+  {
+    "text": "User interface design refresh for Lightning experience",
+    "result": {
+      "impact": "low",
+      "type": "ui_ux",
+      "confidence": 0.5
+    }
+  },
+  {
+    "text": "Agentforce Einstein AI model now generally available",
+    "result": {
+      "impact": "high",
+      "type": "new_feature",
+      "confidence": 0.7
+    }
+  },
+  {
+    "text": "This API integration webhook endpoint update",
+    "result": {
+      "impact": "medium",
+      "type": "integration",
+      "confidence": 0.6
+    }
+  },
+  {
+    "text": "Fluxo de aprovacao melhorado para times de vendas",
+    "result": {
+      "impact": "medium",
+      "type": "other",
+      "confidence": 0.3
+    }
+  },
+  {
+    "text": "New AI security feature with authentication hardening",
+    "result": {
+      "impact": "high",
+      "type": "security",
+      "confidence": 0.8
+    }
+  },
+  {
+    "text": "Upgrade required: incompatible schema migration",
+    "result": {
+      "impact": "high",
+      "type": "breaking_change",
+      "confidence": 0.8
+    }
+  },
+  {
+    "text": "Melhoria geral de UX na interface do Lightning",
+    "result": {
+      "impact": "low",
+      "type": "ui_ux",
+      "confidence": 0.5
+    }
+  }
+]

@@ -1,0 +1,280 @@
+# AI Triage — Issues & PRs Automated Labeling
+
+name: AI Triage
+
+on:
+  issues:
+    types: [opened, reopened, labeled, unlabeled]
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+  issues: write
+  pull_requests: write
+  project: write
+
+concurrency:
+  group: ai-triage-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    name: AI Triage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Analyze and label
+        id: analyze
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Determine type and number
+          if [ "${{ github.event_name }}" = "issues" ] || [ -n "${{ github.event.issue.number }}" ]; then
+            NUMBER="${{ github.event.issue.number }}"
+            TITLE="${{ github.event.issue.title }}"
+            BODY="${{ github.event.issue.body }}"
+            TYPE="issue"
+          else
+            NUMBER="${{ github.event.pull_request.number }}"
+            TITLE="${{ github.event.pull_request.title }}"
+            BODY="${{ github.event.pull_request.body }}"
+            TYPE="pr"
+          fi
+
+          TEXT="${TITLE} ${BODY}"
+          TEXT_LOWER=$(echo "$TEXT" | tr '[:upper:]' '[:lower:]')
+
+          # Auto-labels based on keywords
+          LABELS=""
+          for pattern_label in \
+            "scraper|playwright|chromium|browser:scraper" \
+            "parser|beautifulsoup|html|toc|feature.impact:parser" \
+            "llm|openai|gemini|openrouter|anthropic|model|prompt:llm" \
+            "pipeline|orchestrator|etl|release.notes:pipeline" \
+            "doc|readme|mkdocs|documentation:docs" \
+            "infra|docker|k8s|kubernetes|deploy|ci|cd|github.action:infra" \
+            "ai|agent|skill|command|mcp|claude:ai" \
+            "test|coverage|pytest|snapshot|golden:test" \
+            "security|secret|vulnerab|gitleaks|pip.audit:security" \
+            "performance|slow|latency|benchmark|profile:performance" \
+            "bug|error|fail|crash|exception|traceback:bug" \
+            "feature|enhancement|new|add|implement:feature" \
+            "refactor|clean.arch|clean.architecture|solid|decouple:refactor" \
+            "chore|deps|dependabot|upgrade|bump|lockfile:chore"; do
+            PATTERN="${pattern_label%%:*}"
+            LABEL="${pattern_label##*:}"
+            if echo "$TEXT_LOWER" | grep -qE "$PATTERN"; then
+              LABELS="$LABELS $LABEL"
+            fi
+          done
+
+          # Priority
+          PRIORITY="P3"
+          for p in P0 P1 P2 P3; do
+            case $p in
+              P0) KEYWORDS="security|secret|pipeline.broken|release.blocked|data.loss" ;;
+              P1) KEYWORDS="ci.failing|coverage.drop|regression|blocker" ;;
+              P2) KEYWORDS="feature|enhancement|refactor|improvement" ;;
+              P3) KEYWORDS="docs|cleanup|chore|nitpick" ;;
+            esac
+            if echo "$TEXT_LOWER" | grep -qE "$KEYWORDS"; then
+              PRIORITY=$p
+              break
+            fi
+          done
+          LABELS="$LABELS priority:$PRIORITY"
+
+          # Components
+          for comp in scraper parser llm pipeline docs infra ai test; do
+            case $comp in
+              scraper) KW="scraper|playwright|chromium" ;;
+              parser) KW="parser|beautifulsoup|toc|feature" ;;
+              llm) KW="llm|openai|gemini|openrouter|anthropic" ;;
+              pipeline) KW="pipeline|orchestrator|etl" ;;
+              docs) KW="doc|readme|mkdocs" ;;
+              infra) KW="infra|docker|k8s|ci|cd" ;;
+              ai) KW="ai|agent|skill|command|mcp" ;;
+              test) KW="test|coverage|pytest" ;;
+            esac
+            if echo "$TEXT_LOWER" | grep -qE "$KW"; then
+              LABELS="$LABELS component:$comp"
+            fi
+          done
+
+          # Type and size
+          if [ "$TYPE" = "pr" ]; then
+            LABELS="$LABELS type:pr"
+            CHANGED_FILES=$(gh pr view $NUMBER --json files --jq '.files | length' 2>/dev/null || echo 0)
+            if [ "$CHANGED_FILES" -le 3 ]; then SIZE="size:XS";
+            elif [ "$CHANGED_FILES" -le 10 ]; then SIZE="size:S";
+            elif [ "$CHANGED_FILES" -le 30 ]; then SIZE="size:M";
+            elif [ "$CHANGED_FILES" -le 100 ]; then SIZE="size:L";
+            else SIZE="size:XL"; fi
+            LABELS="$LABELS $SIZE"
+          else
+            LABELS="$LABELS type:issue"
+          fi
+
+          echo "labels=$LABELS" >> $GITHUB_OUTPUT
+          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
+          echo "number=$NUMBER" >> $GITHUB_OUTPUT
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+
+      - name: Apply labels
+        if: steps.analyze.outputs.labels != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUMBER="${{ steps.analyze.outputs.number }}"
+          TYPE="${{ steps.analyze.outputs.type }}"
+          for label in ${{ steps.analyze.outputs.labels }}; do
+            gh "$TYPE" edit $NUMBER --add-label "$label" 2>/dev/null || true
+          done
+
+      - name: Check duplicates
+        id: duplicates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUMBER="${{ steps.analyze.outputs.number }}"
+          TYPE="${{ steps.analyze.outputs.type }}"
+          TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
+          KEYWORDS=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '|')
+          
+          if [ "$TYPE" = "issue" ]; then
+            SIMILAR=$(gh issue list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
+          else
+            SIMILAR=$(gh pr list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
+          fi
+          
+          if [ -n "$SIMILAR" ]; then
+            echo "has-duplicates=true" >> $GITHUB_OUTPUT
+            echo "duplicates=$SIMILAR" >> $GITHUB_OUTPUT
+          else
+            echo "has-duplicates=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment duplicates
+        if: steps.duplicates.outputs.has-duplicates == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUMBER="${{ steps.analyze.outputs.number }}"
+          TYPE="${{ steps.analyze.outputs.type }}"
+          gh "$TYPE" comment $NUMBER --body "Possible duplicates found. Please verify before proceeding." || true
+
+      - name: Check missing info
+        id: missing
+        run: |
+          TYPE="${{ steps.analyze.outputs.type }}"
+          BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
+          TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
+          MISSING=""
+          
+          if [ "$TYPE" = "issue" ]; then
+            if echo "$TITLE" | grep -qiE "bug|error|fail|crash"; then
+              if ! echo "$BODY" | grep -qiE "steps to reproduce|passos para reproduzir|reproduz"; then
+                MISSING="$MISSING\n- [ ] Steps to reproduce"
+              fi
+              if ! echo "$BODY" | grep -qiE "expected|esperado"; then
+                MISSING="$MISSING\n- [ ] Expected behavior"
+              fi
+              if ! echo "$BODY" | grep -qiE "actual|atual|observado"; then
+                MISSING="$MISSING\n- [ ] Actual behavior"
+              fi
+              if ! echo "$BODY" | grep -qiE "logs|log|traceback|stack"; then
+                MISSING="$MISSING\n- [ ] Logs/Traceback"
+              fi
+            fi
+            if echo "$TITLE" | grep -qiE "feature|enhancement|new"; then
+              if ! echo "$BODY" | grep -qiE "user story|historia|acceptance|critério"; then
+                MISSING="$MISSING\n- [ ] User story / Acceptance criteria"
+              fi
+            fi
+          else
+            if ! echo "$BODY" | grep -qiE "related|fixes|closes|issue"; then
+              MISSING="$MISSING\n- [ ] Related issue (e.g., Fixes #123)"
+            fi
+            if ! echo "$BODY" | grep -qiE "test|tested|coverage"; then
+              MISSING="$MISSING\n- [ ] Test evidence"
+            fi
+          fi
+          
+          if [ -n "$MISSING" ]; then
+            echo "has-missing=true" >> $GITHUB_OUTPUT
+            echo "missing_info=$MISSING" >> $GITHUB_OUTPUT
+          else
+            echo "has-missing=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment missing info
+        if: steps.missing.outputs.has-missing == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUMBER="${{ steps.analyze.outputs.number }}"
+          TYPE="${{ steps.analyze.outputs.type }}"
+          gh "$TYPE" comment $NUMBER --body "Missing information detected. Please add the suggested items." || true
+
+      - name: Update GitHub Project
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUMBER="${{ steps.analyze.outputs.number }}"
+          TYPE="${{ steps.analyze.outputs.type }}"
+          PRIORITY="${{ steps.analyze.outputs.priority }}"
+          
+          case "$PRIORITY" in
+            P0|P1) STATUS="3808f0ce" ;;  # In Progress
+            P2) STATUS="a368d611" ;;      # Backlog
+            *) STATUS="a368d611" ;;
+          esac
+          
+          ISSUE_ID=$(gh "$TYPE" view $NUMBER --json id -q .id 2>/dev/null)
+          if [ -n "$ISSUE_ID" ]; then
+            gh api graphql -f query="
+              mutation {
+                addProjectV2ItemById(input: {
+                  projectId: \"PVT_kwDOCQOIIc4BiKNM\"
+                  contentId: \"$ISSUE_ID\"
+                }) { item { id } }
+              }" 2>/dev/null || true
+            
+            ITEM_ID=$(gh api graphql -f query="
+              query {
+                node(id: \"$ISSUE_ID\") {
+                  ... on Issue { projectItems(first: 1) { nodes { id } } }
+                  ... on PullRequest { projectItems(first: 1) { nodes { id } } }
+                }
+              }" --jq '.data.node.projectItems.nodes[0].id // empty' 2>/dev/null)
+            
+            if [ -n "$ITEM_ID" ]; then
+              gh api graphql -f query="
+                mutation {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: \"PVT_kwDOCQOIIc4BiKNM\"
+                    itemId: \"$ITEM_ID\"
+                    fieldId: \"PVTSSF_lADOCQOIIc4BiKNMzhhDPfg\"
+                    value: { singleSelectOptionId: \"$STATUS\" }
+                  }) { projectV2Item { id } }
+                }" 2>/dev/null || true
+            fi
+          fi
+
+  summary:
+    name: Triage Summary
+    runs-on: ubuntu-latest
+    needs: triage
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          echo "## AI Triage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Labels: applied" >> $GITHUB_STEP_SUMMARY
+          echo "Duplicates: ${{ steps.triage.outputs.has-duplicates == 'true' && 'found' || 'none' }}" >> $GITHUB_STEP_SUMMARY
+          echo "Missing info: ${{ steps.triage.outputs.has-missing == 'true' && 'flagged' || 'complete' }}" >> $GITHUB_STEP_SUMMARY
+          echo "Project: updated" >> $GITHUB_STEP_SUMMARY

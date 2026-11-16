@@ -1,0 +1,103 @@
+{
+  "name": "Salesforce-WebDev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "3.14"
+    }
+  },
+  "configuration": {
+    "updateRemoteUserUID": true
+  },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": [
+          "tests/",
+          "-q",
+          "--tb=short",
+          "--timeout=120"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.linting.enabled": true,
+        "python.linting.ruffEnabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.linting.mypyArgs": [
+          "src/",
+          "--ignore-missing-imports",
+          "--pretty"
+        ],
+        "python.formatting.provider": "ruff",
+        "ruff.enable": true,
+        "ruff.format.enable": true,
+        "ruff.lint.enable": true,
+        "ruff.config": "pyproject.toml",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports.ruff": "explicit",
+          "source.fixAll.ruff": "explicit"
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/.mutmut-cache": true,
+          "**/.venv": true,
+          "**/mutants": true
+        },
+        "search.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/.mutmut-cache": true,
+          "**/.venv": true,
+          "**/mutants": true
+        },
+        "terminal.integrated.env.linux": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "extensions": [
+        "charliermarsh.ruff",
+        "ms-python.python",
+        "ms-python.mypy-type-checker",
+        "ms-python.pylint",
+        "github.vscode-github-actions",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "forwardPorts": [
+    8000,
+    8080
+  ],
+  "portsAttributes": {
+    "8000": {
+      "label": "FastAPI Dev Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "MCP Server / Alternative",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+  "remoteEnv": {
+    "PYTHONPATH": "/workspaces/Salesforce-WebDev",
+    "UV_PROJECT_ENVIRONMENT": "/workspaces/Salesforce-WebDev/.venv"
+  },
+  "mounts": [
+    "source=salesforce-webdev-cache,target=/home/vscode/.cache,type=volume",
+    "source=salesforce-webdev-uv-cache,target=/home/vscode/.cache/uv,type=volume"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  }
+}

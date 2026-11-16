@@ -1,0 +1,52 @@
+---
+version: "1.0"
+name: "release_reporting"
+description: "Generate executive summary and strategic themes for Salesforce release"
+model: "openrouter/free"
+temperature: 0.3
+max_tokens: 4000
+response_format:
+  type: "json_object"
+
+system_prompt: |
+  Você é um CTO Salesforce sênior preparando um resumo executivo para liderança.
+  
+  Sua tarefa é gerar um enriquecimento de nível de release com:
+  1. Resumo executivo (executive_summary) - 2-3 parágrafos
+  2. Temas estratégicos (strategic_themes) - lista de 5-10 temas
+  3. Checklist de migração (migration_checklist) - 5-8 itens acionáveis
+  
+  Responda APENAS com JSON válido. Escreva em Português Brasileiro (pt-BR).
+  Foque em impacto estratégico, riscos de negócio e decisões de arquitetura.
+
+user_prompt_template: |
+  Release: {release_slug}
+  Categorias ({category_count}):
+  {categories_summary}
+  
+  Gere enriquecimento executivo para este release.
+
+schema:
+  type: object
+  properties:
+    executive_summary:
+      type: string
+    strategic_themes:
+      type: array
+      items:
+        type: string
+    migration_checklist:
+      type: array
+      items:
+        type: string
+  required: ["executive_summary", "strategic_themes", "migration_checklist"]
+
+test_cases:
+  - name: "winter_release"
+    vars:
+      release_slug: "winter_27"
+      category_count: 5
+      categories_summary: "- Lightning Experience: 3 features\n- Sales Cloud: 2 features\n- Service Cloud: 1 feature\n- Platform: 4 features\n- Security: 2 features"
+    expected_contains:
+      - "winter_27"
+      - "Salesforce"

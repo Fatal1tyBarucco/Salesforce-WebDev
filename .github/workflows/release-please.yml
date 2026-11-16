@@ -1,0 +1,64 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║           🚀 Release Please — Salesforce Release Notes           ║
+# ║  Automated release PRs from Conventional Commits (Python)        ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Trigger: push to main branch
+# Creates/updates a Release PR when feat:/fix: commits exist since last release
+# Merge of Release PR → creates tag + GitHub Release automatically
+# Publish (PyPI/Docker) is downstream gated on release_created output (future phase)
+#
+# Action pinned by immutable SHA: 5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 (v4)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Prevent concurrent Release Please runs on the same branch
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-please:
+    name: 🚀 Release Please
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️  Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 🚀 Run Release Please
+        id: release
+        uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
+        with:
+          release-type: python
+          package-name: salesforce-release-notes
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
+
+      - name: 📋 Release Created Summary
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          echo "## 🚀 Release Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | ${{ steps.release.outputs.tag_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Name | ${{ steps.release.outputs.release_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release URL | ${{ steps.release.outputs.release_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Merge the Release PR to publish this release." >> $GITHUB_STEP_SUMMARY
+
+      - name: 📋 No Release Needed
+        if: steps.release.outputs.release_created != 'true'
+        run: |
+          echo "## 🚀 Release Please" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No new release needed — no feat:/fix: commits since last release." >> $GITHUB_STEP_SUMMARY

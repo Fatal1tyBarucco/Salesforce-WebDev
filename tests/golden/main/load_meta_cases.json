@@ -1,0 +1,22 @@
+{
+  "valid": {
+    "name": "Summer '26",
+    "release_id": 262,
+    "slug": "summer_26",
+    "total_features": 8,
+    "categories": [
+      {
+        "name": "Desenvolvimento",
+        "count": 4
+      },
+      {
+        "name": "Vendas",
+        "count": 4
+      }
+    ],
+    "generated_at": "2026-06-01T09:00:00",
+    "source": "test_factory"
+  },
+  "corrupt": {},
+  "missing": {}
+}

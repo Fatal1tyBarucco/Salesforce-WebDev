@@ -1,0 +1,93 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run ruff*)",
+      "Bash(uv run black*)",
+      "Bash(uv run mypy*)",
+      "Bash(uv run pytest*)",
+      "Bash(uv sync*)",
+      "Bash(uv pip*)",
+      "Bash(uv run playwright*)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git remote*)",
+      "Bash(gh*)",
+      "Bash(python3*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "LS(*)"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(cat .env*)",
+      "Bash(cat *.env*)",
+      "Bash(echo *>.env*)",
+      "Read(.env*)",
+      "Read(*.env*)",
+      "Read(.github/workflows/*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ruff check --fix \"$FILE\" && uv run ruff format \"$FILE\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && uv run pytest tests/ -x -q --tb=short 2>&1 | tail -5",
+            "timeout": 120
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && uv run pytest tests/ -x -q --tb=short 2>&1 | tail -5",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '=== SESSION SUMMARY ===' && git status --short && echo '=== RECENT COMMITS ===' && git log --oneline -5",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '=== REPO STATE ===' && git branch --show-current && git status --short && echo '=== GATES ===' && uv run ruff check . --quiet && echo 'ruff: OK' && uv run ruff format --check . --quiet && echo 'ruff format: OK' && uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && echo 'mypy: OK'",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

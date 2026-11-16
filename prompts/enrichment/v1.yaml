@@ -1,0 +1,104 @@
+---
+version: "1.0"
+name: "category_enrichment"
+description: "Enrich feature categories with business context, adoption guidance, and risk assessment"
+model: "openrouter/free"
+temperature: 0.3
+max_tokens: 3000
+response_format:
+  type: "json_object"
+
+system_prompt: |
+  Você é um Arquiteto de Soluções Salesforce sênior especializado em análise de Release Notes, governança de mudanças e comunicação técnica.
+  
+  Sua tarefa é enriquecer categorias de features do Salesforce com:
+  1. Visão geral de negócio (overview) - 2-3 parágrafos
+  2. Temas principais (key_themes) - lista de 3-5 temas
+  3. Impacto de negócio (business_impact) - descrição do impacto
+  4. Orientações de adoção (adoption_guidance) - passos práticos
+  5. Avaliação de risco (risk_assessment) - riscos e mitigações
+  6. Detalhes por feature (feature_enrichments) - array com:
+     - feature_name: nome da feature
+     - summary: resumo executivo (1-2 frases)
+     - details: detalhes técnicos
+     - business_context: contexto de negócio
+     - technical_context: contexto técnico
+     - migration_notes: notas de migração (se aplicável)
+     - related_features: features relacionadas
+     - tags: tags para busca
+     - confidence: 0.0-1.0
+     - locale: "pt-BR" ou "en-US"
+  
+  Responda APENAS com JSON válido. Escreva em Português Brasileiro (pt-BR).
+  Seja conciso mas completo. Foque no valor prático para admins e desenvolvedores.
+
+user_prompt_template: |
+  Categoria: {category_name}
+  Features ({feature_count}):
+  {features_list}
+  
+  Classificações:
+  {classifications_json}
+  
+  Gere enriquecimento para esta categoria.
+
+schema:
+  type: object
+  properties:
+    overview:
+      type: string
+    key_themes:
+      type: array
+      items:
+        type: string
+    business_impact:
+      type: string
+    adoption_guidance:
+      type: string
+    risk_assessment:
+      type: string
+    feature_enrichments:
+      type: array
+      items:
+        type: object
+        properties:
+          feature_name:
+            type: string
+          summary:
+            type: string
+          details:
+            type: string
+          business_context:
+            type: string
+          technical_context:
+            type: string
+          migration_notes:
+            type: string
+          related_features:
+            type: array
+            items:
+              type: string
+          tags:
+            type: array
+            items:
+              type: string
+          confidence:
+            type: number
+            minimum: 0
+            maximum: 1
+          locale:
+            type: string
+            enum: ["pt-BR", "en-US"]
+        required: ["feature_name", "summary", "details", "business_context", "technical_context", "migration_notes", "related_features", "tags", "confidence", "locale"]
+  required: ["overview", "key_themes", "business_impact", "adoption_guidance", "risk_assessment", "feature_enrichments"]
+
+test_cases:
+  - name: "lightning_enrichment"
+    vars:
+      category_name: "Lightning Experience"
+      feature_count: 2
+      features_list: "- Nova interface de list view\n- Melhoria no drag-and-drop de componentes"
+      classifications_json: '{"Nova interface de list view": {"impact": "medium", "type": "ui_ux"}, "Melhoria no drag-and-drop de componentes": {"impact": "low", "type": "improvement"}}'
+    expected_contains:
+      - "Lightning"
+      - "interface"

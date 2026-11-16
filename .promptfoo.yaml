@@ -1,0 +1,140 @@
+# Promptfoo configuration for prompt evaluation
+# Run: uvx promptfoo eval -c .promptfoo.yaml
+
+prompts:
+  # Classification prompts
+  - file://prompts/classification/v1.yaml
+  # Enrichment prompts
+  - file://prompts/enrichment/v1.yaml
+  # Reporting prompts
+  - file://prompts/reporting/v1.yaml
+
+providers:
+  # Free providers for evaluation
+  - openrouter:openrouter/free
+  - openrouter:google/gemma-4-31b-it:free
+  - openrouter:meta-llama/llama-4-scout:free
+  - openrouter:qwen/qwen-3-coder:free
+  - opencode:gemini-3.6-flash
+
+tests:
+  # Classification tests
+  - vars:
+      feature_text: "Nova autenticação MFA obrigatória para todos os usuários administradores"
+    assert:
+      - type: json-schema
+        schema:
+          type: object
+          properties:
+            impact:
+              type: string
+              enum: ["high", "medium", "low"]
+            type:
+              type: string
+            confidence:
+              type: number
+              minimum: 0
+              maximum: 1
+          required: ["impact", "type", "confidence"]
+      - type: contains
+        value: "security"
+      - type: contains
+        value: "high"
+  
+  - vars:
+      feature_text: "Novo recurso Einstein GPT para geração de código Apex"
+    assert:
+      - type: json-schema
+        schema:
+          type: object
+          properties:
+            impact:
+              type: string
+              enum: ["high", "medium", "low"]
+            type:
+              type: string
+            confidence:
+              type: number
+              minimum: 0
+              maximum: 1
+          required: ["impact", "type", "confidence"]
+      - type: contains
+        value: "new_feature"
+      - type: contains
+        value: "developers"
+  
+  - vars:
+      feature_text: "Remoção do suporte ao Classic Experience em favor do Lightning"
+    assert:
+      - type: json-schema
+        schema:
+          type: object
+          properties:
+            impact:
+              type: string
+              enum: ["high", "medium", "low"]
+            type:
+              type: string
+            confidence:
+              type: number
+              minimum: 0
+              maximum: 1
+          required: ["impact", "type", "confidence"]
+      - type: contains
+        value: "deprecation"
+      - type: contains
+        value: "high"
+  
+  # Enrichment tests
+  - vars:
+      category_name: "Lightning Experience"
+      feature_count: 2
+      features_list: "- Nova interface de list view\n- Melhoria no drag-and-drop de componentes"
+      classifications_json: '{"Nova interface de list view": {"impact": "medium", "type": "ui_ux"}, "Melhoria no drag-and-drop de componentes": {"impact": "low", "type": "improvement"}}'
+    assert:
+      - type: json-schema
+        schema:
+          type: object
+          properties:
+            overview:
+              type: string
+            key_themes:
+              type: array
+              items:
+                type: string
+            feature_enrichments:
+              type: array
+              items:
+                type: object
+                properties:
+                  feature_name:
+                    type: string
+                  summary:
+                    type: string
+                  confidence:
+                    type: number
+                  locale:
+                    type: string
+                required: ["feature_name", "summary", "confidence", "locale"]
+          required: ["overview", "key_themes", "feature_enrichments"]
+      - type: contains
+        value: "Lightning"
+
+options:
+  # Evaluation options
+  max_concurrency: 3
+  timeout: 120
+  
+  # Gate thresholds
+  threshold:
+    # Minimum pass rate for all tests
+    pass_rate: 0.85
+    # Minimum score for semantic similarity (if using embeddings)
+    semantic_similarity: 0.80
+
+# Output configuration
+output:
+  # Save results to file
+  path: docs/prompt-eval/results-{{timestamp}}.json
+  # Also output summary to console
+  summary: true

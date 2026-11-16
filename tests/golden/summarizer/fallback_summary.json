@@ -1,0 +1,33 @@
+{
+  "release_slug": "spring_26",
+  "release_name": "Spring '26",
+  "total_features": 4,
+  "total_categories": 2,
+  "executive_summary": "A release Spring '26 representa uma atualização focada do ecossistema Salesforce com **4 novos recursos** distribuídos em **2 categorias**. As áreas com maior volume de inovação são Desenvolvimento, Vendas e outras categorias. Esta release consolida investimentos em inteligência artificial, experiência do desenvolvedor e conformidade regulatória.",
+  "business_impact": "Para as empresas, Spring '26 entrega valor em múltiplas frentes. A automação avançada reduz tarefas manuais, enquanto as melhorias em experiência do usuário aumentam a adoção. As 4 novas capacidades habilitam cenários que antes exigiam customização significativa, reduzindo o custo total de propriedade.",
+  "strategic_themes": [
+    "Atualização Geral"
+  ],
+  "top_categories": [
+    {
+      "name": "Desenvolvimento",
+      "feature_count": 2,
+      "percentage": 50.0,
+      "top_feature": "Recurso Um",
+      "theme": "2 novos recursos"
+    },
+    {
+      "name": "Vendas",
+      "feature_count": 2,
+      "percentage": 50.0,
+      "top_feature": "Venda Feature 1",
+      "theme": "2 novos recursos"
+    }
+  ],
+  "migration_notes": "Nenhuma nota de migração significativa.",
+  "category_summaries": {
+    "Desenvolvimento": "Desenvolvimento conta com 2 novos recursos nesta release. Destaques: Recurso Um, Recurso Dois.",
+    "Vendas": "Vendas conta com 2 novos recursos nesta release. Destaques: Venda Feature 1, Venda Feature 2."
+  },
+  "confidence": 0.7
+}

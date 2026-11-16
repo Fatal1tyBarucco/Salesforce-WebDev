@@ -1,0 +1,41 @@
+[tool.mutmut]
+paths_to_mutate = [
+    "src/domain/",
+    "src/services/",
+]
+exclude = [
+    "src/infrastructure/llm_adapters/*",
+    "src/infrastructure/mcp/*",
+    "src/infrastructure/scraping/*",
+    "src/translator.py",
+    "src/nl_search.py",
+    "src/notifications.py",
+    "src/smart_notifications.py",
+    "src/workflow.py",
+    "src/salesforce.py",
+    "src/release_docs.py",
+    "src/release_summarizer.py",
+    "src/scraper.py",
+    "src/parser.py",
+    "src/orchestrator.py",
+    "src/models/*",
+    "src/main.py",
+    "src/logger.py",
+    "src/limiters/*",
+    "src/cache_manager.py",
+    "src/circuit_breaker.py",
+    "src/config.py",
+    "src/exceptions.py",
+    "src/llm_service.py",
+    "src/analytics.py",
+    "src/api.py",
+    "src/issue_triage.py",
+    "src/ai/*",
+    "src/automation/*",
+    "src/impact_propagation/*",
+    "src/core/*",
+]
+backup = false
+runner = "python -m pytest tests/ -x --tb=short -q --ignore=tests/infrastructure/mcp --ignore=tests/infrastructure/scraping --ignore=tests/infrastructure/llm_adapters"
+threshold = 80
+timeout = 60

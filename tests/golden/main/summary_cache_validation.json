@@ -1,0 +1,30 @@
+[
+  {
+    "case": "cache_valido",
+    "valid": true
+  },
+  {
+    "case": "exec_diz_zero_recursos_mas_meta_tem_dados",
+    "valid": false
+  },
+  {
+    "case": "meta_com_categorias_mas_cache_sem_summaries",
+    "valid": false
+  },
+  {
+    "case": "cache_com_menos_metade_das_categorias",
+    "valid": false
+  },
+  {
+    "case": "exec_curta_para_release_grande",
+    "valid": false
+  },
+  {
+    "case": "meta_vazia_cache_qualquer",
+    "valid": true
+  },
+  {
+    "case": "frase_zero_recursos_mas_meta_total_zero",
+    "valid": true
+  }
+]
