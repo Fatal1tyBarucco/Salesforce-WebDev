@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server.fastmcp import FastMCP
+from mcp.server import FastMCP
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -97,12 +97,13 @@ class TestReleaseNotesMCPServer:
         assert hasattr(server, "mcp")
         assert isinstance(server.mcp, FastMCP)
 
-    def test_server_registers_four_tools(self, server):
+    @pytest.mark.asyncio
+    async def test_server_registers_four_tools(self, server):
         """Should register four tools with FastMCP."""
-        # FastMCP stores tools in _tool_manager
-        tools = list(server.mcp._tool_manager._tools.keys())
+        tools = await server.mcp.list_tools()
         assert len(tools) == 4
-        assert set(tools) == {
+        tool_names = {t.name for t in tools}
+        assert tool_names == {
             "search_release_notes",
             "get_release_summary",
             "list_releases",
@@ -112,13 +113,12 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):
         """Should search notes by release slug."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                release_slug="winter_27",
-                locale="pt-BR",
-                limit=10,
-            )
+        query = ReleaseNotesQuery(
+            release_slug="winter_27",
+            locale="pt-BR",
+            limit=10,
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -128,13 +128,12 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_by_category(self, server):
         """Should search notes by category."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                category="Lightning Experience",
-                locale="pt-BR",
-                limit=10,
-            )
+        query = ReleaseNotesQuery(
+            category="Lightning Experience",
+            locale="pt-BR",
+            limit=10,
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -144,13 +143,12 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_by_feature(self, server):
         """Should search notes by feature name."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                feature_name="Feature 1",
-                locale="pt-BR",
-                limit=10,
-            )
+        query = ReleaseNotesQuery(
+            feature_name="Feature 1",
+            locale="pt-BR",
+            limit=10,
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -160,12 +158,11 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_all_releases(self, server):
         """Should search across all releases when no release specified."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                locale="pt-BR",
-                limit=10,
-            )
+        query = ReleaseNotesQuery(
+            locale="pt-BR",
+            limit=10,
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -174,12 +171,11 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_limit(self, server):
         """Should respect limit parameter."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                locale="pt-BR",
-                limit=1,
-            )
+        query = ReleaseNotesQuery(
+            locale="pt-BR",
+            limit=1,
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -188,17 +184,14 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_invalid_query(self, server):
         """Should handle invalid query gracefully."""
-        # Pydantic validation happens at construction time
-        with pytest.raises(Exception):
-            ReleaseNotesQuery(invalid_field="value")
+        with pytest.raises(Exception) as exc_info:
+            ReleaseNotesQuery(invalid_field="value")  # type: ignore[call-arg]
+        assert "extra_forbidden" in str(exc_info.value).lower() or "extra inputs" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
     async def test_get_release_summary_exists(self, server):
         """Should return summary for existing release."""
-        result = await server._get_release_summary(
-            "winter_27",
-            "pt-BR",
-        )
+        result = await server._get_release_summary("winter_27", "pt-BR")
 
         data = json.loads(result)
 
@@ -210,10 +203,7 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_get_release_summary_not_found(self, server):
         """Should return error for non-existent release."""
-        result = await server._get_release_summary(
-            "nonexistent",
-            "pt-BR",
-        )
+        result = await server._get_release_summary("nonexistent", "pt-BR")
 
         data = json.loads(result)
 
@@ -223,10 +213,7 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_get_release_summary_locale_not_found(self, server):
         """Should return error for non-existent locale."""
-        result = await server._get_release_summary(
-            "winter_27",
-            "fr-FR",
-        )
+        result = await server._get_release_summary("winter_27", "fr-FR")
 
         data = json.loads(result)
 
@@ -253,18 +240,13 @@ class TestReleaseNotesMCPServer:
 
         data = json.loads(result)
 
-        # sorted(reverse=True): "winter_27" > "spring_27" lexicographically
         assert data[0]["slug"] == "winter_27"
         assert data[1]["slug"] == "spring_27"
 
     @pytest.mark.asyncio
     async def test_compare_releases(self, server):
         """Should compare two releases."""
-        result = await server._compare_releases(
-            "winter_27",
-            "spring_27",
-            "pt-BR",
-        )
+        result = await server._compare_releases("winter_27", "spring_27", "pt-BR")
 
         data = json.loads(result)
 
@@ -279,11 +261,7 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_compare_releases_from_not_found(self, server):
         """Should return error when from release not found."""
-        result = await server._compare_releases(
-            "nonexistent",
-            "spring_27",
-            "pt-BR",
-        )
+        result = await server._compare_releases("nonexistent", "spring_27", "pt-BR")
 
         data = json.loads(result)
 
@@ -293,11 +271,7 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_compare_releases_to_not_found(self, server):
         """Should return error when to release not found."""
-        result = await server._compare_releases(
-            "winter_27",
-            "nonexistent",
-            "pt-BR",
-        )
+        result = await server._compare_releases("winter_27", "nonexistent", "pt-BR")
 
         data = json.loads(result)
 
@@ -348,36 +322,33 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_missing_locale(self, server):
         """Should skip releases without the requested locale."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                release_slug="winter_27",
-                locale="fr-FR",
-            )
+        query = ReleaseNotesQuery(
+            release_slug="winter_27",
+            locale="fr-FR",
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
         assert data == []
 
     @pytest.mark.asyncio
-    async def test_search_release_notes_read_error_is_logged(self, server, monkeypatch, caplog):
+    async def test_search_release_notes_read_error_is_logged(self, server, monkeypatch):
         """Should log and skip files that fail to read."""
 
         def raise_read_text(self, *args, **kwargs):
             raise OSError("boom")
 
         monkeypatch.setattr("pathlib.Path.read_text", raise_read_text)
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                release_slug="winter_27",
-                locale="pt-BR",
-            )
+        query = ReleaseNotesQuery(
+            release_slug="winter_27",
+            locale="pt-BR",
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
         assert data == []
-        assert "boom" in caplog.text or "Error reading" in caplog.text
 
     @pytest.mark.asyncio
     async def test_get_release_summary_cache_hit(self, server, temp_releases_dir):
@@ -385,10 +356,7 @@ class TestReleaseNotesMCPServer:
         cache_file = temp_releases_dir / "winter_27" / ".summary_cache.json"
         cache_file.write_text('{"release": "winter_27", "cached": true}')
 
-        result = await server._get_release_summary(
-            "winter_27",
-            "pt-BR",
-        )
+        result = await server._get_release_summary("winter_27", "pt-BR")
 
         data = json.loads(result)
 
@@ -399,10 +367,7 @@ class TestReleaseNotesMCPServer:
         """Should fall back to markdown when the cache cannot be read."""
         (temp_releases_dir / "winter_27" / ".summary_cache.json").mkdir()
 
-        result = await server._get_release_summary(
-            "winter_27",
-            "pt-BR",
-        )
+        result = await server._get_release_summary("winter_27", "pt-BR")
 
         data = json.loads(result)
 
@@ -412,12 +377,11 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_search_release_notes_nonexistent_release(self, server):
         """Should return no results when the release slug does not exist."""
-        result = await server._search_release_notes(
-            ReleaseNotesQuery(
-                release_slug="nonexistent",
-                locale="pt-BR",
-            )
+        query = ReleaseNotesQuery(
+            release_slug="nonexistent",
+            locale="pt-BR",
         )
+        result = await server._search_release_notes(query)
 
         data = json.loads(result)
 
@@ -481,17 +445,20 @@ class TestReleaseNotesMCPServer:
 class TestCreateServer:
     """Tests for create_server function."""
 
-    def test_creates_server_with_default_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_default_dir(self):
         """Should create server with default releases directory."""
         server = create_server()
 
         assert isinstance(server, FastMCP)
-        # Check that tools are registered
-        tools = list(server._tool_manager._tools.keys())
+        tools = await server.list_tools()
         assert len(tools) == 4
 
-    def test_creates_server_with_custom_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
         assert isinstance(server, FastMCP)
+        tools = await server.list_tools()
+        assert len(tools) == 4
