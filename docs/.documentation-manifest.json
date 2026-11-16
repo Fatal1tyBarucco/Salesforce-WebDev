@@ -373,6 +373,7 @@
       "docs/api/infrastructure-llm_adapters-rate_limiter.md"
     ],
     "src/infrastructure/llm_adapters/unified_client.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm_adapters-unified_client.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
@@ -617,7 +618,7 @@
     ".promptfoo.yaml": "678cb8bae6c531c1091274f2cb366a46a8d9e6b1",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     "AGENTS.md": "3202496ac954f7910d863583e4be2dfd9640d5b9",
-    "CHANGELOG.md": "91c1910f5a5fa25cd93f37274394411174cf614f",
+    "CHANGELOG.md": "46fc10cb63a94ebe34ae4ae714e6d3656e4b7f69",
     "CLAUDE.md": "f8b1ef28244762098e2b8d004722585aba1ec0ca",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -636,14 +637,14 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "5c4e4fbf971d72729f50a636e9ddc2253c7d7c2d",
+    "docs/.last-processed-ref": "9447863698009fda27c182749ef3ca2e9ce7abb9",
     "docs/ARQUITETURA.md": "89977724ac7efbc6add7f04c035928df35cfceaa",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
     "docs/MODERNIZACAO.md": "e55877d77caec006676d5a69c6bf222979cb357a",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "fc68bf380074e8df3578de88f15e4c9e90279624",
-    "docs/ai-generated/release-notes.md": "728bd82eaa212a859294426999e9eea3e93dc0ab",
-    "docs/ai-generated/roadmap.md": "6896836b989fbe580ef4807eb342d7cc865a18ab",
+    "docs/ai-generated/leadership.md": "dfb971178fb120fc24c66d503bee28219260f6dc",
+    "docs/ai-generated/release-notes.md": "ef784af2bd26fbe111e677f93787d640d8e91a75",
+    "docs/ai-generated/roadmap.md": "5341febab8fac5e8d74eb65fdfd300bd69caae77",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -758,7 +759,7 @@
     "docs/architecture/decisions/adr-007-clean-architecture.md": "4e2da5b64c17a38576633db8c19474fd0c68fe94",
     "docs/architecture/decisions/adr-008-prompt-versioning.md": "05c67c3beaa4c9e46873780bbbda08286aa13968",
     "docs/architecture/decisions/adr-009-scraper-resilience.md": "4f50cc40c38a1970dda6f78dd9f57233d296a329",
-    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "701d0f51108f82c87645ace64cfdaa765c851a31",
+    "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "a5d1f99c00a1e794b19ee9cb4e357970e17a68d4",
     "docs/architecture/decisions/index.md": "89525a2323d1c5d8aaab890b16beeae985d664f8",
     "docs/architecture/overview.md": "60a99c7460f560be894c25d41003ffe637a61fdd",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -773,7 +774,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "881cb58b912c492b419b04a199a5d98439c82d24",
+    "docs/index.md": "6a606b9a180dda3093d6ee28efa92cc11c709e99",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -1327,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
   },
-  "generated_at": "2026-11-16T12:35:45.981014+00:00",
-  "repository_sha": "5f59e28bf588b243aea219029e8d00c651a39bef"
+  "generated_at": "2026-11-16T12:37:39.850487+00:00",
+  "repository_sha": "0f99dae42eef70b15add172adc54a7b80d51daf3"
 }

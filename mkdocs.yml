@@ -88,6 +88,9 @@ nav:
     - Desenvolvimento Local: guides/local-development.md
   - Arquitetura:
     - Visão Geral: architecture/overview.md
+    - ARQUITETURA: ../ARQUITETURA.md
+    - DEBITO_TECNICO: ../DEBITO_TECNICO.md
+    - MODERNIZACAO: ../MODERNIZACAO.md
     - Diagrama C4: architecture/c4_container.md
     - Decisões (ADRs):
       - Índice: architecture/decisions/index.md
@@ -98,6 +101,9 @@ nav:
       - ADR-005 Documentation Reconciliation: architecture/decisions/adr-005-documentation-reconciliation.md
       - ADR-006 Feature Evolution Ledger: architecture/decisions/adr-006-feature-evolution-ledger.md
       - ADR-007 Clean Architecture Migration: architecture/decisions/adr-007-clean-architecture.md
+      - ADR-008 Prompt Versioning: architecture/decisions/adr-008-prompt-versioning.md
+      - ADR-009 Scraper Resilience: architecture/decisions/adr-009-scraper-resilience.md
+      - ADR-010 LLM Cache Strategy: architecture/decisions/adr-010-llm-cache-strategy.md
   - API Reference:
     - Domain Llm: api/domain-llm.md
     - Domain Scraper: api/domain-scraper.md
