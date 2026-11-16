@@ -807,7 +807,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "3bf9fafae1d0ae30c0d7bdd6caca3fb6d363ca93",
+    "mkdocs.yml": "5c4e97c70ff17f630ca9e1856b9d77235e4f819a",
     "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "66a14d396e3ac3f695adea460b397cea3d2e3c3c"
   },
-  "generated_at": "2026-11-16T12:36:54.972476+00:00",
-  "repository_sha": "0f99dae42eef70b15add172adc54a7b80d51daf3"
+  "generated_at": "2026-11-16T12:48:55.609988+00:00",
+  "repository_sha": "c6589d10ae37c7cf5e102d5c45766489f9bfe36a"
 }
