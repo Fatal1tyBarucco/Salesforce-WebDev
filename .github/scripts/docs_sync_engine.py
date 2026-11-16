@@ -585,7 +585,13 @@ def audit() -> dict:
             }
         )
 
-    findings += broken_internal_links(sorted(p for p in inv_set if p.endswith(".md")), inv_set)
+    # Test fixtures (tests/) mirror real README output and may contain
+    # relative links that only resolve in the repo root context; they are
+    # not documentation surfaces, so they are excluded from link auditing.
+    findings += broken_internal_links(
+        sorted(p for p in inv_set if p.endswith(".md") and not p.startswith("tests/")),
+        inv_set,
+    )
 
     for mod in missing_api_evokers():
         findings.append(
@@ -1014,10 +1020,13 @@ def strip_dead_refs() -> list[str]:
        dead path.
 
     Idempotent: a second run is a no-op.  Never raises.
+
+    Files under ``tests/`` are skipped: fixtures mirror real README output
+    and their relative links only resolve in the repo-root context.
     """
     inventory = set(tracked_inventory().keys())
     root_resolved = REPO_ROOT.resolve()
-    docs = sorted(p for p in inventory if p.endswith(".md"))
+    docs = sorted(p for p in inventory if p.endswith(".md") and not p.startswith("tests/"))
     actions: list[str] = []
     for doc in docs:
         text = read_text(doc)

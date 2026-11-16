@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, TypeVar
 
-from mcp.server import Server, ServerRequestContext
+from mcp.server import Server
 from mcp.types import (
     CallToolRequestParams,
     CallToolResult,
@@ -20,6 +20,8 @@ from mcp.types import (
 from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
+
+HandlerT = TypeVar("HandlerT", bound=Callable[..., Any])
 
 
 class ReleaseNotesQuery(BaseModel):
@@ -43,11 +45,18 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.server: Server[Any] = Server(
-            "salesforce-release-notes",
-            on_list_tools=self._on_list_tools,
-            on_call_tool=self._on_call_tool,
-        )
+        self.server: Server[Any] = Server("salesforce-release-notes")
+
+        list_tools: Callable[[], Callable[[HandlerT], HandlerT]] = self.server.list_tools
+        call_tool: Callable[..., Callable[[HandlerT], HandlerT]] = self.server.call_tool
+
+        @list_tools()
+        async def handle_list_tools() -> ListToolsResult:
+            return await self._on_list_tools(None, None)
+
+        @call_tool()
+        async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
+            return await self.call_tool(name, arguments)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -55,12 +64,12 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="search_release_notes",
                 description="Search Salesforce Release Notes by release, category, or feature name",
-                input_schema=ReleaseNotesQuery.model_json_schema(),
+                inputSchema=ReleaseNotesQuery.model_json_schema(),
             ),
             Tool(
                 name="get_release_summary",
                 description="Get executive summary for a specific release",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "release_slug": {
@@ -75,7 +84,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="list_releases",
                 description="List all available releases",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {},
                 },
@@ -83,7 +92,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="compare_releases",
                 description="Compare two releases - what's new, changed, removed",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "from_slug": {"type": "string", "description": "Base release slug"},
@@ -97,10 +106,10 @@ class ReleaseNotesMCPServer:
 
     async def _on_list_tools(
         self,
-        ctx: ServerRequestContext[Any],
+        ctx: Any,
         params: PaginatedRequestParams | None,
     ) -> ListToolsResult:
-        """MCP SDK v2 handler for ``tools/list`` (signature from installed SDK)."""
+        """Handler for ``tools/list`` wrapping the tool definitions."""
         return ListToolsResult(tools=self._build_tools())
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> list[TextContent]:
@@ -118,10 +127,10 @@ class ReleaseNotesMCPServer:
 
     async def _on_call_tool(
         self,
-        ctx: ServerRequestContext[Any],
+        ctx: Any,
         params: CallToolRequestParams,
     ) -> CallToolResult:
-        """MCP SDK v2 handler for ``tools/call`` (signature from installed SDK)."""
+        """Handler for ``tools/call`` wrapping dispatched results."""
         blocks: list[ContentBlock] = []
         # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
         blocks.extend(await self.call_tool(params.name, params.arguments or {}))
