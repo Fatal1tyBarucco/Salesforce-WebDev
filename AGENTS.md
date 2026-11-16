@@ -100,15 +100,21 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 
 - `NOTIFICATION_DIGEST.md` is an artifact from test runs — do not commit.
 - `datetime.utcnow()` was deprecated — use `datetime.now()` instead.
-- **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
-  project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
-  Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
-- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
-  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
-  variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
-  `get_request_handler`, `server._build_tools`) do not exist in that version. Tool results come
-  from `await server.mcp.call_tool(...)` (returns `(content, structured)`) and
-  `await server.mcp.list_tools()`; unknown tools raise `mcp.server.fastmcp.exceptions.ToolError`.
+- **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must match
+  `pyproject.toml` — both the project `version` **and** every dependency specifier. Bumping one
+  without re-locking fails the whole workflow (the 2026-11-16 failure was `mcp>=2.0.0,<3>` in
+  `pyproject.toml` while the lock still pinned `mcp==1.30.0`). Fix with `uv lock` (or `uv sync`,
+  which rewrites it), never hand-edit.
+- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the `MCPServer` API** of
+  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==2.3.0` (`mcp>=2.0.0,<3>`):
+  `FastMCP` was renamed to `MCPServer` (`from mcp.server import MCPServer`), and importing
+  `mcp.server.fastmcp` now raises `ModuleNotFoundError`. Internal helpers take plain arguments
+  (`ReleaseNotesQuery` / positional slugs) and return a JSON `str`; tool results come from
+  `await server.mcp.call_tool(...)` (a `CallToolResult` — read `result.content[0].text`) and
+  `await server.mcp.list_tools()`; unknown tools raise
+  `mcp.server.mcpserver.exceptions.ToolError`. The low-level `Server` variants used in reverted
+  merge commits (`on_list_tools=` kwarg, `get_request_handler`, `server._build_tools`) do not
+  exist — do not reintroduce them.
 - **`_build_release_block` output is frozen by `tests/golden/summarizer/readme_block_{pt,en}.md`
   and `readme_pt_updated.md`.** The leading `lines = [""]` and the blank separators after each
   `</details>` are intentional (they match the committed `README.md`/`README.en.md`) — the
