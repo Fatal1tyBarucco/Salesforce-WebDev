@@ -687,9 +687,6 @@ async def _build_release_block(
             if cat_lines:
                 lines.extend(cat_lines)
             lines.append("</details>")
-            lines.append("")
-
-        lines.append("")
 
     return "\n".join(lines)
 

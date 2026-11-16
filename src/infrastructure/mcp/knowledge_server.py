@@ -7,18 +7,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server
-from mcp.types import (
-    CallToolRequest,
-    CallToolRequestParams,
-    CallToolResult,
-    ContentBlock,
-    ListToolsRequest,
-    ListToolsResult,
-    PaginatedRequestParams,
-    TextContent,
-    Tool,
-)
+from mcp.server import FastMCP
+from mcp.types import Tool
 from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
@@ -45,98 +35,36 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.server: Server[Any, Any] = Server("salesforce-release-notes")
-        self._register_handlers()
+        self.mcp = FastMCP("salesforce-release-notes")
+        self._register_tools()
 
-    def _register_handlers(self) -> None:
-        """Register MCP tool handlers using decorators."""
+    def _register_tools(self) -> None:
+        """Register MCP tools."""
 
-        @self.server.list_tools()  # type: ignore[untyped-decorator, assignment]
-        async def handle_list_tools(
-            request: ListToolsRequest | None = None,
-        ) -> ListToolsResult:
-            """MCP SDK v2 handler for ``tools/list``."""
-            del request  # unused, but kept for signature compatibility
-            return ListToolsResult(tools=self._build_tools())
+        @self.mcp.tool()
+        async def search_release_notes(query: ReleaseNotesQuery) -> str:
+            """Search Salesforce Release Notes by release, category, or feature name."""
+            return await self._search_release_notes(query)
 
-        @self.server.call_tool()  # type: ignore[untyped-decorator, assignment]
-        async def handle_call_tool(
-            request: CallToolRequest,
-        ) -> CallToolResult:
-            """MCP SDK v2 handler for ``tools/call``."""
-            params: CallToolRequestParams = request.params
-            blocks: list[ContentBlock] = []
-            # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
-            blocks.extend(await self.call_tool(params.name, params.arguments or {}))
-            return CallToolResult(content=blocks)
+        @self.mcp.tool()
+        async def get_release_summary(release_slug: str, locale: str = "pt-BR") -> str:
+            """Get executive summary for a specific release."""
+            return await self._get_release_summary(release_slug, locale)
 
-    def _build_tools(self) -> list[Tool]:
-        """Build the tool definitions exposed by this server."""
-        return [
-            Tool(
-                name="search_release_notes",
-                description="Search Salesforce Release Notes by release, category, or feature name",
-                inputSchema=ReleaseNotesQuery.model_json_schema(),
-            ),
-            Tool(
-                name="get_release_summary",
-                description="Get executive summary for a specific release",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "release_slug": {
-                            "type": "string",
-                            "description": "Release slug (e.g., winter_27)",
-                        },
-                        "locale": {"type": "string", "default": "pt-BR"},
-                    },
-                    "required": ["release_slug"],
-                },
-            ),
-            Tool(
-                name="list_releases",
-                description="List all available releases",
-                inputSchema={
-                    "type": "object",
-                    "properties": {},
-                },
-            ),
-            Tool(
-                name="compare_releases",
-                description="Compare two releases - what's new, changed, removed",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "from_slug": {"type": "string", "description": "Base release slug"},
-                        "to_slug": {"type": "string", "description": "Target release slug"},
-                        "locale": {"type": "string", "default": "pt-BR"},
-                    },
-                    "required": ["from_slug", "to_slug"],
-                },
-            ),
-        ]
-
-    async def call_tool(self, name: str, arguments: dict[str, Any]) -> list[TextContent]:
-        """Dispatch a tool call by name; raises ValueError for unknown tools."""
-        if name == "search_release_notes":
-            return await self._search_release_notes(arguments)
-        elif name == "get_release_summary":
-            return await self._get_release_summary(arguments)
-        elif name == "list_releases":
+        @self.mcp.tool()
+        async def list_releases() -> str:
+            """List all available releases."""
             return await self._list_releases()
-        elif name == "compare_releases":
-            return await self._compare_releases(arguments)
-        else:
-            raise ValueError(f"Unknown tool: {name}")
 
-    async def _search_release_notes(self, args: dict[str, Any]) -> list[TextContent]:
-        from pydantic import ValidationError
+        @self.mcp.tool()
+        async def compare_releases(
+            from_slug: str, to_slug: str, locale: str = "pt-BR"
+        ) -> str:
+            """Compare two releases - what's new, changed, removed."""
+            return await self._compare_releases(from_slug, to_slug, locale)
 
-        try:
-            query = ReleaseNotesQuery(**args)
-        except ValidationError as e:
-            return [TextContent(type="text", text=f"Invalid query: {e}")]
-
+    async def _search_release_notes(self, query: ReleaseNotesQuery) -> str:
+        """Search release notes based on query."""
         results = []
 
         releases_to_search = []
@@ -185,7 +113,7 @@ class ReleaseNotesMCPServer:
             if len(results) >= query.limit:
                 break
 
-        return [TextContent(type="text", text=json.dumps(results, ensure_ascii=False, indent=2))]
+        return json.dumps(results, ensure_ascii=False, indent=2)
 
     def _extract_category(self, content: str) -> str:
         """Extract category from markdown content."""
@@ -199,35 +127,23 @@ class ReleaseNotesMCPServer:
                 return line[2:].strip()
         return "Unknown"
 
-    async def _get_release_summary(self, arguments: dict[str, Any]) -> list[TextContent]:
-        release_slug = arguments["release_slug"]
-        locale = arguments.get("locale", "pt-BR")
-
+    async def _get_release_summary(self, release_slug: str, locale: str = "pt-BR") -> str:
         release_dir = self.releases_dir / release_slug
         if not release_dir.exists():
-            return [
-                TextContent(
-                    type="text", text=json.dumps({"error": f"Release {release_slug} not found"})
-                )
-            ]
+            return json.dumps({"error": f"Release {release_slug} not found"})
 
         # Try to load summary cache
         cache_file = release_dir / ".summary_cache.json"
         if cache_file.exists():
             try:
-                return [TextContent(type="text", text=cache_file.read_text(encoding="utf-8"))]
+                return cache_file.read_text(encoding="utf-8")
             except Exception:
                 pass
 
         # Fallback: generate from markdown files
         locale_dir = release_dir / locale
         if not locale_dir.exists():
-            return [
-                TextContent(
-                    type="text",
-                    text=json.dumps({"error": f"Locale {locale} not found for {release_slug}"}),
-                )
-            ]
+            return json.dumps({"error": f"Locale {locale} not found for {release_slug}"})
 
         features = []
         for md_file in locale_dir.glob("*.md"):
@@ -247,9 +163,9 @@ class ReleaseNotesMCPServer:
             "features": features,
         }
 
-        return [TextContent(type="text", text=json.dumps(summary, ensure_ascii=False, indent=2))]
+        return json.dumps(summary, ensure_ascii=False, indent=2)
 
-    async def _list_releases(self) -> list[TextContent]:
+    async def _list_releases(self) -> str:
         releases = []
         for d in sorted(self.releases_dir.iterdir(), reverse=True):
             if d.is_dir() and not d.name.startswith("."):
@@ -271,28 +187,18 @@ class ReleaseNotesMCPServer:
                 else:
                     releases.append({"slug": d.name})
 
-        return [TextContent(type="text", text=json.dumps(releases, ensure_ascii=False, indent=2))]
+        return json.dumps(releases, ensure_ascii=False, indent=2)
 
-    async def _compare_releases(self, arguments: dict[str, Any]) -> list[TextContent]:
-        from_slug = arguments["from_slug"]
-        to_slug = arguments["to_slug"]
-        locale = arguments.get("locale", "pt-BR")
-
+    async def _compare_releases(
+        self, from_slug: str, to_slug: str, locale: str = "pt-BR"
+    ) -> str:
         from_dir = self.releases_dir / from_slug / locale
         to_dir = self.releases_dir / to_slug / locale
 
         if not from_dir.exists():
-            return [
-                TextContent(
-                    type="text", text=json.dumps({"error": f"Release {from_slug} not found"})
-                )
-            ]
+            return json.dumps({"error": f"Release {from_slug} not found"})
         if not to_dir.exists():
-            return [
-                TextContent(
-                    type="text", text=json.dumps({"error": f"Release {to_slug} not found"})
-                )
-            ]
+            return json.dumps({"error": f"Release {to_slug} not found"})
 
         from_features = {f.stem: f.read_text(encoding="utf-8") for f in from_dir.glob("*.md")}
         to_features = {f.stem: f.read_text(encoding="utf-8") for f in to_dir.glob("*.md")}
@@ -319,13 +225,13 @@ class ReleaseNotesMCPServer:
             },
         }
 
-        return [TextContent(type="text", text=json.dumps(diff, ensure_ascii=False, indent=2))]
+        return json.dumps(diff, ensure_ascii=False, indent=2)
 
 
-def create_server(releases_dir: Path = Path("releases")) -> Server:
+def create_server(releases_dir: Path = Path("releases")) -> FastMCP:
     """Create and configure the MCP server."""
     mcp_server = ReleaseNotesMCPServer(releases_dir)
-    return mcp_server.server
+    return mcp_server.mcp
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -335,6 +241,8 @@ if __name__ == "__main__":  # pragma: no cover
     async def main() -> None:
         server = create_server()
         async with stdio_server() as (read_stream, write_stream):
-            await server.run(read_stream, write_stream, server.create_initialization_options())
+            await server.run(
+                read_stream, write_stream, server.create_initialization_options()
+            )
 
     asyncio.run(main())
