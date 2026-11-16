@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: validar a resolução de conflitos em src/infrastructure/mcp/knowledge_server.py e confirmar que os testes MCP cobrem o comportamento esperado. Revisar o pequeno ajuste em src/release_docs.py para confirmar se é apenas refatoração ou se altera a saída documental. Avaliar se as exclusões adicionadas ao markdownlint não ocultam problemas relevantes de lint. Monitorar a estabilidade da coleta de testes após a inclusão das dependências structlog e mcp. Considerar automação recorrente da reconciliação do manifesto de documentação e da navegação do MkDocs.
+
+---
 
 ## Nova atualização
 

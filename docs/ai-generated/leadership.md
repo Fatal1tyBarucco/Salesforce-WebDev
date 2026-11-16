@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+As mudanças desta execução têm impacto predominantemente baixo, concentradas em sincronização documental (manifesto, navegação do MkDocs e documentos) e em ferramentas de lint de documentação (script fix_md.py e exclusões do markdownlint). A inclusão das dependências structlog e mcp e a resolução de conflitos no knowledge_server e nos testes MCP apresentam impacto médio, por afetarem a coleta de testes e o comportamento do servidor MCP. O impacto de negócio é baixo e não há breaking change identificado. Riscos principais: a resolução de conflitos no knowledge_server e nos testes MCP precisa de revisão, pois o diff completo não está disponível; e o pequeno ajuste em src/release_docs.py tem finalidade não confirmada. Próximos passos: validar a resolução de conflitos do MCP e a cobertura dos testes correspondentes, confirmar o objetivo do ajuste em release_docs.py e verificar se as exclusões do markdownlint não ocultam problemas relevantes de lint.
+
+---
 
 ## Nova atualização
 

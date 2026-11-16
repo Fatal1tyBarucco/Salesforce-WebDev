@@ -1,6 +1,47 @@
-<!-- gerado por IA em 2026-11-16T11:35:56+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T14:22:48+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização concentra-se em sincronização documental e em correções de infraestrutura de testes. Foram reconciliados o manifesto de documentação, a navegação do MkDocs e diversos documentos, alinhando inventário, links e conteúdo gerado, incluindo resolução de conflitos de merge em arquivos de documentação. Foi adicionado o script fix_md.py para correção de markdown, com ampliação das exclusões do markdownlint para diretórios de documentação gerada e ADRs, além de correções pontuais de lint. As dependências structlog e mcp foram incluídas no pyproject.toml para corrigir erros de coleta de testes, atendendo aos módulos de observabilidade da infraestrutura e ao knowledge server. Também houve resolução de conflitos de merge em src/infrastructure/mcp/knowledge_server.py e nos testes MCP.
+
+Impacto: predominantemente baixo, com itens de impacto médio associados às dependências e ao servidor MCP. Risco: baixo a médio. Não há breaking change identificado.
+
+Ponto de atenção: a resolução de conflitos em src/infrastructure/mcp/knowledge_server.py e em tests/infrastructure/mcp/test_knowledge_server.py requer revisão, pois o diff completo não está disponível e é necessário confirmar que os testes cobrem o comportamento esperado. Recomenda-se ainda revisar o pequeno ajuste em src/release_docs.py, cuja finalidade não pôde ser determinada a partir das evidências.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Reconciliação da documentação, manifesto e navegação — 📋 documentation** | Atualiza o manifesto de documentação, a navegação do MkDocs e diversos documentos para reconcilia… | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml, docs · Prioridade: 💡 P3 |
+| **Adição de script fix_md.py e ajuste de exclusões do markdownlint — 📋 refactor** | Inclui o script fix_md.py para correção de markdown e amplia as exclusões do markdownlint para di… | 🟢 low | .markdownlint.json, fix_md.py, docs · Prioridade: 💡 P3 |
+| **Adição das dependências structlog e mcp — 📋 bugfix** | Adiciona structlog e mcp ao pyproject.toml para corrigir erros de coleta de testes. Os commits in… | 🟡 medium | pyproject.toml, src/infrastructure/mcp/knowledge_server.py, observabilidade · Prioridade: 💡 P2 |
+| **Resolução de conflitos no knowledge_server e nos testes MCP — 📋 bugfix** | Resolve conflitos de merge em src/infrastructure/mcp/knowledge_server.py e em tests/infrastructur… | 🟡 medium | src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **0** (0%) 
+🟡 Médio: **2** (50%) 🟡🟡
+🟢 Baixo: **2** (50%) 🟢🟢
+
+Total: **4 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    2 →
+📋 documentation      │███████████████░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │███████████████░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo:  ██
+
+
+## Revisão Necessária
+
+- **Resolução de conflitos no knowledge_server e nos testes MCP** — O diff completo não está disponível; é necessário validar a resolução de conflitos e confirmar que os testes cobrem o comportamento esperado do knowledge_server. (0.65)
+- **Pequeno ajuste em src/release_docs.py** — Diff detalhado não fornecido; revisar a mudança para confirmar se é apenas refatoração ou se altera saída documental. (0.35)
+
+---
 
 ## Nova atualização
 
