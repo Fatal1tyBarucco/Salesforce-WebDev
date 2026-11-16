@@ -278,7 +278,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 | **Expansão significativa do change collector — 📋 feature** | Reescrita completa do change_collector.py com novas funcionalidades de coleta de mudanças Git/Git… | 🔴 high | src/ai/collectors/change_collector.py, src/ai/schemas/change.py, tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P1 |
 | **Exposição de diagnóstico de falha com testes validados — 📋 feature** | Implementa exposição de diagnóstico de falhas com cobertura de testes validada. | 🟡 medium | src/ai/orchestrator.py, tests/test_ledger/test_service.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 1 1
+## 📊 Distribuição de Impacto 8
 
 🔴 Alto: **3** (42%) 🔴🔴🔴
 🟡 Médio: **3** (42%) 🟡🟡🟡
@@ -286,7 +286,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 1 1
+## Mudanças por tipo nesta execução 8
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →

@@ -88,9 +88,9 @@ nav:
     - Desenvolvimento Local: guides/local-development.md
   - Arquitetura:
     - Visão Geral: architecture/overview.md
-    - ARQUITETURA: ../ARQUITETURA.md
-    - DEBITO_TECNICO: ../DEBITO_TECNICO.md
-    - MODERNIZACAO: ../MODERNIZACAO.md
+    - ARQUITETURA: ARQUITETURA.md
+    - DEBITO_TECNICO: DEBITO_TECNICO.md
+    - MODERNIZACAO: MODERNIZACAO.md
     - Diagrama C4: architecture/c4_container.md
     - Decisões (ADRs):
       - Índice: architecture/decisions/index.md

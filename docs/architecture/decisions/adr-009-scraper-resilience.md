@@ -174,3 +174,4 @@ uv run pytest tests/test_characterization.py -v
 - `src/circuit_breaker.py` — `CircuitBreaker`
 - `src/cache_manager.py` — `CacheManager` (TTL + content-hash + namespace)
 - Michael Nygard, "Release It!" (2018) — Circuit Breaker pattern
+
