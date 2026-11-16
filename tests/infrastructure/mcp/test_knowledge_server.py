@@ -7,14 +7,7 @@ from pathlib import Path
 
 import pytest
 from mcp.server.lowlevel import Server
-from mcp.types import (
-    CallToolRequest,
-    CallToolResult,
-    CallToolRequestParams,
-    ListToolsRequest,
-    ListToolsResult,
-    TextContent,
-)
+from mcp.types import CallToolRequest, ListToolsRequest
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -117,8 +110,8 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_server_registers_sdk_handlers(self, server):
         """The lowlevel Server should have tools/list and tools/call registered."""
-        assert server.server.get_request_handler("tools/list") is not None
-        assert server.server.get_request_handler("tools/call") is not None
+        assert ListToolsRequest in server.server.request_handlers
+        assert CallToolRequest in server.server.request_handlers
 
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):
@@ -602,8 +595,8 @@ class TestCreateServer:
         server = create_server()
 
         assert isinstance(server, Server)
-        assert server.get_request_handler("tools/list") is not None
-        assert server.get_request_handler("tools/call") is not None
+        assert ListToolsRequest in server.request_handlers
+        assert CallToolRequest in server.request_handlers
 
     def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""

@@ -7,14 +7,11 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server  # type: ignore[attr-defined]  # ServerRequestContext moved in v1.30.0
-from mcp.server.lowlevel import ServerRequestContext  # type: ignore[attr-defined]  # moved in v1.30.0
+from mcp.server import Server
 from mcp.types import (
-    CallToolRequestParams,
     CallToolResult,
     ContentBlock,
     ListToolsResult,
-    PaginatedRequestParams,
     TextContent,
     Tool,
 )
@@ -45,9 +42,10 @@ class ReleaseNotesMCPServer:
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
         self.server: Server[Any] = Server("salesforce-release-notes")
-        # Register handlers using the low-level API
-        self.server.on_list_tools(self._on_list_tools)
-        self.server.on_call_tool(self._on_call_tool)
+        # Register handlers via the low-level decorator API (mcp >= 1.30).
+        # The SDK decorators lack return annotations → no-untyped-call.
+        self.server.list_tools()(self._on_list_tools)  # type: ignore[no-untyped-call]
+        self.server.call_tool()(self._on_call_tool)  # type: ignore[no-untyped-call]
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -95,12 +93,8 @@ class ReleaseNotesMCPServer:
             ),
         ]
 
-    async def _on_list_tools(
-        self,
-        ctx: Any,
-        params: PaginatedRequestParams | None,
-    ) -> ListToolsResult:
-        """MCP SDK v2 handler for ``tools/list`` (signature from installed SDK)."""
+    async def _on_list_tools(self) -> ListToolsResult:
+        """MCP SDK handler for ``tools/list`` (registered via ``Server.list_tools()``)."""
         return ListToolsResult(tools=self._build_tools())
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> list[TextContent]:
@@ -116,15 +110,11 @@ class ReleaseNotesMCPServer:
         else:
             raise ValueError(f"Unknown tool: {name}")
 
-    async def _on_call_tool(
-        self,
-        ctx: Any,
-        params: CallToolRequestParams,
-    ) -> CallToolResult:
-        """MCP SDK v2 handler for ``tools/call`` (signature from installed SDK)."""
+    async def _on_call_tool(self, name: str, arguments: dict[str, Any]) -> CallToolResult:
+        """MCP SDK handler for ``tools/call`` (registered via ``Server.call_tool()``)."""
         blocks: list[ContentBlock] = []
         # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
-        blocks.extend(await self.call_tool(params.name, params.arguments or {}))
+        blocks.extend(await self.call_tool(name, arguments or {}))
         return CallToolResult(content=blocks)
 
     async def _search_release_notes(self, args: dict[str, Any]) -> list[TextContent]:
