@@ -1,3 +1,4 @@
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 ### ☀️ Summer '26
 
@@ -18,7 +19,7 @@
 > Resumo por categoria (summer en) de Desenvolvimento.
 
 
-> 📄 Full details: [./releases/summer_26/en_US/development.md](./releases/summer_26/en_US/development.md)
+> 📄 Full details: [./releases/summer_26/en_US/desenvolvimento.md](./releases/summer_26/en_US/desenvolvimento.md)
 
 </details>
 
@@ -28,7 +29,7 @@
 > Resumo por categoria (summer en) de Vendas.
 
 
-> 📄 Full details: [./releases/summer_26/en_US/sales.md](./releases/summer_26/en_US/sales.md)
+> 📄 Full details: [./releases/summer_26/en_US/vendas.md](./releases/summer_26/en_US/vendas.md)
 
 </details>
 
@@ -53,7 +54,7 @@
 > Resumo por categoria (winter en) de Desenvolvimento.
 
 
-> 📄 Full details: [./releases/winter_26/en_US/development.md](./releases/winter_26/en_US/development.md)
+> 📄 Full details: [./releases/winter_26/en_US/desenvolvimento.md](./releases/winter_26/en_US/desenvolvimento.md)
 
 </details>
 
@@ -63,7 +64,7 @@
 > Resumo por categoria (winter en) de Vendas.
 
 
-> 📄 Full details: [./releases/winter_26/en_US/sales.md](./releases/winter_26/en_US/sales.md)
+> 📄 Full details: [./releases/winter_26/en_US/vendas.md](./releases/winter_26/en_US/vendas.md)
 
 </details>
 
