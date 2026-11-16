@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server import FastMCP
+from mcp.server.fastmcp import FastMCP
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,

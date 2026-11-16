@@ -129,7 +129,7 @@ def test_badge_factories() -> None:
     b = impact_badge("alto")
     assert "alto" in b.message
     assert impact_badge("HIGH").color == "#E53935"
-    assert impact_badge("unknown").color == "#9E9E9E"
+    assert impact_badge("unknown").color == "#555555"
     fc = feature_count_badge(150)
     assert fc.color == "#E53935"
     assert feature_count_badge(60).color == "#FB8C00"
@@ -141,7 +141,7 @@ def test_badge_factories() -> None:
     assert api_version_badge("v67.0").logo == "salesforce"
     sb = status_badge("beta")
     assert sb.color == "#8E24AA"
-    assert status_badge("nope").color == "#9E9E9E"
+    assert status_badge("nope").color == "#555555"
     cb = category_badge("Flows", 150)
     assert cb.color == "#E53935"
     assert category_badge("Flows", 60).color == "#FB8C00"
