@@ -96,6 +96,7 @@ flowchart TB
 ```
 
 **Fronteiras não confiáveis (untrusted boundaries)**:
+
 - **HTML externo**: `SalesforceReleaseScraper._exec_fetch()` (src/scraper.py:205-233) recebe HTML renderizado do Salesforce Help Portal — estrutura pode mudar sem aviso.
 - **Respostas de LLM**: `LLMService._dispatch_to_provider()` (src/llm_service.py:275-298) e `UnifiedLLMClient._dispatch_to_provider()` (src/infrastructure/llm.py:321-344) processam JSON não validado de provedores externos — pode conter campos inesperados, truncamento (`finish_reason=length`), recusas (`content_filter`), ou JSON inválido.
 - **GitHub API**: `AIAutomationService.create_github_issue()` e `GitHubAdapter` dependem de `GITHUB_TOKEN` / `RELEASE_TOKEN` — rate limits, permissões (ex.: criação de refs bloqueada em alguns orgs, issue #112), e schema de resposta podem variar.
@@ -231,11 +232,13 @@ sequenceDiagram
 ```
 
 **Injeção de Dependência (DI) em `main.py`**:
+
 - `PipelineConfig` (src/main.py:560-599) é o container DI — todos os campos têm defaults sensíveis para produção.
 - Campos `None` são inicializados em `__post_init__` (src/main.py:584-605): `CacheManager`, `get_event_bus()`, `LLMService()`, `SalesforceReleaseScraper()`, `FeatureImpactParser()`, `MarkdownGenerator()`, `TranslatorService(llm)`.
 - Testes podem sobrescrever qualquer campo passando instâncias mockadas/fakes no construtor de `PipelineConfig` (ex.: `dry_run=True`, `llm=None`).
 
 **Modelos Pydantic (src/models/)**:
+
 - `src/models/release.py`: `ReleaseMetadata`, `ReleaseInfo` (config.py:168-175)
 - `src/models/feature.py`: `Feature`, `FeatureCategory`, `FeatureStatus`, `TopicNode` (config.py:218-241)
 - `src/models/classification.py`: `ClassificationResult`, `ClassifiedFeature`, `ImpactLevel`, `FeatureType`, `Audience`, `Priority`

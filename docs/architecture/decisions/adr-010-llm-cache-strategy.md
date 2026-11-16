@@ -209,4 +209,3 @@ uv run pytest tests/test_characterization.py::test_llm_cache_behavior -v
 - `src/cache_manager.py` — `CacheManager` (base TTL + namespace)
 - ADR-008 (Prompt Versioning) — `schema_hash` no cache_key invalida auto em bump
 - ADR-007 (Clean Architecture) — `LLMCacheAdapter` implementa `CachePort` do Core
-
