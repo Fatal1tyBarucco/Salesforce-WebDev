@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 from mcp import types as mcp_types
+from mcp.server import ServerRequestContext
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -22,11 +23,32 @@ def _decode(result: list[Any]) -> Any:
     return json.loads(result[0].text)
 
 
+def _request_ctx(method: str) -> ServerRequestContext[Any]:
+    """Build a minimal request context; handlers ignore it entirely."""
+    return ServerRequestContext(
+        session=None,
+        lifespan_context={},
+        protocol_version="2025-06-18",
+        method=method,
+    )
+
+
 async def _tool_names_from_server(server: Any) -> set[str]:
     """Invoca o handler registrado de ``tools/list`` e retorna os nomes."""
-    handler = server.request_handlers[mcp_types.ListToolsRequest]
-    response = await handler(mcp_types.ListToolsRequest(method="tools/list"))
-    return {tool.name for tool in response.root.tools}
+    entry = server.get_request_handler("tools/list")
+    assert entry is not None
+    response = await entry.handler(_request_ctx("tools/list"), mcp_types.PaginatedRequestParams())
+    return {tool.name for tool in response.tools}
+
+
+async def _call_tool(server: Any, name: str, arguments: dict[str, Any]) -> Any:
+    """Invoca o handler registrado de ``tools/call`` e retorna o CallToolResult."""
+    entry = server.get_request_handler("tools/call")
+    assert entry is not None
+    return await entry.handler(
+        _request_ctx("tools/call"),
+        mcp_types.CallToolRequestParams(name=name, arguments=arguments),
+    )
 
 
 class TestReleaseNotesQuery:
@@ -116,6 +138,22 @@ class TestReleaseNotesMCPServer:
             "list_releases",
             "compare_releases",
         }
+
+    @pytest.mark.asyncio
+    async def test_call_tool_handler_dispatches(self, server):
+        """Should dispatch a registered tool through the ``tools/call`` handler."""
+        response = await _call_tool(server.server, "list_releases", {})
+
+        assert response.is_error is False
+        assert len(response.content) == 1
+        data = json.loads(response.content[0].text)
+        assert [r["slug"] for r in data] == ["winter_27", "spring_27"]
+
+    @pytest.mark.asyncio
+    async def test_call_tool_handler_rejects_unknown_tool(self, server):
+        """Should raise ValueError for tools the server does not implement."""
+        with pytest.raises(ValueError, match="Unknown tool"):
+            await _call_tool(server.server, "no_such_tool", {})
 
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):

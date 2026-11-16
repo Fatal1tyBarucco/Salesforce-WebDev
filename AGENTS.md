@@ -103,18 +103,25 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 - **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
   project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
   Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
-- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
-  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
-  variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
-  `get_request_handler`, `server._build_tools`) do not exist in that version. Tool results come
-  from `await server.mcp.call_tool(...)` (returns `(content, structured)`) and
-  `await server.mcp.list_tools()`; unknown tools raise `mcp.server.fastmcp.exceptions.ToolError`.
+- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the low-level `Server` API of
+  `mcp==2.3.0`** (pyproject: `mcp>=2.0.0,<3`) used by `src/infrastructure/mcp/knowledge_server.py`.
+  `Server` is generic over ONE parameter (`Server[LifespanResultT]`, never `Server[Any, Any]`) and has
+  **no** `list_tools()`/`call_tool()` decorators. Handlers are registered with
+  `server.add_request_handler("tools/list" | "tools/call", params_type, handler)` (or the
+  `on_list_tools=` / `on_call_tool=` constructor kwargs) and take the signature
+  `(ctx: ServerRequestContext[Any], params) -> Awaitable[HandlerResult]`. Tool definitions use
+  `Tool(input_schema=...)` — the `inputSchema` alias is rejected by mypy strict even though pydantic
+  accepts it. Tests invoke handlers via `server.get_request_handler(method).handler(ctx, params)`
+  with a minimal `ServerRequestContext(session=None, lifespan_context={}, protocol_version=..., method=...)`.
+  The FastMCP surface (`server.mcp.call_tool(...)`, `mcp.server.fastmcp.exceptions.ToolError`) does
+  **not** exist in this version.
 - **`_build_release_block` output is frozen by `tests/golden/summarizer/readme_block_{pt,en}.md`
-  and `readme_pt_updated.md`.** The leading `lines = [""]` and the blank separators after each
-  `</details>` are intentional (they match the committed `README.md`/`README.en.md`) — the
-  2026-11-16 "docs: reconcile" commits stripped them and desynced the goldens. If that function
-  changes, regenerate the goldens with `CHAR_GOLDEN_UPDATE=1 uv run pytest
-  tests/test_characterization_summarizer.py`.
+  and `readme_pt_updated.md`.** The block starts directly with the language-toggle `<div>` — there is
+  **no** leading blank line (`lines: list[str] = []`); the blank separators after each `</details>`
+  are intentional and match the committed `README.md`/`README.en.md`. `readme_block_pt.md` carried a
+  stale leading blank line (desynced from `readme_block_en.md`) and was regenerated on 2026-11-16.
+  If `_build_release_block` changes, regenerate the goldens with `CHAR_GOLDEN_UPDATE=1 uv run pytest
+  tests/test_characterization_summarizer.py` — never hand-edit them.
 
 ## GitHub Project Integration
 
