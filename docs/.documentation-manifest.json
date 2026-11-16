@@ -1213,8 +1213,8 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "e2c1e4bdd4cb09fca0b02538fc7d092964cb76f5",
-    "tests/golden/summarizer/readme_block_pt.md": "4dbf06552997125680c4add3e55a6108a3524f7f",
+    "tests/golden/summarizer/readme_block_en.md": "8a15534f5f736469e11c77db0c7909b8653876a2",
+    "tests/golden/summarizer/readme_block_pt.md": "c1b2ef1604b7ec4c1f676701a6bde322809ddb19",
     "tests/golden/summarizer/readme_pt_updated.md": "73e659686dd4f2c205edd3fe7e1664c795dbffaa",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-  "generated_at": "2026-11-16T14:08:14.620655+00:00",
-  "repository_sha": "0d98de1f72026dc49840480047536dfc8d3dc38b"
+  "generated_at": "2026-11-16T14:08:53.678171+00:00",
+  "repository_sha": "e8e99875e40f7faad18a92657c2b3c4e7b48cf7a"
 }
