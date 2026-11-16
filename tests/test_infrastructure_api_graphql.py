@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 
@@ -293,4 +293,4 @@ class TestSchemaAndExports:
     def test_unknown_package_attribute_raises(self) -> None:
         """Unknown attributes should raise AttributeError from __getattr__."""
         with pytest.raises(AttributeError, match="nope"):
-            getattr(api_package, "nope")
+            api_package.nope

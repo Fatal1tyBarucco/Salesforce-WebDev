@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-
 import pytest
 
-from src.domain.llm import LLMProvider, LLMResponse, LLMUsage, LLMPrompt, LLMError
-from src.infrastructure.llm_adapters.observability import LLMObservabilityAdapter, LLMCallMetrics
+from src.domain.llm import LLMError, LLMPrompt, LLMProvider, LLMResponse, LLMUsage
+from src.infrastructure.llm_adapters.observability import LLMCallMetrics, LLMObservabilityAdapter
 
 
 class TestLLMCallMetrics:

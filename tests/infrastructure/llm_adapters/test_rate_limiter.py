@@ -263,10 +263,10 @@ class TestRateLimiterIntegration:
         from unittest.mock import MagicMock
 
         from src.cache_manager import CacheManager
-        from src.domain.llm import LLMPrompt, ProviderConfig, LLMModel, LLMProvider
+        from src.domain.llm import LLMModel, LLMPrompt, LLMProvider, ProviderConfig
         from src.infrastructure.llm_adapters.cache import LLMCacheAdapter
-        from src.infrastructure.llm_adapters.unified_client import UnifiedLLMClient
         from src.infrastructure.llm_adapters.rate_limiter import AdaptiveRateLimiter
+        from src.infrastructure.llm_adapters.unified_client import UnifiedLLMClient
 
         provider = ProviderConfig(
             name=LLMProvider.OPENROUTER,

@@ -89,7 +89,7 @@ class ScraperObservabilityAdapter:
 # Configure structlog for JSON output
 def configure_structlog(json_output: bool = True) -> None:
     """Configure structlog for structured logging."""
-    from typing import Callable, MutableMapping
+    from collections.abc import Callable, MutableMapping
 
     processors: list[Callable[[Any, str, MutableMapping[str, Any]], Any]] = [
         structlog.processors.TimeStamper(fmt="iso"),

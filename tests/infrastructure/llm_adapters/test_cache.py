@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from src.cache_manager import CacheManager
-from src.domain.llm import LLMProvider, LLMResponse, LLMUsage, LLMPrompt
+from src.domain.llm import LLMPrompt, LLMProvider, LLMResponse, LLMUsage
 from src.infrastructure.llm_adapters.cache import LLMCacheAdapter, SemanticCacheAdapter
 
 

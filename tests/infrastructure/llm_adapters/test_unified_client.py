@@ -3,20 +3,20 @@
 from __future__ import annotations
 
 import os
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 
 from src.cache_manager import CacheManager
 from src.domain.llm import (
+    LLMAuthError,
     LLMModel,
-    LLMProvider,
     LLMPrompt,
+    LLMProvider,
+    LLMRateLimitError,
     LLMResponse,
     LLMUsage,
     ProviderConfig,
-    LLMRateLimitError,
-    LLMAuthError,
 )
 from src.infrastructure.llm_adapters.cache import LLMCacheAdapter
 from src.infrastructure.llm_adapters.unified_client import UnifiedLLMClient

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Detect new Salesforce release - used by scheduled-pipeline workflow."""
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, ".")
 
+import asyncio
+
 from src.release_discovery import ReleaseDiscoveryService
 from src.scraper import SalesforceReleaseScraper
-import asyncio
 
 
 async def main():

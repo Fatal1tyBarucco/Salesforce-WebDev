@@ -1,17 +1,17 @@
 """Scraper infrastructure adapters."""
 
-from src.infrastructure.scraping.playwright_adapter import (
-    PlaywrightScraperAdapter,
-    SalesforceReleaseScraper,
-    PlaywrightScrapingAdapter,  # Legacy compatibility wrapper
-    CachedScrapingAdapter,  # Legacy compatibility wrapper
-)
 from src.infrastructure.scraping.cache_adapter import ScraperCacheAdapter
-from src.infrastructure.scraping.rate_limiter import AsyncRateLimiter, RateLimitState
 from src.infrastructure.scraping.observability import (
     ScraperObservabilityAdapter,
     configure_structlog,
 )
+from src.infrastructure.scraping.playwright_adapter import (
+    CachedScrapingAdapter,  # Legacy compatibility wrapper
+    PlaywrightScraperAdapter,
+    PlaywrightScrapingAdapter,  # Legacy compatibility wrapper
+    SalesforceReleaseScraper,
+)
+from src.infrastructure.scraping.rate_limiter import AsyncRateLimiter, RateLimitState
 
 
 # Legacy ScrapingAdapter base class for backwards compatibility with characterization tests

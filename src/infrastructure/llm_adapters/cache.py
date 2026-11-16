@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from src.cache_manager import CacheManager
-from src.domain.llm import LLMResponse, LLMPrompt
+from src.domain.llm import LLMPrompt, LLMResponse
 
 logger = logging.getLogger(__name__)
 

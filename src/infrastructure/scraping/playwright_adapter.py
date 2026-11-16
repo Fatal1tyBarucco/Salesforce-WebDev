@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import asyncio
 import hashlib
 import logging
@@ -12,6 +10,7 @@ import time
 import uuid
 from pathlib import Path
 from types import TracebackType
+from typing import Any
 from urllib.parse import urlparse
 
 from playwright._impl._errors import Error as PlaywrightError
@@ -22,17 +21,17 @@ from src.cache_manager import CacheManager
 from src.circuit_breaker import CircuitBreaker
 from src.config import REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
 from src.domain.scraper import (
+    DEFAULT_SELECTOR_CONTRACTS,
     ScraperConfig,
     ScraperError,
     ScraperErrorCode,
     ScraperMetrics,
     ScraperPort,
     SelectorContract,
-    DEFAULT_SELECTOR_CONTRACTS,
 )
 from src.infrastructure.scraping.cache_adapter import ScraperCacheAdapter
-from src.infrastructure.scraping.rate_limiter import AsyncRateLimiter
 from src.infrastructure.scraping.observability import ScraperObservabilityAdapter
+from src.infrastructure.scraping.rate_limiter import AsyncRateLimiter
 
 logger = logging.getLogger(__name__)
 
@@ -810,8 +809,8 @@ class CachedScrapingAdapter:
 
 # Export the legacy names
 __all__ = [
-    "PlaywrightScraperAdapter",
-    "SalesforceReleaseScraper",
-    "PlaywrightScrapingAdapter",  # Legacy
     "CachedScrapingAdapter",  # Legacy
+    "PlaywrightScraperAdapter",
+    "PlaywrightScrapingAdapter",  # Legacy
+    "SalesforceReleaseScraper",
 ]

@@ -9,7 +9,7 @@ from typing import Any
 
 import structlog
 
-from src.domain.llm import LLMProvider, LLMResponse, LLMPrompt, LLMError
+from src.domain.llm import LLMError, LLMPrompt, LLMProvider, LLMResponse
 
 logger = structlog.get_logger(__name__)
 
@@ -149,9 +149,9 @@ class LLMObservabilityAdapter:
 # Configure structlog
 def configure_llm_structlog(json_output: bool = True) -> None:
     """Configure structlog for LLM observability."""
-    import structlog
+    from collections.abc import Callable, MutableMapping
 
-    from typing import Callable, MutableMapping
+    import structlog
 
     processors: list[Callable[[Any, str, MutableMapping[str, Any]], Any]] = [
         structlog.processors.TimeStamper(fmt="iso"),

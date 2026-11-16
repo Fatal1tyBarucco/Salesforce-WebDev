@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate PR body for scheduled pipeline."""
 
-import subprocess
 import os
+import subprocess
 
 
 def main():

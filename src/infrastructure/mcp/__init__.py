@@ -1,8 +1,8 @@
 """MCP Server infrastructure for Knowledge-as-Code."""
 
-from src.infrastructure.mcp.knowledge_server import create_server, ReleaseNotesMCPServer
+from src.infrastructure.mcp.knowledge_server import ReleaseNotesMCPServer, create_server
 
 __all__ = [
-    "create_server",
     "ReleaseNotesMCPServer",
+    "create_server",
 ]

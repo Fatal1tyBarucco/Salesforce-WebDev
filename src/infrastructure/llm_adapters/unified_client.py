@@ -13,22 +13,22 @@ import structlog
 from pydantic import BaseModel
 
 from src.domain.llm import (
+    DEFAULT_PROVIDER_CHAIN,
+    LLMAuthError,
+    LLMError,
     LLMModel,
+    LLMModelUnavailableError,
+    LLMPort,
+    LLMPrompt,
     LLMProvider,
+    LLMRateLimitError,
     LLMResponse,
     LLMUsage,
-    LLMPrompt,
-    LLMPort,
-    LLMError,
-    LLMRateLimitError,
-    LLMAuthError,
-    LLMModelUnavailableError,
     ProviderConfig,
-    DEFAULT_PROVIDER_CHAIN,
 )
 from src.infrastructure.llm_adapters.cache import LLMCacheAdapter
-from src.infrastructure.llm_adapters.rate_limiter import AdaptiveRateLimiter
 from src.infrastructure.llm_adapters.observability import LLMObservabilityAdapter
+from src.infrastructure.llm_adapters.rate_limiter import AdaptiveRateLimiter
 
 logger = structlog.get_logger(__name__)
 
@@ -146,7 +146,7 @@ class UnifiedLLMClient(LLMPort):
             )
         elif provider == LLMProvider.GEMINI:
             try:
-                import google.genai as genai
+                from google import genai
 
                 client = genai.Client(api_key=key)
             except ImportError:
@@ -173,11 +173,9 @@ class UnifiedLLMClient(LLMPort):
             return False
 
         self._tried_providers.add(
-            (
-                (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
-                if self._active_provider
-                else LLMProvider.OPENROUTER
-            )
+            (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
+            if self._active_provider
+            else LLMProvider.OPENROUTER
         )
         next_cfg = self._next_fallback_provider()
 
@@ -218,11 +216,9 @@ class UnifiedLLMClient(LLMPort):
 
         # Acquire rate limit permission
         await self._rate_limiter.acquire(
-            (
-                (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
-                if self._active_provider
-                else LLMProvider.OPENROUTER
-            )
+            (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
+            if self._active_provider
+            else LLMProvider.OPENROUTER
         )
 
         try:
@@ -236,15 +232,9 @@ class UnifiedLLMClient(LLMPort):
             self._total_usage = self._total_usage.add(response.usage)
             self._call_count += 1
             await self._rate_limiter.record_success(
-                (
-                    (
-                        self._active_provider.name
-                        if self._active_provider
-                        else LLMProvider.OPENROUTER
-                    )
-                    if self._active_provider
-                    else LLMProvider.OPENROUTER
-                )
+                (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
+                if self._active_provider
+                else LLMProvider.OPENROUTER
             )
             self._reset_provider_chain()
 
