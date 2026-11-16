@@ -301,6 +301,7 @@
       "docs/api/generator.md"
     ],
     "src/health.py": [
+      "CHANGELOG.md",
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
       "docs/api/health.md",
@@ -378,6 +379,9 @@
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
     "src/infrastructure/mcp/knowledge_server.py": [
+      "CHANGELOG.md",
+      "docs/ai-generated/release-notes.md",
+      "docs/ai-generated/roadmap.md",
       "docs/api/infrastructure-mcp-knowledge_server.md"
     ],
     "src/infrastructure/messaging.py": [
@@ -513,6 +517,9 @@
     "src/release_docs.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
+      "docs/ai-generated/leadership.md",
+      "docs/ai-generated/release-notes.md",
+      "docs/ai-generated/roadmap.md",
       "docs/api/release_docs.md"
     ],
     "src/release_summarizer.py": [
@@ -618,7 +625,7 @@
     ".promptfoo.yaml": "678cb8bae6c531c1091274f2cb366a46a8d9e6b1",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     "AGENTS.md": "3202496ac954f7910d863583e4be2dfd9640d5b9",
-    "CHANGELOG.md": "46fc10cb63a94ebe34ae4ae714e6d3656e4b7f69",
+    "CHANGELOG.md": "53da370fd4d1fda8f47610a796082fd224084783",
     "CLAUDE.md": "f8b1ef28244762098e2b8d004722585aba1ec0ca",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -637,14 +644,14 @@
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "9447863698009fda27c182749ef3ca2e9ce7abb9",
+    "docs/.last-processed-ref": "44cf20c6d61a208974ba79418f86e574b0f513d8",
     "docs/ARQUITETURA.md": "e6806aa1b96195a5bd88f27b00898be39f7467a6",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
     "docs/MODERNIZACAO.md": "e55877d77caec006676d5a69c6bf222979cb357a",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "887fbe23483cbdc08f29c5bc220d00e1c5437c78",
-    "docs/ai-generated/release-notes.md": "48530c5f59f697b5ade6e8636db37cdb0aee87b1",
-    "docs/ai-generated/roadmap.md": "9415968e3b445a95e24ef5e56b267c7f85229a9f",
+    "docs/ai-generated/leadership.md": "977db90f01586b4a246de827492b9b74b1edd613",
+    "docs/ai-generated/release-notes.md": "cb2240469489b0078822b34d0d43b77109cccbb5",
+    "docs/ai-generated/roadmap.md": "ed24556fc266c4f32568700a56bae465d99a9231",
     "docs/api/ai-collectors-change_collector.md": "fc7042bd162a90edebe389016a59a76cc588e2bc",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -774,7 +781,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "575c175efe837b46ecfce0d18bb8919da6b5e2de",
+    "docs/index.md": "6a606b9a180dda3093d6ee28efa92cc11c709e99",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -812,7 +819,7 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "a5084d838a1ad09af50db5060f005ca16bb3aeff",
+    "pyproject.toml": "d419ed5bf0a03e5a321c0451a8409f5ad5277ea0",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1100,7 +1107,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "4716228bbd85483cea8845e5bf5211a00cb82fe5",
     "src/infrastructure/mcp/__init__.py": "60de6875842d2cc3e5329254fc823c01e23b799d",
-    "src/infrastructure/mcp/knowledge_server.py": "77eca9c58ab821464f18d5791591555b0a1fcd85",
+    "src/infrastructure/mcp/knowledge_server.py": "afc7eb97f8c9a42ae9fead3ea542bf62ab2765be",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1213,14 +1220,14 @@
     "tests/golden/summarizer/fallback_summary.json": "fa0c8985b425e05ad8e9997429d5d50c400d4178",
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
-    "tests/golden/summarizer/readme_block_en.md": "8a15534f5f736469e11c77db0c7909b8653876a2",
-    "tests/golden/summarizer/readme_block_pt.md": "cf19b3c753e5d5a594bda711488767b6806028c6",
-    "tests/golden/summarizer/readme_pt_updated.md": "b215dc3053ed0864a33758577d8b2b9cb2cc0374",
+    "tests/golden/summarizer/readme_block_en.md": "65d3749759a502dc09d42b00100eb2d56eb9598a",
+    "tests/golden/summarizer/readme_block_pt.md": "4dbf06552997125680c4add3e55a6108a3524f7f",
+    "tests/golden/summarizer/readme_pt_updated.md": "c8c40075032bcb8f858be3ea8f5d204efffab2b9",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "ff394521fc78b3482f75cb88f154c2f472b24a1e",
     "tests/infrastructure/llm_adapters/test_unified_client.py": "f1cb6dbf519e2a1c02d8abc7970cb90145c82e1f",
-    "tests/infrastructure/mcp/test_knowledge_server.py": "ebead98d7c66930335fa1c162a680655fc713e76",
+    "tests/infrastructure/mcp/test_knowledge_server.py": "d71723b3ceec3e698a98917e63384d5e57428189",
     "tests/infrastructure/scraping/test_cache_adapter.py": "ac57723379776eea698e9bd08d48f8a0fc5eb34b",
     "tests/infrastructure/scraping/test_playwright_scraper_adapter.py": "014aab3bf69163d69d891c46b830b794a6c30fa7",
     "tests/infrastructure/scraping/test_scraping_observability.py": "a8b0d268c717e1e732b4e33100d1c088f5c7e1a1",
@@ -1328,6 +1335,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-  "generated_at": "2026-11-16T14:16:12.548619+00:00",
-  "repository_sha": "1ab89c15e9961370df47c3de39f0b54a1aec10a7"
+  "generated_at": "2026-11-16T14:28:50.515763+00:00",
+  "repository_sha": "0d2f102a311f59e5b4b5fe952e380bbfac9fbe04"
 }
