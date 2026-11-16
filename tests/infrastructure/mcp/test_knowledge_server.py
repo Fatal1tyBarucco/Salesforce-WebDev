@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server import FastMCP
-from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -100,7 +100,7 @@ class TestReleaseNotesMCPServer:
 
     @pytest.mark.asyncio
     async def test_server_has_four_tools(self, server):
-        """Should expose exactly four tools through the FastMCP server."""
+        """Should expose exactly four tools through the MCPServer server."""
         tools = await server.mcp.list_tools()
 
         tool_names = {t.name for t in tools}
@@ -438,7 +438,7 @@ class TestReleaseNotesMCPServer:
 
 
 class TestToolDispatch:
-    """Tests for the registered FastMCP tool wrappers."""
+    """Tests for the registered MCPServer tool wrappers."""
 
     @pytest.fixture
     def temp_releases_dir(self, tmp_path):
@@ -459,14 +459,12 @@ class TestToolDispatch:
 
     @staticmethod
     def _tool_text(result) -> str:
-        """Extract the text payload from a FastMCP call_tool result."""
-        content, _structured = result
-        block = content[0]
-        return block.text
+        """Extract the text payload from an MCPServer call_tool result."""
+        return result.content[0].text
 
     @pytest.mark.asyncio
     async def test_call_tool_search(self, server):
-        """Should dispatch search_release_notes through FastMCP."""
+        """Should dispatch search_release_notes through MCPServer."""
         result = await server.mcp.call_tool(
             "search_release_notes",
             {"release_slug": "winter_27", "locale": "pt-BR", "limit": 5},
@@ -479,7 +477,7 @@ class TestToolDispatch:
 
     @pytest.mark.asyncio
     async def test_call_tool_summary(self, server):
-        """Should dispatch get_release_summary through FastMCP."""
+        """Should dispatch get_release_summary through MCPServer."""
         result = await server.mcp.call_tool(
             "get_release_summary",
             {"release_slug": "winter_27", "locale": "pt-BR"},
@@ -492,7 +490,7 @@ class TestToolDispatch:
 
     @pytest.mark.asyncio
     async def test_call_tool_list(self, server):
-        """Should dispatch list_releases through FastMCP."""
+        """Should dispatch list_releases through MCPServer."""
         result = await server.mcp.call_tool("list_releases", {})
 
         data = json.loads(self._tool_text(result))
@@ -501,7 +499,7 @@ class TestToolDispatch:
 
     @pytest.mark.asyncio
     async def test_call_tool_compare(self, server):
-        """Should dispatch compare_releases through FastMCP."""
+        """Should dispatch compare_releases through MCPServer."""
         result = await server.mcp.call_tool(
             "compare_releases",
             {"from_slug": "winter_27", "to_slug": "winter_27", "locale": "pt-BR"},
@@ -527,7 +525,7 @@ class TestCreateServer:
         """Should create server with default releases directory."""
         server = create_server()
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
 
@@ -536,6 +534,6 @@ class TestCreateServer:
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
