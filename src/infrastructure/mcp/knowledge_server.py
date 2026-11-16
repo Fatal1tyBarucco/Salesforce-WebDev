@@ -7,11 +7,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from mcp.server import Server, ServerRequestContext
+from mcp.server import Server
 from mcp.types import (
+    CallToolRequest,
     CallToolRequestParams,
     CallToolResult,
     ContentBlock,
+    ListToolsRequest,
     ListToolsResult,
     PaginatedRequestParams,
     TextContent,
@@ -43,11 +45,30 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.server: Server[Any] = Server(
-            "salesforce-release-notes",
-            on_list_tools=self._on_list_tools,
-            on_call_tool=self._on_call_tool,
-        )
+        self.server: Server[Any, Any] = Server("salesforce-release-notes")
+        self._register_handlers()
+
+    def _register_handlers(self) -> None:
+        """Register MCP tool handlers using decorators."""
+
+        @self.server.list_tools()  # type: ignore[untyped-decorator]
+        async def handle_list_tools(
+            request: ListToolsRequest | None = None,
+        ) -> ListToolsResult:
+            """MCP SDK v2 handler for ``tools/list``."""
+            del request  # unused, but kept for signature compatibility
+            return ListToolsResult(tools=self._build_tools())
+
+        @self.server.call_tool()  # type: ignore[untyped-decorator]
+        async def handle_call_tool(
+            request: CallToolRequest,
+        ) -> CallToolResult:
+            """MCP SDK v2 handler for ``tools/call``."""
+            params: CallToolRequestParams = request.params
+            blocks: list[ContentBlock] = []
+            # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
+            blocks.extend(await self.call_tool(params.name, params.arguments or {}))
+            return CallToolResult(content=blocks)
 
     def _build_tools(self) -> list[Tool]:
         """Build the tool definitions exposed by this server."""
@@ -55,12 +76,12 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="search_release_notes",
                 description="Search Salesforce Release Notes by release, category, or feature name",
-                input_schema=ReleaseNotesQuery.model_json_schema(),
+                inputSchema=ReleaseNotesQuery.model_json_schema(),
             ),
             Tool(
                 name="get_release_summary",
                 description="Get executive summary for a specific release",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "release_slug": {
@@ -75,7 +96,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="list_releases",
                 description="List all available releases",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {},
                 },
@@ -83,7 +104,7 @@ class ReleaseNotesMCPServer:
             Tool(
                 name="compare_releases",
                 description="Compare two releases - what's new, changed, removed",
-                input_schema={
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "from_slug": {"type": "string", "description": "Base release slug"},
@@ -94,14 +115,6 @@ class ReleaseNotesMCPServer:
                 },
             ),
         ]
-
-    async def _on_list_tools(
-        self,
-        ctx: ServerRequestContext[Any],
-        params: PaginatedRequestParams | None,
-    ) -> ListToolsResult:
-        """MCP SDK v2 handler for ``tools/list`` (signature from installed SDK)."""
-        return ListToolsResult(tools=self._build_tools())
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> list[TextContent]:
         """Dispatch a tool call by name; raises ValueError for unknown tools."""
@@ -115,17 +128,6 @@ class ReleaseNotesMCPServer:
             return await self._compare_releases(arguments)
         else:
             raise ValueError(f"Unknown tool: {name}")
-
-    async def _on_call_tool(
-        self,
-        ctx: ServerRequestContext[Any],
-        params: CallToolRequestParams,
-    ) -> CallToolResult:
-        """MCP SDK v2 handler for ``tools/call`` (signature from installed SDK)."""
-        blocks: list[ContentBlock] = []
-        # list[TextContent] is Iterable[ContentBlock]; extend avoids list invariance.
-        blocks.extend(await self.call_tool(params.name, params.arguments or {}))
-        return CallToolResult(content=blocks)
 
     async def _search_release_notes(self, args: dict[str, Any]) -> list[TextContent]:
         from pydantic import ValidationError
@@ -287,7 +289,9 @@ class ReleaseNotesMCPServer:
             ]
         if not to_dir.exists():
             return [
-                TextContent(type="text", text=json.dumps({"error": f"Release {to_slug} not found"}))
+                TextContent(
+                    type="text", text=json.dumps({"error": f"Release {to_slug} not found"})
+                )
             ]
 
         from_features = {f.stem: f.read_text(encoding="utf-8") for f in from_dir.glob("*.md")}
