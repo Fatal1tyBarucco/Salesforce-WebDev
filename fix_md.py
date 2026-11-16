@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Fix markdown lint issues in docs."""
 
-import re
 
 def fix_adr_008():
     with open('docs/architecture/decisions/adr-008-prompt-versioning.md', 'r') as f:
