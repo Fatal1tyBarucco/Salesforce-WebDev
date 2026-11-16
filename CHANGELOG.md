@@ -1,5 +1,40 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Changed
+- Sincronização do manifesto de documentação com novas referências, hashes e metadados de geração.
+- Correção na inicialização de linhas do bloco de release docs, ajustando formatação esperada.
+- Adaptação de testes do servidor MCP de release notes para API atual.
+
+### Fixed
+- Ajuste de inicialização de linhas no bloco de release docs para restaurar formatação esperada.
+
+<!-- gerado por IA em 2026-11-16T16:27:57+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Breaking Changes
+- Migrated the MCP server from FastMCP to the MCP Server API v2, replacing decorators with request handlers (`Server`, `CallToolRequest`, `ListToolsRequest`, `CallToolResult`). Consumers relying on the previous FastMCP API may require updates.
+
+### Changed
+- Refactored MCP server tests to use a `_decode` helper for extracting JSON payloads, removing direct `call_tool` integration tests in favor of low-level tests for internal methods (`_search_release_notes`, `_get_release_summary`, `_list_releases`, `_compare_releases`).
+
+### Fixed
+- Fixed link generation in `release_docs.py` by correcting the order of operations, ensuring English category slugs are applied before building the link, preventing broken links to nonexistent Portuguese slugs.
+
+<!-- gerado por IA em 2026-11-16T16:13:25+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Fixed
+- Fixed release link generation for English documentation by using English category slugs for the en_US locale and building the link before the display block, preventing links to nonexistent Portuguese slugs.
+
+### Changed
+- Updated MCP knowledge server tests to use the low-level SDK Server, registering handlers for ListToolsRequest and CallToolRequest and calling internal methods such as _build_tools, _search_release_notes, _get_release_summary, _list_releases, and _compare_releases; assertions were updated for result format and dictionary-based queries.
+
 <!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]

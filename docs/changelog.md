@@ -94,3 +94,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `e1b30a8` — docs: fix test file links
 - `bf45058` — fix: resolve Python Quality gate failures
 - `544edf1` — docs: resolve merge conflicts in manifest
+- `df8c35c` — docs: refresh documentation manifest baseline after quality fix
+- `2aff9fb` — docs: reconcile documentation baseline
