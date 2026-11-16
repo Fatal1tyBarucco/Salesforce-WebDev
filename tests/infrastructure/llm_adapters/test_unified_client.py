@@ -21,7 +21,6 @@ from src.domain.llm import (
 from src.infrastructure.llm_adapters.cache import LLMCacheAdapter
 from src.infrastructure.llm_adapters.unified_client import UnifiedLLMClient
 
-
 # Set environment variables globally for all tests
 os.environ["TEST_OPENROUTER_KEY"] = "test-key-1"
 os.environ["TEST_OPENCODE_KEY"] = "test-key-2"

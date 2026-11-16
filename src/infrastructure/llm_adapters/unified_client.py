@@ -397,15 +397,17 @@ class UnifiedLLMClient(LLMPort):
         kwargs = {
             "model": (
                 (
-                    _env_model_override(self._active_provider)
+                    (
+                        _env_model_override(self._active_provider)
+                        if self._active_provider
+                        else LLMModel.OPENROUTER_FREE.value
+                    )
                     if self._active_provider
                     else LLMModel.OPENROUTER_FREE.value
                 )
                 if self._active_provider
                 else LLMModel.OPENROUTER_FREE.value
-            )
-            if self._active_provider
-            else LLMModel.OPENROUTER_FREE.value,
+            ),
             "messages": messages,
             "temperature": prompt.temperature,
         }
@@ -427,15 +429,17 @@ class UnifiedLLMClient(LLMPort):
             lambda: client.models.generate_content(
                 model=(
                     (
-                        _env_model_override(self._active_provider)
+                        (
+                            _env_model_override(self._active_provider)
+                            if self._active_provider
+                            else LLMModel.OPENROUTER_FREE.value
+                        )
                         if self._active_provider
                         else LLMModel.OPENROUTER_FREE.value
                     )
                     if self._active_provider
-                    else LLMModel.OPENROUTER_FREE.value
-                )
-                if self._active_provider
-                else LLMModel.GEMINI_36_FLASH_DIRECT.value,
+                    else LLMModel.GEMINI_36_FLASH_DIRECT.value
+                ),
                 contents=full_prompt,
             ),
         )
@@ -478,12 +482,18 @@ class UnifiedLLMClient(LLMPort):
             "prompt_tokens": self._total_usage.prompt_tokens,
             "completion_tokens": self._total_usage.completion_tokens,
             "active_provider": (
-                (self._active_provider.name if self._active_provider else LLMProvider.OPENROUTER)
+                (
+                    (
+                        self._active_provider.name
+                        if self._active_provider
+                        else LLMProvider.OPENROUTER
+                    )
+                    if self._active_provider
+                    else LLMProvider.OPENROUTER
+                ).value
                 if self._active_provider
-                else LLMProvider.OPENROUTER
-            ).value
-            if self._active_provider
-            else "none",
+                else "none"
+            ),
             "rate_limits": {
                 p.name.value: self._rate_limiter.get_state(p.name) for p in self._provider_chain
             },
