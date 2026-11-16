@@ -774,7 +774,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "6a606b9a180dda3093d6ee28efa92cc11c709e99",
+    "docs/index.md": "575c175efe837b46ecfce0d18bb8919da6b5e2de",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -1214,7 +1214,7 @@
     "tests/golden/summarizer/llm_contract.md": "296db6aa9a4b35ef642a7b5ae45b47ef202ff265",
     "tests/golden/summarizer/llm_contract_summary.json": "8ac5cc82f8c6a5ed39a7a78666ca9d1b2ade84e4",
     "tests/golden/summarizer/readme_block_en.md": "8a15534f5f736469e11c77db0c7909b8653876a2",
-    "tests/golden/summarizer/readme_block_pt.md": "c1b2ef1604b7ec4c1f676701a6bde322809ddb19",
+    "tests/golden/summarizer/readme_block_pt.md": "cf19b3c753e5d5a594bda711488767b6806028c6",
     "tests/golden/summarizer/readme_pt_updated.md": "b215dc3053ed0864a33758577d8b2b9cb2cc0374",
     "tests/infrastructure/llm_adapters/test_cache.py": "3cb66ada592108af4ba8214cedb9cb0a5269e6d9",
     "tests/infrastructure/llm_adapters/test_observability.py": "e0c238f999debcbfc34be9f435384ca2fafc5022",
@@ -1328,6 +1328,6 @@
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "uv.lock": "6a9edc6b9d7b256f39398129e46580ebc0ab1322"
   },
-  "generated_at": "2026-11-16T14:09:38.235416+00:00",
-  "repository_sha": "2dca2010547c124b676c739f0d1629a556955303"
+  "generated_at": "2026-11-16T14:16:12.548619+00:00",
+  "repository_sha": "1ab89c15e9961370df47c3de39f0b54a1aec10a7"
 }
