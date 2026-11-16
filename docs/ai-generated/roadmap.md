@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Investigar se a reversão de versão de 3.1.0 para 0.1.0 foi intencional e definir critério de versionamento; mapear consumidores do servidor MCP e validar compatibilidade com a FastMCP API v2 antes de ampliar adoção; avaliar inclusão de testes de contrato para a interface do servidor MCP para detectar quebras futuras; manter teste que garante que a engine de documentação não reescreva fixtures de teste; monitorar estabilidade do gate de qualidade Python após sincronização uv.lock e correções de formatação; validar resolução de conflitos em src/infrastructure/mcp/knowledge_server.py e confirmar cobertura dos testes; revisar ajuste em src/release_docs.py para confirmar se é apenas refatoração ou altera saída; avaliar se exclusões ao markdownlint podem ocultar problemas relevantes de lint; monitorar estabilidade da coleta de testes após inclusão das dependências structlog e mcp; considerar automação recorrente da reconciliação do manifesto de documentação e da navegação do MkDocs.
+
+---
 
 ## Nova atualização
 

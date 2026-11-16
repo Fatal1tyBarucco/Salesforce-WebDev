@@ -1,6 +1,44 @@
-<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização traz a reescrita dos testes do servidor MCP Knowledge Server para a API FastMCP v2, substituindo a interface antiga por decoradores @tool, com 35 testes atualizados que cobrem search, summary, list, compare e unknown tool. A versão do projeto foi revertida de 3.1.0 para 0.1.0 no pyproject.toml, representando uma breaking change que pode impactar consumidores que dependem de versionamento semântico. Foram corrigidos problemas de qualidade (sincronização uv.lock, formatação Black, mypy), restaurados blocos README no release_docs.py, regenerados arquivos golden de testes de caracterização e incluída documentação automatizada sem alterações funcionais. Impacto: alto para migração do MCP e reversão de versão; médio para correções de badges e golden files; baixo para qualidade de código e documentação. Risco: alto a médio, concentrado na compatibilidade de consumidores do MCP e na confirmação da reversão de versão.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Correção de qualidade: sincronização uv.lock e formatação Black — 📋 bugfix** | Corrigido versionamento no uv.lock (3.1.0 -> 0.1.0) para corresponder ao pyproject.toml, restaura… | 🟡 medium | uv.lock, src/infrastructure/mcp/knowledge_server.py, src/release_docs.py · Prioridade: 💡 P1 |
+| **Reescrita completa dos testes do MCP Knowledge Server para FastMCP API — 📋 refactor** | Testes reescritos contra a API FastMCP travada em mcp==1.30.0 (35 testes incluindo dispatch call_… | 🔴 high | tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P0 |
+| **Restauração do formato de bloco README no release_docs.py — 📋 bugfix** | Restaurado comportamento pré-reconcile do _build_release_block: linhas em branco iniciais e finai… | 🟡 medium | src/release_docs.py, tests/golden/summarizer/ · Prioridade: 💡 P1 |
+| **Regeneração de golden files corrompidos do summarizer — 📋 bugfix** | Três arquivos golden (readme_block_pt.md, readme_block_en.md, readme_pt_updated.md) regenerados v… | 🟡 medium | tests/golden/summarizer/readme_block_pt.md, tests/golden/summarizer/readme_block_en.md, tests/golden/summarizer/readme_pt_updated.md · Prioridade: 💡 P1 |
+| **Atualização automática de documentação via IA — 📋 documentation** | Commit de documentação automatizada ([skip ci]) sem alterações funcionais; provavelmente atualiza… | 🟢 low | docs/, README* · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (20%) 🔴
+🟡 Médio: **3** (60%) 🟡🟡🟡
+🟢 Baixo: **1** (20%) 🟢
+
+Total: **5 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    3 →
+📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▂█▂
+
+
+## Revisão Necessária
+
+- **Reescrita completa dos testes do MCP Knowledge Server para FastMCP API** — Reescrita ampla de testes; validar se novos casos de borda (ToolError, extra_forbid) refletem requisitos de negócio. (0.98)
+- **Atualização automática de documentação via IA** — Conteúdo exato não visível no diff; verificar se mudanças são desejadas. (0.70)
+
+---
 
 ## Nova atualização
 

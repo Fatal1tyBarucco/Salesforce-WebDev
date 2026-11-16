@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T15:42:52+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-16T16:10:03+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+As mudanças desta execução têm impacto alto na compatibilidade dos consumidores do servidor MCP devido à migração para a FastMCP API v2 e à reversão da versão do projeto de 3.1.0 para 0.1.0, o que pode exigir adaptações e gerar incerteza em quem depende de versionamento semântico. Os demais ajustes (correção de qualidade, regeneração de arquivos golden, formatação de README) apresentam impacto médio ou baixo e não introduzem breaking changes. Riscos principais: integração rompida com clientes que utilizam a API antiga do MCP e necessidade de confirmação de que a reversão de versão foi intencional. Próximos passos: validar a compatibilidade dos consumidores com a nova API, confirmar a intenção da reversão de versão, verificar a cobertura dos testes MCP atualizados e garantir que a engine de documentação não reescreva fixtures de teste.
+
+---
 
 ## Nova atualização
 
