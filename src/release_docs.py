@@ -516,7 +516,7 @@ async def _build_release_block(
     """
     _ = existing_text  # Kept for signature compatibility; not consulted.
 
-    lines: list[str] = [""]
+    lines: list[str] = []
     if limit is not None and limit > 0:
         metas = metas[:limit]
 
@@ -624,21 +624,19 @@ async def _build_release_block(
             cat_name = cat["name"]
             count = cat["count"]
             cat_slug = _slugify_category(cat_name)
-            if lang == "en_US":
-                # en_US category files are written with English slugs
-                # (see _generate_release_files); mirror that here so README
-                # links resolve instead of pointing at Portuguese filenames.
-                cat_slug = ENGLISH_CATEGORY_SLUGS.get(cat_name, cat_slug)
-            link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
             if lang == "en_US":
                 display_name = ENGLISH_CATEGORY_NAMES.get(cat_name, cat_name)
                 count_label = "features"
                 details_label = "Full details"
+                # en_US files are written with English slugs (see
+                # _generate_release_files); links must match them.
+                cat_slug = ENGLISH_CATEGORY_SLUGS.get(cat_name, cat_slug)
             else:
                 display_name = cat_name
                 count_label = "recursos"
                 details_label = "Detalhes completos"
+            link = f"./releases/{slug}/{lang}/{cat_slug}.md"
 
             cat_summary_text = ""
             if cat_name in cat_summaries:

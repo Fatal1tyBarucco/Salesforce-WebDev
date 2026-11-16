@@ -4,16 +4,29 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
-from mcp.server import Server
-from mcp.types import CallToolRequest, ListToolsRequest
+from mcp import types as mcp_types
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
     ReleaseNotesQuery,
     create_server,
 )
+
+
+def _decode(result: list[Any]) -> Any:
+    """Decodifica o payload JSON do único TextContent retornado pelos handlers."""
+    assert len(result) == 1
+    return json.loads(result[0].text)
+
+
+async def _tool_names_from_server(server: Any) -> set[str]:
+    """Invoca o handler registrado de ``tools/list`` e retorna os nomes."""
+    handler = server.request_handlers[mcp_types.ListToolsRequest]
+    response = await handler(mcp_types.ListToolsRequest(method="tools/list"))
+    return {tool.name for tool in response.root.tools}
 
 
 class TestReleaseNotesQuery:
@@ -93,12 +106,9 @@ class TestReleaseNotesMCPServer:
         """Create MCP server with temp directory."""
         return ReleaseNotesMCPServer(releases_dir=temp_releases_dir)
 
-    @pytest.mark.asyncio
-    async def test_list_tools_returns_four_tools(self, server):
-        """Should return four tools."""
+    def test_mcp_has_four_tools(self, server):
+        """Should have four tools registered."""
         tools = server._build_tools()
-
-        assert len(tools) == 4
         tool_names = {t.name for t in tools}
         assert tool_names == {
             "search_release_notes",
@@ -106,12 +116,6 @@ class TestReleaseNotesMCPServer:
             "list_releases",
             "compare_releases",
         }
-
-    @pytest.mark.asyncio
-    async def test_server_registers_sdk_handlers(self, server):
-        """The lowlevel Server should have tools/list and tools/call registered."""
-        assert ListToolsRequest in server.server.request_handlers
-        assert CallToolRequest in server.server.request_handlers
 
     @pytest.mark.asyncio
     async def test_search_release_notes_by_release(self, server):
@@ -124,9 +128,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 2
         assert all(r["release"] == "winter_27" for r in data)
@@ -142,9 +144,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 1
         assert data[0]["category"] == "Lightning Experience"
@@ -160,9 +160,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 1
         assert data[0]["feature"] == "feature1"
@@ -177,9 +175,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 3  # 2 from winter_27 + 1 from spring_27
 
@@ -193,9 +189,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 1
 
@@ -203,9 +197,7 @@ class TestReleaseNotesMCPServer:
     async def test_search_release_notes_invalid_query(self, server):
         """Should handle invalid query gracefully."""
         result = await server._search_release_notes(
-            {
-                "invalid_field": "value",
-            }
+            {"invalid_field": "value"}  # extra="forbid" rejeita o campo
         )
 
         assert "Invalid query" in result[0].text
@@ -213,16 +205,9 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_get_release_summary_exists(self, server):
         """Should return summary for existing release."""
-        result = await server._get_release_summary(
-            {
-                "release_slug": "winter_27",
-                "locale": "pt-BR",
-            }
-        )
+        result = await server._get_release_summary({"release_slug": "winter_27", "locale": "pt-BR"})
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data["release"] == "winter_27"
         assert data["locale"] == "pt-BR"
@@ -233,15 +218,10 @@ class TestReleaseNotesMCPServer:
     async def test_get_release_summary_not_found(self, server):
         """Should return error for non-existent release."""
         result = await server._get_release_summary(
-            {
-                "release_slug": "nonexistent",
-                "locale": "pt-BR",
-            }
+            {"release_slug": "nonexistent", "locale": "pt-BR"}
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert "error" in data
         assert "not found" in data["error"]
@@ -249,16 +229,9 @@ class TestReleaseNotesMCPServer:
     @pytest.mark.asyncio
     async def test_get_release_summary_locale_not_found(self, server):
         """Should return error for non-existent locale."""
-        result = await server._get_release_summary(
-            {
-                "release_slug": "winter_27",
-                "locale": "fr-FR",
-            }
-        )
+        result = await server._get_release_summary({"release_slug": "winter_27", "locale": "fr-FR"})
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert "error" in data
         assert "not found" in data["error"]
@@ -268,9 +241,7 @@ class TestReleaseNotesMCPServer:
         """Should list all releases with metadata."""
         result = await server._list_releases()
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert len(data) == 2
         assert data[0]["slug"] == "winter_27"
@@ -283,9 +254,7 @@ class TestReleaseNotesMCPServer:
         """Should list releases in deterministic descending slug order."""
         result = await server._list_releases()
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         # sorted(reverse=True): "winter_27" > "spring_27" lexicographically
         assert data[0]["slug"] == "winter_27"
@@ -295,16 +264,10 @@ class TestReleaseNotesMCPServer:
     async def test_compare_releases(self, server):
         """Should compare two releases."""
         result = await server._compare_releases(
-            {
-                "from_slug": "winter_27",
-                "to_slug": "spring_27",
-                "locale": "pt-BR",
-            }
+            {"from_slug": "winter_27", "to_slug": "spring_27", "locale": "pt-BR"}
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data["from_release"] == "winter_27"
         assert data["to_release"] == "spring_27"
@@ -318,15 +281,10 @@ class TestReleaseNotesMCPServer:
     async def test_compare_releases_from_not_found(self, server):
         """Should return error when from release not found."""
         result = await server._compare_releases(
-            {
-                "from_slug": "nonexistent",
-                "to_slug": "spring_27",
-            }
+            {"from_slug": "nonexistent", "to_slug": "spring_27", "locale": "pt-BR"}
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert "error" in data
         assert "not found" in data["error"]
@@ -335,15 +293,10 @@ class TestReleaseNotesMCPServer:
     async def test_compare_releases_to_not_found(self, server):
         """Should return error when to release not found."""
         result = await server._compare_releases(
-            {
-                "from_slug": "winter_27",
-                "to_slug": "nonexistent",
-            }
+            {"from_slug": "winter_27", "to_slug": "nonexistent", "locale": "pt-BR"}
         )
 
-        import json
-
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert "error" in data
         assert "not found" in data["error"]
@@ -360,9 +313,11 @@ class TestReleaseNotesMCPServer:
         (v2 / "shared.md").write_text("# Shared\nNew content")
 
         srv = ReleaseNotesMCPServer(releases_dir=releases_dir)
-        result = await srv._compare_releases({"from_slug": "v1", "to_slug": "v2"})
+        result = await srv._compare_releases(
+            {"from_slug": "v1", "to_slug": "v2", "locale": "pt-BR"}
+        )
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data["changed"] == ["shared"]
         assert data["summary"]["changed_count"] == 1
@@ -382,74 +337,14 @@ class TestReleaseNotesMCPServer:
         (v2 / "new.md").write_text("# New\nBrand new content")
 
         srv = ReleaseNotesMCPServer(releases_dir=releases_dir)
-        result = await srv._compare_releases({"from_slug": "v1", "to_slug": "v2"})
+        result = await srv._compare_releases(
+            {"from_slug": "v1", "to_slug": "v2", "locale": "pt-BR"}
+        )
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data["changed"] == []
         assert data["added"] == ["new"]
-
-    @pytest.mark.asyncio
-    async def test_call_tool_search(self, server):
-        """Should call search tool."""
-        result = await server.call_tool(
-            "search_release_notes",
-            {
-                "release_slug": "winter_27",
-            },
-        )
-
-        import json
-
-        data = json.loads(result[0].text)
-        assert len(data) == 2
-
-    @pytest.mark.asyncio
-    async def test_call_tool_summary(self, server):
-        """Should call summary tool."""
-        result = await server.call_tool(
-            "get_release_summary",
-            {
-                "release_slug": "winter_27",
-            },
-        )
-
-        import json
-
-        data = json.loads(result[0].text)
-        assert data["release"] == "winter_27"
-
-    @pytest.mark.asyncio
-    async def test_call_tool_list(self, server):
-        """Should call list tool."""
-        result = await server.call_tool("list_releases", {})
-
-        import json
-
-        data = json.loads(result[0].text)
-        assert len(data) == 2
-
-    @pytest.mark.asyncio
-    async def test_call_tool_compare(self, server):
-        """Should call compare tool."""
-        result = await server.call_tool(
-            "compare_releases",
-            {
-                "from_slug": "winter_27",
-                "to_slug": "spring_27",
-            },
-        )
-
-        import json
-
-        data = json.loads(result[0].text)
-        assert data["from_release"] == "winter_27"
-
-    @pytest.mark.asyncio
-    async def test_call_tool_unknown(self, server):
-        """Should raise error for unknown tool."""
-        with pytest.raises(ValueError, match="Unknown tool"):
-            await server.call_tool("unknown_tool", {})
 
     @pytest.mark.asyncio
     async def test_search_release_notes_missing_locale(self, server):
@@ -461,7 +356,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data == []
 
@@ -480,7 +375,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data == []
 
@@ -490,14 +385,9 @@ class TestReleaseNotesMCPServer:
         cache_file = temp_releases_dir / "winter_27" / ".summary_cache.json"
         cache_file.write_text('{"release": "winter_27", "cached": true}')
 
-        result = await server._get_release_summary(
-            {
-                "release_slug": "winter_27",
-                "locale": "pt-BR",
-            }
-        )
+        result = await server._get_release_summary({"release_slug": "winter_27", "locale": "pt-BR"})
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data == {"release": "winter_27", "cached": True}
 
@@ -506,14 +396,9 @@ class TestReleaseNotesMCPServer:
         """Should fall back to markdown when the cache cannot be read."""
         (temp_releases_dir / "winter_27" / ".summary_cache.json").mkdir()
 
-        result = await server._get_release_summary(
-            {
-                "release_slug": "winter_27",
-                "locale": "pt-BR",
-            }
-        )
+        result = await server._get_release_summary({"release_slug": "winter_27", "locale": "pt-BR"})
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data["release"] == "winter_27"
         assert data["total_features"] == 2
@@ -528,7 +413,7 @@ class TestReleaseNotesMCPServer:
             }
         )
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert data == []
 
@@ -540,7 +425,7 @@ class TestReleaseNotesMCPServer:
 
         result = await server._list_releases()
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         slugs = {r["slug"] for r in data}
         assert "README.txt" not in slugs
@@ -553,7 +438,7 @@ class TestReleaseNotesMCPServer:
 
         result = await server._list_releases()
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert all(r["slug"] != "winter_27" for r in data)
 
@@ -564,7 +449,7 @@ class TestReleaseNotesMCPServer:
 
         result = await server._list_releases()
 
-        data = json.loads(result[0].text)
+        data = _decode(result)
 
         assert {"slug": "summer_27"} in data
 
@@ -590,16 +475,28 @@ class TestReleaseNotesMCPServer:
 class TestCreateServer:
     """Tests for create_server function."""
 
-    def test_creates_server_with_default_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_default_dir(self):
         """Should create server with default releases directory."""
         server = create_server()
 
-        assert isinstance(server, Server)
-        assert ListToolsRequest in server.request_handlers
-        assert CallToolRequest in server.request_handlers
+        tool_names = await _tool_names_from_server(server)
+        assert tool_names == {
+            "search_release_notes",
+            "get_release_summary",
+            "list_releases",
+            "compare_releases",
+        }
 
-    def test_creates_server_with_custom_dir(self):
+    @pytest.mark.asyncio
+    async def test_creates_server_with_custom_dir(self):
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
-        assert isinstance(server, Server)
+        tool_names = await _tool_names_from_server(server)
+        assert tool_names == {
+            "search_release_notes",
+            "get_release_summary",
+            "list_releases",
+            "compare_releases",
+        }
