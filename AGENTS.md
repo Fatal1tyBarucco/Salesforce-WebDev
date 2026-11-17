@@ -103,6 +103,13 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 - **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
   project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
   Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
+  - **release-please desync (2026-11-17):** release-please (`release-type: python`) bumps
+    `pyproject.toml` version without refreshing `uv.lock`, so every release PR merge ref and the
+    subsequent push to `main` fail this gate (issues #339–#342). After any release-please merge,
+    run `uv lock` on `main` immediately. The durable fix — extending
+    `.github/workflows/dependabot-lock-refresh.yml`'s `if:` to release-please PRs — requires
+    workflow-file write (403 for the Actions token, see below); until an admin lands it, this
+    remains a manual post-release step.
 - **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
   `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
   variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
