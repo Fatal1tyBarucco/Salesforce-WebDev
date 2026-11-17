@@ -446,6 +446,7 @@ Salesforce-WebDev/
   ├── reconcile_summary.md
   ├── update
   └── uv.lock                    # Lockfile determinístico
+
 ```
 
 ## Qualidade de Código
