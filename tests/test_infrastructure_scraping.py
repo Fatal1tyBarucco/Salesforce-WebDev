@@ -296,8 +296,8 @@ class TestCachedScrapingAdapter:
         self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
     ) -> None:
         """Should refetch when cache is expired."""
+        import asyncio
         import tempfile
-        import time
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cached_adapter._cache_dir = tmpdir
@@ -308,7 +308,7 @@ class TestCachedScrapingAdapter:
             assert mock_base_adapter.call_count == 1
 
             # Wait for cache to expire
-            time.sleep(1.1)
+            await asyncio.sleep(1.1)
 
             # Second call - should refetch
             _ = await cached_adapter.execute("https://example.com/page1")

@@ -234,13 +234,13 @@ class TestSemanticCacheAdapter:
         index_file = temp_cache_dir / "index.json"
         assert index_file.exists()
 
+        import asyncio
         import json
 
-        with open(index_file) as f:
-            index = json.load(f)
+        index = await asyncio.to_thread(json.load, index_file.open())
 
         assert len(index) == 1
-        key = list(index.keys())[0]
+        key = next(iter(index.keys()))
         assert "embedding" in index[key]
         assert "prompt_hash" in index[key]
         assert "timestamp" in index[key]

@@ -28,21 +28,15 @@ class ScrapingAdapter:
         raise NotImplementedError("Subclasses must implement execute method")
 
 
-# Legacy aliases
-PlaywrightScrapingAdapter = PlaywrightScrapingAdapter
-CachedScrapingAdapter = CachedScrapingAdapter
-
 __all__ = [
-    # New names
+    "AsyncRateLimiter",
+    "CachedScrapingAdapter",
     "PlaywrightScraperAdapter",
+    "PlaywrightScrapingAdapter",
+    "RateLimitState",
     "SalesforceReleaseScraper",
     "ScraperCacheAdapter",
-    "AsyncRateLimiter",
-    "RateLimitState",
     "ScraperObservabilityAdapter",
-    "configure_structlog",
-    # Legacy names (for characterization tests)
     "ScrapingAdapter",
-    "PlaywrightScrapingAdapter",
-    "CachedScrapingAdapter",
+    "configure_structlog",
 ]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -22,7 +23,7 @@ class MockStep(PipelineStep):
     def __init__(
         self,
         name: str = "mock_step",
-        return_value: any = None,
+        return_value: Any = None,
         should_fail: bool = False,
         fail_with: Exception | None = None,
     ) -> None:
@@ -31,7 +32,7 @@ class MockStep(PipelineStep):
         self.should_fail = should_fail
         self.fail_with = fail_with or RuntimeError("Step failed")
         self.call_count = 0
-        self.last_input: any = None
+        self.last_input: Any = None
 
     @property
     def name(self) -> str:

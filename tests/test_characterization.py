@@ -178,12 +178,12 @@ class TestMarkdownFilesPtBR:
 
     def test_markdown_no_empty_tables(self, golden_markdown_pt_br: dict):
         """Tabelas não devem estar vazias (exceto categorias legitimamente vazias)."""
-        for slug, content in golden_markdown_pt_br.items():
+        for content in golden_markdown_pt_br.values():
             lines = content.split("\n")
             in_table = False
             row_count = 0
             for line in lines:
-                if line.startswith("| Recurso") or line.startswith("| Feature"):
+                if line.startswith(("| Recurso", "| Feature")):
                     in_table = True
                     continue
                 if in_table and line.startswith("| :---"):
@@ -211,7 +211,7 @@ class TestMarkdownFilesEnUS:
 
     def test_en_us_has_english_headers(self, golden_markdown_en_us: dict):
         """Headers devem estar em inglês."""
-        for slug, content in golden_markdown_en_us.items():
+        for content in golden_markdown_en_us.values():
             # Verificar headers em inglês
             if "Feature" in content or "Features" in content:
                 # Tem header em inglês
