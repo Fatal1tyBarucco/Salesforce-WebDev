@@ -107,3 +107,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c5fa520` — fix: restore scheduled-pipeline with only schedule trigger
 - `825b23e` — fix: restore scheduled-pipeline with workflow_dispatch
 - `344cb42` — fix: add event_name guard to scheduled-pipeline jobs to skip ghost push runs
+- `6cd8d37` — refactor(workflows): rewrite AI triage as Python script to handle multiline content
