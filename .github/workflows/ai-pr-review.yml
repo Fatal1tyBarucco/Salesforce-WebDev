@@ -60,7 +60,7 @@ jobs:
         run: uv sync --frozen --extra dev --group dev
 
       - name: 🤖 Run Claude Code Review
-        uses: anthropics/claude-code-action@3b9e5c7f5e8b4d2a1c6f7e8d9a0b1c2d3e4f5a6b # v1.0.0 (SHA placeholder - substituir por SHA real)
+        uses: anthropics/claude-code-action@cc98b3ae241b0fcfb6a42a2690751afffecb4452 # v1.0.278
         if: env.ANTHROPIC_API_KEY != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
