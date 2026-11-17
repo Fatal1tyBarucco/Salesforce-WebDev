@@ -822,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "76971806c7e079952cac5c43ce7650453a0de5a7",
+    "drift_report.json": "491990f9dcb6661dd24552c24cfc8e3aaceeb2d4",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1357,6 +1357,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "ce4ffb3dd590f4d1f89b8b7bee07ae2ea387b580"
   },
-  "generated_at": "2026-11-17T17:45:37.265475+00:00",
-  "repository_sha": "95f5ebab91f2f4a8404e837167ee60723653c59b"
+  "generated_at": "2026-11-17T17:49:31.777738+00:00",
+  "repository_sha": "a17f2e2684b3982f2375d460e08a757d059905b8"
 }
