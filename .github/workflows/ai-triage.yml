@@ -179,34 +179,45 @@ jobs:
       - name: Check missing info
         id: missing
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ steps.analyze.outputs.number }}
           TYPE: ${{ steps.analyze.outputs.type }}
         run: |
+          # Fetch title and body from GitHub API to avoid multiline issues
+          if [ "$TYPE" = "issue" ]; then
+            TITLE=$(gh issue view "$NUMBER" --json title -q .title)
+            BODY=$(gh issue view "$NUMBER" --json body -q .body)
+          else
+            TITLE=$(gh pr view "$NUMBER" --json title -q .title)
+            BODY=$(gh pr view "$NUMBER" --json body -q .body)
+          fi
+
           MISSING=""
 
           if [ "$TYPE" = "issue" ]; then
-            if grep -qiE "bug|error|fail|crash" /tmp/title.txt; then
-              if ! grep -qiE "steps to reproduce|passos para reproduzir|reproduz" /tmp/body.txt; then
+            if echo "$TITLE" | grep -qiE "bug|error|fail|crash"; then
+              if ! echo "$BODY" | grep -qiE "steps to reproduce|passos para reproduzir|reproduz"; then
                 MISSING="$MISSING\n- [ ] Steps to reproduce"
               fi
-              if ! grep -qiE "expected|esperado" /tmp/body.txt; then
+              if ! echo "$BODY" | grep -qiE "expected|esperado"; then
                 MISSING="$MISSING\n- [ ] Expected behavior"
               fi
-              if ! grep -qiE "actual|atual|observado" /tmp/body.txt; then
+              if ! echo "$BODY" | grep -qiE "actual|atual|observado"; then
                 MISSING="$MISSING\n- [ ] Actual behavior"
               fi
-              if ! grep -qiE "logs|log|traceback|stack" /tmp/body.txt; then
+              if ! echo "$BODY" | grep -qiE "logs|log|traceback|stack"; then
                 MISSING="$MISSING\n- [ ] Logs/Traceback"
               fi
             fi
-            if grep -qiE "feature|enhancement|new" /tmp/title.txt; then
-              if ! grep -qiE "user story|historia|acceptance|critério" /tmp/body.txt; then
+            if echo "$TITLE" | grep -qiE "feature|enhancement|new"; then
+              if ! echo "$BODY" | grep -qiE "user story|historia|acceptance|critério"; then
                 MISSING="$MISSING\n- [ ] User story / Acceptance criteria"
               fi
           else
-            if ! grep -qiE "related|fixes|closes|issue" /tmp/body.txt; then
+            if ! echo "$BODY" | grep -qiE "related|fixes|closes|issue"; then
               MISSING="$MISSING\n- [ ] Related issue (e.g., Fixes #123)"
             fi
-            if ! grep -qiE "test|tested|coverage" /tmp/body.txt; then
+            if ! echo "$BODY" | grep -qiE "test|tested|coverage"; then
               MISSING="$MISSING\n- [ ] Test evidence"
             fi
           fi
