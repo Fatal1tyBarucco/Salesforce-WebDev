@@ -4,8 +4,8 @@ name: Scheduled Pipeline (Knowledge-as-Code)
 
 on:
   push:
-    branches-ignore:
-      - '**'
+    branches:
+      - 'no-push-trigger'
   schedule:
     - cron: "0 8 * * 1"
   workflow_dispatch:

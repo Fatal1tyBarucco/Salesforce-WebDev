@@ -4,8 +4,8 @@ name: CI Repair
 
 on:
   push:
-    branches-ignore:
-      - '**'
+    branches:
+      - 'no-push-trigger'
   workflow_run:
     workflows: ["Python Quality"]
     types: [completed]

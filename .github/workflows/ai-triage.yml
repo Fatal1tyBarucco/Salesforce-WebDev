@@ -4,8 +4,8 @@ name: AI Triage
 
 on:
   push:
-    branches-ignore:
-      - '**'
+    branches:
+      - 'no-push-trigger'
   issues:
     types: [opened, reopened, labeled, unlabeled]
   pull_request:
