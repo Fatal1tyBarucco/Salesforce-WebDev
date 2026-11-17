@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "623760e5325047bba24a6876e998d8cdc27655b9",
-  "generated_at": "2026-11-17T09:56:21.007649+00:00",
+  "repository_sha": "6e0705ee9859422bacd0ab7927aec91bc9530a01",
+  "generated_at": "2026-11-17T10:05:09.413316+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -49,50 +49,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "src/ai/generators/markdown.py",
-      "detail": "'src/ai/generators/markdown.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/release_summarizer.py",
-      "detail": "'src/release_summarizer.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_ai_integration.py",
-      "detail": "'tests/test_ai_integration.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_characterization.py",
-      "detail": "'tests/test_characterization.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_main_coverage.py",
-      "detail": "'tests/test_main_coverage.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_release_docs.py",
-      "detail": "'tests/test_release_docs.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": "commit_fixes.sh",
-      "detail": "'commit_fixes.sh' is new since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": "pr_body.md",
-      "detail": "'pr_body.md' is new since last manifest baseline."
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
