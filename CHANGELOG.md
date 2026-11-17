@@ -2,6 +2,26 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.2...v0.1.3) (2026-11-17)
+
+
+### Bug Fixes
+
+* **workflows:** correct pull_requests to pull-requests permission ([ecdf716](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/ecdf716d2b1a693358d5ef11e46dc8535ba672d9))
+* **workflows:** use correct 'projects' permission for GitHub Projects V2 ([181e7fd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/181e7fd854bbb3c99f5424b69e765cfc72182de8))
+* **workflows:** use env vars for issue/PR body to handle newlines ([84e21ce](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/84e21ce6c8c710111ba90abec118ebecf2e8b476))
+* **workflows:** use real SHA for anthropics/claude-code-action ([b7305ec](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b7305ecb9ee0f18e31c99241e2d426cd3309d733))
+* **workflows:** use valid 'repository-projects' permission ([258ea1b](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/258ea1b12a8eae2abbe97fde888601a1d85c3fc5))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-17 10:39 UTC ([01bb717](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/01bb7175432f6897965c8a5a1fb830788d82a57a))
+* **sync:** reconcile documentation — 2026-11-17 10:45 UTC ([771cfb7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/771cfb7c61bdfa3955643ffd657a7580d7a808d9))
+* **sync:** reconcile documentation — 2026-11-17 10:50 UTC ([5675c97](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5675c977a0efcd8aa907b891120640275ecfd18b))
+* **sync:** reconcile documentation — 2026-11-17 10:52 UTC ([2964ecc](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/2964ecc79851d1c8a31e66fea52d1509cb32beca))
+* **sync:** reconcile documentation — 2026-11-17 10:55 UTC ([7130629](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/71306297ccba9f7ff1ef11117de596206fc176bc))
+
 ## [0.1.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.1...v0.1.2) (2026-11-17)
 
 
