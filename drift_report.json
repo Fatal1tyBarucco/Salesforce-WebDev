@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "dfba33018d13a5ae5a415826dc7c3196238fb2cb",
-  "generated_at": "2026-11-17T04:25:10.143714+00:00",
+  "repository_sha": "f289154b03aa7419af545c1b5b18b688b86b81cb",
+  "generated_at": "2026-11-17T04:26:51.360462+00:00",
   "inventory_count": 782,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,20 +43,38 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "README.md",
-      "detail": "'README.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-pr-review.yml",
+      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ai-triage.yml",
+      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ci-repair.yml",
+      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/opencode.yml",
+      "detail": "'.github/workflows/opencode.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
