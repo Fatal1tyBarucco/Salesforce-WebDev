@@ -2,6 +2,45 @@
 
 <!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
 
+## [0.1.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.0...v0.1.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* correct badge label color default and add missing emoji keys ([e4917f9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e4917f9f51ab8160fcee51a2fdfa18bdd06d04eb))
+* **docs:** install package in editable mode for mkdocstrings ([2a676b7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/2a676b7b64a79222b9600ebed1f2b29241daa16c))
+* migrate MCP server to FastMCP API; fix characterization test golden files ([3e78019](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3e7801998ed1a09adc4b15bb4c2eb23e8fde17e4))
+* **quality:** restore characterization goldens and scope docs engine off tests/ ([e07dd12](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e07dd12c3765176e47caeb34077816cda17ee75a))
+* **quality:** sync uv.lock, restore README block format, align MCP tests with FastMCP ([74f86d8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/74f86d84c17faad9c8f10d455ae346af78e68b6d))
+* resolve all quality gate failures and MCP 1.30.0 compatibility ([900b8a6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/900b8a69fd5feadec05b522a0f77ec64519abfe3))
+* resolve Python Quality gate failures ([bf45058](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/bf450585d6865be9cbbe47da353a06ded1fdd764))
+* **tests:** regenerate corrupted summarizer golden files ([aefc8cd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/aefc8cdb93735915f8cabe22ce6c1084a8fbd83a))
+* update MCP server to FastMCP API v2 ([e0c3f3e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e0c3f3e13ae196c75c7dbfa024b351f38672f2f9))
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([1775e78](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/1775e782da7aa07440813afcfe6c742fb3708f0d))
+* atualização automática via IA [skip ci] ([ddc3be8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/ddc3be810262d58198bd138372ac591d15f27926))
+* atualização automática via IA [skip ci] ([94b0cc9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/94b0cc9a7a013e789c662dea214e87d17723f4c4))
+* atualização automática via IA [skip ci] ([b81797c](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b81797cc1d9da7afc27df53b8356482fe9b6fdee))
+* atualização automática via IA [skip ci] ([8ccfecb](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8ccfecb58917c8062a39c3b401fa6ceeb14531b7))
+* final reconcile navigation and inventory ([dad5a49](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/dad5a49d3866257fc97788c8bc0d794cef0e4e27))
+* fix broken links in test golden files and update manifest ([e359b1d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e359b1d0dae4956f5c1c1d4d9292c43a2f995c79))
+* fix broken links in test golden files with correct relative paths and update manifest ([70084fb](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/70084fb7af3b8489076ac4522f92bf93be8cb2da))
+* resolve manifest merge conflict ([47b91e5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/47b91e55fbb92dbc788ed41774f094be6e18c7cd))
+* resolve merge conflicts in manifest ([544edf1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/544edf1a93b4d16536ffab3a3c9512800dcfee64))
+* sync with remote reconcile ([9cd8d75](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9cd8d75b6a897a27077d5e134ea96ec09d653209))
+* **sync:** final reconcile and manifest update ([7878008](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/78780086fde6e0fb964486a7c19560c2b367e487))
+* **sync:** reconcile documentation — 2026-11-16 14:38 UTC ([0475ad5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/0475ad519efa25fde347f530ef5216de45807436))
+* **sync:** reconcile documentation — 2026-11-16 14:43 UTC ([80e4181](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/80e4181bcc32b31230f9d5f7a9d201f7f9e2cf71))
+* **sync:** reconcile documentation — 2026-11-16 14:51 UTC ([54187db](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/54187db07708192d339f38d40d7e7dbede7995a4))
+* **sync:** reconcile documentation — 2026-11-16 15:39 UTC ([a1c4fb8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a1c4fb815f247d80a61196ddfb97758c49b6bcbf))
+* **sync:** reconcile documentation — 2026-11-16 16:41 UTC ([71594a6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/71594a654e5077e35c466dd07fb5815a73a54a60))
+* **sync:** reconcile documentation — 2026-11-16 17:51 UTC ([e8114ea](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e8114ea3e49916ac70a9701f3c5e45da2876b7af))
+* **sync:** reconcile documentation — 2026-11-16 18:53 UTC ([3f56320](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3f56320c8c6a2b58fe440b2eb8cdd665563b23b6))
+* **sync:** reconcile documentation and fix test links ([1fe0fca](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/1fe0fcabfe97f9c5001b255d1e796e83a2a4ac6c))
+
 ## [Unreleased]
 
 ### Changed
