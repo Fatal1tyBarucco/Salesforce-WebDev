@@ -41,16 +41,19 @@ jobs:
           # Determine type and number
           if [ "$EVENT_NAME" = "issues" ] || [ -n "$ISSUE_NUMBER" ]; then
             NUMBER="$ISSUE_NUMBER"
-            TITLE="$ISSUE_TITLE"
-            BODY="$ISSUE_BODY"
+            printf '%s\n' "$ISSUE_TITLE" > /tmp/title.txt
+            printf '%s\n' "$ISSUE_BODY" > /tmp/body.txt
             TYPE="issue"
           else
             NUMBER="$PR_NUMBER"
-            TITLE="$PR_TITLE"
-            BODY="$PR_BODY"
+            printf '%s\n' "$PR_TITLE" > /tmp/title.txt
+            printf '%s\n' "$PR_BODY" > /tmp/body.txt
             TYPE="pr"
           fi
 
+          # Read from files to handle newlines safely
+          TITLE=$(cat /tmp/title.txt)
+          BODY=$(cat /tmp/body.txt)
           TEXT="${TITLE} ${BODY}"
           TEXT_LOWER=$(echo "$TEXT" | tr '[:upper:]' '[:lower:]')
 
@@ -145,12 +148,10 @@ jobs:
         id: duplicates
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
           NUMBER: ${{ steps.analyze.outputs.number }}
           TYPE: ${{ steps.analyze.outputs.type }}
         run: |
-          TITLE="${ISSUE_TITLE:-$PR_TITLE}"
+          TITLE=$(cat /tmp/title.txt)
           KEYWORDS=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '|')
 
           if [ "$TYPE" = "issue" ]; then
@@ -184,34 +185,35 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          BODY="${ISSUE_BODY:-$PR_BODY}"
-          TITLE="${ISSUE_TITLE:-$PR_TITLE}"
+          # Write body to file to handle newlines safely
+          printf '%s\n' "${ISSUE_BODY:-$PR_BODY}" > /tmp/body.txt
+          printf '%s\n' "${ISSUE_TITLE:-$PR_TITLE}" > /tmp/title.txt
           MISSING=""
 
           if [ "$TYPE" = "issue" ]; then
-            if echo "$TITLE" | grep -qiE "bug|error|fail|crash"; then
-              if ! echo "$BODY" | grep -qiE "steps to reproduce|passos para reproduzir|reproduz"; then
+            if grep -qiE "bug|error|fail|crash" /tmp/title.txt; then
+              if ! grep -qiE "steps to reproduce|passos para reproduzir|reproduz" /tmp/body.txt; then
                 MISSING="$MISSING\n- [ ] Steps to reproduce"
               fi
-              if ! echo "$BODY" | grep -qiE "expected|esperado"; then
+              if ! grep -qiE "expected|esperado" /tmp/body.txt; then
                 MISSING="$MISSING\n- [ ] Expected behavior"
               fi
-              if ! echo "$BODY" | grep -qiE "actual|atual|observado"; then
+              if ! grep -qiE "actual|atual|observado" /tmp/body.txt; then
                 MISSING="$MISSING\n- [ ] Actual behavior"
               fi
-              if ! echo "$BODY" | grep -qiE "logs|log|traceback|stack"; then
+              if ! grep -qiE "logs|log|traceback|stack" /tmp/body.txt; then
                 MISSING="$MISSING\n- [ ] Logs/Traceback"
               fi
             fi
-            if echo "$TITLE" | grep -qiE "feature|enhancement|new"; then
-              if ! echo "$BODY" | grep -qiE "user story|historia|acceptance|critério"; then
+            if grep -qiE "feature|enhancement|new" /tmp/title.txt; then
+              if ! grep -qiE "user story|historia|acceptance|critério" /tmp/body.txt; then
                 MISSING="$MISSING\n- [ ] User story / Acceptance criteria"
               fi
           else
-            if ! echo "$BODY" | grep -qiE "related|fixes|closes|issue"; then
+            if ! grep -qiE "related|fixes|closes|issue" /tmp/body.txt; then
               MISSING="$MISSING\n- [ ] Related issue (e.g., Fixes #123)"
             fi
-            if ! echo "$BODY" | grep -qiE "test|tested|coverage"; then
+            if ! grep -qiE "test|tested|coverage" /tmp/body.txt; then
               MISSING="$MISSING\n- [ ] Test evidence"
             fi
           fi
