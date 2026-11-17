@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: definir e documentar a política final do portão de qualidade (Black versus Ruff), eliminando a alternância de adição e remoção do job no workflow; mapear os consumidores do servidor MCP e validar a compatibilidade com a FastMCP API antes de ampliar a adoção; avaliar a inclusão de testes de contrato para a interface do servidor MCP, dado que a migração exigiu regeneração dos golden files; revisar o conteúdo produzido pela atualização automática de documentação por IA antes de incorporá-lo à documentação oficial; monitorar a estabilidade dos workflows de documentação e de qualidade após as correções aplicadas; considerar verificação automatizada de que o manifesto de documentação permanece consistente com os artefatos gerados.
+
+---
 
 ## Nova atualização
 

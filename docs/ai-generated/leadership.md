@@ -1,6 +1,16 @@
-<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Impacto de negócio: a atualização prioriza a confiabilidade do pipeline (correções nos workflows de documentação e de qualidade) e a modernização do servidor MCP, esta última com impacto alto por reescrever a implementação principal e exigir regeneração dos testes ouro. Os demais itens — lint, formatação, configuração de portas de qualidade, instalação editável para documentação, reconciliação de manifesto e marcação de release — têm impacto baixo e não alteram comportamento funcional de forma direta.
+
+Riscos: consumidores do servidor MCP podem precisar de adaptação à FastMCP API; a configuração do portão de qualidade Black está contraditória entre commits (adição, remoção e restauração do job), o que pode gerar falhas intermitentes no pipeline; e há um commit de documentação gerada por IA sem detalhes no corpo, que deve ser revisado.
+
+Próximos passos: definir a política final de formatação (Black ou Ruff) e alinhar workflow e documentação interna; validar a compatibilidade dos consumidores com a API MCP migrada e confirmar a cobertura dos testes após a regeneração dos golden files; revisar o conteúdo de documentação gerado automaticamente antes de publicá-lo.
+
+---
 
 ## Nova atualização
 

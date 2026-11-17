@@ -1,6 +1,51 @@
-<!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização concentra-se na estabilidade do pipeline de integração contínua e na modernização do servidor MCP. As correções nos workflows de documentação e de qualidade endereçam falhas que comprometiam a geração automática de documentação e a execução do gate Python, com impacto médio e prioridade alta. A migração do servidor MCP para a FastMCP API, com pinagem do pacote mcp na versão 1.30.0, é a mudança de maior impacto desta execução: ela reescreve a implementação principal do servidor e exige regeneração dos arquivos de teste ouro, podendo afetar integrações que dependem da API MCP anterior. Não há breaking change formalmente classificado, mas consumidores do servidor MCP devem ser validados.
+
+Os demais itens são de impacto baixo: correções de lint Ruff e organização de imports, formatação Black, configuração das portas de qualidade, instalação editável do pacote para o mkdocstrings, reconciliação automática da documentação com atualização de manifesto e a marcação da versão de release com sincronização do arquivo de lock.
+
+Riscos e revisão: a configuração do portão de qualidade Black aparece de forma contraditória entre os commits (adição, remoção e restauração do job), e há um commit de atualização automática de documentação via IA sem detalhes no corpo — ambos sinalizados para revisão humana antes de consolidar a política final.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Correção de falhas no GitHub Actions e sincronização de documentação — 📋 bugfix** | Vários commits corrigem falhas no GitHub Actions, incluindo uso de 'git add -A' no documentation-… | 🟡 medium | .github/workflows/documentation-sync.yml, .github/workflows/documentation-build.yml, .github/workflows/python-quality.yml · Prioridade: 💡 P1 |
+| **Migração do servidor MCP para FastMCP API (mcp 1.30.0) — 📋 refactor** | Reescrita de knowledge_server.py para usar FastMCP em vez da API de baixo nível Server, atualizaç… | 🔴 high | src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py, pyproject.toml · Prioridade: 💡 P1 |
+| **Correções de lint Ruff e organização de imports — 📋 refactor** | Correção de erros E402 (import de nível de módulo no topo do arquivo) e diversos problemas Ruff (… | 🟢 low | src/infrastructure/llm_adapters/unified_client.py, tests/infrastructure/llm_coverage.py, src/domain/llm.py, vários arquivos de teste · Prioridade: 💡 P2 |
+| **Reconciliação automática de documentação e atualização de manifesto — 📋 documentation** | Commits docs(sync) reconciliam documentação, atualizam docs/.documentation-manifest.json com novo… | 🟢 low | docs/.documentation-manifest.json, drift_report.json, .github/scripts/docs_sync_engine.py, docs/ · Prioridade: 💡 P3 |
+| **Release da versão 0.1.1 — 📋 documentation** | Commits chore(main): release 0.1.1 e atualização de uv.lock para corresponder à versão 0.1.1 no p… | 🟢 low | pyproject.toml, uv.lock, CHANGELOG.md · Prioridade: 💡 P3 |
+| **Configuração de portas de qualidade Black e Ruff — 📋 refactor** | Atualização de CLAUDE.md, pyproject.toml, .claude/settings.json e adição de .ruffignore para excl… | 🟢 low | .claude/settings.json, pyproject.toml, .ruffignore, CLAUDE.md · Prioridade: 💡 P2 |
+| **Instalação editável do pacote para mkdocstrings — 📋 bugfix** | Adição de src/domain/__init__.py para tornar domain um pacote adequado e atualização do documenta… | 🟢 low | src/domain/__init__.py, .github/workflows/documentation-build.yml · Prioridade: 💡 P2 |
+| **Formatação Black e ajustes de estilo de código — 📋 refactor** | Aplicação de formatação Black para corrigir o portão de qualidade Python, incluindo remoção e res… | 🟢 low | .github/workflows/python-quality.yml, arquivos Python diversos · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (12%) 🔴
+🟡 Médio: **1** (12%) 🟡
+🟢 Baixo: **6** (75%) 🟢🟢🟢🟢🟢🟢
+
+Total: **8 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │███████████████░░░░░░░░░░░░░░░│    2 →
+📋 documentation      │███████████████░░░░░░░░░░░░░░░│    2 →
+📋 refactor           │██████████████████████████████│    4 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▁▁█
+
+
+## Revisão Necessária
+
+- **Configuração contraditória do portão de qualidade Black** — Verificar decisão final entre Black e Ruff como portão de qualidade obrigatório. (0.60)
+- **Atualização automática de documentação via IA** — Revisar conteúdo gerado por IA antes de incorporar à documentação oficial. (0.50)
+
+---
 
 ## Nova atualização
 

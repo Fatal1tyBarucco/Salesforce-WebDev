@@ -1,5 +1,20 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Changed
+- Migrated the MCP knowledge server to the FastMCP API and pinned the `mcp` package to 1.30.0, regenerating characterization test golden files; integrations relying on the previous MCP server API may require updates.
+- Reconciled generated documentation and refreshed `docs/.documentation-manifest.json` hashes, the drift report and the documentation sync scripts.
+- Updated quality gate configuration for Black and Ruff and added `.ruffignore` to exclude non-Python files from linting.
+- Applied Black formatting and resolved Ruff findings (module-level import placement, unused imports and related rules) across source and test files.
+- Marked the 0.1.1 release and synchronized `uv.lock` with the declared project version.
+
+### Fixed
+- Fixed GitHub Actions failures across the documentation sync, documentation build and Python quality workflows, including staging of all modified files during documentation sync.
+- Installed the package in editable mode and added `src/domain/__init__.py` so mkdocstrings can resolve `src.domain.llm` during documentation builds.
+
 <!-- gerado por IA em 2026-11-16T16:44:36+00:00 — revisar antes de publicar -->
 
 ## [0.1.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.0...v0.1.1) (2026-11-16)
