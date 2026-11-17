@@ -242,9 +242,9 @@ class TestBuildReleaseBlockDeterministic:
         result = asyncio.run(_build_release_block(metas, "pt_BR", _StubSummarizer()))
         open_count = result.count("<details>")
         close_count = result.count("</details>")
-        assert open_count == close_count, (
-            f"Unbalanced <details>: {open_count} open vs {close_count} close"
-        )
+        assert (
+            open_count == close_count
+        ), f"Unbalanced <details>: {open_count} open vs {close_count} close"
 
     def test_en_us_language_labels(self) -> None:
         """en_US locale uses English labels and 'features' count."""
