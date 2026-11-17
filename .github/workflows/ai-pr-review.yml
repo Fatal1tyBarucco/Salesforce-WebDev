@@ -6,8 +6,6 @@
 name: AI PR Review
 
 on:
-  push:
-    branches: ['no-push-trigger']
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
@@ -29,13 +27,6 @@ env:
   UV_CACHE_DIR: /tmp/uv-cache
 
 jobs:
-  push-trigger:
-    name: Push Trigger
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Push trigger - AI PR Review not designed to run on push; skipping real jobs"
-
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🤖 CLAUDE CODE REVIEW                                      │
   # │  Usa anthropics/claude-code-action para revisar PR          │
@@ -43,7 +34,7 @@ jobs:
   claude-review:
     name: 🤖 Claude Code Review
     runs-on: ubuntu-latest
-    if: github.event_name != 'push' && (github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')))
+    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     permissions:
       contents: read
       pull_requests: write
@@ -110,7 +101,6 @@ jobs:
   security-audit:
     name: 🔒 Security Audit
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
     permissions:
       contents: read
       security-events: write

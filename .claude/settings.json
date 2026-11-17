@@ -15,12 +15,12 @@
       "Bash(git remote*)",
       "Bash(gh*)",
       "Bash(python3*)",
-      "Read(*)",
-      "Glob(*)",
-      "Grep(*)",
-      "LS(*)",
-      "Edit(.github/workflows/*)",
-      "Write(.github/workflows/*)"
+      "Read",
+      "Glob",
+      "Grep",
+      "LS",
+      "Edit",
+      "Write"
     ],
     "deny": [
       "Bash(rm -rf*)",
@@ -40,8 +40,30 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run ruff check --fix \"$FILE\" && uv run ruff format \"$FILE\"",
+            "command": ".claude/hooks/post-tool-use.py",
             "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-commit.py",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-push.py",
+            "timeout": 120
           }
         ]
       }
@@ -62,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '=== REPO STATE ===' && git branch --show-current && git status --short && echo '=== GATES ===' && uv run ruff check . --quiet && echo 'ruff: OK' && uv run ruff format --check . --quiet && echo 'ruff format: OK' && uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && echo 'mypy: OK'",
+            "command": ".claude/hooks/session-start.py",
             "timeout": 60
           }
         ]

@@ -3,9 +3,6 @@
 name: AI Triage
 
 on:
-  push:
-    branches:
-      - 'no-push-trigger'
   issues:
     types: [opened, reopened, labeled, unlabeled]
   pull_request:
@@ -196,7 +193,6 @@ jobs:
               if ! echo "$BODY" | grep -qiE "user story|historia|acceptance|critério"; then
                 MISSING="$MISSING\n- [ ] User story / Acceptance criteria"
               fi
-            fi
           else
             if ! echo "$BODY" | grep -qiE "related|fixes|closes|issue"; then
               MISSING="$MISSING\n- [ ] Related issue (e.g., Fixes #123)"
