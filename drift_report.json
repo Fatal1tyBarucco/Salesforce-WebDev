@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "84490a2a539e0a9821f6b635199a52b907f4ead9",
-  "generated_at": "2026-11-17T10:07:53.680751+00:00",
-  "inventory_count": 788,
+  "repository_sha": "35c2cd102ce312ced3ad080fbbb70695e086775d",
+  "generated_at": "2026-11-17T10:09:19.182478+00:00",
+  "inventory_count": 789,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -53,16 +53,10 @@
       "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_FILE",
-      "severity": "medium",
-      "path": ".github/workflows/scheduled-pipeline.yml.bak",
-      "detail": "'.github/workflows/scheduled-pipeline.yml.bak' is in manifest but missing from repo."
-    },
-    {
       "type": "MANIFEST_NEW_FILE",
       "severity": "info",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' is new since last manifest baseline."
+      "path": ".github/workflows/test-trigger.yml",
+      "detail": "'.github/workflows/test-trigger.yml' is new since last manifest baseline."
     }
   ]
 }
