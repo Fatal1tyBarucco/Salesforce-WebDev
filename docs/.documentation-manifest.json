@@ -73,9 +73,6 @@
     ".github/workflows/salesforce_release_intelligence_hub.yml": [
       "docs/ai-generated/release-notes.md"
     ],
-    ".github/workflows/scheduled-pipeline.yml": [
-      "docs/MODERNIZACAO.md"
-    ],
     "scripts/detect_release.py": [
       "docs/MODERNIZACAO.md"
     ],
@@ -629,7 +626,7 @@
     ".github/workflows/release-please.yml": "a4247493247010de05a57657b1ea1ba77237ea82",
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
-    ".github/workflows/scheduled-pipeline.yml": "bccb8c45332dc6568e1f80c8d3d326276e621867",
+    ".github/workflows/scheduled-pipeline.yml.bak": "bccb8c45332dc6568e1f80c8d3d326276e621867",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
@@ -664,7 +661,7 @@
     "docs/.last-processed-ref": "0e3a83f24083fe63ce6bfc15c6dc465ea3806628",
     "docs/ARQUITETURA.md": "e6806aa1b96195a5bd88f27b00898be39f7467a6",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
-    "docs/MODERNIZACAO.md": "e55877d77caec006676d5a69c6bf222979cb357a",
+    "docs/MODERNIZACAO.md": "20b50cb2021ae4cb08d25fc127fdaa12f3ca8b2b",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
     "docs/ai-generated/leadership.md": "5c8ccd77c36a7f257bce9cb153cf46b1b6b59287",
     "docs/ai-generated/release-notes.md": "1ac2660387304ee90ce5572fe9728c3c43195da3",
@@ -822,7 +819,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "de3a83cf11f5838fea0293f13aa68d35ba65e505",
+    "drift_report.json": "8b14bb346547dbac23abe55e578d3b2fc63f7e28",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1357,6 +1354,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T10:05:09.534303+00:00",
-  "repository_sha": "6e0705ee9859422bacd0ab7927aec91bc9530a01"
+  "generated_at": "2026-11-17T10:07:23.897691+00:00",
+  "repository_sha": "c7c0ce7590ff059a7c2a4b58cdc11ceb5445fa5a"
 }
