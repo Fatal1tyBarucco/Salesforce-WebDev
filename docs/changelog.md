@@ -104,3 +104,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `f1761d0` — test: restore scheduled-pipeline workflow
 - `d44c366` — fix: remove workflow_dispatch from scheduled-pipeline to test push trigger
 - `14a93bd` — test: delete scheduled-pipeline to verify trigger source
+- `c5fa520` — fix: restore scheduled-pipeline with only schedule trigger
