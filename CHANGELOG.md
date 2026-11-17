@@ -2,6 +2,20 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.6...v0.1.7) (2026-11-17)
+
+
+### Bug Fixes
+
+* **ci:** sync uv.lock project version to 0.1.5 after release-please bump ([9a873af](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9a873afd9fd9cee6d4a104d33ac85eaf5c283a32))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-17 17:44 UTC ([535d78e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/535d78e3362442d5272b27b916f0eca91af0beba))
+* **sync:** reconcile documentation — 2026-11-17 17:45 UTC ([79af329](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/79af3290464106f8a44abda153b5a0c7eb1baeca))
+* **sync:** reconcile documentation — 2026-11-17 17:49 UTC ([881e19a](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/881e19a9cdca148e43ad9502217874af9b3140f4))
+
 ## [0.1.6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.5...v0.1.6) (2026-11-17)
 
 
