@@ -641,8 +641,8 @@
     ".promptfoo.yaml": "678cb8bae6c531c1091274f2cb366a46a8d9e6b1",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "cdfb804d7210377e044d8bccce1c1bc3cb57a2eb",
-    "CHANGELOG.md": "6c50b089fa08947c86fc88c43af6351547009896",
+    "AGENTS.md": "6f737758d69bef5898a9bae9c81299fb0aa22292",
+    "CHANGELOG.md": "5bb9f064f301e80f430039fb72313b023fa9d8d7",
     "CLAUDE.md": "9f3e3a462fe84b7486e445498baacf5ff575295f",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "5a78723bbec7e169dd35599bbae0a9221d97d20a",
+    "drift_report.json": "76971806c7e079952cac5c43ce7650453a0de5a7",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -839,7 +839,7 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "6fce5316f29e2a7024cb1d11a4c757fedeb9ad1b",
+    "pyproject.toml": "19f6d78785f6b8be3ed5db3b9e1f8bfc948f61de",
     "reconcile_summary.md": "04e097f05b2d16bf911539189a48ad8ae064bf1c",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -1356,8 +1356,8 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "b5b5dc223bc43c14c4c35bc4951d3b7718f7fb72"
+    "uv.lock": "ce4ffb3dd590f4d1f89b8b7bee07ae2ea387b580"
   },
-  "generated_at": "2026-11-17T11:37:26.437451+00:00",
-  "repository_sha": "d404d3ca9edd4787b3e59a35bb5392f5fef182f1"
+  "generated_at": "2026-11-17T17:45:37.265475+00:00",
+  "repository_sha": "95f5ebab91f2f4a8404e837167ee60723653c59b"
 }
