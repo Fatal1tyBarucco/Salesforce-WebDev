@@ -2,6 +2,13 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.5...v0.1.6) (2026-11-17)
+
+
+### Bug Fixes
+
+* **ci:** sync uv.lock with project version 0.1.5 ([d9dcc91](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d9dcc914eb10ff5dea941a9c1bc0c57d3fb06dbb))
+
 ## [0.1.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.4...v0.1.5) (2026-11-17)
 
 
