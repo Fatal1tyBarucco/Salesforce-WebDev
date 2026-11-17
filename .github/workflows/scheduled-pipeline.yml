@@ -5,17 +5,6 @@ name: Scheduled Pipeline (Knowledge-as-Code)
 on:
   schedule:
     - cron: "0 8 * * 1"
-  workflow_dispatch:
-    inputs:
-      release_slug:
-        description: "Release slug to process (e.g., winter_27)"
-        required: false
-        type: string
-      dry_run:
-        description: "Dry-run (does not write to releases/)"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -23,7 +12,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: scheduled-pipeline-${{ github.ref }}-${{ github.event.inputs.release_slug || 'auto' }}
+  group: scheduled-pipeline-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -60,8 +49,6 @@ jobs:
 
       - name: Check for new release
         id: check
-        env:
-          TARGET_SLUG: ${{ github.event.inputs.release_slug }}
         run: |
           python3 scripts/detect_release.py >> $GITHUB_OUTPUT
 
@@ -100,16 +87,10 @@ jobs:
 
       - name: Run pipeline
         id: pipeline
-        env:
-          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
-          DRY_RUN_FLAG=""
-          if [ "$DRY_RUN" = "true" ]; then
-            DRY_RUN_FLAG="--dry-run"
-          fi
-          echo "Processing release: $RELEASE_SLUG (dry-run: $DRY_RUN)"
-          uv run python -m src.main --release "$RELEASE_SLUG" $DRY_RUN_FLAG
+          echo "Processing release: $RELEASE_SLUG"
+          uv run python -m src.main --release "$RELEASE_SLUG"
 
           if git diff --quiet; then
             echo "has-changes=false" >> $GITHUB_OUTPUT
