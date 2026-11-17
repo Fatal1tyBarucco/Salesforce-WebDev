@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "c35656706c59075d181fa40abb7ad8b76c28a077",
-  "generated_at": "2026-11-17T10:17:33.448049+00:00",
-  "inventory_count": 789,
+  "repository_sha": "466150260429de6b6d587d3445c48d67b36e50d6",
+  "generated_at": "2026-11-17T10:21:38.982713+00:00",
+  "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,20 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
+      "type": "MANIFEST_STALE_FILE",
+      "severity": "medium",
+      "path": ".github/workflows/test-trigger.yml",
+      "detail": "'.github/workflows/test-trigger.yml' is in manifest but missing from repo."
     }
   ]
 }
