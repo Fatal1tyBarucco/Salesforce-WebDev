@@ -629,7 +629,7 @@
     ".github/workflows/release-please.yml": "a4247493247010de05a57657b1ea1ba77237ea82",
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
-    ".github/workflows/scheduled-pipeline.yml": "bccb8c45332dc6568e1f80c8d3d326276e621867",
+    ".github/workflows/scheduled-pipeline.yml": "6d14f41c3b94a88257d924742afe9e3141237a42",
     ".github/workflows/test-trigger.yml": "1dc489a07458f2ba14ff61fe65c3290628b7c87d",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -793,7 +793,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "d6aa7879b37d0ddf0acbc514a4c5b528c8c17a7b",
+    "docs/changelog.md": "4cc6d749fdf99ffef2e9b58365fe337601389657",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "146cf3efe307836c1472d1f6694a2c1bbd900fc7",
+    "drift_report.json": "5916713cfd583a94e773ee411925da9471a9c608",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -840,7 +840,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "214c19db54fea88730b0e0e441eb17237936e3fa",
-    "reconcile_summary.md": "04e097f05b2d16bf911539189a48ad8ae064bf1c",
+    "reconcile_summary.md": "757dd0cbdbf83fc09de5bf90c5d17c1a110c178b",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1358,6 +1358,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T10:09:19.380700+00:00",
-  "repository_sha": "35c2cd102ce312ced3ad080fbbb70695e086775d"
+  "generated_at": "2026-11-17T10:12:10.543092+00:00",
+  "repository_sha": "5083b500a4e26e90b31116e3667ec4b72ebc648d"
 }

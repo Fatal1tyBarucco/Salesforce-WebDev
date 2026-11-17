@@ -102,3 +102,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `ed0b6a9` — style(format): apply Black formatting to pass Python Quality gate
 - `a5de784` — style(quality): format codebase with black 26.10.1
 - `f1761d0` — test: restore scheduled-pipeline workflow
+- `d44c366` — fix: remove workflow_dispatch from scheduled-pipeline to test push trigger
