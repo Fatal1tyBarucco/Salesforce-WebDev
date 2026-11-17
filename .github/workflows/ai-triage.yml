@@ -3,9 +3,6 @@
 name: AI Triage
 
 on:
-  push:
-    branches:
-      - 'no-push-trigger'
   issues:
     types: [opened, reopened, labeled, unlabeled]
   pull_request:
@@ -146,13 +143,13 @@ jobs:
           TYPE="${{ steps.analyze.outputs.type }}"
           TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
           KEYWORDS=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '|')
-          
+
           if [ "$TYPE" = "issue" ]; then
             SIMILAR=$(gh issue list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
           else
             SIMILAR=$(gh pr list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
           fi
-          
+
           if [ -n "$SIMILAR" ]; then
             echo "has-duplicates=true" >> $GITHUB_OUTPUT
             echo "duplicates=$SIMILAR" >> $GITHUB_OUTPUT
@@ -176,7 +173,7 @@ jobs:
           BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
           TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
           MISSING=""
-          
+
           if [ "$TYPE" = "issue" ]; then
             if echo "$TITLE" | grep -qiE "bug|error|fail|crash"; then
               if ! echo "$BODY" | grep -qiE "steps to reproduce|passos para reproduzir|reproduz"; then
@@ -205,7 +202,7 @@ jobs:
               MISSING="$MISSING\n- [ ] Test evidence"
             fi
           fi
-          
+
           if [ -n "$MISSING" ]; then
             echo "has-missing=true" >> $GITHUB_OUTPUT
             echo "missing_info=$MISSING" >> $GITHUB_OUTPUT
@@ -229,13 +226,13 @@ jobs:
           NUMBER="${{ steps.analyze.outputs.number }}"
           TYPE="${{ steps.analyze.outputs.type }}"
           PRIORITY="${{ steps.analyze.outputs.priority }}"
-          
+
           case "$PRIORITY" in
             P0|P1) STATUS="3808f0ce" ;;  # In Progress
             P2) STATUS="a368d611" ;;      # Backlog
             *) STATUS="a368d611" ;;
           esac
-          
+
           ISSUE_ID=$(gh "$TYPE" view $NUMBER --json id -q .id 2>/dev/null)
           if [ -n "$ISSUE_ID" ]; then
             gh api graphql -f query="
@@ -245,7 +242,7 @@ jobs:
                   contentId: \"$ISSUE_ID\"
                 }) { item { id } }
               }" 2>/dev/null || true
-            
+
             ITEM_ID=$(gh api graphql -f query="
               query {
                 node(id: \"$ISSUE_ID\") {
@@ -253,7 +250,7 @@ jobs:
                   ... on PullRequest { projectItems(first: 1) { nodes { id } } }
                 }
               }" --jq '.data.node.projectItems.nodes[0].id // empty' 2>/dev/null)
-            
+
             if [ -n "$ITEM_ID" ]; then
               gh api graphql -f query="
                 mutation {

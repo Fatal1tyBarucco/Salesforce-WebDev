@@ -3,8 +3,6 @@
 name: Scheduled Pipeline (Knowledge-as-Code)
 
 on:
-  push:
-    branches: ['no-push-trigger']
   schedule:
     - cron: "0 8 * * 1"
   workflow_dispatch:
@@ -33,17 +31,9 @@ env:
   UV_CACHE_DIR: /tmp/uv-cache
 
 jobs:
-  push-trigger:
-    name: Push Trigger
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Push trigger - Scheduled Pipeline not designed to run on push; skipping real jobs"
-
   detect:
     name: Detect New Release
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
     outputs:
       has-new-release: ${{ steps.check.outputs.has-new-release }}
       release-slug: ${{ steps.check.outputs.release-slug }}
@@ -78,7 +68,7 @@ jobs:
   process:
     name: Process Release
     needs: detect
-    if: github.event_name != 'push' && needs.detect.outputs.has-new-release == 'true'
+    if: needs.detect.outputs.has-new-release == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -120,7 +110,7 @@ jobs:
           fi
           echo "Processing release: $RELEASE_SLUG (dry-run: $DRY_RUN)"
           uv run python -m src.main --release "$RELEASE_SLUG" $DRY_RUN_FLAG
-          
+
           if git diff --quiet; then
             echo "has-changes=false" >> $GITHUB_OUTPUT
           else
@@ -145,23 +135,23 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git add -A
           git commit -m "feat(pipeline): $RELEASE_SLUG release notes"
-          
+
           BRANCH="pipeline/$RELEASE_SLUG-$(date +%Y%m%d-%H%M)"
           git push origin HEAD:$BRANCH --force-with-lease
-          
+
           PR_URL=$(gh pr create \
             --title "feat(pipeline): $RELEASE_SLUG release notes" \
             --body-file /tmp/pr_body.md \
             --base main \
             --head $BRANCH \
             --label "pipeline,release-notes,knowledge-as-code")
-          
+
           echo "pr-url=$PR_URL" >> $GITHUB_OUTPUT
 
       - name: Create issue on failure

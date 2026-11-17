@@ -6,8 +6,6 @@
 name: AI PR Review
 
 on:
-  push:
-    branches: ['no-push-trigger']
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
@@ -29,13 +27,6 @@ env:
   UV_CACHE_DIR: /tmp/uv-cache
 
 jobs:
-  push-trigger:
-    name: Push Trigger
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Push trigger - AI PR Review not designed to run on push; skipping real jobs"
-
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🤖 CLAUDE CODE REVIEW                                      │
   # │  Usa anthropics/claude-code-action para revisar PR          │
@@ -43,7 +34,7 @@ jobs:
   claude-review:
     name: 🤖 Claude Code Review
     runs-on: ubuntu-latest
-    if: github.event_name != 'push' && (github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')))
+    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     permissions:
       contents: read
       pull_requests: write
@@ -79,17 +70,17 @@ jobs:
           prompt: |
             Você é um revisor de código sênior para o projeto Salesforce-WebDev.
             Revise este PR seguindo as diretrizes de AGENTS.md e CLAUDE.md.
-            
+
             Foco obrigatório:
             1. **Segurança**: input validation (Pydantic), sem segredos, rate limiting, prompt injection
             2. **Performance**: I/O async, concorrência controlada (Semaphore), cache, prompt size
             3. **Padrões**: Ruff format, type hints 100%, DI explícita, null-safe (except (A,B) as e:)
             4. **Clean Architecture**: domain/services/infrastructure/entrypoints, Pydantic nas fronteiras
             5. **Testes**: golden files para comportamento determinístico, contract tests para LLM
-            
+
             NÃO elogie — apenas reporte problemas com severidade (CRÍTICO/ALTO/MÉDIO/BAIXO).
             Formato: "### [SEVERIDADE] arquivo:linha — descrição"
-            
+
             Se for menção @claude em issue: faça triagem (labels, prioridade, duplicatas, info faltante).
           # Limitar a arquivos alterados no PR
           include: "src/**/*.py,tests/**/*.py,.github/workflows/*.yml,pyproject.toml,.pre-commit-config.yaml"
@@ -110,7 +101,6 @@ jobs:
   security-audit:
     name: 🔒 Security Audit
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
     permissions:
       contents: read
       security-events: write
