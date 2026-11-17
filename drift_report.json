@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "6cd8d376df11ca80e4b417111b4e230a81923cf4",
-  "generated_at": "2026-11-17T11:22:26.149561+00:00",
+  "repository_sha": "ab3cf380b99ac9e1d53859ae5869e22a5f1bbe9e",
+  "generated_at": "2026-11-17T11:31:54.489051+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,14 +43,26 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/ai-triage.yml",
-      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
+      "path": "CHANGELOG.md",
+      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "pyproject.toml",
+      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "uv.lock",
+      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
     }
   ]
 }
