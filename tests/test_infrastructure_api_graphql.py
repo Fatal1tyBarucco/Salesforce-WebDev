@@ -293,4 +293,4 @@ class TestSchemaAndExports:
     def test_unknown_package_attribute_raises(self) -> None:
         """Unknown attributes should raise AttributeError from __getattr__."""
         with pytest.raises(AttributeError, match="nope"):
-            api_package.nope
+            _ = api_package.nope

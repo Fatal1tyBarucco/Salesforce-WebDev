@@ -370,11 +370,11 @@ class TestEnrichmentService:
             return_value=CategoryEnrichment(
                 category_name="Test",
                 overview="Overview",
-                key_themes=tuple(),
+                key_themes=(),
                 business_impact="",
                 adoption_guidance="",
                 risk_assessment="",
-                feature_enrichments=tuple(),
+                feature_enrichments=(),
                 locale="pt_BR",
                 generated_at=datetime.now().isoformat(),
             )
@@ -383,9 +383,9 @@ class TestEnrichmentService:
             return_value=ReleaseEnrichment(
                 release_slug="summer_26",
                 executive_summary="Summary",
-                strategic_themes=tuple(),
-                category_enrichments=tuple(),
-                migration_checklist=tuple(),
+                strategic_themes=(),
+                category_enrichments=(),
+                migration_checklist=(),
                 locale="pt_BR",
                 generated_at=datetime.now().isoformat(),
             )
@@ -479,11 +479,11 @@ class TestEnrichmentService:
             return_value=CategoryEnrichment(
                 category_name="Lightning",
                 overview="Overview",
-                key_themes=tuple(),
+                key_themes=(),
                 business_impact="",
                 adoption_guidance="",
                 risk_assessment="",
-                feature_enrichments=tuple(),
+                feature_enrichments=(),
                 locale="pt_BR",
                 generated_at=datetime.now().isoformat(),
             )
@@ -492,9 +492,9 @@ class TestEnrichmentService:
             return_value=ReleaseEnrichment(
                 release_slug="summer_26",
                 executive_summary="Summary",
-                strategic_themes=tuple(),
-                category_enrichments=tuple(),
-                migration_checklist=tuple(),
+                strategic_themes=(),
+                category_enrichments=(),
+                migration_checklist=(),
                 locale="pt_BR",
                 generated_at=datetime.now().isoformat(),
             )
@@ -524,11 +524,11 @@ class TestEnrichmentService:
             return_value=CategoryEnrichment(
                 category_name="Lightning",
                 overview="Overview",
-                key_themes=tuple(),
+                key_themes=(),
                 business_impact="",
                 adoption_guidance="",
                 risk_assessment="",
-                feature_enrichments=tuple(),
+                feature_enrichments=(),
                 locale="pt_BR",  # Category locale is pt_BR
                 generated_at=datetime.now().isoformat(),
             )
@@ -537,9 +537,9 @@ class TestEnrichmentService:
             return_value=ReleaseEnrichment(
                 release_slug="summer_26",
                 executive_summary="Summary",
-                strategic_themes=tuple(),
-                category_enrichments=tuple(),
-                migration_checklist=tuple(),
+                strategic_themes=(),
+                category_enrichments=(),
+                migration_checklist=(),
                 locale="en_US",  # Release locale comes from config
                 generated_at=datetime.now().isoformat(),
             )

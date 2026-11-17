@@ -366,7 +366,7 @@ jobs:
           set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
           TARGET_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
-          git add docs/ README.md README.en.md mkdocs.yml
+          git add -A
           # Só faz commit se houver arquivos stageados (evita commit vazio)
           if ! git diff --cached --quiet; then
             git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"

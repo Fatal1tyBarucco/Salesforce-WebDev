@@ -10,7 +10,7 @@ import time
 import uuid
 from pathlib import Path
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 from urllib.parse import urlparse
 
 from playwright._impl._errors import Error as PlaywrightError
@@ -72,7 +72,7 @@ class PlaywrightScraperAdapter(ScraperPort):
         # Selector validation cache
         self._selector_cache: dict[str, str] = {}
 
-    async def __aenter__(self) -> PlaywrightScraperAdapter:
+    async def __aenter__(self) -> Self:
         await self._ensure_browser()
         return self
 
@@ -246,7 +246,7 @@ class PlaywrightScraperAdapter(ScraperPort):
         for contract in self.selector_contracts:
             if not contract.required:
                 continue
-            valid, error = contract.validate(html)
+            valid, _ = contract.validate(html)
             if not valid:
                 failed.append(contract.name)
                 logger.warning("[%s] Layout change detected: %s", correlation_id, contract.name)
@@ -741,7 +741,7 @@ class PlaywrightScrapingAdapter:
         except Exception:
             return None  # type: ignore[return-value]
 
-    async def __aenter__(self) -> PlaywrightScrapingAdapter:
+    async def __aenter__(self) -> Self:
         await self._adapter.__aenter__()
         return self
 

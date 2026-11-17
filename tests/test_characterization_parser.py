@@ -80,22 +80,20 @@ RICH_TOC_HTML: str = """
 # make_feature_impact_text() não alcança: descrição explícita de categoria,
 # header de tabela, entrada parcial (confiança 0.7), subcategoria, seção
 # duplicada (merge) e linha de uma coluna (confiança 0.5).
-CRAFTED_FEATURE_IMPACT_TEXT: str = "\n".join(
-    [
-        "Desenvolvimento",
-        "Categoria de desenvolvimento de aplicações e automações.",
-        "RECURSO\tATIVADO PARA USUÁRIOS\tADMINS/DEVS\tCONFIG\tCONTATO",
-        "Recurso Um\tYes\tYes\tNo\tNo",
-        "Recurso Parcial\tYes\tNo",
-        "Fluxos",
-        "Recurso Dois\tYes\tNo\tYes\tNo",
-        "Agentforce",
-        "RECURSO\tATIVADO PARA USUÁRIOS\tADMINS/DEVS\tCONFIG\tCONTATO",
-        "Recurso Agente\tYes\tYes\tYes\tNo",
-        "Total de Recursos: 4",
-        "Desenvolvimento",
-        "Recurso Extra\tYes\tNo\tNo\tYes",
-    ]
+CRAFTED_FEATURE_IMPACT_TEXT: str = (
+    "Desenvolvimento\n"
+    "Categoria de desenvolvimento de aplicações e automações.\n"
+    "RECURSO\tATIVADO PARA USUÁRIOS\tADMINS/DEVS\tCONFIG\tCONTATO\n"
+    "Recurso Um\tYes\tYes\tNo\tNo\n"
+    "Recurso Parcial\tYes\tNo\n"
+    "Fluxos\n"
+    "Recurso Dois\tYes\tNo\tYes\tNo\n"
+    "Agentforce\n"
+    "RECURSO\tATIVADO PARA USUÁRIOS\tADMINS/DEVS\tCONFIG\tCONTATO\n"
+    "Recurso Agente\tYes\tYes\tYes\tNo\n"
+    "Total de Recursos: 4\n"
+    "Desenvolvimento\n"
+    "Recurso Extra\tYes\tNo\tNo\tYes"
 )
 
 CRAFTED_LINK_MAP: dict[str, str] = {

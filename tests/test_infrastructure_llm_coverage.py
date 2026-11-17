@@ -23,6 +23,10 @@ from src.infrastructure.llm import (
 from src.models.enrichment import CategoryEnrichment, ReleaseEnrichment
 
 
+class TestLLMException(Exception):
+    """Custom exception for LLM test scenarios."""
+
+
 class MockOpenRouterLLMAdapter(OpenRouterLLMAdapter):
     """Mock OpenRouter LLM adapter for testing."""
 
@@ -336,7 +340,7 @@ class TestUnifiedLLMClientCoverage:
         def side_effect(*args, **kwargs):
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("Error code: 403 - only available on agentic harnesses")
+                raise TestLLMException("Error code: 403 - only available on agentic harnesses")
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -363,7 +367,7 @@ class TestUnifiedLLMClientCoverage:
         def side_effect(*args, **kwargs):
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception(
+                raise TestLLMException(
                     "Error code: 401 - {'type': 'error', 'error': {'type': 'ModelError', 'message': 'Model not supported'}}"
                 )
             return fake_resp
@@ -394,7 +398,7 @@ class TestUnifiedLLMClientCoverage:
         def side_effect(*args, **kwargs):
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("Error code: 429 - rate limit exceeded")
+                raise TestLLMException("Error code: 429 - rate limit exceeded")
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -443,7 +447,7 @@ class TestUnifiedLLMClientCoverage:
         def side_effect(*args, **kwargs):
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("RESOURCE_EXHAUSTED - quota exceeded for metric")
+                raise TestLLMException("RESOURCE_EXHAUSTED - quota exceeded for metric")
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect

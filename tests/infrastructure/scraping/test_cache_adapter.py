@@ -133,12 +133,12 @@ class TestScraperCacheAdapterWithRealCacheManager:
     @pytest.mark.asyncio
     async def test_real_cache_expiration(self, adapter):
         """Should expire content after TTL."""
-        import time
+        import asyncio
 
         content = "<html>Expiring content</html>"
 
         await adapter.set("test-key", content, ttl_seconds=0)  # Immediate expiration
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
         result = await adapter.get("test-key")
 
         assert result is None

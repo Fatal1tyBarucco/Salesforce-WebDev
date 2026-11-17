@@ -55,6 +55,27 @@ dev = [
 [tool.black]
 line-length = 100
 target-version = ["py314"]
+exclude = '''
+/(
+    \.github
+  | \.ruffignore
+  | docs
+  | k8s
+  | stubs
+  | \.venv
+  | \.git
+  | __pycache__
+  | \.pytest_cache
+  | \.mypy_cache
+  | \.coverage
+  | htmlcov
+  | dist
+  | build
+  | \.eggs
+  | \.tox
+  | \.ruff_cache
+)/
+'''
 
 [tool.ruff]
 line-length = 100

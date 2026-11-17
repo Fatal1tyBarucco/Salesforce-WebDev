@@ -1,0 +1,13 @@
+# Ignore non-Python files and directories
+.github/
+docs/
+k8s/
+*.yml
+*.yaml
+*.md
+*.txt
+*.json
+*.lock
+*.toml
+stubs/
+*.pyi
