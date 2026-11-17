@@ -30,17 +30,24 @@ jobs:
         id: analyze
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           # Determine type and number
-          if [ "${{ github.event_name }}" = "issues" ] || [ -n "${{ github.event.issue.number }}" ]; then
-            NUMBER="${{ github.event.issue.number }}"
-            TITLE="${{ github.event.issue.title }}"
-            BODY="${{ github.event.issue.body }}"
+          if [ "$EVENT_NAME" = "issues" ] || [ -n "$ISSUE_NUMBER" ]; then
+            NUMBER="$ISSUE_NUMBER"
+            TITLE="$ISSUE_TITLE"
+            BODY="$ISSUE_BODY"
             TYPE="issue"
           else
-            NUMBER="${{ github.event.pull_request.number }}"
-            TITLE="${{ github.event.pull_request.title }}"
-            BODY="${{ github.event.pull_request.body }}"
+            NUMBER="$PR_NUMBER"
+            TITLE="$PR_TITLE"
+            BODY="$PR_BODY"
             TYPE="pr"
           fi
 
@@ -107,7 +114,7 @@ jobs:
           # Type and size
           if [ "$TYPE" = "pr" ]; then
             LABELS="$LABELS type:pr"
-            CHANGED_FILES=$(gh pr view $NUMBER --json files --jq '.files | length' 2>/dev/null || echo 0)
+            CHANGED_FILES=$(gh pr view "$NUMBER" --json files --jq '.files | length' 2>/dev/null || echo 0)
             if [ "$CHANGED_FILES" -le 3 ]; then SIZE="size:XS";
             elif [ "$CHANGED_FILES" -le 10 ]; then SIZE="size:S";
             elif [ "$CHANGED_FILES" -le 30 ]; then SIZE="size:M";
@@ -131,17 +138,19 @@ jobs:
           NUMBER="${{ steps.analyze.outputs.number }}"
           TYPE="${{ steps.analyze.outputs.type }}"
           for label in ${{ steps.analyze.outputs.labels }}; do
-            gh "$TYPE" edit $NUMBER --add-label "$label" 2>/dev/null || true
+            gh "$TYPE" edit "$NUMBER" --add-label "$label" 2>/dev/null || true
           done
 
       - name: Check duplicates
         id: duplicates
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          NUMBER: ${{ steps.analyze.outputs.number }}
+          TYPE: ${{ steps.analyze.outputs.type }}
         run: |
-          NUMBER="${{ steps.analyze.outputs.number }}"
-          TYPE="${{ steps.analyze.outputs.type }}"
-          TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
+          TITLE="${ISSUE_TITLE:-$PR_TITLE}"
           KEYWORDS=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '|')
 
           if [ "$TYPE" = "issue" ]; then
@@ -164,14 +173,19 @@ jobs:
         run: |
           NUMBER="${{ steps.analyze.outputs.number }}"
           TYPE="${{ steps.analyze.outputs.type }}"
-          gh "$TYPE" comment $NUMBER --body "Possible duplicates found. Please verify before proceeding." || true
+          gh "$TYPE" comment "$NUMBER" --body "Possible duplicates found. Please verify before proceeding." || true
 
       - name: Check missing info
         id: missing
+        env:
+          TYPE: ${{ steps.analyze.outputs.type }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          TYPE="${{ steps.analyze.outputs.type }}"
-          BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
-          TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
+          BODY="${ISSUE_BODY:-$PR_BODY}"
+          TITLE="${ISSUE_TITLE:-$PR_TITLE}"
           MISSING=""
 
           if [ "$TYPE" = "issue" ]; then
@@ -216,23 +230,22 @@ jobs:
         run: |
           NUMBER="${{ steps.analyze.outputs.number }}"
           TYPE="${{ steps.analyze.outputs.type }}"
-          gh "$TYPE" comment $NUMBER --body "Missing information detected. Please add the suggested items." || true
+          gh "$TYPE" comment "$NUMBER" --body "Missing information detected. Please add the suggested items." || true
 
       - name: Update GitHub Project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ steps.analyze.outputs.number }}
+          TYPE: ${{ steps.analyze.outputs.type }}
+          PRIORITY: ${{ steps.analyze.outputs.priority }}
         run: |
-          NUMBER="${{ steps.analyze.outputs.number }}"
-          TYPE="${{ steps.analyze.outputs.type }}"
-          PRIORITY="${{ steps.analyze.outputs.priority }}"
-
           case "$PRIORITY" in
             P0|P1) STATUS="3808f0ce" ;;  # In Progress
             P2) STATUS="a368d611" ;;      # Backlog
             *) STATUS="a368d611" ;;
           esac
 
-          ISSUE_ID=$(gh "$TYPE" view $NUMBER --json id -q .id 2>/dev/null)
+          ISSUE_ID=$(gh "$TYPE" view "$NUMBER" --json id -q .id 2>/dev/null)
           if [ -n "$ISSUE_ID" ]; then
             gh api graphql -f query="
               mutation {
