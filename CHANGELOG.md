@@ -2,6 +2,38 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.1...v0.1.2) (2026-11-17)
+
+
+### Bug Fixes
+
+* **ci:** prevent empty workflow runs on push ([9b24ab2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b24ab258df6d71351e384d45caddc60a654cb70))
+* **ci:** prevent empty workflow runs on push ([#325](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/325)) ([6ebb098](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6ebb09861e525594857f81eb68a27122f89c7239))
+* **ci:** remove Black Format job from Python Quality workflow ([9b033f9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b033f981f845274f71e9ae2c98ca67ca124d752))
+* **ci:** resolve all GitHub Actions failures ([e629386](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e629386f5d61f5d37c06f37b8d1a1531cba6dcdb))
+* **ci:** resolve all GitHub Actions failures ([#317](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/317)) ([79acfea](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/79acfea7288a39592af8b9490d6c127de3651263))
+* **ci:** use branches filter to prevent empty workflow runs ([4b80866](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/4b80866d1750b811b8b2db4d67d3417fdef12cfa))
+* **ruff:** move imports to top of file in test_infrastructure_llm_coverage.py ([9c51877](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9c51877ab576045be78eb946fdfcdff500a970e5))
+* **workflows:** add push-trigger dummy job to prevent empty runs on push ([82cd56b](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/82cd56b97a1fd569cf21e390624766b2872d90be))
+* **workflows:** remove push triggers to prevent bot loops and fix CI failures ([#328](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/328)) ([e91d64d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e91d64db8e6cf9185420da96b26d36913d4dc37b))
+
+
+### Reverts
+
+* restore Black Format job in Python Quality workflow ([6f976ba](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6f976ba16d1109ffc186127fcdf8ddeaacd58d95))
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([478249f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/478249f9e0e88c455fd50088926b3b4fb34caadc))
+* **sync:** reconcile documentation — 2026-11-17 01:53 UTC ([db5ad42](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/db5ad42c03691bb3ca35fba018229542b3223779))
+* **sync:** reconcile documentation — 2026-11-17 02:42 UTC ([9425564](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/94255647d6f713f07b2e7f7c559cd566797735e8))
+* **sync:** reconcile documentation — 2026-11-17 04:19 UTC ([99af09e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/99af09e4d86e5234406fa55b56c2816aa42ff7d1))
+* **sync:** reconcile documentation — 2026-11-17 04:25 UTC ([dc95e9a](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/dc95e9a0fb8debfc75c3ad765339afb76bbd399d))
+* **sync:** reconcile documentation — 2026-11-17 04:27 UTC ([e4669a5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e4669a5f945f38ae1416a30cbd49c5b0822732f2))
+* **sync:** reconcile documentation — 2026-11-17 04:40 UTC ([f7c405e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f7c405ed85a6dd248a9a4c4ac90e1b64175c41d2))
+* **sync:** reconcile documentation — 2026-11-17 07:52 UTC ([4989155](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/498915553a92ca3dee1c67fe0a97b1b89c926921))
+
 ## [Unreleased]
 
 ### Changed
