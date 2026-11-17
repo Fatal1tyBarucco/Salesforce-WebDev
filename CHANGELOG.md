@@ -7,6 +7,69 @@
 
 ### Bug Fixes
 
+* add event_name guard to scheduled-pipeline jobs to skip ghost push runs ([344cb42](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/344cb42d3918466fba77e9f1ea6b6e61a37593fd))
+* **ci:** prevent empty workflow runs on push ([9b24ab2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b24ab258df6d71351e384d45caddc60a654cb70))
+* **ci:** prevent empty workflow runs on push ([#325](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/325)) ([6ebb098](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6ebb09861e525594857f81eb68a27122f89c7239))
+* **ci:** remove Black Format job from Python Quality workflow ([9b033f9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b033f981f845274f71e9ae2c98ca67ca124d752))
+* **ci:** resolve all GitHub Actions failures ([e629386](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e629386f5d61f5d37c06f37b8d1a1531cba6dcdb))
+* **ci:** resolve all GitHub Actions failures ([#317](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/317)) ([79acfea](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/79acfea7288a39592af8b9490d6c127de3651263))
+* **ci:** sync uv.lock project version with pyproject 0.1.1 ([65385c6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/65385c64d1b5336cda78c27450770bd4c7b8ada3))
+* **ci:** use branches filter to prevent empty workflow runs ([4b80866](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/4b80866d1750b811b8b2db4d67d3417fdef12cfa))
+* **hooks:** merge PR [#326](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/326) - resolve redundant allow rules and broken hook commands ([ba35131](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/ba3513126756a1105dcdc3b6fe0f6e20fe70c566))
+* **hooks:** resolve redundant allow rules and broken hook commands ([44a1fe9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/44a1fe9bc44191778173e4049e5d43b27b692ca5))
+* **quality:** apply black formatting to pass Python Quality gate ([37dc2a1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/37dc2a19fff5db393c4262260e047336bf0fc976))
+* **quality:** merge PR [#321](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/321) - Black formatting fixes ([6fd73c6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6fd73c642cc4b59f42cf30aa1731cec0fa03b412))
+* remove workflow_dispatch from scheduled-pipeline to test push trigger ([d44c366](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d44c3665fd51911af23a0aad484da5733c9bb56b))
+* restore scheduled-pipeline with only schedule trigger ([c5fa520](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c5fa520e4af8ccc4b053321e01c153a3ec7256a0))
+* restore scheduled-pipeline with workflow_dispatch ([825b23e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/825b23e5620cb968c973bbe628a574eb3a9e296d))
+* **ruff:** move imports to top of file in test_infrastructure_llm_coverage.py ([9c51877](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9c51877ab576045be78eb946fdfcdff500a970e5))
+* **workflows:** add push-trigger dummy job to prevent empty runs on push ([82cd56b](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/82cd56b97a1fd569cf21e390624766b2872d90be))
+* **workflows:** remove push triggers to prevent bot loops (re-apply after merge conflict loss) ([9a7d5e9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9a7d5e9873122a264108b6c7bfd1b096afff87b5))
+* **workflows:** remove push triggers to prevent bot loops and fix CI failures ([#328](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/328)) ([e91d64d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e91d64db8e6cf9185420da96b26d36913d4dc37b))
+
+
+### Reverts
+
+* restore Black Format job in Python Quality workflow ([6f976ba](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6f976ba16d1109ffc186127fcdf8ddeaacd58d95))
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([478249f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/478249f9e0e88c455fd50088926b3b4fb34caadc))
+* **sync:** reconcile documentation — 2026-11-17 01:46 UTC ([3f88818](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3f8881890acc3cc5cd0556cd7cf3acf2eb172c5f))
+* **sync:** reconcile documentation — 2026-11-17 01:53 UTC ([db5ad42](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/db5ad42c03691bb3ca35fba018229542b3223779))
+* **sync:** reconcile documentation — 2026-11-17 01:58 UTC ([1350213](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/1350213199272e865728ac68a0b76c03b4d60985))
+* **sync:** reconcile documentation — 2026-11-17 02:42 UTC ([9425564](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/94255647d6f713f07b2e7f7c559cd566797735e8))
+* **sync:** reconcile documentation — 2026-11-17 02:58 UTC ([e81a4b0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e81a4b0dc32843b98f3caf8e199969d68c085acd))
+* **sync:** reconcile documentation — 2026-11-17 03:01 UTC ([b79388d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b79388d57ca60ab9e371f9e4727fb6f5e0a9793c))
+* **sync:** reconcile documentation — 2026-11-17 03:10 UTC ([b565617](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b565617efcf37cb2cc659757ed68b4ea35320303))
+* **sync:** reconcile documentation — 2026-11-17 04:19 UTC ([99af09e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/99af09e4d86e5234406fa55b56c2816aa42ff7d1))
+* **sync:** reconcile documentation — 2026-11-17 04:25 UTC ([dc95e9a](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/dc95e9a0fb8debfc75c3ad765339afb76bbd399d))
+* **sync:** reconcile documentation — 2026-11-17 04:27 UTC ([e4669a5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e4669a5f945f38ae1416a30cbd49c5b0822732f2))
+* **sync:** reconcile documentation — 2026-11-17 04:40 UTC ([f7c405e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f7c405ed85a6dd248a9a4c4ac90e1b64175c41d2))
+* **sync:** reconcile documentation — 2026-11-17 06:26 UTC ([f657850](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f6578509a0675b1abc261572a87ac93fda6ed6e2))
+* **sync:** reconcile documentation — 2026-11-17 07:52 UTC ([4989155](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/498915553a92ca3dee1c67fe0a97b1b89c926921))
+* **sync:** reconcile documentation — 2026-11-17 07:58 UTC ([33db581](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33db58190fccc0aa3de933a8b14c11a3273e8cdf))
+* **sync:** reconcile documentation — 2026-11-17 08:04 UTC ([3c1c1f1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3c1c1f1c0b949a40c1b48097be42c546180634d1))
+* **sync:** reconcile documentation — 2026-11-17 08:07 UTC ([5812066](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5812066fdf92853c90afa02c7fd7604af5364842))
+* **sync:** reconcile documentation — 2026-11-17 09:49 UTC ([8747185](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8747185a0923265ead64f4df7fc5e2b6cd4ebb10))
+* **sync:** reconcile documentation — 2026-11-17 09:56 UTC ([c06e3a4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c06e3a4346d8dbf46be762789109ed8a3cd33d2b))
+* **sync:** reconcile documentation — 2026-11-17 10:05 UTC ([0ce534e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/0ce534ea63538fa46f350c6a75ebddb180cd9a4f))
+* **sync:** reconcile documentation — 2026-11-17 10:07 UTC ([2e6a370](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/2e6a37052e6a4998323d580e14e4f69d2c5e3035))
+* **sync:** reconcile documentation — 2026-11-17 10:08 UTC ([e0bcf04](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e0bcf04d60fc4427a0036f9f0a248e190e685c93))
+* **sync:** reconcile documentation — 2026-11-17 10:09 UTC ([984d364](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/984d3640e23797a3dd028d3adf1b3e01f0faa64a))
+* **sync:** reconcile documentation — 2026-11-17 10:12 UTC ([46cbb55](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/46cbb55fcbf716732ffa7114068a0dfa9fe609c7))
+* **sync:** reconcile documentation — 2026-11-17 10:13 UTC ([3816ea7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3816ea74441bdbebfbb824465e218d23259bcda3))
+* **sync:** reconcile documentation — 2026-11-17 10:15 UTC ([4549098](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/454909802b30a786f8e7972cf87c7c706abcdfc3))
+* **sync:** reconcile documentation — 2026-11-17 10:17 UTC ([8238d29](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8238d2966e86a2f72c1059cab8747704de49b7e8))
+* **sync:** reconcile documentation — 2026-11-17 10:21 UTC ([f365d0a](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f365d0a3c04b9193450a42fcbcbc85068337837e))
+* **sync:** reconcile documentation — 2026-11-17 10:33 UTC ([c51553f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c51553faeba4043cf0e0ee9f8a28514cc5029500))
+
+## [0.1.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.1...v0.1.2) (2026-11-17)
+
+
+### Bug Fixes
+
 * **ci:** prevent empty workflow runs on push ([9b24ab2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b24ab258df6d71351e384d45caddc60a654cb70))
 * **ci:** prevent empty workflow runs on push ([#325](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/325)) ([6ebb098](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6ebb09861e525594857f81eb68a27122f89c7239))
 * **ci:** remove Black Format job from Python Quality workflow ([9b033f9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b033f981f845274f71e9ae2c98ca67ca124d752))
