@@ -630,7 +630,6 @@
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
     ".github/workflows/scheduled-pipeline.yml": "62cea8b74e5f82edd87b88bc5ce93cb181d236de",
-    ".github/workflows/test-trigger.yml": "1dc489a07458f2ba14ff61fe65c3290628b7c87d",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
@@ -823,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "2fa777d2df2c3a29ad970b4d7e0c19cbcf9b0ac5",
+    "drift_report.json": "5c1a64e55e0a68807748317a4731637e6dbe58f7",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1358,6 +1357,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T10:17:48.352165+00:00",
-  "repository_sha": "c35656706c59075d181fa40abb7ad8b76c28a077"
+  "generated_at": "2026-11-17T10:21:39.105228+00:00",
+  "repository_sha": "466150260429de6b6d587d3445c48d67b36e50d6"
 }
