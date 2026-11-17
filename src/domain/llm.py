@@ -43,8 +43,8 @@ class LLMModel(str, Enum):
     LING_3_TINY = "ling-3.0-tiny-free"
     NEMOTRON_3_ULTRA = "nemotron-3-ultra-free"
 
-    # Gemini direct
-    GEMINI_36_FLASH_DIRECT = "gemini-3.6-flash"
+    # Gemini direct (uses same model identifier but distinct enum member)
+    GEMINI_36_FLASH_DIRECT = "gemini-3.6-flash-direct"
 
     # Anthropic
     CLAUDE_3_HAIKU_ANTHROPIC = "claude-3-haiku-20240307"

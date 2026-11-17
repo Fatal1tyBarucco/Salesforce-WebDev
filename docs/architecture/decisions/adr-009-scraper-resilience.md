@@ -43,9 +43,9 @@ Antes: lógica de retry/spread em `src/scraper.py` monolítica, sem observabilid
 ```python
 @dataclass(frozen=True)
 class SelectorContract:
-    name: str                    # "toc", "feature_table", "content"
-    selectors: tuple[str, ...]   # Fallback chain: [".toc-container", "ul.tree", '[role="tree"]']
-    required: bool = True        # Se True, falha loga layout change
+    name: str  # "toc", "feature_table", "content"
+    selectors: tuple[str, ...]  # Fallback chain: [".toc-container", "ul.tree", '[role="tree"]']
+    required: bool = True  # Se True, falha loga layout change
     min_content_size: int = 100  # Validação mínima de conteúdo
 ```
 

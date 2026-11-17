@@ -48,8 +48,9 @@ Necessário: estratégia unificada, observável, com invalidação semântica.
 
 ```python
 class LLMCacheAdapter:
-    def __init__(self, cache_manager: CacheManager | None = None,
-                 cache_dir: Path = Path("cache/llm")):
+    def __init__(
+        self, cache_manager: CacheManager | None = None, cache_dir: Path = Path("cache/llm")
+    ):
         self._cache = cache_manager or CacheManager(cache_dir=cache_dir)
         self._ttl_default = 7 * 24 * 3600  # 7 dias
 
@@ -57,8 +58,7 @@ class LLMCacheAdapter:
         data = self._cache.get(f"llm:{key}")
         return LLMResponse.model_validate_json(data) if data else None
 
-    async def set(self, key: str, response: LLMResponse,
-                  ttl_seconds: int | None = None) -> None:
+    async def set(self, key: str, response: LLMResponse, ttl_seconds: int | None = None) -> None:
         ttl = ttl_seconds or self._ttl_default
         self._cache.set(f"llm:{key}", response.model_dump_json(), ttl=ttl)
 ```
@@ -88,8 +88,7 @@ def cache_key(self) -> str:
 
 ```python
 class SemanticCacheAdapter:
-    def __init__(self, cache_dir: Path = Path("cache/llm/semantic"),
-                 threshold: float = 0.95):
+    def __init__(self, cache_dir: Path = Path("cache/llm/semantic"), threshold: float = 0.95):
         self.cache_dir = cache_dir
         self.threshold = threshold
         self._index_file = cache_dir / "index.json"

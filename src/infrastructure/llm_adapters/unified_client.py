@@ -351,7 +351,7 @@ class UnifiedLLMClient(LLMPort):
             except (LLMRateLimitError, LLMAuthError, LLMModelUnavailableError) as e:
                 logger.warning("Provider %s error: %s", provider.value, e)
                 if not self._switch_to_next_provider():
-                    raise e
+                    raise
                 continue
 
             except Exception as e:

@@ -141,24 +141,36 @@ from __future__ import annotations
 from pydantic import BaseModel, Field  # type: ignore[import-not-found]
 from typing import Literal
 
+
 class DependencyEdge(BaseModel):  # type: ignore[misc]
     """Uma aresta dirigida do grafo de dependências."""
+
     source_feature: str = Field(..., description="Slug/nome da feature origem")
     target_feature: str = Field(..., description="Feature dependente (afetada)")
-    dependency_type: Literal["api", "object", "permission", "integration", "deprecated_api", "version_constraint"] = Field(...)
+    dependency_type: Literal[
+        "api", "object", "permission", "integration", "deprecated_api", "version_constraint"
+    ] = Field(...)
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confiança do LLM na relação")
     evidence: str = Field("", description="Trecho do texto de release que fundamenta a relação")
 
+
 class BlastRadiusNode(BaseModel):  # type: ignore[misc]
     """Resultado de propagação para um nó específico."""
+
     feature_slug: str
     depth: int = Field(..., ge=0)
     impact_score: float = Field(..., ge=0.0)
-    dependency_path: list[str] = Field(default_factory=list, description="Caminho de dependência desde origem")
-    affected_by: list[str] = Field(default_factory=list, description="Features pai que causam impacto")
+    dependency_path: list[str] = Field(
+        default_factory=list, description="Caminho de dependência desde origem"
+    )
+    affected_by: list[str] = Field(
+        default_factory=list, description="Features pai que causam impacto"
+    )
+
 
 class BlastRadiusResponse(BaseModel):  # type: ignore[misc]
     """Resposta do endpoint /v1/propagation/blast-radius."""
+
     source_feature: str
     max_depth: int
     nodes_affected: int
@@ -167,8 +179,10 @@ class BlastRadiusResponse(BaseModel):  # type: ignore[misc]
     computed_at: str
     cache_hit: bool = False
 
+
 class MigrationStep(BaseModel):  # type: ignore[misc]
     """Passo sequencial de migração gerado pelo engine."""
+
     order: int = Field(..., ge=1)
     feature_slug: str
     category: str = ""
@@ -176,8 +190,10 @@ class MigrationStep(BaseModel):  # type: ignore[misc]
     action: str = ""
     dependency_chain: list[str] = Field(default_factory=list)
 
+
 class MigrationReportResponse(BaseModel):  # type: ignore[misc]
     """Relatório completo de migração para uma release."""
+
     release_slug: str
     release_name: str
     total_features_mapped: int
@@ -187,8 +203,10 @@ class MigrationReportResponse(BaseModel):  # type: ignore[misc]
     generated_at: str
     fallback_used: bool = False
 
+
 class DependencyGraphResponse(BaseModel):  # type: ignore[misc]
     """Representação do grafo para a API."""
+
     release_slug: str
     nodes: list[str]
     edges: list[DependencyEdge]
@@ -202,13 +220,18 @@ class DependencyGraphResponse(BaseModel):  # type: ignore[misc]
 ```python
 class DependencyGraphRequest(BaseModel):  # type: ignore[misc]
     release_slug: str = Field(...)
-    include_interrelease: bool = Field(False, description="Incluir dependências com release anterior")
+    include_interrelease: bool = Field(
+        False, description="Incluir dependências com release anterior"
+    )
+
 
 class BlastRadiusRequest(BaseModel):  # type: ignore[misc]
     release_slug: str
     feature_slug: str
     max_depth: int = Field(3, ge=1, le=5)
-    include_impact_filter: bool = Field(True, description="Filtrar apenas features de impacto médio/alto")
+    include_impact_filter: bool = Field(
+        True, description="Filtrar apenas features de impacto médio/alto"
+    )
 ```
 
 ### 4.3 Serviço principal — `src/impact_propagation/engine.py`
@@ -230,6 +253,7 @@ from .heuristic_fallback import DependencyHeuristicFallback
 from .models import DependencyGraphResponse, BlastRadiusResponse, MigrationReportResponse
 
 logger = logging.getLogger(__name__)
+
 
 class ImpactPropagationEngine:
     """Engine de propagação de impacto e grafo de dependências."""
@@ -269,9 +293,7 @@ class ImpactPropagationEngine:
         # Persistência em arquivo (artefato de release)
         release_dir = Path(RELEASES_DIR) / release_slug
         graph_path = release_dir / ".dependency_graph.json"
-        graph_path.write_text(
-            json.dumps(graph.model_dump(), ensure_ascii=False), encoding="utf-8"
-        )
+        graph_path.write_text(json.dumps(graph.model_dump(), ensure_ascii=False), encoding="utf-8")
 
         # Cache
         self._cache.set(cache_key, graph.model_dump(), namespace="propagation_graph")
@@ -297,9 +319,7 @@ class ImpactPropagationEngine:
 
         # Recupera grafo (do arquivo de artefato ou cache)
         graph = await self.build_graph_for_release(release_slug)
-        nodes_affected = self._bfs_affected(
-            graph.edges, feature_slug, max_depth=depth
-        )
+        nodes_affected = self._bfs_affected(graph.edges, feature_slug, max_depth=depth)
         total_score = sum(n.impact_score for n in nodes_affected)
 
         response = BlastRadiusResponse(
@@ -331,11 +351,13 @@ class ImpactPropagationEngine:
         )
 
     # ── Métodos auxiliares (definidos no arquivo físico) ───
-    def _bfs_affected(self, edges: list[Any], source: str, max_depth: int) -> list[Any]:
-        ...  # BFS transitive com acúmulo de score
+    def _bfs_affected(
+        self, edges: list[Any], source: str, max_depth: int
+    ) -> list[Any]: ...  # BFS transitive com acúmulo de score
 
-    def _order_migration_steps(self, graph: DependencyGraphResponse) -> list[Any]:
-        ...  # Ordenação topológica ponderada por risco
+    def _order_migration_steps(
+        self, graph: DependencyGraphResponse
+    ) -> list[Any]: ...  # Ordenação topológica ponderada por risco
 
     async def __aenter__(self) -> Self:
         return self
@@ -361,6 +383,7 @@ from .models import DependencyGraphResponse, DependencyEdge
 
 logger = logging.getLogger(__name__)
 
+
 class DependencyGraphBuilder:
     def __init__(self, llm: LLMService, breaker: CircuitBreaker) -> None:
         self._llm = llm
@@ -374,7 +397,9 @@ class DependencyGraphBuilder:
         # Extrai nomes de features da meta / markdown
         features = self._extract_feature_slugs(release_dir, meta)
         if not features:
-            return DependencyGraphResponse(release_slug=release_slug, nodes=[], edges=[], graph_statistics={})
+            return DependencyGraphResponse(
+                release_slug=release_slug, nodes=[], edges=[], graph_statistics={}
+            )
 
         # Prompt estruturado para inferência de dependências
         prompt = self._build_dependency_prompt(features, meta.get("name", release_slug))
@@ -404,7 +429,7 @@ class DependencyGraphBuilder:
         return (
             f"Release {release_name}. Features: {', '.join(features)}.\n"
             "Infera dependências entre elas (API, objeto, permissão, integração, depreciação).\n"
-            "Responda em JSON: {\"nodes\": [...], \"edges\": [{\"source_feature\",\"target_feature\",\"dependency_type\",\"confidence\"}], \"statistics\": {...}}"
+            'Responda em JSON: {"nodes": [...], "edges": [{"source_feature","target_feature","dependency_type","confidence"}], "statistics": {...}}'
         )
 
     @staticmethod
@@ -428,32 +453,46 @@ class DependencyGraphBuilder:
 ```python
 # Adição ao arquivo src/api.py (já existe app = FastAPI(...))
 
+
 class DependencyGraphRequest(BaseModel):  # já definido em src/models.py
     release_slug: str
+
 
 class BlastRadiusRequest(BaseModel):
     release_slug: str
     feature_slug: str
     max_depth: int = 3
 
+
 @app.post("/v1/propagation/graph", response_model=DependencyGraphResponse)
-def get_dependency_graph(payload: DependencyGraphRequest, api_key: str = Depends(verify_api_key)) -> DependencyGraphResponse:
+def get_dependency_graph(
+    payload: DependencyGraphRequest, api_key: str = Depends(verify_api_key)
+) -> DependencyGraphResponse:
     from .impact_propagation.engine import ImpactPropagationEngine
+
     engine = ImpactPropagationEngine()
     # Nota: em produção, usar async e injetar engine via DI (PipelineConfig)
     return engine.build_graph_for_release(payload.release_slug)
 
+
 @app.post("/v1/propagation/blast-radius", response_model=BlastRadiusResponse)
-async def blast_radius(payload: BlastRadiusRequest, api_key: str = Depends(verify_api_key)) -> BlastRadiusResponse:
+async def blast_radius(
+    payload: BlastRadiusRequest, api_key: str = Depends(verify_api_key)
+) -> BlastRadiusResponse:
     from .impact_propagation.engine import ImpactPropagationEngine
+
     engine = ImpactPropagationEngine()
     return await engine.compute_blast_radius(
         payload.release_slug, payload.feature_slug, payload.max_depth
     )
 
+
 @app.get("/v1/propagation/migration-report/{release_slug}", response_model=MigrationReportResponse)
-async def migration_report(release_slug: str, api_key: str = Depends(verify_api_key)) -> MigrationReportResponse:
+async def migration_report(
+    release_slug: str, api_key: str = Depends(verify_api_key)
+) -> MigrationReportResponse:
     from .impact_propagation.engine import ImpactPropagationEngine
+
     engine = ImpactPropagationEngine()
     return await engine.generate_migration_report(release_slug)
 ```
@@ -502,25 +541,32 @@ from src.impact_propagation.models import DependencyGraphResponse, BlastRadiusRe
 from src.cache_manager import CacheManager
 from unittest.mock import MagicMock, AsyncMock
 
+
 @pytest.fixture
 def mock_llm():
     llm = MagicMock()
-    llm.generate_text = AsyncMock(return_value='{"nodes":["agentforce"],"edges":[],"statistics":{}}')
+    llm.generate_text = AsyncMock(
+        return_value='{"nodes":["agentforce"],"edges":[],"statistics":{}}'
+    )
     return llm
+
 
 @pytest.fixture
 def engine(mock_llm):
     return ImpactPropagationEngine(llm=mock_llm, cache=CacheManager(Path("/tmp/test_cache")))
 
+
 @pytest.mark.asyncio
 async def test_engine_builds_graph_from_lm(engine, mock_llm, tmp_path):
     # Mock de arquivo de release existente
     from src.config import RELEASES_DIR
+
     # Cria estrutura mínima para teste
     ...
     result = await engine.build_graph_for_release("test_release")
     assert isinstance(result, DependencyGraphResponse)
     assert result.source == "llm"
+
 
 @pytest.mark.asyncio
 async def test_engine_falls_back_on_llm_failure(engine, mock_llm):
@@ -529,23 +575,28 @@ async def test_engine_falls_back_on_llm_failure(engine, mock_llm):
     result = await engine.build_graph_for_release("test_release")
     assert result.source == "heuristic"  # fallback garantido
 
+
 @pytest.mark.asyncio
 async def test_blast_radius_cache_hit(engine):
     # Pré-popula cache com resposta simulada
-    engine._cache.set("blast:test:feat:3", BlastRadiusResponse(...).model_dump(), namespace="blast_radius")
+    engine._cache.set(
+        "blast:test:feat:3", BlastRadiusResponse(...).model_dump(), namespace="blast_radius"
+    )
     result = await engine.compute_blast_radius("test", "feat")
     assert result.cache_hit is True
+
 
 @pytest.mark.asyncio
 async def test_bfs_affected_max_depth(engine):
     # Grafo linear: A -> B -> C -> D; max_depth=2 a partir de A
     edges = [
-        {"source_feature":"A","target_feature":"B","dependency_type":"api","confidence":1.0},
-        {"source_feature":"B","target_feature":"C","dependency_type":"api","confidence":1.0},
-        {"source_feature":"C","target_feature":"D","dependency_type":"api","confidence":1.0},
+        {"source_feature": "A", "target_feature": "B", "dependency_type": "api", "confidence": 1.0},
+        {"source_feature": "B", "target_feature": "C", "dependency_type": "api", "confidence": 1.0},
+        {"source_feature": "C", "target_feature": "D", "dependency_type": "api", "confidence": 1.0},
     ]
     # Teste de que D não aparece com max_depth=2
     ...
+
 
 def test_heuristic_fallback_builds_graph_without_llm():
     heuristic = DependencyHeuristicFallback()
@@ -554,11 +605,13 @@ def test_heuristic_fallback_builds_graph_without_llm():
     assert result.release_slug == "test_release"
     assert result.source == "heuristic"
 
+
 @pytest.mark.asyncio
 async def test_api_endpoint_graph(mock_llm):
     # Mock do FastAPI endpoint via TestClient
     from fastapi.testclient import TestClient
     from src.api import app
+
     # Injeta mock no engine via monkeypatch (não no arquivo de produção)
     ...
 ```

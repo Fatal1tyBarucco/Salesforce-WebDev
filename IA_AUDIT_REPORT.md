@@ -189,11 +189,12 @@ colors = [
 ]
 
 fig = make_subplots(
-    rows=1, cols=2,
+    rows=1,
+    cols=2,
     specs=[[{"type": "bar"}, {"type": "pie"}]],
     subplot_titles=(
         "Distribuição de Uso de IA por Categoria de Módulo",
-        "Proporção de Categorias com Referência a LLM"
+        "Proporção de Categorias com Referência a LLM",
     ),
 )
 
@@ -207,7 +208,8 @@ fig.add_trace(
         textposition="outside",
         hovertemplate="Categoria: %{x}<br>Referências AI: %{y}<extra></extra>",
     ),
-    row=1, col=1,
+    row=1,
+    col=1,
 )
 fig.update_xaxes(tickangle=-45, row=1, col=1)
 fig.update_yaxes(title_text="Contagem de Referências a LLM / IA", row=1, col=1)
@@ -222,7 +224,8 @@ fig.add_trace(
         textinfo="label+percent",
         hoverinfo="label+value+percent",
     ),
-    row=1, col=2,
+    row=1,
+    col=2,
 )
 
 fig.update_layout(

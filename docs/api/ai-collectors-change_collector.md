@@ -6,6 +6,7 @@ Módulo determinístico (`src/ai/collectors/change_collector.py`): coleta contex
 
 ```python
 from src.ai.collectors.change_collector import collect_changes
+
 raw = collect_changes(since_ref="HEAD~10")
 ```
 

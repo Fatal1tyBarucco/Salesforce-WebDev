@@ -155,7 +155,7 @@ class ReleaseNotesMCPServer:
         lines = content.splitlines()
         # Category header takes precedence over the feature title.
         for line in lines:
-            if line.startswith("## Categoria:") or line.startswith("## Category:"):
+            if line.startswith(("## Categoria:", "## Category:")):
                 return line.split(":", 1)[1].strip()
         for line in lines:
             if line.startswith("# "):
@@ -272,6 +272,7 @@ def create_server(releases_dir: Path = Path("releases")) -> FastMCP:
 
 if __name__ == "__main__":  # pragma: no cover
     import asyncio
+
     from mcp.server.stdio import stdio_server
 
     async def main() -> None:
