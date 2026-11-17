@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "b7305ecb9ee0f18e31c99241e2d426cd3309d733",
-  "generated_at": "2026-11-17T10:49:42.106100+00:00",
+  "repository_sha": "181e7fd854bbb3c99f5424b69e765cfc72182de8",
+  "generated_at": "2026-11-17T10:52:15.226043+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,8 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/ai-pr-review.yml",
-      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-triage.yml",
+      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
