@@ -180,14 +180,7 @@ jobs:
         id: missing
         env:
           TYPE: ${{ steps.analyze.outputs.type }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          PR_BODY: ${{ github.event.pull_request.body }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          # Write body to file to handle newlines safely
-          printf '%s\n' "${ISSUE_BODY:-$PR_BODY}" > /tmp/body.txt
-          printf '%s\n' "${ISSUE_TITLE:-$PR_TITLE}" > /tmp/title.txt
           MISSING=""
 
           if [ "$TYPE" = "issue" ]; then
