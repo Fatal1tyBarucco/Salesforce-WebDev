@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "5083b500a4e26e90b31116e3667ec4b72ebc648d",
-  "generated_at": "2026-11-17T10:11:57.128109+00:00",
-  "inventory_count": 789,
+  "repository_sha": "2410389f689eb16c6ee8eeed3f9ba48e9b99872f",
+  "generated_at": "2026-11-17T10:13:30.328612+00:00",
+  "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,20 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
+      "type": "MANIFEST_STALE_FILE",
+      "severity": "medium",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' is in manifest but missing from repo."
     }
   ]
 }
