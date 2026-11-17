@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: read
-  pull_requests: read
+  pull-requests: read
   issues: read
 
 concurrency:
@@ -37,7 +37,7 @@ jobs:
     if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     permissions:
       contents: read
-      pull_requests: write
+      pull-requests: write
       issues: write
     steps:
       - name: ⬇️ Checkout
@@ -104,7 +104,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-      pull_requests: write
+      pull-requests: write
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

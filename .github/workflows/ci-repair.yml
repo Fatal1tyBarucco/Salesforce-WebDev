@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read
-  pull_requests: write
+  pull-requests: write
   issues: write
 
 concurrency:

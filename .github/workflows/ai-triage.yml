@@ -11,7 +11,7 @@ on:
 permissions:
   contents: read
   issues: write
-  pull_requests: write
+  pull-requests: write
   project: write
 
 concurrency:
