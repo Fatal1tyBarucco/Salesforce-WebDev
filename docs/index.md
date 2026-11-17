@@ -420,6 +420,7 @@ Salesforce-WebDev/
   ├── .mutmut-cache
   ├── .promptfoo.yaml
   ├── .python-version
+  ├── .ruffignore
   ├── AGENTS.md                  # Diretrizes para agentes de código
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CLAUDE.md
@@ -435,10 +436,12 @@ Salesforce-WebDev/
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança
+  ├── drift_report.json
   ├── fix_md.py
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── mutmut_config.toml
   ├── pyproject.toml             # Configuração do projeto
+  ├── reconcile_summary.md
   ├── update
   └── uv.lock                    # Lockfile determinístico
 
