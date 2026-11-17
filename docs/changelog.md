@@ -106,3 +106,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `14a93bd` — test: delete scheduled-pipeline to verify trigger source
 - `c5fa520` — fix: restore scheduled-pipeline with only schedule trigger
 - `825b23e` — fix: restore scheduled-pipeline with workflow_dispatch
+- `344cb42` — fix: add event_name guard to scheduled-pipeline jobs to skip ghost push runs
