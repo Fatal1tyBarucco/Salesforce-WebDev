@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "e629386f5d61f5d37c06f37b8d1a1531cba6dcdb",
-  "generated_at": "2026-11-17T02:42:02.348308+00:00",
-  "inventory_count": 779,
+  "repository_sha": "6ebb09861e525594857f81eb68a27122f89c7239",
+  "generated_at": "2026-11-17T04:18:58.138907+00:00",
+  "inventory_count": 782,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,8 +43,44 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
+      "path": ".claude/settings.json",
+      "detail": "'.claude/settings.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ai-pr-review.yml",
+      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ai-triage.yml",
+      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ci-repair.yml",
+      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
       "path": ".github/workflows/documentation-sync.yml",
       "detail": "'.github/workflows/documentation-sync.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/opencode.yml",
+      "detail": "'.github/workflows/opencode.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -55,38 +91,38 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "IA_AUDIT_REPORT.md",
-      "detail": "'IA_AUDIT_REPORT.md' blob SHA changed since last manifest baseline."
+      "path": "CLAUDE.md",
+      "detail": "'CLAUDE.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "PROPOSTA_FEATURE_RIPE.md",
-      "detail": "'PROPOSTA_FEATURE_RIPE.md' blob SHA changed since last manifest baseline."
+      "path": "docs/.last-processed-ref",
+      "detail": "'docs/.last-processed-ref' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/api/ai-collectors-change_collector.md",
-      "detail": "'docs/api/ai-collectors-change_collector.md' blob SHA changed since last manifest baseline."
+      "path": "docs/ai-generated/leadership.md",
+      "detail": "'docs/ai-generated/leadership.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/architecture/decisions/adr-009-scraper-resilience.md",
-      "detail": "'docs/architecture/decisions/adr-009-scraper-resilience.md' blob SHA changed since last manifest baseline."
+      "path": "docs/ai-generated/release-notes.md",
+      "detail": "'docs/ai-generated/release-notes.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
-      "detail": "'docs/architecture/decisions/adr-010-llm-cache-strategy.md' blob SHA changed since last manifest baseline."
+      "path": "docs/ai-generated/roadmap.md",
+      "detail": "'docs/ai-generated/roadmap.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/index.md",
-      "detail": "'docs/index.md' blob SHA changed since last manifest baseline."
+      "path": "docs/changelog.md",
+      "detail": "'docs/changelog.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -99,24 +135,6 @@
       "severity": "high",
       "path": "src/ai/generators/markdown.py",
       "detail": "'src/ai/generators/markdown.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/domain/llm.py",
-      "detail": "'src/domain/llm.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/infrastructure/llm_adapters/unified_client.py",
-      "detail": "'src/infrastructure/llm_adapters/unified_client.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/infrastructure/mcp/knowledge_server.py",
-      "detail": "'src/infrastructure/mcp/knowledge_server.py' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -209,10 +227,22 @@
       "detail": "'tests/test_release_docs.py' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".ruffignore",
+      "detail": "'.ruffignore' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": "drift_report.json",
+      "detail": "'drift_report.json' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' is new since last manifest baseline."
     }
   ]
 }
