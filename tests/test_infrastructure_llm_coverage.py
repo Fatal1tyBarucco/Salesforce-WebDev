@@ -9,11 +9,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
-class TestLLMException(Exception):
-    """Custom exception for LLM test scenarios."""
-
-
 from src.infrastructure.llm import (
     GeminiClassificationAdapter,
     GeminiLLMAdapter,
@@ -26,6 +21,10 @@ from src.infrastructure.llm import (
     _ProviderConfig,
 )
 from src.models.enrichment import CategoryEnrichment, ReleaseEnrichment
+
+
+class TestLLMException(Exception):
+    """Custom exception for LLM test scenarios."""
 
 
 class MockOpenRouterLLMAdapter(OpenRouterLLMAdapter):
