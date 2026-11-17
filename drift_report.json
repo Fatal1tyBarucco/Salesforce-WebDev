@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "9a7d5e9873122a264108b6c7bfd1b096afff87b5",
-  "generated_at": "2026-11-17T08:07:12.965371+00:00",
-  "inventory_count": 782,
+  "repository_sha": "b0db6f456188e94387ad56046371fe129d34e6d5",
+  "generated_at": "2026-11-17T09:49:08.973695+00:00",
+  "inventory_count": 786,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,8 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/ai-pr-review.yml",
-      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+      "path": ".claude/settings.json",
+      "detail": "'.claude/settings.json' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -55,26 +55,92 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/ci-repair.yml",
-      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".github/workflows/opencode.yml",
-      "detail": "'.github/workflows/opencode.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
+      "path": "CHANGELOG.md",
+      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "pyproject.toml",
+      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "src/ai/generators/markdown.py",
+      "detail": "'src/ai/generators/markdown.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "src/release_summarizer.py",
+      "detail": "'src/release_summarizer.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_ai_integration.py",
+      "detail": "'tests/test_ai_integration.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_characterization.py",
+      "detail": "'tests/test_characterization.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_main_coverage.py",
+      "detail": "'tests/test_main_coverage.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_release_docs.py",
+      "detail": "'tests/test_release_docs.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "uv.lock",
+      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/post-tool-use.py",
+      "detail": "'.claude/hooks/post-tool-use.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/pre-commit.py",
+      "detail": "'.claude/hooks/pre-commit.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/pre-push.py",
+      "detail": "'.claude/hooks/pre-push.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/session-start.py",
+      "detail": "'.claude/hooks/session-start.py' is new since last manifest baseline."
     }
   ]
 }
