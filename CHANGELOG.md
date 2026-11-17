@@ -2,6 +2,13 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.3...v0.1.4) (2026-11-17)
+
+
+### Bug Fixes
+
+* **workflows:** use file-based approach for issue/PR body to handle newlines ([08b6764](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/08b6764035b26cbd82dbbf88ee9a515ee30b0e5f))
+
 ## [0.1.3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.2...v0.1.3) (2026-11-17)
 
 
