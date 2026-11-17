@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "cc4f55b6f6e44c8ad7ad3ae4112155805a9a8c65",
-  "generated_at": "2026-11-17T04:40:31.507454+00:00",
+  "repository_sha": "394cdacf25a6678d542ba35c5bd29c4e5076538e",
+  "generated_at": "2026-11-17T08:04:14.645551+00:00",
   "inventory_count": 782,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,14 +43,44 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "README.md",
-      "detail": "'README.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-pr-review.yml",
+      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ci-repair.yml",
+      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/opencode.yml",
+      "detail": "'.github/workflows/opencode.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "CHANGELOG.md",
+      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "pyproject.toml",
+      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
     }
   ]
 }
