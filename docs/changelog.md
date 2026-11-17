@@ -99,4 +99,11 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `900b8a6` — fix: resolve all quality gate failures and MCP 1.30.0 compatibility
 - `fd9ba39` — style(format): apply Black formatting to fix Python Quality gate
 - `6f976ba` — revert: restore Black Format job in Python Quality workflow
+- `ed0b6a9` — style(format): apply Black formatting to pass Python Quality gate
 - `a5de784` — style(quality): format codebase with black 26.10.1
+- `f1761d0` — test: restore scheduled-pipeline workflow
+- `d44c366` — fix: remove workflow_dispatch from scheduled-pipeline to test push trigger
+- `14a93bd` — test: delete scheduled-pipeline to verify trigger source
+- `c5fa520` — fix: restore scheduled-pipeline with only schedule trigger
+- `825b23e` — fix: restore scheduled-pipeline with workflow_dispatch
+- `344cb42` — fix: add event_name guard to scheduled-pipeline jobs to skip ghost push runs

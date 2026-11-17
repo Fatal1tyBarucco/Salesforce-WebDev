@@ -31,7 +31,7 @@
 |---|---|---|
 | **AI PR Review** | `.github/workflows/ai-pr-review.yml` | Revisão automática via Claude Code (code-reviewer + security-auditor), menção `@claude` |
 | **CI Repair** | `.github/workflows/ci-repair.yml` | Auto-fix ruff/format falhas → branch de reparo → PR update → escala para humano (máx 2 tentativas) |
-| **Scheduled Pipeline** | `.github/workflows/scheduled-pipeline.yml` | Extração agendada (Mon 08:00 UTC) → PR com release notes + resumo IA + diff + checklist |
+| **Scheduled Pipeline** | `scheduled-pipeline.yml` | Extração agendada (Mon 08:00 UTC) → PR com release notes + resumo IA + diff + checklist |
 | **AI Triage** | `.github/workflows/ai-triage.yml` | Labels automáticos, prioridade P0-P3, duplicatas, info faltante, GitHub Project sync |
 
 ### Atualizações em Workflows Existentes
