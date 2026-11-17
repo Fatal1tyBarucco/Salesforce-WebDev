@@ -617,7 +617,7 @@
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/workflows/ai-docs.yml": "812aef3675bb9a77ef4226eb352c81bc8afcf830",
     ".github/workflows/ai-pr-review.yml": "6789c62817d89b682065190549adaa0657e93b7b",
-    ".github/workflows/ai-triage.yml": "e87bacb13be932749d65c92103f59f1af29ae376",
+    ".github/workflows/ai-triage.yml": "7c8be0e5d7324677bca6b63e47a2ee9692ac5109",
     ".github/workflows/ci-repair.yml": "fdd6b24043d97502fca090424486c0ff7692c508",
     ".github/workflows/copilot-setup-steps.yml": "b3cbd8339ec635e56270e3e6aea0157df6dd92c0",
     ".github/workflows/dependabot-lock-refresh.yml": "a63fa6464942a7ef348f7c3f85c62885c8f7d63d",
@@ -822,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "d5066ca19d163878f72d74f5338a96397f5346ec",
+    "drift_report.json": "0c51471153ed6111fb1075c762167c1267be108d",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1355,8 +1355,8 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "c0907d5bcb8a14cfe2dad148ba2433fdd2669830"
+    "uv.lock": "cb5de0c06ad29157197de697ebb0abdc092f95c1"
   },
-  "generated_at": "2026-11-17T11:07:54.653541+00:00",
-  "repository_sha": "08b6764035b26cbd82dbbf88ee9a515ee30b0e5f"
+  "generated_at": "2026-11-17T11:13:20.017393+00:00",
+  "repository_sha": "4556657ee271a0b97e34cb610ccd699b3abf7bdc"
 }
