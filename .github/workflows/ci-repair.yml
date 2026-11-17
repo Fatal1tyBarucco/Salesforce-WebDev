@@ -3,6 +3,9 @@
 name: CI Repair
 
 on:
+  push:
+    branches-ignore:
+      - '**'
   workflow_run:
     workflows: ["Python Quality"]
     types: [completed]
