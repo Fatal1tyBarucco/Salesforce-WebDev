@@ -616,9 +616,9 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/workflows/ai-docs.yml": "812aef3675bb9a77ef4226eb352c81bc8afcf830",
-    ".github/workflows/ai-pr-review.yml": "56205662d9fc737b8269e309335e53e7e8d5b99b",
-    ".github/workflows/ai-triage.yml": "7b36102f8be1b1784c6a8172aea9bee8e0e4dffe",
-    ".github/workflows/ci-repair.yml": "6f602bf61d0d47f543aff60d72072e582b95e53d",
+    ".github/workflows/ai-pr-review.yml": "391ab9fef178b3692b3808bb1da46f31536c715f",
+    ".github/workflows/ai-triage.yml": "dffc13ca99ccc2d4f030c2aabb03a72438080abe",
+    ".github/workflows/ci-repair.yml": "fdd6b24043d97502fca090424486c0ff7692c508",
     ".github/workflows/copilot-setup-steps.yml": "b3cbd8339ec635e56270e3e6aea0157df6dd92c0",
     ".github/workflows/dependabot-lock-refresh.yml": "a63fa6464942a7ef348f7c3f85c62885c8f7d63d",
     ".github/workflows/dependency-review.yml": "d288ad06a5eb00f8ef34b060df2c8eae3a8e9c9a",
@@ -629,7 +629,7 @@
     ".github/workflows/release-please.yml": "a4247493247010de05a57657b1ea1ba77237ea82",
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "83c4511311c3960e543ddf0541654a4c47def0be",
-    ".github/workflows/scheduled-pipeline.yml": "e00a7d55f74ec72732bd8f31e88d1879c7109f85",
+    ".github/workflows/scheduled-pipeline.yml": "1885a3946708efa0b1182aac3d43c9ec7f9ef618",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
@@ -822,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "1ac55a7a08144f81f4a17f874884fa87b1db5558",
+    "drift_report.json": "78d91004eaef56596a38926702ef2176b1c6982c",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1357,6 +1357,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T10:39:40.824915+00:00",
-  "repository_sha": "1844bbeb1a5e252983f0a6487c054e4f5cd4506e"
+  "generated_at": "2026-11-17T10:44:54.836724+00:00",
+  "repository_sha": "ecdf716d2b1a693358d5ef11e46dc8535ba672d9"
 }

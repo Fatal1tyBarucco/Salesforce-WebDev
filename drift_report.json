@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "1844bbeb1a5e252983f0a6487c054e4f5cd4506e",
-  "generated_at": "2026-11-17T10:39:40.675124+00:00",
+  "repository_sha": "ecdf716d2b1a693358d5ef11e46dc8535ba672d9",
+  "generated_at": "2026-11-17T10:44:54.677247+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,8 +43,26 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-pr-review.yml",
+      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ai-triage.yml",
+      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ci-repair.yml",
+      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
