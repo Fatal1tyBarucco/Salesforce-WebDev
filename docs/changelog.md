@@ -99,3 +99,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `900b8a6` — fix: resolve all quality gate failures and MCP 1.30.0 compatibility
 - `fd9ba39` — style(format): apply Black formatting to fix Python Quality gate
 - `6f976ba` — revert: restore Black Format job in Python Quality workflow
+- `ed0b6a9` — style(format): apply Black formatting to pass Python Quality gate
+- `a5de784` — style(quality): format codebase with black 26.10.1
