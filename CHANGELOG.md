@@ -2,6 +2,20 @@
 
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
 
+## [0.1.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.4...v0.1.5) (2026-11-17)
+
+
+### Bug Fixes
+
+* **workflows:** fetch issue/PR body from API in missing info step ([b58ae20](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b58ae2081352b278650d30a2918fc5946f427579))
+* **workflows:** remove env vars for body/title, use files from analyze step ([4556657](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/4556657ee271a0b97e34cb610ccd699b3abf7bdc))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-17 11:13 UTC ([c82e9ea](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c82e9eaab6b7a36f74b559c614cf9a863d133019))
+* **sync:** reconcile documentation — 2026-11-17 11:17 UTC ([3d14ff9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3d14ff9cac5fc0986d1754d1a045769973bcf060))
+
 ## [0.1.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.3...v0.1.4) (2026-11-17)
 
 
