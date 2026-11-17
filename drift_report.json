@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "f289154b03aa7419af545c1b5b18b688b86b81cb",
-  "generated_at": "2026-11-17T04:26:51.360462+00:00",
-  "inventory_count": 782,
+  "repository_sha": "44a1fe9bc44191778173e4049e5d43b27b692ca5",
+  "generated_at": "2026-11-17T06:26:38.182588+00:00",
+  "inventory_count": 786,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,6 +43,12 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
+      "path": ".claude/settings.json",
+      "detail": "'.claude/settings.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
       "path": ".github/workflows/ai-pr-review.yml",
       "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
     },
@@ -73,8 +79,74 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
+      "path": "README.md",
+      "detail": "'README.md' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "src/ai/generators/markdown.py",
+      "detail": "'src/ai/generators/markdown.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "src/release_summarizer.py",
+      "detail": "'src/release_summarizer.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_ai_integration.py",
+      "detail": "'tests/test_ai_integration.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_characterization.py",
+      "detail": "'tests/test_characterization.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_main_coverage.py",
+      "detail": "'tests/test_main_coverage.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "tests/test_release_docs.py",
+      "detail": "'tests/test_release_docs.py' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/post-tool-use.py",
+      "detail": "'.claude/hooks/post-tool-use.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/pre-commit.py",
+      "detail": "'.claude/hooks/pre-commit.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/pre-push.py",
+      "detail": "'.claude/hooks/pre-push.py' is new since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".claude/hooks/session-start.py",
+      "detail": "'.claude/hooks/session-start.py' is new since last manifest baseline."
     }
   ]
 }
