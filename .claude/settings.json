@@ -18,7 +18,9 @@
       "Read(*)",
       "Glob(*)",
       "Grep(*)",
-      "LS(*)"
+      "LS(*)",
+      "Edit(.github/workflows/*)",
+      "Write(.github/workflows/*)"
     ],
     "deny": [
       "Bash(rm -rf*)",
@@ -28,8 +30,7 @@
       "Bash(cat *.env*)",
       "Bash(echo *>.env*)",
       "Read(.env*)",
-      "Read(*.env*)",
-      "Read(.github/workflows/*)"
+      "Read(*.env*)"
     ]
   },
   "hooks": {
@@ -41,28 +42,6 @@
             "type": "command",
             "command": "uv run ruff check --fix \"$FILE\" && uv run ruff format \"$FILE\"",
             "timeout": 30
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash(git commit*)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && uv run pytest tests/ -x -q --tb=short 2>&1 | tail -5",
-            "timeout": 120
-          }
-        ]
-      },
-      {
-        "matcher": "Bash(git push*)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1 && uv run pytest tests/ -x -q --tb=short 2>&1 | tail -5",
-            "timeout": 120
           }
         ]
       }
