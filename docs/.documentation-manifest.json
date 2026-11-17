@@ -641,7 +641,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "6f737758d69bef5898a9bae9c81299fb0aa22292",
-    "CHANGELOG.md": "52189b5f2d4f3566040065f2ff993140fdb1dc53",
+    "CHANGELOG.md": "93a24747261929b975f83cdcb37f7fd4184165e7",
     "CLAUDE.md": "9f3e3a462fe84b7486e445498baacf5ff575295f",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -822,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "2b7fe08f2c7cd1a0261fb0eba63fc3f0c503f7f1",
+    "drift_report.json": "1ac55a7a08144f81f4a17f874884fa87b1db5558",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -1357,6 +1357,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T10:33:01.482161+00:00",
-  "repository_sha": "544f85676e760e81bf58f01c4a359c9f23269cc9"
+  "generated_at": "2026-11-17T10:39:40.824915+00:00",
+  "repository_sha": "1844bbeb1a5e252983f0a6487c054e4f5cd4506e"
 }
