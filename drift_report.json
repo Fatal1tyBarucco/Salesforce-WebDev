@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "cc6e6fd703fbb8a72406a9a843d0047c17fe5512",
-  "generated_at": "2026-11-17T11:02:45.338191+00:00",
+  "repository_sha": "84e21ce6c8c710111ba90abec118ebecf2e8b476",
+  "generated_at": "2026-11-17T11:01:18.950061+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
