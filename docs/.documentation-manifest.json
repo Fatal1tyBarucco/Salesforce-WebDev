@@ -46,6 +46,7 @@
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/dependabot-lock-refresh.yml": [
+      "AGENTS.md",
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/documentation-build.yml": [
