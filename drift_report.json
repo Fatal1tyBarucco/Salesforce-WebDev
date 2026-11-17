@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "c7c0ce7590ff059a7c2a4b58cdc11ceb5445fa5a",
-  "generated_at": "2026-11-17T10:07:06.698856+00:00",
+  "repository_sha": "84490a2a539e0a9821f6b635199a52b907f4ead9",
+  "generated_at": "2026-11-17T10:07:53.680751+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -47,23 +47,22 @@
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
+    },
+    {
       "type": "MANIFEST_STALE_FILE",
       "severity": "medium",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' is in manifest but missing from repo."
+      "path": ".github/workflows/scheduled-pipeline.yml.bak",
+      "detail": "'.github/workflows/scheduled-pipeline.yml.bak' is in manifest but missing from repo."
     },
     {
       "type": "MANIFEST_NEW_FILE",
       "severity": "info",
-      "path": ".github/workflows/scheduled-pipeline.yml.bak",
-      "detail": "'.github/workflows/scheduled-pipeline.yml.bak' is new since last manifest baseline."
-    },
-    {
-      "type": "DEAD_CODE_REF",
-      "severity": "medium",
-      "doc": "docs/MODERNIZACAO.md",
-      "ref": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'docs/MODERNIZACAO.md' references '.github/workflows/scheduled-pipeline.yml' which no longer exists."
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' is new since last manifest baseline."
     }
   ]
 }
