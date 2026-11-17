@@ -26,149 +26,215 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Analyze and label
+      - name: Analyze, label, and triage
         id: analyze
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EVENT_NAME: ${{ github.event_name }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          # Determine type and number
-          if [ "$EVENT_NAME" = "issues" ] || [ -n "$ISSUE_NUMBER" ]; then
-            NUMBER="$ISSUE_NUMBER"
-            printf '%s\n' "$ISSUE_TITLE" > /tmp/title.txt
-            printf '%s\n' "$ISSUE_BODY" > /tmp/body.txt
-            TYPE="issue"
-          else
-            NUMBER="$PR_NUMBER"
-            printf '%s\n' "$PR_TITLE" > /tmp/title.txt
-            printf '%s\n' "$PR_BODY" > /tmp/body.txt
-            TYPE="pr"
-          fi
+          python3 << 'PYEOF'
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
 
-          # Read from files to handle newlines safely
-          TITLE=$(cat /tmp/title.txt)
-          BODY=$(cat /tmp/body.txt)
-          TEXT="${TITLE} ${BODY}"
-          TEXT_LOWER=$(echo "$TEXT" | tr '[:upper:]' '[:lower:]')
+          GH_TOKEN = os.environ['GH_TOKEN']
+          event_name = os.environ.get('GITHUB_EVENT_NAME', '')
+
+          # Read event payload
+          with open(os.environ['GITHUB_EVENT_PATH']) as f:
+            event = json.load(f)
+
+          # Determine type and get data
+          if event_name == 'issues' or 'issue' in event:
+            number = event['issue']['number']
+            title = event['issue']['title'] or ''
+            body = event['issue']['body'] or ''
+            type_ = 'issue'
+          else:
+            number = event['pull_request']['number']
+            title = event['pull_request']['title'] or ''
+            body = event['pull_request']['body'] or ''
+            type_ = 'pr'
+
+          text = f"{title} {body}"
+          text_lower = text.lower()
 
           # Auto-labels based on keywords
-          LABELS=""
-          for pattern_label in \
-            "scraper|playwright|chromium|browser:scraper" \
-            "parser|beautifulsoup|html|toc|feature.impact:parser" \
-            "llm|openai|gemini|openrouter|anthropic|model|prompt:llm" \
-            "pipeline|orchestrator|etl|release.notes:pipeline" \
-            "doc|readme|mkdocs|documentation:docs" \
-            "infra|docker|k8s|kubernetes|deploy|ci|cd|github.action:infra" \
-            "ai|agent|skill|command|mcp|claude:ai" \
-            "test|coverage|pytest|snapshot|golden:test" \
-            "security|secret|vulnerab|gitleaks|pip.audit:security" \
-            "performance|slow|latency|benchmark|profile:performance" \
-            "bug|error|fail|crash|exception|traceback:bug" \
-            "feature|enhancement|new|add|implement:feature" \
-            "refactor|clean.arch|clean.architecture|solid|decouple:refactor" \
-            "chore|deps|dependabot|upgrade|bump|lockfile:chore"; do
-            PATTERN="${pattern_label%%:*}"
-            LABEL="${pattern_label##*:}"
-            if echo "$TEXT_LOWER" | grep -qE "$PATTERN"; then
-              LABELS="$LABELS $LABEL"
-            fi
-          done
+          labels = []
+          patterns = [
+            ("scraper|playwright|chromium|browser", "scraper"),
+            ("parser|beautifulsoup|html|toc|feature\\.impact", "parser"),
+            ("llm|openai|gemini|openrouter|anthropic|model|prompt", "llm"),
+            ("pipeline|orchestrator|etl|release\\.notes", "pipeline"),
+            ("doc|readme|mkdocs|documentation", "docs"),
+            ("infra|docker|k8s|kubernetes|deploy|ci|cd|github\\.action", "infra"),
+            ("ai|agent|skill|command|mcp|claude", "ai"),
+            ("test|coverage|pytest|snapshot|golden", "test"),
+            ("security|secret|vulnerab|gitleaks|pip\\.audit", "security"),
+            ("performance|slow|latency|benchmark|profile", "performance"),
+            ("bug|error|fail|crash|exception|traceback", "bug"),
+            ("feature|enhancement|new|add|implement", "feature"),
+            ("refactor|clean\\.arch|clean\\.architecture|solid|decouple", "refactor"),
+            ("chore|deps|dependabot|upgrade|bump|lockfile", "chore"),
+          ]
+          for pattern, label in patterns:
+            if re.search(pattern, text_lower):
+              labels.append(label)
 
           # Priority
-          PRIORITY="P3"
-          for p in P0 P1 P2 P3; do
-            case $p in
-              P0) KEYWORDS="security|secret|pipeline.broken|release.blocked|data.loss" ;;
-              P1) KEYWORDS="ci.failing|coverage.drop|regression|blocker" ;;
-              P2) KEYWORDS="feature|enhancement|refactor|improvement" ;;
-              P3) KEYWORDS="docs|cleanup|chore|nitpick" ;;
-            esac
-            if echo "$TEXT_LOWER" | grep -qE "$KEYWORDS"; then
-              PRIORITY=$p
+          priority = "P3"
+          priority_keywords = {
+            "P0": "security|secret|pipeline\\.broken|release\\.blocked|data\\.loss",
+            "P1": "ci\\.failing|coverage\\.drop|regression|blocker",
+            "P2": "feature|enhancement|refactor|improvement",
+            "P3": "docs|cleanup|chore|nitpick",
+          }
+          for p, keywords in priority_keywords.items():
+            if re.search(keywords, text_lower):
+              priority = p
               break
-            fi
-          done
-          LABELS="$LABELS priority:$PRIORITY"
+          labels.append(f"priority:{priority}")
 
           # Components
-          for comp in scraper parser llm pipeline docs infra ai test; do
-            case $comp in
-              scraper) KW="scraper|playwright|chromium" ;;
-              parser) KW="parser|beautifulsoup|toc|feature" ;;
-              llm) KW="llm|openai|gemini|openrouter|anthropic" ;;
-              pipeline) KW="pipeline|orchestrator|etl" ;;
-              docs) KW="doc|readme|mkdocs" ;;
-              infra) KW="infra|docker|k8s|ci|cd" ;;
-              ai) KW="ai|agent|skill|command|mcp" ;;
-              test) KW="test|coverage|pytest" ;;
-            esac
-            if echo "$TEXT_LOWER" | grep -qE "$KW"; then
-              LABELS="$LABELS component:$comp"
-            fi
-          done
+          components = {
+            "scraper": "scraper|playwright|chromium",
+            "parser": "parser|beautifulsoup|toc|feature",
+            "llm": "llm|openai|gemini|openrouter|anthropic",
+            "pipeline": "pipeline|orchestrator|etl",
+            "docs": "doc|readme|mkdocs",
+            "infra": "infra|docker|k8s|ci|cd",
+            "ai": "ai|agent|skill|command|mcp",
+            "test": "test|coverage|pytest",
+          }
+          for comp, kw in components.items():
+            if re.search(kw, text_lower):
+              labels.append(f"component:{comp}")
 
           # Type and size
-          if [ "$TYPE" = "pr" ]; then
-            LABELS="$LABELS type:pr"
-            CHANGED_FILES=$(gh pr view "$NUMBER" --json files --jq '.files | length' 2>/dev/null || echo 0)
-            if [ "$CHANGED_FILES" -le 3 ]; then SIZE="size:XS";
-            elif [ "$CHANGED_FILES" -le 10 ]; then SIZE="size:S";
-            elif [ "$CHANGED_FILES" -le 30 ]; then SIZE="size:M";
-            elif [ "$CHANGED_FILES" -le 100 ]; then SIZE="size:L";
-            else SIZE="size:XL"; fi
-            LABELS="$LABELS $SIZE"
-          else
-            LABELS="$LABELS type:issue"
-          fi
+          if type_ == 'pr':
+            labels.append("type:pr")
+            # Get changed files count
+            try:
+              result = subprocess.run(
+                ['gh', 'pr', 'view', str(number), '--json', 'files', '--jq', '.files | length'],
+                capture_output=True, text=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+              )
+              changed_files = int(result.stdout.strip() or 0)
+            except Exception:
+              changed_files = 0
+            if changed_files <= 3:
+              size = "size:XS"
+            elif changed_files <= 10:
+              size = "size:S"
+            elif changed_files <= 30:
+              size = "size:M"
+            elif changed_files <= 100:
+              size = "size:L"
+            else:
+              size = "size:XL"
+            labels.append(size)
+          else:
+            labels.append("type:issue")
 
-          echo "labels=$LABELS" >> $GITHUB_OUTPUT
-          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
-          echo "number=$NUMBER" >> $GITHUB_OUTPUT
-          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          # Apply labels
+          for label in labels:
+            subprocess.run(
+              ['gh', type_, 'edit', str(number), '--add-label', label],
+              capture_output=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
 
-      - name: Apply labels
-        if: steps.analyze.outputs.labels != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          NUMBER="${{ steps.analyze.outputs.number }}"
-          TYPE="${{ steps.analyze.outputs.type }}"
-          for label in ${{ steps.analyze.outputs.labels }}; do
-            gh "$TYPE" edit "$NUMBER" --add-label "$label" 2>/dev/null || true
-          done
+          # Check duplicates
+          keywords = re.sub(r'[^a-z0-9 ]', '', title.lower()).replace(' ', '|')
+          if type_ == 'issue':
+            result = subprocess.run(
+              ['gh', 'issue', 'list', '--state', 'all', '--search', f'{keywords} in:title', '--json', 'number,title,state', '--jq', '.[] | select(.number != %d) | "\\(.number): \\(.title) [\\(.state)]"' % number],
+              capture_output=True, text=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
+          else:
+            result = subprocess.run(
+              ['gh', 'pr', 'list', '--state', 'all', '--search', f'{keywords} in:title', '--json', 'number,title,state', '--jq', '.[] | select(.number != %d) | "\\(.number): \\(.title) [\\(.state)]"' % number],
+              capture_output=True, text=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
+          similar = result.stdout.strip()[:500] if result.stdout.strip() else ''
+          has_duplicates = bool(similar)
 
-      - name: Check duplicates
-        id: duplicates
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ steps.analyze.outputs.number }}
-          TYPE: ${{ steps.analyze.outputs.type }}
-        run: |
-          TITLE=$(cat /tmp/title.txt)
-          KEYWORDS=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '|')
+          if has_duplicates:
+            subprocess.run(
+              ['gh', type_, 'comment', str(number), '--body', 'Possible duplicates found. Please verify before proceeding.'],
+              capture_output=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
 
-          if [ "$TYPE" = "issue" ]; then
-            SIMILAR=$(gh issue list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
-          else
-            SIMILAR=$(gh pr list --state all --search "$KEYWORDS in:title" --json number,title,state --jq '.[] | select(.number != '$NUMBER') | "\(.number): \(.title) [\(.state)]"' 2>/dev/null | head -5)
-          fi
+          # Check missing info
+          missing = []
+          if type_ == 'issue':
+            if re.search(r'bug|error|fail|crash', title, re.I):
+              if not re.search(r'steps to reproduce|passos para reproduzir|reproduz', body, re.I):
+                missing.append("- [ ] Steps to reproduce")
+              if not re.search(r'expected|esperado', body, re.I):
+                missing.append("- [ ] Expected behavior")
+              if not re.search(r'actual|atual|observado', body, re.I):
+                missing.append("- [ ] Actual behavior")
+              if not re.search(r'logs|log|traceback|stack', body, re.I):
+                missing.append("- [ ] Logs/Traceback")
+            if re.search(r'feature|enhancement|new', title, re.I):
+              if not re.search(r'user story|historia|acceptance|critério', body, re.I):
+                missing.append("- [ ] User story / Acceptance criteria")
+          else:
+            if not re.search(r'related|fixes|closes|issue', body, re.I):
+              missing.append("- [ ] Related issue (e.g., Fixes #123)")
+            if not re.search(r'test|tested|coverage', body, re.I):
+              missing.append("- [ ] Test evidence")
 
-          if [ -n "$SIMILAR" ]; then
-            echo "has-duplicates=true" >> $GITHUB_OUTPUT
-            echo "duplicates=$SIMILAR" >> $GITHUB_OUTPUT
-          else
-            echo "has-duplicates=false" >> $GITHUB_OUTPUT
-          fi
+          has_missing = bool(missing)
+          if has_missing:
+            missing_info = "\\n".join(missing)
+            subprocess.run(
+              ['gh', type_, 'comment', str(number), '--body', f'Missing information detected. Please add the suggested items.\\n{missing_info}'],
+              capture_output=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
+
+          # Update GitHub Project
+          status_map = {"P0": "3808f0ce", "P1": "3808f0ce", "P2": "a368d611", "P3": "a368d611"}
+          status = status_map.get(priority, "a368d611")
+
+          # Get issue/PR ID
+          result = subprocess.run(
+            ['gh', type_, 'view', str(number), '--json', 'id', '-q', '.id'],
+            capture_output=True, text=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+          )
+          issue_id = result.stdout.strip()
+          if issue_id:
+            # Add to project
+            subprocess.run(
+              ['gh', 'api', 'graphql', '-f', f'query=mutation {{ addProjectV2ItemById(input: {{ projectId: "PVT_kwDOCQOIIc4BiKNM" contentId: "{issue_id}" }}) {{ item {{ id }} }} }}'],
+              capture_output=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
+
+            # Get item ID
+            result = subprocess.run(
+              ['gh', 'api', 'graphql', '-f', f'query=query {{ node(id: "{issue_id}") {{ ... on Issue {{ projectItems(first: 1) {{ nodes {{ id }} }} }} ... on PullRequest {{ projectItems(first: 1) {{ nodes {{ id }} }} }} }} }}', '--jq', '.data.node.projectItems.nodes[0].id // empty'],
+              capture_output=True, text=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+            )
+            item_id = result.stdout.strip()
+            if item_id:
+              subprocess.run(
+                ['gh', 'api', 'graphql', '-f', f'query=mutation {{ updateProjectV2ItemFieldValue(input: {{ projectId: "PVT_kwDOCQOIIc4BiKNM" itemId: "{item_id}" fieldId: "PVTSSF_lADOCQOIIc4BiKNMzhhDPfg" value: {{ singleSelectOptionId: "{status}" }} }}) {{ projectV2Item {{ id }} }} }}'],
+                capture_output=True, env={**os.environ, 'GH_TOKEN': GH_TOKEN}
+              )
+
+          # Write outputs for summary
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"labels={' '.join(labels)}\n")
+            f.write(f"priority={priority}\n")
+            f.write(f"number={number}\n")
+            f.write(f"type={type_}\n")
+            f.write(f"has-duplicates={'true' if has_duplicates else 'false'}\n")
+            f.write(f"has-missing={'true' if has_missing else 'false'}\n")
+          PYEOF
 
       - name: Comment duplicates
-        if: steps.duplicates.outputs.has-duplicates == 'true'
+        if: steps.analyze.outputs.has-duplicates == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -176,111 +242,14 @@ jobs:
           TYPE="${{ steps.analyze.outputs.type }}"
           gh "$TYPE" comment "$NUMBER" --body "Possible duplicates found. Please verify before proceeding." || true
 
-      - name: Check missing info
-        id: missing
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ steps.analyze.outputs.number }}
-          TYPE: ${{ steps.analyze.outputs.type }}
-        run: |
-          # Fetch title and body from GitHub API to avoid multiline issues
-          if [ "$TYPE" = "issue" ]; then
-            TITLE=$(gh issue view "$NUMBER" --json title -q .title)
-            BODY=$(gh issue view "$NUMBER" --json body -q .body)
-          else
-            TITLE=$(gh pr view "$NUMBER" --json title -q .title)
-            BODY=$(gh pr view "$NUMBER" --json body -q .body)
-          fi
-
-          MISSING=""
-
-          if [ "$TYPE" = "issue" ]; then
-            if echo "$TITLE" | grep -qiE "bug|error|fail|crash"; then
-              if ! echo "$BODY" | grep -qiE "steps to reproduce|passos para reproduzir|reproduz"; then
-                MISSING="$MISSING\n- [ ] Steps to reproduce"
-              fi
-              if ! echo "$BODY" | grep -qiE "expected|esperado"; then
-                MISSING="$MISSING\n- [ ] Expected behavior"
-              fi
-              if ! echo "$BODY" | grep -qiE "actual|atual|observado"; then
-                MISSING="$MISSING\n- [ ] Actual behavior"
-              fi
-              if ! echo "$BODY" | grep -qiE "logs|log|traceback|stack"; then
-                MISSING="$MISSING\n- [ ] Logs/Traceback"
-              fi
-            fi
-            if echo "$TITLE" | grep -qiE "feature|enhancement|new"; then
-              if ! echo "$BODY" | grep -qiE "user story|historia|acceptance|critério"; then
-                MISSING="$MISSING\n- [ ] User story / Acceptance criteria"
-              fi
-          else
-            if ! echo "$BODY" | grep -qiE "related|fixes|closes|issue"; then
-              MISSING="$MISSING\n- [ ] Related issue (e.g., Fixes #123)"
-            fi
-            if ! echo "$BODY" | grep -qiE "test|tested|coverage"; then
-              MISSING="$MISSING\n- [ ] Test evidence"
-            fi
-          fi
-
-          if [ -n "$MISSING" ]; then
-            echo "has-missing=true" >> $GITHUB_OUTPUT
-            echo "missing_info=$MISSING" >> $GITHUB_OUTPUT
-          else
-            echo "has-missing=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Comment missing info
-        if: steps.missing.outputs.has-missing == 'true'
+        if: steps.analyze.outputs.has-missing == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           NUMBER="${{ steps.analyze.outputs.number }}"
           TYPE="${{ steps.analyze.outputs.type }}"
           gh "$TYPE" comment "$NUMBER" --body "Missing information detected. Please add the suggested items." || true
-
-      - name: Update GitHub Project
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ steps.analyze.outputs.number }}
-          TYPE: ${{ steps.analyze.outputs.type }}
-          PRIORITY: ${{ steps.analyze.outputs.priority }}
-        run: |
-          case "$PRIORITY" in
-            P0|P1) STATUS="3808f0ce" ;;  # In Progress
-            P2) STATUS="a368d611" ;;      # Backlog
-            *) STATUS="a368d611" ;;
-          esac
-
-          ISSUE_ID=$(gh "$TYPE" view "$NUMBER" --json id -q .id 2>/dev/null)
-          if [ -n "$ISSUE_ID" ]; then
-            gh api graphql -f query="
-              mutation {
-                addProjectV2ItemById(input: {
-                  projectId: \"PVT_kwDOCQOIIc4BiKNM\"
-                  contentId: \"$ISSUE_ID\"
-                }) { item { id } }
-              }" 2>/dev/null || true
-
-            ITEM_ID=$(gh api graphql -f query="
-              query {
-                node(id: \"$ISSUE_ID\") {
-                  ... on Issue { projectItems(first: 1) { nodes { id } } }
-                  ... on PullRequest { projectItems(first: 1) { nodes { id } } }
-                }
-              }" --jq '.data.node.projectItems.nodes[0].id // empty' 2>/dev/null)
-
-            if [ -n "$ITEM_ID" ]; then
-              gh api graphql -f query="
-                mutation {
-                  updateProjectV2ItemFieldValue(input: {
-                    projectId: \"PVT_kwDOCQOIIc4BiKNM\"
-                    itemId: \"$ITEM_ID\"
-                    fieldId: \"PVTSSF_lADOCQOIIc4BiKNMzhhDPfg\"
-                    value: { singleSelectOptionId: \"$STATUS\" }
-                  }) { projectV2Item { id } }
-                }" 2>/dev/null || true
-            fi
-          fi
 
   summary:
     name: Triage Summary
