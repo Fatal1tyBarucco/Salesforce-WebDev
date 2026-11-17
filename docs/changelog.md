@@ -97,3 +97,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `df8c35c` — docs: refresh documentation manifest baseline after quality fix
 - `2aff9fb` — docs: reconcile documentation baseline
 - `900b8a6` — fix: resolve all quality gate failures and MCP 1.30.0 compatibility
+- `a6bc614` — style(format): apply Black formatting to fix Python Quality gate
+- `fd9ba39` — style(format): apply Black formatting to fix Python Quality gate
