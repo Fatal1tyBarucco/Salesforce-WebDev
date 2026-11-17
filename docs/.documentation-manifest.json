@@ -822,7 +822,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "ba300de9a031a81df7ac3a79d82e2c030a0a0ef8",
+    "drift_report.json": "de3a83cf11f5838fea0293f13aa68d35ba65e505",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
@@ -839,7 +839,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "214c19db54fea88730b0e0e441eb17237936e3fa",
-    "reconcile_summary.md": "4e9ed916fdc84cfa5bf8831598d850fe2b06c0b6",
+    "reconcile_summary.md": "04e097f05b2d16bf911539189a48ad8ae064bf1c",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1357,6 +1357,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "a535621b7ecdc4a9e14fb9a72a2236ced14adbc9"
   },
-  "generated_at": "2026-11-17T09:56:38.440617+00:00",
-  "repository_sha": "623760e5325047bba24a6876e998d8cdc27655b9"
+  "generated_at": "2026-11-17T10:05:09.534303+00:00",
+  "repository_sha": "6e0705ee9859422bacd0ab7927aec91bc9530a01"
 }
