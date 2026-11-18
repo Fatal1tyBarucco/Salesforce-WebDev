@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "c49e6da70191962b9cd6dff23367a3f51bc3c221",
-  "generated_at": "2026-11-18T17:38:40.714129+00:00",
+  "repository_sha": "f63d4a85d563e42453a620049743eb27cd8a3b6e",
+  "generated_at": "2026-11-18T18:06:52.371646+00:00",
   "inventory_count": 798,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,8 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/release-please.yml",
-      "detail": "'.github/workflows/release-please.yml' blob SHA changed since last manifest baseline."
+      "path": "drift_report.json",
+      "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "mkdocs.yml",
+      "detail": "'mkdocs.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",

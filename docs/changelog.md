@@ -118,3 +118,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `b21e9ac` — docs: clean up README.md — remove test commit garbage and auto-generated index
 - `c49e6da` — fix: add missing mkdocs-sitemap dep + uv setup for release-please sync
 - `4869ad6` — docs(agents): record CI/quality learnings — uv lock gate fix landed, drift baseline quirk, action_required runs, gitleaks globs, fix_markdown layers
+- `f63d4a8` — fix: remove non-existent mkdocs-sitemap plugin and dependency
