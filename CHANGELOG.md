@@ -2,6 +2,27 @@
 
 <!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
+## [0.3.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.4...v0.3.0) (2026-11-18)
+
+
+### Features
+
+* **intelligence:** evoluir para Release Intelligence Hub (release=264) — defensivo ([23a3c83](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/23a3c83dc0aad4e081c059080298f4fdd5491f97))
+
+
+### Bug Fixes
+
+* markdown lint errors in docs/index.md (MD025, MD036, MD051) ([a7f2336](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a7f233616c3fbabd4ce5874c4e7ff503fe190449))
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([#400](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/400)) ([63c23bf](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/63c23bfc0b0567cce52ab8f03c2cd5aa1dbcb974))
+* **sync:** reconcile documentation — 2026-11-18 05:55 UTC ([8c0e37e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8c0e37ebe952114c303d136267c7991d83046fd6))
+* **sync:** reconcile documentation — 2026-11-18 06:34 UTC ([19306f0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/19306f07c0062d4b87bb786fb35c0fe9a7768458))
+* **sync:** reconcile documentation — 2026-11-18 06:39 UTC ([5a4da63](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5a4da63ca2ba1f57555a15256e03c7d1f12d15db))
+* **sync:** reconcile documentation — 2026-11-18 07:33 UTC ([844d946](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/844d946b38a2a950cf4f8010e3cbb341cbc7b8b7))
+
 ## [Unreleased]
 
 ### Security
