@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "c7d75535f3bc253b7619c014afab78adb32ee78a",
-  "generated_at": "2026-11-18T04:29:22.184364+00:00",
+  "repository_sha": "15fc5bb3716be699217dd627a139eb2856bbaa21",
+  "generated_at": "2026-11-18T04:45:31.735320+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,20 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/scheduled-pipeline.yml",
-      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/release_notes_pipeline.yml",
+      "detail": "'.github/workflows/release_notes_pipeline.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
