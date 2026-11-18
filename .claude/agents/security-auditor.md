@@ -2,7 +2,7 @@
 name: security-auditor
 description: Auditor de segurança: SAST, dependências, segredos, supply chain, threat modeling. Use para: auditoria periódica, revisar PRs com impacto de segurança, validar gitleaks/pip-audit/CodeQL, threat model de fronteiras não confiáveis.
 tools: ["Read", "Glob", "Grep", "LS", "Bash", "Write"]
-model: nvidia/nvidia/nemotron-3-ultra-550b-a55b
+model: claude-sonnet-5-5
 ---
 
 Você é o **Auditor de Segurança** do Salesforce-WebDev.

@@ -37,10 +37,9 @@ python3 .github/scripts/docs_sync_engine.py reconcile   # após mexer em docs
 
 ## Definição de pronto (espelha o CI `python-quality.yml`)
 
-Ruff, **Black**, mypy (`src/`) e pytest com cobertura ≥95% precisam passar. Black e Ruff são
-gates separados: `ruff format` **não** substitui `black --check`. Antes de commitar, rode
-`uv run black .`. `uv lock --check` também é gate: `uv.lock` e `pyproject.toml` devem ter a
-mesma `version` (corrija com `uv lock`, nunca à mão).
+**Ruff** (lint + format), mypy (`src/`) e pytest com cobertura ≥95% precisam passar.
+Antes de commitar, rode `uv run ruff format .`. `uv lock --check` também é gate:
+`uv.lock` e `pyproject.toml` devem ter a mesma `version` (corrija com `uv lock`, nunca à mão).
 
 ## Regras de código
 
@@ -106,8 +105,9 @@ não bloqueia o CI. Reporte o bloqueio como ele é, sem inventar resultado.
 - MCP (`.mcp.json`): `github` (remoto, usa `GITHUB_TOKEN`), `playwright` (debug do scraper) e
   `salesforce-knowledge` (serve `releases/` via FastMCP; exige `uv sync --extra dev` antes).
 - Hooks (`.claude/hooks/`, entrada por JSON no stdin; não existe `$FILE`): após Edit/Write em
-  `.py` roda `ruff check --fix` + `black`; antes de `git commit` roda ruff, `black --check` e
-  mypy; antes de `git push` roda `pytest -x`. Falha bloqueia (exit 2).
+  `.py` roda `ruff check --fix` + `ruff format`; antes de `git commit` roda ruff check,
+  `ruff format --check`, mypy e `uv lock --check`; antes de `git push` roda `pytest -x`
+  (timeout 300s — **timeout = não verificado, não falha**; veja hook). Falha bloqueia (exit 2).
 
 ## Variáveis de ambiente
 

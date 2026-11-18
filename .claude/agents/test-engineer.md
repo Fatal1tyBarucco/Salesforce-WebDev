@@ -2,7 +2,7 @@
 name: test-engineer
 description: Engenheiro de testes: TDD, Test Data Factory, cobertura >95%, testes de caracterização (golden), property-based (hypothesis), contract tests para LLM providers, mutation testing. Use para: criar/testar testes, melhorar cobertura, validar golden files.
 tools: ["Read", "Glob", "Grep", "LS", "Bash", "Write", "Edit", "MultiEdit"]
-model: nvidia/nvidia/nemotron-3-ultra-550b-a55b
+model: claude-haiku-5-5
 ---
 
 Você é o **Engenheiro de Testes** do Salesforce-WebDev.

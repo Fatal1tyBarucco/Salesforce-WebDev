@@ -1,0 +1,56 @@
+# Triagem automatizada de issues e PRs
+# Referenciado por .claude/commands/triage.md e skill triage
+
+labels:
+  auto:
+    - pattern: "scraper|playwright|chromium|scraping"
+      label: "scraper"
+    - pattern: "parser|parsing|html|beautifulsoup|lxml"
+      label: "parser"
+    - pattern: "llm|openai|gemini|openrouter|anthropic|model"
+      label: "llm"
+    - pattern: "pipeline|etl|orchestrat|workflow"
+      label: "pipeline"
+    - pattern: "doc|readme|mkdocs|documentation"
+      label: "docs"
+    - pattern: "infra|infrastructure|mcp|server"
+      label: "infra"
+    - pattern: "ai|intelligence|classif|enrich|summariz"
+      label: "ai"
+    - pattern: "test|coverage|pytest|golden|snapshot"
+      label: "test"
+    - pattern: "ci|workflow|action|github"
+      label: "ci"
+    - pattern: "security|secret|vuln|gitleaks|audit"
+      label: "security"
+    - pattern: "bug|erro|falha|broken|crash"
+      label: "bug"
+    - pattern: "feature|feat|enhancement|melhoria"
+      label: "feature"
+    - pattern: "refactor|cleanup|tech.debt|debt"
+      label: "refactor"
+    - pattern: "chore|deps|dependabot|bump"
+      label: "chore"
+
+priority:
+  P0: ["security", "secret", "pipeline broken", "release blocked", "data loss"]
+  P1: ["ci failing", "coverage drop", "regression", "blocked"]
+  P2: ["feature", "enhancement", "refactor", "scraper", "parser", "llm"]
+  P3: ["docs", "cleanup", "chore", "test"]
+
+duplicate_check:
+  enabled: true
+  similarity_threshold: 0.7
+  lookback_days: 90
+
+pr_size:
+  XS: "< 50"
+  S: "50-199"
+  M: "200-499"
+  L: "500-999"
+  XL: "> 1000"
+
+breaking_change_patterns:
+  - "feat.*!:"
+  - "BREAKING CHANGE:"
+  - "breaking change:"

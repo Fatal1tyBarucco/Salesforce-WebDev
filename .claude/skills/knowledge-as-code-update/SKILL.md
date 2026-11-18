@@ -36,12 +36,13 @@ diff -u releases/spring_26/.meta.json releases/winter_27/.meta.json
 ### 3. Revisar Relatórios IA
 ```bash
 # Relatórios gerados na raiz (ou tmp_path se dry-run)
+# NOTA: IMPACT_REPORT.md e NOTIFICATION_DIGEST.md são artifacts de teste (não commitados — AGENTS.md:101)
 cat CHANGELOG.md
 cat QUALITY_REPORT.md
 cat REGRESSION_REPORT.md
 cat DIFF_REPORT.md
-cat IMPACT_REPORT.md
-cat NOTIFICATION_DIGEST.md
+# cat IMPACT_REPORT.md          # artifact de teste
+# cat NOTIFICATION_DIGEST.md    # artifact de teste
 ```
 
 ### 4. Validação de Gates
