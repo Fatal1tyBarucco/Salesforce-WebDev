@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "fc85b80b6804efeca7db7d46d0e41f024e798b6d",
-  "generated_at": "2026-11-18T04:20:44.963505+00:00",
+  "repository_sha": "3f122ea35066177490fc284cc8a8737b32cd90cb",
+  "generated_at": "2026-11-18T04:23:07.042570+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -51,12 +51,6 @@
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
