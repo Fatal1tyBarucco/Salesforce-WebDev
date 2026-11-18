@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "63c23bfc0b0567cce52ab8f03c2cd5aa1dbcb974",
-  "generated_at": "2026-11-18T07:33:08.969754+00:00",
+  "repository_sha": "40254432cb276d6abd260abf0d3a7a25c561430f",
+  "generated_at": "2026-11-18T10:01:32.107085+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,12 +43,6 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "README.en.md",
       "detail": "'README.en.md' blob SHA changed since last manifest baseline."
     },
@@ -61,68 +55,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/.last-processed-ref",
-      "detail": "'docs/.last-processed-ref' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/leadership.md",
-      "detail": "'docs/ai-generated/leadership.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/release-notes.md",
-      "detail": "'docs/ai-generated/release-notes.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/roadmap.md",
-      "detail": "'docs/ai-generated/roadmap.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "intelligence/intelligence_hub/assets/pages/index.html",
-      "detail": "'intelligence/intelligence_hub/assets/pages/index.html' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json",
-      "detail": "'intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json",
-      "detail": "'intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json",
-      "detail": "'intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "reconcile_summary.md",
       "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "RELEASE_TABLE_MISSING",
-      "severity": "high",
-      "doc": "README.en.md",
-      "detail": "'README.en.md' 'Available Releases' section has no releases table."
     }
   ]
 }

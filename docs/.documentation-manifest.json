@@ -659,8 +659,8 @@
     "PLANO_DE_MODERNIZACAO.md": "e410c7458abbdf230a9c68d1048f54e89b670127",
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
     "PROPOSTA_FEATURE_RIPE.md": "003dc61ba0a5c0c9046f9219de58c723cd3d93eb",
-    "README.en.md": "be8abe7e2063fd851727cedd5c5f4da66e0d0c4f",
-    "README.md": "393e217946ca1d1c150ff30eafba15517ba4ea68",
+    "README.en.md": "6b124ce09cac31209f986a41e081eba5108d4158",
+    "README.md": "755d2ea9b5791c98dece31cb950cc9eeda4f0523",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
@@ -829,7 +829,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "c722724355202b001ad2a2a57054586e6a9c1d80",
+    "drift_report.json": "99eaec7fca3a6e199b18df65d57ab6fe8fbfc165",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -852,7 +852,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "12149e72f13bcc12c4c46973dc36f276d6adf650",
-    "reconcile_summary.md": "ad10c00655c75007c2dea5a8c739eed71ac2565a",
+    "reconcile_summary.md": "1325a9d0b70a66a645e63d4bcf3a61c1ffad211b",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1370,6 +1370,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "487155d69fa6d01e05f1f586aaf4eb863fbe84d3"
   },
-  "generated_at": "2026-11-18T07:33:21.811270+00:00",
-  "repository_sha": "63c23bfc0b0567cce52ab8f03c2cd5aa1dbcb974"
+  "generated_at": "2026-11-18T10:01:32.298465+00:00",
+  "repository_sha": "40254432cb276d6abd260abf0d3a7a25c561430f"
 }
