@@ -110,6 +110,16 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
     `.github/workflows/dependabot-lock-refresh.yml`'s `if:` to release-please PRs — requires
     workflow-file write (403 for the Actions token, see below); until an admin lands it, this
     remains a manual post-release step.
+    - **Status 2026-11-18 (issues #389/#391/#393, closed as stale):** partial fix landed as
+      `772b2e8` (skip condition on the lock-check step + post-merge `uv lock` auto-sync in
+      `release-please.yml`), but both halves are ineffective as shipped: (a) the skip condition
+      tests `github.event.head_commit.message`, which is empty on `pull_request` events and does
+      not contain `release-please`/`sync uv.lock` on release merge commits like
+      `chore(main): release 0.2.4 (#392)` — so the gate still fails on any desynced release PR;
+      (b) the auto-sync step fails with `uv: command not found` (exit 127, run 44247467257)
+      because `release-please.yml` has no `setup-uv`/`setup-python` step. Until an admin adds
+      `astral-sh/setup-uv` to that job (403 for this token — workflow files cannot be pushed),
+      pre-merge manual `uv lock` on the release branch is the only working protection.
 - **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
   `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
   variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,

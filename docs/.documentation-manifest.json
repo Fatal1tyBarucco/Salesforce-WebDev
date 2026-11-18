@@ -641,7 +641,7 @@
     ".promptfoo.yaml": "678cb8bae6c531c1091274f2cb366a46a8d9e6b1",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "cdfb804d7210377e044d8bccce1c1bc3cb57a2eb",
+    "AGENTS.md": "54a0779ec1722e905b95d864c9da3391ebf17176",
     "CHANGELOG.md": "bab9ab8d34d0826ebbf8d4a2dfb0fc984cd61770",
     "CLAUDE.md": "9f3e3a462fe84b7486e445498baacf5ff575295f",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -799,7 +799,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "3b4932bccedea5cdfcb81dde8e5f4ae6ec79dd1f",
+    "docs/index.md": "76bf58d2076953ad789a95527150c3ad63e0034d",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "8676319d55c0e2f54dc91b8fa3bc517c7e3f6643",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "454b79c2acc7d0fff2c90ae198b1a95b0eba4c01",
+    "drift_report.json": "eeddc4682cecfedda388a81062a445f049079a61",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
@@ -1364,6 +1364,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "49dd900c00435fb1dc4fe9248c129a2441ea935d"
   },
-  "generated_at": "2026-11-18T05:51:14.738061+00:00",
-  "repository_sha": "3a33f6c22bead3c491727c60d61ae22251e05906"
+  "generated_at": "2026-11-18T06:19:39.489226+00:00",
+  "repository_sha": "daa2b8e7295198a6dcd2f297bfdd067e8746fd06"
 }
