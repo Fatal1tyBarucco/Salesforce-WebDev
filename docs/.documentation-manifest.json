@@ -48,7 +48,6 @@
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/dependabot-lock-refresh.yml": [
-      "AGENTS.md",
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/documentation-build.yml": [
@@ -651,7 +650,7 @@
     ".promptfoo.yaml": "97bb60485524cbc5008d1a1b8d495d9c453834d7",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "e8651946c96a2aeacd82ec3d026fef5411e7208d",
+    "AGENTS.md": "44afd671ad033e9926dd3ce4e5994241ae886dc3",
     "CHANGELOG.md": "07e613cd4a55be492227b67251745001e948bdba",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -833,7 +832,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "6a65c0ae07b42250b5ec8c542e9244e0ed71f14b",
+    "drift_report.json": "b1eaa0c9ac2d57058f6ae8f13224cc67cf6c2e82",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1374,6 +1373,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "305bce350d4fb3426415c9c17bc18f123c3eb020"
   },
-  "generated_at": "2026-11-18T11:58:08.871353+00:00",
-  "repository_sha": "f0f86fadb98cbd1c1ae4d3afa7d89811948f4c92"
+  "generated_at": "2026-11-18T13:00:10.917792+00:00",
+  "repository_sha": "5fc195e766ef5ceda7452fe68b3e0001ad6409fc"
 }
