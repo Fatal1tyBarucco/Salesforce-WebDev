@@ -630,7 +630,7 @@
     ".github/workflows/release-please.yml": "a4247493247010de05a57657b1ea1ba77237ea82",
     ".github/workflows/release_notes_pipeline.yml": "8e9848d565fa7c7c70047b355bc73d0d733cc519",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "71c123881e48f8b8d32b145217f873c5180872fe",
-    ".github/workflows/scheduled-pipeline.yml": "be5586b03616dd3b72d6f7778309462cbb06a11a",
+    ".github/workflows/scheduled-pipeline.yml": "fca816023cf674deb66e9ca0333b901f83eea761",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "c67cc27546bcf3038f86ba0bb258cbd6be550425",
+    "drift_report.json": "1c4fe13c5ac5cc042a58815170883bf70d079243",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
@@ -846,7 +846,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "73628b05eab6d0dc074f0a063fe6aaf5000dfece",
-    "reconcile_summary.md": "04e097f05b2d16bf911539189a48ad8ae064bf1c",
+    "reconcile_summary.md": "e745bfc1e829827d6b10d1cbdf4267c6b3bedc06",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1364,6 +1364,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "faa3e8503979c2fcb4fdc078358940cd25786533"
   },
-  "generated_at": "2026-11-18T04:27:08.412979+00:00",
-  "repository_sha": "a97f6c60bae11364e25fd0ee6fad19cf0d764509"
+  "generated_at": "2026-11-18T04:29:22.378605+00:00",
+  "repository_sha": "c7d75535f3bc253b7619c014afab78adb32ee78a"
 }
