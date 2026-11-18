@@ -2,6 +2,14 @@
 
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
+## [0.2.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.0...v0.2.1) (2026-11-18)
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([#358](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/358)) ([885ccbc](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/885ccbccddbcd09e2ed62e5ae9446c012a173e87))
+* **sync:** reconcile documentation — 2026-11-18 04:49 UTC ([413ccb1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/413ccb1c349df0a34251ce30392f38a03e04994d))
+
 ## [Unreleased]
 
 ### Added
