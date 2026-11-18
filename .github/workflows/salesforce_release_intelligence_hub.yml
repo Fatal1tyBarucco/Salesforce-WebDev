@@ -1,5 +1,7 @@
 name: Salesforce Release Intelligence Hub — Pipeline Defensivo
 
+run-name: "🧠 Intelligence Hub — Release ${{ github.event.inputs.release_identifier_input || '264' }} — @${{ github.actor }}"
+
 on:
   schedule:
     - cron: '0 4 * * 1'  # Recorrente semanal (segunda, 04:00 UTC)
@@ -21,32 +23,34 @@ concurrency:
 
 jobs:
   extract-and-build-defensive:
+    name: 🧠 Extract & Build Intelligence Hub
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout repository (defensive)
+      - name: ⬇️ Checkout repository (defensive)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
 
-      - name: Configure Python 3.14 (defensive — pinado)
+      - name: 🐍 Configure Python 3.14 (defensive — pinado)
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.14'
 
-      - name: Install uv and sync dependencies (defensive)
+      - name: ⚡ Install uv and sync dependencies (defensive)
         run: |
           pip install uv
           uv sync --frozen --extra dev --group dev
 
-      - name: Install Playwright browsers (defensive)
+      - name: 🎭 Install Playwright browsers (defensive)
         run: uv run playwright install chromium
 
-      - name: Execute defensive extraction pipeline (Status + Change Log + Home)
+      - name: 🕷️ Execute defensive extraction pipeline (Status + Change Log + Home)
         id: extraction_pipeline_defensive
         run: |
+          echo "::group::🕷️ Defensive Extraction Pipeline"
           python - << 'PYTHON_DEFENSIVE_BLOCK'
           import sys, os
           sys.path.insert(0, ".")
@@ -77,9 +81,11 @@ jobs:
               control_file.write(RELEASE_NUMBER + "\n")
               control_file.write(str(status_identifier_result or "NONE") + "\n")
           PYTHON_DEFENSIVE_BLOCK
+          echo "::endgroup::"
 
-      - name: Build defensive artifacts (PDF, Manual, Cronograma, Readiness, Org Prep)
+      - name: 🏗️ Build defensive artifacts (PDF, Manual, Cronograma, Readiness, Org Prep)
         run: |
+          echo "::group::🏗️ Building Defensive Artifacts"
           RELEASE_NUMBER=$(cat intelligence/intelligence_hub/.release_control_defensive.txt | head -n1)
           uv run python - << PYTHON_BUILD_BLOCK
           import sys
@@ -112,9 +118,11 @@ jobs:
               sys.exit(f"Falha na verificação de artefatos: {missing}")
           print("[BUILD] Quatro artefatos JSON verificados com sucesso.")
           PYTHON_BUILD_BLOCK
+          echo "::endgroup::"
 
-      - name: Inject links defensively into READMEs (SoC — isolado)
+      - name: 🔗 Inject links defensively into READMEs (SoC — isolado)
         run: |
+          echo "::group::🔗 Injecting Links into READMEs"
           uv run python - << PYTHON_INJECT_BLOCK
           import sys
           sys.path.insert(0, ".")
@@ -131,9 +139,11 @@ jobs:
               ],
           )
           PYTHON_INJECT_BLOCK
+          echo "::endgroup::"
 
-      - name: Build GitHub Pages site (index with artifact links)
+      - name: 🌐 Build GitHub Pages site (index with artifact links)
         run: |
+          echo "::group::🌐 Building GitHub Pages Site"
           RELEASE_NUMBER=$(head -n1 intelligence/intelligence_hub/.release_control_defensive.txt)
           PAGES_DIR="intelligence/intelligence_hub/assets/pages"
           mkdir -p "$PAGES_DIR"
@@ -160,10 +170,16 @@ jobs:
           </html>
           HTML_EOF
           echo "[PAGES] index.html gerado em ${PAGES_DIR}"
+          echo "::endgroup::"
 
-      - name: Commit defensively updated READMEs and artifacts
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+
+      - name: 📤 Commit defensively updated READMEs and artifacts
         if: success()
         run: |
+          echo "::group::📤 Commit & Push"
           RELEASE_NUMBER=$(head -n1 intelligence/intelligence_hub/.release_control_defensive.txt)
           git config user.name "Salesforce-Intelligence-Hub-Automation"
           git config user.email "automation@fatal1tybarucco.dev"
@@ -171,3 +187,32 @@ jobs:
           git commit -m "feat(intelligence): evoluir para Release Intelligence Hub (release=${RELEASE_NUMBER}) — defensivo" || echo "Nada para commitar."
           git pull --rebase origin main
           git push
+          echo "::endgroup::"
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          RELEASE_NUMBER="${{ github.event.inputs.release_identifier_input || '264' }}"
+          echo "## 🧠 Salesforce Release Intelligence Hub" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🕷️ Extraction | ${{ steps.extraction_pipeline_defensive.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏗️ Build Artifacts | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 Inject READMEs | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🌐 GitHub Pages | ${{ steps.deployment.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📤 Commit & Push | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release | \`${RELEASE_NUMBER}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[Schedule/Dispatch] --> B[🕷️ Extraction]' >> $GITHUB_STEP_SUMMARY
+          echo '    B --> C[🏗️ Build Artifacts]' >> $GITHUB_STEP_SUMMARY
+          echo '    C --> D[🔗 Inject READMEs]' >> $GITHUB_STEP_SUMMARY
+          echo '    D --> E[🌐 GitHub Pages]' >> $GITHUB_STEP_SUMMARY
+          echo '    E --> F[📤 Commit & Push]' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

@@ -2,6 +2,8 @@
 
 name: CI Repair
 
+run-name: "🔧 CI Repair — ${{ github.event.workflow_run.head_branch }} — run #${{ github.event.workflow_run.run_number }}"
+
 on:
   workflow_run:
     workflows: ["Python Quality"]
@@ -23,7 +25,7 @@ env:
 
 jobs:
   diagnose:
-    name: Diagnose Failures
+    name: 🔍 Diagnose Failures
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.head_branch != 'main'
     outputs:
@@ -31,25 +33,25 @@ jobs:
       repair-branch: ${{ steps.decide.outputs.repair-branch }}
       pr-number: ${{ steps.decide.outputs.pr-number }}
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_branch }}
 
-      - name: Get PR number
+      - name: 🔢 Get PR number
         id: pr
         run: |
           PR_NUMBER=$(gh pr list --head ${{ github.event.workflow_run.head_branch }} --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-      - name: Get failed job logs
+      - name: 📜 Get failed job logs
         id: logs
         run: |
           RUN_ID=${{ github.event.workflow_run.id }}
           gh run view $RUN_ID --log-failed > /tmp/failed_logs.txt 2>&1 || true
 
-      - name: Decide repair
+      - name: 🤔 Decide repair
         id: decide
         run: |
           FAILED_JOBS=$(cat /tmp/failed_logs.txt | grep -E "(ruff|format|mypy|tests)" | head -20 || true)
@@ -74,48 +76,75 @@ jobs:
           echo "should-repair=true" >> $GITHUB_OUTPUT
           echo "repair-branch=$REPAIR_BRANCH" >> $GITHUB_OUTPUT
 
+      - name: 📋 Diagnose Summary
+        if: always()
+        run: |
+          echo "## 🔍 CI Repair — Diagnose" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.event.workflow_run.head_branch }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Failed Run | [#${{ github.event.workflow_run.id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Should Repair | ${{ steps.decide.outputs.should-repair }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Repair Branch | \`${{ steps.decide.outputs.repair-branch }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.decide.outputs.should-repair }}" = "true" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Auto-repair will be attempted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!TIP]" >> $GITHUB_STEP_SUMMARY
+            echo "> No repair needed or max attempts reached" >> $GITHUB_STEP_SUMMARY
+          fi
+
   repair:
-    name: Auto Repair
+    name: 🔧 Auto Repair
     needs: diagnose
     runs-on: ubuntu-latest
     if: needs.diagnose.outputs.should-repair == 'true'
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_branch }}
 
-      - name: Setup uv
+      - name: ⚡ Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --group dev
 
-      - name: Apply fixes
+      - name: 🔧 Apply fixes
         id: fixes
         run: |
+          echo "::group::🔧 Applying Auto-fixes"
           FIXES_APPLIED=""
 
+          echo "Running ruff --fix..."
           uv run ruff check . --fix && FIXES_APPLIED="$FIXES_APPLIED ruff-fix" || true
+
+          echo "Running ruff format..."
           uv run ruff format . && FIXES_APPLIED="$FIXES_APPLIED ruff-format" || true
 
-          # Mypy and tests: capture errors for analysis (no auto-fix)
+          echo "Checking mypy (no auto-fix)..."
           uv run mypy src/ --ignore-missing-imports > /tmp/mypy_errors.txt 2>&1 || true
+
+          echo "Running tests (no auto-fix)..."
           uv pip install "syrupy>=4.9.0,<5" 2>/dev/null || true
           uv run pytest tests/ -x -q --tb=short > /tmp/test_errors.txt 2>&1 || true
 
           echo "fixes-applied=$FIXES_APPLIED" >> $GITHUB_OUTPUT
+          echo "::endgroup::"
 
-      - name: Create repair branch and PR
+      - name: 🌿 Create repair branch and PR
         if: steps.fixes.outputs.fixes-applied != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -146,18 +175,46 @@ jobs:
               --label "ci-repair,auto-fix" || true
           fi
 
+      - name: 📋 Repair Summary
+        if: always()
+        run: |
+          echo "## 🔧 CI Repair — Auto Repair" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.fixes.outputs.fixes-applied }}" != "" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Fixes applied: \`${{ steps.fixes.outputs.fixes-applied }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "> Repair branch: \`${{ needs.diagnose.outputs.repair-branch }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!TIP]" >> $GITHUB_STEP_SUMMARY
+            echo "> No fixes were applicable" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
   summary:
-    name: CI Repair Summary
+    name: 📋 CI Repair Summary
     runs-on: ubuntu-latest
     needs: [diagnose, repair]
     if: always()
     steps:
-      - name: Write summary
+      - name: 📋 Write summary
         run: |
-          echo "## CI Repair" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔧 CI Repair Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Diagnose | ${{ needs.diagnose.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔧 Repair | ${{ needs.repair.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ needs.diagnose.outputs.should-repair }}" = "true" ]; then
             echo "Repair attempted. Check PR for details." >> $GITHUB_STEP_SUMMARY
           else
             echo "No repair needed or escalated to human." >> $GITHUB_STEP_SUMMARY
           fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[Python Quality Failed] --> B[🔍 Diagnose]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|Should Repair| C[🔧 Auto Repair]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|No Repair| D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
+          echo '    C --> D' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

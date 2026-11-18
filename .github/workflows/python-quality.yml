@@ -5,6 +5,8 @@
 
 name: Python Quality
 
+run-name: "🐍 Python Quality — ${{ github.ref_name }} — ${{ github.sha::7 }} — @${{ github.actor }}"
+
 on:
   push:
     branches: [main, develop]
@@ -24,9 +26,6 @@ env:
   UV_CACHE_DIR: /tmp/uv-cache
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
 
-# ─────────────────────────────────────────────────────────────────
-# Shared setup — reused as a composite across all jobs
-# ─────────────────────────────────────────────────────────────────
 defaults:
   run:
     shell: bash
@@ -61,8 +60,11 @@ jobs:
         run: uv sync --frozen --extra dev --group dev
 
       - name: 🔍 Run Ruff
+        env:
+          FORCE_COLOR: 3
+          CLICOLOR_FORCE: 1
         run: |
-          echo ""
+          echo "::group::🔍 Ruff — Static Analysis & Linting"
           printf '\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
           printf '\033[1;36m  🔍  RUFF — Static Analysis & Linting\033[0m\n'
           printf '\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
@@ -71,6 +73,7 @@ jobs:
           echo ""
           printf '\033[1;32m  ✅  Ruff passed — no issues found\033[0m\n'
           echo ""
+          echo "::endgroup::"
 
       - name: Cache pytest / snapshots
         uses: actions/cache@v6.1.0
@@ -78,6 +81,20 @@ jobs:
           path: tests/__snapshots__
           key: ${{ runner.os }}-snapshots-${{ hashFiles('tests/__snapshots__/*.ambr') }}
           restore-keys: ${{ runner.os }}-snapshots-
+
+      - name: 📋 Ruff Summary
+        if: always()
+        run: |
+          echo "## 🔍 Ruff Lint" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Ruff passed — no issues found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
+            echo "> Ruff found issues — check logs above" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🎨 BLACK — Code formatting                                 │
@@ -104,8 +121,11 @@ jobs:
         run: uv sync --frozen --extra dev --group dev
 
       - name: 🎨 Run Black
+        env:
+          FORCE_COLOR: 3
+          CLICOLOR_FORCE: 1
         run: |
-          echo ""
+          echo "::group::🎨 Black — Code Formatting Check"
           printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
           printf '\033[1;35m  🎨  BLACK — Code Formatting Check\033[0m\n'
           printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
@@ -114,6 +134,21 @@ jobs:
           echo ""
           printf '\033[1;32m  ✅  Black passed — code is properly formatted\033[0m\n'
           echo ""
+          echo "::endgroup::"
+
+      - name: 📋 Black Summary
+        if: always()
+        run: |
+          echo "## 🎨 Black Format" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Black passed — code is properly formatted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
+            echo "> Black found formatting issues — run \`uv run black .\` to fix" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🔬 MYPY — Static type checking                             │
@@ -145,8 +180,11 @@ jobs:
         run: uv sync --frozen --extra dev --extra healing --group dev
 
       - name: 🔬 Run Mypy
+        env:
+          FORCE_COLOR: 3
+          CLICOLOR_FORCE: 1
         run: |
-          echo ""
+          echo "::group::🔬 Mypy — Static Type Checking"
           printf '\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
           printf '\033[1;34m  🔬  MYPY — Static Type Checking\033[0m\n'
           printf '\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
@@ -155,6 +193,21 @@ jobs:
           echo ""
           printf '\033[1;32m  ✅  Mypy passed — no type errors\033[0m\n'
           echo ""
+          echo "::endgroup::"
+
+      - name: 📋 Mypy Summary
+        if: always()
+        run: |
+          echo "## 🔬 Mypy Types" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Mypy passed — no type errors" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
+            echo "> Mypy found type errors — run \`uv run mypy src/\` to see details" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🧪 PYTEST — Tests + Coverage                               │
@@ -191,8 +244,11 @@ jobs:
           uv pip install "syrupy>=4.9.0,<5"
 
       - name: 🧪 Run tests with coverage
+        env:
+          FORCE_COLOR: 3
+          CLICOLOR_FORCE: 1
         run: |
-          echo ""
+          echo "::group::🧪 Pytest — Test Suite + Coverage Report"
           printf '\033[1;33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
           printf '\033[1;33m  🧪  PYTEST — Test Suite + Coverage Report\033[0m\n'
           printf '\033[1;33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
@@ -210,6 +266,7 @@ jobs:
           printf '\033[1;32m  ✅  All tests passed — coverage ≥ 95%%\033[0m\n'
           printf '\033[1;32m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
           echo ""
+          echo "::endgroup::"
 
       - name: 📊 Upload coverage report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -218,6 +275,20 @@ jobs:
           name: coverage-report
           path: coverage.xml
           retention-days: 7
+
+      - name: 📋 Tests Summary
+        if: always()
+        run: |
+          echo "## 🧪 Tests & Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> All tests passed — coverage ≥ 95%" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!CAUTION]" >> $GITHUB_STEP_SUMMARY
+            echo "> Tests failed or coverage below 95% — check logs" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📝 CREATE ISSUE ON FAILURE                                 │
@@ -249,7 +320,6 @@ jobs:
           echo "mypy=$MYPY" >> "$GITHUB_OUTPUT"
           echo "tests=$TESTS" >> "$GITHUB_OUTPUT"
 
-          # Write body to file to avoid GH output quoting issues
           BODY_FILE="/tmp/issue_body.md"
           {
             echo "## 🐍 Python Quality falhou — \`${{ github.sha }}\`"
@@ -284,13 +354,11 @@ jobs:
           set -e
           TITLE="🐍 Python Quality falhou — ${{ github.sha }}"
           BODY_FILE="${{ steps.collect.outputs.body_file }}"
-          # Evita duplicatas para o mesmo commit
           EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
           if [ "${EXISTING:-0}" != "0" ]; then
             echo "Issue já existe para este commit — skipping."
             exit 0
           fi
-          # Cria issue; captura URL para extrair número (gh nao tem --json number nesta versao)
           ISSUE_FILE="/tmp/issue_url.txt"
           NUMBER=""
           if OUTPUT=$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" 2>/dev/null); then
@@ -308,11 +376,9 @@ jobs:
               NUMBER=""
             fi
           fi
-          # Fallback: busca pelo título (se arquivo falhou)
           if [ -z "$NUMBER" ]; then
-            NUMBER=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+            NUMBER=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
-          # Salva em arquivo persistente (tmp persiste entre steps do mesmo job)
           echo "$NUMBER" > /tmp/issue_number.txt
           if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
 
@@ -322,11 +388,6 @@ jobs:
           GH_TOKEN: ${{ secrets.COMMENT_TOKEN || secrets.GITHUB_TOKEN }}
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
         run: |
-          # Só comenta se o número do issue existe e há falha de lint/format/testes
-          # Usa COMMENT_TOKEN (PAT de usuário real) quando disponível para que o
-          # OpenCode acione — o GITHUB_TOKEN faz o comment aparecer como bot e o
-          # opencode-agent ignora. Fallback para GITHUB_TOKEN se o secret não existir.
-          # Tenta ler do env, depois do arquivo persistente, depois busca pelo título
           ISSUE_NUM="${NUMBER:-}"
           if [ -z "$ISSUE_NUM" ] && [ -f /tmp/issue_number.txt ]; then
             ISSUE_NUM=$(cat /tmp/issue_number.txt | tr -d ' \n')
@@ -336,7 +397,6 @@ jobs:
           fi
           if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
           echo "Comentando no issue #$ISSUE_NUM com /oc fix ruff/black/mypy/tests (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
-          # Usa comando específico, não genérico
           gh issue comment "$ISSUE_NUM" --body "/oc fix for ruff, black, mypy and test errors." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
@@ -360,21 +420,40 @@ jobs:
             [ "$1" = "success" ] && echo "✅ passed" || echo "❌ failed"
           }
 
-          echo "## 🐍 Python Quality — ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Ruff Lint        | $(badge $RUFF)  |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🎨 Black Format     | $(badge $BLACK) |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔬 Mypy Types       | $(badge $MYPY)  |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Tests & Coverage | $(badge $TESTS) |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🐍 Python Quality — ${{ github.ref_name }}"
+            echo ""
+            echo "| Step | Status |"
+            echo "| --- | --- |"
+            echo "| 🔍 Ruff Lint        | $(badge $RUFF)  |"
+            echo "| 🎨 Black Format     | $(badge $BLACK) |"
+            echo "| 🔬 Mypy Types       | $(badge $MYPY)  |"
+            echo "| 🧪 Tests & Coverage | $(badge $TESTS) |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$RUFF" == "success" && "$BLACK" == "success" && "$MYPY" == "success" && "$TESTS" == "success" ]]; then
-            echo "### ✅ All quality gates passed — ready to merge!" >> $GITHUB_STEP_SUMMARY
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> **All quality gates passed — ready to merge!** ✅" >> $GITHUB_STEP_SUMMARY
           else
-            echo "### ❌ One or more quality gates failed — review required." >> $GITHUB_STEP_SUMMARY
+            echo "> [!CAUTION]" >> $GITHUB_STEP_SUMMARY
+            echo "> **One or more quality gates failed — review required.** ❌" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "> 🐍 Python \`${{ env.PYTHON_VERSION }}\` · 📦 uv · 🕐 \`$(date -u '+%Y-%m-%d %H:%M UTC')\`" >> $GITHUB_STEP_SUMMARY
+
+          # Mermaid diagram of pipeline
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[🔍 Ruff] --> D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
+          echo '    B[🎨 Black] --> D' >> $GITHUB_STEP_SUMMARY
+          echo '    C[🔬 Mypy] --> D' >> $GITHUB_STEP_SUMMARY
+          echo '    E[🧪 Tests] --> D' >> $GITHUB_STEP_SUMMARY
+          echo '    classDef success fill:#22c55e,stroke:#16a34a,color:#fff' >> $GITHUB_STEP_SUMMARY
+          echo '    classDef fail fill:#ef4444,stroke:#dc2626,color:#fff' >> $GITHUB_STEP_SUMMARY
+          echo '    class A,B,C,E success' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

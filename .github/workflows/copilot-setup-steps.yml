@@ -1,5 +1,7 @@
 name: "Copilot Setup Steps"
 
+run-name: "🤖 Copilot Setup — ${{ github.ref_name }} — @${{ github.actor }}"
+
 on:
   workflow_dispatch:
   push:
@@ -11,25 +13,39 @@ on:
 
 jobs:
   copilot-setup-steps:
+    name: 🤖 Copilot Setup
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python 3.14
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+      - name: 🐍 Set up Python 3.14
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.14"
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+      - name: ⚡ Set up uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: uv sync --extra dev
 
-      - name: Install Playwright browsers
+      - name: 🎭 Install Playwright browsers
         run: uv run playwright install chromium --with-deps
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "## 🤖 Copilot Setup Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Environment ready for Copilot coding agent." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Checkout | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Python 3.14 | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| uv | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Playwright | ✅ |" >> $GITHUB_STEP_SUMMARY

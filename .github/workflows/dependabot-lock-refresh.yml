@@ -1,5 +1,7 @@
 name: Refresh Dependabot Lockfile
 
+run-name: "🔒 Refresh Lockfile — #${{ github.event.pull_request.number }} — @${{ github.actor }}"
+
 # Automatically regenerates uv.lock when a Dependabot PR updates
 # pyproject.toml, so the lockfile never lags behind dependency declarations.
 #
@@ -23,6 +25,7 @@ concurrency:
 
 jobs:
   refresh-lock:
+    name: 🔒 Refresh uv Lockfile
     # Only run for Dependabot PRs from the same repository.
     # Checks the PR author (not the event actor) so it works for both
     # `opened` and `synchronize` events — a push by a maintainer to the
@@ -35,24 +38,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️  Checkout PR branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: ⬇️ Checkout PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: 🐍 Setup Python 3.14
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.14"
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           enable-cache: true
 
       - name: 🔒 Refresh uv lockfile
-        run: uv lock
+        run: |
+          echo "::group::🔒 Refreshing uv lockfile"
+          uv lock
+          echo "::endgroup::"
 
       - name: 📦 Commit lockfile update
         run: |
@@ -67,3 +73,14 @@ jobs:
           git add uv.lock
           git commit -m "chore(deps): refresh uv lockfile"
           git push origin HEAD
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "## 🔒 Dependabot Lockfile Refresh" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| PR | #${{ github.event.pull_request.number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Author | @${{ github.event.pull_request.user.login }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lockfile Updated | ${{ job.status == 'success' && '✅ Yes' || '⏭️ No changes' }} |" >> $GITHUB_STEP_SUMMARY

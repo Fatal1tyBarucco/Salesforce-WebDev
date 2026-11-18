@@ -15,6 +15,8 @@
 
 name: 🚀 Salesforce Release Notes Pipeline
 
+run-name: "🚀 Release Notes — ${{ github.event_name }} — ${{ github.event.inputs.release_slug || 'all' }} — @${{ github.actor }}"
+
 permissions:
   contents: write
   issues: write
@@ -54,33 +56,33 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
-      - name: Checkout do repositório
+      - name: ⬇️ Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup uv
+      - name: ⚡ Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
 
-      - name: Configurar Python ${{ env.PYTHON_VERSION }}
+      - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Instalar dependências
+      - name: 📦 Instalar dependências
         run: |
           uv sync --frozen
           # syrupy fora do pyproject (evita downgrade do pytest); igual ao python-quality.yml
           uv pip install "syrupy>=4.9.0,<5"
 
-      - name: Instalar Playwright browsers
+      - name: 🎭 Instalar Playwright browsers
         run: uv run playwright install --with-deps chromium
 
-      - name: Instalar GitHub CLI
+      - name: 🐙 Instalar GitHub CLI
         run: sudo apt-get install -y gh
 
-      - name: Configurar identidade do bot para commits
+      - name: 🤖 Configurar identidade do bot para commits
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -91,7 +93,7 @@ jobs:
       # oscilam (503 upstream/stalls um dia, saudáveis no outro).
       # Não-fatal: se nada responder, o fallback interno do serviço varre
       # todos os pools normalmente.
-      - name: Selecionar modelo free dinamicamente
+      - name: 🤖 Selecionar modelo free dinamicamente
         id: free_model
         continue-on-error: true
         env:
@@ -100,10 +102,12 @@ jobs:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           FREE_MODEL_PROBE_BUDGET_S: "90"
         run: |
+          echo "::group::🤖 Dynamic Free Model Selection"
           mkdir -p /tmp/pipeline_logs
           uv run python .github/scripts/select_free_model.py 2>&1 | tee /tmp/pipeline_logs/free_model_selection.log
+          echo "::endgroup::"
 
-      - name: Resolver parâmetros de execução
+      - name: 🎯 Resolver parâmetros de execução
         id: params
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
@@ -114,8 +118,9 @@ jobs:
             echo "release_slug="   >> $GITHUB_OUTPUT
           fi
 
-      - name: Executar pipeline de extração
+      - name: 🚀 Executar pipeline de extração
         run: |
+          echo "::group::🚀 Pipeline Extraction"
           set -o pipefail
           mkdir -p /tmp/pipeline_logs
           ARGS=""
@@ -126,15 +131,17 @@ jobs:
             ARGS="$ARGS --release ${{ steps.params.outputs.release_slug }}"
           fi
           uv run python -m src.main $ARGS 2>&1 | tee /tmp/pipeline_logs/extraction.log
+          echo "::endgroup::"
         working-directory: ${{ env.WORKING_DIR }}
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
 
-      - name: Validar caches de resumo contra meta.json
+      - name: ✅ Validar caches de resumo contra meta.json
         if: steps.params.outputs.dry_run == 'false'
         run: |
+          echo "::group::✅ Cache Validation"
           {
           echo "🔍 Validating summary caches against .meta.json..."
           ERRORS=0
@@ -176,8 +183,9 @@ jobs:
             echo "✅ All summary caches are valid"
           fi
           } 2>&1 | tee /tmp/pipeline_logs/cache_validation.log
+          echo "::endgroup::"
 
-      - name: Verificar alterações geradas
+      - name: 🔍 Verificar alterações geradas
         id: git_status
         if: steps.params.outputs.dry_run == 'false'
         run: |
@@ -187,19 +195,22 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Validar artefatos gerados
+      - name: ✅ Validar artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
+          echo "::group::✅ Artifact Tests"
           set -o pipefail
           uv run --extra dev --extra healing pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/artifact_tests.log
+          echo "::endgroup::"
 
-      - name: Commit e push dos artefatos gerados
+      - name: 📤 Commit e push dos artefatos gerados
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
         run: |
+          echo "::group::📤 Commit & Push"
           set -o pipefail
           {
           # Stash locais (releases/ + READMEs) antes do pull para evitar
@@ -221,8 +232,9 @@ jobs:
             git push --force-with-lease origin HEAD:${{ github.ref_name }}
           fi
           } 2>&1 | tee /tmp/pipeline_logs/commit_push.log
+          echo "::endgroup::"
 
-      - name: Criar GitHub Release
+      - name: 📦 Criar GitHub Release
         if: |
           steps.params.outputs.dry_run == 'false' &&
           steps.git_status.outputs.has_changes == 'true'
@@ -235,6 +247,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           RELEASE_SLUG: ${{ steps.params.outputs.release_slug }}
         run: |
+          echo "::group::📦 GitHub Release Creation"
           set -o pipefail
           python3 << 'PYEOF' 2>&1 | tee /tmp/pipeline_logs/release_creation.log
           import json, os, re, subprocess, glob
@@ -427,8 +440,9 @@ jobs:
               print('   To replace them, manually delete via GitHub UI then re-run the pipeline.')
 
           PYEOF
+          echo "::endgroup::"
 
-      - name: Upload dos logs de execução
+      - name: 📦 Upload dos logs de execução
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -437,20 +451,20 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-      - name: Gerar sumário do pipeline
+      - name: 📋 Gerar sumário do pipeline
         if: always()
         run: |
           echo "## 📊 Sumário do Pipeline" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "```mermaid" >> $GITHUB_STEP_SUMMARY
-          echo "flowchart LR" >> $GITHUB_STEP_SUMMARY
-          echo "    A[Salesforce Help] -->|Playwright| B[Parser]" >> $GITHUB_STEP_SUMMARY
-          echo "    B -->|FeatureImpact| C[Markdown]" >> $GITHUB_STEP_SUMMARY
-          echo "    C -->|Generator| D[Releases]" >> $GITHUB_STEP_SUMMARY
-          echo "    C -->|Updater| E[README]" >> $GITHUB_STEP_SUMMARY
-          echo "    D -->|Jekyll| F[GitHub Pages]" >> $GITHUB_STEP_SUMMARY
-          echo "    E -->|Jekyll| F" >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[Salesforce Help] -->|Playwright| B[Parser]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|FeatureImpact| C[Markdown]' >> $GITHUB_STEP_SUMMARY
+          echo '    C -->|Generator| D[Releases]' >> $GITHUB_STEP_SUMMARY
+          echo '    C -->|Updater| E[README]' >> $GITHUB_STEP_SUMMARY
+          echo '    D -->|Jekyll| F[GitHub Pages]' >> $GITHUB_STEP_SUMMARY
+          echo '    E -->|Jekyll| F' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Parâmetro | Valor |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
@@ -458,6 +472,14 @@ jobs:
           echo "| Dry Run | \`${{ steps.params.outputs.dry_run }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Release | \`${{ steps.params.outputs.release_slug || 'todas' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Modelo LLM (selecionado) | \`${{ steps.free_model.outputs.model && format('{0}:{1}', steps.free_model.outputs.provider, steps.free_model.outputs.model) || 'auto (fallback)' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.git_status.outputs.has_changes }}" = "true" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> Artifacts generated and committed. Releases created." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!TIP]" >> $GITHUB_STEP_SUMMARY
+            echo "> No changes detected." >> $GITHUB_STEP_SUMMARY
+          fi
 
   create-issue:
     name: 📝 Issue com Diagnóstico de Falhas
@@ -466,17 +488,17 @@ jobs:
     needs: extract
     if: always() && needs.extract.result == 'failure'
     steps:
-      - name: Checkout do repositório
+      - name: ⬇️ Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Baixar logs da extração
+      - name: 📥 Baixar logs da extração
         continue-on-error: true
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: extract-logs
           path: /tmp/pipeline_logs/extract
 
-      - name: Gerar corpo didático da issue
+      - name: 📝 Gerar corpo didático da issue
         id: body
         env:
           LOG_DIR: /tmp/pipeline_logs
@@ -490,7 +512,7 @@ jobs:
           python3 .github/scripts/build_failure_issue.py > /tmp/issue_body.md
           echo "body_file=/tmp/issue_body.md" >> $GITHUB_OUTPUT
 
-      - name: Criar GitHub Issue
+      - name: 📝 Criar GitHub Issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -508,3 +530,10 @@ jobs:
             echo "::warning::Falha ao criar issue com body-file, tentando com --body"
             gh issue create --title "$TITLE" --body "$(cat "$BODY_FILE")"
           fi
+
+      - name: 📋 Issue Summary
+        if: always()
+        run: |
+          echo "## 📝 Failure Issue Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Diagnostic issue created for failed pipeline run." >> $GITHUB_STEP_SUMMARY
