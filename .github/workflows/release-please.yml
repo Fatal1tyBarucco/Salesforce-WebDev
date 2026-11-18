@@ -56,6 +56,16 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Merge the Release PR to publish this release." >> $GITHUB_STEP_SUMMARY
 
+      - name: 🔒 Sync uv.lock after version bump
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          uv lock
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add uv.lock
+          git commit -m "chore: sync uv.lock after release-please version bump"
+          git push
+
       - name: 📋 No Release Needed
         if: steps.release.outputs.release_created != 'true'
         run: |
