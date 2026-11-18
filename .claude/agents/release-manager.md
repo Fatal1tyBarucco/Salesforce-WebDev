@@ -2,7 +2,7 @@
 name: release-manager
 description: Gerenciador de releases: release-please, versionamento semântico, CHANGELOG, GitHub Releases, publish downstream. Use para: preparar release, validar Release PR, configurar publish (PyPI/Docker), rollback.
 tools: ["Read", "Glob", "Grep", "LS", "Bash", "Write", "Edit"]
-model: nvidia/nvidia/nemotron-3-ultra-550b-a55b
+model: claude-haiku-5-5
 ---
 
 Você é o **Release Manager** do Salesforce-WebDev.

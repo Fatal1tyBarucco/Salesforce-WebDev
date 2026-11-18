@@ -2,31 +2,31 @@
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": ["-y", "@modelcontextprotocol/server-github@2025.4.8"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       },
-      "description": "GitHub API access for issues, PRs, repos, workflows"
+      "description": "GitHub API access — REQUIRES GITHUB_TOKEN env var (GitHub Actions secret or local .env)"
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-playwright"],
-      "description": "Playwright for browser automation debugging (scraper)"
+      "args": ["-y", "@modelcontextprotocol/server-playwright@2025.3.12"],
+      "description": "Playwright for browser automation debugging (scraper) — requires npx + Playwright installed"
     },
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/barucco/projetos/Salesforce-WebDev"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.3.12", "/home/barucco/projetos/Salesforce-WebDev"],
       "description": "Local filesystem access (read-only by default)"
     },
     "python-docs": {
       "command": "python3",
       "args": ["-m", "mcp.server.python_docs"],
-      "description": "Python standard library documentation"
+      "description": "Python stdlib docs — requires mcp[python-docs] extra or separate install"
     },
     "salesforce-knowledge": {
       "command": "python3",
       "args": ["-m", "src.infrastructure.mcp.knowledge_server"],
-      "description": "Salesforce Release Notes Knowledge-as-Code MCP Server",
+      "description": "Salesforce Release Notes Knowledge-as-Code MCP Server — requires uv sync --extra dev",
       "env": {
         "RELEASES_DIR": "releases"
       }

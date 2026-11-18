@@ -559,6 +559,7 @@ Salesforce-WebDev/
   ├── report_parts/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
+  ├── .gitleaks.toml
   ├── .mcp.json
   ├── .mutmut-cache
   ├── .promptfoo.yaml

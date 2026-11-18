@@ -1,0 +1,62 @@
+# Gitleaks configuration for secret detection
+# Run with: gitleaks git . --redact --config .gitleaks.toml
+
+title = "Salesforce-WebDev Gitleaks Config"
+
+[allowlist]
+description = "Allowlisted patterns for this repo"
+paths = [
+    "tests/fixtures/**",
+    "tests/golden/**",
+    "*.example",
+    "*.template",
+]
+regexes = [
+    # Allow test/fake tokens in test files
+    "test[-_]?token",
+    "fake[-_]?secret",
+    "dummy[-_]?key",
+    "example[-_]?key",
+]
+
+[[rules]]
+id = "openrouter-api-key"
+description = "OpenRouter API Key"
+regex = '''(?i)(openrouter[_-]?api[_-]?key|openrouter[_-]?key)["']?\s*[:=]\s*["']?[a-zA-Z0-9_-]{32,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "google-api-key"
+description = "Google API Key"
+regex = '''(?i)(google[_-]?api[_-]?key|gemini[_-]?api[_-]?key)["']?\s*[:=]\s*["']?[a-zA-Z0-9_-]{32,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Token"
+regex = '''(?i)(github[_-]?token|gh[_-]?token|ghp_)["']?\s*[:=]\s*["']?[a-zA-Z0-9_]{36,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "opencode-api-key"
+description = "OpenCode API Key"
+regex = '''(?i)(opencode[_-]?api[_-]?key)["']?\s*[:=]\s*["']?[a-zA-Z0-9_-]{32,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "release-token"
+description = "Release Token"
+regex = '''(?i)(release[_-]?token)["']?\s*[:=]\s*["']?[a-zA-Z0-9_-]{32,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key Pattern"
+regex = '''(?i)(api[_-]?key|secret[_-]?key|access[_-]?token)["']?\s*[:=]\s*["']?[a-zA-Z0-9_-]{32,}["']?'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'''
+tags = ["key", "ssh"]

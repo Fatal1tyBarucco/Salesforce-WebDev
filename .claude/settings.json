@@ -2,7 +2,6 @@
   "permissions": {
     "allow": [
       "Bash(uv run ruff*)",
-      "Bash(uv run black*)",
       "Bash(uv run mypy*)",
       "Bash(uv run pytest*)",
       "Bash(uv sync*)",
@@ -19,8 +18,23 @@
       "Glob",
       "Grep",
       "LS",
-      "Edit",
-      "Write"
+      "Edit(src/**)",
+      "Edit(tests/**)",
+      "Edit(docs/**)",
+      "Edit(.claude/**)",
+      "Edit(.github/**)",
+      "Edit(pyproject.toml)",
+      "Edit(uv.lock)",
+      "Edit(README*.md)",
+      "Edit(CHANGELOG.md)",
+      "Write(src/**)",
+      "Write(tests/**)",
+      "Write(docs/**)",
+      "Write(.claude/**)",
+      "Write(.github/**)",
+      "Write(pyproject.toml)",
+      "Write(README*.md)",
+      "Write(CHANGELOG.md)"
     ],
     "deny": [
       "Bash(rm -rf*)",
@@ -63,7 +77,7 @@
           {
             "type": "command",
             "command": ".claude/hooks/pre-push.py",
-            "timeout": 120
+            "timeout": 300
           }
         ]
       }

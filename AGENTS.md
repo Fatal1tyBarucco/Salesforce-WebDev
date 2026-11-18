@@ -15,16 +15,16 @@ Dependency management and virtual environments are handled by `uv`. The project 
 - **Run tests:** `uv run pytest` (or `uv run pytest tests/`)
 - **Run lint / formatting check:**
   - `uv run ruff check .`
-  - `uv run black --check .`
+  - `uv run ruff format --check .`
 - **Run typecheck:** `uv run mypy src/`
 - **Run all pre-commit checks manually:** `uv run pre-commit run --all-files`
-  - Pre-push hook (`.hooks/pytest-pre-push.sh`) runs `pytest tests/ -x -q` automatically on push; it uses `python3` directly, so ensure deps are in the active venv.
+  - Pre-push hook (`.claude/hooks/pre-push.py`) runs `pytest tests/ -x` on push (timeout 300s; timeout = not verified); it uses `uv run`, so ensure deps are in the active venv.
 
 ## Stack & Conventions
 
 - Python `>=3.14,<3.15` (via `uv`; system may have 3.14, lock file pins to 3.14).
 - `addopts = "-q --tb=short --durations=10 --timeout=120"` in pyproject.toml; `--timeout=120` (pytest-timeout) enforces a 120s per-test limit.
-- Code style: Black (line length 100) and Ruff linting.
+- Code style: **Ruff** (lint + format, line length 100).
 - Async code: Asyncio (`asyncio_mode = "auto"` in pytest).
 - `pythonpath = ["."]` in pyproject.toml — `src` modules are importable without installation.
 - Commit messages: Conventional Commits (`feat(scope): ...`, `fix(scope): ...`, `refactor(scope): ...`, `test(scope): ...`, `docs(scope): ...`, `chore(scope): ...`).
@@ -41,19 +41,20 @@ Dependency management and virtual environments are handled by `uv`. The project 
 
 Before finishing changes, always run:
 1. `uv run ruff check .`
-2. `uv run black --check .`
+2. `uv run ruff format --check .`
 3. `uv run mypy src/`
 4. `uv run pytest --cov=src --cov-fail-under=95 --cov-report=term-missing --cov-report=xml:coverage.xml`
 
 ### Feature: Python Quality + /oc fix auto-comment (2026-09-23)
-Quando `python-quality.yml` falha, ele cria um issue automaticamente e comenta `/oc fix for ruff, black, mypy and test errors.` para acionar `opencode` (`opencode.yml`). Modelo configurado: `opencode/mimo-v2.6-flash-free` (v2.5 removida). Requer `OPENCODE_API_KEY` + `GITHUB_TOKEN` no `opencode.yml`. Se o `opencode` reagir, ele cria PR automaticamente; caso contrário, a correção é manual (`uv run ruff check . --fix`, `uv run black .`, `uv run mypy src/`).
+Quando `python-quality.yml` falha, ele cria um issue automaticamente e comenta `/oc fix for ruff, mypy and test errors.` para acionar `opencode` (`opencode.yml`). Modelo configurado: `opencode/mimo-v2.6-flash-free` (v2.5 removida). Requer `OPENCODE_API_KEY` + `GITHUB_TOKEN` no `opencode.yml`. Se o `opencode` reagir, ele cria PR automaticamente; caso contrário, a correção é manual (`uv run ruff check . --fix`, `uv run ruff format .`, `uv run mypy src/`).
 
 ### Quality issue fix convention (updated 2026-09-22)
-When an open issue reports "Python Quality falhou": fix with `uv run ruff check . --fix`, `uv run black .`, commit to main, push, then close all related issues (#141-143 pattern). Remove test artifacts (`NOTIFICATION_DIGEST.md`, `DIFF_REPORT.md`, etc.). Verify with `uv run pytest --cov=src --cov-fail-under=95`.
+When an open issue reports "Python Quality falhou": fix with `uv run ruff check . --fix`, `uv run ruff format .`, commit to main, push, then close all related issues (#141-143 pattern). Remove test artifacts (`NOTIFICATION_DIGEST.md`, `DIFF_REPORT.md`, etc.). Verify with `uv run pytest --cov=src --cov-fail-under=95`.
 
 #### Atualização de conclusão (2026-10-17 — Renato / Termux aarch64-android)
 - Issue #184 fechada; PR #188 mergeada; repo sincronizado para 93cf8c2.
 - MEMORY.md criado local (não versionado) com registro da conclusão e bloqueio (ruff 0.17.1 não linkado, python3.13 indisponível).
+- **Atenção**: Projeto agora é **Ruff-only** (lint + format). No Termux/ARM64, `ruff` pode não estar linkado — formatação e lint só rodam no CI ou máquina com Ruff funcional.
 - Bloqueio documentado honestamente: não inventado.
 
 ## Key Files & Decisions

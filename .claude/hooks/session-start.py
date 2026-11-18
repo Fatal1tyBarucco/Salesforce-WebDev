@@ -7,12 +7,14 @@ import sys
 
 
 def run_cmd(cmd, desc=None):
-    result = subprocess.run(cmd, capture_output=True, timeout=60, shell=True)
+    result = subprocess.run(cmd, capture_output=True, timeout=60)
     output = result.stdout.decode().strip()
     if output:
         print(output)
     if result.returncode != 0 and desc:
         print(f"{desc}: FAILED", file=sys.stderr)
+        if result.stderr:
+            print(result.stderr.decode().strip(), file=sys.stderr)
     return result.returncode == 0
 
 
@@ -23,13 +25,13 @@ def main():
         pass
 
     print("=== REPO STATE ===")
-    run_cmd("git branch --show-current")
-    run_cmd("git status --short")
+    run_cmd(["git", "branch", "--show-current"])
+    run_cmd(["git", "status", "--short"])
 
     print("=== GATES ===")
-    run_cmd("uv run ruff check . --quiet", "ruff")
-    run_cmd("uv run ruff format --check . --quiet", "ruff format")
-    run_cmd("uv run mypy src/ --ignore-missing-imports >/dev/null 2>&1", "mypy")
+    run_cmd(["uv", "run", "ruff", "check", "."], "ruff")
+    run_cmd(["uv", "run", "ruff", "format", "--check", "."], "ruff format")
+    run_cmd(["uv", "run", "mypy", "src/", "--ignore-missing-imports"], "mypy")
 
 
 if __name__ == "__main__":
