@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: ⬇️  Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - name: 🚀 Run Release Please
         id: release
@@ -43,6 +45,7 @@ jobs:
           bump-minor-pre-major: true
           bump-patch-for-minor-pre-major: true
           auto-merge: true
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - name: 📋 Release Created Summary
         if: steps.release.outputs.release_created == 'true'
