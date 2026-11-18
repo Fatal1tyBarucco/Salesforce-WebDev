@@ -104,13 +104,16 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
 - **`uv lock --check` is a CI gate** (first step of the Ruff job). `uv.lock` must embed the same
   project `version` as `pyproject.toml` — bumping one without the other fails the whole workflow.
   Fix with `uv lock` (or `uv sync`, which rewrites it), never hand-edit.
-  - **release-please desync (2026-11-17):** release-please (`release-type: python`) bumps
-    `pyproject.toml` version without refreshing `uv.lock`, so every release PR merge ref and the
-    subsequent push to `main` fail this gate (issues #339–#342). After any release-please merge,
-    run `uv lock` on `main` immediately. The durable fix — extending
-    `.github/workflows/dependabot-lock-refresh.yml`'s `if:` to release-please PRs — requires
-    workflow-file write (403 for the Actions token, see below); until an admin lands it, this
-    remains a manual post-release step.
+  - **release-please desync (2026-11-17, gate skip landed 2026-11-18):** release-please
+    (`release-type: python`) bumps `pyproject.toml` version without refreshing `uv.lock`, so
+    release PRs and the subsequent push to `main` failed this gate (issues #339–#342, #404, #406).
+    **Durable fix landed in `f0f86fa`** (admin commit): the step now runs
+    `if: "!contains(github.event.head_commit.message, 'release-please') && !contains(github.event.head_commit.message, 'sync uv.lock')"` —
+    push events whose head commit message contains either string skip the gate. Caveat: on
+    `pull_request` events `github.event.head_commit` is null → the gate **runs**, so the PR branch
+    must have `uv.lock` in sync with `pyproject.toml` (release 0.3.1 PR #405 did — `uv lock --check`
+    green on its head). Manual fallback after any release merge: run `uv lock` on `main`; never
+    hand-edit `uv.lock`.
 - **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
   `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
   variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
@@ -123,6 +126,29 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
   2026-11-16 "docs: reconcile" commits stripped them and desynced the goldens. If that function
   changes, regenerate the goldens with `CHAR_GOLDEN_UPDATE=1 uv run pytest
   tests/test_characterization_summarizer.py`.
+- **`drift_report.json` self-referential `MANIFEST_STALE_SHA` (pre-existing, never fails CI):**
+  the Documentation Sync workflow runs `audit` (which writes `./drift_report.json`) **before**
+  `write_manifest()` reads `git ls-files -s` (the index), then `git add -A` commits the new
+  report — so the committed baseline lags one generation and the next audit reports exactly 1
+  finding (`drift_report.json` blob SHA changed). `main` carries this state too; `cmd_audit`
+  returns 0 regardless of findings, so nothing is blocked. Fix recipe after any merge/conflict
+  resolution: `git checkout -- drift_report.json` → `python3 .github/scripts/docs_sync_engine.py
+  reconcile` → re-audit with `DRIFT_REPORT=/tmp/...` (keeps the tree clean) → commit the
+  regenerated `docs/.documentation-manifest.json`. Do **not** treat this finding as a regression.
+- **CI runs created by the Actions `GITHUB_TOKEN` (`github-actions[bot]`) on PR heads conclude
+  `action_required`** (observed 2026-11-18 pushing to `release-please--branches--main`: the 5
+  `pull_request` runs — Python Quality, AI PR Review, Documentation Sync, Dependency Review,
+  AI Triage — were all created but hold for maintainer approval in the UI; runs pushed by a human
+  execute normally). The token has no `actions: write`/`checks: write` → `gh run rerun`,
+  `gh workflow run`, and check-suite `rerequest` all return HTTP 403. Verify every gate locally
+  with the full Validation Checklist, report results honestly, and state that a human must
+  approve the runs (or a PAT must push) — never claim CI ran when it did not.
+- **`.gitleaks.toml` allowlist `paths` globs panic gitleaks v8.30.1 (since `9cfbab3`, 2026-11-18):**
+  globs like `tests/fixtures/**`, `tests/golden/**`, `*.example`, `*.template` are compiled as RE2
+  (`bad repetition operator` from `re2.cc`) → the `AI PR Review → Security Audit` job fails on
+  **every** run. It is a non-required check (PRs merged with it red); do not attribute the failure
+  to PR content. Fix not applied yet — rewrite globs as RE2 (`tests/fixtures/.*`, `.*\.example$`)
+  only after verifying locally against gitleaks v8.30.1.
 
 ## GitHub Project Integration
 
@@ -242,7 +268,7 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 - **Tests must never write repo-root files.** `src/main.py` `generate_ai_reports_async` writes `CHANGELOG.md`, `QUALITY_REPORT.md`, `REGRESSION_REPORT.md`, `DIFF_REPORT.md` relative to cwd; tests invoking it need a temp cwd (see autouse `isolated_cwd` fixture in `tests/test_main_coverage.py`).
 - **`.github/scripts/docs_sync_engine.py` must stay runnable** (`python3` stdlib-only, no third-party deps); after editing it, verify with `python3 -m py_compile` and `python3 .github/scripts/docs_sync_engine.py audit`. Docs changes require `reconcile` → validate → commit + push.
 - **No available token can edit `.github/workflows/*`.** Both the opencode GitHub App token and the Actions `GITHUB_TOKEN` refuse with HTTP 403/`refusing to allow a GitHub App ... without workflows permission` (verified via git push and the Contents API). Workflow-file fixes must be reported to a human/admin — never claim they were pushed.
-- **`.github/scripts/fix_markdown.py` `fix_md040_fence_language` must track fence open/close state** (fixed 2026-11-04). Rewriting a *closing* fence as if it were an opener mutates docs on every Documentation Sync run → the bot pushes a `github-actions[bot]` commit → that commit's checks pause at `action_required` (needs UI approval; opencode pushes run automatically). After editing, run `python3 .github/scripts/fix_markdown.py` and confirm `git status` stays clean on an unchanged tree.
+- **`.github/scripts/fix_markdown.py` `fix_md040_fence_language` must track fence open/close state** (fixed 2026-11-04). Rewriting a *closing* fence as if it were an opener mutates docs on every Documentation Sync run → the bot pushes a `github-actions[bot]` commit → that commit's checks pause at `action_required` (needs UI approval; GITHUB_TOKEN pushes pause the same way — see the known issue above). Never commit the script's output alone: its MD029 pass renumbers continuing lists to 1..n (e.g. `docs/index.md` steps 5–7 → 1–3, semantically wrong), and only the Documentation Sync's layer-2 `markdownlint-cli2 --fix` reverts that (verified in run `44299414704`: layer 1 "Fixed files: docs/index.md", layer 2 "3 fixes in 1 file" → net zero). When validating locally, run layer 1 followed by `npx --yes markdownlint-cli2 "docs/**/*.md" --fix --config-file .markdownlint.json --ignore node_modules`, then confirm `git status` stays clean on an unchanged tree.
 
 ## Atualização de conclusão — Auditoria de IA (2026-10-18 — Renato / Termux)
 - `MEMORY.md` atualizado (não versionado) com registro completo da auditoria e envio para canais de mensagem.

@@ -48,7 +48,6 @@
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/dependabot-lock-refresh.yml": [
-      "AGENTS.md",
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/documentation-build.yml": [
@@ -651,7 +650,7 @@
     ".promptfoo.yaml": "97bb60485524cbc5008d1a1b8d495d9c453834d7",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "e8651946c96a2aeacd82ec3d026fef5411e7208d",
+    "AGENTS.md": "44afd671ad033e9926dd3ce4e5994241ae886dc3",
     "CHANGELOG.md": "cc9450c761cb35344caec44c15572bfeb4bde649",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -1374,6 +1373,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "5613e9fa8218f80a02d2eada514d53cb4375217e"
   },
-  "generated_at": "2026-11-18T12:36:20.270887+00:00",
-  "repository_sha": "08ee3f3502bdad73860480364a7b160766fd6c90"
+  "generated_at": "2026-11-18T13:02:00.921448+00:00",
+  "repository_sha": "48f6753105b39cc5973a289c0fc76360fd110c7f"
 }
