@@ -6,10 +6,10 @@ title = "Salesforce-WebDev Gitleaks Config"
 [allowlist]
 description = "Allowlisted patterns for this repo"
 paths = [
-    "tests/fixtures/**",
-    "tests/golden/**",
-    "*.example",
-    "*.template",
+    "tests/fixtures/.*",
+    "tests/golden/.*",
+    ".*\\.example",
+    ".*\\.template",
 ]
 regexes = [
     # Allow test/fake tokens in test files
