@@ -109,3 +109,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `344cb42` — fix: add event_name guard to scheduled-pipeline jobs to skip ghost push runs
 - `6cd8d37` — refactor(workflows): rewrite AI triage as Python script to handle multiline content
 - `22a498f` — feat(intelligence): evoluir para Release Intelligence Hub (release=264) — defensivo
+- `885ccbc` — docs: atualização automática via IA [skip ci] (#358)

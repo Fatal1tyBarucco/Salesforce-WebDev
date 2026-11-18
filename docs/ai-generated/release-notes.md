@@ -41,7 +41,7 @@ Sparkline da distribuição alto/médio/baixo: ▄█▄
 
 ---
 
-## Nova atualização
+## Nova atualização 2
 
 Esta atualização concentra-se na estabilidade do pipeline de integração contínua e na modernização do servidor MCP. As correções nos workflows de documentação e de qualidade endereçam falhas que comprometiam a geração automática de documentação e a execução do gate Python, com impacto médio e prioridade alta. A migração do servidor MCP para a FastMCP API, com pinagem do pacote mcp na versão 1.30.0, é a mudança de maior impacto desta execução: ela reescreve a implementação principal do servidor e exige regeneração dos arquivos de teste ouro, podendo afetar integrações que dependem da API MCP anterior. Não há breaking change formalmente classificado, mas consumidores do servidor MCP devem ser validados.
 
@@ -60,7 +60,7 @@ Riscos e revisão: a configuração do portão de qualidade Black aparece de for
 | **Instalação editável do pacote para mkdocstrings — 📋 bugfix** | Adição de src/domain/**init**.py para tornar domain um pacote adequado e atualização do documenta… | 🟢 low | src/domain/**init**.py, .github/workflows/documentation-build.yml · Prioridade: 💡 P2 |
 | **Formatação Black e ajustes de estilo de código — 📋 refactor** | Aplicação de formatação Black para corrigir o portão de qualidade Python, incluindo remoção e res… | 🟢 low | .github/workflows/python-quality.yml, arquivos Python diversos · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto
+## 📊 Distribuição de Impacto 2
 
 🔴 Alto: **1** (12%) 🔴
 🟡 Médio: **1** (12%) 🟡
@@ -68,7 +68,7 @@ Riscos e revisão: a configuração do portão de qualidade Black aparece de for
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução
+## Mudanças por tipo nesta execução 2
 
 ```text
 📋 bugfix             │███████████████░░░░░░░░░░░░░░░│    2 →
@@ -85,7 +85,7 @@ Sparkline da distribuição alto/médio/baixo: ▁▁█
 
 ---
 
-## Nova atualização 2
+## Nova atualização 3
 
 Sincronização do manifesto de documentação com atualização de referências, hashes e metadados de geração, impactando arquivos de documentação associadas, risco baixo de alteração de comportamento funcional. Correção na inicialização de linhas do bloco de release docs, ajustando lista de inicialização de vazia para linha em branco para restaurar formatação esperada, impacto médio na formatação gerada. Adaptação de testes do servidor MCP de release notes para API atual, incluindo objetos query, retorno JSON string e registro de ferramentas via FastMCP; maior parte do impacto na suíte de testes, comportamento pode necessitar de validação adicional.
 
@@ -95,7 +95,7 @@ Sincronização do manifesto de documentação com atualização de referências
 | **Correção na inicialização de linhas do bloco de release docs — 📋 bugfix** | Ajustou a inicialização da lista de linhas do bloco de release docs, passando de lista vazia para… | 🟡 medium | src/release_docs.py, src/release_summarizer.py · Prioridade: 💡 P2 |
 | **Adaptação de testes do servidor MCP de release notes — 📋 refactor** | Reescreveu os testes do MCP knowledge server para usar a API atual, incluindo objetos query, reto… | 🟢 low | tests/infrastructure/mcp/test_knowledge_server.py, src/infrastructure/mcp/knowledge_server.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 2
+## 📊 Distribuição de Impacto 3
 
 🔴 Alto: **0** (0%)
 🟡 Médio: **1** (33%) 🟡
@@ -103,7 +103,7 @@ Sincronização do manifesto de documentação com atualização de referências
 
 Total: **3 features**
 
-## Mudanças por tipo nesta execução 2
+## Mudanças por tipo nesta execução 3
 
 ```text
 📋 bugfix             │██████████████████████████████│    1 →
@@ -120,9 +120,9 @@ Sparkline da distribuição alto/médio/baixo:  ▄█
 
 ---
 
-## Nova atualização 3
-
 ## Nova atualização 4
+
+## Nova atualização 5
 
 Esta atualização traz uma migração crítica de arquitetura do FastMCP para a API do Servidor MCP v2, que altera a assinatura de `create_server` e a forma de registro de ferramentas, gerando um impacto alto devido à quebra de compatibilidade com clientes que dependiam da API anterior. También corrige a ordem de cálculo de links em `release_docs.py` para garantir que slugs de categorias em inglês sejam aplicados corretamente, evitando links quebrados na documentação (impacto médio). Por fim, refatora os testes do MCP Server, introduzindo a função `_decode` e removendo testes de chamada direta de ferramentas (`call_tool`), o que reduz a cobertura de integração mas simplifica a manutenção (impacto médio).
 
@@ -134,7 +134,7 @@ Riscos principais: quebra de integração com consumidores que utilizavam a API 
 | **Correção de ordem de link em release_docs.py — 📋 bugfix** | A variável `link` era calculada antes de ser redefinida para idioma en_US, gerando links incorret… | 🟡 medium | src/release_docs.py, Documentação Gerada · Prioridade: 💡 P1 |
 | **Refatoração e simplificação de testes do MCP Server — 📋 refactor** | Testes foram refatorados para usar uma função auxiliar `_decode` que extrai o payload JSON do úni… | 🟡 medium | tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 3
+## 📊 Distribuição de Impacto 4
 
 🔴 Alto: **1** (33%) 🔴
 🟡 Médio: **2** (66%) 🟡🟡
@@ -142,7 +142,7 @@ Riscos principais: quebra de integração com consumidores que utilizavam a API 
 
 Total: **3 features**
 
-## Mudanças por tipo nesta execução 3
+## Mudanças por tipo nesta execução 4
 
 ```text
 💥 Breaking Change    │██████████████████████████████│    1 →
@@ -159,9 +159,9 @@ Sparkline da distribuição alto/médio/baixo: ▄█
 
 ---
 
-## Nova atualização 5
-
 ## Nova atualização 6
+
+## Nova atualização 7
 
 Esta atualização corrige a geração de links de release para a documentação em inglês, passando a usar slugs de categoria em inglês definidos para o locale en_US e montando o link antes do bloco de exibição. A correção tem impacto alto na navegação da documentação em inglês, pois evita links apontando para slugs em português inexistentes.
 
@@ -174,7 +174,7 @@ Não há breaking change identificado nas mudanças classificadas. O risco conce
 | **Corrigir slugs de categorias em inglês para links de release — 📋 bugfix** | A correção ajusta a construção de links para arquivos de release ao localizar categorias em inglê… | 🔴 high | src/release_docs.py · Prioridade: 💡 P1 |
 | **Migrar testes do MCP knowledge server para API de baixo nível — 📋 refactor** | Os testes do MCP knowledge server foram ajustados para usar o Server de baixo nível do SDK, regis… | 🟡 medium | tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 4
+## 📊 Distribuição de Impacto 5
 
 🔴 Alto: **1** (50%) 🔴
 🟡 Médio: **1** (50%) 🟡
@@ -182,7 +182,7 @@ Não há breaking change identificado nas mudanças classificadas. O risco conce
 
 Total: **2 features**
 
-## Mudanças por tipo nesta execução 4
+## Mudanças por tipo nesta execução 5
 
 ```text
 📋 bugfix             │██████████████████████████████│    1 →
@@ -197,7 +197,7 @@ Sparkline da distribuição alto/médio/baixo: ██
 
 ---
 
-## Nova atualização 7
+## Nova atualização 8
 
 Esta atualização traz a reescrita dos testes do servidor MCP Knowledge Server para a API FastMCP v2, substituindo a interface antiga por decoradores @tool, com 35 testes atualizados que cobrem search, summary, list, compare e unknown tool. A versão do projeto foi revertida de 3.1.0 para 0.1.0 no pyproject.toml, representando uma breaking change que pode impactar consumidores que dependem de versionamento semântico. Foram corrigidos problemas de qualidade (sincronização uv.lock, formatação Black, mypy), restaurados blocos README no release_docs.py, regenerados arquivos golden de testes de caracterização e incluída documentação automatizada sem alterações funcionais. Impacto: alto para migração do MCP e reversão de versão; médio para correções de badges e golden files; baixo para qualidade de código e documentação. Risco: alto a médio, concentrado na compatibilidade de consumidores do MCP e na confirmação da reversão de versão.
 
@@ -209,7 +209,7 @@ Esta atualização traz a reescrita dos testes do servidor MCP Knowledge Server 
 | **Regeneração de golden files corrompidos do summarizer — 📋 bugfix** | Três arquivos golden (readme_block_pt.md, readme_block_en.md, readme_pt_updated.md) regenerados v… | 🟡 medium | tests/golden/summarizer/readme_block_pt.md, tests/golden/summarizer/readme_block_en.md, tests/golden/summarizer/readme_pt_updated.md · Prioridade: 💡 P1 |
 | **Atualização automática de documentação via IA — 📋 documentation** | Commit de documentação automatizada ([skip ci]) sem alterações funcionais; provavelmente atualiza… | 🟢 low | docs/, README* · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 5
+## 📊 Distribuição de Impacto 6
 
 🔴 Alto: **1** (20%) 🔴
 🟡 Médio: **3** (60%) 🟡🟡🟡
@@ -217,7 +217,7 @@ Esta atualização traz a reescrita dos testes do servidor MCP Knowledge Server 
 
 Total: **5 features**
 
-## Mudanças por tipo nesta execução 5
+## Mudanças por tipo nesta execução 6
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
@@ -234,7 +234,7 @@ Sparkline da distribuição alto/médio/baixo: ▂█▂
 
 ---
 
-## Nova atualização 8
+## Nova atualização 9
 
 Esta atualização concentra-se na migração do servidor MCP para a FastMCP API v2, com reescrita do knowledge_server.py para uso de decoradores @tool no lugar da API anterior baseada em Server.on_list_tools/on_call_tool, além da atualização dos testes para a API assíncrona, correção de erros de mypy e remoção de importações não utilizadas. A dependência mcp passa a exigir a faixa >=2.0.0,<3.
 
@@ -253,7 +253,7 @@ Impacto: alto para a migração do MCP e para a reversão de versão; médio par
 | **Corrigir falhas do Python Quality gate — 📋 bugfix** | Corrige problemas de qualidade de código detectados pelo pipeline: sincronização de uv.lock (Ruff… | 🟢 low | uv.lock, pyproject.toml · Prioridade: 💡 P3 |
 | **Atualizar manifest e corrigir links em documentação — 📋 documentation** | Atualiza docs/.documentation-manifest.json com novos hashes de arquivos, adiciona referências a C… | 🟢 low | docs/.documentation-manifest.json, .github/scripts/docs_sync_engine.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 6
+## 📊 Distribuição de Impacto 7
 
 🔴 Alto: **2** (33%) 🔴🔴
 🟡 Médio: **2** (33%) 🟡🟡
@@ -261,7 +261,7 @@ Impacto: alto para a migração do MCP e para a reversão de versão; médio par
 
 Total: **6 features**
 
-## Mudanças por tipo nesta execução 6
+## Mudanças por tipo nesta execução 7
 
 ```text
 💥 Breaking Change    │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -278,7 +278,7 @@ Sparkline da distribuição alto/médio/baixo: ███
 
 ---
 
-## Nova atualização 9
+## Nova atualização 10
 
 Esta atualização concentra-se em sincronização documental e em correções de infraestrutura de testes. Foram reconciliados o manifesto de documentação, a navegação do MkDocs e diversos documentos, alinhando inventário, links e conteúdo gerado, incluindo resolução de conflitos de merge em arquivos de documentação. Foi adicionado o script fix_md.py para correção de markdown, com ampliação das exclusões do markdownlint para diretórios de documentação gerada e ADRs, além de correções pontuais de lint. As dependências structlog e mcp foram incluídas no pyproject.toml para corrigir erros de coleta de testes, atendendo aos módulos de observabilidade da infraestrutura e ao knowledge server. Também houve resolução de conflitos de merge em src/infrastructure/mcp/knowledge_server.py e nos testes MCP.
 
@@ -293,7 +293,7 @@ Ponto de atenção: a resolução de conflitos em src/infrastructure/mcp/knowled
 | **Adição das dependências structlog e mcp — 📋 bugfix** | Adiciona structlog e mcp ao pyproject.toml para corrigir erros de coleta de testes. Os commits in… | 🟡 medium | pyproject.toml, src/infrastructure/mcp/knowledge_server.py, observabilidade · Prioridade: 💡 P2 |
 | **Resolução de conflitos no knowledge_server e nos testes MCP — 📋 bugfix** | Resolve conflitos de merge em src/infrastructure/mcp/knowledge_server.py e em tests/infrastructur… | 🟡 medium | src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 7
+## 📊 Distribuição de Impacto 8
 
 🔴 Alto: **0** (0%)
 🟡 Médio: **2** (50%) 🟡🟡
@@ -301,7 +301,7 @@ Ponto de atenção: a resolução de conflitos em src/infrastructure/mcp/knowled
 
 Total: **4 features**
 
-## Mudanças por tipo nesta execução 7
+## Mudanças por tipo nesta execução 8
 
 ```text
 📋 bugfix             │██████████████████████████████│    2 →
@@ -318,9 +318,9 @@ Sparkline da distribuição alto/médio/baixo:  ██
 
 ---
 
-## Nova atualização 10
-
 ## Nova atualização 11
+
+## Nova atualização 12
 
 Esta atualização inclui uma correção de formatação de código com Black 26.10.0 em unified_client e nos testes relacionados, ajustando expressões ternárias e asserts multilinha para atender aos padrões de estilo e resolver uma falha no workflow de qualidade Python. A alteração é apenas de reformatação, sem mudança de lógica ou comportamento. Também há uma atualização automática de documentação via ferramenta de IA, sem impacto funcional.
 
@@ -333,7 +333,7 @@ Ponto de atenção: a remoção das definições das variáveis de ambiente TEST
 | **Style fix: Black formatting in unified_client and tests — 📋 refactor** | Correção de formatação de código usando Black 26.10.0, ajustando expressões ternárias e assert mu… | 🟢 low | src/infrastructure/llm_adapters/unified_client.py, tests/infrastructure/llm_adapters/test_unified_client.py, tests/test_characterization.py · Prioridade: 💡 P2 |
 | **Documentação: atualização automática via IA — 📋 documentation** | Atualização da documentação via ferramenta de IA, sem alterações funcionais, marcadas com [skip c… | 🟢 low | documentation · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 8
+## 📊 Distribuição de Impacto 9
 
 🔴 Alto: **0** (0%)
 🟡 Médio: **0** (0%)
@@ -341,7 +341,7 @@ Ponto de atenção: a remoção das definições das variáveis de ambiente TEST
 
 Total: **2 features**
 
-## Mudanças por tipo nesta execução 8
+## Mudanças por tipo nesta execução 9
 
 ```text
 📋 documentation      │██████████████████████████████│    1 →
@@ -356,7 +356,7 @@ Sparkline da distribuição alto/médio/baixo:   █
 
 ---
 
-## Nova atualização 12
+## Nova atualização 13
 
 Implementação da Fase 5 concluída com mutation testing, devcontainer e documentação; criação de workflows de CI/CD com IA; arquitetura de adaptadores LLM e scraping; MCP Knowledge Server; expansão de testes e fixtures golden; configuração de ambiente e qualidade. Correção de headings duplicados em documentação gerada por IA; reconciliação do manifest. Riscos: score de mutation testing abaixo do limiar; arquivo .bak pendente; secrets e permissões nos workflows com placeholder. Possíveis impactos em consumidores devido à remoção do módulo de scraping. Nenhum breaking change confirmado sem suporte.
 
@@ -371,7 +371,7 @@ Implementação da Fase 5 concluída com mutation testing, devcontainer e docume
 | **Expansão de testes e fixtures golden files — 📋 feature** | Adição de 28 novos arquivos de teste cobrindo os componentes de infraestrutura: test_cache.py, te… | 🔴 high | testes, qualidade de código · Prioridade: 💡 P0 |
 | **Configuração de ambiente de desenvolvimento e ferramentas de qualidade — 📋 refactor** | Adição de .claude/settings.json com configuração de permissões e hooks para automação de qualidad… | 🟡 medium | infraestrutura de desenvolvimento, ferramentas de qualidade, scripts · Prioridade: 💡 P1 |
 
-## 📊 Distribuição de Impacto 9
+## 📊 Distribuição de Impacto 10
 
 🔴 Alto: **4** (50%) 🔴🔴🔴🔴
 🟡 Médio: **3** (37%) 🟡🟡🟡
@@ -379,7 +379,7 @@ Implementação da Fase 5 concluída com mutation testing, devcontainer e docume
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução 9
+## Mudanças por tipo nesta execução 10
 
 ```text
 📋 bugfix             │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -399,7 +399,7 @@ Sparkline da distribuição alto/médio/baixo: █▆▂
 
 ---
 
-## Nova atualização 13
+## Nova atualização 14
 
 Correção de newline no final do arquivo `src/infrastructure/api/__init__.py` para atender ao gate de formatação Black. A alteração não introduz mudança de lógica ou comportamento.
 
@@ -409,7 +409,7 @@ Impacto: baixo. Risco: baixo. Não há breaking change identificado.
 | :--- | :--- | :---: | :--- |
 | **Correção de newline no EOF do src/infrastructure/api/**init**.py — 📋 refactor** | Adiciona nova linha ausente no final do arquivo src/infrastructure/api/**init**.py para atender a… | 🟢 low | src/infrastructure/api/**init**.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 10
+## 📊 Distribuição de Impacto 11
 
 🔴 Alto: **0** (0%)
 🟡 Médio: **0** (0%)
@@ -417,7 +417,7 @@ Impacto: baixo. Risco: baixo. Não há breaking change identificado.
 
 Total: **1 features**
 
-## Mudanças por tipo nesta execução 10
+## Mudanças por tipo nesta execução 11
 
 ```text
 📋 refactor           │██████████████████████████████│    1 →
@@ -427,7 +427,7 @@ Sparkline da distribuição alto/médio/baixo:   █
 
 ---
 
-## Nova atualização 14
+## Nova atualização 15
 
 Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError em 11 testes, restaurando a capacidade de build e elevando a cobertura para 95,35%; atualização de baixo impacto do manifesto de documentação com novos checksums; e adição do plugin syrupy ao conftest.py para corrigir erros de registro de fixture.
 
@@ -437,7 +437,7 @@ Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError
 | **Atualiza o manifesto de documentação com novos checksums de arquivos — 📋 documentation** | Reconcilia o docs/.documentation-manifest.json com checksums atualizados para pyproject.toml, src… | 🟢 low | docs/.documentation-manifest.json · Prioridade: 💡 P3 |
 | **Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture — 📋 refactor** | Adiciona pytest_plugins = ["syrupy"] ao conftest.py, garantindo que o plugin syrupy seja carregad… | 🟢 low | tests/conftest.py · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 11
+## 📊 Distribuição de Impacto 12
 
 🔴 Alto: **1** (33%) 🔴
 🟡 Médio: **0** (0%)
@@ -445,7 +445,7 @@ Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError
 
 Total: **3 features**
 
-## Mudanças por tipo nesta execução 11
+## Mudanças por tipo nesta execução 12
 
 ```text
 📋 bugfix             │██████████████████████████████│    1 →
@@ -463,7 +463,7 @@ Sparkline da distribuição alto/médio/baixo: ▄ █
 
 ---
 
-## Nova atualização 15
+## Nova atualização 16
 
 Esta release implementa uma refatoração para Clean Architecture em src/core e src/infrastructure, com módulos de core, infrastructure e models organizados em camadas desacopladas. Refatoração estrutural de alto impacto pode exigir atualização de imports e deve ser validada quanto a compatibilidade com consumidores existentes. A correção no fallback do LLMService visa preservar a disponibilidade do serviço em falhas de provedores. Ajustes no schema GraphQL com tipos Strawberry e ChangeType podem alterar contratos de API para consumidores externos. A ampliação da cobertura de testes, correções de quality gates, atualizações de dependências e reconciliação documental também foram incluídas. Riscos principais: possíveis imports desatualizados após a refatoração, necessidade de revisão de compatibilidade do schema GraphQL e fallback do LLM.
 
@@ -479,7 +479,7 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 | **Atualização de testes para novos limites de retry e tokens — 📋 bugfix** | Ajuste das expectativas de teste em test_ai_docs.py e test_ai_docs_coverage.py para coincidir com… | 🟢 low | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P3 |
 | **Reconciliação de documentação e atualização do manifest — 📋 documentation** | Atualização do docs/.documentation-manifest.json com novos mapeamentos entre código e documentaçã… | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml, docs/api/core-classification-service.md, docs/api/core-enrichment-service.md, docs/api/core-pipeline-orchestrator.md, docs/api/core-pipeline-steps.md, docs/api/core-summarization-service.md, docs/architecture/decisions/adr-007-clean-architecture.md · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 12
+## 📊 Distribuição de Impacto 13
 
 🔴 Alto: **2** (22%) 🔴🔴
 🟡 Médio: **3** (33%) 🟡🟡🟡
@@ -487,7 +487,7 @@ Esta release implementa uma refatoração para Clean Architecture em src/core e 
 
 Total: **9 features**
 
-## Mudanças por tipo nesta execução 12
+## Mudanças por tipo nesta execução 13
 
 ```text
 ⚡ Performance        │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
@@ -508,7 +508,7 @@ Sparkline da distribuição alto/médio/baixo: ▄▆█
 
 ---
 
-## Nova atualização 16
+## Nova atualização 17
 
 Esta release introduz o design system no dashboard com suporte a dark mode e recursos de acessibilidade, além de corrigir o rastreamento de estado de fences no fix_markdown.py e atualizar diversas dependências de ferramentas e bibliotecas para as versões mais recentes.
 
@@ -523,7 +523,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 | **Atualizar aiohttp para 3.14.4 — ⚡ Performance** | Bump da dependência direta aiohttp de 3.14.3 para 3.14.4. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 | **Atualizar black para 26.10.1 — ⚡ Performance** | Bump da dependência de desenvolvimento black de 26.10.0 para 26.10.1. | 🟢 low | pyproject.toml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 13
+## 📊 Distribuição de Impacto 14
 
 🔴 Alto: **1** (12%) 🔴
 🟡 Médio: **0** (0%)
@@ -531,7 +531,7 @@ Esta release introduz o design system no dashboard com suporte a dark mode e rec
 
 Total: **8 features**
 
-## Mudanças por tipo nesta execução 13
+## Mudanças por tipo nesta execução 14
 
 ```text
 ⚡ Performance        │██████████████████████████████│    6 →
@@ -543,7 +543,7 @@ Sparkline da distribuição alto/médio/baixo: ▁ █
 
 ---
 
-## Nova atualização 17
+## Nova atualização 18
 
 Esta release corrige a falha de deploy no GitHub Pages que impedia a publicação de artefatos de release e afetava a entrega contínua do Intelligence Hub. Ajusta cabeçalhos Markdown para conformidade com lint MD001/MD036 e melhora o upload de artefatos de logs de IA no workflow ai-docs. Introduz gestão de orçamento de tokens de saída no cliente LLM, com variáveis de ambiente e escalonamento exponencial em retentativas para reduzir completions vazias ou truncadas. Adiciona novos testes de cobertura para módulos de IA e documentação. Simplifica o tratamento de exceções no docs_sync_engine, substituindo blocos específicos por captura genérica de Exception, o que pode mascarar erros específicos e requer atenção. Atualiza o manifesto de documentação com novos artefatos gerados por IA. Um import não utilizado em orchestrator.py está sob revisão.
 
@@ -557,7 +557,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 | **Novos testes de cobertura para módulos IA e docs — 📋 feature** | Adição de test_ai_docs.py, test_ai_docs_coverage.py, test_ai_coverage.py e atualização de test_ma… | 🟡 medium | tests/test_ai_docs.py, tests/test_ai_docs_coverage.py, tests/test_ai_coverage.py, tests/test_main_coverage.py · Prioridade: 💡 P2 |
 | **Ajuste no workflow ai-docs para upload de artefatos ocultos — 📋 bugfix** | Mudança de if-no-files-found: ignore para warn e adição de include-hidden-files: true no upload d… | 🟢 low | .github/workflows/ai-docs.yml · Prioridade: 💡 P3 |
 
-## 📊 Distribuição de Impacto 14
+## 📊 Distribuição de Impacto 15
 
 🔴 Alto: **1** (14%) 🔴
 🟡 Médio: **2** (28%) 🟡🟡
@@ -565,7 +565,7 @@ Esta release corrige a falha de deploy no GitHub Pages que impedia a publicaçã
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 14
+## Mudanças por tipo nesta execução 15
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
@@ -594,7 +594,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 | **Expansão significativa do change collector — 📋 feature** | Reescrita completa do change_collector.py com novas funcionalidades de coleta de mudanças Git/Git… | 🔴 high | src/ai/collectors/change_collector.py, src/ai/schemas/change.py, tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P1 |
 | **Exposição de diagnóstico de falha com testes validados — 📋 feature** | Implementa exposição de diagnóstico de falhas com cobertura de testes validada. | 🟡 medium | src/ai/orchestrator.py, tests/test_ledger/test_service.py · Prioridade: 💡 P2 |
 
-## 📊 Distribuição de Impacto 15
+## 📊 Distribuição de Impacto 16
 
 🔴 Alto: **3** (42%) 🔴🔴🔴
 🟡 Médio: **3** (42%) 🟡🟡🟡
@@ -602,7 +602,7 @@ Correções críticas no pipeline de geração de documentação via IA. Corrige
 
 Total: **7 features**
 
-## Mudanças por tipo nesta execução 15
+## Mudanças por tipo nesta execução 16
 
 ```text
 📋 bugfix             │██████████████████████████████│    3 →
