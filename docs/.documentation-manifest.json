@@ -640,7 +640,7 @@
     ".github/workflows/salesforce_release_intelligence_hub.yml": "71c123881e48f8b8d32b145217f873c5180872fe",
     ".github/workflows/scheduled-pipeline.yml": "fca816023cf674deb66e9ca0333b901f83eea761",
     ".gitignore": "d45c21dacb764f4a95f24fa13b0d13c5b56e6cc2",
-    ".gitleaks.toml": "43e9cf086980bcb77bf4f8310a97ac979669e68a",
+    ".gitleaks.toml": "a3ce143fe32f50932b4b76582f503fcf777f50cf",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
@@ -832,7 +832,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "eae8377ac8e7cd2415a737376dc3dfdf3aed8a9c",
+    "drift_report.json": "cc6dba354c318d9201495d468517f66e3b682bb0",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1373,6 +1373,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "5613e9fa8218f80a02d2eada514d53cb4375217e"
   },
-  "generated_at": "2026-11-18T18:07:06.113022+00:00",
-  "repository_sha": "f63d4a85d563e42453a620049743eb27cd8a3b6e"
+  "generated_at": "2026-11-18T18:25:30.713105+00:00",
+  "repository_sha": "9b38cf9e5b5025ea825f3c2107375b91941218d6"
 }
