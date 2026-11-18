@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "362c571cdbe785e5893464a9d6d769b1c096362c",
-  "generated_at": "2026-11-18T04:56:59.283844+00:00",
+  "repository_sha": "462921a44f75413fcdb8c2f1121e0bec805467d1",
+  "generated_at": "2026-11-18T04:58:17.805413+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -53,10 +53,10 @@
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "RELEASE_TABLE_MISSING",
+      "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "doc": "README.en.md",
-      "detail": "'README.en.md' 'Available Releases' section has no releases table."
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
