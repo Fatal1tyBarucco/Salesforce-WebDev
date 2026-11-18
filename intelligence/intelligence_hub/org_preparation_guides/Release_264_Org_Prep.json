@@ -1,0 +1,11 @@
+{
+  "guide_title": "Guia de Prepara\u00e7\u00e3o de Orgs \u2014 Release 264",
+  "mitigation_focus": "Redu\u00e7\u00e3o de impacto por atualiza\u00e7\u00f5es de API, altera\u00e7\u00f5es de permiss\u00e3o e manuten\u00e7\u00e3o.",
+  "org_action_items": [
+    "Auditar permiss\u00f5es de objeto afetadas pelo Change Log.",
+    "Validar integra\u00e7\u00f5es externas contra novas vers\u00f5es de API.",
+    "Executar backup de metadados antes do deploy.",
+    "Documentar altera\u00e7\u00f5es de processo no manual interno de deploy."
+  ],
+  "status_monitoring_recommendation": "Consultar https://status.salesforce.com/ antes de qualquer deploy."
+}

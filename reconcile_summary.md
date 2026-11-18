@@ -1,3 +1,4 @@
 
-Documentation reconciliation complete: 1 action(s)
-  - regenerated baseline (788 files, 127 map entries)
+Documentation reconciliation complete: 2 action(s)
+  - updated docs/index.md: directory tree refreshed
+  - regenerated baseline (794 files, 127 map entries)

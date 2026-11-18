@@ -59,12 +59,15 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --extra dev --extra healing --group dev
 
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium
+
       - name: Check for new release
         id: check
         env:
           TARGET_SLUG: ${{ github.event.inputs.release_slug }}
         run: |
-          python3 scripts/detect_release.py >> $GITHUB_OUTPUT
+          uv run python scripts/detect_release.py >> $GITHUB_OUTPUT
 
   process:
     name: Process Release

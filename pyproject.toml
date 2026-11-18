@@ -1,6 +1,6 @@
 [project]
 name = "salesforce-release-notes"
-version = "0.1.7"
+version = "0.2.0"
 description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes"
 requires-python = ">=3.14,<3.15"
 dependencies = [
@@ -15,6 +15,7 @@ dependencies = [
     "prometheus-client>=0.25.0",
     "structlog>=24.0.0,<25",
     "mcp==1.30.0",
+    "requests>=2.31.0,<3",
 ]
 
 [project.optional-dependencies]
@@ -47,8 +48,9 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "mypy>=1.8.0,<3",
     "freezegun>=1.4.0",
-    "types-requests>=2.31.0,<3",
     "types-beautifulsoup4>=4.12.0,<5",
+    "types-html5lib>=1.1.11.20260518",
+    "types-webencodings>=0.5.0.20260408",
     "pre-commit>=3.5.0",
 ]
 
@@ -115,4 +117,5 @@ branch = true
 dev = [
     "pytest-asyncio>=1.4.0",
     "pytest-timeout>=2.4.0",
+    "syrupy>=7.0.2",
 ]

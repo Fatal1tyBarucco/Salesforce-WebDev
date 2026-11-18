@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: validar a estabilidade dos novos triggers de workflow (event_name guards, branches filter, dummy jobs) em cenários de push reais e PRs; mapear consumidores de automações que dependiam de triggers push e comunicar mudanças; avaliar inclusão de testes de contrato para a interface do Release Intelligence Hub, dado o novo conjunto de artefatos JSON e HTML; monitorar a cobertura e confiabilidade dos hooks Python (pre-commit, pre-push, post-tool-use, session-start) em diferentes ambientes de desenvolvimento; revisar a sincronização automatizada de uv.lock após release-please para evitar dessincronizações recorrentes; considerar automação da validação de permissões GitHub Actions em workflows novos; avaliar a necessidade de testes de integração para o AI Triage refatorado, cobrindo casos de corpos de issue/PR com quebras de linha e encoding especial; monitorar a execução do Scheduled Pipeline após adição de Playwright e 'uv run python' no job de detecção; revisar se a remoção do deploy GitHub Pages do Intelligence Hub requer alternativa de publicação de artefatos.
+
+---
 
 ## Nova atualização
 

@@ -1,0 +1,11 @@
+{
+  "document_title": "Cronograma Sandbox Preview \u2014 Release 264",
+  "release_identifier": "264",
+  "preview_activities": [
+    "Ativa\u00e7\u00e3o de Sandbox Preview (Geralmente 4-6 semanas antes).",
+    "Execu\u00e7\u00e3o de testes de regress\u00e3o em ambiente isolado.",
+    "Valida\u00e7\u00e3o de integra\u00e7\u00f5es de terceiros (API, Middleware)."
+  ],
+  "defensive_notes": "Se Status Salesforce indicar manuten\u00e7\u00e3o, reprogramar Sandbox Preview.",
+  "generation_timestamp": "2026-11-18T04:23:17.907099"
+}
