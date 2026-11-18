@@ -34,7 +34,6 @@ docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.8.1,<10",
     "mkdocstrings[python]>=1.0.8,<2",
-    "mkdocs-sitemap>=0.3.0,<1",
 ]
 observability = [
     "prometheus-client>=0.26.0,<1",

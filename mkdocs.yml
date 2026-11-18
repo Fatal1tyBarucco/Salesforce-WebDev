@@ -78,9 +78,6 @@ plugins:
             merge_init_into_class: true
             separate_signature: true
             show_signature_annotations: true
-  - sitemap:
-      priority: 0.8
-      changefreq: weekly
   - minify:
       minify_html: true
   - htmlproofer:
