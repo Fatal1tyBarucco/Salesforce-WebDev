@@ -113,3 +113,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c950ac2` — fix: resolve merge conflicts in docs manifest and drift report
 - `a7f2336` — fix: markdown lint errors in docs/index.md (MD025, MD036, MD051)
 - `5b2be9e` — docs(agents): record uv.lock check gaps after issue #393 closure
+- `63c23bf` — docs: atualização automática via IA [skip ci] (#400)

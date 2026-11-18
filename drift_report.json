@@ -1,8 +1,8 @@
 {
   "mode": "audit",
-  "repository_sha": "a7f233616c3fbabd4ce5874c4e7ff503fe190449",
-  "generated_at": "2026-11-18T06:33:48.839439+00:00",
-  "inventory_count": 794,
+  "repository_sha": "f207b2a9f0c9f81bc9bbefcdef25c1f82a25243c",
+  "generated_at": "2026-11-18T08:39:53.011793+00:00",
+  "inventory_count": 795,
   "src_modules": 101,
   "existing_api_evokers": 104,
   "releases": [
@@ -43,14 +43,92 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "README.en.md",
-      "detail": "'README.en.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-docs.yml",
+      "detail": "'.github/workflows/ai-docs.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "docs/index.md",
-      "detail": "'docs/index.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/ai-pr-review.yml",
+      "detail": "'.github/workflows/ai-pr-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ai-triage.yml",
+      "detail": "'.github/workflows/ai-triage.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/ci-repair.yml",
+      "detail": "'.github/workflows/ci-repair.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/copilot-setup-steps.yml",
+      "detail": "'.github/workflows/copilot-setup-steps.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/dependabot-lock-refresh.yml",
+      "detail": "'.github/workflows/dependabot-lock-refresh.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/dependency-review.yml",
+      "detail": "'.github/workflows/dependency-review.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/documentation-build.yml",
+      "detail": "'.github/workflows/documentation-build.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/documentation-sync.yml",
+      "detail": "'.github/workflows/documentation-sync.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/opencode.yml",
+      "detail": "'.github/workflows/opencode.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/python-quality.yml",
+      "detail": "'.github/workflows/python-quality.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/release-please.yml",
+      "detail": "'.github/workflows/release-please.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/release_notes_pipeline.yml",
+      "detail": "'.github/workflows/release_notes_pipeline.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/salesforce_release_intelligence_hub.yml",
+      "detail": "'.github/workflows/salesforce_release_intelligence_hub.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": ".github/workflows/scheduled-pipeline.yml",
+      "detail": "'.github/workflows/scheduled-pipeline.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -61,32 +139,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "mkdocs.yml",
-      "detail": "'mkdocs.yml' blob SHA changed since last manifest baseline."
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "RELEASE_TABLE_STALE",
-      "severity": "high",
-      "doc": "docs/index.md",
-      "expected": [
-        "| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |",
-        "| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |",
-        "| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |",
-        "| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |"
-      ],
-      "detail": "'docs/index.md' releases table stale vs releases/ metadata (pt); Winter '27 missing or feature counts drift."
+      "type": "MANIFEST_NEW_FILE",
+      "severity": "info",
+      "path": ".github/scripts/ci-visual.sh",
+      "detail": "'.github/scripts/ci-visual.sh' is new since last manifest baseline."
     }
   ]
 }
