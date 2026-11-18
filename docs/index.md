@@ -1,5 +1,4 @@
 ---
-title: Salesforce Release Intelligence — Pipeline Automatizado de Release Notes com IA
 description: Pipeline ETL automatizado para extração, classificação e versionamento das Salesforce Release Notes. Knowledge-as-Code com IA para análise de impacto, resumos executivos, rastreamento cross-release de features (SFEL) e distribuição multi-canal. Suporte a português e inglês.
 keywords:
   - Salesforce Release Notes
@@ -571,9 +570,9 @@ Este projeto é mantido para fins educacionais e de referência técnica.
 
 <div align="center">
 
-**Feito com ☕ e código Python**
+## Feito com ☕ e código Python
 
-[⬆ Voltar ao topo](#salesforce-release-intelligence---pipeline-automatizado-de-release-notes-com-ia)
+[⬆ Voltar ao topo](#salesforce-release-intelligence)
 
 </div>
 
