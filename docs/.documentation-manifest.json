@@ -617,8 +617,8 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/workflows/ai-docs.yml": "812aef3675bb9a77ef4226eb352c81bc8afcf830",
-    ".github/workflows/ai-pr-review.yml": "6789c62817d89b682065190549adaa0657e93b7b",
-    ".github/workflows/ai-triage.yml": "14179e098493cb39dbbfba2f869e4ba201548611",
+    ".github/workflows/ai-pr-review.yml": "79610cd30989fc9c1afc110c0ef6be4105d71347",
+    ".github/workflows/ai-triage.yml": "83b3c315a9e0df47f533f2860f1bee7eda741b95",
     ".github/workflows/ci-repair.yml": "fdd6b24043d97502fca090424486c0ff7692c508",
     ".github/workflows/copilot-setup-steps.yml": "b3cbd8339ec635e56270e3e6aea0157df6dd92c0",
     ".github/workflows/dependabot-lock-refresh.yml": "a63fa6464942a7ef348f7c3f85c62885c8f7d63d",
@@ -626,7 +626,7 @@
     ".github/workflows/documentation-build.yml": "e8b9a743d932746e2028641e4d698f235b3a620a",
     ".github/workflows/documentation-sync.yml": "ba70392b101c46a0b835f5960602f772f518be46",
     ".github/workflows/opencode.yml": "b3e85640b6756c542136a39aee356d2f47f55fb7",
-    ".github/workflows/python-quality.yml": "303ed5a8a804f44cb1dad7266ffd536667da17fb",
+    ".github/workflows/python-quality.yml": "09fb903139729933078796593767b08bcc48ab65",
     ".github/workflows/release-please.yml": "b4c654923cb3a3497275a2c51e3e439245cf172c",
     ".github/workflows/release_notes_pipeline.yml": "7359bc94605bb47fac12c5e1506e3f542b123b5c",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "71c123881e48f8b8d32b145217f873c5180872fe",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "4dc5d1b96b6e5daabb989e6caf9762c0def5bd33",
+    "drift_report.json": "454b79c2acc7d0fff2c90ae198b1a95b0eba4c01",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
@@ -1364,6 +1364,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "49dd900c00435fb1dc4fe9248c129a2441ea935d"
   },
-  "generated_at": "2026-11-18T05:45:21.732622+00:00",
-  "repository_sha": "c950ac27b51cec814162ace0dc41364fb98649f7"
+  "generated_at": "2026-11-18T05:51:14.738061+00:00",
+  "repository_sha": "3a33f6c22bead3c491727c60d61ae22251e05906"
 }
