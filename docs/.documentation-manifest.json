@@ -635,7 +635,7 @@
     ".github/workflows/documentation-build.yml": "e8b9a743d932746e2028641e4d698f235b3a620a",
     ".github/workflows/documentation-sync.yml": "ba70392b101c46a0b835f5960602f772f518be46",
     ".github/workflows/opencode.yml": "b3e85640b6756c542136a39aee356d2f47f55fb7",
-    ".github/workflows/python-quality.yml": "ef61cf8c42e3d3803b25be5dad5ea710118c4c61",
+    ".github/workflows/python-quality.yml": "94219d75593e49361715b6d3ce8c6507f518cbb0",
     ".github/workflows/release-please.yml": "b4c654923cb3a3497275a2c51e3e439245cf172c",
     ".github/workflows/release_notes_pipeline.yml": "7359bc94605bb47fac12c5e1506e3f542b123b5c",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "71c123881e48f8b8d32b145217f873c5180872fe",
@@ -833,7 +833,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "25fbe0771bf98344a92436f1f967306e4b08ce8d",
+    "drift_report.json": "6a65c0ae07b42250b5ec8c542e9244e0ed71f14b",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1374,6 +1374,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "305bce350d4fb3426415c9c17bc18f123c3eb020"
   },
-  "generated_at": "2026-11-18T11:43:01.453517+00:00",
-  "repository_sha": "b21e9ac1c6b85560cd1dfe8b1be5b63540848f31"
+  "generated_at": "2026-11-18T11:58:08.871353+00:00",
+  "repository_sha": "f0f86fadb98cbd1c1ae4d3afa7d89811948f4c92"
 }

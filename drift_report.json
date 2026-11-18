@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "b21e9ac1c6b85560cd1dfe8b1be5b63540848f31",
-  "generated_at": "2026-11-18T11:42:51.380183+00:00",
+  "repository_sha": "f0f86fadb98cbd1c1ae4d3afa7d89811948f4c92",
+  "generated_at": "2026-11-18T11:58:08.752476+00:00",
   "inventory_count": 798,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,8 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "README.md",
-      "detail": "'README.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/python-quality.yml",
+      "detail": "'.github/workflows/python-quality.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
