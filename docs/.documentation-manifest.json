@@ -664,7 +664,7 @@
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
     "PROPOSTA_FEATURE_RIPE.md": "003dc61ba0a5c0c9046f9219de58c723cd3d93eb",
     "README.en.md": "6b124ce09cac31209f986a41e081eba5108d4158",
-    "README.md": "755d2ea9b5791c98dece31cb950cc9eeda4f0523",
+    "README.md": "7a292c6d6eab0324a8d4320f3862cfa2e669de64",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
@@ -803,7 +803,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "5138c64960293bf906bb886cbde755022fafc3b5",
+    "docs/changelog.md": "872994c30cfc492ae070eeaf9e8a73593a56730d",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -833,7 +833,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "653277c1dc675c1b03f16a7e4f264ee24dc253f0",
+    "drift_report.json": "25fbe0771bf98344a92436f1f967306e4b08ce8d",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1374,6 +1374,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "305bce350d4fb3426415c9c17bc18f123c3eb020"
   },
-  "generated_at": "2026-11-18T11:30:05.830827+00:00",
-  "repository_sha": "2de7475da531a502d1bf07d0f424bcf96ce5c475"
+  "generated_at": "2026-11-18T11:43:01.453517+00:00",
+  "repository_sha": "b21e9ac1c6b85560cd1dfe8b1be5b63540848f31"
 }

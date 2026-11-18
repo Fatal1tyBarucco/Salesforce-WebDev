@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "2de7475da531a502d1bf07d0f424bcf96ce5c475",
-  "generated_at": "2026-11-18T11:30:05.674172+00:00",
+  "repository_sha": "b21e9ac1c6b85560cd1dfe8b1be5b63540848f31",
+  "generated_at": "2026-11-18T11:42:51.380183+00:00",
   "inventory_count": 798,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,32 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
+      "path": "README.md",
+      "detail": "'README.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "reconcile_summary.md",
-      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
     }
   ]
 }

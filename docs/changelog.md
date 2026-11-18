@@ -115,3 +115,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `5b2be9e` — docs(agents): record uv.lock check gaps after issue #393 closure
 - `63c23bf` — docs: atualização automática via IA [skip ci] (#400)
 - `6e82d01` — ci: migrate python-quality.yml from Black to Ruff Format
+- `b21e9ac` — docs: clean up README.md — remove test commit garbage and auto-generated index
