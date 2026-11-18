@@ -111,3 +111,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `22a498f` — feat(intelligence): evoluir para Release Intelligence Hub (release=264) — defensivo
 - `885ccbc` — docs: atualização automática via IA [skip ci] (#358)
 - `c950ac2` — fix: resolve merge conflicts in docs manifest and drift report
+- `a7f2336` — fix: markdown lint errors in docs/index.md (MD025, MD036, MD051)
+- `5b2be9e` — docs(agents): record uv.lock check gaps after issue #393 closure
