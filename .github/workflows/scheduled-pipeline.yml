@@ -67,7 +67,7 @@ jobs:
         env:
           TARGET_SLUG: ${{ github.event.inputs.release_slug }}
         run: |
-          python3 scripts/detect_release.py >> $GITHUB_OUTPUT
+          uv run python scripts/detect_release.py >> $GITHUB_OUTPUT
 
   process:
     name: Process Release
