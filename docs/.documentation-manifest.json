@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "454b79c2acc7d0fff2c90ae198b1a95b0eba4c01",
+    "drift_report.json": "eeddc4682cecfedda388a81062a445f049079a61",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
@@ -1364,6 +1364,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "49dd900c00435fb1dc4fe9248c129a2441ea935d"
   },
-  "generated_at": "2026-11-18T05:51:14.738061+00:00",
-  "repository_sha": "3a33f6c22bead3c491727c60d61ae22251e05906"
+  "generated_at": "2026-11-18T05:55:13.880220+00:00",
+  "repository_sha": "daa2b8e7295198a6dcd2f297bfdd067e8746fd06"
 }
