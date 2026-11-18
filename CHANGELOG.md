@@ -2,6 +2,19 @@
 
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
+## [0.2.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.4...v0.2.5) (2026-11-18)
+
+
+### Bug Fixes
+
+* markdown lint errors in docs/index.md (MD025, MD036, MD051) ([a7f2336](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a7f233616c3fbabd4ce5874c4e7ff503fe190449))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 05:55 UTC ([8c0e37e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8c0e37ebe952114c303d136267c7991d83046fd6))
+* **sync:** reconcile documentation — 2026-11-18 06:34 UTC ([19306f0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/19306f07c0062d4b87bb786fb35c0fe9a7768458))
+
 ## [0.2.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.3...v0.2.4) (2026-11-18)
 
 
