@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "3fb9b8f9f6e1323dd4782db58f41aeaad4149953",
-  "generated_at": "2026-11-18T04:49:15.198389+00:00",
+  "repository_sha": "362c571cdbe785e5893464a9d6d769b1c096362c",
+  "generated_at": "2026-11-18T04:56:59.283844+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,32 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/.last-processed-ref",
-      "detail": "'docs/.last-processed-ref' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/leadership.md",
-      "detail": "'docs/ai-generated/leadership.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/release-notes.md",
-      "detail": "'docs/ai-generated/release-notes.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/ai-generated/roadmap.md",
-      "detail": "'docs/ai-generated/roadmap.md' blob SHA changed since last manifest baseline."
+      "path": "README.en.md",
+      "detail": "'README.en.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -77,10 +53,10 @@
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
+      "type": "RELEASE_TABLE_MISSING",
       "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
+      "doc": "README.en.md",
+      "detail": "'README.en.md' 'Available Releases' section has no releases table."
     }
   ]
 }
