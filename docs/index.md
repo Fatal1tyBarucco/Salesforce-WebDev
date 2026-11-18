@@ -1,6 +1,7 @@
 ---
 description: Pipeline ETL automatizado para extração, classificação e versionamento das Salesforce Release Notes. Knowledge-as-Code com IA para análise de impacto, resumos executivos, rastreamento cross-release de features (SFEL) e distribuição multi-canal. Suporte a português e inglês.
 keywords:
+
   - Salesforce Release Notes
   - Salesforce Winter 27
   - Salesforce Summer 26
@@ -28,10 +29,10 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 
 | Release | Features | Categorias | Status |
 | :--- | :---: | :---: | :---: |
-| ❄️ **Winter '27** | 1.123 | 19 | ✅ Atual |
-| ☀️ **Summer '26** | 1.373 | 22 | ✅ Completo |
-| 🌸 **Spring '26** | 1.438 | 21 | ✅ Completo |
-| ❄️ **Winter '26** | 1.348 | 19 | ✅ Completo |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
 
 > Cada release inclui **resumos executivos gerados por IA** (até 5.000 caracteres), **resumos por categoria** (até 1.000 caracteres), e **documentação completa em português e inglês**.
 
@@ -319,7 +320,7 @@ Cada arquivo de categoria inclui:
 
 ### Cadeia de Fallback
 
-```
+```text
 OpenAI → Google Gemini → OpenCode → Classificação Heurística
 ```
 
@@ -386,7 +387,7 @@ print(f"Viu {history.total_releases_seen} releases, status atual: {history.curre
 
 ### Testes
 
-```
+```text
 tests/test_ledger/  — 70+ testes (linker, service, modelos, prompts, branches/erro handling)
 ```
 
@@ -455,72 +456,139 @@ curl http://localhost:8080/metrics
 ## 📁 Estrutura do Projeto
 
 ```text
+
 Salesforce-WebDev/
-│
-├── 📂 src/                          # Código fonte
-│   ├── main.py                      # 🎯 Orquestrador principal + DI
-│   ├── orchestrator.py              # 🔄 Pipeline orchestrator
-│   ├── scraper.py                   # 🎭 Playwright + Circuit Breaker
-│   ├── parser.py                    # 📋 Parser HTML/Markdown
-│   ├── llm_service.py               # 🧠 Multi-provider LLM + Rate Limiting
-│   ├── feature_enricher.py          # 📝 Enriquecimento AI por feature
-│   ├── release_summarizer.py        # 📋 Resumos executivos por release
-│   ├── release_docs.py              # 📄 Geração de documentação por release
-│   ├── generator.py                 # 📦 Geração Markdown
-│   ├── config.py                    # ⚙️ Configuração central
-│   ├── exceptions.py                # ⚠️ Hierarquia de exceções
-│   ├── circuit_breaker.py           # ⚡ Circuit Breaker unificado
-│   ├── cache_manager.py             # 💾 Cache TTL + content-hash
-│   ├── health.py                    # 🏥 Health checks + Prometheus metrics
-│   ├── api.py                       # 🌐 REST + GraphQL + Auth + OpenAPI
-│   ├── events.py                    # 📡 EventBus pub/sub assíncrono
-│   ├── models.py                    # 📐 Modelos Pydantic
-│   ├── notifications.py             # 📧 Email/Slack/Discord
-│   ├── salesforce.py                # 🔗 Trailhead integration
-│   ├── feature_classifier.py        # 🏷️ Classificação via LLM
-│   ├── heuristic_classifier.py      # 🏷️ Classificação heurística (fallback)
-│   ├── impact_analyzer.py           # 📊 Análise de impacto
-│   ├── issue_triage.py              # 🐙 Triage automático
-│   ├── logger.py                    # 📝 Logging JSON + Sentry
-│   ├── translator.py                # 🌍 Tradução via LLM
-│   ├── dashboard.py                 # 📈 Dashboard HTML interativo
-│   ├── dashboard_template.html      # 🎨 Template do dashboard
-│   ├── nl_search.py                 # 🔍 Busca semântica
-│   ├── i18n.py                      # 🌐 Internacionalização
-│   └── automation/                  # 🤖 Pacote de automação AI
-│       ├── service.py               #    Facade principal
-│       ├── reporting.py             #    Relatórios AI (changelog, diff, resumos)
-│       ├── comparison.py            #    Comparação entre releases
-│       ├── impact.py                #    Scores de impacto + predição
-│       ├── content.py               #    Deduplicação + content-hash
-│       ├── export.py                #    Exportação JSON/CSV
-│       ├── github_ops.py            #    GitHub Issues
-│       ├── notifications.py         #    Notificações filtradas
-│       ├── models.py                #    Dataclasses
-│       ├── badge.py                 #    Badges dinâmicos
-│       └── ledger/                  #    📊 Salesforce Feature Evolution Ledger (SFEL)
-│           ├── __init__.py           #    Pacote de rastreamento cross-release
-│           ├── models.py             #    Pydantic v2: FeatureSnapshot, FeatureLink, LedgerDiff, LedgerStats, LifecycleStatus, LinkageMethod
-│           ├── linker.py            #    FeatureLinker: 5 níveis de matching (EXACT, CATEGORY_CHANGE, FUZZY, HEURISTIC, LLM)
-│           ├── prompts.py           #    Prompt builder para desambiguação LLM
-│           └── service.py           #    FeatureEvolutionLedgerService: geração de ledger, cache, histórico por feature
-│
-├── 📂 releases/                     # 📄 Artefatos Markdown versionados
-│   ├── summer_26/                   #    v2.1.0
-│   ├── spring_26/                   #    v2.0.0
-│   └── winter_26/                   #    v2.2.0
-│
-├── 📂 tests/                        # 🧪 Testes pytest (95%+ cobertura)
-├── 📂 docs/                         # 📚 Documentação MkDocs
-├── 📂 k8s/                          # ☸️ Manifestos Kubernetes
-├── 📂 stubs/                        # 📝 Type stubs (tenacity, google-genai)
-├── 📂 .github/workflows/            # 🔄 CI/CD GitHub Actions
-│
-├── mkdocs.yml                       # 📖 Config MkDocs
-├── pyproject.toml                   # 📦 Config do projeto (Python >=3.14,<3.15)
-├── uv.lock                          # 🔒 Lock file
-├── Dockerfile                       # 🐳 Multi-stage build
-└── .pre-commit-config.yaml          # 🪝 Pre-commit hooks
+  ├── ai/
+      ├── collectors/
+      ├── config/
+      ├── generators/
+      ├── integrations/
+      ├── llm/
+      ├── prompts/
+      ├── schemas/
+      └── orchestrator.py
+  ├── automation/
+      ├── ledger/
+      ├── badge.py
+      ├── comparison.py
+      ├── content.py
+      ├── export.py
+      ├── github_ops.py
+      ├── impact.py
+      ├── models.py
+      ├── notifications.py
+      ├── reporting.py
+      └── service.py
+  ├── core/
+      ├── classification/
+      ├── enrichment/
+      ├── pipeline/
+      ├── summarization/
+  ├── design-system/
+      ├── components/
+  ├── domain/
+      ├── llm.py
+      └── scraper.py
+  ├── impact_propagation/
+      ├── engine.py
+      ├── graph_builder.py
+      ├── heuristic_fallback.py
+      └── models.py
+  ├── infrastructure/
+      ├── api/
+      ├── llm_adapters/
+      ├── mcp/
+      ├── scraping/
+      ├── generation.py
+      ├── github.py
+      ├── llm.py
+      ├── messaging.py
+      ├── notification_step.py
+      ├── parsing.py
+      ├── storage.py
+      └── translation.py
+  ├── limiters/
+      └── rate_limiter.py
+  ├── models/
+      ├── api.py
+      ├── classification.py
+      ├── enrichment.py
+      ├── feature.py
+      └── release.py
+  ├── ai_automation.py
+  ├── analytics.py
+  ├── api.py
+  ├── cache_manager.py
+  ├── circuit_breaker.py
+  ├── config.py
+  ├── dashboard.py
+  ├── documentation_service.py
+  ├── events.py
+  ├── exceptions.py
+  ├── feature_classifier.py
+  ├── feature_enricher.py
+  ├── generator.py
+  ├── health.py
+  ├── heuristic_classifier.py
+  ├── i18n.py
+  ├── impact_analyzer.py
+  ├── issue_triage.py
+  ├── llm_service.py
+  ├── logger.py
+  ├── main.py
+  ├── nl_search.py
+  ├── notifications.py
+  ├── orchestrator.py
+  ├── parser.py
+  ├── release_discovery.py
+  ├── release_docs.py
+  ├── release_summarizer.py
+  ├── salesforce.py
+  ├── scraper.py
+  ├── smart_notifications.py
+  ├── translator.py
+  └── workflow.py
+  ├── .claude/
+  ├── .devcontainer/
+  ├── .github/                   # Workflows e scripts do GitHub
+  ├── docs/                      # Documentação MkDocs
+  ├── intelligence/
+  ├── k8s/                       # Manifestos Kubernetes
+  ├── prompts/
+  ├── releases/                  # Artefatos Markdown por release
+  ├── report_parts/
+  ├── scripts/                   # Scripts utilitários
+  ├── tests/                     # Suíte pytest
+  ├── .mcp.json
+  ├── .mutmut-cache
+  ├── .promptfoo.yaml
+  ├── .python-version
+  ├── .ruffignore
+  ├── AGENTS.md                  # Diretrizes para agentes de código
+  ├── CHANGELOG.md               # Changelog do projeto
+  ├── CLAUDE.md
+  ├── CONTRIBUTING.md            # Guia de contribuição
+  ├── DESIGN.md
+  ├── Dockerfile                 # Imagem Docker de runtime
+  ├── FASE5_COMPLETION_REPORT.md
+  ├── IA_AUDIT_REPORT.md
+  ├── MUTATION_TESTING_REPORT.md
+  ├── PLANO_DE_MODERNIZACAO.md
+  ├── PRODUCT.md
+  ├── PROPOSTA_FEATURE_RIPE.md
+  ├── README.en.md               # Readme em inglês
+  ├── README.md                  # Readme em português
+  ├── SECURITY.md                # Política de segurança
+  ├── commit_fixes.sh
+  ├── drift_report.json
+  ├── fix_md.py
+  ├── mkdocs.yml                 # Configuração MkDocs
+  ├── mutmut_config.toml
+  ├── pr_body.md
+  ├── pyproject.toml             # Configuração do projeto
+  ├── reconcile_summary.md
+  ├── update
+  └── uv.lock                    # Lockfile determinístico
 ```
 
 ---
@@ -549,9 +617,11 @@ flowchart LR
 2. Crie uma branch: `git checkout -b feature/minha-feature`
 3. Instale dependências: `uv sync --extra dev`
 4. Execute a quality gate completa:
+
    ```bash
    uv run ruff check src/ && uv run black --check src/ && uv run mypy src/ && uv run pytest --cov=src --cov-fail-under=95
    ```
+
 5. Commit: `git commit -m 'feat: descrição da alteração'`
 6. Push: `git push origin feature/minha-feature`
 7. Abra um **Pull Request**

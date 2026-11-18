@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "daa2b8e7295198a6dcd2f297bfdd067e8746fd06",
-  "generated_at": "2026-11-18T05:55:13.675989+00:00",
+  "repository_sha": "a7f233616c3fbabd4ce5874c4e7ff503fe190449",
+  "generated_at": "2026-11-18T06:33:48.839439+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,8 +43,50 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
+      "path": "README.en.md",
+      "detail": "'README.en.md' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "docs/index.md",
+      "detail": "'docs/index.md' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "mkdocs.yml",
+      "detail": "'mkdocs.yml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "pyproject.toml",
+      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "uv.lock",
+      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "RELEASE_TABLE_STALE",
+      "severity": "high",
+      "doc": "docs/index.md",
+      "expected": [
+        "| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |",
+        "| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |",
+        "| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |",
+        "| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |"
+      ],
+      "detail": "'docs/index.md' releases table stale vs releases/ metadata (pt); Winter '27 missing or feature counts drift."
     }
   ]
 }
