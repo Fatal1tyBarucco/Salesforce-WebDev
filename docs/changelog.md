@@ -116,3 +116,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `63c23bf` — docs: atualização automática via IA [skip ci] (#400)
 - `6e82d01` — ci: migrate python-quality.yml from Black to Ruff Format
 - `b21e9ac` — docs: clean up README.md — remove test commit garbage and auto-generated index
+- `c49e6da` — fix: add missing mkdocs-sitemap dep + uv setup for release-please sync
+- `4869ad6` — docs(agents): record CI/quality learnings — uv lock gate fix landed, drift baseline quirk, action_required runs, gitleaks globs, fix_markdown layers
