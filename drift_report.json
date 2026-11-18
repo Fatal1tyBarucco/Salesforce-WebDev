@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "eff76142d719e688b4de513b5c58fad9493485cb",
-  "generated_at": "2026-11-18T05:29:29.956981+00:00",
+  "repository_sha": "22f92614f41b25a99e564067ec7e66a4148dc175",
+  "generated_at": "2026-11-18T05:36:18.417608+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,14 +43,20 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/release-please.yml",
-      "detail": "'.github/workflows/release-please.yml' blob SHA changed since last manifest baseline."
+      "path": "CHANGELOG.md",
+      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "pyproject.toml",
+      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
     }
   ]
 }
