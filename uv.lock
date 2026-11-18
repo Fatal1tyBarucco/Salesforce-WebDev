@@ -2151,7 +2151,7 @@ wheels = [
 
 [[package]]
 name = "salesforce-release-notes"
-version = "0.1.6"
+version = "0.1.7"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -2163,6 +2163,7 @@ dependencies = [
     { name = "playwright" },
     { name = "prometheus-client" },
     { name = "pydantic" },
+    { name = "requests" },
     { name = "structlog" },
     { name = "tenacity" },
 ]
@@ -2179,7 +2180,8 @@ dev = [
     { name = "pytest-xdist" },
     { name = "ruff" },
     { name = "types-beautifulsoup4" },
-    { name = "types-requests" },
+    { name = "types-html5lib" },
+    { name = "types-webencodings" },
 ]
 docs = [
     { name = "black" },
@@ -2204,6 +2206,7 @@ observability = [
 dev = [
     { name = "pytest-asyncio" },
     { name = "pytest-timeout" },
+    { name = "syrupy" },
 ]
 
 [package.metadata]
@@ -2235,12 +2238,14 @@ requires-dist = [
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0.0,<8" },
     { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.5.0,<4" },
+    { name = "requests", specifier = ">=2.31.0,<3" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5.0,<1" },
     { name = "strawberry-graphql", extras = ["fastapi"], marker = "extra == 'healing'", specifier = ">=0.341.2,<1" },
     { name = "structlog", specifier = ">=24.0.0,<25" },
     { name = "tenacity", specifier = ">=8.0.0" },
     { name = "types-beautifulsoup4", marker = "extra == 'dev'", specifier = ">=4.12.0,<5" },
-    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.31.0,<3" },
+    { name = "types-html5lib", marker = "extra == 'dev'", specifier = ">=1.1.11.20260518" },
+    { name = "types-webencodings", marker = "extra == 'dev'", specifier = ">=0.5.0.20260408" },
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'healing'", specifier = ">=0.30.0,<1" },
 ]
 provides-extras = ["healing", "docs", "observability", "dev"]
@@ -2249,6 +2254,7 @@ provides-extras = ["healing", "docs", "observability", "dev"]
 dev = [
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "syrupy", specifier = ">=7.0.2" },
 ]
 
 [[package]]
@@ -2335,6 +2341,18 @@ wheels = [
 ]
 
 [[package]]
+name = "syrupy"
+version = "7.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/55/ff/308f191363c1bc456323918619597aaf9f3a37405d038a350b45f90b6e9f/syrupy-7.0.2.tar.gz", hash = "sha256:b35d3efc800a3362c20f24026d1d116b91fcd4578a315745860ec234e023592c", size = 122668, upload-time = "2026-11-16T04:40:28.401Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a9/eb/72e4460a4d36cf6781f3eacc8dd17256d067c841d147a011956c0d6218ef/syrupy-7.0.2-py3-none-any.whl", hash = "sha256:bb7999d6cc1cce6731154fe46ad98874b484904d3e3fba950e244c5666c53c1b", size = 68914, upload-time = "2026-11-16T04:40:26.776Z" },
+]
+
+[[package]]
 name = "tenacity"
 version = "9.1.4"
 source = { registry = "https://pypi.org/simple" }
@@ -2377,18 +2395,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b8/5a/0c708d1b0d35ad48b6a223c77c4a882fd016b40c25becb082a92e02a9c00/types_html5lib-1.1.11.20260518.tar.gz", hash = "sha256:4f33c087cb1119d65c4c80eca4323c2b501f9eaf8af9616b8b732ed4d8eae8fa", size = 18420, upload-time = "2026-05-18T06:07:23.662Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4d/d0/b088b9f11eb69637d6826843f06caaff60247156735a25512922d3dc2c13/types_html5lib-1.1.11.20260518-py3-none-any.whl", hash = "sha256:9baa7912224ebb37027c5ccb7e3768e43ea47b1dfdd977e7ddc4b0a4a550584d", size = 24339, upload-time = "2026-05-18T06:07:22.876Z" },
-]
-
-[[package]]
-name = "types-requests"
-version = "2.33.0.20260712"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/db/51/703318f7b7be8bee126ec13bf615050f932d0179b8784420f3a0199cc769/types_requests-2.33.0.20260712.tar.gz", hash = "sha256:2141b67ab534a5c5cd2dac5034f2a35f42e699c5bf185eee608c5246a069d7fb", size = 25084, upload-time = "2026-07-12T05:14:20.455Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/e7/010c87f559e216d83f9dc51e939633fd0d0ead3377340181ab0e223cd3b5/types_requests-2.33.0.20260712-py3-none-any.whl", hash = "sha256:de027e28c171d3da529689cbfa023b0b4eab188c8dfa22fd834eebd2cee6e7bb", size = 21392, upload-time = "2026-07-12T05:14:19.616Z" },
 ]
 
 [[package]]

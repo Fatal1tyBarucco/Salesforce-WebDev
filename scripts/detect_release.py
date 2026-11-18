@@ -3,6 +3,7 @@
 
 import os
 import sys
+import traceback
 
 sys.path.insert(0, ".")
 
@@ -12,10 +13,18 @@ from src.release_discovery import ReleaseDiscoveryService
 from src.scraper import SalesforceReleaseScraper
 
 
-async def main():
-    scraper = SalesforceReleaseScraper()
-    disco = ReleaseDiscoveryService(scraper)
-    releases = await disco.discover()
+async def main() -> int:
+    try:
+        scraper = SalesforceReleaseScraper()
+        disco = ReleaseDiscoveryService(scraper)
+        releases = await disco.discover()
+    except Exception as e:
+        # On any error (network, rate limit, parsing), assume no new release
+        # This prevents scheduled pipeline from failing due to transient issues
+        print(f"[detect_release] Error during discovery: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        print("has-new-release=false")
+        return 0
 
     # Check if specific release_slug was provided via env var
     target_slug = os.environ.get("TARGET_SLUG", "")
@@ -25,9 +34,9 @@ async def main():
                 print("has-new-release=true")
                 print(f"release-slug={r.slug}")
                 print(f"release-name={r.name}")
-                return
+                return 0
         print("has-new-release=false")
-        return
+        return 0
 
     # Normal: return first release
     if releases:
@@ -38,6 +47,8 @@ async def main():
     else:
         print("has-new-release=false")
 
+    return 0
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    sys.exit(asyncio.run(main()))
