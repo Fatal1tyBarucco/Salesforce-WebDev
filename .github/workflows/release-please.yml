@@ -13,7 +13,7 @@
 
 name: Release Please
 
-run-name: "🚀 Release Please — ${{ github.ref_name }} — ${{ github.sha::7 }} — @${{ github.actor }}"
+run-name: "🚀 Release Please — ${{ github.ref_name }} — ${{ github.sha }} — @${{ github.actor }}"
 
 on:
   push:

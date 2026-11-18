@@ -5,7 +5,7 @@
 
 name: Python Quality
 
-run-name: "🐍 Python Quality — ${{ github.ref_name }} — ${{ github.sha::7 }} — @${{ github.actor }}"
+run-name: "🐍 Python Quality — ${{ github.ref_name }} — ${{ github.sha }} — @${{ github.actor }}"
 
 on:
   push:

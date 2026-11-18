@@ -1,6 +1,6 @@
 name: Deploy MkDocs to GitHub Pages
 
-run-name: "📚 Deploy Docs — ${{ github.ref_name }} — ${{ github.sha::7 }} — @${{ github.actor }}"
+run-name: "📚 Deploy Docs — ${{ github.ref_name }} — ${{ github.sha }} — @${{ github.actor }}"
 
 on:
   push:
