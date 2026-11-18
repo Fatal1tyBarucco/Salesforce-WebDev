@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "ee3073ae01e83f91e7e653775b0285afa8acf5d0",
-  "generated_at": "2026-11-18T04:54:17.311729+00:00",
+  "repository_sha": "362c571cdbe785e5893464a9d6d769b1c096362c",
+  "generated_at": "2026-11-18T04:56:59.283844+00:00",
   "inventory_count": 794,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,14 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".github/workflows/release_notes_pipeline.yml",
-      "detail": "'.github/workflows/release_notes_pipeline.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
+      "path": "README.en.md",
+      "detail": "'README.en.md' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -59,16 +53,10 @@
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
-      "type": "MANIFEST_STALE_SHA",
+      "type": "RELEASE_TABLE_MISSING",
       "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+      "doc": "README.en.md",
+      "detail": "'README.en.md' 'Available Releases' section has no releases table."
     }
   ]
 }

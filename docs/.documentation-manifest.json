@@ -653,7 +653,7 @@
     "PLANO_DE_MODERNIZACAO.md": "e410c7458abbdf230a9c68d1048f54e89b670127",
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
     "PROPOSTA_FEATURE_RIPE.md": "003dc61ba0a5c0c9046f9219de58c723cd3d93eb",
-    "README.en.md": "9740c7bd4c87087ac7fdc380397400853fa168fc",
+    "README.en.md": "fe26b38375ba157830df4f60b255b3bd61b4b143",
     "README.md": "0b863d983cf1f004938fb20cd7b2db2326f05c5d",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -823,7 +823,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "9539f87d12611477fb547e314544854552e54eb4",
+    "drift_report.json": "6ef0eaf9ece7c5e1e8061de10aac87bf7685d7c2",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
@@ -1364,6 +1364,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "cdafedd6c2793615e6f672aebba2a50e5f64b38e"
   },
-  "generated_at": "2026-11-18T04:54:17.511740+00:00",
-  "repository_sha": "ee3073ae01e83f91e7e653775b0285afa8acf5d0"
+  "generated_at": "2026-11-18T04:56:59.415869+00:00",
+  "repository_sha": "362c571cdbe785e5893464a9d6d769b1c096362c"
 }
