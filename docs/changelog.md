@@ -110,3 +110,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `6cd8d37` — refactor(workflows): rewrite AI triage as Python script to handle multiline content
 - `22a498f` — feat(intelligence): evoluir para Release Intelligence Hub (release=264) — defensivo
 - `885ccbc` — docs: atualização automática via IA [skip ci] (#358)
+- `c950ac2` — fix: resolve merge conflicts in docs manifest and drift report
