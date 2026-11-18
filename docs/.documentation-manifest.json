@@ -635,7 +635,7 @@
     ".github/workflows/documentation-build.yml": "e8b9a743d932746e2028641e4d698f235b3a620a",
     ".github/workflows/documentation-sync.yml": "ba70392b101c46a0b835f5960602f772f518be46",
     ".github/workflows/opencode.yml": "b3e85640b6756c542136a39aee356d2f47f55fb7",
-    ".github/workflows/python-quality.yml": "ef61cf8c42e3d3803b25be5dad5ea710118c4c61",
+    ".github/workflows/python-quality.yml": "94219d75593e49361715b6d3ce8c6507f518cbb0",
     ".github/workflows/release-please.yml": "b4c654923cb3a3497275a2c51e3e439245cf172c",
     ".github/workflows/release_notes_pipeline.yml": "7359bc94605bb47fac12c5e1506e3f542b123b5c",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "71c123881e48f8b8d32b145217f873c5180872fe",
@@ -652,7 +652,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "e8651946c96a2aeacd82ec3d026fef5411e7208d",
-    "CHANGELOG.md": "07e613cd4a55be492227b67251745001e948bdba",
+    "CHANGELOG.md": "cc9450c761cb35344caec44c15572bfeb4bde649",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -833,7 +833,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "25fbe0771bf98344a92436f1f967306e4b08ce8d",
+    "drift_report.json": "6a65c0ae07b42250b5ec8c542e9244e0ed71f14b",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -855,7 +855,7 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "34c0e6dd0eb6e7b2122fd941e28bb799d01eee8b",
+    "pyproject.toml": "b26658329aee115e40c3ec916746400e6b72cb0b",
     "reconcile_summary.md": "915d3c8144ad7d586f58e3026da9c36a77a2b1d0",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
@@ -1374,6 +1374,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "305bce350d4fb3426415c9c17bc18f123c3eb020"
   },
-  "generated_at": "2026-11-18T11:43:01.453517+00:00",
-  "repository_sha": "b21e9ac1c6b85560cd1dfe8b1be5b63540848f31"
+  "generated_at": "2026-11-18T11:58:42.937724+00:00",
+  "repository_sha": "4cc33abc54015d2daf5643d2c4fe55a98ff84464"
 }
