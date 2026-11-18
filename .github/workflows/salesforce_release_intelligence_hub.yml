@@ -178,6 +178,6 @@ jobs:
           RELEASE_NUMBER=$(head -n1 intelligence/intelligence_hub/.release_control_defensive.txt)
           git config user.name "Salesforce-Intelligence-Hub-Automation"
           git config user.email "automation@fatal1tybarucco.dev"
-          git add README.md README-us.md intelligence/intelligence_hub/
+          git add README.md README.en.md intelligence/intelligence_hub/
           git commit -m "feat(intelligence): evoluir para Release Intelligence Hub (release=${RELEASE_NUMBER}) — defensivo" || echo "Nada para commitar."
           git push
