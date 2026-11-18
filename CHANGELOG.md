@@ -2,6 +2,15 @@
 
 <!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
+## [0.3.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.0...v0.3.1) (2026-11-18)
+
+
+### Documentation
+
+* clean up README.md — remove test commit garbage and auto-generated index ([b21e9ac](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b21e9ac1c6b85560cd1dfe8b1be5b63540848f31))
+* **sync:** reconcile documentation — 2026-11-18 11:30 UTC ([e20fae4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e20fae47d1df685db26ef4f2bbe432b216d53c12))
+* **sync:** reconcile documentation — 2026-11-18 11:43 UTC ([c1cf01d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c1cf01d190878e3fea1472108b720bedce8cd47e))
+
 ## [0.3.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.4...v0.3.0) (2026-11-18)
 
 
