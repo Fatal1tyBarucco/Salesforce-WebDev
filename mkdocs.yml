@@ -1,6 +1,11 @@
 site_name: Salesforce Release Intelligence
-site_description: Automated pipeline for extracting and classifying Salesforce Release Notes
+site_description: Automated pipeline for extracting, classifying, and versioning Salesforce Release Notes — Knowledge-as-Code with AI-powered analysis, structured Markdown artifacts, and cross-release feature tracking (SFEL)
 site_url: https://fatal1tybarucco.github.io/Salesforce-WebDev/
+site_author: Fatal1tyBarucco
+repo_url: https://github.com/Fatal1tyBarucco/Salesforce-WebDev
+repo_name: Fatal1tyBarucco/Salesforce-WebDev
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2024 Fatal1tyBarucco — Educational & Technical Reference
 
 theme:
   name: material
@@ -30,6 +35,21 @@ theme:
     - content.code.copy
     - content.code.annotate
     - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+    admonition:
+      note: material/lightbulb
+      abstract: material/book-outline
+      info: material/information
+      tip: material/check-circle-outline
+      success: material/check-circle
+      question: material/help-circle
+      warning: material/alert-circle
+      failure: material/close-circle
+      danger: material/alert-decagram
+      bug: material/bug
+      example: material/flask-outline
+      quote: material/format-quote-close
 
 extra_javascript:
   - assets/javascripts/banner.js
@@ -41,7 +61,7 @@ extra_css:
 
 plugins:
   - search:
-      separator: '[\s\-\.\,\:\/\(\)\[\]]+'
+      separator: '[\s\-\.,:/\\(\\)\[\]]+'
       lang:
         - en
         - pt
@@ -58,6 +78,16 @@ plugins:
             merge_init_into_class: true
             separate_signature: true
             show_signature_annotations: true
+  - sitemap:
+      priority: 0.8
+      changefreq: weekly
+  - minify:
+      minify_html: true
+  - htmlproofer:
+      ignore_urls:
+        - https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues
+        - https://fatal1tybarucco.github.io/Salesforce-WebDev/
+      validate_external: false
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -73,11 +103,35 @@ markdown_extensions:
       permalink: true
   - pymdownx.snippets:
       base_path: ["."]
+  - pymdownx.arithmatex:
+      generic: true
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/Fatal1tyBarucco/Salesforce-WebDev
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/salesforce-release-notes/
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+  version:
+    provider: mike
+  alternate:
+    - name: Português
+      link: /
+      lang: pt-BR
+    - name: English
+      link: /en/
+      lang: en-US
+  generator: false
 
 nav:
   - Home: index.md
