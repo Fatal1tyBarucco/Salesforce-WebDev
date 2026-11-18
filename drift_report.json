@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "316c28f075471021f900115d42182e72317d1693",
-  "generated_at": "2026-11-18T10:08:25.786043+00:00",
+  "repository_sha": "9cfbab31dfa0807fe527c125fb8a4db47a8f3b56",
+  "generated_at": "2026-11-18T10:33:32.563245+00:00",
   "inventory_count": 798,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,200 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".claude/agents/architect.md",
-      "detail": "'.claude/agents/architect.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/code-reviewer.md",
-      "detail": "'.claude/agents/code-reviewer.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/docs-writer.md",
-      "detail": "'.claude/agents/docs-writer.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/python-engineer.md",
-      "detail": "'.claude/agents/python-engineer.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/release-manager.md",
-      "detail": "'.claude/agents/release-manager.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/security-auditor.md",
-      "detail": "'.claude/agents/security-auditor.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/agents/test-engineer.md",
-      "detail": "'.claude/agents/test-engineer.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/hooks/post-tool-use.py",
-      "detail": "'.claude/hooks/post-tool-use.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/hooks/pre-commit.py",
-      "detail": "'.claude/hooks/pre-commit.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/hooks/pre-push.py",
-      "detail": "'.claude/hooks/pre-push.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/hooks/session-start.py",
-      "detail": "'.claude/hooks/session-start.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/settings.json",
-      "detail": "'.claude/settings.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/skills/knowledge-as-code-update/SKILL.md",
-      "detail": "'.claude/skills/knowledge-as-code-update/SKILL.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/skills/new-llm-provider/SKILL.md",
-      "detail": "'.claude/skills/new-llm-provider/SKILL.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".github/workflows/python-quality.yml",
-      "detail": "'.github/workflows/python-quality.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".mcp.json",
-      "detail": "'.mcp.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".promptfoo.yaml",
-      "detail": "'.promptfoo.yaml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "AGENTS.md",
-      "detail": "'AGENTS.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "CLAUDE.md",
-      "detail": "'CLAUDE.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "drift_report.json",
       "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
       "path": "reconcile_summary.md",
       "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/ai/generators/markdown.py",
-      "detail": "'src/ai/generators/markdown.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "src/release_summarizer.py",
-      "detail": "'src/release_summarizer.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_ai_integration.py",
-      "detail": "'tests/test_ai_integration.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_characterization.py",
-      "detail": "'tests/test_characterization.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_main_coverage.py",
-      "detail": "'tests/test_main_coverage.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "tests/test_release_docs.py",
-      "detail": "'tests/test_release_docs.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": ".claude/rules/doc-conventions.md",
-      "detail": "'.claude/rules/doc-conventions.md' is new since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": ".claude/rules/test-conventions.md",
-      "detail": "'.claude/rules/test-conventions.md' is new since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": ".github/triage-rules.yaml",
-      "detail": "'.github/triage-rules.yaml' is new since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_NEW_FILE",
-      "severity": "info",
-      "path": ".gitleaks.toml",
-      "detail": "'.gitleaks.toml' is new since last manifest baseline."
     }
   ]
 }

@@ -833,7 +833,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "00e4128931db7e179ca3d8b7e91706407e0890d4",
+    "drift_report.json": "1f9a09c1a74ce7a0124605b5deaf3275a1015d74",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -856,7 +856,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "890f8bcf5a3bf02181102cab0babd879a4a38c83",
-    "reconcile_summary.md": "ee4606601cd4a61305bfbd4c741f068f5a1164bb",
+    "reconcile_summary.md": "aa2341e19f45dfc3a04a9cdb002dea7841fef338",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1374,6 +1374,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "148cfed50388063ea388219c52c32cb3c72dde51"
   },
-  "generated_at": "2026-11-18T10:08:36.455356+00:00",
-  "repository_sha": "316c28f075471021f900115d42182e72317d1693"
+  "generated_at": "2026-11-18T10:33:32.713978+00:00",
+  "repository_sha": "9cfbab31dfa0807fe527c125fb8a4db47a8f3b56"
 }
