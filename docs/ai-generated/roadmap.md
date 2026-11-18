@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: definir e documentar política de exceção para execução de workflows em PRs de forks confiáveis ou migrar contribuidores externos para branches internos; implementar rotação programada e monitoramento de uso do segredo RELEASE_PLEASE_TOKEN; adicionar validação automatizada de dependências (ex: Dependabot alerts ou teste de integração pós-sync) após a sincronização automática de uv.lock no release-please; revisar a consistência dos hashes no docs/.documentation-manifest.json confirmando que todas as entradas correspondem a arquivos efetivamente modificados e não há duplicatas; avaliar a necessidade de testes de contrato para a interface de release notes dada a alteração nos extras do pytest; monitorar a estabilidade do pipeline de release notes após a adição dos extras 'dev' e 'healing'; considerar automação da verificação de lint markdown em PRs para evitar regressões de formatação em docs/index.md.
+
+---
 
 ## Nova atualização
 

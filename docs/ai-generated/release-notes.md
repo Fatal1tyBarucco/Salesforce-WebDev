@@ -1,6 +1,46 @@
-<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização fortalece a segurança do pipeline de CI/CD ao impedir que workflows privilegiados (ai-pr-review, ai-triage, python-quality, release_notes_pipeline) sejam executados em pull requests originados de forks externos, mitigando riscos de exposição de segredos e operações não autorizadas. O workflow release-please ganha automação completa: token PAT dedicado, auto-merge de PRs de release e sincronização automática do uv.lock após bump de versão, eliminando intervenção manual e inconsistências de lockfile. Correções operacionais incluem: pular verificação 'uv lock --check' em commits de release-please para evitar falhas falsas; adicionar extras 'dev' e 'healing' ao pytest no pipeline de release notes garantindo dependências completas; correções de lint markdown (MD025, MD036, MD051) em docs/index.md; e ajustes de estilo pre-commit (trailing whitespace, final newline). Manifestos de documentação e relatório de drift foram sincronizados. Riscos: a verificação de origem do PR pode afetar contribuidores legítimos de forks se não houver exceções documentadas; a automação de release-please com PAT exige rotação e auditoria do segredo; a sincronização automática de uv.lock deve ser monitorada para regressões de dependência pós-release.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Proteger workflows de CI contra execução em PRs de forks — 🔒 Segurança** | Adicionadas condições de verificação de origem do PR (github.event.pull_request.head.repo.full_na… | 🔴 high | .github/workflows/ai-pr-review.yml, .github/workflows/ai-triage.yml, .github/workflows/python-quality.yml, .github/workflows/release_notes_pipeline.yml · Prioridade: 💡 P0 |
+| **Habilitar auto-merge e sincronização automática de uv.lock no release-please — 📋 feature** | Workflow release-please.yml foi atualizado para usar token PAT (secrets.RELEASE_PLEASE_TOKEN), ha… | 🟡 medium | .github/workflows/release-please.yml · Prioridade: 💡 P1 |
+| **Corrigir erros de lint markdown em docs/index.md — 📋 bugfix** | Correções aplicadas para atender às regras MD025 (único título H1), MD036 (enfatizar termos com a… | 🟢 low | docs/index.md · Prioridade: 💡 P3 |
+| **Aplicar correções de estilo pre-commit (espaço em branco e EOF) — 📋 refactor** | Remoção de espaços em branco no final de linhas e garantia de newline no final de arquivos, confo… | 🟢 low | .github/workflows/ai-pr-review.yml, .github/workflows/ai-triage.yml, .github/workflows/release-please.yml · Prioridade: 💡 P3 |
+| **Corrigir sincronização de uv.lock em commits de release — 📋 bugfix** | Adicionada condição para pular a verificação 'uv lock --check' quando a mensagem do commit contém… | 🟡 medium | .github/workflows/python-quality.yml · Prioridade: 💡 P2 |
+| **Atualizar comando pytest com extras dev e healing no pipeline de release notes — 📋 bugfix** | Comando de pytest foi atualizado para incluir '--extra dev --extra healing' no workflow release_n… | 🟡 medium | .github/workflows/release_notes_pipeline.yml · Prioridade: 💡 P2 |
+| **Sincronizar manifestos de documentação e relatório de drift — 📋 refactor** | Arquivos docs/.documentation-manifest.json e drift_report.json foram atualizados para refletir as… | 🟢 low | docs/.documentation-manifest.json, drift_report.json · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **1** (14%) 🔴
+🟡 Médio: **3** (42%) 🟡🟡🟡
+🟢 Baixo: **3** (42%) 🟢🟢🟢
+
+Total: **7 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    3 →
+📋 feature            │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │████████████████████░░░░░░░░░░│    2 →
+🔒 Segurança          │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▂██
+
+
+## Revisão Necessária
+
+- **Verificar consistência de hashes no manifesto de documentação** — Revisar se todos os hashes atualizados correspondem a arquivos que foram efetivamente modificados nos commits, e se não há entradas duplicadas ou obsoletas no manifesto. (0.70)
+
+---
 
 ## Nova atualização
 
