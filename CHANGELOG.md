@@ -2,6 +2,16 @@
 
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
+## [0.2.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.3...v0.2.4) (2026-11-18)
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 05:23 UTC ([40baab6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/40baab6ff99b64c1f8e2e5cb1b72a23bb5f44b9c))
+* **sync:** reconcile documentation — 2026-11-18 05:24 UTC ([244d0f9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/244d0f991cbece9069dd7102202266932df91c20))
+* **sync:** reconcile documentation — 2026-11-18 05:29 UTC ([185831f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/185831f93a2f0f335211039bfc2a5c32dcb7dfd7))
+* **sync:** reconcile documentation — 2026-11-18 05:35 UTC ([d53d00a](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d53d00a079e833ab1c16e59f7295888a4cf81edd))
+
 ## [0.2.3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.2...v0.2.3) (2026-11-18)
 
 
