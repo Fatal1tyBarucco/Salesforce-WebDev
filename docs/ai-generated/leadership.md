@@ -1,6 +1,16 @@
-<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Impacto de negócio: a principal entrega é o endurecimento de segurança do pipeline — workflows que criam issues ou dependem de segredos deixam de rodar em PRs de forks, fechando vetor de exposição de credenciais. A automação do release-please (auto-merge + sync de uv.lock) reduz toque manual e elimina classe recorrente de falhas por lockfile dessincronizado. Correções operacionais (pytest extras, lint docs, style pre-commit) estabilizam execução e qualidade da documentação.
+
+Riscos: a verificação de origem do PR pode bloquear contribuidores legítimos de forks sem exceção documentada; o PAT do release-please vira segredo crítico exigindo rotação e auditoria; a sincronização automática de uv.lock pós-release pode introduzir regressões de dependência não detectadas pelo gate atual.
+
+Próximos passos: documentar política de exceção para forks confiáveis ou migrar contribuidores para branches internos; definir rotação e monitoramento do RELEASE_PLEASE_TOKEN; adicionar validação de dependências (ex: dependabot ou teste de integração) após sync automático de uv.lock; revisar manifesto de documentação para confirmar consistência de hashes antes de confiar em pipelines downstream.
+
+---
 
 ## Nova atualização
 

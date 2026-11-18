@@ -1,5 +1,24 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Security
+- Protect CI workflows from executing on fork pull requests by adding repository origin checks to ai-pr-review, ai-triage, python-quality, and release_notes_pipeline workflows, preventing privileged jobs from running without access to secrets.
+
+### Added
+- Enable auto-merge and automatic uv.lock synchronization in release-please workflow using dedicated PAT token, streamlining the release process.
+
+### Fixed
+- Skip 'uv lock --check' on release-please and uv.lock sync commits to prevent false pipeline failures during automated releases.
+- Update pytest command in release notes pipeline to include '--extra dev --extra healing' ensuring required test dependencies are installed.
+- Fix markdown lint violations (MD025, MD036, MD051) in docs/index.md for consistent documentation formatting.
+- Apply pre-commit style fixes: remove trailing whitespace and ensure final newline across workflow files.
+
+### Changed
+- Synchronize documentation manifest and drift report hashes to reflect current repository state.
+
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
 ## [0.2.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.3...v0.2.4) (2026-11-18)
