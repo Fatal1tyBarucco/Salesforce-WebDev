@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "5acf905c68d4197e0faa026233850f7b773c7c7e",
-  "generated_at": "2026-11-18T04:16:46.855882+00:00",
+  "repository_sha": "976c9268554105b7e86a010039c9ddc62ed2d32d",
+  "generated_at": "2026-11-18T04:18:45.562897+00:00",
   "inventory_count": 788,
   "src_modules": 101,
   "existing_api_evokers": 104,
@@ -43,14 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "AGENTS.md",
-      "detail": "'AGENTS.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "CHANGELOG.md",
-      "detail": "'CHANGELOG.md' blob SHA changed since last manifest baseline."
+      "path": ".github/workflows/salesforce_release_intelligence_hub.yml",
+      "detail": "'.github/workflows/salesforce_release_intelligence_hub.yml' blob SHA changed since last manifest baseline."
     },
     {
       "type": "MANIFEST_STALE_SHA",
@@ -61,20 +55,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "scripts/detect_release.py",
-      "detail": "'scripts/detect_release.py' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+      "path": "reconcile_summary.md",
+      "detail": "'reconcile_summary.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
