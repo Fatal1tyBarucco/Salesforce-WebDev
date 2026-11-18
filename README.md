@@ -1253,3 +1253,12 @@ Este projeto é mantido para fins educacionais e de referência técnica.
 </div>
 # Test push to verify workflow fixes
 # Verify workflow fix
+
+
+<!-- Salesforce Intelligence Hub — Release 264 -->
+## Índice Automático — Intelligence Hub (Release 264)
+- [Release 264 — Deploy Manual](https://fatal1tybarucco.github.io/Salesforce-WebDev/intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.md)
+- [Release 264 — Sandbox Preview](https://fatal1tybarucco.github.io/Salesforce-WebDev/intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.md)
+- [Release 264 — Release Readiness](https://fatal1tybarucco.github.io/Salesforce-WebDev/intelligence/intelligence_hub/release_readiness/Release_264_Readiness.md)
+- [Release 264 — Org Preparation](https://fatal1tybarucco.github.io/Salesforce-WebDev/intelligence/intelligence_hub/org_preparation_guides/Release_264_Org_Prep.md)
+*Atualizado automaticamente em: 2026-11-18 04:23:17*

@@ -1,6 +1,45 @@
-<!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização entrega o Release Intelligence Hub para o release 264, adicionando assets de deploy manual, guias de preparação de org, relatórios de prontidão e configuração de sandbox — nova capacidade operacional de alto impacto para processos de release. Em paralelo, estabiliza o pipeline de CI/CD com múltiplas correções críticas: resolve falhas 100% no Intelligence Hub adicionando dependências ausentes (requests, types-html5lib, types-webencodings), torna detect_release.py resiliente a erros de rede eliminando crashes do Scheduled Pipeline, corrige triggers de workflow que causavam execuções vazias (ghost runs) e loops de bot em todo push, e ajusta permissões GitHub Actions inválidas (pull_requests→pull-requests, repository-projects, projects V2, SHA real do claude-code-action). Substitui hooks baseados em shell por scripts Python robustos (pre-commit, pre-push, post-tool-use, session-start) com ruff, mypy e pytest integrados, atingindo 95,55% de cobertura. Refatora o AI Triage como script Python para lidar com conteúdo multilinha. Sincroniza uv.lock com versões de release 0.1.2 a 0.1.7 corrigindo dessincronização recorrente do release-please. Aplica formatação Black para conformidade do gate de qualidade. Inclui correções operacionais no workflow do Intelligence Hub (remove deploy Pages problemático, adiciona git pull --rebase, corrige nome do README) e instala Playwright no job de detecção. Riscos: consumidores de automações dependentes de triggers push podem ter comportamento alterado; migração de hooks shell→Python exige validação de fluxos locais; regeneração de uv.lock em múltiplas versões deve ser monitorada para regressões de dependência.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Implementação do Release Intelligence Hub (release=264) — 📋 feature** | Nova funcionalidade que evolui o sistema para um Release Intelligence Hub, incluindo assets de de… | 🔴 high | intelligence-hub, deploy-manuals, release-readiness, sandbox-config · Prioridade: 💡 P1 |
+| **Correção de workflows CI/CD falhando - dependências e resiliência de rede — 📋 bugfix** | Corrige falhas 100% no Intelligence Hub adicionando dependência 'requests', adiciona types-html5l… | 🔴 high | scheduled-pipeline, intelligence-hub, detect-release, ci-dependencies · Prioridade: 💡 P0 |
+| **Sistema de hooks Python para qualidade de código (pre-commit, pre-push, post-tool-use, session-start) — 📋 refactor** | Substitui hooks baseados em shell por scripts Python que leem JSON do stdin. Adiciona: post-tool-… | 🟡 medium | .claude/hooks, .claude/settings.json, pre-commit, pre-push, post-tool-use, session-start · Prioridade: 💡 P1 |
+| **Correção de triggers de workflow para evitar execuções vazias (ghost runs) e loops de bot — 📋 bugfix** | Múltiplas correções iterativas: remove triggers 'push' de workflows (scheduled-pipeline, ai-triag… | 🔴 high | scheduled-pipeline.yml, ai-triage.yml, ci-repair.yml, ai-pr-review.yml, opencode.yml · Prioridade: 💡 P0 |
+| **Correção de permissões GitHub Actions (projects, pull-requests, repository-projects, SHA action) — 📋 bugfix** | Corrige permissões inválidas: 'pull_requests' -> 'pull-requests' (hyphen), usa 'repository-projec… | 🟡 medium | scheduled-pipeline, ai-triage, ai-pr-review, ci-repair, claude-code-action · Prioridade: 💡 P1 |
+| **Refatoração do AI Triage como script Python para lidar com conteúdo multilinha — 📋 refactor** | Reescreve o workflow ai-triage.yml (405 linhas alteradas) convertendo lógica de shell para script… | 🟡 medium | ai-triage.yml, workflows/ai-triage · Prioridade: 💡 P2 |
+| **Sincronização de uv.lock com versões de release (0.1.2 a 0.1.7) e correção de release-please desync — 📋 bugfix** | Múltiplas correções de uv.lock dessincronizado após release-please bump pyproject.toml sem regene… | 🟡 medium | uv.lock, pyproject.toml, release-please, docs/.documentation-manifest.json, docs/index.md, AGENTS.md · Prioridade: 💡 P1 |
+| **Formatação Black aplicada para passar gate Python Quality — 📋 refactor** | Múltiplas aplicações de formatação Black (6 arquivos reformados) para corrigir falhas no gate de … | 🟢 low | src/, scripts/, hooks/ · Prioridade: 💡 P3 |
+| **Atualizações de documentação automatizada (reconcile documentation) — 📋 documentation** | Múltiplos commits de sincronização automática de documentação via IA [skip ci], regenerando docum… | 🟢 low | docs/, documentation-manifest.json, drift_report.json · Prioridade: 💡 P3 |
+| **Correções no workflow Intelligence Hub - deploy Pages, pull rebase, README filename — 📋 bugfix** | Remove deploy problemático do GitHub Pages do workflow Intelligence Hub, adiciona 'git pull --reb… | 🟡 medium | salesforce_release_intelligence_hub.yml, GitHub Pages deploy, README handling · Prioridade: 💡 P2 |
+| **Instalação Playwright e uso 'uv run python' no job detect do Scheduled Pipeline — 📋 bugfix** | Adiciona instalação do Playwright no job de detecção do pipeline agendado e altera execução para … | 🟢 low | scheduled-pipeline.yml, detect_release.py, Playwright · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **3** (27%) 🔴🔴🔴
+🟡 Médio: **5** (45%) 🟡🟡🟡🟡🟡
+🟢 Baixo: **3** (27%) 🟢🟢🟢
+
+Total: **11 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    6 →
+📋 documentation      │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 feature            │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 refactor           │███████████████░░░░░░░░░░░░░░░│    3 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▄█▄
+
+---
 
 ## Nova atualização
 

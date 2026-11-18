@@ -1,6 +1,61 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Added
+- Release Intelligence Hub for release 264: manual deploy assets, org preparation guides, readiness reports, sandbox configuration, and HTML assets page
+- Python-based hook system replacing shell hooks: pre-commit (ruff check, ruff format --check, mypy), pre-push (pytest -x), post-tool-use (ruff check --fix + ruff format), session-start (repo state and gate verification)
+- Playwright installation in Scheduled Pipeline detect job with 'uv run python' execution
+
+### Changed
+- AI Triage workflow refactored from shell to dedicated Python script for robust multiline issue/PR body handling
+- Workflow triggers: removed 'push' triggers from scheduled-pipeline, ai-triage, ci-repair, ai-pr-review, opencode; added event_name guards and branches filter 'no-push-trigger'; added dummy push-trigger jobs
+- GitHub Actions permissions corrected: 'pull_requests'→'pull-requests', 'repository-projects' permission, 'projects' for GitHub Projects V2, real SHA v1.0.278 for anthropics/claude-code-action
+- Intelligence Hub workflow: removed problematic GitHub Pages deploy, added 'git pull --rebase' before push, fixed README filename reference
+
+### Fixed
+- CI/CD failures: added missing 'requests' dependency, types-html5lib and types-webencodings for mypy completeness; made detect_release.py network-resilient
+- uv.lock synchronization with project versions 0.1.2 through 0.1.7 after release-please bumps; documented manual post-release process in AGENTS.md
+- Black formatting applied across 6 files to pass Python Quality gate (ruff/mypy already passing, 2370 tests passed, 95.55% coverage)
+- Redundant allow rules removed from .claude/settings.json; 6 files reformatted with ruff
+
+### Documentation
+- Automated documentation reconciliation: multiple syncs regenerating documentation-manifest.json, drift_report.json, and docs/index.md
+- Baseline updates for new uv.lock and docs blobs
+
 <!-- gerado por IA em 2026-11-17T04:10:09+00:00 — revisar antes de publicar -->
+
+## [0.2.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.7...v0.2.0) (2026-11-18)
+
+
+### Features
+
+* **intelligence:** evoluir para Release Intelligence Hub (release=264) — defensivo ([22a498f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/22a498fceb1a2a67060cee8bda62feb377ee4640))
+
+
+### Bug Fixes
+
+* **ci:** add --extra healing to pytest in Release Notes Pipeline ([3301747](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3301747dfff156f1e33c53eefe2ba7d08997bcae))
+* **ci:** add pull --rebase before push in Intelligence Hub workflow ([fc85b80](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/fc85b80b6804efeca7db7d46d0e41f024e798b6d))
+* **ci:** install Playwright in detect job for Scheduled Pipeline ([a97f6c6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a97f6c60bae11364e25fd0ee6fad19cf0d764509))
+* **ci:** remove problematic GitHub Pages deploy from Intelligence Hub workflow ([3f122ea](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3f122ea35066177490fc284cc8a8737b32cd90cb))
+* **ci:** repair failing workflows ([5acf905](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5acf905c68d4197e0faa026233850f7b773c7c7e))
+* **ci:** use --extra dev for pytest in Release Notes Pipeline validation ([15fc5bb](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/15fc5bb3716be699217dd627a139eb2856bbaa21))
+* **ci:** use correct README filename in Intelligence Hub workflow ([976c926](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/976c9268554105b7e86a010039c9ddc62ed2d32d))
+* **ci:** use uv run python in detect job for Scheduled Pipeline ([c7d7553](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c7d75535f3bc253b7619c014afab78adb32ee78a))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 04:17 UTC ([33c1ca4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33c1ca4731df6583ac954704323ed44724f50278))
+* **sync:** reconcile documentation — 2026-11-18 04:18 UTC ([27e19db](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/27e19dbdc939a7f7cb4be109b1cbfc9216dc0ede))
+* **sync:** reconcile documentation — 2026-11-18 04:21 UTC ([4bbd9fa](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/4bbd9fa5ffa1e7b86e29911abaeb2f91b64efbac))
+* **sync:** reconcile documentation — 2026-11-18 04:23 UTC ([8bacdb6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8bacdb64eddcdb4d99984e2c1919d61e6a3f3066))
+* **sync:** reconcile documentation — 2026-11-18 04:27 UTC ([c39353f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c39353f1634ffcd0480493a9d457901f66c6b7f1))
+* **sync:** reconcile documentation — 2026-11-18 04:29 UTC ([6c5d340](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6c5d3408312f0562743c95df5bd1f088591e7e7c))
+* **sync:** reconcile documentation — 2026-11-18 04:40 UTC ([2101510](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/21015108cd87e78aa1cdac03fe8549c3e66a6bba))
 
 ## [0.1.7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.1.6...v0.1.7) (2026-11-17)
 

@@ -1,0 +1,12 @@
+{
+  "document_title": "Manual de Implanta\u00e7\u00e3o \u2014 Release 264",
+  "release_identifier": "264",
+  "documentation_version": "1.0.0-enterprise-defensive",
+  "recommended_actions": [
+    "Validar Sandbox Preview no ciclo de Release Readiness.",
+    "Executar Change Log diferencial antes do deploy para Produ\u00e7\u00e3o.",
+    "Confirmar status de manuten\u00e7\u00e3o via Salesforce Status.",
+    "Revisar guia de prepara\u00e7\u00e3o de Orgs para mitiga\u00e7\u00e3o de impactos."
+  ],
+  "generation_timestamp": "2026-11-18T04:23:17.907099"
+}
