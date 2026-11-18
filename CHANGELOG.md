@@ -2,6 +2,21 @@
 
 <!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
+## [0.3.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.1...v0.3.2) (2026-11-18)
+
+
+### Bug Fixes
+
+* add missing mkdocs-sitemap dep + uv setup for release-please sync ([c49e6da](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c49e6da70191962b9cd6dff23367a3f51bc3c221))
+* fix gitleaks config glob patterns to regex ([9b38cf9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b38cf9e5b5025ea825f3c2107375b91941218d6))
+* remove non-existent mkdocs-sitemap plugin and dependency ([f63d4a8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f63d4a85d563e42453a620049743eb27cd8a3b6e))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 17:38 UTC ([3adb207](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3adb207f0b6ea874efaac5ff91cdc604f8f616ad))
+* **sync:** reconcile documentation — 2026-11-18 18:07 UTC ([d33f004](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d33f00475539abb28092532d30d1a05ae350b078))
+
 ## [0.3.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.0...v0.3.1) (2026-11-18)
 
 
