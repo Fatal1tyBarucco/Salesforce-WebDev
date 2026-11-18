@@ -193,7 +193,7 @@ jobs:
           steps.git_status.outputs.has_changes == 'true'
         run: |
           set -o pipefail
-          uv run pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/artifact_tests.log
+          uv run --extra healing pytest tests/ -q --tb=short 2>&1 | tee /tmp/pipeline_logs/artifact_tests.log
 
       - name: Commit e push dos artefatos gerados
         if: |
