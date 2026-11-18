@@ -2,6 +2,23 @@
 
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
+## [0.2.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.1...v0.2.2) (2026-11-18)
+
+
+### Bug Fixes
+
+* **ci:** resync uv.lock after release-please version bump to 0.2.1 ([f91f7b4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f91f7b48f26c1a368650c098416b893a16a76631))
+* **ci:** sync uv.lock project version to 0.2.1 ([c895339](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c895339c7888dbbfb2de4c9992a3e2a1aa1c12c8))
+* **ci:** sync uv.lock project version to 0.2.1 for uv lock --check gate ([ee148e0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/ee148e03a78ca649064165e6a8ebf6663957c69d))
+* **ci:** sync uv.lock with pyproject version 0.2.1 ([ac38c13](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/ac38c133b2a4840a9dceb948691f5e17e2270803))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 04:57 UTC ([855fcfd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/855fcfd9b4e8a44eadeb6c921753c0115da0e569))
+* **sync:** reconcile documentation — 2026-11-18 04:58 UTC ([79ba119](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/79ba119f5385dd1380257bbb0bba3d9b9729ffca))
+* **sync:** reconcile documentation — 2026-11-18 05:01 UTC ([79df129](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/79df129564e0c3359917b4941853d314caf3cdd3))
+
 ## [0.2.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.0...v0.2.1) (2026-11-18)
 
 
