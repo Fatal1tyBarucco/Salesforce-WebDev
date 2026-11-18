@@ -180,4 +180,5 @@ jobs:
           git config user.email "automation@fatal1tybarucco.dev"
           git add README.md README.en.md intelligence/intelligence_hub/
           git commit -m "feat(intelligence): evoluir para Release Intelligence Hub (release=${RELEASE_NUMBER}) — defensivo" || echo "Nada para commitar."
+          git pull --rebase origin main
           git push
