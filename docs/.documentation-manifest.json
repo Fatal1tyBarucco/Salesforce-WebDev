@@ -34,10 +34,12 @@
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/ai-pr-review.yml": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/ai-triage.yml": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/ci-repair.yml": [
       "docs/MODERNIZACAO.md"
@@ -67,9 +69,13 @@
       "docs/changelog.md",
       "docs/plans/auto-opencode-issue.md"
     ],
+    ".github/workflows/release-please.yml": [
+      "docs/ai-generated/release-notes.md"
+    ],
     ".github/workflows/release_notes_pipeline.yml": [
       "docs/ARQUITETURA.md",
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/salesforce_release_intelligence_hub.yml": [
       "docs/ai-generated/release-notes.md"
@@ -642,7 +648,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "cdfb804d7210377e044d8bccce1c1bc3cb57a2eb",
-    "CHANGELOG.md": "bab9ab8d34d0826ebbf8d4a2dfb0fc984cd61770",
+    "CHANGELOG.md": "fd8b2e0e45bb8bc8762d7ff7e692b6d65a9fb73c",
     "CLAUDE.md": "9f3e3a462fe84b7486e445498baacf5ff575295f",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -653,8 +659,8 @@
     "PLANO_DE_MODERNIZACAO.md": "e410c7458abbdf230a9c68d1048f54e89b670127",
     "PRODUCT.md": "2ddfa5b64315dc64e6da5a8def2970ffaa53129b",
     "PROPOSTA_FEATURE_RIPE.md": "003dc61ba0a5c0c9046f9219de58c723cd3d93eb",
-    "README.en.md": "792532ca6e44cfee0890237ca382ddd2faeca24d",
-    "README.md": "0b863d983cf1f004938fb20cd7b2db2326f05c5d",
+    "README.en.md": "be8abe7e2063fd851727cedd5c5f4da66e0d0c4f",
+    "README.md": "393e217946ca1d1c150ff30eafba15517ba4ea68",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
@@ -662,14 +668,14 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "commit_fixes.sh": "a2b0332530b98e02aba785db0f2b7cf3719896cf",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "5c7c53c142c62683e4bb3eb930ffe919cb1ced92",
+    "docs/.last-processed-ref": "ae3d8540e552026bf477e2182c6f5a3dcd75205b",
     "docs/ARQUITETURA.md": "e6806aa1b96195a5bd88f27b00898be39f7467a6",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
     "docs/MODERNIZACAO.md": "20b50cb2021ae4cb08d25fc127fdaa12f3ca8b2b",
     "docs/SOURCE_SCHEMA.md": "f458e3e25d37aa66c75cb9dea63dc34ce6673ffd",
-    "docs/ai-generated/leadership.md": "4578598845eef560edab683b9646d29d3f378dcc",
-    "docs/ai-generated/release-notes.md": "185473fc494b05aa3d6382ea79b2685b23836501",
-    "docs/ai-generated/roadmap.md": "40f71d6f20c7f0b84f0311c0bbc433a61d27c0d0",
+    "docs/ai-generated/leadership.md": "0560ef8953bec14311307b071ef207e3fbc75a40",
+    "docs/ai-generated/release-notes.md": "e19abbaaa67a3e8ab701ecc848931e5402565121",
+    "docs/ai-generated/roadmap.md": "e7f6840cb3f571718e562aea3339d02b26e9abb0",
     "docs/api/ai-collectors-change_collector.md": "504999cc5607d908d84a871fbad6c5ff604283be",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -793,7 +799,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "cb2b59621c5768ce5735088fc6852f4fd2a330ea",
+    "docs/changelog.md": "43d64ff6c042c4b9ad20632d10a7ed7afb4b9c5f",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -823,16 +829,16 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "9f80ca45d469a23e7ba1e760c898193280a4e061",
+    "drift_report.json": "c722724355202b001ad2a2a57054586e6a9c1d80",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
-    "intelligence/intelligence_hub/assets/pages/index.html": "f6374daae679e429218ac1c260751f6b6035b49b",
-    "intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json": "e260090aa6f00effb158a182378d3c9b73f80acd",
+    "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
+    "intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json": "90b5389556f732d59530fbc2ae49691a2f66aab1",
     "intelligence/intelligence_hub/diagrama_arquiteto_mermaid.md": "0e897c6673248b14e1e49f68170899ae5999ff94",
     "intelligence/intelligence_hub/estrutura_arquitetura_arvore.md": "9ef2db749b144e7687ff686dc8aab9e0417386c2",
     "intelligence/intelligence_hub/org_preparation_guides/Release_264_Org_Prep.json": "e40b0a0ea93be5a9b5462d388c6771187b0e0ff2",
-    "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json": "b1bcabcd243010a6dc2e6ebde6e54ef72be90af5",
-    "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json": "19deb07e411ebbcae77f07240224d91a6fc63d2f",
+    "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json": "1520f7ca0d4dd2ff63ae3fe3ba72e0cacddab9ed",
+    "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json": "a698929cd9b276e0853cf920a0a8cdc7bb496306",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
     "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "33d84042ac9f2435daea845bdf077ecd4935219b",
     "intelligence/intelligence_hub/scripts/scrapers/salesforce_defensive_scraper_engine.py": "efcd6bc439999225c9be5e138baccad6b72119d9",
@@ -846,7 +852,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "12149e72f13bcc12c4c46973dc36f276d6adf650",
-    "reconcile_summary.md": "56d0205cd9174adef232fbb513a1cf21c982d52d",
+    "reconcile_summary.md": "ad10c00655c75007c2dea5a8c739eed71ac2565a",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1364,6 +1370,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "487155d69fa6d01e05f1f586aaf4eb863fbe84d3"
   },
-  "generated_at": "2026-11-18T06:39:41.548146+00:00",
-  "repository_sha": "af5dc6eef71904004e731531239241dbd8cfe6b1"
+  "generated_at": "2026-11-18T07:33:21.811270+00:00",
+  "repository_sha": "63c23bfc0b0567cce52ab8f03c2cd5aa1dbcb974"
 }

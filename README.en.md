@@ -146,6 +146,13 @@ uv run mypy src/
 
 ## 📋 Available Releases
 
+| Release | Features | Categories | Status |
+| :--- | :---: | :---: | :---: |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Current |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Complete |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Complete |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Complete |
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 ### ❄️ Winter '27
 
