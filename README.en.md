@@ -44,7 +44,7 @@ Automated pipeline for extraction, classification, and versioning of **Salesforc
 | 🎭 **Playwright** | Headless scraper for Salesforce Help SPA applications | `Active` |
 | 🧪 **Pytest** | Automated unit test suite | `450+ tests` |
 | 🔍 **Mypy** | Static type checking with strict mode | `Strict` |
-| ⚡ **Ruff & Black** | Strict code linting and formatting (line-length = 100) | `Compliant` |
+| ⚡ **Ruff** | Strict code linting and formatting (line-length = 100) | `Compliant` |
 | 📦 **uv** | Deterministic dependency management with lock file | `Active` |
 
 ---
@@ -136,8 +136,9 @@ uv run pytest tests/ --cov=src --cov-report=term-missing
 
 # Quality gate (CI order)
 uv run ruff check src/
-uv run black --check src/
+uv run ruff format --check src/
 uv run mypy src/
+uv run uv lock --check
 ```
 
 **Target:** >95% coverage, zero type errors, zero lint warnings.
@@ -858,8 +859,9 @@ uv run mypy src/
 4. Run the quality gate:
    ```bash
    uv run ruff check src/
-   uv run black --check src/
+   uv run ruff format --check src/
    uv run mypy src/
+   uv run uv lock --check
    uv run pytest tests/ --cov=src --cov-fail-under=95
    ```
 5. Commit: `git commit -m 'feat: description of change'`

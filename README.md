@@ -873,7 +873,7 @@ uv sync --extra dev
 # 3. Instale o navegador Playwright
 uv run playwright install chromium
 
-# 4. Instale os hooks de pré-commit (ruff, black, mypy, pytest)
+# 4. Instale os hooks de pré-commit (ruff, mypy, pytest)
 uv run pre-commit install
 uv run pre-commit install --hook-type pre-push
 
@@ -947,8 +947,9 @@ stateDiagram-v2
 ```bash
 # Quality gate completa (mesma do CI)
 uv run ruff check src/          # Linter
-uv run black --check src/       # Formatter
+uv run ruff format --check src/ # Formatter
 uv run mypy src/                # Type checker (strict)
+uv run uv lock --check          # Lock file sync
 uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 ```
 
@@ -956,8 +957,7 @@ uv run pytest tests/ --cov=src --cov-fail-under=95  # Tests + coverage
 |:-----------|:-------------|:------:|
 | 🐍 **Python** | 3.14, type hints completos | ✅ |
 | 🔍 **Mypy** | `strict = true` | ✅ |
-| ⚡ **Ruff** | `line-length = 100` | ✅ |
-| 🖤 **Black** | `target-version = py314` | ✅ |
+| ⚡ **Ruff** | `line-length = 100`, formatter + linter | ✅ |
 | 🧪 **Pytest** | 95%+ cobertura | ✅ |
 | 📦 **uv** | Lock file determinístico | ✅ |
 
@@ -1226,7 +1226,7 @@ flowchart LR
 3. Instale dependências: `uv sync --extra dev`
 4. Execute a quality gate completa:
    ```bash
-   uv run ruff check src/ && uv run black --check src/ && uv run mypy src/ && uv run pytest --cov=src --cov-fail-under=95
+   uv run ruff check src/ && uv run ruff format --check src/ && uv run mypy src/ && uv run uv lock --check && uv run pytest --cov=src --cov-fail-under=95
    ```
 5. Commit: `git commit -m 'feat: descrição da alteração'`
 6. Push: `git push origin feature/minha-feature`
