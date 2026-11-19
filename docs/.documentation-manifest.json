@@ -14,7 +14,8 @@
     ],
     ".github/scripts/docs_contract.py": [
       "docs/architecture/automation-catalog.md",
-      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md"
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md",
@@ -171,7 +172,8 @@
       "docs/reference/repo-index.md"
     ],
     "prompts/reconciliation/v1.yaml": [
-      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md"
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
+      "docs/reference/repo-index.md"
     ],
     "prompts/reporting/v1.yaml": [
       "docs/architecture/automation-catalog.md",
@@ -898,7 +900,7 @@
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".mcp.json": "7af655fee00a854266d691999b597ab7dd171b21",
-    ".pre-commit-config.yaml": "3054b6560dd53f6470e4fdf2aa64778ca84eb780",
+    ".pre-commit-config.yaml": "b1b3902004b1ae7f094ca396a06817d1aac6d6d4",
     ".promptfoo.yaml": "dff4f09ab4eaad7f534756dfcb3ed710e2f50ec9",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
@@ -1060,14 +1062,14 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "99fdf0db9e7338b55c49fb28ff758f787f9ddc60",
+    "docs/changelog.md": "77e16e9aa0a0f61f035eb228517ad00ba2e18d92",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "59720edcd7e6e44e85d5228fc336c5e3f6a4e508",
+    "docs/index.md": "89e630d4ce5be9861c46a55a9219e30e4a2d6aeb",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "1d908a10ecc59028d2141265b9328951d5bbf4f9",
@@ -1080,7 +1082,7 @@
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
     "docs/plans/auto-opencode-issue.md": "c82578ff99a9d9c6a8d86e429ad801a8d1b611d6",
-    "docs/reference/repo-index.md": "94583d54dee2c7ce2c401b20f3b4da751a294f3d",
+    "docs/reference/repo-index.md": "49b801f416ca728b70e626387d908cb4d59d303a",
     "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
@@ -1113,7 +1115,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "2db97370566b942f31cdbbd69972db37483828c8",
+    "pyproject.toml": "68be384531517c0373a47e6a727e3b799af308e3",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1641,9 +1643,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "f3f4cfe7725cba34f3e0aee8feb7f6f23e5c0d2b"
+    "uv.lock": "827df9ab78745641d3ebe56af7b910a8522c531e"
   },
-  "generated_at": "2026-11-19T20:43:14.586609+00:00",
+  "generated_at": "2026-11-19T21:06:21.374685+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1658,5 +1660,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "8397b61b9ab12e07b87f10572096163b410f97e6"
+  "repository_sha": "a7032c6f328666821e0920a1fdc8c67046a7c858"
 }

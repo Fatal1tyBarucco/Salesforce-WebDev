@@ -3,34 +3,35 @@
 Página gerada deterministicamente por `.github/scripts/docs_sync_engine.py`
 a partir da árvore real do repositório (ADR-012). Não editar manualmente.
 
-Artefatos documentáveis: **151**.
+Artefatos documentáveis: **154**.
 
 | Artefato | Categoria | Documentação |
 | :--- | :--- | :--- |
-| `.github/scripts/build_failure_issue.py` | Script CI | — |
+| `.github/scripts/build_failure_issue.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/ci-visual.sh` | Script CI | [CHANGELOG.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/CHANGELOG.md) |
+| `.github/scripts/docs_contract.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/docs_sync_engine.py` | Script CI | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
-| `.github/scripts/documentation_reconcile.py` | Script CI | — |
-| `.github/scripts/documentation_sync.py` | Script CI | — |
+| `.github/scripts/documentation_reconcile.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/scripts/documentation_sync.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/fix_markdown.py` | Script CI | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
-| `.github/scripts/llm_fallback.py` | Script CI | — |
-| `.github/scripts/progress.sh` | Script CI | — |
+| `.github/scripts/llm_fallback.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/scripts/progress.sh` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/select_free_model.py` | Script CI | [ARQUITETURA](../ARQUITETURA.md) |
-| `.github/scripts/update_changelog_auto.py` | Script CI | — |
+| `.github/scripts/update_changelog_auto.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/ai-docs.yml` | Workflow | [README.en.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md) |
 | `.github/workflows/ai-pr-review.yml` | Workflow | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `.github/workflows/ai-triage.yml` | Workflow | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `.github/workflows/ci-repair.yml` | Workflow | [MODERNIZACAO](../MODERNIZACAO.md) |
-| `.github/workflows/copilot-setup-steps.yml` | Workflow | — |
-| `.github/workflows/dependabot-lock-refresh.yml` | Workflow | — |
-| `.github/workflows/dependency-review.yml` | Workflow | — |
-| `.github/workflows/documentation-build.yml` | Workflow | — |
-| `.github/workflows/documentation-sync.yml` | Workflow | [adr-005-documentation-reconciliation](../architecture/decisions/adr-005-documentation-reconciliation.md) |
-| `.github/workflows/opencode.yml` | Workflow | — |
+| `.github/workflows/copilot-setup-steps.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/dependabot-lock-refresh.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/dependency-review.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/documentation-build.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/documentation-sync.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/opencode.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/python-quality.yml` | Workflow | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
-| `.github/workflows/release-please.yml` | Workflow | — |
+| `.github/workflows/release-please.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/release_notes_pipeline.yml` | Workflow | [ARQUITETURA](../ARQUITETURA.md) |
-| `.github/workflows/salesforce_release_intelligence_hub.yml` | Workflow | — |
+| `.github/workflows/salesforce_release_intelligence_hub.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/scheduled-pipeline.yml` | Workflow | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `docs/architecture/decisions/adr-001-parser-strategy.md` | ADR | [adr-001-parser-strategy](../architecture/decisions/adr-001-parser-strategy.md) |
 | `docs/architecture/decisions/adr-002-github-actions.md` | ADR | [adr-002-github-actions](../architecture/decisions/adr-002-github-actions.md) |
@@ -43,18 +44,20 @@ Artefatos documentáveis: **151**.
 | `docs/architecture/decisions/adr-009-scraper-resilience.md` | ADR | [adr-009-scraper-resilience](../architecture/decisions/adr-009-scraper-resilience.md) |
 | `docs/architecture/decisions/adr-010-llm-cache-strategy.md` | ADR | [adr-010-llm-cache-strategy](../architecture/decisions/adr-010-llm-cache-strategy.md) |
 | `docs/architecture/decisions/adr-011-cache-layer-hardening.md` | ADR | [adr-011-cache-layer-hardening](../architecture/decisions/adr-011-cache-layer-hardening.md) |
-| `k8s/cronjob.yaml` | Manifesto Kubernetes | — |
-| `k8s/deployment.yaml` | Manifesto Kubernetes | — |
-| `k8s/service.yaml` | Manifesto Kubernetes | — |
-| `prompts/classification/v1.yaml` | Prompt versionado | [adr-008-prompt-versioning](../architecture/decisions/adr-008-prompt-versioning.md) |
-| `prompts/enrichment/v1.yaml` | Prompt versionado | [adr-008-prompt-versioning](../architecture/decisions/adr-008-prompt-versioning.md) |
-| `prompts/reporting/v1.yaml` | Prompt versionado | [adr-008-prompt-versioning](../architecture/decisions/adr-008-prompt-versioning.md) |
+| `docs/architecture/decisions/adr-012-absolute-documentation-sync.md` | ADR | [adr-012-absolute-documentation-sync](../architecture/decisions/adr-012-absolute-documentation-sync.md) |
+| `k8s/cronjob.yaml` | Manifesto Kubernetes | [automation-catalog](../architecture/automation-catalog.md) |
+| `k8s/deployment.yaml` | Manifesto Kubernetes | [automation-catalog](../architecture/automation-catalog.md) |
+| `k8s/service.yaml` | Manifesto Kubernetes | [automation-catalog](../architecture/automation-catalog.md) |
+| `prompts/classification/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
+| `prompts/enrichment/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
+| `prompts/reconciliation/v1.yaml` | Prompt versionado | [adr-012-absolute-documentation-sync](../architecture/decisions/adr-012-absolute-documentation-sync.md) |
+| `prompts/reporting/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/cache_maintenance.py` | Script utilitário | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `scripts/detect_release.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `scripts/generate_pr_body.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
-| `scripts/quality-check-local.sh` | Script utilitário | — |
-| `scripts/restore_releases.py` | Script utilitário | — |
-| `scripts/restore_releases.sh` | Script utilitário | — |
+| `scripts/quality-check-local.sh` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
+| `scripts/restore_releases.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
+| `scripts/restore_releases.sh` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `src/ai/collectors/change_collector.py` | Módulo Python | [API](../api/ai-collectors-change_collector.md) |
 | `src/ai/config/models.py` | Módulo Python | [API](../api/ai-config-models.md) |
 | `src/ai/generators/badges.py` | Módulo Python | [API](../api/ai-generators-badges.md) |

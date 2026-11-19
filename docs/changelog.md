@@ -137,3 +137,9 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `5f506e5` — docs(agents): record mkdocs plugin deps + ruff-format-in-markdown pitfalls
 - `7bf31a6` — docs(agents): record permanent CI stabilization conventions
 - `753a2d5` — docs(agents): record post-release lock desync fix + skip-ci message pitfall
+- `a7032c6` — feat(docs): Sincronia Absoluta da GitHub Pages — contrato verificável + publicação moderna (ADR-012) (#418)
+- `f475446` — docs(docs): automation catalog, ADR-012, repository index, README parity section, changelog, reconciled baseline
+- `d8cfda1` — ci(docs): hard contract gates in sync/build, mike versioned deploy, AI output validation gates
+- `2ddb32a` — feat(docs): modern MkDocs publishing — gen-files, section-index, privacy, social, mike, announce banner; drop analytics placeholder
+- `c969f8e` — feat(docs): verifiable documentation contract + bidirectional reconcile with removal history (ADR-012)
+- `61cd5bc` — docs(agents): remove stale workflow-token 403 note; check-yaml --unsafe for Material !ENV tag

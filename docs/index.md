@@ -553,6 +553,7 @@ Salesforce-WebDev/
   ├── .claude/
   ├── .devcontainer/
   ├── .github/                   # Workflows e scripts do GitHub
+  ├── custom/
   ├── docs/                      # Documentação MkDocs
   ├── intelligence/
   ├── k8s/                       # Manifestos Kubernetes
