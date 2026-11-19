@@ -193,9 +193,9 @@ Some ToC nodes are parsed but then filtered out by `EXCLUDED_NODE_SLUGS` in `src
 ```python
 EXCLUDED_NODE_SLUGS = {
     "features_released_monthly",  # "Recursos lançados mensalmente"
-    "change_log",                 # "Log de mudanças"
-    "feature_impact",             # "Impacto das features" (we have a separate parser)
-    "previous_release_notes",     # "Notas de releases anteriores"
+    "change_log",  # "Log de mudanças"
+    "feature_impact",  # "Impacto das features" (we have a separate parser)
+    "previous_release_notes",  # "Notas de releases anteriores"
 }
 ```
 
