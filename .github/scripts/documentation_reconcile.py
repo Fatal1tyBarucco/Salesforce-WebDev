@@ -30,7 +30,7 @@ EVIDENCE_MAX_CHARS = 6_000
 WRITABLE_PREFIXES = ("docs/",)
 WRITABLE_EXACT = {"README.md", "README.en.md", "mkdocs.yml"}
 
-SYSTEM_PROMPT = """You are the Documentation Intelligence Agent for the Fatal1tyBarucco/Salesforce-WebDev repository.
+_FALLBACK_SYSTEM_PROMPT = """You are the Documentation Intelligence Agent for the Fatal1tyBarucco/Salesforce-WebDev repository.
 The Git repository is the single source of truth; documentation is only its representation.
 Precedence: source code > configuration > workflows > dependencies > tests > structure > git history > existing docs.
 If documentation contradicts the repository, update the DOCUMENTATION — never invent functionality,
@@ -41,6 +41,43 @@ rewrite partially-obsolete docs to describe what remains.
 Respond with STRICT JSON only, no markdown fences:
 {"actions": [{"op": "update|create|delete", "path": "docs/...", "reason": "...", "content": "<full final file content, required for update/create>"}], "summary": "one paragraph"}
 Only paths under docs/ plus exactly README.md, README.en.md, mkdocs.yml are allowed."""
+
+
+def _load_reconciliation_prompt() -> str:
+    """Load the versioned prompt (ADR-008) with a stdlib-only block extractor.
+
+    Single source of truth: ``prompts/reconciliation/v1.yaml`` (evaluated by
+    promptfoo).  The embedded fallback keeps the agent runnable if the prompt
+    file is missing — never a silent behavior change.
+    """
+    path = REPO_ROOT / "prompts" / "reconciliation" / "v1.yaml"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return _FALLBACK_SYSTEM_PROMPT
+    out: list[str] = []
+    active = False
+    for line in text.splitlines():
+        if line.startswith("system_prompt: |"):
+            active = True
+            continue
+        if active:
+            if line.startswith("  "):
+                out.append(line[2:])
+            elif not line.strip():
+                out.append("")
+            else:
+                break
+    prompt = "\n".join(out).strip()
+    return prompt or _FALLBACK_SYSTEM_PROMPT
+
+
+SYSTEM_PROMPT = _load_reconciliation_prompt()
+
+
+def build_reconciliation_system_prompt() -> str:
+    """promptfoo entrypoint (file://...py:build_reconciliation_system_prompt)."""
+    return SYSTEM_PROMPT
 
 
 def _run(cmd: list[str]) -> tuple[int, str]:

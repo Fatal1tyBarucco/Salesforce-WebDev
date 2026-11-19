@@ -1,11 +1,21 @@
 # Promptfoo configuration for prompt evaluation
 # Run with: uvx promptfoo eval -c .promptfoo.yaml
+#
+# ADR-012: every AI prompt used by the documentation sync has a test case
+# here, with manifest-fidelity assertions (deterministic checks on the
+# prompt contract — the LLM never replaces the deterministic engine).
 
 prompts:
-  - file://src/ai/prompts/classification.py:build_classification_system_prompt
-  - file://src/ai/prompts/enrichment.py:build_enrichment_prompt
-  - file://src/ai/prompts/reporting.py:build_reporting_prompt
-  - file://src/ai/prompts/validation.py:build_validation_prompt
+  - id: file://src/ai/prompts/classification.py:build_classification_system_prompt
+    label: classification
+  - id: file://src/ai/prompts/enrichment.py:build_enrichment_prompt
+    label: enrichment
+  - id: file://src/ai/prompts/reporting.py:build_reporting_prompt
+    label: reporting
+  - id: file://src/ai/prompts/validation.py:build_validation_prompt
+    label: validation
+  - id: file://.github/scripts/documentation_reconcile.py:build_reconciliation_system_prompt
+    label: reconciliation
 
 providers:
   - openrouter:openrouter/free
@@ -13,11 +23,42 @@ providers:
   - google:gemini-3.6-flash
 
 tests:
-  - vars:
+  - prompts: [classification]
+    vars:
       feature_text: "Nova funcionalidade de IA para automação de vendas"
     assert:
       - type: json-schema
         schema: src/ai/schemas/classification.py:ClassificationResult
+
+  # Fidelidade ao manifest (ADR-012): o prompt de reconciliação precisa
+  # preservar as invariantes do contrato — fonte de verdade, superfície
+  # escrevível restrita, JSON estrito, proibição de invenção.
+  - prompts: [reconciliation]
+    vars: {}
+    assert:
+      - type: contains
+        value: "single source of truth"
+      - type: contains
+        value: "never invent functionality"
+      - type: contains
+        value: "STRICT JSON"
+      - type: contains
+        value: "README.en.md"
+      - type: contains
+        value: "mkdocs.yml"
+      - type: contains
+        value: "pt-BR docs stay pt-BR"
+      - type: not-contains
+        value: "G-XXXXXXXXXX"
+      - type: javascript
+        value: |
+          // Manifest fidelity: writable surface must stay restricted to
+          // docs/ + README.md + README.en.md + mkdocs.yml (no src/, tests/,
+          // workflows or secrets), and deletions must strip nav entries.
+          const okSurface = output.includes("Only paths under docs/");
+          const okNav = output.includes("strip their nav entries");
+          const okNoCode = !/write|modify|edit[^;]*src\//i.test(output);
+          return okSurface && okNav && okNoCode;
 
 defaultTest:
   vars:
