@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "c31899c438948ffcf5b2ee4ea60b28197c29bbe6",
-  "generated_at": "2026-11-19T15:58:03.690146+00:00",
+  "repository_sha": "2fcc61df86cff77786cad8de22bb584e7a83eb40",
+  "generated_at": "2026-11-19T16:29:15.284892+00:00",
   "inventory_count": 814,
   "src_modules": 103,
   "existing_api_evokers": 106,
@@ -43,8 +43,14 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "AGENTS.md",
-      "detail": "'AGENTS.md' blob SHA changed since last manifest baseline."
+      "path": ".github/link-check-config.json",
+      "detail": "'.github/link-check-config.json' blob SHA changed since last manifest baseline."
+    },
+    {
+      "type": "MANIFEST_STALE_SHA",
+      "severity": "high",
+      "path": "docs/index.md",
+      "detail": "'docs/index.md' blob SHA changed since last manifest baseline."
     }
   ]
 }

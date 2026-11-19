@@ -636,7 +636,7 @@
     ".github/ai-docs-ignore": "a746cb8c884050cde72a63823554919581180938",
     ".github/copilot-instructions.md": "e5356af3a20a992710a9959394dcbcb5f9ef22ed",
     ".github/dependabot.yml": "ec76a0a6b7fb35c0d5996bfd80ae19dbb38044fa",
-    ".github/link-check-config.json": "57d4088ce40352aa572a54d805483b995e416fd2",
+    ".github/link-check-config.json": "7d146114b9729ff39b390e96d62953d3789dfd75",
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "0041672260b12759121d41d62fec6e764d89bfbc",
     ".github/scripts/ci-visual.sh": "e652827743916b3b14e0606eadba9fa88d6e36ef",
@@ -835,7 +835,7 @@
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
-    "docs/index.md": "75d395ea3ee62d64df621c331fa9aaf6b765e863",
+    "docs/index.md": "59c269602147675b9f45eb72b5b57ff35a673a49",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "1d908a10ecc59028d2141265b9328951d5bbf4f9",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "c864fbe295d7ee425bca8a3c1744664d83d3faca"
   },
-  "generated_at": "2026-11-19T16:04:10.255686+00:00",
-  "repository_sha": "c79109f0da91468a24610e14e85f53221a449d0e"
+  "generated_at": "2026-11-19T16:29:15.422024+00:00",
+  "repository_sha": "2fcc61df86cff77786cad8de22bb584e7a83eb40"
 }
