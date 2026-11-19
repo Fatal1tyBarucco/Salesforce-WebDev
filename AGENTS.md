@@ -261,6 +261,13 @@ The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on eve
 
 All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).
 
+### CodeQL e segurança de workflows (2026-11-19)
+
+- CodeQL roda via **default setup** do GitHub (languages: actions+python, query suite `extended`, threat model `remote`) — não há arquivo de workflow; gerenciar via API `code-scanning/default-setup` ou UI Security.
+- **Nunca interpolar campos de payload externo** (`github.event.workflow_run.*`, `github.event.pull_request.*`, etc.) em blocos `run:` — usar `env:` (contexto de expressão, seguro) + variáveis shell entre aspas. `ci-repair.yml` foi hardened assim (fix de injeção critical + guard `head_repository.full_name == github.repository` em ambos os jobs; checkout de ref só é confiável sob esse guard).
+- Falsos positivos dismissados com justificativa: `.github/actions/ci-visual/action.yml` — `github.action_path`/`HELPER_PATH` são caminhos controlados pelo runner, não input de usuário (alertas #112–#114).
+- Decisão do owner: manter CodeQL (detectou injeção real no ci-repair + masks 0o644 no cache novo, corrigidos com 0o600).
+
 ## Codebase Pitfalls (learned the hard way — do not re-introduce)
 
 - **Black 26.10.0 with `target-version = ["py314"]` removes the parentheses from `except (A, B):` clauses that have no `as` binding, producing invalid Python.** Never write `except (A, B):` without `as` in any `.py` file — use `except Exception:` in defensive best-effort wrappers or `except (A, B) as exc:` when the binding is needed. `except (A, B) as e:` is black-stable.
@@ -288,6 +295,6 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 - **`clear_expired()` é preguiçoso** (namespaces tocados na sessão); varredura completa só via `full_scan=True`, `maintenance()` ou `scripts/cache_maintenance.py` (finalizer de CI). Limpeza toca SOMENTE `cache/` runtime — nunca `releases/`.
 - **`cache/` é runtime, NÃO versionado** (contradição doc×.gitignore resolvida pelo ADR-011). Histórico auditável = artefato `pipeline-cache` dos workflows + `releases/`.
 - **Testes de cache**: relógio injetado (`clock=`), proibido `time.sleep`; multiprocesso via `os.fork` + `os.pipe` (kernel Termux/Android bloqueia semáforos POSIX — `multiprocessing.Event/Pool/Queue` falham com PermissionError).
-- **mutmut**: usar `mutmut==2.5.0` neste kernel (3.x usa Pool/semáforos). Config `[tool.mutmut]` no pyproject (escopo cache). Execução local via adapter de thread quando semáforos são bloqueados; em CI ubuntu o runner padrão funciona. Baseline py3.14 com `except A, B:` (PEP 758) precisa normalização para parso.
+- **mutmut**: usar `mutmut==2.5.0` neste kernel (3.x usa Pool/semáforos). Config `[tool.mutmut]` no pyproject (escopo cache). Execução local via adapter de thread quando semáforos são bloqueados; em CI ubuntu o runner padrão funciona. Baseline py3.14 com `except A, B:` (PEP 758) precisa normalização para parso. Resultado autoritativo = visão do feeder (`get_cached_mutation_statuses`), NÃO agregação SQL crua da tabela `Mutant` — runs interrompidos deixam linhas órfãs `untested` com mapeamento line/index antigo que não correspondem aos mutantes do código atual.
 - **Cobertura do módulo de cache ≥95%** (atual: cache_io 100%, processed_releases 100%, cache_manager 97%).
 - `except (A, B) as exc:` com binding é a forma black-estável; PEP 758 sem parênteses é válido em py3.14 mas quebra parso/ferramentas antigas.
