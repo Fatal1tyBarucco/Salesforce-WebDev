@@ -45,7 +45,10 @@ docs = [
 # sem cairo/pillow (ex.: Termux/ARM64) o plugin social fica desabilitado via
 # `enabled: !ENV [CI, false]` no mkdocs.yml; o build local continua verde.
 imaging = [
-    "pillow>=10.0,<12",
+    # pillow >=13: as versões 11.x/12.x carregam advisories críticos
+    # (heap overflow FPX/JPEG/TIFF, Ghostscript argument injection) —
+    # Dependency Review bloqueia o merge com fail-on-severity: high.
+    "pillow>=13.0.0,<14",
     "cairosvg>=2.7,<3",
 ]
 observability = [
