@@ -729,7 +729,7 @@
     "docs/api/automation-notifications.md": "cdcafd817b0915d0ecf86d13120b45edce4b2f3b",
     "docs/api/automation-reporting.md": "277c730ec06d479265c34dcafb289b1ddb73e7fe",
     "docs/api/automation-service.md": "334c0e1356d6c636baffc5254a1f3ab037e17d4e",
-    "docs/api/cache_io.md": "6106f022ee996ca277f76a79f0dae75485156b68",
+    "docs/api/cache_io.md": "a5a45c95fd3cc817a5f4ca8bc1d26d91c13b3095",
     "docs/api/cache_manager.md": "d5adff8b0e5377fe411e4df5f8da7c32a0bb967c",
     "docs/api/circuit_breaker.md": "4951f3bec38382fb5c982ca49173070fc26e78ae",
     "docs/api/config.md": "1370ab2b6e9c35c5073cb2635f95697e42a6a99f",
@@ -791,7 +791,7 @@
     "docs/api/notifications.md": "3de012aa6dce7127ab6089af6c53bd1ade0cd8bf",
     "docs/api/orchestrator.md": "3dbfd07f1dddbbad59907d38e95fc2d333055d83",
     "docs/api/parser.md": "b1818951d365ebf204b6a7871583329b22ae6866",
-    "docs/api/processed_releases.md": "2e2adf3a74dead2125642adf80075600e7a1a996",
+    "docs/api/processed_releases.md": "747fe186951397517cd6f074185e9487ff70763f",
     "docs/api/release_discovery.md": "1e4c65f957e5c309ac2a7ad87d43d1396efe51ef",
     "docs/api/release_docs.md": "b8b90f26224b3e4e534ed5fd52a3adabd05b76d1",
     "docs/api/release_summarizer.md": "de91a5c3a8412e6cf9da73eebfeefc8d12d95583",
@@ -811,7 +811,7 @@
     "docs/architecture/decisions/adr-008-prompt-versioning.md": "05c67c3beaa4c9e46873780bbbda08286aa13968",
     "docs/architecture/decisions/adr-009-scraper-resilience.md": "b51764bf9f8859563256495b880385c949e0492c",
     "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "e8dee0e22306580f4ca59c055eb1101a1ae99b6a",
-    "docs/architecture/decisions/adr-011-cache-layer-hardening.md": "de970215a00d0b3bcf99e95ecae6b2c170f98f32",
+    "docs/architecture/decisions/adr-011-cache-layer-hardening.md": "b68d330d0a1a2d1dbb26e9a3f729e8896e4ae738",
     "docs/architecture/decisions/index.md": "31c0d94b0784743cab95f6330abeae3b584b80b3",
     "docs/architecture/overview.md": "34869944d9a162b9cfd758578f91ec2b0ab60816",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -829,7 +829,7 @@
     "docs/index.md": "00aaf873a4e5ec248a9776afdb81835ae9a058e5",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
-    "docs/maintenance/cache-management.md": "04b0947529d520c2921240fef38f539b0091e742",
+    "docs/maintenance/cache-management.md": "1d908a10ecc59028d2141265b9328951d5bbf4f9",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
     "docs/maintenance/index.md": "9738d83904ac022c7f1dd62b3c49ab6189268631",
     "docs/maintenance/local-development.md": "3a7f494edf4654c38f72b052ec6044d273ae559b",
@@ -1402,6 +1402,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "487155d69fa6d01e05f1f586aaf4eb863fbe84d3"
   },
-  "generated_at": "2026-11-19T05:30:12.036980+00:00",
-  "repository_sha": "70a4bf705155b2ac55320d81b33d4d5c10e2ebb8"
+  "generated_at": "2026-11-19T05:31:29.079295+00:00",
+  "repository_sha": "e661cbf766e9e2f9aaa70b6b4e7bfff4404798bc"
 }
