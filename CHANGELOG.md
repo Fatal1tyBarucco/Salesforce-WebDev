@@ -14,6 +14,30 @@
 
 <!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
 
+## [0.4.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.2...v0.4.0) (2026-11-19)
+
+
+### Features
+
+* **cache:** harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011) ([#410](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/410)) ([8e7a3ee](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8e7a3eedeb57be8f12a55ee8cc6b4f3bf8feaedb))
+
+
+### Bug Fixes
+
+* **ci:** ai-docs rebase before push — avoid non-fast-forward race with Documentation Sync ([603799e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/603799e9c0a2297c51a99da1ffe35f96cb0e51a1))
+* **ci:** ai-docs summary — replace GHA expression inside bash with shell conditional ([fb52904](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/fb529047df062c4434479d2e35907efb5eb4987e))
+* **docs:** repair Deploy Docs — missing mkdocs plugin deps + corrupted SOURCE_SCHEMA fences ([8d529fa](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8d529fa93e7c6d5094091736a5956ee6ffcff48c))
+
+
+### Documentation
+
+* **agents:** record mkdocs plugin deps + ruff-format-in-markdown pitfalls ([5f506e5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5f506e5b31edd154a7b67fcf4cd482e3df1b9fe5))
+* atualização automática via IA [skip ci] ([33ccab3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33ccab373fb14148cce815133b7cd26f5dd518d6))
+* **sync:** reconcile documentation — 2026-11-19 01:07 UTC ([271c925](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/271c92530061bae1a2f4c62622a94a4cca5b502b))
+* **sync:** reconcile documentation — 2026-11-19 16:48 UTC ([7df34b8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7df34b8c7090f008f54f595a4b47e268cc9aea59))
+* **sync:** reconcile documentation — 2026-11-19 17:17 UTC ([6cbbd12](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6cbbd1255f4c6b090e68e43427826b715388c361))
+* **sync:** reconcile documentation — 2026-11-19 17:26 UTC ([12625dd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/12625ddc60e6942a12a4ad8bc1e3557597ec45e5))
+
 ## [Unreleased]
 
 ### Security
