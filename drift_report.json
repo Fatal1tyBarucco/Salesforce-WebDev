@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "498617906c0cd130b54f15380da8354cc839bb06",
-  "generated_at": "2026-11-19T15:19:46.873691+00:00",
+  "repository_sha": "c31899c438948ffcf5b2ee4ea60b28197c29bbe6",
+  "generated_at": "2026-11-19T15:58:03.690146+00:00",
   "inventory_count": 814,
   "src_modules": 103,
   "existing_api_evokers": 106,
@@ -43,68 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": ".claude/rules/doc-conventions.md",
-      "detail": "'.claude/rules/doc-conventions.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/rules/test-conventions.md",
-      "detail": "'.claude/rules/test-conventions.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/settings.json",
-      "detail": "'.claude/settings.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".claude/skills/new-llm-provider/SKILL.md",
-      "detail": "'.claude/skills/new-llm-provider/SKILL.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".github/triage-rules.yaml",
-      "detail": "'.github/triage-rules.yaml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".gitleaks.toml",
-      "detail": "'.gitleaks.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".promptfoo.yaml",
-      "detail": "'.promptfoo.yaml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "drift_report.json",
-      "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json",
-      "detail": "'intelligence/intelligence_hub/deploy_manuals/Release_264_Deploy_Guide.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json",
-      "detail": "'intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json",
-      "detail": "'intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json' blob SHA changed since last manifest baseline."
+      "path": "AGENTS.md",
+      "detail": "'AGENTS.md' blob SHA changed since last manifest baseline."
     }
   ]
 }

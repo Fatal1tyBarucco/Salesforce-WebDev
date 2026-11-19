@@ -121,3 +121,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `f63d4a8` — fix: remove non-existent mkdocs-sitemap plugin and dependency
 - `e661cbf` — style(docs): end-of-file newlines + reconcile manifest baseline
 - `70a4bf7` — feat(cache): harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011)
+- `c31899c` — docs(agents): record CodeQL default-setup decision + workflow_run injection hardening convention
