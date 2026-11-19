@@ -851,6 +851,16 @@ uv run uv lock --check
 
 ---
 
+## Documentation & Absolute Sync
+
+The documentation published on [GitHub Pages](https://fatal1tybarucco.github.io/Salesforce-WebDev/) is a faithful mirror of the repository, enforced by a verifiable CI contract (ADR-012):
+
+- **Contract**: `docs/.documentation-manifest.json` × `mkdocs.yml` (nav) × `docs/` × real repository tree. The validator `docs_contract.py` classifies divergences as OK/ÓRFÃO/OMITO/OBSOLETO/DIVERGENTE and fails the build on any divergence.
+- **Bidirectional reconciliation**: automatic inclusion of new artifacts and automatic removal of orphaned content, with an auditable removal history in the manifest (date, commit, reason).
+- **Modern publishing**: MkDocs Material with `navigation.instant`/`path`/`indexes`, tooltips, `search.share`, `toc.follow`, release announce banner, privacy plugin, social cards (CI), code-generated references (`mkdocs-gen-files`) and `mike` versioning synced to release tags.
+- **pt-BR/English parity**: release tables reconciled across the three surfaces (`docs/index.md`, `README.md`, `README.en.md`) and verified by `docs_contract.py parity`.
+- **AI with determinism first**: versioned prompts (`v1.yaml`) evaluated with promptfoo; every AI output passes contract + markdownlint + link checker + `mkdocs build --strict` before committing.
+
 ## 🤝 How to Contribute
 
 1. **Fork** the project

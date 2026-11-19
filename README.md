@@ -77,6 +77,13 @@ Execute localmente com `OPENROUTER_API_KEY` configurada: `python -m src.ai.orche
 
 ## 📋 Releases Disponíveis
 
+| Release | Features | Categorias | Status |
+| :--- | :---: | :---: | :---: |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 ### ❄️ Winter '27
 
@@ -1200,6 +1207,16 @@ Salesforce-WebDev/
 ```
 
 ---
+
+## Documentação e Sincronia Absoluta
+
+A documentação publicada em [GitHub Pages](https://fatal1tybarucco.github.io/Salesforce-WebDev/) é um espelho fiel do repositório, garantido por contrato verificável em CI (ADR-012):
+
+- **Contrato**: `docs/.documentation-manifest.json` × `mkdocs.yml` (nav) × `docs/` × árvore real. O validador `docs_contract.py` classifica divergências em OK/ÓRFÃO/OMITO/OBSOLETO/DIVERGENTE e falha o build em qualquer divergência.
+- **Reconciliação bidirecional**: inclusão automática de artefatos novos e remoção automática de conteúdo órfão, com histórico auditável de remoções no manifest (data, commit, motivo).
+- **Publicação moderna**: MkDocs Material com `navigation.instant`/`path`/`indexes`, tooltips, `search.share`, `toc.follow`, banner de release, privacy plugin, social cards (CI), referências geradas por código (`mkdocs-gen-files`) e versionamento com `mike` sincronizado às tags de release.
+- **Paridade pt-BR/English**: tabelas de releases reconciliadas nas três superfícies (`docs/index.md`, `README.md`, `README.en.md`) e verificadas por `docs_contract.py parity`.
+- **IA com determinismo primeiro**: prompts versionados (`v1.yaml`) avaliados no promptfoo; toda saída de IA passa por contrato + markdownlint + link checker + `mkdocs build --strict` antes de commitar.
 
 ## 🤝 Contribuição
 

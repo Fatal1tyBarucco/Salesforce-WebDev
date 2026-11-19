@@ -17,6 +17,15 @@
 
 ## Melhorias principais (grande impacto — refatorações + features)
 
+### Sincronia Absoluta da Documentação (ADR-012)
+
+- Contrato verificável: `docs_contract.py` (tipado, stdlib-only, 15 testes) valida manifest × nav × docs × repositório; qualquer divergência ÓRFÃO/OMITO/OBSOLETO/DIVERGENTE falha o CI (gates no Documentation Sync v2.3 e no Documentation Build).
+- Reconciliação bidirecional: remoção determinística de evocadores órfãos e nav morto, com histórico append-only de remoções no manifest (data, commit, motivo); índice do repositório gerado por código (`docs/reference/repo-index.md`, 152 artefatos) + catálogo prose de automação.
+- Publicação moderna: mkdocs-gen-files + section-index + privacy + social cards (CI), features navigation.path/indexes, content.tooltips, search.share, toc.follow, banner announce de release; versionamento mike sincronizado às tags; deploy oficial via upload-pages-artifact + deploy-pages preservado.
+- Analytics placeholder `G-XXXXXXXXXX` removido (defeito de produção); reativação documentada via segredo `GA_PROPERTY`.
+- Paridade pt-BR/English: tabela de releases reconciliada também no `README.md`; subcomando `parity` no validador.
+- IA: prompt de reconciliação versionado (`v1.yaml`), casos promptfoo de fidelidade ao manifest, gates de saída (contrato + lint + links + strict) no `ai-docs.yml`.
+
 ### 3.14 Upgrade (Python + Tooling)
 
 - `pyproject.toml`: pinned `>=3.14,<3.15`; `uv.lock` regenerado.
