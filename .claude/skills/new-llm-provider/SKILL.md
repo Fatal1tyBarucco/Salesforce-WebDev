@@ -12,7 +12,7 @@ description: Adicionar novo provedor LLM ao fallback chain (ex.: Anthropic, Mist
 
 ## Passos
 
-### 1. Criar Adapter em `src/infrastructure/llm.py`
+### 1. Criar Adapter em `src/llm_service.py` (legado) ou `src/infrastructure/llm_adapters.py` (nova arch)
 ```python
 class NovoProviderAdapter(LLMAdapter):
     async def generate_completion(self, prompt: str, **kwargs) -> LLMResponse:
@@ -24,7 +24,7 @@ class NovoProviderAdapter(LLMAdapter):
         pass
 ```
 
-### 2. Registrar no Fallback Chain (`src/infrastructure/llm.py`)
+### 2. Registrar no Fallback Chain (`src/llm_service.py` ou `src/infrastructure/llm_adapters.py`)
 ```python
 _PROVIDER_CHAIN = [
     ("openrouter", OpenRouterAdapter()),
@@ -34,9 +34,10 @@ _PROVIDER_CHAIN = [
 ]
 ```
 
-### 3. Configuração (`src/ai/config/models.py` ou `src/config.py`)
+### 3. Configuração (`src/config.py` ou `src/ai/config/models.py`)
 - Adicione variáveis de ambiente necessárias (API_KEY, BASE_URL, MODEL_NAME)
 - Documente em `.env.example` e `CLAUDE.md`
+- Crie `.env.example` se não existir (referenciado em CLAUDE.md e .claude/settings.json deny)
 
 ### 4. Testes de Contrato (`tests/test_infrastructure_llm.py`)
 - Mock do adapter com respostas fixas

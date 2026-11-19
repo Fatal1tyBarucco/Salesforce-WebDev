@@ -32,10 +32,10 @@ defaults:
 
 jobs:
   # ┌─────────────────────────────────────────────────────────────┐
-  # │  🔍 RUFF — Linting                                          │
+  # │  🔍 RUFF — Linting & Formatting                             │
   # └─────────────────────────────────────────────────────────────┘
   ruff:
-    name: 🔍 Ruff Lint
+    name: 🔍 Ruff Lint & Format
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️  Checkout
@@ -53,7 +53,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: 🔒 Check uv lockfile is in sync
-        if: "!contains(github.event.head_commit.message, 'release-please') && !contains(github.event.head_commit.message, 'sync uv.lock')"
+        if: "!startsWith(github.head_ref, 'release-please') && !contains(github.event.head_commit.message, 'sync uv.lock')"
         run: uv lock --check
 
       - name: 📦 Install dependencies
@@ -75,6 +75,22 @@ jobs:
           echo ""
           echo "::endgroup::"
 
+      - name: 🎨 Run Ruff Format
+        env:
+          FORCE_COLOR: 3
+          CLICOLOR_FORCE: 1
+        run: |
+          echo "::group::🎨 Ruff Format — Code Formatting Check"
+          printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
+          printf '\033[1;35m  🎨  RUFF FORMAT — Code Formatting Check\033[0m\n'
+          printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
+          echo ""
+          uv run ruff format --check .
+          echo ""
+          printf '\033[1;32m  ✅  Ruff Format passed — code is properly formatted\033[0m\n'
+          echo ""
+          echo "::endgroup::"
+
       # ADR-011 (R8): o cache de snapshots versionados foi removido — era
       # inócuo (tests/__snapshots__ já é versionado) e usava tag mutável.
       # O cache de dependências é feito pelo setup-uv (enable-cache +
@@ -83,68 +99,14 @@ jobs:
       - name: 📋 Ruff Summary
         if: always()
         run: |
-          echo "## 🔍 Ruff Lint" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔍 Ruff Lint & Format" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" = "success" ]; then
             echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
-            echo "> Ruff passed — no issues found" >> $GITHUB_STEP_SUMMARY
+            echo "> Ruff lint + format passed — no issues found" >> $GITHUB_STEP_SUMMARY
           else
             echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
             echo "> Ruff found issues — check logs above" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-  # ┌─────────────────────────────────────────────────────────────┐
-  # │  🎨 BLACK — Code formatting                                 │
-  # └─────────────────────────────────────────────────────────────┘
-  black:
-    name: 🎨 Black Format
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️  Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-        with:
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-
-      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: 📦 Install dependencies
-        run: uv sync --frozen --extra dev --group dev
-
-      - name: 🎨 Run Black
-        env:
-          FORCE_COLOR: 3
-          CLICOLOR_FORCE: 1
-        run: |
-          echo "::group::🎨 Black — Code Formatting Check"
-          printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
-          printf '\033[1;35m  🎨  BLACK — Code Formatting Check\033[0m\n'
-          printf '\033[1;35m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
-          echo ""
-          uv run black --check --diff .
-          echo ""
-          printf '\033[1;32m  ✅  Black passed — code is properly formatted\033[0m\n'
-          echo ""
-          echo "::endgroup::"
-
-      - name: 📋 Black Summary
-        if: always()
-        run: |
-          echo "## 🎨 Black Format" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ job.status }}" = "success" ]; then
-            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
-            echo "> Black passed — code is properly formatted" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
-            echo "> Black found formatting issues — run \`uv run black .\` to fix" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -209,12 +171,12 @@ jobs:
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🧪 PYTEST — Tests + Coverage                               │
-  # │  Depends on: ruff, black, mypy (all quality gates pass)     │
+  # │  Depends on: ruff, mypy (all quality gates pass)     │
   # └─────────────────────────────────────────────────────────────┘
   tests:
     name: 🧪 Tests & Coverage
     runs-on: ubuntu-latest
-    needs: [ruff, black, mypy]
+    needs: [ruff, mypy]
 
     steps:
       - name: ⬇️  Checkout
@@ -294,10 +256,10 @@ jobs:
   create-issue:
     name: 📝 Create Issue on Failure
     runs-on: ubuntu-latest
-    needs: [ruff, black, mypy, tests]
+    needs: [ruff, mypy, tests]
     if: |
       always() &&
-      (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure') &&
+      (needs.ruff.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure') &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     permissions:
       issues: write
@@ -310,11 +272,9 @@ jobs:
         id: collect
         run: |
           RUFF="${{ needs.ruff.result }}"
-          BLACK="${{ needs.black.result }}"
           MYPY="${{ needs.mypy.result }}"
           TESTS="${{ needs.tests.result }}"
           echo "ruff=$RUFF" >> "$GITHUB_OUTPUT"
-          echo "black=$BLACK" >> "$GITHUB_OUTPUT"
           echo "mypy=$MYPY" >> "$GITHUB_OUTPUT"
           echo "tests=$TESTS" >> "$GITHUB_OUTPUT"
 
@@ -327,14 +287,12 @@ jobs:
             echo "| Gate | Status |"
             echo "|------|--------|"
             echo "| 🔍 Ruff | \`$RUFF\` |"
-            echo "| 🎨 Black | \`$BLACK\` |"
             echo "| 🔬 Mypy | \`$MYPY\` |"
             echo "| 🧪 Tests & Coverage | \`$TESTS\` |"
             echo ""
             echo "### O que deve ser corrigido"
             echo ""
             if [ "$RUFF" = "failure" ]; then echo "- [ ] Corrigir **Ruff** \`uv run ruff check . --fix\`"; echo ""; fi
-            if [ "$BLACK" = "failure" ]; then echo "- [ ] Formatar com **Black** \`uv run black .\`"; echo ""; fi
             if [ "$MYPY" = "failure" ]; then echo "- [ ] Corrigir **Mypy** \`uv run mypy src/\`"; echo ""; fi
             if [ "$TESTS" = "failure" ]; then echo "- [ ] Corrigir **Tests / Coverage ≥95%** \`uv run pytest --cov=src --cov-fail-under=95\`"; echo ""; fi
             echo ""
@@ -380,8 +338,8 @@ jobs:
           echo "$NUMBER" > /tmp/issue_number.txt
           if [ -n "$NUMBER" ]; then echo "issue_number=$NUMBER" >> "$GITHUB_OUTPUT"; echo "Issue número: $NUMBER"; else echo "issue_number=" >> "$GITHUB_OUTPUT"; echo "Número do issue não extraído."; fi
 
-      - name: 💬 Comment /oc fix (ruff/black/mypy/tests)
-        if: always() && (needs.ruff.result == 'failure' || needs.black.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure')
+      - name: 💬 Comment /oc fix (ruff/mypy/tests)
+        if: always() && (needs.ruff.result == 'failure' || needs.mypy.result == 'failure' || needs.tests.result == 'failure')
         env:
           GH_TOKEN: ${{ secrets.COMMENT_TOKEN || secrets.GITHUB_TOKEN }}
           NUMBER: ${{ steps.create-issue.outputs.issue_number }}
@@ -394,8 +352,9 @@ jobs:
             ISSUE_NUM=$(gh issue list --state open --search "🐍 Python Quality falhou" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           fi
           if [ -z "$ISSUE_NUM" ]; then echo "Sem número do issue — skip."; exit 0; fi
-          echo "Comentando no issue #$ISSUE_NUM com /oc fix ruff/black/mypy/tests (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
-          gh issue comment "$ISSUE_NUM" --body "/oc fix for ruff, black, mypy and test errors." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
+          echo "Comentando no issue #$ISSUE_NUM com /oc fix ruff/mypy/tests (token: $([ "${GH_TOKEN:-}" = "${{ secrets.GITHUB_TOKEN }}" ] && echo 'GITHUB_TOKEN' || echo 'COMMENT_TOKEN PAT'))..."
+          # Usa comando específico, não genérico
+          gh issue comment "$ISSUE_NUM" --body "/oc fix for ruff, mypy and test errors." || echo "Comentário falhou (possível duplicata ou falta de permissão)."
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY — Pipeline result dashboard                     │
@@ -403,14 +362,13 @@ jobs:
   summary:
     name: 📋 Summary
     runs-on: ubuntu-latest
-    needs: [ruff, black, mypy, tests]
+    needs: [ruff, mypy, tests]
     if: always()
 
     steps:
       - name: 📋 Write job summary
         run: |
           RUFF="${{ needs.ruff.result }}"
-          BLACK="${{ needs.black.result }}"
           MYPY="${{ needs.mypy.result }}"
           TESTS="${{ needs.tests.result }}"
 
@@ -424,13 +382,13 @@ jobs:
             echo "| Step | Status |"
             echo "| --- | --- |"
             echo "| 🔍 Ruff Lint        | $(badge $RUFF)  |"
-            echo "| 🎨 Black Format     | $(badge $BLACK) |"
+            echo "| 🎨 Ruff Format      | $(badge $RUFF)  |"
             echo "| 🔬 Mypy Types       | $(badge $MYPY)  |"
             echo "| 🧪 Tests & Coverage | $(badge $TESTS) |"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [[ "$RUFF" == "success" && "$BLACK" == "success" && "$MYPY" == "success" && "$TESTS" == "success" ]]; then
+          if [[ "$RUFF" == "success" && "$MYPY" == "success" && "$TESTS" == "success" ]]; then
             echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
             echo "> **All quality gates passed — ready to merge!** ✅" >> $GITHUB_STEP_SUMMARY
           else
@@ -448,7 +406,7 @@ jobs:
           echo '```mermaid' >> $GITHUB_STEP_SUMMARY
           echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
           echo '    A[🔍 Ruff] --> D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
-          echo '    B[🎨 Black] --> D' >> $GITHUB_STEP_SUMMARY
+          echo '    B[🎨 Ruff Format] --> D' >> $GITHUB_STEP_SUMMARY
           echo '    C[🔬 Mypy] --> D' >> $GITHUB_STEP_SUMMARY
           echo '    E[🧪 Tests] --> D' >> $GITHUB_STEP_SUMMARY
           echo '    classDef success fill:#22c55e,stroke:#16a34a,color:#fff' >> $GITHUB_STEP_SUMMARY

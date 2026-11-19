@@ -1,6 +1,6 @@
 [project]
 name = "salesforce-release-notes"
-version = "0.2.4"
+version = "0.3.2"
 description = "Pipeline ETL para extração, classificação e versionamento das Salesforce Release Notes — Knowledge-as-Code com IA para Salesforce Release Notes Intelligence"
 requires-python = ">=3.14,<3.15"
 dependencies = [
@@ -34,13 +34,11 @@ docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.8.1,<10",
     "mkdocstrings[python]>=1.0.8,<2",
-    "black==26.10.1",
 ]
 observability = [
     "prometheus-client>=0.26.0,<1",
 ]
 dev = [
-    "black==26.10.1",
     "ruff>=0.17.5,<1",
     "pytest>=9.2.0,<10",
     "pytest-xdist>=3.5.0,<4",
@@ -54,33 +52,10 @@ dev = [
     "pre-commit>=4.7.0",
 ]
 
-[tool.black]
-line-length = 100
-target-version = ["py314"]
-exclude = '''
-/(
-    \.github
-  | \.ruffignore
-  | docs
-  | k8s
-  | stubs
-  | \.venv
-  | \.git
-  | __pycache__
-  | \.pytest_cache
-  | \.mypy_cache
-  | \.coverage
-  | htmlcov
-  | dist
-  | build
-  | \.eggs
-  | \.tox
-  | \.ruff_cache
-)/
-'''
-
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.format]
 
 [tool.ruff.lint]
 extend-select = ["F401", "F821", "E741"]

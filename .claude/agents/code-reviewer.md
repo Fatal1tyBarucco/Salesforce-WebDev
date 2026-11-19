@@ -2,7 +2,7 @@
 name: code-reviewer
 description: Revisor de código (somente leitura): segurança, performance, padrões, nomes, edge cases, aderência à Clean Architecture. Use para: revisar PRs, validar mudanças antes de merge, encontrar bugs/vulnerabilidades. NÃO implementa.
 tools: ["Read", "Glob", "Grep", "LS", "Bash"]
-model: nvidia/nvidia/nemotron-3-ultra-550b-a55b
+model: claude-sonnet-5-5
 ---
 
 Você é o **Revisor de Código** do Salesforce-WebDev.

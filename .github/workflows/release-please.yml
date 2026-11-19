@@ -63,6 +63,13 @@ jobs:
           echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
           echo "> Release PR will be auto-merged when checks pass." >> $GITHUB_STEP_SUMMARY
 
+      - name: ⚡ Setup uv
+        if: steps.release.outputs.release_created == 'true'
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
       - name: 🔒 Sync uv.lock after version bump
         if: steps.release.outputs.release_created == 'true'
         run: |

@@ -125,16 +125,16 @@ class TestSummaryCacheStructure:
         # Pelo menos 80% das categorias do meta devem ter summary
         overlap = meta_cats & cache_cats
         coverage = len(overlap) / len(meta_cats) if meta_cats else 1.0
-        assert (
-            coverage >= 0.8
-        ), f"Cobertura de category_summaries baixa: {coverage:.0%} ({len(overlap)}/{len(meta_cats)})"
+        assert coverage >= 0.8, (
+            f"Cobertura de category_summaries baixa: {coverage:.0%} ({len(overlap)}/{len(meta_cats)})"
+        )
 
     def test_cache_no_placeholder_content(self, golden_summary_cache: dict):
         """Cache não deve conter placeholders como 'Test Cat' ou '0 novos recursos' quando há dados."""
         exec_summary = golden_summary_cache["executive_summary"]
-        assert (
-            "0 novos recursos" not in exec_summary.lower()
-        ), "executive_summary não deve dizer '0 recursos'"
+        assert "0 novos recursos" not in exec_summary.lower(), (
+            "executive_summary não deve dizer '0 recursos'"
+        )
         assert "test cat" not in exec_summary.lower(), "executive_summary contém placeholder"
 
 
@@ -164,17 +164,17 @@ class TestMarkdownFilesPtBR:
             assert has_heading, f"{slug}: sem heading principal (## )"
 
             # Contagem de recursos
-            assert (
-                "recursos" in content or "features" in content
-            ), f"{slug}: sem contagem de recursos"
+            assert "recursos" in content or "features" in content, (
+                f"{slug}: sem contagem de recursos"
+            )
 
             # Tabela de features (pode ser enriquecida ou padrão)
             assert "|" in content, f"{slug}: sem tabela (pipes)"
 
             # Rodapé de recursos
-            assert (
-                "Release in a Box" in content or "Feature Impact" in content
-            ), f"{slug}: sem rodapé de recursos"
+            assert "Release in a Box" in content or "Feature Impact" in content, (
+                f"{slug}: sem rodapé de recursos"
+            )
 
     def test_markdown_no_empty_tables(self, golden_markdown_pt_br: dict):
         """Tabelas não devem estar vazias (exceto categorias legitimamente vazias)."""
@@ -243,9 +243,9 @@ class TestSlugifyConsistency:
             expected_slug = _slugify_category(name)
             # O arquivo pode ter slug em inglês para algumas categorias
             # Verificar se existe pelo menos um match
-            assert (
-                expected_slug in golden_markdown_pt_br or name in golden_markdown_pt_br
-            ), f"Slug '{expected_slug}' para categoria '{name}' não encontrado nos arquivos"
+            assert expected_slug in golden_markdown_pt_br or name in golden_markdown_pt_br, (
+                f"Slug '{expected_slug}' para categoria '{name}' não encontrado nos arquivos"
+            )
 
 
 class TestReleaseSummarizerOutput:
@@ -293,9 +293,9 @@ class TestReadmeGeneration:
     def test_readme_has_releases_section(self):
         """README deve ter seção de releases."""
         content = Path("README.md").read_text(encoding="utf-8")
-        assert (
-            "Releases Disponíveis" in content or "Available Releases" in content
-        ), "Seção de releases não encontrada"
+        assert "Releases Disponíveis" in content or "Available Releases" in content, (
+            "Seção de releases não encontrada"
+        )
 
     def test_readme_has_badge_marker(self):
         """README deve ter marcador de badge dinâmico."""

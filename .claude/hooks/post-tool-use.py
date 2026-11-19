@@ -35,7 +35,7 @@ def main():
     if result.returncode != 0:
         print(f"ruff check --fix failed: {result.stderr.decode()}", file=sys.stderr)
 
-    # Run ruff format (replaces black)
+    # Run ruff format
     result = subprocess.run(
         ["uv", "run", "ruff", "format", str(path)],
         capture_output=True,

@@ -1,5 +1,69 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
+
+## [0.3.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.1...v0.3.2) (2026-11-18)
+
+
+### Bug Fixes
+
+* add missing mkdocs-sitemap dep + uv setup for release-please sync ([c49e6da](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c49e6da70191962b9cd6dff23367a3f51bc3c221))
+* fix gitleaks config glob patterns to regex ([9b38cf9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9b38cf9e5b5025ea825f3c2107375b91941218d6))
+* remove non-existent mkdocs-sitemap plugin and dependency ([f63d4a8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f63d4a85d563e42453a620049743eb27cd8a3b6e))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-18 17:38 UTC ([3adb207](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/3adb207f0b6ea874efaac5ff91cdc604f8f616ad))
+* **sync:** reconcile documentation — 2026-11-18 18:07 UTC ([d33f004](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d33f00475539abb28092532d30d1a05ae350b078))
+
+## [0.3.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.0...v0.3.1) (2026-11-18)
+
+
+### Documentation
+
+* clean up README.md — remove test commit garbage and auto-generated index ([b21e9ac](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b21e9ac1c6b85560cd1dfe8b1be5b63540848f31))
+* **sync:** reconcile documentation — 2026-11-18 11:30 UTC ([e20fae4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/e20fae47d1df685db26ef4f2bbe432b216d53c12))
+* **sync:** reconcile documentation — 2026-11-18 11:43 UTC ([c1cf01d](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c1cf01d190878e3fea1472108b720bedce8cd47e))
+
+## [0.3.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.4...v0.3.0) (2026-11-18)
+
+
+### Features
+
+* **intelligence:** evoluir para Release Intelligence Hub (release=264) — defensivo ([23a3c83](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/23a3c83dc0aad4e081c059080298f4fdd5491f97))
+
+
+### Bug Fixes
+
+* markdown lint errors in docs/index.md (MD025, MD036, MD051) ([a7f2336](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a7f233616c3fbabd4ce5874c4e7ff503fe190449))
+
+
+### Documentation
+
+* atualização automática via IA [skip ci] ([#400](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/400)) ([63c23bf](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/63c23bfc0b0567cce52ab8f03c2cd5aa1dbcb974))
+* **sync:** reconcile documentation — 2026-11-18 05:55 UTC ([8c0e37e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8c0e37ebe952114c303d136267c7991d83046fd6))
+* **sync:** reconcile documentation — 2026-11-18 06:34 UTC ([19306f0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/19306f07c0062d4b87bb786fb35c0fe9a7768458))
+* **sync:** reconcile documentation — 2026-11-18 06:39 UTC ([5a4da63](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5a4da63ca2ba1f57555a15256e03c7d1f12d15db))
+* **sync:** reconcile documentation — 2026-11-18 07:33 UTC ([844d946](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/844d946b38a2a950cf4f8010e3cbb341cbc7b8b7))
+
+## [Unreleased]
+
+### Security
+- Protect CI workflows from executing on fork pull requests by adding repository origin checks to ai-pr-review, ai-triage, python-quality, and release_notes_pipeline workflows, preventing privileged jobs from running without access to secrets.
+
+### Added
+- Enable auto-merge and automatic uv.lock synchronization in release-please workflow using dedicated PAT token, streamlining the release process.
+
+### Fixed
+- Skip 'uv lock --check' on release-please and uv.lock sync commits to prevent false pipeline failures during automated releases.
+- Update pytest command in release notes pipeline to include '--extra dev --extra healing' ensuring required test dependencies are installed.
+- Fix markdown lint violations (MD025, MD036, MD051) in docs/index.md for consistent documentation formatting.
+- Apply pre-commit style fixes: remove trailing whitespace and ensure final newline across workflow files.
+
+### Changed
+- Synchronize documentation manifest and drift report hashes to reflect current repository state.
+
 <!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
 
 ## [0.2.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.2.3...v0.2.4) (2026-11-18)
