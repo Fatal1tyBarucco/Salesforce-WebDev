@@ -123,3 +123,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `70a4bf7` — feat(cache): harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011)
 - `c31899c` — docs(agents): record CodeQL default-setup decision + workflow_run injection hardening convention
 - `f9ed8fd` — docs(agents): record API approval for bot runs + Documentation Sync link-checker hardening quirks
+- `8e7a3ee` — feat(cache): harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011) (#410)

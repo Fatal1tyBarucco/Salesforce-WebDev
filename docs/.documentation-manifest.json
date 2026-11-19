@@ -829,7 +829,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "24e65cd1dbb87308c8f11f8e83e6d61dbb714440",
+    "docs/changelog.md": "babc9c362ddf23f1c7f725bb20c45160a3d0c1e5",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -859,7 +859,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "5599bce6262b39e6193ed153370c8bbab3ecc83d",
+    "drift_report.json": "f7d26499b12a97a50eada1b31eb9f46cd8147891",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "c864fbe295d7ee425bca8a3c1744664d83d3faca"
   },
-  "generated_at": "2026-11-19T16:38:41.189153+00:00",
-  "repository_sha": "f9ed8fd4432632b4d481ec5bdd925353f221fb03"
+  "generated_at": "2026-11-19T16:48:31.939829+00:00",
+  "repository_sha": "8e7a3eedeb57be8f12a55ee8cc6b4f3bf8feaedb"
 }
