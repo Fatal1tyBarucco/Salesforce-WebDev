@@ -120,7 +120,7 @@ class PlaywrightScraperAdapter(ScraperPort):
     async def _find_working_selector(self, page: Page, contract: SelectorContract) -> str | None:
         """Find first working selector from contract, with caching."""
         cache_key = (
-            f"{contract.name}:{hashlib.md5(str(contract.selectors).encode()).hexdigest()[:8]}"
+            f"{contract.name}:{hashlib.sha256(str(contract.selectors).encode()).hexdigest()[:8]}"
         )
 
         if cache_key in self._selector_cache:

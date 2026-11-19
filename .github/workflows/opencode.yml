@@ -1,5 +1,7 @@
 name: opencode
 
+run-name: "🤖 OpenCode — #${{ github.event.issue.number || github.event.pull_request.number }} — @${{ github.actor }}"
+
 on:
   issue_comment:
     types: [created]
@@ -8,6 +10,7 @@ on:
 
 jobs:
   opencode:
+    name: 🤖 OpenCode Agent
     if: |
       contains(github.event.comment.body, ' /oc') ||
       startsWith(github.event.comment.body, '/oc') ||
@@ -20,16 +23,27 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Run opencode
+      - name: 🤖 Run opencode
         uses: anomalyco/opencode/github@733562e92a96255fb123aae92f267e4534a635fb # v1.18.25
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          #model: opencode/x-preview-f-free
           model: opencode/mimo-v2.6-flash-free
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "## 🤖 OpenCode Agent" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered by \`/oc\` or \`/opencode\` command in comment." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Model | \`opencode/mimo-v2.6-flash-free\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | Comment on ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY

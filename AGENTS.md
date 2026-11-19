@@ -253,13 +253,20 @@ gh api graphql -f query="
 The Python Quality workflow (`.github/workflows/python-quality.yml`) runs on every push to `main` and `develop` and on PRs. Gates:
 
 - **Ruff** — `uv run ruff check .`
-- **Black** — `uv run black --check .`
+- **Ruff Format** — `uv run ruff format --check .` (migrated from Black in `6e82d01`, 2026-11-18; the `black` job was merged into the `ruff` job — "Ruff Lint & Format")
 - **Mypy** — `uv run mypy src/ --ignore-missing-imports --pretty`
 - **Tests + Coverage** — `uv run pytest tests/ --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --cov-fail-under=95`
 
-  CI installs deps with `uv sync --frozen --extra dev --group dev` (ruff/black jobs) or `uv sync --frozen --extra dev --extra healing --group dev` (mypy/tests jobs). Syrupy is added separately via `uv pip install "syrupy>=4.9.0,<5"`.
+  CI installs deps with `uv sync --frozen --extra dev --group dev` (ruff job) or `uv sync --frozen --extra dev --extra healing --group dev` (mypy/tests jobs). Syrupy lives in the `dev` dependency group (`>=7.0.2`) — no separate install step.
 
 All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reintroduce mutable references (e.g. `@v5` instead of `@<sha>`).
+
+### CodeQL e segurança de workflows (2026-11-19)
+
+- CodeQL roda via **default setup** do GitHub (languages: actions+python, query suite `extended`, threat model `remote`) — não há arquivo de workflow; gerenciar via API `code-scanning/default-setup` ou UI Security.
+- **Nunca interpolar campos de payload externo** (`github.event.workflow_run.*`, `github.event.pull_request.*`, etc.) em blocos `run:` — usar `env:` (contexto de expressão, seguro) + variáveis shell entre aspas. `ci-repair.yml` foi hardened assim (fix de injeção critical + guard `head_repository.full_name == github.repository` em ambos os jobs; checkout de ref só é confiável sob esse guard).
+- Falsos positivos dismissados com justificativa: `.github/actions/ci-visual/action.yml` — `github.action_path`/`HELPER_PATH` são caminhos controlados pelo runner, não input de usuário (alertas #112–#114).
+- Decisão do owner: manter CodeQL (detectou injeção real no ci-repair + masks 0o644 no cache novo, corrigidos com 0o600).
 
 ## Codebase Pitfalls (learned the hard way — do not re-introduce)
 
@@ -268,7 +275,8 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 - **Tests must never write repo-root files.** `src/main.py` `generate_ai_reports_async` writes `CHANGELOG.md`, `QUALITY_REPORT.md`, `REGRESSION_REPORT.md`, `DIFF_REPORT.md` relative to cwd; tests invoking it need a temp cwd (see autouse `isolated_cwd` fixture in `tests/test_main_coverage.py`).
 - **`.github/scripts/docs_sync_engine.py` must stay runnable** (`python3` stdlib-only, no third-party deps); after editing it, verify with `python3 -m py_compile` and `python3 .github/scripts/docs_sync_engine.py audit`. Docs changes require `reconcile` → validate → commit + push.
 - **No available token can edit `.github/workflows/*`.** Both the opencode GitHub App token and the Actions `GITHUB_TOKEN` refuse with HTTP 403/`refusing to allow a GitHub App ... without workflows permission` (verified via git push and the Contents API). Workflow-file fixes must be reported to a human/admin — never claim they were pushed.
-- **`.github/scripts/fix_markdown.py` `fix_md040_fence_language` must track fence open/close state** (fixed 2026-11-04). Rewriting a *closing* fence as if it were an opener mutates docs on every Documentation Sync run → the bot pushes a `github-actions[bot]` commit → that commit's checks pause at `action_required` (needs UI approval; GITHUB_TOKEN pushes pause the same way — see the known issue above). Never commit the script's output alone: its MD029 pass renumbers continuing lists to 1..n (e.g. `docs/index.md` steps 5–7 → 1–3, semantically wrong), and only the Documentation Sync's layer-2 `markdownlint-cli2 --fix` reverts that (verified in run `44299414704`: layer 1 "Fixed files: docs/index.md", layer 2 "3 fixes in 1 file" → net zero). When validating locally, run layer 1 followed by `npx --yes markdownlint-cli2 "docs/**/*.md" --fix --config-file .markdownlint.json --ignore node_modules`, then confirm `git status` stays clean on an unchanged tree.
+- **`.github/scripts/fix_markdown.py` `fix_md040_fence_language` must track fence open/close state** (fixed 2026-11-04). Rewriting a *closing* fence as if it were an opener mutates docs on every Documentation Sync run → the bot pushes a `github-actions[bot]` commit → that commit's checks pause at `action_required` — **API approval works** (verified 2026-11-19): `gh api -X POST repos/<owner>/<repo>/actions/runs/<run_id>/approve` with a write-scope token, no UI needed; GITHUB_TOKEN pushes pause the same way — see the known issue above. Never commit the script's output alone: its MD029 pass renumbers continuing lists to 1..n (e.g. `docs/index.md` steps 5–7 → 1–3, semantically wrong), and only the Documentation Sync's layer-2 `markdownlint-cli2 --fix` reverts that (verified in run `44299414704`: layer 1 "Fixed files: docs/index.md", layer 2 "3 fixes in 1 file" → net zero). When validating locally, run layer 1 followed by `npx --yes markdownlint-cli2 "docs/**/*.md" --fix --config-file .markdownlint.json --ignore node_modules`, then confirm `git status` stays clean on an unchanged tree.
+- **Documentation Sync bot cycle quirk:** every human push to a PR triggers the bot's reconcile, which rewrites `drift_report.json` *after* computing the manifest baseline → 1 cosmetic `MANIFEST_STALE_SHA` finding (drift_report self-reference). Do not chase it with refresh commits — the bot regenerates it on the next push; it is not content drift. Link checker hardening (2fcc61d): `retryOn429`/`retryCount`/`fallbackRetryDelay` + ignore self-repo `blob/` links — github.com returns transient 429/503 under CI load (run 44561979136 failed on a 503, not a dead link; the real bug found alongside was a stale anchor in docs/index.md → README.en.md `#-available-releases`).
 
 ## Atualização de conclusão — Auditoria de IA (2026-10-18 — Renato / Termux)
 - `MEMORY.md` atualizado (não versionado) com registro completo da auditoria e envio para canais de mensagem.
@@ -278,3 +286,16 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 
 ## Atualização automática (gatilho) — 2026-10-18T03:06:47-03:00
 - Gatilho executado: `auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.
+
+## Cache Layer conventions (ADR-011, 2026-11-19)
+
+- **Facade única**: `src/cache_manager.py` (`CacheManager`/`CacheStats`). Primitivas transversais em `src/cache_io.py` (escrita atômica temp+fsync+os.replace, `FileLock` fcntl/msvcrt, checksum SHA-256 canônico, quarentena rotacionada). Estado incremental em `src/processed_releases.py` (`ProcessedReleasesStore`, fingerprint + single-flight).
+- **Toda escrita de cache passa pela camada** — nunca `write_text` direto em arquivos de cache. Payloads carregam `schema_version` + `checksum`; corrupção → quarentena + rebuild + miss, nunca exceção não tratada.
+- **TTLs, budgets e nomes centralizados** em `src/config.py` (seção "Cache Layer (ADR-011)"). `ttl=-1` = nunca expira; `ttl=0` = expiração imediata (semântica legada dos adapters de invalidate, congelada por testes).
+- **`PARSER_VERSION`** em config.py: bump manual quando mudanças no parser alterarem conteúdo gerado (invalida fingerprints).
+- **`clear_expired()` é preguiçoso** (namespaces tocados na sessão); varredura completa só via `full_scan=True`, `maintenance()` ou `scripts/cache_maintenance.py` (finalizer de CI). Limpeza toca SOMENTE `cache/` runtime — nunca `releases/`.
+- **`cache/` é runtime, NÃO versionado** (contradição doc×.gitignore resolvida pelo ADR-011). Histórico auditável = artefato `pipeline-cache` dos workflows + `releases/`.
+- **Testes de cache**: relógio injetado (`clock=`), proibido `time.sleep`; multiprocesso via `os.fork` + `os.pipe` (kernel Termux/Android bloqueia semáforos POSIX — `multiprocessing.Event/Pool/Queue` falham com PermissionError).
+- **mutmut**: usar `mutmut==2.5.0` neste kernel (3.x usa Pool/semáforos). Config `[tool.mutmut]` no pyproject (escopo cache). Execução local via adapter de thread quando semáforos são bloqueados; em CI ubuntu o runner padrão funciona. Baseline py3.14 com `except A, B:` (PEP 758) precisa normalização para parso. Resultado autoritativo = visão do feeder (`get_cached_mutation_statuses`), NÃO agregação SQL crua da tabela `Mutant` — runs interrompidos deixam linhas órfãs `untested` com mapeamento line/index antigo que não correspondem aos mutantes do código atual.
+- **Cobertura do módulo de cache ≥95%** (atual: cache_io 100%, processed_releases 100%, cache_manager 97%).
+- `except (A, B) as exc:` com binding é a forma black-estável; PEP 758 sem parênteses é válido em py3.14 mas quebra parso/ferramentas antigas.

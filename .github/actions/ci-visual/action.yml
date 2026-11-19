@@ -1,0 +1,42 @@
+name: 'CI Visual Helpers'
+description: 'Reusable visual helpers for GitHub Actions logs & summaries (colors, groups, Mermaid, badges)'
+author: 'Fatal1tyBarucco'
+branding:
+  icon: 'palette'
+  color: 'purple'
+
+inputs:
+  # No inputs needed - this action sources the helper script
+  # All functions become available after `uses: Fatal1tyBarucco/Salesforce-WebDev/.github/actions/ci-visual@main`
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 🎨 Setup CI Visual Helpers
+      id: setup
+      shell: bash
+      run: |
+        # Copy helper script to runner temp for sourcing
+        cp "${{ github.action_path }}/ci-visual.sh" "${RUNNER_TEMP}/ci-visual.sh"
+        # Source it to verify it works
+        source "${RUNNER_TEMP}/ci-visual.sh"
+        banner "CI Visual Helpers" "highlight"
+        ok "Helper script sourced successfully"
+        echo "HELPER_PATH=${RUNNER_TEMP}/ci-visual.sh" >> "$GITHUB_OUTPUT"
+
+    - name: 📋 Helper Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## 🎨 CI Visual Helpers" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Helper script available at: \`${{ steps.setup.outputs.HELPER_PATH }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Usage in subsequent steps:" >> $GITHUB_STEP_SUMMARY
+        echo '```bash' >> $GITHUB_STEP_SUMMARY
+        echo 'source "${{ steps.setup.outputs.HELPER_PATH }}"' >> $GITHUB_STEP_SUMMARY
+        echo 'banner "MY JOB" "info"' >> $GITHUB_STEP_SUMMARY
+        echo 'ok "Task completed"' >> $GITHUB_STEP_SUMMARY
+        echo 'summary_alert "NOTE" "All good"' >> $GITHUB_STEP_SUMMARY
+        echo 'summary_mermaid "flowchart LR A --> B"' >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY

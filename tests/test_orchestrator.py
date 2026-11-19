@@ -1,10 +1,12 @@
 """Tests for src/orchestrator.py — 100% coverage target."""
 
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from src.orchestrator import PipelineOrchestrator, PipelineResult
+from src.processed_releases import ProcessedReleasesStore
 
 
 class TestPipelineResult:
@@ -269,12 +271,13 @@ class TestProcessReleaseBranches:
     """Test _process_release with dry_run True/False."""
 
     @pytest.mark.asyncio
-    async def test_dry_run_skips_enrich(self) -> None:
+    async def test_dry_run_skips_enrich(self, tmp_path: Path) -> None:
         """dry_run=True: skip enrich_meta_with_classification."""
         config = MagicMock()
         config.event_bus = MagicMock()
         config.event_bus.emit = AsyncMock()
         config.dry_run = True
+        config.processed_store = ProcessedReleasesStore(cache_dir=tmp_path / "cache")
         release = MagicMock()
         release.slug = "summer_26"
         release.name = "Summer '26"
@@ -290,12 +293,13 @@ class TestProcessReleaseBranches:
         mock_enrich.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_not_dry_run_calls_enrich(self) -> None:
+    async def test_not_dry_run_calls_enrich(self, tmp_path: Path) -> None:
         """dry_run=False: enrich_meta_with_classification is called."""
         config = MagicMock()
         config.event_bus = MagicMock()
         config.event_bus.emit = AsyncMock()
         config.dry_run = False
+        config.processed_store = ProcessedReleasesStore(cache_dir=tmp_path / "cache")
         release = MagicMock()
         release.slug = "summer_26"
         release.name = "Summer '26"

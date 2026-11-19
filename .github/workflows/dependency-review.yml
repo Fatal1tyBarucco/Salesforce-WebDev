@@ -1,5 +1,7 @@
 name: "Dependency Review"
 
+run-name: "🔍 Dependency Review — #${{ github.event.pull_request.number }} — @${{ github.actor }}"
+
 on:
   pull_request:
     branches: [main]
@@ -14,16 +16,29 @@ concurrency:
 
 jobs:
   dependency-review:
-    name: Review Dependency Changes
+    name: 🔍 Review Dependency Changes
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Dependency Review
+      - name: 🔍 Dependency Review
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5
         with:
           fail-on-severity: high
           comment-summary-in-pr: always
           deny-licenses: GPL-3.0, AGPL-3.0
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "## 🔍 Dependency Review" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Dependency changes reviewed for security vulnerabilities and license compliance." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Vulnerabilities | \`fail-on-severity: high\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| License Compliance | \`deny: GPL-3.0, AGPL-3.0\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| PR Comment | \`always\` |" >> $GITHUB_STEP_SUMMARY

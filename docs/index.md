@@ -39,7 +39,7 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 **📄 Documentação completa:**
 
 - [🇧🇷 Português](index.md)
-- [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-releases-disponíveis)
+- [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-available-releases)
 
 ---
 
@@ -518,6 +518,7 @@ Salesforce-WebDev/
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
+  ├── cache_io.py
   ├── cache_manager.py
   ├── circuit_breaker.py
   ├── config.py
@@ -540,6 +541,7 @@ Salesforce-WebDev/
   ├── notifications.py
   ├── orchestrator.py
   ├── parser.py
+  ├── processed_releases.py
   ├── release_discovery.py
   ├── release_docs.py
   ├── release_summarizer.py
@@ -561,7 +563,6 @@ Salesforce-WebDev/
   ├── tests/                     # Suíte pytest
   ├── .gitleaks.toml
   ├── .mcp.json
-  ├── .mutmut-cache
   ├── .promptfoo.yaml
   ├── .python-version
   ├── .ruffignore

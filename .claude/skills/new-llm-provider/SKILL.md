@@ -18,7 +18,7 @@ class NovoProviderAdapter(LLMAdapter):
     async def generate_completion(self, prompt: str, **kwargs) -> LLMResponse:
         # Implemente chamada ao provedor
         pass
-    
+
     async def classify_text(self, text: str) -> ClassificationResult:
         # Implemente classificação
         pass

@@ -2,6 +2,8 @@
 
 name: Scheduled Pipeline (Knowledge-as-Code)
 
+run-name: "📅 Scheduled Pipeline — ${{ github.event_name }} — ${{ github.event.inputs.release_slug || 'auto' }} — @${{ github.actor }}"
+
 on:
   schedule:
     - cron: "0 8 * * 1"
@@ -32,7 +34,7 @@ env:
 
 jobs:
   detect:
-    name: Detect New Release
+    name: 🔍 Detect New Release
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     outputs:
@@ -40,73 +42,97 @@ jobs:
       release-slug: ${{ steps.check.outputs.release-slug }}
       release-name: ${{ steps.check.outputs.release-name }}
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
 
-      - name: Setup uv
+      - name: ⚡ Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --extra healing --group dev
 
-      - name: Install Playwright browsers
+      - name: 🎭 Install Playwright browsers
         run: uv run playwright install chromium
 
-      - name: Check for new release
+      - name: 🔍 Check for new release
         id: check
         env:
           TARGET_SLUG: ${{ github.event.inputs.release_slug }}
         run: |
+          echo "::group::🔍 Detecting New Release"
           uv run python scripts/detect_release.py >> $GITHUB_OUTPUT
+          echo "::endgroup::"
+
+      - name: 📋 Detect Summary
+        if: always()
+        run: |
+          echo "## 🔍 Detect New Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Has New Release | ${{ steps.check.outputs.has-new-release }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Slug | \`${{ steps.check.outputs.release-slug }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Name | \`${{ steps.check.outputs.release-name }}\` |" >> $GITHUB_STEP_SUMMARY
 
   process:
-    name: Process Release
+    name: 🚀 Process Release
     needs: detect
     if: (needs.detect.outputs.has-new-release == 'true') && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
 
-      - name: Setup uv
+      - name: ⚡ Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Cache Playwright browsers
+      - name: 💾 Cache Playwright browsers
         uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('uv.lock') }}
           restore-keys: ${{ runner.os }}-playwright-
 
-      - name: Install dependencies
+      # ADR-011 (R8): restaura o cache de runtime (processed_releases,
+      # scraper TTL, stats) para processamento incremental entre execuções.
+      - name: 💾 Restore pipeline runtime cache
+        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        with:
+          path: cache/
+          key: ${{ runner.os }}-pipeline-cache-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-pipeline-cache-
+
+      - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --extra healing --group dev
 
-      - name: Run pipeline
+      - name: 🚀 Run pipeline
         id: pipeline
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
+          echo "::group::🚀 Processing Release"
           RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
           DRY_RUN_FLAG=""
           if [ "$DRY_RUN" = "true" ]; then
@@ -121,8 +147,26 @@ jobs:
             echo "has-changes=true" >> $GITHUB_OUTPUT
             git status --short
           fi
+          echo "::endgroup::"
 
-      - name: Generate PR body
+      # ADR-011 (R8): histórico auditável do cache vive em artefatos de
+      # workflow (cache/ é runtime e não é versionado).
+      - name: 📦 Upload runtime cache artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pipeline-cache
+          path: cache/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # Finalizer: limpa SOMENTE caches deriváveis com segurança (cache/
+      # runtime). Nunca toca releases/ ou qualquer artefato versionado.
+      - name: 🧹 Cache maintenance (finalizer)
+        if: always()
+        run: uv run python scripts/cache_maintenance.py --cache-dir cache
+
+      - name: 📝 Generate PR body
         if: steps.pipeline.outputs.has-changes == 'true'
         id: diff
         env:
@@ -132,12 +176,13 @@ jobs:
           python3 scripts/generate_pr_body.py
           echo "pr_body_file=/tmp/pr_body.md" >> $GITHUB_OUTPUT
 
-      - name: Create PR
+      - name: 🔀 Create PR
         if: steps.pipeline.outputs.has-changes == 'true'
         id: create-pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "::group::🔀 Creating PR"
           RELEASE_SLUG="${{ needs.detect.outputs.release-slug }}"
 
           git config user.name "github-actions[bot]"
@@ -157,8 +202,9 @@ jobs:
             --label "pipeline,release-notes,knowledge-as-code")
 
           echo "pr-url=$PR_URL" >> $GITHUB_OUTPUT
+          echo "::endgroup::"
 
-      - name: Create issue on failure
+      - name: 📝 Create issue on failure
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -169,15 +215,29 @@ jobs:
             --body "Scheduled pipeline failed for \`$RELEASE_SLUG\`.\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --label "pipeline,failure,needs-investigation" || true
 
+      - name: 📋 Process Summary
+        if: always()
+        run: |
+          echo "## 🚀 Process Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release | \`${{ needs.detect.outputs.release-slug }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Has Changes | ${{ steps.pipeline.outputs.has-changes }} |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.pipeline.outputs.has-changes }}" = "true" ]; then
+            echo "| PR | ${{ steps.create-pr.outputs.pr-url }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+
   summary:
-    name: Pipeline Summary
+    name: 📋 Pipeline Summary
     runs-on: ubuntu-latest
     needs: [detect, process]
     if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     steps:
-      - name: Write summary
+      - name: 📋 Write summary
         run: |
-          echo "## Scheduled Pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "## 📅 Scheduled Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ needs.detect.outputs.has-new-release }}" = "true" ]; then
             echo "Release: \`${{ needs.detect.outputs.release-slug }}\`" >> $GITHUB_STEP_SUMMARY
             if [ "${{ needs.process.outputs.has-changes }}" = "true" ]; then
@@ -188,3 +248,12 @@ jobs:
           else
             echo "No new release detected" >> $GITHUB_STEP_SUMMARY
           fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[Schedule/Dispatch] --> B[🔍 Detect]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|New Release| C[🚀 Process]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|No Release| D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
+          echo '    C -->|Changes| E[🔀 Create PR]' >> $GITHUB_STEP_SUMMARY
+          echo '    C -->|No Changes| D' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

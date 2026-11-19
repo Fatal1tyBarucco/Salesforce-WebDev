@@ -452,31 +452,67 @@ def _update_readme_single(
 
 
 def _update_release_history(release: ReleaseInfo, total_features: int, category_count: int) -> None:
-    """Append to release history tracker at releases/history.json."""
-    import json as _json
+    """Upsert the release history tracker at releases/history.json.
+
+    Hardened per ADR-011: exclusive lock, tolerant reads (corrupt payloads
+    are quarantined with rotated backup and rebuilt), atomic write. I/O
+    failures degrade with a warning — history never breaks the pipeline.
+    """
+    from .cache_io import (
+        CacheLockTimeoutError,
+        FileLock,
+        atomic_write_json,
+        quarantine_file,
+        read_json_safe,
+    )
+    from .config import (
+        CACHE_LOCK_TIMEOUT_SECONDS,
+        CACHE_QUARANTINE_DIRNAME,
+        CACHE_QUARANTINE_KEEP,
+    )
 
     history_path = Path(RELEASES_DIR) / "history.json"
-    history: list[dict[str, object]] = []
-    if history_path.exists():
-        history = _json.loads(history_path.read_text(encoding="utf-8"))
+    lock_path = history_path.with_name(history_path.name + ".lock")
+    try:
+        with FileLock(lock_path, timeout=CACHE_LOCK_TIMEOUT_SECONDS):
+            history: list[dict[str, object]] = []
+            if history_path.exists():
+                raw = read_json_safe(history_path)
+                if isinstance(raw, list):
+                    history = [h for h in raw if isinstance(h, dict)]
+                else:
+                    logger.warning("[CACHE] Corrupt history.json — quarantining and rebuilding")
+                    quarantine_file(
+                        history_path,
+                        history_path.parent / CACHE_QUARANTINE_DIRNAME,
+                        keep=CACHE_QUARANTINE_KEEP,
+                    )
 
-    entry = {
-        "slug": release.slug,
-        "name": release.name,
-        "release_id": release.release_id,
-        "total_features": total_features,
-        "category_count": category_count,
-        "processed_at": datetime.now(tz=UTC).isoformat(),
-    }
+            entry = {
+                "slug": release.slug,
+                "name": release.name,
+                "release_id": release.release_id,
+                "total_features": total_features,
+                "category_count": category_count,
+                "processed_at": datetime.now(tz=UTC).isoformat(),
+            }
 
-    existing_idx = next((i for i, h in enumerate(history) if h.get("slug") == release.slug), -1)
-    if existing_idx >= 0:
-        history[existing_idx] = entry
-    else:
-        history.append(entry)
+            existing_idx = next(
+                (i for i, h in enumerate(history) if h.get("slug") == release.slug), -1
+            )
+            if existing_idx >= 0:
+                history[existing_idx] = entry
+            else:
+                history.append(entry)
 
-    history.sort(key=lambda h: int(str(h.get("release_id", 0))), reverse=True)
-    history_path.write_text(_json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
+            def _sort_key(h: dict[str, object]) -> int:
+                text = str(h.get("release_id", 0))
+                return int(text) if text.lstrip("-").isdigit() else 0
+
+            history.sort(key=_sort_key, reverse=True)
+            atomic_write_json(history_path, history)
+    except (CacheLockTimeoutError, OSError) as exc:
+        logger.warning("[CACHE] Failed to update release history: %s", exc)
 
 
 def _get_release_emoji(name: str) -> str:

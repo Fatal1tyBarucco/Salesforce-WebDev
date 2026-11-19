@@ -5,6 +5,8 @@
 
 name: AI PR Review
 
+run-name: "🤖 AI PR Review — #${{ github.event.pull_request.number || github.event.issue.number }} — @${{ github.actor }}"
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -68,7 +70,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Instruções baseadas nos subagentes code-reviewer + security-auditor
           prompt: |
             Você é um revisor de código sênior para o projeto Salesforce-WebDev.
             Revise este PR seguindo as diretrizes de AGENTS.md e CLAUDE.md.
@@ -84,9 +85,7 @@ jobs:
             Formato: "### [SEVERIDADE] arquivo:linha — descrição"
 
             Se for menção @claude em issue: faça triagem (labels, prioridade, duplicatas, info faltante).
-          # Limitar a arquivos alterados no PR
           include: "src/**/*.py,tests/**/*.py,.github/workflows/*.yml,pyproject.toml,.pre-commit-config.yaml"
-          # Não revisar docs (tem workflow próprio)
           exclude: "docs/**,README*.md,CHANGELOG.md"
 
       - name: 📋 Post review summary
@@ -94,8 +93,10 @@ jobs:
         run: |
           echo "## 🤖 AI PR Review Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Revisão baseada nos subagentes: code-reviewer + security-auditor" >> $GITHUB_STEP_SUMMARY
-          echo "Ver comentários no PR para detalhes." >> $GITHUB_STEP_SUMMARY
+          echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+          echo "> Revisão baseada nos subagentes: code-reviewer + security-auditor" >> $GITHUB_STEP_SUMMARY
+          echo "> Ver comentários no PR para detalhes." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  🔒 SECURITY AUDIT (pip-audit, gitleaks, dependency-review) │
@@ -128,14 +129,18 @@ jobs:
 
       - name: 🔍 pip-audit
         run: |
+          echo "::group::🔍 pip-audit — Vulnerability Scan"
           uv export --frozen --no-emit-project --no-hashes | uvx pip-audit -r /dev/stdin --format json -o pip-audit-report.json || true
           cat pip-audit-report.json | jq '.vulnerabilities | length' || echo "0"
+          echo "::endgroup::"
 
       - name: 🔍 gitleaks
         run: |
+          echo "::group::🔍 gitleaks — Secret Detection"
           curl -sL "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz" | tar -xz gitleaks
           ./gitleaks detect --source . --report-format json --report-path gitleaks-report.json --redact --exit-code 0
           cat gitleaks-report.json | jq 'length' || echo "0"
+          echo "::endgroup::"
 
       - name: 📋 Upload security reports
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -146,6 +151,26 @@ jobs:
             pip-audit-report.json
             gitleaks-report.json
           retention-days: 30
+
+      - name: 📋 Security Summary
+        if: always()
+        run: |
+          echo "## 🔒 Security Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          VULNS=$(cat pip-audit-report.json 2>/dev/null | jq '.vulnerabilities | length' || echo "0")
+          LEAKS=$(cat gitleaks-report.json 2>/dev/null | jq 'length' || echo "0")
+          echo "| Check | Findings |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| pip-audit | $VULNS vulnerabilities |" >> $GITHUB_STEP_SUMMARY
+          echo "| gitleaks | $LEAKS potential secrets |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$VULNS" = "0" ] && [ "$LEAKS" = "0" ]; then
+            echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+            echo "> No vulnerabilities or secrets detected ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "> [!WARNING]" >> $GITHUB_STEP_SUMMARY
+            echo "> Security findings detected — review artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
 
   # ┌─────────────────────────────────────────────────────────────┐
   # │  📋 SUMMARY                                                 │
@@ -168,3 +193,11 @@ jobs:
           echo "| 🔒 Security Audit | ${{ needs.security-audit.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Subagentes: code-reviewer + security-auditor | Trigger: @claude mention ou PR aberto" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[PR Opened] --> B[🤖 Claude Review]' >> $GITHUB_STEP_SUMMARY
+          echo '    A --> C[🔒 Security Audit]' >> $GITHUB_STEP_SUMMARY
+          echo '    B --> D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
+          echo '    C --> D' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

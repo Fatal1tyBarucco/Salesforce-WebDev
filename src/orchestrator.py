@@ -17,13 +17,16 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
-from .config import ReleaseInfo
+from .cache_manager import CacheManager
+from .config import CACHE_DIR, RELEASES_DIR, ReleaseInfo
 from .events import EventBus, get_event_bus
 from .exceptions import GitHubError, LLMError, NotificationError
 from .health import set_pipeline_status
 from .logger import new_correlation_id
+from .processed_releases import ProcessedReleasesStore
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +89,7 @@ class PipelineOrchestrator:
             await DocumentationService().update_readme_all()
             result.status = "no_new_releases"
             await self._bus.emit("pipeline.completed", {"new_releases": 0}, source="orchestrator")
+            self._persist_cache_stats()
             return result
 
         async with scraper:
@@ -116,6 +120,7 @@ class PipelineOrchestrator:
             {"new_releases": len(releases), "status": result.status},
             source="orchestrator",
         )
+        self._persist_cache_stats()
         return result
 
     # ── Private pipeline stages ──────────────────────────────────
@@ -154,12 +159,31 @@ class PipelineOrchestrator:
         translator: Any,
         llm: Any,
     ) -> None:
-        """Process a single release: scrape, parse, generate files."""
+        """Process a single release: scrape, parse, generate files.
+
+        Non-dry runs go through the processed-releases store (ADR-011):
+        fingerprint match skips regeneration (hit), and the per-release
+        lock guarantees exactly one processing across concurrent runs.
+        """
         from .main import enrich_meta_with_classification, process_single_release
 
-        await process_single_release(
-            release, scraper, impact_parser, generator, translator, self._config.dry_run, llm
-        )
+        if self._config.dry_run:
+            await process_single_release(
+                release, scraper, impact_parser, generator, translator, True, llm
+            )
+        else:
+            store = self._get_processed_store()
+            release_dir = Path(RELEASES_DIR) / release.slug
+
+            async def _process() -> bool:
+                return bool(
+                    await process_single_release(
+                        release, scraper, impact_parser, generator, translator, False, llm
+                    )
+                )
+
+            await store.run_once(release, release_dir, _process)
+
         await self._bus.emit(
             "release.processed",
             {"slug": release.slug, "name": release.name},
@@ -171,6 +195,26 @@ class PipelineOrchestrator:
             await self._bus.emit(
                 "release.classified", {"slug": release.slug}, source="orchestrator"
             )
+
+    def _get_processed_store(self) -> ProcessedReleasesStore:
+        """Return the injected store or a default runtime store (ADR-011)."""
+        store = getattr(self._config, "processed_store", None)
+        if isinstance(store, ProcessedReleasesStore):
+            return store
+        return ProcessedReleasesStore(cache_dir=Path(CACHE_DIR))
+
+    def _persist_cache_stats(self) -> None:
+        """Persist cache statistics for this execution (best-effort, R6)."""
+        cache = getattr(self._config, "cache", None)
+        if not isinstance(cache, CacheManager):
+            return
+        store = getattr(self._config, "processed_store", None)
+        extra = (
+            {"processed_releases": store.stats.to_dict()}
+            if isinstance(store, ProcessedReleasesStore)
+            else None
+        )
+        cache.persist_stats(extra=extra)
 
     async def _run_ai_reports(
         self, releases: list[ReleaseInfo], llm: Any, result: PipelineResult

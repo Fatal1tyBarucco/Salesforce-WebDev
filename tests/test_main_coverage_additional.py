@@ -1228,20 +1228,24 @@ def test_load_meta_for_release_json_decode_error(tmp_path: Path) -> None:
 
 
 def test_load_meta_for_release_os_error(tmp_path: Path) -> None:
-    """Test _load_meta_for_release handles OSError (lines 164-166)."""
+    """Test _load_meta_for_release handles OSError (lines 164-166).
+
+    Uses a PermissionError mock instead of chmod(0o000): running as root
+    (CI containers, Termux) bypasses file mode bits, making chmod-based
+    simulations non-deterministic (ADR-011 R10).
+    """
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
     release_dir = releases_dir / "summer_26"
     release_dir.mkdir()
-    # Make file unreadable
     (release_dir / ".meta.json").write_text('{"valid": "json"}')
-    (release_dir / ".meta.json").chmod(0o000)
 
-    with patch("src.main.RELEASES_DIR", str(releases_dir)):
+    with (
+        patch("src.main.RELEASES_DIR", str(releases_dir)),
+        patch("pathlib.Path.read_text", side_effect=PermissionError("denied")),
+    ):
         result = _load_meta_for_release("summer_26")
 
-    # Restore permissions for cleanup
-    (release_dir / ".meta.json").chmod(0o644)
     assert result == {}
 
 

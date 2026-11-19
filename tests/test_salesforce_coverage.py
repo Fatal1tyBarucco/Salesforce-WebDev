@@ -264,7 +264,10 @@ class TestTrailheadCache:
         p = tmp_path / "cache.json"
         with patch("src.salesforce.TRAILHEAD_CACHE_FILE", str(p)):
             _save_trailhead_cache({"A": ["url1"]})
-            assert json.loads(p.read_text()) == {"A": ["url1"]}
+            # ADR-011: file is now an integrity envelope; data round-trips.
+            raw = json.loads(p.read_text())
+            assert raw["data"] == {"A": ["url1"]}
+            assert _load_trailhead_cache() == {"A": ["url1"]}
 
     def test_save_os_error(self, tmp_path: Path) -> None:
         with (

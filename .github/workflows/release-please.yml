@@ -13,6 +13,8 @@
 
 name: Release Please
 
+run-name: "🚀 Release Please — ${{ github.ref_name }} — ${{ github.sha }} — @${{ github.actor }}"
+
 on:
   push:
     branches: [main]
@@ -31,7 +33,7 @@ jobs:
     name: 🚀 Release Please
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️  Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
@@ -58,6 +60,7 @@ jobs:
           echo "| Release Name | ${{ steps.release.outputs.release_name }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Release URL | ${{ steps.release.outputs.release_url }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
           echo "> Release PR will be auto-merged when checks pass." >> $GITHUB_STEP_SUMMARY
 
       - name: ⚡ Setup uv
@@ -70,16 +73,39 @@ jobs:
       - name: 🔒 Sync uv.lock after version bump
         if: steps.release.outputs.release_created == 'true'
         run: |
+          echo "::group::🔒 Syncing uv.lock after release"
           uv lock
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add uv.lock
           git commit -m "chore: sync uv.lock after release-please version bump"
           git push
+          echo "::endgroup::"
 
       - name: 📋 No Release Needed
         if: steps.release.outputs.release_created != 'true'
         run: |
           echo "## 🚀 Release Please" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "No new release needed — no feat:/fix: commits since last release." >> $GITHUB_STEP_SUMMARY
+          echo "> [!TIP]" >> $GITHUB_STEP_SUMMARY
+          echo "> No new release needed — no feat:/fix: commits since last release." >> $GITHUB_STEP_SUMMARY
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "## 🚀 Release Please Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Created | ${{ steps.release.outputs.release_created }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | ${{ steps.release.outputs.tag_name || 'n/a' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Name | ${{ steps.release.outputs.release_name || 'n/a' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```mermaid' >> $GITHUB_STEP_SUMMARY
+          echo 'flowchart LR' >> $GITHUB_STEP_SUMMARY
+          echo '    A[Push to main] --> B[🚀 Release Please]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|feat:/fix: found| C[📦 Create Release PR]' >> $GITHUB_STEP_SUMMARY
+          echo '    B -->|No changes| D[📋 Summary]' >> $GITHUB_STEP_SUMMARY
+          echo '    C --> E[✅ Auto-merge]' >> $GITHUB_STEP_SUMMARY
+          echo '    E --> F[🔒 Sync uv.lock]' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

@@ -38,8 +38,15 @@ site/
 exports/
 releases/test/
 releases/history.json
+releases/history.json.lock
+releases/quarantine/
+releases/*/.content_cache.json*
 notifications/trailhead_cache.json
+notifications/trailhead_cache.json.lock
+notifications/quarantine/
 analytics/
+.mutmut-cache/
+mutants/
 
 # Tool artifacts
 docs/compose/

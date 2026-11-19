@@ -115,7 +115,7 @@ flowchart LR
 
     subgraph SCRAPE["2. Scraping (Playwright + Chromium)"]
         FETCH_HTML["fetch_page()\nwait_until=domcontentloaded + 5s wait + scroll + TOC expansion\nsrc/scraper.py:112-233"]
-        FETCH_TEXT["fetch_page_raw_text()\nTTL cache 7 dias (CacheManager)\nsrc/scraper.py:338-383"]
+        FETCH_TEXT["fetch_page_raw_text()\nTTL cache 24h (CacheManager, config)\nsrc/scraper.py"]
         FETCH_LINKS["fetch_features_with_links()\nHTML parsing com BeautifulSoup\nsrc/scraper.py:385-442"]
         FETCH_PDF["download_pdf_from_button()\nclique em button[title='Open PDF']\nsrc/scraper.py:582-645"]
     end
@@ -234,7 +234,7 @@ sequenceDiagram
 **Injeção de Dependência (DI) em `main.py`**:
 
 - `PipelineConfig` (src/main.py:560-599) é o container DI — todos os campos têm defaults sensíveis para produção.
-- Campos `None` são inicializados em `__post_init__` (src/main.py:584-605): `CacheManager`, `get_event_bus()`, `LLMService()`, `SalesforceReleaseScraper()`, `FeatureImpactParser()`, `MarkdownGenerator()`, `TranslatorService(llm)`.
+- Campos `None` são inicializados em `__post_init__`: `CacheManager`, `ProcessedReleasesStore` (ADR-011), `get_event_bus()`, `LLMService()`, `SalesforceReleaseScraper()`, `FeatureImpactParser()`, `MarkdownGenerator()`, `TranslatorService(llm)`.
 - Testes podem sobrescrever qualquer campo passando instâncias mockadas/fakes no construtor de `PipelineConfig` (ex.: `dry_run=True`, `llm=None`).
 
 **Modelos Pydantic (src/models/)**:

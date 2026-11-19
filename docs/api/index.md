@@ -51,6 +51,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.automation.notifications` | [`automation-notifications.md`](automation-notifications.md) |
 | `src.automation.reporting` | [`automation-reporting.md`](automation-reporting.md) |
 | `src.automation.service` | [`automation-service.md`](automation-service.md) |
+| `src.cache_io` | [`cache_io.md`](cache_io.md) |
 | `src.cache_manager` | [`cache_manager.md`](cache_manager.md) |
 | `src.circuit_breaker` | [`circuit_breaker.md`](circuit_breaker.md) |
 | `src.config` | [`config.md`](config.md) |
@@ -111,6 +112,7 @@ O mkdocstrings lê as docstrings (Google-style) das classes, métodos e funçõe
 | `src.notifications` | [`notifications.md`](notifications.md) |
 | `src.orchestrator` | [`orchestrator.md`](orchestrator.md) |
 | `src.parser` | [`parser.md`](parser.md) |
+| `src.processed_releases` | [`processed_releases.md`](processed_releases.md) |
 | `src.release_discovery` | [`release_discovery.md`](release_discovery.md) |
 | `src.release_docs` | [`release_docs.md`](release_docs.md) |
 | `src.release_summarizer` | [`release_summarizer.md`](release_summarizer.md) |

@@ -20,8 +20,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from .cache_io import atomic_write_json
 from .cache_manager import CacheManager
 from .config import (
+    CACHE_DIR,
+    CACHE_PIPELINE_TTL_SECONDS,
     FEATURE_IMPACT_URL,
     KNOWN_RELEASES,
     RELEASES_DIR,
@@ -37,6 +40,7 @@ from .logger import setup_logging
 from .parser import (
     FeatureImpactParser,
 )
+from .processed_releases import ProcessedReleasesStore
 from .release_docs import (  # noqa: F401
     RELEASE_BADGE_MARKER,
     RELEASE_BASE_ID,
@@ -264,10 +268,7 @@ async def generate_summary_cache(
                 }
 
                 if _validate_summary_cache(ai_cache, meta, release.slug):
-                    summary_cache_path.write_text(
-                        json.dumps(ai_cache, indent=2, ensure_ascii=False),
-                        encoding="utf-8",
-                    )
+                    atomic_write_json(summary_cache_path, ai_cache)
                     logger.info("AI-generated summary cache saved to %s", summary_cache_path)
                     return
                 else:
@@ -325,10 +326,7 @@ async def generate_summary_cache(
         }
 
         if _validate_summary_cache(fallback_cache, meta, release.slug):
-            summary_cache_path.write_text(
-                json.dumps(fallback_cache, indent=2, ensure_ascii=False),
-                encoding="utf-8",
-            )
+            atomic_write_json(summary_cache_path, fallback_cache)
             logger.info("Fallback summary cache saved to %s", summary_cache_path)
         else:
             logger.error("Fallback summary also invalid for %s — not writing cache", release.slug)
@@ -576,6 +574,7 @@ class PipelineConfig:
     translator: TranslatorService | None = None
     llm: LLMService | None = None
     cache: CacheManager | None = None
+    processed_store: ProcessedReleasesStore | None = None
     event_bus: EventBus | None = None
     release_filter: str | None = None
     known_releases: list[ReleaseInfo] | None = None
@@ -586,7 +585,11 @@ class PipelineConfig:
         if self.known_releases is None:
             self.known_releases = list(KNOWN_RELEASES)
         if self.cache is None:
-            self.cache = CacheManager(cache_dir=Path("cache"), ttl_seconds=86400 * 7)
+            self.cache = CacheManager(
+                cache_dir=Path(CACHE_DIR), ttl_seconds=CACHE_PIPELINE_TTL_SECONDS
+            )
+        if self.processed_store is None:
+            self.processed_store = ProcessedReleasesStore(cache_dir=Path(CACHE_DIR))
         if self.event_bus is None:
             self.event_bus = get_event_bus()
         if self.llm is None:

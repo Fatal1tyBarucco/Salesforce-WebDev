@@ -1,10 +1,10 @@
 {
   "mode": "audit",
-  "repository_sha": "e1483b2d5acf2a2bcad597a0e7446dd2df34f619",
-  "generated_at": "2026-11-19T01:07:29.571729+00:00",
-  "inventory_count": 798,
-  "src_modules": 101,
-  "existing_api_evokers": 104,
+  "repository_sha": "f9ed8fd4432632b4d481ec5bdd925353f221fb03",
+  "generated_at": "2026-11-19T16:38:32.810024+00:00",
+  "inventory_count": 814,
+  "src_modules": 103,
+  "existing_api_evokers": 106,
   "releases": [
     {
       "dir": "winter_27",
@@ -43,14 +43,8 @@
     {
       "type": "MANIFEST_STALE_SHA",
       "severity": "high",
-      "path": "drift_report.json",
-      "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
+      "path": "AGENTS.md",
+      "detail": "'AGENTS.md' blob SHA changed since last manifest baseline."
     }
   ]
 }
