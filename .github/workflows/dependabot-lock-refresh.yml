@@ -26,14 +26,18 @@ concurrency:
 jobs:
   refresh-lock:
     name: 🔒 Refresh uv Lockfile
-    # Only run for Dependabot PRs from the same repository.
+    # Run for Dependabot PRs AND release-please PRs from the same repository.
     # Checks the PR author (not the event actor) so it works for both
     # `opened` and `synchronize` events — a push by a maintainer to the
     # PR branch would set `github.actor` to the maintainer, not Dependabot.
+    # release-please bumps pyproject version without refreshing uv.lock;
+    # syncing the lock ON THE PR makes the merge commit pass `uv lock --check`
+    # (elimina a janela transitória de falha pós-release — run 44587552679).
     # Forks do not get write access to the base repo, and running
     # contents:write on untrusted fork branches is a security risk.
     if: >
-      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      (github.event.pull_request.user.login == 'dependabot[bot]' ||
+       startsWith(github.event.pull_request.head.ref, 'release-please')) &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 

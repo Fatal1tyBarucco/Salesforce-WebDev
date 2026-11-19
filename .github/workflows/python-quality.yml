@@ -53,7 +53,11 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: 🔒 Check uv lockfile is in sync
-        if: "!startsWith(github.head_ref, 'release-please') && !contains(github.event.head_commit.message, 'sync uv.lock')"
+        # Skip: release-please PRs (head_ref), lock-sync commits, and the
+        # release squash commit on main ("chore(main): release X.Y.Z (#N)") —
+        # o lock é sincronizado pelo refresh no PR e pelo step pós-release;
+        # a mensagem do squash NÃO contém 'release-please' (run 44587552679).
+        if: "!startsWith(github.head_ref, 'release-please') && !contains(github.event.head_commit.message, 'sync uv.lock') && !contains(github.event.head_commit.message, 'chore(main): release')"
         run: uv lock --check
 
       - name: 📦 Install dependencies
