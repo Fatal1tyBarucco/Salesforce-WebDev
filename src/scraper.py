@@ -91,7 +91,7 @@ class SalesforceReleaseScraper:
         self._browser: Browser | None = None
         self._rate_limiter = RateLimiter(min_interval=RATE_LIMIT_MIN_INTERVAL)
         self._circuit_breaker = CircuitBreaker()
-        self._cache = CacheManager(cache_dir=Path("cache"))
+        self._cache = CacheManager(cache_dir=CACHE_DIR)
 
     async def __aenter__(self) -> Self:
         self._playwright = await async_playwright().start()

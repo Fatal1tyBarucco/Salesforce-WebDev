@@ -15,7 +15,7 @@ from typing import Any, Literal, Self, cast
 
 from src.cache_manager import CacheManager
 from src.circuit_breaker import CircuitBreaker
-from src.config import RELEASES_DIR
+from src.config import CACHE_DIR, CACHE_IMPACT_TTL_SECONDS, RELEASES_DIR
 from src.llm_service import LLMService
 
 from .graph_builder import DependencyGraphBuilder
@@ -31,7 +31,7 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_DEPTH = 3
-DEFAULT_CACHE_TTL = 86400
+DEFAULT_CACHE_TTL = CACHE_IMPACT_TTL_SECONDS
 
 
 class ImpactPropagationEngine:
@@ -45,7 +45,7 @@ class ImpactPropagationEngine:
     ) -> None:
         self._llm = llm or LLMService()
         self._cache = cache or CacheManager(
-            cache_dir=Path("cache/impact_propagation"), ttl_seconds=DEFAULT_CACHE_TTL
+            cache_dir=Path(CACHE_DIR) / "impact_propagation", ttl_seconds=DEFAULT_CACHE_TTL
         )
         self._max_depth = max_depth
         self._breaker = CircuitBreaker(threshold=3, cooldown=120.0)

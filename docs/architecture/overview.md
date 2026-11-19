@@ -263,7 +263,7 @@ graph TB
 
     F --> J["cache_dir/<br/>sha256(key).json"]
     G --> J
-    H --> K["MD5 hash"]
+    H --> K["SHA-256 hash"]
     I --> K
 ```
 

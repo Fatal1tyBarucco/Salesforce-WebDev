@@ -518,6 +518,7 @@ Salesforce-WebDev/
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
+  ├── cache_io.py
   ├── cache_manager.py
   ├── circuit_breaker.py
   ├── config.py
@@ -540,6 +541,7 @@ Salesforce-WebDev/
   ├── notifications.py
   ├── orchestrator.py
   ├── parser.py
+  ├── processed_releases.py
   ├── release_discovery.py
   ├── release_docs.py
   ├── release_summarizer.py
@@ -560,7 +562,6 @@ Salesforce-WebDev/
   ├── scripts/                   # Scripts utilitários
   ├── tests/                     # Suíte pytest
   ├── .mcp.json
-  ├── .mutmut-cache
   ├── .promptfoo.yaml
   ├── .python-version
   ├── .ruffignore

@@ -114,6 +114,16 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('uv.lock') }}
           restore-keys: ${{ runner.os }}-playwright-
 
+      # ADR-011 (R8): restaura o cache de runtime (processed_releases,
+      # scraper TTL, stats) para processamento incremental entre execuções.
+      - name: 💾 Restore pipeline runtime cache
+        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        with:
+          path: cache/
+          key: ${{ runner.os }}-pipeline-cache-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-pipeline-cache-
+
       - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --extra healing --group dev
 
@@ -138,6 +148,23 @@ jobs:
             git status --short
           fi
           echo "::endgroup::"
+
+      # ADR-011 (R8): histórico auditável do cache vive em artefatos de
+      # workflow (cache/ é runtime e não é versionado).
+      - name: 📦 Upload runtime cache artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pipeline-cache
+          path: cache/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # Finalizer: limpa SOMENTE caches deriváveis com segurança (cache/
+      # runtime). Nunca toca releases/ ou qualquer artefato versionado.
+      - name: 🧹 Cache maintenance (finalizer)
+        if: always()
+        run: uv run python scripts/cache_maintenance.py --cache-dir cache
 
       - name: 📝 Generate PR body
         if: steps.pipeline.outputs.has-changes == 'true'

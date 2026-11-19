@@ -251,3 +251,16 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 
 ## Atualização automática (gatilho) — 2026-10-18T03:06:47-03:00
 - Gatilho executado: `auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.
+
+## Cache Layer conventions (ADR-011, 2026-11-19)
+
+- **Facade única**: `src/cache_manager.py` (`CacheManager`/`CacheStats`). Primitivas transversais em `src/cache_io.py` (escrita atômica temp+fsync+os.replace, `FileLock` fcntl/msvcrt, checksum SHA-256 canônico, quarentena rotacionada). Estado incremental em `src/processed_releases.py` (`ProcessedReleasesStore`, fingerprint + single-flight).
+- **Toda escrita de cache passa pela camada** — nunca `write_text` direto em arquivos de cache. Payloads carregam `schema_version` + `checksum`; corrupção → quarentena + rebuild + miss, nunca exceção não tratada.
+- **TTLs, budgets e nomes centralizados** em `src/config.py` (seção "Cache Layer (ADR-011)"). `ttl=-1` = nunca expira; `ttl=0` = expiração imediata (semântica legada dos adapters de invalidate, congelada por testes).
+- **`PARSER_VERSION`** em config.py: bump manual quando mudanças no parser alterarem conteúdo gerado (invalida fingerprints).
+- **`clear_expired()` é preguiçoso** (namespaces tocados na sessão); varredura completa só via `full_scan=True`, `maintenance()` ou `scripts/cache_maintenance.py` (finalizer de CI). Limpeza toca SOMENTE `cache/` runtime — nunca `releases/`.
+- **`cache/` é runtime, NÃO versionado** (contradição doc×.gitignore resolvida pelo ADR-011). Histórico auditável = artefato `pipeline-cache` dos workflows + `releases/`.
+- **Testes de cache**: relógio injetado (`clock=`), proibido `time.sleep`; multiprocesso via `os.fork` + `os.pipe` (kernel Termux/Android bloqueia semáforos POSIX — `multiprocessing.Event/Pool/Queue` falham com PermissionError).
+- **mutmut**: usar `mutmut==2.5.0` neste kernel (3.x usa Pool/semáforos). Config `[tool.mutmut]` no pyproject (escopo cache). Execução local via adapter de thread quando semáforos são bloqueados; em CI ubuntu o runner padrão funciona. Baseline py3.14 com `except A, B:` (PEP 758) precisa normalização para parso.
+- **Cobertura do módulo de cache ≥95%** (atual: cache_io 100%, processed_releases 100%, cache_manager 97%).
+- `except (A, B) as exc:` com binding é a forma black-estável; PEP 758 sem parênteses é válido em py3.14 mas quebra parso/ferramentas antigas.

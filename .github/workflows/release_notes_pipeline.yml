@@ -64,6 +64,19 @@ jobs:
 
       - name: ⚡ Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      # ADR-011 (R8): restaura o cache de runtime (processed_releases,
+      # scraper TTL, stats) para processamento incremental entre execuções.
+      - name: 💾 Restore pipeline runtime cache
+        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        with:
+          path: cache/
+          key: ${{ runner.os }}-pipeline-cache-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-pipeline-cache-
 
       - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -450,6 +463,22 @@ jobs:
           path: /tmp/pipeline_logs/
           retention-days: 7
           if-no-files-found: ignore
+
+      # ADR-011 (R8): histórico auditável do cache de runtime como artefato.
+      - name: 📦 Upload runtime cache artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pipeline-cache
+          path: cache/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # Finalizer: limpa SOMENTE caches deriváveis com segurança (cache/
+      # runtime). Nunca toca releases/ ou qualquer artefato versionado.
+      - name: 🧹 Cache maintenance (finalizer)
+        if: always()
+        run: uv run python scripts/cache_maintenance.py --cache-dir cache
 
       - name: 📋 Gerar sumário do pipeline
         if: always()

@@ -2,6 +2,8 @@
 
 Cache duplo para LLM: exact-match (chave determinística) + semantic (embedding centrado), TTL 7 dias.
 
+> **Atualização (ADR-011):** o embedding placeholder do semantic cache migrou de MD5 para SHA-256, o TTL passou a ser centralizado em `src/config.py` (`CACHE_LLM_TTL_SECONDS`) e o index semântico ganhou escrita atômica + leitura tolerante. A estratégia dual-cache permanece como descrita abaixo.
+
 ## Status
 
 **Aceito** — Implementado em `src/infrastructure/llm_adapters/cache.py`.

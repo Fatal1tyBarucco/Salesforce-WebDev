@@ -50,6 +50,54 @@ MAX_CONCURRENT_PAGES: Final[int] = 4
 ARTICLE_FETCH_TIMEOUT_SECONDS: Final[int] = 45
 RELEASES_DIR: Final[str] = "releases"
 
+# ---------------------------------------------------------------------------
+# Cache Layer (ADR-011) — TTLs, budgets e nomes centralizados.
+# Defaults preservam o comportamento histórico de cada consumidor.
+# ---------------------------------------------------------------------------
+
+CACHE_DIR: Final[str] = "cache"
+#: TTL padrão do CacheManager (scraper e caches genéricos): 24h.
+CACHE_DEFAULT_TTL_SECONDS: Final[int] = 86400
+#: TTL do cache de pipeline (PipelineConfig): 7 dias.
+CACHE_PIPELINE_TTL_SECONDS: Final[int] = 86400 * 7
+#: TTL do cache LLM exact-match: 7 dias (ADR-010).
+CACHE_LLM_TTL_SECONDS: Final[int] = 7 * 24 * 3600
+#: TTL do Feature Evolution Ledger: 1h (recompute a cada run).
+CACHE_LEDGER_TTL_SECONDS: Final[int] = 3600
+#: TTL do content-cache (detecção de mudança por hash): 30 dias.
+CACHE_CONTENT_TTL_SECONDS: Final[int] = 86400 * 30
+#: TTL do grafo de propagação de impacto: 24h.
+CACHE_IMPACT_TTL_SECONDS: Final[int] = 86400
+#: TTL do cache Trailhead: 7 dias (antes: sem expiração).
+CACHE_TRAILHEAD_TTL_SECONDS: Final[int] = 86400 * 7
+#: Sentinel de TTL: entrada nunca expira (estado incremental).
+CACHE_NEVER_EXPIRE: Final[int] = -1
+#: Budget LRU por namespace: número máximo de entradas.
+CACHE_MAX_ENTRIES_PER_NAMESPACE: Final[int] = 1000
+#: Budget LRU por namespace: bytes totais máximos (50 MiB).
+CACHE_MAX_BYTES_PER_NAMESPACE: Final[int] = 50 * 1024 * 1024
+#: Timeout de lock por entrada/namespace (segundos).
+CACHE_LOCK_TIMEOUT_SECONDS: Final[float] = 30.0
+#: Timeout do lock de single-flight por release (segundos).
+CACHE_RELEASE_LOCK_TIMEOUT_SECONDS: Final[float] = 600.0
+#: Intervalo mínimo entre persistências de last_access no hit (throttle).
+CACHE_ACCESS_PERSIST_INTERVAL_SECONDS: Final[float] = 60.0
+#: Nome do arquivo de estatísticas persistidas por execução.
+CACHE_STATS_FILENAME: Final[str] = "stats.json"
+#: Diretório de quarentena (relativo ao cache_dir) para payloads corrompidos.
+CACHE_QUARANTINE_DIRNAME: Final[str] = "quarantine"
+#: Cópias de backup rotacionadas mantidas por arquivo na quarentena.
+CACHE_QUARANTINE_KEEP: Final[int] = 3
+#: Diretório de lock files (relativo ao cache_dir).
+CACHE_LOCKS_DIRNAME: Final[str] = "locks"
+#: Estado incremental de releases processadas (runtime, não versionado).
+PROCESSED_RELEASES_FILENAME: Final[str] = "processed_releases.json"
+#: Máximo de eventos de execução mantidos no histórico do store.
+PROCESSED_RELEASES_HISTORY_LIMIT: Final[int] = 200
+#: Versão do parser incluída no fingerprint de releases.
+#: BUMP MANUAL quando mudanças no parser alterarem o conteúdo gerado.
+PARSER_VERSION: Final[str] = "1"
+
 USER_AGENT: Final[str] = (
     "Mozilla/5.0 (compatible; SalesforceReleaseBot/1.0; "
     "+https://github.com/Fatal1tyBarucco/Salesforce-WebDev)"

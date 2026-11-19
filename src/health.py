@@ -17,7 +17,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
 
-from .config import RELEASES_DIR
+from .cache_io import read_json_safe
+from .config import CACHE_DIR, CACHE_STATS_FILENAME, RELEASES_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -231,6 +232,14 @@ def _get_health_data(state: HealthState | None = None) -> dict[str, object]:
                     except (json.JSONDecodeError, OSError) as e:
                         logger.warning("Ignorando .meta.json corrompido: %s", e)
 
+    cache_section: dict[str, object] = {}
+    stats_path = Path(CACHE_DIR) / CACHE_STATS_FILENAME
+    stats_payload = read_json_safe(stats_path)
+    if isinstance(stats_payload, dict):
+        stats_data = stats_payload.get("stats")
+        if isinstance(stats_data, dict):
+            cache_section = stats_data
+
     return {
         "status": "healthy",
         "uptime_seconds": round(state.uptime_seconds, 1),
@@ -240,6 +249,7 @@ def _get_health_data(state: HealthState | None = None) -> dict[str, object]:
         "total_features": total_features,
         "version": "3.1.0",
         "prometheus": _PROMETHEUS_AVAILABLE,
+        "cache": cache_section,
     }
 
 

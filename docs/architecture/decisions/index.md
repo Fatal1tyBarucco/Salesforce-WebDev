@@ -9,3 +9,4 @@ Decisões de design documentadas do projeto Salesforce Release Intelligence.
 - **[ADR-003 Topic Classification](adr-003-topic-classification.md)** — Classificação de tópicos via LLM
 - **[ADR-005 Documentation Reconciliation](adr-005-documentation-reconciliation.md)** — Reconciliação contínua da documentação
 - **[ADR-006 Feature Evolution Ledger](adr-006-feature-evolution-ledger.md)** — Rastreamento cross-release de features individuais
+- **[ADR-011 Cache Layer Hardening](adr-011-cache-layer-hardening.md)** — Cache atômico, com lock, integridade SHA-256, fingerprint de releases e runtime não versionado

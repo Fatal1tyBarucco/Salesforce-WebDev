@@ -1,11 +1,12 @@
 """Content deduplication and hashing.
 
 Uses CacheManager for unified cache storage with content-hash support.
+Hashing is SHA-256 (ADR-011); legacy MD5 entries are migrated tolerantly
+by ``CacheManager.load_content_cache``.
 """
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 
 from ..cache_manager import CacheManager
@@ -21,11 +22,13 @@ def _get_releases_dir() -> Path:
 
 def _get_cache_manager() -> CacheManager:
     """Return a CacheManager instance for content caching."""
-    return CacheManager(cache_dir=_get_releases_dir(), ttl_seconds=86400 * 30)
+    from ..config import CACHE_CONTENT_TTL_SECONDS
+
+    return CacheManager(cache_dir=_get_releases_dir(), ttl_seconds=CACHE_CONTENT_TTL_SECONDS)
 
 
 def calculate_file_hash(file_path: Path) -> ContentHash:
-    """Calculate MD5 hash and metadata for a file.
+    """Calculate SHA-256 hash and metadata for a file.
 
     Args:
         file_path: Path to the file.
@@ -33,8 +36,7 @@ def calculate_file_hash(file_path: Path) -> ContentHash:
     Returns:
         ContentHash with hash, size, and modification time.
     """
-    content = file_path.read_bytes()
-    content_hash = hashlib.md5(content).hexdigest()
+    content_hash = CacheManager.compute_file_hash(file_path)
     stat = file_path.stat()
     return ContentHash(
         file_path=str(file_path),
@@ -142,19 +144,22 @@ async def analyze_content_changes(release_slug: str) -> DeduplicationResult:
 
 
 async def get_content_hash(file_path: str) -> str | None:
-    """Get the MD5 hash of a file's content.
+    """Get the SHA-256 hash of a file's content.
 
     Args:
         file_path: Path to the file as string.
 
     Returns:
-        MD5 hex digest if file exists, ``None`` otherwise.
+        SHA-256 hex digest if the file exists and is readable,
+        ``None`` otherwise.
     """
     path = Path(file_path)
     if not path.exists():
         return None
-    content = path.read_bytes()
-    return hashlib.md5(content).hexdigest()
+    try:
+        return CacheManager.compute_file_hash(path)
+    except OSError:
+        return None
 
 
 async def is_content_unchanged(file_path: str, expected_hash: str) -> bool:
@@ -162,7 +167,7 @@ async def is_content_unchanged(file_path: str, expected_hash: str) -> bool:
 
     Args:
         file_path: Path to the file as string.
-        expected_hash: Expected MD5 hex digest.
+        expected_hash: Expected SHA-256 hex digest.
 
     Returns:
         ``True`` if file exists and hash matches.

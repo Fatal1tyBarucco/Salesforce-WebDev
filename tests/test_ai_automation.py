@@ -411,7 +411,7 @@ async def test_get_content_hash(service, tmp_path: Path) -> None:
 
     result = await get_content_hash(str(test_file))
     assert result is not None
-    assert len(result) == 32
+    assert len(result) == 64  # SHA-256 (ADR-011, was MD5/32)
 
 
 @pytest.mark.asyncio

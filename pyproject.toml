@@ -119,3 +119,13 @@ dev = [
     "pytest-timeout>=2.4.0",
     "syrupy>=7.0.2",
 ]
+
+[tool.mutmut]
+# ADR-011: medição de mutação focada na camada de cache.
+# mutmut 2.5.0 (runner sequencial via subprocess — funciona em kernels que
+# bloqueiam semáforos POSIX, ex.: Termux/Android). Instale com:
+#   uv pip install "mutmut==2.5.0"
+# O mutmut_config.toml legado permanece para o escopo domain/services.
+paths_to_mutate = ["src/cache_manager.py"]
+tests_dir = "tests/"
+runner = "python -m pytest tests/test_cache_manager.py tests/test_cache_robustness.py -x -q --no-header -p no:cacheprovider"

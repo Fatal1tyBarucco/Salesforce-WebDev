@@ -75,12 +75,10 @@ jobs:
           echo ""
           echo "::endgroup::"
 
-      - name: Cache pytest / snapshots
-        uses: actions/cache@v6.1.0
-        with:
-          path: tests/__snapshots__
-          key: ${{ runner.os }}-snapshots-${{ hashFiles('tests/__snapshots__/*.ambr') }}
-          restore-keys: ${{ runner.os }}-snapshots-
+      # ADR-011 (R8): o cache de snapshots versionados foi removido — era
+      # inócuo (tests/__snapshots__ já é versionado) e usava tag mutável.
+      # O cache de dependências é feito pelo setup-uv (enable-cache +
+      # cache-dependency-glob: uv.lock) em todos os jobs.
 
       - name: 📋 Ruff Summary
         if: always()

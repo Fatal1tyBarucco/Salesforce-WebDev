@@ -468,28 +468,101 @@ TRAILHEAD_CACHE_FILE = "notifications/trailhead_cache.json"
 
 
 def _load_trailhead_cache() -> dict[str, list[str]]:
-    """Load previously known Trailhead module URLs per category."""
+    """Load known Trailhead module URLs per category (TTL + integrity).
+
+    ADR-011: the file is an integrity envelope (schema_version + checksum +
+    TTL). Legacy plain-dict files are read transparently and rewritten as
+    envelopes on the next save. Corrupt or tampered payloads are quarantined
+    with rotated backup and degrade to an empty cache — never an exception.
+    """
+    import time
     from pathlib import Path
+
+    from .cache_io import (
+        CacheLockTimeoutError,
+        FileLock,
+        compute_checksum,
+        quarantine_file,
+        read_json_safe,
+    )
+    from .config import (
+        CACHE_LOCK_TIMEOUT_SECONDS,
+        CACHE_QUARANTINE_DIRNAME,
+        CACHE_QUARANTINE_KEEP,
+        CACHE_TRAILHEAD_TTL_SECONDS,
+    )
 
     cache_path = Path(TRAILHEAD_CACHE_FILE)
     if not cache_path.exists():
         return {}
+    lock_path = cache_path.with_name(cache_path.name + ".lock")
     try:
-        data: dict[str, list[str]] = json.loads(cache_path.read_text(encoding="utf-8"))
-        return data
-    except json.JSONDecodeError, OSError:
+        with FileLock(lock_path, timeout=CACHE_LOCK_TIMEOUT_SECONDS):
+            payload = read_json_safe(cache_path)
+            if not isinstance(payload, dict):
+                logger.warning("[CACHE] Corrupt Trailhead cache — quarantining")
+                quarantine_file(
+                    cache_path,
+                    cache_path.parent / CACHE_QUARANTINE_DIRNAME,
+                    keep=CACHE_QUARANTINE_KEEP,
+                )
+                return {}
+            raw: object = payload
+            if "schema_version" in payload:
+                data = payload.get("data")
+                expected = payload.get("checksum")
+                timestamp = payload.get("timestamp")
+                ttl = payload.get("ttl", CACHE_TRAILHEAD_TTL_SECONDS)
+                if (
+                    not isinstance(data, dict)
+                    or not isinstance(expected, str)
+                    or not isinstance(timestamp, (int, float))
+                    or not isinstance(ttl, (int, float))
+                    or compute_checksum(data) != expected
+                ):
+                    logger.warning("[CACHE] Invalid Trailhead envelope — quarantining")
+                    quarantine_file(
+                        cache_path,
+                        cache_path.parent / CACHE_QUARANTINE_DIRNAME,
+                        keep=CACHE_QUARANTINE_KEEP,
+                    )
+                    return {}
+                if ttl >= 0 and time.time() - timestamp > ttl:
+                    logger.info("[CACHE] Trailhead cache expired — starting fresh")
+                    return {}
+                raw = data
+            result: dict[str, list[str]] = {}
+            if isinstance(raw, dict):
+                for key, value in raw.items():
+                    if isinstance(key, str) and isinstance(value, list):
+                        result[key] = [url for url in value if isinstance(url, str)]
+            return result
+    except (CacheLockTimeoutError, OSError) as exc:
+        logger.warning("[CACHE] Failed to load Trailhead cache: %s", exc)
         return {}
 
 
 def _save_trailhead_cache(cache: dict[str, list[str]]) -> None:
-    """Save Trailhead module URLs cache."""
+    """Save Trailhead module URLs atomically under lock (envelope + TTL)."""
+    import time
     from pathlib import Path
 
+    from .cache_io import CacheLockTimeoutError, FileLock, atomic_write_json, compute_checksum
+    from .config import CACHE_LOCK_TIMEOUT_SECONDS, CACHE_TRAILHEAD_TTL_SECONDS
+
     cache_path = Path(TRAILHEAD_CACHE_FILE)
+    lock_path = cache_path.with_name(cache_path.name + ".lock")
+    payload = {
+        "schema_version": 1,
+        "timestamp": time.time(),
+        "ttl": CACHE_TRAILHEAD_TTL_SECONDS,
+        "checksum": compute_checksum(cache),
+        "data": cache,
+    }
     try:
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
-    except OSError:
+        with FileLock(lock_path, timeout=CACHE_LOCK_TIMEOUT_SECONDS):
+            atomic_write_json(cache_path, payload)
+    except CacheLockTimeoutError, OSError:
         logger.warning("Failed to save Trailhead cache")
 
 

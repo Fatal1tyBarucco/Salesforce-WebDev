@@ -1,14 +1,19 @@
-"""LLM cache adapters (exact + semantic)."""
+"""LLM cache adapters (exact + semantic).
+
+ADR-011: TTL centralizado em config, index semântico com escrita atômica,
+leitura tolerante e embedding placeholder SHA-256 (MD5 removido).
+"""
 
 from __future__ import annotations
 
-import json
 import logging
 import time
 from pathlib import Path
 from typing import Any
 
+from src.cache_io import atomic_write_json, atomic_write_text, read_json_safe
 from src.cache_manager import CacheManager
+from src.config import CACHE_LLM_TTL_SECONDS
 from src.domain.llm import LLMPrompt, LLMResponse
 
 logger = logging.getLogger(__name__)
@@ -21,7 +26,7 @@ class LLMCacheAdapter:
         self, cache_manager: CacheManager | None = None, cache_dir: Path = Path("cache/llm")
     ):
         self._cache = cache_manager or CacheManager(cache_dir=cache_dir)
-        self._ttl_default = 7 * 24 * 3600  # 7 days
+        self._ttl_default = CACHE_LLM_TTL_SECONDS  # 7 days (ADR-010/ADR-011)
 
     async def get(self, key: str) -> LLMResponse | None:
         """Get cached response by exact key."""
@@ -59,18 +64,16 @@ class SemanticCacheAdapter:
         self._index_file = cache_dir / "index.json"
         self._index: dict[str, dict[str, Any]] = self._load_index()
 
-    def _load_index(self) -> dict[str, dict[str, Any]]:  # type: ignore[no-any-return]
-        if self._index_file.exists():
-            try:
-                return json.loads(self._index_file.read_text())  # type: ignore[no-any-return]
-            except Exception:
-                pass
+    def _load_index(self) -> dict[str, dict[str, Any]]:
+        data = read_json_safe(self._index_file)
+        if isinstance(data, dict):
+            return {str(k): v for k, v in data.items() if isinstance(v, dict)}
         return {}
 
     def _save_index(self) -> None:
         try:
-            self._index_file.write_text(json.dumps(self._index))
-        except Exception as e:
+            atomic_write_json(self._index_file, self._index)
+        except OSError as e:
             logger.debug("Failed to save semantic index: %s", e)
 
     def _get_embedding(self, text: str) -> list[float]:
@@ -78,10 +81,12 @@ class SemanticCacheAdapter:
 
         Components are centered around zero so that cosine similarity is
         discriminative: raw bytes in ``[0, 1]`` make unrelated texts score ~0.8.
+        SHA-256 replaces MD5 (ADR-011); old index entries simply miss and are
+        recomputed — safe degradation for a derivable cache.
         """
         import hashlib
 
-        hash_bytes = hashlib.md5(text.encode()).digest()
+        hash_bytes = hashlib.sha256(text.encode()).digest()
         return [b / 255.0 - 0.5 for b in hash_bytes[:16]]  # 16-dim vector
 
     def _cosine_similarity(self, a: list[float], b: list[float]) -> float:
@@ -121,6 +126,8 @@ class SemanticCacheAdapter:
 
     async def set(self, prompt: LLMPrompt, response: LLMResponse) -> None:
         """Cache response with semantic embedding."""
+        import hashlib
+
         prompt_text = f"{prompt.system}\n{prompt.user}"
         embedding = self._get_embedding(prompt_text)
 
@@ -128,12 +135,12 @@ class SemanticCacheAdapter:
         response_file = self.cache_dir / f"{key}.json"
 
         try:
-            response_file.write_text(response.model_dump_json(), encoding="utf-8")
+            atomic_write_text(response_file, response.model_dump_json())
             self._index[key] = {
                 "embedding": embedding,
-                "prompt_hash": hash(prompt_text),
+                "prompt_hash": hashlib.sha256(prompt_text.encode()).hexdigest()[:16],
                 "timestamp": time.time(),
             }
             self._save_index()
-        except Exception as e:
+        except OSError as e:
             logger.debug("Failed to set semantic cache: %s", e)

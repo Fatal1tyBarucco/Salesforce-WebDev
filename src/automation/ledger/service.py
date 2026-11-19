@@ -15,7 +15,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from src.cache_manager import CacheManager
-from src.config import RELEASES_DIR
+from src.config import CACHE_LEDGER_TTL_SECONDS, RELEASES_DIR
 from src.events import get_event_bus
 
 from . import linker
@@ -31,9 +31,9 @@ from .models import (
 
 logger = logging.getLogger(__name__)
 
-# Namespace e TTL dentro do CacheManager existente do projeto.
+# Namespace e TTL dentro do CacheManager existente do projeto (ADR-011: TTL centralizado).
 LEDGER_NAMESPACE = "sfel"
-LEDGER_TTL_SECONDS = 3600  # 1 hora — recompute após cada pipeline run
+LEDGER_TTL_SECONDS = CACHE_LEDGER_TTL_SECONDS  # 1 hora — recompute após cada pipeline run
 
 
 class FeatureEvolutionLedgerService:
