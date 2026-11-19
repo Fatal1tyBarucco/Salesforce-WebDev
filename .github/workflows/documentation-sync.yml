@@ -37,6 +37,17 @@
 #   7. PRs de forks: step de commit/push é pulado (GITHUB_TOKEN é
 #      read-only; push falharia após 3 tentativas).
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# Correções aplicadas (v2.3 — ADR-012, Sincronia Absoluta):
+#   8. Gate duro de contrato: docs_contract.py validate roda APÓS a
+#      reconciliação e o refresh do manifest (com o índice stageado) e
+#      FALHA o workflow em qualquer divergência ÓRFÃO/OMITO/OBSOLETO/
+#      DIVERGENTE. Divergência é defeito de build, não aviso.
+#   9. Manifest stageado antes da regeneração (git add -A) para capturar
+#      páginas criadas na própria reconciliação (repo-index, stubs).
+#  10. Guards v2.1/v2.2 preservados integralmente (anti-loop, skip-ci,
+#      concurrency pages, push condicional, paridade pt-BR/English).
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 name: Documentation Sync
 
@@ -171,7 +182,7 @@ jobs:
       - name: 📦 Instalar dependências
         if: steps.guard.outputs.skip != 'true'
         continue-on-error: true
-        run: uv sync --frozen --extra dev --extra docs
+        run: uv sync --frozen --extra dev --extra docs --extra imaging
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # DETECÇÃO DETERMINÍSTICA DE DRIFT:
@@ -316,7 +327,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "::group::🏗️ MkDocs Build (best-effort)"
-          uv run mkdocs build --strict
+          uv run --no-sync mkdocs build --strict
           echo "::endgroup::"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -346,7 +357,27 @@ jobs:
         if: |
           steps.guard.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true'
-        run: python3 .github/scripts/docs_sync_engine.py manifest
+        run: |
+          # Stage primeiro: o baseline precisa capturar páginas criadas na
+          # própria reconciliação (repo-index, stubs de API) — ADR-012.
+          git add -A
+          python3 .github/scripts/docs_sync_engine.py manifest
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # GATE DURO DE CONTRATO (ADR-012 — Sincronia Absoluta):
+      # valida manifest × nav × docs × árvore real do repositório.
+      # Qualquer divergência (ÓRFÃO/OMITO/OBSOLETO/DIVERGENTE) falha o
+      # workflow — divergência é defeito de build, não aviso. Roda com o
+      # índice stageado para enxergar as páginas criadas na reconciliação.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: 🧾 Validar contrato de documentação (hard gate)
+        if: steps.guard.outputs.skip != 'true'
+        id: contract
+        run: |
+          echo "::group::🧾 Documentation Contract (ADR-012)"
+          git add -A
+          python3 .github/scripts/docs_contract.py validate
+          echo "::endgroup::"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # CONFIGURAR IDENTIDADE DO BOT PARA COMMITS:
@@ -439,6 +470,7 @@ jobs:
             echo "| Markdown lint | ${{ steps['markdown-lint'].outcome || 'skipped' }} |"
             echo "| Link checker | ${{ steps['link-check'].outcome || 'skipped' }} |"
             echo "| MkDocs strict | ${{ steps['mkdocs-build'].outcome || 'skipped' }} (best-effort) |"
+            echo "| Contrato de documentação | ${{ steps.contract.outcome || 'skipped' }} (hard gate) |"
             echo "| Alterações documentais | ${{ steps.changes.outputs.has_changes || 'n/a' }} |"
             echo "| Atualização do manifesto | ${{ steps.manifest.outcome || 'skipped' }} |"
             echo "| Commit/push | ${{ steps['commit-push'].outcome || 'skipped' }} |"
@@ -468,8 +500,9 @@ jobs:
           echo '    H --> I[✅ Markdown Lint]' >> "$GITHUB_STEP_SUMMARY"
           echo '    I --> J[🔗 Link Checker]' >> "$GITHUB_STEP_SUMMARY"
           echo '    J --> K[🏗️ MkDocs Build]' >> "$GITHUB_STEP_SUMMARY"
-          echo '    K --> L[📤 Commit & Push]' >> "$GITHUB_STEP_SUMMARY"
-          echo '    L --> M[📚 GitHub Pages]' >> "$GITHUB_STEP_SUMMARY"
+          echo '    K --> L[🧾 Contract Gate]' >> "$GITHUB_STEP_SUMMARY"
+          echo '    L --> M[📤 Commit & Push]' >> "$GITHUB_STEP_SUMMARY"
+          echo '    M --> N[📚 GitHub Pages]' >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

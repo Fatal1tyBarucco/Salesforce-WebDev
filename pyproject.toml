@@ -36,7 +36,20 @@ docs = [
     "mkdocstrings[python]>=1.0.8,<2",
     "mkdocs-minify-plugin>=0.5,<1",
     "mkdocs-htmlproofer-plugin>=1.0,<2",
+    "mkdocs-gen-files>=0.5,<1",
+    "mkdocs-section-index>=0.3,<1",
+    "mike>=2.1,<3",
     "ruff>=0.17.5,<1",
+]
+# Social cards (og:image) — instalado apenas no CI (ubuntu). Em ambientes
+# sem cairo/pillow (ex.: Termux/ARM64) o plugin social fica desabilitado via
+# `enabled: !ENV [CI, false]` no mkdocs.yml; o build local continua verde.
+imaging = [
+    # pillow >=13: as versões 11.x/12.x carregam advisories críticos
+    # (heap overflow FPX/JPEG/TIFF, Ghostscript argument injection) —
+    # Dependency Review bloqueia o merge com fail-on-severity: high.
+    "pillow>=13.0.0,<14",
+    "cairosvg>=2.7,<3",
 ]
 observability = [
     "prometheus-client>=0.26.0,<1",

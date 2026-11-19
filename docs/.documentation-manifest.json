@@ -2,101 +2,210 @@
   "documentation_map": {
     ".github/scripts/build_failure_issue.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/plans/auto-opencode-issue.md"
+      "docs/architecture/automation-catalog.md",
+      "docs/plans/auto-opencode-issue.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/ci-visual.sh": [
       "CHANGELOG.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/scripts/docs_contract.py": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md",
       "docs/ARQUITETURA.md",
       "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
       "docs/changelog.md",
+      "docs/reference/repo-index.md",
       "docs/runbooks/documentation-sync-failure.md"
     ],
     ".github/scripts/documentation_reconcile.py": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/documentation_sync.py": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/fix_markdown.py": [
       "AGENTS.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/scripts/llm_fallback.py": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/scripts/progress.sh": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/select_free_model.py": [
-      "docs/ARQUITETURA.md"
+      "docs/ARQUITETURA.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/scripts/update_changelog_auto.py": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/ai-docs.yml": [
       "README.en.md",
       "README.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/ai-pr-review.yml": [
       "docs/MODERNIZACAO.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/ai-triage.yml": [
       "docs/MODERNIZACAO.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/ci-repair.yml": [
       "docs/MODERNIZACAO.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/copilot-setup-steps.yml": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/dependabot-lock-refresh.yml": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/workflows/dependency-review.yml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/documentation-build.yml": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/documentation-sync.yml": [
       "docs/ai-generated/release-notes.md",
-      "docs/architecture/decisions/adr-005-documentation-reconciliation.md"
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-005-documentation-reconciliation.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/opencode.yml": [
-      "docs/plans/auto-opencode-issue.md"
+      "docs/architecture/automation-catalog.md",
+      "docs/plans/auto-opencode-issue.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/python-quality.yml": [
       "AGENTS.md",
       "docs/ARQUITETURA.md",
       "docs/MODERNIZACAO.md",
       "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
       "docs/changelog.md",
-      "docs/plans/auto-opencode-issue.md"
+      "docs/plans/auto-opencode-issue.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/release-please.yml": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/release_notes_pipeline.yml": [
       "docs/ARQUITETURA.md",
       "docs/MODERNIZACAO.md",
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/salesforce_release_intelligence_hub.yml": [
-      "docs/ai-generated/release-notes.md"
+      "docs/ai-generated/release-notes.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     ".github/workflows/scheduled-pipeline.yml": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "k8s/cronjob.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "k8s/deployment.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "k8s/service.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "prompts/classification/v1.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-008-prompt-versioning.md",
+      "docs/reference/repo-index.md"
+    ],
+    "prompts/enrichment/v1.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-008-prompt-versioning.md",
+      "docs/reference/repo-index.md"
+    ],
+    "prompts/reconciliation/v1.yaml": [
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md"
+    ],
+    "prompts/reporting/v1.yaml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-008-prompt-versioning.md",
+      "docs/reference/repo-index.md"
     ],
     "scripts/cache_maintenance.py": [
       "AGENTS.md",
+      "docs/architecture/automation-catalog.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
-      "docs/maintenance/cache-management.md"
+      "docs/maintenance/cache-management.md",
+      "docs/reference/repo-index.md"
     ],
     "scripts/detect_release.py": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     "scripts/generate_pr_body.py": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "scripts/quality-check-local.sh": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "scripts/restore_releases.py": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "scripts/restore_releases.sh": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
     ],
     "src/__init__.py": [
       "docs/runbooks/mkdocs-build-failure.md"
@@ -104,149 +213,185 @@
     "src/ai/collectors/change_collector.py": [
       "README.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-collectors-change_collector.md"
+      "docs/api/ai-collectors-change_collector.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/config/models.py": [
       "README.en.md",
       "README.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-config-models.md"
+      "docs/api/ai-config-models.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/generators/badges.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-generators-badges.md"
+      "docs/api/ai-generators-badges.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/generators/code.py": [
-      "docs/api/ai-generators-code.md"
+      "docs/api/ai-generators-code.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/generators/markdown.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-generators-markdown.md"
+      "docs/api/ai-generators-markdown.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/integrations/salesforce.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/ai-integrations-salesforce.md"
+      "docs/api/ai-integrations-salesforce.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/integrations/trailhead.py": [
-      "docs/api/ai-integrations-trailhead.md"
+      "docs/api/ai-integrations-trailhead.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/llm/client.py": [
       "README.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-llm-client.md"
+      "docs/api/ai-llm-client.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/orchestrator.py": [
       "README.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-orchestrator.md"
+      "docs/api/ai-orchestrator.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/prompts/classification.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/ai-prompts-classification.md"
+      "docs/api/ai-prompts-classification.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/prompts/enrichment.py": [
-      "docs/api/ai-prompts-enrichment.md"
+      "docs/api/ai-prompts-enrichment.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/prompts/reporting.py": [
-      "docs/api/ai-prompts-reporting.md"
+      "docs/api/ai-prompts-reporting.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/prompts/validation.py": [
-      "docs/api/ai-prompts-validation.md"
+      "docs/api/ai-prompts-validation.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/schemas/change.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/ai-schemas-change.md"
+      "docs/api/ai-schemas-change.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/schemas/change_classifier.py": [
-      "docs/api/ai-schemas-change_classifier.md"
+      "docs/api/ai-schemas-change_classifier.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/schemas/change_reviewer.py": [
-      "docs/api/ai-schemas-change_reviewer.md"
+      "docs/api/ai-schemas-change_reviewer.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/schemas/generated_docs.py": [
-      "docs/api/ai-schemas-generated_docs.md"
+      "docs/api/ai-schemas-generated_docs.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai/schemas/llm_input.py": [
-      "docs/api/ai-schemas-llm_input.md"
+      "docs/api/ai-schemas-llm_input.md",
+      "docs/reference/repo-index.md"
     ],
     "src/ai_automation.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/ai_automation.md"
+      "docs/api/ai_automation.md",
+      "docs/reference/repo-index.md"
     ],
     "src/analytics.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/analytics.md"
+      "docs/api/analytics.md",
+      "docs/reference/repo-index.md"
     ],
     "src/api.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/api.md"
+      "docs/api/api.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/badge.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-badge.md"
+      "docs/api/automation-badge.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/comparison.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-comparison.md"
+      "docs/api/automation-comparison.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/content.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/automation-content.md"
+      "docs/api/automation-content.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/export.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-export.md"
+      "docs/api/automation-export.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/github_ops.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-github_ops.md"
+      "docs/api/automation-github_ops.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/impact.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-impact.md"
+      "docs/api/automation-impact.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/__init__.py": [
       "docs/DEBITO_TECNICO.md"
     ],
     "src/automation/ledger/linker.py": [
-      "docs/api/automation-ledger-linker.md"
+      "docs/api/automation-ledger-linker.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/models.py": [
-      "docs/api/automation-ledger-models.md"
+      "docs/api/automation-ledger-models.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/prompts.py": [
-      "docs/api/automation-ledger-prompts.md"
+      "docs/api/automation-ledger-prompts.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/service.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/automation-ledger-service.md"
+      "docs/api/automation-ledger-service.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/models.py": [
-      "docs/api/automation-models.md"
+      "docs/api/automation-models.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/notifications.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-notifications.md"
+      "docs/api/automation-notifications.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/reporting.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-reporting.md"
+      "docs/api/automation-reporting.md",
+      "docs/reference/repo-index.md"
     ],
     "src/automation/service.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-service.md"
+      "docs/api/automation-service.md",
+      "docs/reference/repo-index.md"
     ],
     "src/cache_io.py": [
       "AGENTS.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/cache_io.md",
-      "docs/architecture/decisions/adr-011-cache-layer-hardening.md"
+      "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
+      "docs/reference/repo-index.md"
     ],
     "src/cache_manager.py": [
       "AGENTS.md",
@@ -256,14 +401,16 @@
       "docs/architecture/c4_container.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
-      "docs/architecture/decisions/adr-011-cache-layer-hardening.md"
+      "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
+      "docs/reference/repo-index.md"
     ],
     "src/circuit_breaker.py": [
       "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/circuit_breaker.md",
       "docs/architecture/c4_container.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/config.py": [
       "AGENTS.md",
@@ -274,36 +421,44 @@
       "docs/api/config.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
-      "docs/maintenance/cache-management.md"
+      "docs/maintenance/cache-management.md",
+      "docs/reference/repo-index.md"
     ],
     "src/core/classification/service.py": [
       "docs/DEBITO_TECNICO.md",
       "docs/api/core-classification-service.md",
-      "docs/architecture/decisions/adr-008-prompt-versioning.md"
+      "docs/architecture/decisions/adr-008-prompt-versioning.md",
+      "docs/reference/repo-index.md"
     ],
     "src/core/enrichment/service.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/core-enrichment-service.md"
+      "docs/api/core-enrichment-service.md",
+      "docs/reference/repo-index.md"
     ],
     "src/core/pipeline/orchestrator.py": [
-      "docs/api/core-pipeline-orchestrator.md"
+      "docs/api/core-pipeline-orchestrator.md",
+      "docs/reference/repo-index.md"
     ],
     "src/core/pipeline/steps.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/core-pipeline-steps.md"
+      "docs/api/core-pipeline-steps.md",
+      "docs/reference/repo-index.md"
     ],
     "src/core/summarization/service.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/core-summarization-service.md"
+      "docs/api/core-summarization-service.md",
+      "docs/reference/repo-index.md"
     ],
     "src/dashboard.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/dashboard.md"
+      "docs/api/dashboard.md",
+      "docs/reference/repo-index.md"
     ],
     "src/documentation_service.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/documentation_service.md"
+      "docs/api/documentation_service.md",
+      "docs/reference/repo-index.md"
     ],
     "src/domain/__init__.py": [
       "CHANGELOG.md"
@@ -311,35 +466,42 @@
     "src/domain/llm.py": [
       "docs/ai-generated/release-notes.md",
       "docs/api/domain-llm.md",
-      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
+      "docs/reference/repo-index.md"
     ],
     "src/domain/scraper.py": [
       "docs/api/domain-scraper.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/events.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/events.md"
+      "docs/api/events.md",
+      "docs/reference/repo-index.md"
     ],
     "src/exceptions.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/exceptions.md"
+      "docs/api/exceptions.md",
+      "docs/reference/repo-index.md"
     ],
     "src/feature_classifier.py": [
       "docs/DEBITO_TECNICO.md",
       "docs/api/feature_classifier.md",
-      "docs/architecture/decisions/adr-007-clean-architecture.md"
+      "docs/architecture/decisions/adr-007-clean-architecture.md",
+      "docs/reference/repo-index.md"
     ],
     "src/feature_enricher.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/feature_enricher.md"
+      "docs/api/feature_enricher.md",
+      "docs/reference/repo-index.md"
     ],
     "src/generator.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/generator.md"
+      "docs/api/generator.md",
+      "docs/reference/repo-index.md"
     ],
     "src/health.py": [
       "CHANGELOG.md",
@@ -347,36 +509,44 @@
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/health.md",
-      "docs/architecture/c4_container.md"
+      "docs/architecture/c4_container.md",
+      "docs/reference/repo-index.md"
     ],
     "src/heuristic_classifier.py": [
       "docs/DEBITO_TECNICO.md",
       "docs/api/heuristic_classifier.md",
-      "docs/architecture/decisions/adr-007-clean-architecture.md"
+      "docs/architecture/decisions/adr-007-clean-architecture.md",
+      "docs/reference/repo-index.md"
     ],
     "src/i18n.py": [
-      "docs/api/i18n.md"
+      "docs/api/i18n.md",
+      "docs/reference/repo-index.md"
     ],
     "src/impact_analyzer.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/impact_analyzer.md"
+      "docs/api/impact_analyzer.md",
+      "docs/reference/repo-index.md"
     ],
     "src/impact_propagation/engine.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/impact_propagation-engine.md"
+      "docs/api/impact_propagation-engine.md",
+      "docs/reference/repo-index.md"
     ],
     "src/impact_propagation/graph_builder.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/impact_propagation-graph_builder.md"
+      "docs/api/impact_propagation-graph_builder.md",
+      "docs/reference/repo-index.md"
     ],
     "src/impact_propagation/heuristic_fallback.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/impact_propagation-heuristic_fallback.md"
+      "docs/api/impact_propagation-heuristic_fallback.md",
+      "docs/reference/repo-index.md"
     ],
     "src/impact_propagation/models.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/impact_propagation-models.md"
+      "docs/api/impact_propagation-models.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/api/__init__.py": [
       "CHANGELOG.md",
@@ -385,96 +555,117 @@
     ],
     "src/infrastructure/api/graphql.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/infrastructure-api-graphql.md"
+      "docs/api/infrastructure-api-graphql.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/api/routes.py": [
-      "docs/api/infrastructure-api-routes.md"
+      "docs/api/infrastructure-api-routes.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/generation.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-generation.md"
+      "docs/api/infrastructure-generation.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/github.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-github.md"
+      "docs/api/infrastructure-github.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/llm.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/MODERNIZACAO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/infrastructure-llm.md"
+      "docs/api/infrastructure-llm.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/llm_adapters/cache.py": [
       "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm_adapters-cache.md",
-      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/llm_adapters/observability.py": [
-      "docs/api/infrastructure-llm_adapters-observability.md"
+      "docs/api/infrastructure-llm_adapters-observability.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/llm_adapters/rate_limiter.py": [
-      "docs/api/infrastructure-llm_adapters-rate_limiter.md"
+      "docs/api/infrastructure-llm_adapters-rate_limiter.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/llm_adapters/unified_client.py": [
       "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm_adapters-unified_client.md",
-      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/mcp/knowledge_server.py": [
       "AGENTS.md",
       "CHANGELOG.md",
       "docs/ai-generated/release-notes.md",
       "docs/ai-generated/roadmap.md",
-      "docs/api/infrastructure-mcp-knowledge_server.md"
+      "docs/api/infrastructure-mcp-knowledge_server.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/messaging.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-messaging.md"
+      "docs/api/infrastructure-messaging.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/notification_step.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-notification_step.md"
+      "docs/api/infrastructure-notification_step.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/parsing.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-parsing.md"
+      "docs/api/infrastructure-parsing.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/scraping/cache_adapter.py": [
       "docs/api/infrastructure-scraping-cache_adapter.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/scraping/observability.py": [
       "docs/api/infrastructure-scraping-observability.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/scraping/playwright_adapter.py": [
       "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-scraping-playwright_adapter.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/scraping/rate_limiter.py": [
       "docs/api/infrastructure-scraping-rate_limiter.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/storage.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-storage.md"
+      "docs/api/infrastructure-storage.md",
+      "docs/reference/repo-index.md"
     ],
     "src/infrastructure/translation.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/infrastructure-translation.md"
+      "docs/api/infrastructure-translation.md",
+      "docs/reference/repo-index.md"
     ],
     "src/issue_triage.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/issue_triage.md"
+      "docs/api/issue_triage.md",
+      "docs/reference/repo-index.md"
     ],
     "src/limiters/rate_limiter.py": [
       "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
       "docs/api/limiters-rate_limiter.md",
-      "docs/architecture/c4_container.md"
+      "docs/architecture/c4_container.md",
+      "docs/reference/repo-index.md"
     ],
     "src/llm_service.py": [
       "docs/ARQUITETURA.md",
@@ -482,13 +673,15 @@
       "docs/api/llm_service.md",
       "docs/architecture/c4_container.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md",
-      "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
+      "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
+      "docs/reference/repo-index.md"
     ],
     "src/logger.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
       "docs/api/logger.md",
       "docs/observability/logging.md",
+      "docs/reference/repo-index.md",
       "docs/runbooks/index.md"
     ],
     "src/main.py": [
@@ -507,42 +700,51 @@
       "docs/guides/running-pipeline.md",
       "docs/index.md",
       "docs/maintenance/local-development.md",
+      "docs/reference/repo-index.md",
       "docs/runbooks/release-generation-failure.md",
       "docs/runbooks/scraper-failure.md"
     ],
     "src/models/api.py": [
       "docs/ARQUITETURA.md",
-      "docs/api/models-api.md"
+      "docs/api/models-api.md",
+      "docs/reference/repo-index.md"
     ],
     "src/models/classification.py": [
       "docs/ARQUITETURA.md",
-      "docs/api/models-classification.md"
+      "docs/api/models-classification.md",
+      "docs/reference/repo-index.md"
     ],
     "src/models/enrichment.py": [
       "docs/ARQUITETURA.md",
-      "docs/api/models-enrichment.md"
+      "docs/api/models-enrichment.md",
+      "docs/reference/repo-index.md"
     ],
     "src/models/feature.py": [
       "docs/ARQUITETURA.md",
-      "docs/api/models-feature.md"
+      "docs/api/models-feature.md",
+      "docs/reference/repo-index.md"
     ],
     "src/models/release.py": [
       "docs/ARQUITETURA.md",
-      "docs/api/models-release.md"
+      "docs/api/models-release.md",
+      "docs/reference/repo-index.md"
     ],
     "src/nl_search.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/nl_search.md"
+      "docs/api/nl_search.md",
+      "docs/reference/repo-index.md"
     ],
     "src/notifications.py": [
       "README.en.md",
-      "docs/api/notifications.md"
+      "docs/api/notifications.md",
+      "docs/reference/repo-index.md"
     ],
     "src/orchestrator.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/orchestrator.md"
+      "docs/api/orchestrator.md",
+      "docs/reference/repo-index.md"
     ],
     "src/parser.py": [
       "README.en.md",
@@ -551,20 +753,23 @@
       "docs/SOURCE_SCHEMA.md",
       "docs/api/parser.md",
       "docs/architecture/c4_container.md",
-      "docs/architecture/decisions/adr-007-clean-architecture.md"
+      "docs/architecture/decisions/adr-007-clean-architecture.md",
+      "docs/reference/repo-index.md"
     ],
     "src/processed_releases.py": [
       "AGENTS.md",
       "docs/ai-generated/release-notes.md",
       "docs/api/processed_releases.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
-      "docs/maintenance/cache-management.md"
+      "docs/maintenance/cache-management.md",
+      "docs/reference/repo-index.md"
     ],
     "src/release_discovery.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/release_discovery.md"
+      "docs/api/release_discovery.md",
+      "docs/reference/repo-index.md"
     ],
     "src/release_docs.py": [
       "docs/ARQUITETURA.md",
@@ -572,19 +777,22 @@
       "docs/ai-generated/leadership.md",
       "docs/ai-generated/release-notes.md",
       "docs/ai-generated/roadmap.md",
-      "docs/api/release_docs.md"
+      "docs/api/release_docs.md",
+      "docs/reference/repo-index.md"
     ],
     "src/release_summarizer.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/release_summarizer.md"
+      "docs/api/release_summarizer.md",
+      "docs/reference/repo-index.md"
     ],
     "src/salesforce.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/release-notes.md",
-      "docs/api/salesforce.md"
+      "docs/api/salesforce.md",
+      "docs/reference/repo-index.md"
     ],
     "src/scraper.py": [
       "README.en.md",
@@ -593,21 +801,25 @@
       "docs/SOURCE_SCHEMA.md",
       "docs/api/scraper.md",
       "docs/architecture/decisions/adr-007-clean-architecture.md",
-      "docs/architecture/decisions/adr-009-scraper-resilience.md"
+      "docs/architecture/decisions/adr-009-scraper-resilience.md",
+      "docs/reference/repo-index.md"
     ],
     "src/smart_notifications.py": [
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/smart_notifications.md"
+      "docs/api/smart_notifications.md",
+      "docs/reference/repo-index.md"
     ],
     "src/translator.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/translator.md"
+      "docs/api/translator.md",
+      "docs/reference/repo-index.md"
     ],
     "src/workflow.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
-      "docs/api/workflow.md"
+      "docs/api/workflow.md",
+      "docs/reference/repo-index.md"
     ]
   },
   "files": {
@@ -655,8 +867,9 @@
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "0041672260b12759121d41d62fec6e764d89bfbc",
     ".github/scripts/ci-visual.sh": "e652827743916b3b14e0606eadba9fa88d6e36ef",
-    ".github/scripts/docs_sync_engine.py": "9bbc10edb211bc1f563dfd7c0f576949987a332b",
-    ".github/scripts/documentation_reconcile.py": "9d65b68af90802501030594f7aa984206e6b1d73",
+    ".github/scripts/docs_contract.py": "858c660aa0b8e986f324de3cf1ed9251e78fa39b",
+    ".github/scripts/docs_sync_engine.py": "f333d25e2a1426bf5a7889690dc645048f5dd943",
+    ".github/scripts/documentation_reconcile.py": "f65a8851dea5c27f0e69708eea9108ea35784813",
     ".github/scripts/documentation_sync.py": "54ca4220be6f37b99c107a084c751b9c5d6754d4",
     ".github/scripts/fix_markdown.py": "99cd8b21b685f7db3778da1eed18fe7af5aef0f5",
     ".github/scripts/llm_fallback.py": "3ff9f3af317e746772e85b4e585bf510c6ed17f8",
@@ -664,32 +877,32 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/triage-rules.yaml": "85fef0b72056e9f3c1f4e5b872e9d9639eb97401",
-    ".github/workflows/ai-docs.yml": "231240a0d5dcd87b470b7f7ab1353f272cb6e296",
+    ".github/workflows/ai-docs.yml": "c9d7e45e7a4f7501ca190a5ee44a7d37b3a025ea",
     ".github/workflows/ai-pr-review.yml": "8b93471d61d3825945655fade91ff6a35f2367c6",
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
     ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
     ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
     ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
-    ".github/workflows/documentation-build.yml": "a48ef3f4cb636079b09f9215904f165c7d5ba12b",
-    ".github/workflows/documentation-sync.yml": "30c20becf67b76b447467d8f36ba9499ea1a382d",
+    ".github/workflows/documentation-build.yml": "e4d313d4bff5af62679e73d144bd5b8afad0b35e",
+    ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
     ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
     ".github/workflows/release-please.yml": "768d7642f6991a9b975c1a93d70ed599ca5be92d",
     ".github/workflows/release_notes_pipeline.yml": "6ed7684f89e864395bccd3e176755ef8dd587660",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "597455339d64bc367e373ecf56dc34ead54ce35a",
     ".github/workflows/scheduled-pipeline.yml": "5231cab82ec2d67816ec0804c14f98eb0852c5e0",
-    ".gitignore": "123e30c0bab754da34abc5b46f0fa773b5b1a725",
+    ".gitignore": "f95ec99871a793723ca2a230161c06f2b268de02",
     ".gitleaks.toml": "44d744133c71b998b3b28a5b2262838c0d2376df",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".mcp.json": "7af655fee00a854266d691999b597ab7dd171b21",
     ".pre-commit-config.yaml": "3054b6560dd53f6470e4fdf2aa64778ca84eb780",
-    ".promptfoo.yaml": "d5cf8c11c35215bb159fb49d7232cdfb70a2f431",
+    ".promptfoo.yaml": "dff4f09ab4eaad7f534756dfcb3ed710e2f50ec9",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
-    "AGENTS.md": "1ec18b74a7e4b4ebcefe2252f36cf90f3f058ab4",
+    "AGENTS.md": "66b3b9f8c72b63e450fe783fa22cde343820cba8",
     "CHANGELOG.md": "d9119929349ea4289e3ab8c718217c927b49abe4",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -701,14 +914,15 @@
     "PLANO_DE_MODERNIZACAO.md": "78dc7c4ba62b95bc19fef42d938634df9e085eb0",
     "PRODUCT.md": "352e8c6d11c9185e6b24474ad2557f5b3613310e",
     "PROPOSTA_FEATURE_RIPE.md": "70ba458d1e8337573a78e71a87e5085a2cc5dcb1",
-    "README.en.md": "6b124ce09cac31209f986a41e081eba5108d4158",
-    "README.md": "7a292c6d6eab0324a8d4320f3862cfa2e669de64",
+    "README.en.md": "72d4a35ba27ff400e2da8fc84c6972d04e54dbc9",
+    "README.md": "89e2ef9ec59343d08a3afd9dccacf23d953d972c",
     "SECURITY.md": "44f9b66a850ee5ac5b97ad371bead0e38cc11c1e",
     "assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
     "assets/pipeline-flow.png": "565d6af2416f539411553c8a32d9c739c8a4947d",
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "commit_fixes.sh": "aa56366250aa7f370a4affb7e5a1dcbb8e5618e1",
+    "custom/main.html": "925be71edaab39f7ed962bf39d9dc3948e978117",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
     "docs/.last-processed-ref": "8d9c0f5d4dbbbe1f85aa7b20a603174d99408522",
     "docs/ARQUITETURA.md": "fe540703565fd9096476a65b330bf905aa5ecdc4",
@@ -824,6 +1038,7 @@
     "docs/api/smart_notifications.md": "5c28fa9d62aadb9deb1b57d4d64565334f9d88fa",
     "docs/api/translator.md": "c994097761189c1a4881946dd75ffc5b8b3fa4bb",
     "docs/api/workflow.md": "3e446601659d78db75ba647e0437fa8be426e4ac",
+    "docs/architecture/automation-catalog.md": "4eb5148acf3b29ae676d0e546ef7608dc231f0ad",
     "docs/architecture/c4_container.md": "46451f3fa0af8ef4dbd4313637c85ab77eebc4eb",
     "docs/architecture/decisions/adr-001-parser-strategy.md": "445fcc85b61a64b6ad7d706621681022bcab875e",
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
@@ -836,7 +1051,8 @@
     "docs/architecture/decisions/adr-009-scraper-resilience.md": "b51764bf9f8859563256495b880385c949e0492c",
     "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "e8dee0e22306580f4ca59c055eb1101a1ae99b6a",
     "docs/architecture/decisions/adr-011-cache-layer-hardening.md": "b68d330d0a1a2d1dbb26e9a3f729e8896e4ae738",
-    "docs/architecture/decisions/index.md": "31c0d94b0784743cab95f6330abeae3b584b80b3",
+    "docs/architecture/decisions/adr-012-absolute-documentation-sync.md": "7086a682675ea68dabdbb6ec17dbc3a6ef4ca259",
+    "docs/architecture/decisions/index.md": "a3adaac536ff16ad1175906e70741f28df29a8ee",
     "docs/architecture/overview.md": "34869944d9a162b9cfd758578f91ec2b0ab60816",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
     "docs/assets/banner2.png": "3479f60b98939b1171291a89977865a95b811a5b",
@@ -844,8 +1060,9 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "e7fd7101adc0aabada1a6659c2e67156c06656e4",
+    "docs/changelog.md": "99fdf0db9e7338b55c49fb28ff758f787f9ddc60",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
+    "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
@@ -863,6 +1080,7 @@
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
     "docs/plans/auto-opencode-issue.md": "c82578ff99a9d9c6a8d86e429ad801a8d1b611d6",
+    "docs/reference/repo-index.md": "94583d54dee2c7ce2c401b20f3b4da751a294f3d",
     "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
@@ -889,12 +1107,13 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "37ef828c500792326d7ed6b1d0efd1bf6e420ea0",
+    "mkdocs.yml": "e0eb4a3baa5d91bfc7bd93f9ea4af53924e2cc72",
     "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
     "prompts/classification/v1.yaml": "68f6eb37746235577864ab1cf1c91cc520306a7e",
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
+    "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "6761f10535d4383a06f767191dbccf2ef79dbf3f",
+    "pyproject.toml": "2db97370566b942f31cdbbd69972db37483828c8",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1347,6 +1566,7 @@
     "tests/test_coverage_extra.py": "523225a4d942242de5e79a6e0913df9f8081a5a5",
     "tests/test_coverage_final.py": "ac31ee3adf2bada119ffa77f6dbb14ebd09a5a92",
     "tests/test_dashboard.py": "a2822786c531805373d9acf85b27aaac7e0d8a7f",
+    "tests/test_docs_contract.py": "1001d94a22e6c5d581060e4770ca07eee0bb928a",
     "tests/test_documentation_service_coverage.py": "ef9aa5c76d7a4d800f11a5a16d4e04b85ce0cee6",
     "tests/test_e2e.py": "7b18bd1ede34590b738658a12e737ebf09a74a55",
     "tests/test_events.py": "980a855960015a3231c28448a8282c478c660cb5",
@@ -1421,8 +1641,22 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "5328ad8c3360731460e5e7110334f303c6f93918"
+    "uv.lock": "f3f4cfe7725cba34f3e0aee8feb7f6f23e5c0d2b"
   },
-  "generated_at": "2026-11-19T18:48:10.153949+00:00",
-  "repository_sha": "a0daa7307cbdbddc299dad3ba1ebe713786625a1"
+  "generated_at": "2026-11-19T20:43:14.586609+00:00",
+  "removals": [
+    {
+      "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
+      "path": "docs/architecture/automation-catalog.md",
+      "reason": "nav target no longer exists in repository",
+      "removed_at": "2026-11-19T20:21:39.207082+00:00"
+    },
+    {
+      "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
+      "path": "docs/reference/repo-index.md",
+      "reason": "nav target no longer exists in repository",
+      "removed_at": "2026-11-19T20:21:39.284721+00:00"
+    }
+  ],
+  "repository_sha": "8397b61b9ab12e07b87f10572096163b410f97e6"
 }

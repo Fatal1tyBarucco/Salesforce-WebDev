@@ -10,6 +10,10 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        # --unsafe: mkdocs.yml usa a tag !ENV do MkDocs Material
+        # (social cards habilitadas apenas em CI) — construtor custom
+        # legítimo que o safe loader padrão desconhece (ADR-012).
+        args: [--unsafe]
       - id: check-toml
       - id: check-added-large-files
         args: ["--maxkb=2000"]

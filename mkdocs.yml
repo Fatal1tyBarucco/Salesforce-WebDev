@@ -7,8 +7,17 @@ repo_name: Fatal1tyBarucco/Salesforce-WebDev
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2024 Fatal1tyBarucco — Educational & Technical Reference
 
+# Superfícies fora do índice público (ADR-012): permanecem no repositório
+# (histórico + outputs do pipeline de IA), mas não são publicadas nem
+# exigidas no nav. O validador de contrato conhece a mesma lista.
+exclude_docs: |
+  ai-generated/
+  internal/
+  plans/
+
 theme:
   name: material
+  custom_dir: custom
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -30,11 +39,16 @@ theme:
     - navigation.sections
     - navigation.expand
     - navigation.top
+    - navigation.path
+    - navigation.indexes
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
     - content.code.annotate
     - content.tabs.link
+    - content.tooltips
+    - toc.follow
   icon:
     repo: fontawesome/brands/github
     admonition:
@@ -61,10 +75,13 @@ extra_css:
 
 plugins:
   - search:
-      separator: '[\s\-\.,:/\\(\\)\[\]]+'
+      separator: '[\s\-\.,:/\\(\\)\\[\\]]+'
       lang:
         - en
         - pt
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
   - mkdocstrings:
       handlers:
         python:
@@ -78,6 +95,10 @@ plugins:
             merge_init_into_class: true
             separate_signature: true
             show_signature_annotations: true
+  - section-index
+  - privacy
+  - social:
+      enabled: !ENV [CI, false]
   - minify:
       minify_html: true
   - htmlproofer:
@@ -104,21 +125,19 @@ markdown_extensions:
       generic: true
 
 extra:
+  # Banner de release (bloco `announce` em custom/main.html). O texto é
+  # reconciliado deterministicamente pelo docs_sync_engine.py a partir de
+  # releases/*.meta.json — nunca editar manualmente.
+  announce: "Release mais recente: Winter '27 — documentação sincronizada com o repositório."
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/Fatal1tyBarucco/Salesforce-WebDev
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/salesforce-release-notes/
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
-  consent:
-    title: Cookie consent
-    description: >-
-      We use cookies to recognize your repeated visits and preferences, as well
-      as to measure the effectiveness of our documentation and whether users
-      find what they're searching for. With your consent, you're helping us to
-      make our documentation better.
+  # Analytics removido (ADR-012): o placeholder G-XXXXXXXXXX era um defeito
+  # de produção e não há propriedade/segredo configurado. Para reativar,
+  # adicione `analytics: {provider: google, property: !ENV [GA_PROPERTY, '']}`
+  # com o segredo GA_PROPERTY no CI — nunca um placeholder commitado.
   version:
     provider: mike
   alternate:
@@ -143,8 +162,10 @@ nav:
     - DEBITO_TECNICO: DEBITO_TECNICO.md
     - MODERNIZACAO: MODERNIZACAO.md
     - Diagrama C4: architecture/c4_container.md
+    - Catálogo de Automação: architecture/automation-catalog.md
     - Decisões (ADRs):
       - Índice: architecture/decisions/index.md
+      - ADR-012 - Absolute Documentation Sync (Contrato Verificável): architecture/decisions/adr-012-absolute-documentation-sync.md
       - ADR-001 Parser Strategy: architecture/decisions/adr-001-parser-strategy.md
       - ADR-002 GitHub Actions: architecture/decisions/adr-002-github-actions.md
       - ADR-003 Topic Classification: architecture/decisions/adr-003-topic-classification.md
@@ -254,7 +275,6 @@ nav:
     - Workflow: api/workflow.md
     - Visão Geral: api/index.md
     - Pipeline Principal: api/main.md
-    - AGENT Directive: internal/AGENT_DIRECTIVE.md
     - Scraper: api/scraper.md
     - Parser: api/parser.md
     - LLM Service: api/llm_service.md
@@ -271,10 +291,6 @@ nav:
     - Falha no Document Sync: runbooks/documentation-sync-failure.md
     - Falha no MkDocs Build: runbooks/mkdocs-build-failure.md
     - Falha na Geração de Release: runbooks/release-generation-failure.md
-  - Documentação Gerada por IA:
-    - Release Notes: ai-generated/release-notes.md
-    - Resumo Executivo: ai-generated/leadership.md
-    - Sugestões de Roadmap: ai-generated/roadmap.md
   - Observabilidade:
     - Visão Geral: observability/index.md
     - Logging: observability/logging.md
@@ -294,9 +310,10 @@ nav:
     - V3: roadmap/v3.md
     - V4 (Atual): roadmap/v4.md
   - Changelog: changelog.md
-  - Planos:
-    - Comentário Automático /oc fix: plans/auto-opencode-issue.md
   - Referências:
     - Source Schema: SOURCE_SCHEMA.md
+    - Árvore de Código (gerada): reference/code-tree.md
   - Contribuição:
     - Testing Strategy: contribution/testing-strategy.md
+  - Referências:
+    - Repo Index: reference/repo-index.md
