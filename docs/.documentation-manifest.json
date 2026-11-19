@@ -829,7 +829,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "c0333854ba841ac0e34aa62d128ea6ebbb5774d5",
+    "docs/changelog.md": "438572ddd0fae3e4f4f1d473fcc7e2e0fa661c65",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "7c071a85570006229c00c36769765a5fe6806f44"
   },
-  "generated_at": "2026-11-19T17:25:33.893020+00:00",
-  "repository_sha": "6cbbd1255f4c6b090e68e43427826b715388c361"
+  "generated_at": "2026-11-19T17:26:51.446386+00:00",
+  "repository_sha": "5f506e5b31edd154a7b67fcf4cd482e3df1b9fe5"
 }

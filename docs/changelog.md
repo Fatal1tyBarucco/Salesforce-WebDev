@@ -125,3 +125,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `f9ed8fd` — docs(agents): record API approval for bot runs + Documentation Sync link-checker hardening quirks
 - `8e7a3ee` — feat(cache): harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011) (#410)
 - `9bb29ec` — style(docs): ruff-format Python blocks in restored SOURCE_SCHEMA.md
+- `5f506e5` — docs(agents): record mkdocs plugin deps + ruff-format-in-markdown pitfalls

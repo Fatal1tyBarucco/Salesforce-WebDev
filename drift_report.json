@@ -1,7 +1,7 @@
 {
   "mode": "audit",
-  "repository_sha": "9bb29ec1947836ebefa47505b3d5108bc85220a5",
-  "generated_at": "2026-11-19T17:17:16.478433+00:00",
+  "repository_sha": "5f506e5b31edd154a7b67fcf4cd482e3df1b9fe5",
+  "generated_at": "2026-11-19T17:26:11.877400+00:00",
   "inventory_count": 814,
   "src_modules": 103,
   "existing_api_evokers": 106,
@@ -39,42 +39,5 @@
       "release_id": 258
     }
   ],
-  "findings": [
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": ".github/workflows/ai-docs.yml",
-      "detail": "'.github/workflows/ai-docs.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "docs/SOURCE_SCHEMA.md",
-      "detail": "'docs/SOURCE_SCHEMA.md' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "drift_report.json",
-      "detail": "'drift_report.json' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "mkdocs.yml",
-      "detail": "'mkdocs.yml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "pyproject.toml",
-      "detail": "'pyproject.toml' blob SHA changed since last manifest baseline."
-    },
-    {
-      "type": "MANIFEST_STALE_SHA",
-      "severity": "high",
-      "path": "uv.lock",
-      "detail": "'uv.lock' blob SHA changed since last manifest baseline."
-    }
-  ]
+  "findings": []
 }
