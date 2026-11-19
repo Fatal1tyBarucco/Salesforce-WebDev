@@ -669,12 +669,12 @@
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
     ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
     ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
-    ".github/workflows/dependabot-lock-refresh.yml": "22d8ea6a4693d8b7e11bc366b69a16bdf218cf9f",
+    ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
     ".github/workflows/documentation-build.yml": "a48ef3f4cb636079b09f9215904f165c7d5ba12b",
     ".github/workflows/documentation-sync.yml": "30c20becf67b76b447467d8f36ba9499ea1a382d",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
-    ".github/workflows/python-quality.yml": "bd218e4b1b3f6876500266a7db7f42e68d34900f",
+    ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
     ".github/workflows/release-please.yml": "768d7642f6991a9b975c1a93d70ed599ca5be92d",
     ".github/workflows/release_notes_pipeline.yml": "6ed7684f89e864395bccd3e176755ef8dd587660",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "597455339d64bc367e373ecf56dc34ead54ce35a",
@@ -1421,8 +1421,8 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "54d7973d7b04535d803ddd05d22f4603276e5119"
+    "uv.lock": "f837b32a81c2227585b7329a111c5c2c49f86942"
   },
-  "generated_at": "2026-11-19T18:26:24.636711+00:00",
-  "repository_sha": "1c9d6f6ee6e383253d30dc5df50ac61c1ede0f4b"
+  "generated_at": "2026-11-19T18:34:36.266085+00:00",
+  "repository_sha": "91889b72741326c03863cf4524e87c3218725d37"
 }
