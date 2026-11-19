@@ -119,3 +119,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c49e6da` — fix: add missing mkdocs-sitemap dep + uv setup for release-please sync
 - `4869ad6` — docs(agents): record CI/quality learnings — uv lock gate fix landed, drift baseline quirk, action_required runs, gitleaks globs, fix_markdown layers
 - `f63d4a8` — fix: remove non-existent mkdocs-sitemap plugin and dependency
+- `e661cbf` — style(docs): end-of-file newlines + reconcile manifest baseline
+- `70a4bf7` — feat(cache): harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011)
