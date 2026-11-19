@@ -205,7 +205,7 @@ EXCLUDED_NODE_SLUGS = {
 
 ### 5.1 Release Notes Index
 
-```
+```yaml
 https://help.salesforce.com/s/articleView
   ?id=release-notes.salesforce_release_notes.htm
   &release={release_id}
@@ -217,7 +217,7 @@ Defined in `src/config.py:25-31` as `BASE_URL`.
 
 ### 5.2 Feature Impact
 
-```
+```yaml
 https://help.salesforce.com/s/articleView
   ?id=release-notes.rn_feature_impact.htm
   &release={release_id}
@@ -229,7 +229,7 @@ Defined in `src/config.py:33-39` as `FEATURE_IMPACT_URL`.
 
 ### 5.3 Release-in-a-Box PDF
 
-```
+```yaml
 https://www.salesforce.com/en-us/wp-content/uploads/sites/4/
   documents/PDF/release-in-a-box-{season}-{year_short}-v{version}.pdf
 ```
@@ -301,7 +301,6 @@ return Array.from(document.querySelectorAll('.feature-item')).map(item => ({
 
 The pipeline includes snapshot tests in `tests/test_snapshot.py` that capture expected parser output. When the DOM changes, these tests will fail and require snapshot regeneration:
 
-
 ```bash
 uv run pytest tests/test_snapshot.py           # Run snapshots
 uv run pytest tests/test_snapshot.py --snapshot-update  # Update after intentional changes
@@ -350,24 +349,29 @@ When Salesforce updates its portal:
    uv run pytest tests/test_snapshot.py -v
    ```
 
-2. **Inspect the failure** — read the diff in the test output
+1. **Inspect the failure** — read the diff in the test output
 
-3. **Update selectors** in `src/parser.py` and `src/scraper.py`
+2. **Update selectors** in `src/parser.py` and `src/scraper.py`
 
-4. **Update this document** with the new selectors/structure
+3. **Update this document** with the new selectors/structure
 
-5. **Regenerate snapshots**:
+4. **Regenerate snapshots**:
 
 ```bash
+
    uv run pytest tests/test_snapshot.py --snapshot-update
+
    ```
 
-6. **Validate** end-to-end:
+1. **Validate** end-to-end:
+
    ```bash
+
    uv run ruff check . && uv run black --check . && uv run mypy src/ && uv run pytest
+
    ```
 
-7. **Commit** with a `fix(scraper):` or `fix(parser):` conventional commit message.
+2. **Commit** with a `fix(scraper):` or `fix(parser):` conventional commit message.
 
 ---
 
