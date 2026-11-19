@@ -652,7 +652,7 @@
     ".github/workflows/ai-docs.yml": "508936627c51c9719e0c98e08c19b1bd317ccdb0",
     ".github/workflows/ai-pr-review.yml": "8b93471d61d3825945655fade91ff6a35f2367c6",
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
-    ".github/workflows/ci-repair.yml": "199f1745b618df62ba95853fadac78cfaac0b4c9",
+    ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
     ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
     ".github/workflows/dependabot-lock-refresh.yml": "22d8ea6a4693d8b7e11bc366b69a16bdf218cf9f",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
@@ -859,7 +859,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "2ab7c025a1b6c22852cb1e90a338fba5cbcf42bb",
+    "drift_report.json": "e224140bdd701a65202b299d8b62e5ddfcdacedd",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -882,7 +882,7 @@
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
     "pyproject.toml": "5b3bd717cd8189a4c435db5944cb7ce14ba26fc6",
-    "reconcile_summary.md": "915d3c8144ad7d586f58e3026da9c36a77a2b1d0",
+    "reconcile_summary.md": "9f3114a4040b19104dc90ed50c05d3b8c4971bac",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1116,7 +1116,7 @@
     "src/automation/notifications.py": "6ff1503c666cb3bfefa4465140ce5ff6b1113573",
     "src/automation/reporting.py": "4b8334a72114fc2d2f183b2d7227d8dfbf144dc3",
     "src/automation/service.py": "da38e0ca0d42a21267069ca2b54492d74a6bc335",
-    "src/cache_io.py": "8ee600907c025b08f210cec1efc1743e1dbb778b",
+    "src/cache_io.py": "6c79e261f216f532a1a75ebd92936274eac5731d",
     "src/cache_manager.py": "37d50f1f382cf528252e1f7fc6e330ba4e0a4de9",
     "src/circuit_breaker.py": "8c660deb950478c8749f23334c819b5fa5416967",
     "src/config.py": "4da33d91a966e9e5f39372048de0aa8cde6e5540",
@@ -1387,7 +1387,7 @@
     "tests/test_orchestrator_cache.py": "6930c4ef24543761b26160e050d7ca15953f849b",
     "tests/test_orchestrator_coverage.py": "148c394c9a12ae1cfb037b5190036a1ccf881cab",
     "tests/test_phase2_coverage.py": "02a5b0e854644af6a43a87d552332f4015453c60",
-    "tests/test_processed_releases.py": "c216c601df0c61f87b23a8c3c8f2ef2d15c0ab1a",
+    "tests/test_processed_releases.py": "e3b8f321aa5bd0ecc543478c7c96bdbb0251c598",
     "tests/test_release_discovery.py": "accf5c8a203af1ffe70290c7fce6f4ff6b529eee",
     "tests/test_release_docs.py": "6ee4e52ac39bbd19366c58e858c741f78f84906f",
     "tests/test_release_summarizer.py": "e7719f5d5e94369db84c2faf6bda807d4a677cc2",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "c864fbe295d7ee425bca8a3c1744664d83d3faca"
   },
-  "generated_at": "2026-11-19T15:19:56.352149+00:00",
-  "repository_sha": "498617906c0cd130b54f15380da8354cc839bb06"
+  "generated_at": "2026-11-19T15:52:37.028602+00:00",
+  "repository_sha": "fa57c7472abb41efa29ed0e67bb23a96e9c7c49a"
 }
