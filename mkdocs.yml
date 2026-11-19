@@ -84,7 +84,7 @@ plugins:
       ignore_urls:
         - https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues
         - https://fatal1tybarucco.github.io/Salesforce-WebDev/
-      validate_external: false
+      validate_external_urls: false
 
 markdown_extensions:
   - pymdownx.highlight:

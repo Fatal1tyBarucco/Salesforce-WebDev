@@ -34,6 +34,9 @@ docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocs-material>=9.8.1,<10",
     "mkdocstrings[python]>=1.0.8,<2",
+    "mkdocs-minify-plugin>=0.5,<1",
+    "mkdocs-htmlproofer-plugin>=1.0,<2",
+    "ruff>=0.17.5,<1",
 ]
 observability = [
     "prometheus-client>=0.26.0,<1",
