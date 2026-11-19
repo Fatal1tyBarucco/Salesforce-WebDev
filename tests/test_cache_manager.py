@@ -778,3 +778,132 @@ def test_unicode_and_special_keys(cache: CacheManager) -> None:
 def test_empty_key(cache: CacheManager) -> None:
     cache.set("", "empty-key-value")
     assert cache.get("") == "empty-key-value"
+
+
+# ── Mutation-driven boundary tests (ADR-011 Fase 5) ───────────────
+
+
+def test_namespace_stats_fresh_hit_rate_zero() -> None:
+    from src.cache_manager import NamespaceStats
+
+    fresh = NamespaceStats()
+    assert fresh.hit_rate == 0.0
+    assert fresh.to_dict() == {
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0,
+        "sets": 0,
+        "hit_rate": 0.0,
+    }
+
+
+def test_invalidate_namespace_ignores_non_json(cache: CacheManager) -> None:
+    cache.set("k", "v", namespace="ns")
+    ns_dir = cache._cache_dir / "ns"
+    (ns_dir / "notes.txt").write_text("keep me", encoding="utf-8")
+    assert cache.invalidate_namespace("ns") == 1
+    assert (ns_dir / "notes.txt").exists()
+    assert cache.stats.eviction_reasons == {"manual": 1}
+
+
+def test_clear_expired_multi_namespace_and_multi_entry(
+    cache: CacheManager, clock: FakeClock
+) -> None:
+    cache.set("a", "1", ttl=10, namespace="n1")
+    cache.set("b", "2", ttl=10, namespace="n1")
+    cache.set("c", "3", ttl=10, namespace="n2")
+    cache.set("fresh", "4", ttl=99999, namespace="n2")
+    clock.advance(5000)
+    assert cache.clear_expired() == 3
+    assert cache.get("fresh", namespace="n2") == "4"
+
+
+def test_maintenance_full_scan_reaches_untouched(tmp_path: Path, clock: FakeClock) -> None:
+    shared = tmp_path / "c"
+    writer = CacheManager(cache_dir=shared, clock=clock)
+    writer.set("old", "v", ttl=10, namespace="cold")
+    maint = CacheManager(cache_dir=shared, clock=clock)
+    clock.advance(5000)
+    report = maint.maintenance()
+    assert report["expired_removed"] == 1
+
+
+def test_maintenance_quarantine_copies_counted(cache: CacheManager) -> None:
+    cache.set("k", "v")
+    entry_path(cache._cache_dir, "k").write_text("bad", encoding="utf-8")
+    assert cache.get("k") is None  # produces one quarantine copy
+    report = cache.maintenance()
+    assert report["quarantine_copies"] == 1
+
+
+def test_persist_stats_extra_roundtrip(cache: CacheManager) -> None:
+    path = cache.persist_stats(extra={"processed_releases": {"hits": 2}})
+    assert path is not None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert data["schema_version"] == 1
+    assert "generated_at" in data
+    assert data["extra"] == {"processed_releases": {"hits": 2}}
+
+
+def test_lru_exact_budget_boundary(tmp_path: Path, clock: FakeClock) -> None:
+    cache = CacheManager(cache_dir=tmp_path / "c", clock=clock, max_entries_per_namespace=2)
+    cache.set("a", "1", namespace="ns")
+    clock.advance(120)
+    cache.set("b", "2", namespace="ns")
+    assert cache.get("a", namespace="ns") == "1"
+    assert cache.get("b", namespace="ns") == "2"
+    assert cache.stats.eviction_reasons.get("lru", 0) == 0
+
+
+def test_lru_multi_eviction_arithmetic(tmp_path: Path, clock: FakeClock) -> None:
+    cache = CacheManager(cache_dir=tmp_path / "c", clock=clock, max_entries_per_namespace=1)
+    cache.set("a", "1", namespace="ns")
+    clock.advance(120)
+    cache.set("b", "2", namespace="ns")
+    clock.advance(120)
+    cache.set("c", "3", namespace="ns")
+    assert cache.get("a", namespace="ns") is None
+    assert cache.get("b", namespace="ns") is None
+    assert cache.get("c", namespace="ns") == "3"
+    assert cache.stats.eviction_reasons["lru"] == 2
+
+
+def test_lru_multi_eviction_bytes(tmp_path: Path, clock: FakeClock) -> None:
+    cache = CacheManager(cache_dir=tmp_path / "c", clock=clock, max_bytes_per_namespace=500)
+    cache.set("a", "x" * 200, namespace="ns")
+    clock.advance(120)
+    cache.set("b", "y" * 200, namespace="ns")
+    clock.advance(120)
+    cache.set("c", "z" * 200, namespace="ns")
+    assert cache.get("a", namespace="ns") is None
+    assert cache.get("b", namespace="ns") is None
+    assert cache.get("c", namespace="ns") == "z" * 200
+    assert cache.stats.eviction_reasons["lru"] == 2
+
+
+def test_sweep_ttl_zero_and_exact_boundary(cache: CacheManager, clock: FakeClock) -> None:
+    cache.set("zero", "v", ttl=0)
+    cache.set("edge", "v", ttl=100)
+    clock.advance(100)  # edge: now-ts == ttl → still valid; zero: expired
+    assert cache.clear_expired() == 1
+    assert cache.get("edge") == "v"
+
+
+def test_last_access_refresh_exact_interval(cache: CacheManager, clock: FakeClock) -> None:
+    cache.set("k", "v")
+    clock.advance(60)  # exactly the throttle interval → refresh must happen (>=)
+    assert cache.get("k") == "v"
+    payload = json.loads(entry_path(cache._cache_dir, "k").read_text(encoding="utf-8"))
+    assert payload["last_access"] == clock.now
+
+
+def test_load_content_cache_dict_without_content_hash(cache: CacheManager, tmp_path: Path) -> None:
+    f = tmp_path / "nohash.json"
+    f.write_text(json.dumps({"gone.md": {}}), encoding="utf-8")
+    assert cache.load_content_cache(f) == {"gone.md": ""}
+
+
+def test_save_content_cache_nested_parents(cache: CacheManager, tmp_path: Path) -> None:
+    cache_file = tmp_path / "deep" / "nested" / "content.json"
+    cache.save_content_cache(cache_file, {"a": "b"})
+    assert cache.load_content_cache(cache_file) == {"a": "b"}
