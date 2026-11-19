@@ -224,7 +224,9 @@ class FileLock:
     def __enter__(self) -> Self:
         """Acquire the exclusive lock, blocking up to ``timeout`` seconds."""
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        fd = os.open(str(self._path), os.O_CREAT | os.O_RDWR, 0o644)
+        # Owner-only (0o600): lock files carry no payload and must not be
+        # world-readable/writable (CodeQL py/overly-permissive-file-mask).
+        fd = os.open(str(self._path), os.O_CREAT | os.O_RDWR, 0o600)
         deadline = time.monotonic() + self._timeout
         while True:
             if self._try_lock(fd):

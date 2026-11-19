@@ -330,7 +330,7 @@ def _child_run_once(cache_dir_str: str, release_dir_str: str, counter_path_str: 
     release = RELEASE
 
     async def process() -> bool:
-        fd = os.open(str(counter), os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o644)
+        fd = os.open(str(counter), os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o600)
         os.write(fd, b"processed\n")
         os.close(fd)
         write_meta(release_dir)
