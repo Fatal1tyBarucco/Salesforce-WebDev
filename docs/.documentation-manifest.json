@@ -690,7 +690,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "337abcb0d690f65f8ece3056952d9bc67cf64c22",
-    "CHANGELOG.md": "485d1d8b2133d3879f8db9d9e71fd4bf2631fa90",
+    "CHANGELOG.md": "d2d4bf6501eb9f1cf2ecb4de1eb4a223f897d8f1",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
@@ -894,7 +894,7 @@
     "prompts/classification/v1.yaml": "68f6eb37746235577864ab1cf1c91cc520306a7e",
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "6a1c8fcb70ebea57ff602af95ca55d64ca512c78",
+    "pyproject.toml": "87e7f8713481eae6dab9e96d040d3847bc4663ca",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1423,6 +1423,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "54d7973d7b04535d803ddd05d22f4603276e5119"
   },
-  "generated_at": "2026-11-19T18:18:24.333735+00:00",
-  "repository_sha": "7bf31a6983e57886ba91943ddf6b6edb2b5b63f1"
+  "generated_at": "2026-11-19T18:26:24.636711+00:00",
+  "repository_sha": "1c9d6f6ee6e383253d30dc5df50ac61c1ede0f4b"
 }
