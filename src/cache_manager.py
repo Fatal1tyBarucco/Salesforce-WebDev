@@ -643,8 +643,10 @@ class CacheManager:
             self._stats.record_miss(namespace)
             return None
         schema = payload.get("schema_version")
-        if schema is None:
+        if schema is None and "checksum" not in payload:
             # Legacy v1 payload: no checksum, trusted shape (migration path).
+            # A checksummed envelope without schema_version is a damaged v2
+            # payload (e.g. a partial refresh rewrite) — never trust it.
             if "data" not in payload:
                 self._quarantine(path, namespace)
                 self._stats.record_miss(namespace)

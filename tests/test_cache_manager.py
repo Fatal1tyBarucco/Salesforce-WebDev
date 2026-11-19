@@ -900,6 +900,18 @@ def test_refresh_preserves_ttl_and_schema(cache: CacheManager, clock: FakeClock)
     assert cache.get("k") is None  # custom ttl must survive the refresh
 
 
+def test_checksummed_envelope_without_schema_quarantined(cache: CacheManager) -> None:
+    """A v2 envelope that lost schema_version must not downgrade to legacy trust."""
+    cache.set("k", "v")
+    path = entry_path(cache._cache_dir, "k")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    del payload["schema_version"]
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    assert cache.get("k") is None
+    quarantine = cache._cache_dir / "quarantine"
+    assert quarantine.exists() and any(quarantine.iterdir())
+
+
 def test_lru_multi_eviction_cross_instance_count(tmp_path: Path, clock: FakeClock) -> None:
     """One enforcement scan must evict several entries when the budget shrank."""
     shared = tmp_path / "c"
