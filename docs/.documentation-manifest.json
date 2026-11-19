@@ -674,7 +674,7 @@
     ".promptfoo.yaml": "d5cf8c11c35215bb159fb49d7232cdfb70a2f431",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "7dcd8ddd1d96fe13f83be532da13287df6e1c7ce",
+    "AGENTS.md": "a9abcf4fff97d80f69d0831ba429a6b25a03a735",
     "CHANGELOG.md": "fcb6131fc2d1090123018dc8406658d2437206ab",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -859,7 +859,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "83f1f487c9d235a2caa3074fa0172f4f36bb56c8",
+    "drift_report.json": "c0200b30498e3044e1dae69da13fb7d4d29fe144",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "7c071a85570006229c00c36769765a5fe6806f44"
   },
-  "generated_at": "2026-11-19T17:17:55.425106+00:00",
-  "repository_sha": "9bb29ec1947836ebefa47505b3d5108bc85220a5"
+  "generated_at": "2026-11-19T17:25:33.893020+00:00",
+  "repository_sha": "6cbbd1255f4c6b090e68e43427826b715388c361"
 }
