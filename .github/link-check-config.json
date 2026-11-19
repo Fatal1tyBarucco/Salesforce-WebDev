@@ -3,6 +3,9 @@
   "aliveStatusCodes": [200, 301, 302],
   "requestTimeout": 10000,
   "retryConnReset": true,
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "5s",
   "baseUrl": "https://fatal1tybarucco.github.io/Salesforce-WebDev/",
   "ignorePatterns": [
     {
@@ -10,6 +13,10 @@
     },
     {
       "pattern": "^https://github\\.com/Fatal1tyBarucco/Salesforce-WebDev/actions/"
+    },
+    {
+      "_comment": "Links blob do próprio repo: alvos existem no checkout (validados pelo docs_sync_engine/git); HTTP-check no github.com é flaky (429/503 sob carga de CI — run 44561979136 falhou por 503 transitório)",
+      "pattern": "^https://github\\.com/Fatal1tyBarucco/Salesforce-WebDev/blob/"
     },
     {
       "pattern": "^mailto:"

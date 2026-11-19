@@ -39,7 +39,7 @@ Pipeline automatizado para extração, classificação, análise e versionamento
 **📄 Documentação completa:**
 
 - [🇧🇷 Português](index.md)
-- [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-releases-disponíveis)
+- [🇺🇸 English](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/README.en.md#-available-releases)
 
 ---
 
