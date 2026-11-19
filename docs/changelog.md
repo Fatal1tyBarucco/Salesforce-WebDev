@@ -143,3 +143,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `2ddb32a` — feat(docs): modern MkDocs publishing — gen-files, section-index, privacy, social, mike, announce banner; drop analytics placeholder
 - `c969f8e` — feat(docs): verifiable documentation contract + bidirectional reconcile with removal history (ADR-012)
 - `61cd5bc` — docs(agents): remove stale workflow-token 403 note; check-yaml --unsafe for Material !ENV tag
+- `331c0e6` — Deployed a6fe95f to 0.4.2 with ProperDocs 1.6.7 and mike 2.2.0

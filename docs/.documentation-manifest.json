@@ -1062,7 +1062,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "77e16e9aa0a0f61f035eb228517ad00ba2e18d92",
+    "docs/changelog.md": "23bf04e11b544da1c5d93fa971ec500fdc965426",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
@@ -1645,7 +1645,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "827df9ab78745641d3ebe56af7b910a8522c531e"
   },
-  "generated_at": "2026-11-19T21:10:30.010513+00:00",
+  "generated_at": "2026-11-19T21:17:33.060979+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1660,5 +1660,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "7df455c486a05f76381d3aff0a567ed7f6a955b6"
+  "repository_sha": "a6fe95fad7b1346096b95612e7903f4e95480967"
 }
