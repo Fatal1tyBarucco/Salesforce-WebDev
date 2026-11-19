@@ -4,6 +4,9 @@
       "docs/ai-generated/release-notes.md",
       "docs/plans/auto-opencode-issue.md"
     ],
+    ".github/scripts/ci-visual.sh": [
+      "docs/ai-generated/release-notes.md"
+    ],
     ".github/scripts/docs_sync_engine.py": [
       "AGENTS.md",
       "docs/ARQUITETURA.md",
@@ -42,7 +45,8 @@
       "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/ci-repair.yml": [
-      "docs/MODERNIZACAO.md"
+      "docs/MODERNIZACAO.md",
+      "docs/ai-generated/release-notes.md"
     ],
     ".github/workflows/copilot-setup-steps.yml": [
       "docs/ai-generated/release-notes.md"
@@ -191,6 +195,7 @@
       "docs/api/automation-comparison.md"
     ],
     "src/automation/content.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/automation-content.md"
     ],
     "src/automation/export.py": [
@@ -218,6 +223,7 @@
       "docs/api/automation-ledger-prompts.md"
     ],
     "src/automation/ledger/service.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/automation-ledger-service.md"
     ],
     "src/automation/models.py": [
@@ -237,12 +243,14 @@
     ],
     "src/cache_io.py": [
       "AGENTS.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/cache_io.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md"
     ],
     "src/cache_manager.py": [
       "AGENTS.md",
       "docs/DEBITO_TECNICO.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/cache_manager.md",
       "docs/architecture/c4_container.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md",
@@ -261,6 +269,7 @@
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/SOURCE_SCHEMA.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/config.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
@@ -335,6 +344,7 @@
       "CHANGELOG.md",
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/health.md",
       "docs/architecture/c4_container.md"
     ],
@@ -395,6 +405,7 @@
       "docs/api/infrastructure-llm.md"
     ],
     "src/infrastructure/llm_adapters/cache.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-llm_adapters-cache.md",
       "docs/architecture/decisions/adr-010-llm-cache-strategy.md"
     ],
@@ -437,6 +448,7 @@
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
     "src/infrastructure/scraping/playwright_adapter.py": [
+      "docs/ai-generated/release-notes.md",
       "docs/api/infrastructure-scraping-playwright_adapter.md",
       "docs/architecture/decisions/adr-009-scraper-resilience.md"
     ],
@@ -542,6 +554,7 @@
     ],
     "src/processed_releases.py": [
       "AGENTS.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/processed_releases.md",
       "docs/architecture/decisions/adr-011-cache-layer-hardening.md",
       "docs/maintenance/cache-management.md"
@@ -569,6 +582,7 @@
     "src/salesforce.py": [
       "README.en.md",
       "docs/DEBITO_TECNICO.md",
+      "docs/ai-generated/release-notes.md",
       "docs/api/salesforce.md"
     ],
     "src/scraper.py": [
@@ -649,7 +663,7 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/triage-rules.yaml": "85fef0b72056e9f3c1f4e5b872e9d9639eb97401",
-    ".github/workflows/ai-docs.yml": "f60db4d2519df885f7faf3529f1610b3f98bbe75",
+    ".github/workflows/ai-docs.yml": "231240a0d5dcd87b470b7f7ab1353f272cb6e296",
     ".github/workflows/ai-pr-review.yml": "8b93471d61d3825945655fade91ff6a35f2367c6",
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
     ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
@@ -675,7 +689,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "a9abcf4fff97d80f69d0831ba429a6b25a03a735",
-    "CHANGELOG.md": "fcb6131fc2d1090123018dc8406658d2437206ab",
+    "CHANGELOG.md": "881e43f5ff3878229c0ab908493c2a4993217064",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -695,14 +709,14 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "commit_fixes.sh": "a2b0332530b98e02aba785db0f2b7cf3719896cf",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "ae3d8540e552026bf477e2182c6f5a3dcd75205b",
+    "docs/.last-processed-ref": "cb5185b759ef3de3d8415e65c1e5e5cf9a9250ca",
     "docs/ARQUITETURA.md": "fe540703565fd9096476a65b330bf905aa5ecdc4",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
     "docs/MODERNIZACAO.md": "20b50cb2021ae4cb08d25fc127fdaa12f3ca8b2b",
     "docs/SOURCE_SCHEMA.md": "ca119ea7189e7c4861e6956907baa15540b5f54d",
-    "docs/ai-generated/leadership.md": "0560ef8953bec14311307b071ef207e3fbc75a40",
-    "docs/ai-generated/release-notes.md": "e19abbaaa67a3e8ab701ecc848931e5402565121",
-    "docs/ai-generated/roadmap.md": "e7f6840cb3f571718e562aea3339d02b26e9abb0",
+    "docs/ai-generated/leadership.md": "4484508900e65ab7139d737197d9d5adbd7dab8d",
+    "docs/ai-generated/release-notes.md": "8a8b75258391db575a540babae9a07ad25121bce",
+    "docs/ai-generated/roadmap.md": "49afaa5f46dba0cc4615efde95e377c2b3aae2d7",
     "docs/api/ai-collectors-change_collector.md": "504999cc5607d908d84a871fbad6c5ff604283be",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -859,7 +873,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "c0200b30498e3044e1dae69da13fb7d4d29fe144",
+    "drift_report.json": "ac40219782132ec20f274d34a61fd6506eb0899e",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -881,8 +895,8 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "3f61917ac96ca2343ec19e22cfb59069c59030af",
-    "reconcile_summary.md": "9f3114a4040b19104dc90ed50c05d3b8c4971bac",
+    "pyproject.toml": "6a1c8fcb70ebea57ff602af95ca55d64ca512c78",
+    "reconcile_summary.md": "617c49715b5b5cb0d76111d98c2fb499a2afd43a",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1411,6 +1425,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "7c071a85570006229c00c36769765a5fe6806f44"
   },
-  "generated_at": "2026-11-19T17:26:51.446386+00:00",
-  "repository_sha": "5f506e5b31edd154a7b67fcf4cd482e3df1b9fe5"
+  "generated_at": "2026-11-19T17:32:21.651435+00:00",
+  "repository_sha": "92bc47420fabf3c883fc0b443c554b28ae580c15"
 }
