@@ -345,7 +345,7 @@ Se a taxa de scraping precisar ser ajustada, altere apenas `RATE_LIMIT_MIN_INTER
 When Salesforce updates its portal:
 
 1. **Run a probe** to detect new failures:
-   
+
 ```bash
    uv run pytest tests/test_snapshot.py -v
    ```
@@ -357,7 +357,7 @@ When Salesforce updates its portal:
 4. **Update this document** with the new selectors/structure
 
 5. **Regenerate snapshots**:
-   
+
 ```bash
    uv run pytest tests/test_snapshot.py --snapshot-update
    ```
