@@ -1,7 +1,7 @@
 # Plano de Modernização — Salesforce-WebDev
 
-> **Baseline da Auditoria FASE 0** — 2026-11-14  
-> Branch: `feat/phase1-consolidate-architecture` | HEAD: `8b77069`  
+> **Baseline da Auditoria FASE 0** — 2026-11-14
+> Branch: `feat/phase1-consolidate-architecture` | HEAD: `8b77069`
 > Python: 3.14.6 | uv: lockfile frozen | Pytest: 9.1.1 | Ruff: 0.5.x | Black: 26.10.1 | Mypy: 1.8+
 
 ---

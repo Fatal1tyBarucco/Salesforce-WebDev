@@ -45,9 +45,11 @@ run-name: "📚 Doc Sync — ${{ github.event_name }} — ${{ github.ref_name }}
 on:
   push:
     branches:
-      - '*'
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - main
+  # pull_request trigger REMOVED (2026-11-19): bot commits em branches de PR
+  # causavam cascata de checks action_required, corridas de push e conflitos
+  # recorrentes em release PRs. PRs são validados pelo Python Quality + link
+  # checker; reconciliação roda em push/main, schedule e dispatch.
   schedule:
     - cron: "17 */6 * * *"   # a cada 6 horas
   workflow_dispatch:
@@ -91,17 +93,15 @@ jobs:
       # CHECKOUT: fetch-depth: 0 para que o script de drift
       # possa analisar o histórico de blobs e calcular diffs.
       # Token padrão GITHUB_TOKEN com escopo contents: write.
-      # PRs do mesmo repositório: check out do branch de origem (não do
-      # merge ref efêmero refs/pull/N/merge), permitindo commit + push
-      # de volta no branch do PR. Forks/events: ref padrão do evento
-      # (ref vazio = fallback documentado do actions/checkout).
+      # Eventos: push/main, schedule, dispatch — sempre o ref padrão do
+      # evento (trigger pull_request removido em 2026-11-19; bot não
+      # commita mais em branches de PR).
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       - name: ⬇️ Checkout do repositório
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || '' }}
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # GUARD ANTI-LOOP: previne execução recursiva quando o
@@ -131,7 +131,6 @@ jobs:
           set -e
           case "${{ github.event_name }}" in
             push)     MODE="reconcile" ;;
-            pull_request) MODE="reconcile" ;;
             schedule) MODE="full" ;;
             *)        MODE="${{ github.event.inputs.mode || 'reconcile' }}" ;;
           esac
@@ -184,7 +183,7 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         id: drift
         env:
-          DRIFT_REPORT: ./drift_report.json
+          DRIFT_REPORT: /tmp/drift_report.json
         run: |
           echo "::group::🔍 Drift Detection"
           python3 .github/scripts/docs_sync_engine.py audit
@@ -204,7 +203,7 @@ jobs:
         run: |
           echo "::group::🔄 Deterministic Reconciliation"
           set -o pipefail
-          python3 .github/scripts/docs_sync_engine.py reconcile | tee ./reconcile_summary.md
+          python3 .github/scripts/docs_sync_engine.py reconcile | tee /tmp/reconcile_summary.md
           echo "::endgroup::"
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -375,17 +374,16 @@ jobs:
         id: commit-push
         if: |
           steps.guard.outputs.skip != 'true' &&
-          steps.changes.outputs.has_changes == 'true' &&
-          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+          steps.changes.outputs.has_changes == 'true'
         run: |
           echo "::group::📤 Commit & Push"
           set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-          TARGET_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          TARGET_BRANCH="$GITHUB_REF_NAME"
           git add -A
           # Só faz commit se houver arquivos stageados (evita commit vazio)
           if ! git diff --cached --quiet; then
-            git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP}"
+            git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP} [skip ci]"
 
             for attempt in 1 2 3; do
               if ! git fetch origin "$TARGET_BRANCH"; then
@@ -447,8 +445,8 @@ jobs:
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [ -f ./reconcile_summary.md ]; then
-            cat ./reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f /tmp/reconcile_summary.md ]; then
+            cat /tmp/reconcile_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "$MODE" = "reconcile" ]; then

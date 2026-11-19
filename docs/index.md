@@ -582,13 +582,10 @@ Salesforce-WebDev/
   ├── README.md                  # Readme em português
   ├── SECURITY.md                # Política de segurança
   ├── commit_fixes.sh
-  ├── drift_report.json
   ├── fix_md.py
   ├── mkdocs.yml                 # Configuração MkDocs
   ├── mutmut_config.toml
-  ├── pr_body.md
   ├── pyproject.toml             # Configuração do projeto
-  ├── reconcile_summary.md
   ├── update
   └── uv.lock                    # Lockfile determinístico
 ```

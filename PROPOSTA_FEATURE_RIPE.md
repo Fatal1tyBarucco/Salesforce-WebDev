@@ -1,25 +1,25 @@
 # Proposta de Feature: Motor de Propagação de Impacto e Grafo de Dependências
 ## (Cross-Release Impact Propagation & Dependency Graph Engine — RIPE)
 
-**Versão do documento:** 1.0  
-**Data:** 2026-09-28  
-**Autor:** Arquiteto de Software / Product Owner Técnico  
-**Repositório de referência:** `Fatal1tyBarucco/Salesforce-WebDev`  
+**Versão do documento:** 1.0
+**Data:** 2026-09-28
+**Autor:** Arquiteto de Software / Product Owner Técnico
+**Repositório de referência:** `Fatal1tyBarucco/Salesforce-WebDev`
 **Status:** Proposta arquitetural — Ready for Design Review
 
 ---
 
 ## 1. Nome da Feature & Visão Geral
 
-**Nome técnico:** `ImpactPropagationEngine` (codename: **RIPE** — Release Impact Propagation Engine)  
+**Nome técnico:** `ImpactPropagationEngine` (codename: **RIPE** — Release Impact Propagation Engine)
 **Nome de produto:** *Motor de Propagação de Impacto e Grafo de Dependências entre Features*
 
-**Visão Geral:**  
+**Visão Geral:**
 Um serviço arquiteturalmente coeso que, após a classificação e enriquecimento de cada release (já existente via `feature_classifier.py` / `feature_enricher.py`), realiza **inferência de dependências cruzadas entre features** usando raciocínio LLM (com fallback heurístico) e constrói um **grafo direcionado de dependências** (features → APIs/objetos/permismoes → features afetadas). A partir desse grafo, o engine computa o **blast radius transitivo** (propagação de impacto) por feature e gera, por release, um **Migration Intelligence Report** estrutural — um artefato JSON + endpoint REST — que responde à pergunta real de arquitetos Salesforce: *"Se eu atualizar para Summer '26, qual conjunto de recursos da minha org existente é afetado, em que ordem de risco e com que dependências?"*
 
-A feature expande o paradigma *Knowledge-as-Code* de "documento estático por release" para **"rede de conhecimento viva entre releases"**, permitindo consultas como:  
-- `propagate("agentforce_ai_analytics")` → retorna todos os recursos dependentes, com caminho de dependência  
-- `blast_radius("deprecate_legacy_api")` → retorna impacto transitivo estimado  
+A feature expande o paradigma *Knowledge-as-Code* de "documento estático por release" para **"rede de conhecimento viva entre releases"**, permitindo consultas como:
+- `propagate("agentforce_ai_analytics")` → retorna todos os recursos dependentes, com caminho de dependência
+- `blast_radius("deprecate_legacy_api")` → retorna impacto transitivo estimado
 - `compare_dependencies("summer_26", "spring_26")` → delta de grafo entre releases
 
 ---
@@ -663,9 +663,9 @@ uv run pytest tests/test_impact_propagation.py -v --cov=src/impact_propagation -
 
 ## 8. Próximos Passos Sugeridos (Roadmap de Implementação)
 
-**Fase 1 — Arquitetura + Especificação (esta proposta)** → Design Review + aprovação do Project Board (`Status: Backlog` → `In Progress` via `gh api graphql`)  
-**Fase 2 — Núcleo:** `src/impact_propagation/` + `tests/test_impact_propagation.py` (cobertura 95%)  
-**Fase 3 — Integração:** `api.py` endpoints + `main.py` chamada opcional pós-classificação + artefatos `.dependency_graph.json`  
+**Fase 1 — Arquitetura + Especificação (esta proposta)** → Design Review + aprovação do Project Board (`Status: Backlog` → `In Progress` via `gh api graphql`)
+**Fase 2 — Núcleo:** `src/impact_propagation/` + `tests/test_impact_propagation.py` (cobertura 95%)
+**Fase 3 — Integração:** `api.py` endpoints + `main.py` chamada opcional pós-classificação + artefatos `.dependency_graph.json`
 **Fase 4 — Produção:** Validação com release real (`summer_26`), comparação `blast_radius` vs. `spring_26`, atualização do `README.en.md` / docs
 
 ---
