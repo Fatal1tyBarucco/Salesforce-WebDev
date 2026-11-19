@@ -670,11 +670,11 @@
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".mcp.json": "7af655fee00a854266d691999b597ab7dd171b21",
-    ".pre-commit-config.yaml": "3c8215b493d86e2bdb3e9be170a6701dad8023eb",
+    ".pre-commit-config.yaml": "7d1709246d6f9a5e8a93bb2354eef1a1c3d94db0",
     ".promptfoo.yaml": "97bb60485524cbc5008d1a1b8d495d9c453834d7",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
-    "AGENTS.md": "5760bac6abed48a1dbe98a45446b9ee569a16f7c",
+    "AGENTS.md": "533399682422938493d5c4eaf32d38412d75d83a",
     "CHANGELOG.md": "fcb6131fc2d1090123018dc8406658d2437206ab",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -1411,6 +1411,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "c864fbe295d7ee425bca8a3c1744664d83d3faca"
   },
-  "generated_at": "2026-11-19T15:12:21.450057+00:00",
-  "repository_sha": "947ffcb71e60657cc3c49b5e5fe1b50e99afe0c6"
+  "generated_at": "2026-11-19T15:15:51.112507+00:00",
+  "repository_sha": "02d2215a9cbdec2390c1c62ed7ecfab60092898d"
 }
