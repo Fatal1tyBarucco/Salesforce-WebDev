@@ -2,6 +2,19 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.4.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.1...v0.4.2) (2026-11-19)
+
+
+### Bug Fixes
+
+* **ci:** eliminate post-release uv.lock desync failure window ([91889b7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/91889b72741326c03863cf4524e87c3218725d37))
+
+
+### Documentation
+
+* **agents:** record post-release lock desync fix + skip-ci message pitfall ([753a2d5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/753a2d5b4d77a38e3e9e5eedd2c2d0c752e00ecb))
+* **sync:** reconcile documentation — 2026-11-19 18:26 UTC [skip ci] ([b92fa5f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b92fa5fce76ed0d98e9d331b960ecf91bdedb0ac))
+
 ## [0.4.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.0...v0.4.1) (2026-11-19)
 
 
