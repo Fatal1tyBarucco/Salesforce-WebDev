@@ -144,6 +144,8 @@ jobs:
 
       - name: 📋 Generate Summary
         if: always()
+        env:
+          HAS_CHANGES: ${{ steps.publish.outputs.has_changes }}
         run: |
           echo "## 📚 AI Documentation Pipeline" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -156,9 +158,13 @@ jobs:
           echo "| Generation | ${{ steps.pipeline.outcome }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Changes | ${{ steps.publish.outputs.has_changes || 'n/a' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.publish.outputs.has_changes }}" = "true" ]; then
+          if [ "$HAS_CHANGES" = "true" ]; then
             echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
-            echo "> Documentation updated and ${PUBLISH_MODE == 'pr' && 'PR created' || 'committed directly'}." >> $GITHUB_STEP_SUMMARY
+            if [ "$PUBLISH_MODE" = "pr" ]; then
+              echo "> Documentation updated and PR created." >> $GITHUB_STEP_SUMMARY
+            else
+              echo "> Documentation updated and committed directly." >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "> [!TIP]" >> $GITHUB_STEP_SUMMARY
             echo "> No documentation changes detected." >> $GITHUB_STEP_SUMMARY

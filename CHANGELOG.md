@@ -1,5 +1,64 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Fixed
+- Fix `ai-docs` workflow summary generation: replaced invalid GHA expression `${PUBLISH_MODE == 'pr' && ...}` in bash with shell conditional using `HAS_CHANGES` env var (from publish step output) and explicit `PUBLISH_MODE` check, resolving "bad substitution" error.
+
+### Documentation
+- Reconcile documentation manifest (`docs/.documentation-manifest.json`) and drift report (`drift_report.json`): add mappings for new files (e.g., `.github/scripts/ci-visual.sh`), update SHAs for multiple files (AGENTS.md, CHANGELOG.md, docs/ai-generated/*), and fix `MANIFEST_STALE_SHA` drift entries.
+- Record mkdocs plugin dependencies and `ruff-format-in-markdown` pitfalls in AGENTS.md for AI agents and developers.
+- Automated AI documentation update (commit 33ccab3): likely updates `docs/ai-generated/release-notes.md`, `leadership.md`, `roadmap.md` — **requires human review** as diff is not available in provided data.
+
+<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
+
+## [0.4.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.2...v0.4.0) (2026-11-19)
+
+
+### Features
+
+* **cache:** harden cache layer — atomic writes, locks, integrity, fingerprints (ADR-011) ([#410](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/410)) ([8e7a3ee](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8e7a3eedeb57be8f12a55ee8cc6b4f3bf8feaedb))
+
+
+### Bug Fixes
+
+* **ci:** ai-docs rebase before push — avoid non-fast-forward race with Documentation Sync ([603799e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/603799e9c0a2297c51a99da1ffe35f96cb0e51a1))
+* **ci:** ai-docs summary — replace GHA expression inside bash with shell conditional ([fb52904](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/fb529047df062c4434479d2e35907efb5eb4987e))
+* **docs:** repair Deploy Docs — missing mkdocs plugin deps + corrupted SOURCE_SCHEMA fences ([8d529fa](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8d529fa93e7c6d5094091736a5956ee6ffcff48c))
+
+
+### Documentation
+
+* **agents:** record mkdocs plugin deps + ruff-format-in-markdown pitfalls ([5f506e5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/5f506e5b31edd154a7b67fcf4cd482e3df1b9fe5))
+* atualização automática via IA [skip ci] ([33ccab3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33ccab373fb14148cce815133b7cd26f5dd518d6))
+* **sync:** reconcile documentation — 2026-11-19 01:07 UTC ([271c925](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/271c92530061bae1a2f4c62622a94a4cca5b502b))
+* **sync:** reconcile documentation — 2026-11-19 16:48 UTC ([7df34b8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7df34b8c7090f008f54f595a4b47e268cc9aea59))
+* **sync:** reconcile documentation — 2026-11-19 17:17 UTC ([6cbbd12](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/6cbbd1255f4c6b090e68e43427826b715388c361))
+* **sync:** reconcile documentation — 2026-11-19 17:26 UTC ([12625dd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/12625ddc60e6942a12a4ad8bc1e3557597ec45e5))
+
+## [Unreleased]
+
+### Security
+- Harden `ci-repair` workflow against `workflow_run` code-injection and untrusted-checkout (CodeQL critical/high alerts): jobs now run only for same-repository events, no fork payload fields are interpolated into `run:` blocks, and lock files / multiprocess test counters use owner-only (`0o600`) permissions.
+- Fix gitleaks config to use proper RE2 regex instead of unsupported glob patterns, restoring effective secret detection.
+
+### Added
+- Harden cache layer (ADR-011): atomic writes (temp+fsync+os.replace), per-entry/namespace `FileLock` with fcntl/msvcrt fallback, canonical SHA-256 checksums, and quarantine with rotated backups.
+- Add `processed_releases` store based on release fingerprints with single-flight locking; orchestrator integrates single-flight and per-run stats persistence.
+- Add CI visual improvements across all workflows: reusable helpers, dynamic run-names, collapsible log groups, ANSI truecolor, and rich Job Summaries (no logic changes).
+
+### Changed
+- Migrate quality gate from Black to Ruff Format: remove the separate Black job, run lint + format in a single Ruff job, and update READMEs and pre-commit hooks accordingly.
+- CacheManager now uses a v2 envelope (schema_version + checksum), per-namespace stats with eviction reasons, LRU budgets with stat-only pre-checks, and lazy `clear_expired`; MD5 removed entirely from `src/` with tolerant migration from existing MD5 hashes.
+
+### Fixed
+- Repair documentation build broken on main: add missing mkdocs-minify and mkdocs-htmlproofer plugin dependencies, correct the `validate_external_urls` option name, remove the non-existent mkdocs-sitemap plugin/dependency, and restore corrupted `docs/SOURCE_SCHEMA.md` fences.
+- Harden link checker against transient GitHub errors (retry on 429/5xx) and fix the English README anchor.
+- Fix ai-docs rebase before push to avoid non-fast-forward races with Documentation Sync.
+- Skip `uv lock --check` on release-please branches using a branch-name pattern instead of commit-message matching.
+
 <!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
 ## [0.3.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.1...v0.3.2) (2026-11-18)
