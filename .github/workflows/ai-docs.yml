@@ -134,6 +134,10 @@ jobs:
             git push origin "HEAD:$branch"
             echo "head_branch=$branch" >> "$GITHUB_OUTPUT"
           else
+            # Rebase onto the latest remote before pushing: concurrent bots
+            # (Documentation Sync) may advance the branch during generation
+            # (run 44570124554 lost its push to a non-fast-forward race).
+            git pull --rebase origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
