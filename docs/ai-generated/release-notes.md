@@ -1,6 +1,70 @@
-<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+Esta atualização fortalece a camada de cache e a segurança do pipeline de CI/CD. A camada de cache foi reescrita com escritas atômicas (temp+fsync+os.replace), locks por entrada/namespace com fallback fcntl/msvcrt, checksums SHA-256 canônicos e quarentena com backups rotacionados; o CacheManager passa a usar envelope v2 (schema_version+checksum), com estatísticas por namespace e motivos de evicção, orçamentos LRU com pré-checagem stat-only e clear_expired lazy. O MD5 foi removido por completo do código-fonte, com migração tolerante a partir de hashes MD5 existentes. Um novo store processed_releases baseado em fingerprint, com locking single-flight por release, evita processamento duplicado, e o orquestrador integra single-flight e persistência de estatísticas por execução.
+
+No campo de segurança, o workflow ci-repair foi endurecido contra injeção via eventos workflow_run (alertas críticos de code-injection e alto de untrusted-checkout): os jobs só executam para eventos do mesmo repositório, sem interpolar payloads de fork em blocos run, e arquivos de lock e contadores de teste multiprocess passam a usar permissões owner-only (0o600). A configuração do gitleaks foi corrigida de padrões glob para regex RE2, restaurando a detecção efetiva de segredos.
+
+O pipeline de documentação, que estava quebrado na main, foi reparado: adicionadas as dependências ausentes dos plugins mkdocs-minify e mkdocs-htmlproofer, corrigido o nome da opção validate_external_urls, removido o plugin e a dependência mkdocs-sitemap inexistentes e restaurado o docs/SOURCE_SCHEMA.md, corrompido por um auto-fix de lint. O link checker ganhou resiliência a erros transitórios do GitHub (retry) e o anchor do README em inglês foi corrigido.
+
+Como mudança de tooling, o gate de qualidade migrou integralmente de Black para Ruff Format (lint e formatação em um único job), com remoção do job Black separado e atualização de READMEs e hooks pre-commit. Também foram aplicadas melhorias visuais nos 14 workflows (grupos de log colapsáveis, cores ANSI, run-names dinâmicos e Job Summaries) sem alteração de lógica, corrigida a condição que pula 'uv lock --check' em branches do release-please (agora por padrão de nome de branch) e ajustado o rebase antes do push no job ai-docs para evitar corridas de non-fast-forward com o Documentation Sync.
+
+Riscos e pontos de atenção: a mudança de formato de cache (envelope v2 e remoção de MD5) depende da migração tolerante para não invalidar caches existentes e pode afetar consumidores do formato antigo; as correções de segurança do CodeQL exigem revisão humana para confirmar a mitigação completa dos alertas; e o escopo da evolução para o Release Intelligence Hub (release 264) tem baixa confiança e requer verificação no diff. Recomenda-se validar a compatibilidade dos consumidores de cache após a migração e monitorar o pipeline de documentação após os reparos.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Harden cache layer with atomic writes, locks, integrity checks and fingerprints (ADR-011) — 📋 feature** | Refatoração profunda da camada de cache: cache_io agora usa escritas atômicas (temp+fsync+os.repl… | 🔴 high | src/cache_io.py, src/cache_manager.py, src/processed_releases.py, src/orchestrator.py, src/config.py, src/health.py, src/infrastructure/llm_adapters/cache.py, src/infrastructure/scraping/playwright_adapter.py, tests/test_cache_io.py, tests/test_cache_manager.py, tests/test_cache_robustness.py, tests/test_processed_releases.py, tests/test_orchestrator_cache.py, tests/test_summary_cache_atomic.py, tests/test_history_cache.py, tests/test_trailhead_cache.py, docs/adr/ADR-011.md, docs/cache-management.md, .github/workflows/*.yml · Prioridade: 💡 P0 |
+| **CI visual makeover — colors, groups, summaries, dynamic run-names across all workflows — 📋 feature** | Melhoria visual em todos os 14 workflows: adicionado .github/scripts/ci-visual.sh com helpers reu… | 🟢 low | .github/scripts/ci-visual.sh, .github/actions/ci-visual/action.yml, .github/actions/ci-visual/ci-visual.sh, .github/workflows/*.yml · Prioridade: 💡 P3 |
+| **Repair Deploy Docs — fix missing mkdocs plugin deps and corrupted SOURCE_SCHEMA.md fences — 📋 bugfix** | Correção do build de documentação que falhava desde 51528de: mkdocs.yml declarava plugins minify … | 🔴 high | mkdocs.yml, pyproject.toml, docs/SOURCE_SCHEMA.md, .github/workflows/documentation-build.yml, .github/workflows/documentation-sync.yml · Prioridade: 💡 P0 |
+| **CodeQL security hardening — workflow_run injection guards and file permission fixes — 🔒 Segurança** | Endurecimento contra injeção em ci-repair.yml: CodeQL actions/code-injection (crítico, alerts #11… | 🔴 high | .github/workflows/ci-repair.yml, src/cache_io.py, tests/test_cache_manager.py, tests/test_cache_robustness.py · Prioridade: 💡 P0 |
+| **Migrate python-quality.yml from Black to Ruff Format — Ruff-only quality gate — 📋 refactor** | Migração completa do Black para Ruff Format: job Black separado removido (era linhas 85-116); ste… | 🟡 medium | .github/workflows/python-quality.yml, README.md, README.en.md, .pre-commit-config.yaml, pyproject.toml · Prioridade: 💡 P1 |
+| **Fix gitleaks config — glob patterns to proper RE2 regex — 📋 bugfix** | Configuração gitleaks usava padrões glob (**) não suportados pelo motor RE2. Alterados para padrõ… | 🟡 medium | .gitleaks.toml · Prioridade: 💡 P1 |
+| **Remove non-existent mkdocs-sitemap plugin and dependency — 📋 bugfix** | Pacote mkdocs-sitemap não existe no PyPI, causando falha no build de documentação. Removido plugi… | 🔴 high | mkdocs.yml, pyproject.toml · Prioridade: 💡 P0 |
+| **Fix ai-docs rebase before push — avoid non-fast-forward race with Documentation Sync — 📋 bugfix** | Job ai-docs gerava e commitava docs localmente mas push era rejeitado porque bot Documentation Sy… | 🟡 medium | .github/workflows/ai-docs.yml · Prioridade: 💡 P1 |
+| **Harden link checker vs transient GitHub errors and fix English README anchor — 📋 bugfix** | Documentation Sync falhou em erro 503 transitório do github.com (link não morto — docs/index.md i… | 🟡 medium | docs/index.md, .github/link-check-config.json, .github/workflows/documentation-sync.yml · Prioridade: 💡 P1 |
+| **Release 0.3.2 — patch release with documentation reconciliation — 📋 feature** | Release patch 0.3.2 via release-please; inclui reconciliação de documentação automatizada. | 🟢 low | pyproject.toml, CHANGELOG.md, docs/.documentation-manifest.json · Prioridade: 💡 P3 |
+| **Release 0.3.1 — patch release with mkdocs-sitemap fix and uv setup — 📋 feature** | Release patch 0.3.1: correção de dependência mkdocs-sitemap inexistente + configuração uv para sy… | 🟢 low | pyproject.toml, mkdocs.yml, CHANGELOG.md · Prioridade: 💡 P3 |
+| **Release 0.3.0 — minor release with Ruff-only migration and audit fixes — 📋 feature** | Release minor 0.3.0 (0.2.4 → 0.3.0): migração completa para Ruff-only (remove Black), correções d… | 🟡 medium | pyproject.toml, .github/workflows/python-quality.yml, README.md, README.en.md, .pre-commit-config.yaml, CHANGELOG.md · Prioridade: 💡 P2 |
+| **Fix ci-repair workflow_run injection and untrusted checkout (CodeQL alerts) — 🔒 Segurança** | Duplicado da mudança de segurança acima — mesmo commit 8e7a3eedeb57be8f12a55ee8cc6b4f3bf8feaedb c… | 🔴 high | .github/workflows/ci-repair.yml · Prioridade: 💡 P0 |
+| **Skip uv lock check for release-please branches — use branch name pattern — 📋 bugfix** | Condição verificava 'release-please' na mensagem de commit, mas release-please gera commits como … | 🟢 low | .github/workflows/release-please.yml, .github/workflows/python-quality.yml · Prioridade: 💡 P2 |
+| **Clean up README.md — remove test commit garbage and auto-generated index — 📋 documentation** | Limpeza do README.md removendo lixo de commits de teste e índice auto-gerado. | 🟢 low | README.md · Prioridade: 💡 P3 |
+| **Documentation sync reconciliation — multiple automated bot runs — 📋 documentation** | Múltiplos commits docs(sync): reconcile documentation do bot Documentation Sync (github-actions[b… | 🟢 low | docs/.documentation-manifest.json, drift_report.json, docs/**/*.md · Prioridade: 💡 P3 |
+| **Style fixes — ruff-format Python blocks in SOURCE_SCHEMA.md, EOF newlines, trailing whitespace — 📋 refactor** | Formatação ruff em blocos Python dentro de Markdown restaurado (CI 'ruff format --check .' format… | 🟢 low | docs/SOURCE_SCHEMA.md, src/**/*.py, tests/**/*.py · Prioridade: 💡 P3 |
+| **Evolve to Release Intelligence Hub (release=264) — defensive — 📋 feature** | Evolução para Release Intelligence Hub (release=264) com abordagem defensiva; atualizações em ass… | 🟡 medium | src/automation/content.py, src/automation/ledger/service.py, src/release_docs.py, src/release_summarizer.py, src/salesforce.py, docs/intelligence_hub/**, docs/deploy_manuals/**, docs/release_readiness/** · Prioridade: 💡 P2 |
+| **AI-Docs bot automatic update [skip ci] — 📋 documentation** | Atualização automática via IA [skip ci] pelo AI-Docs Bot; atualização de release notes automática. | 🟢 low | docs/**, CHANGELOG.md · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **5** (26%) 🔴🔴🔴🔴🔴
+🟡 Médio: **6** (31%) 🟡🟡🟡🟡🟡🟡
+🟢 Baixo: **8** (42%) 🟢🟢🟢🟢🟢🟢🟢🟢
+
+Total: **19 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████████████████████████│    6 →
+📋 documentation      │███████████████░░░░░░░░░░░░░░░│    3 →
+📋 feature            │██████████████████████████████│    6 →
+📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    2 →
+🔒 Segurança          │██████████░░░░░░░░░░░░░░░░░░░░│    2 →
+```
+
+Sparkline da distribuição alto/médio/baixo: ▅▆█
+
+
+## Revisão Necessária
+
+- **CodeQL security hardening — workflow_run injection guards and file permission fixes** — Mudança de segurança crítica; revisão humana obrigatória para validar mitigação completa dos alertas CodeQL. (0.97)
+- **Evolve to Release Intelligence Hub (release=264) — defensive** — Commit message em português com poucos detalhes técnicos; verificar escopo real da mudança no diff. (0.75)
+- **AI-Docs bot automatic update [skip ci]** — Commit de bot com [skip ci]; conteúdo não verificado no diff; marcar para revisão humana. (0.70)
+- **Fix ci-repair workflow_run injection and untrusted checkout (CodeQL alerts)** — Possível duplicação com change 'CodeQL security hardening'; verificar se deve ser mesclado. (0.97)
+
+---
 
 ## Nova atualização
 

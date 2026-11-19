@@ -1,6 +1,16 @@
-<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+Impacto de negócio: esta atualização eleva a confiabilidade e a segurança da infraestrutura de engenharia. A camada de cache foi reescrita com escritas atômicas, locking robusto, checksums SHA-256 e um novo store de releases processadas com single-flight, aumentando a integridade dos dados e a observabilidade (estatísticas por namespace e motivos de evicção) e eliminando o MD5 do código. No campo de segurança, o workflow ci-repair foi blindado contra injeção via workflow_run e arquivos sensíveis passaram a permissões restritas, enquanto a configuração do gitleaks voltou a detectar segredos corretamente. O pipeline de documentação — que estava quebrado na main — foi reparado, restaurando builds e validação de links. A migração de Black para Ruff simplifica o gate de qualidade e reduz o tempo de CI.
+
+Riscos: a mudança de formato de cache (envelope v2 e remoção de MD5) depende de migração tolerante e pode afetar consumidores que dependam do formato antigo; as correções de segurança do CodeQL são críticas e exigem revisão humana para confirmar a mitigação completa dos alertas; e o escopo da evolução para o Release Intelligence Hub permanece incerto (baixa confiança), demandando verificação no diff.
+
+Próximos passos: validar a compatibilidade dos consumidores de cache após a migração de formato; submeter as correções de CodeQL à revisão humana obrigatória; monitorar o pipeline de documentação após os reparos; e confirmar o escopo real da mudança do Release Intelligence Hub antes de considerá-la concluída.
+
+---
 
 ## Nova atualização
 

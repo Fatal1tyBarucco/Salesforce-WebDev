@@ -1,5 +1,28 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Security
+- Harden `ci-repair` workflow against `workflow_run` code-injection and untrusted-checkout (CodeQL critical/high alerts): jobs now run only for same-repository events, no fork payload fields are interpolated into `run:` blocks, and lock files / multiprocess test counters use owner-only (`0o600`) permissions.
+- Fix gitleaks config to use proper RE2 regex instead of unsupported glob patterns, restoring effective secret detection.
+
+### Added
+- Harden cache layer (ADR-011): atomic writes (temp+fsync+os.replace), per-entry/namespace `FileLock` with fcntl/msvcrt fallback, canonical SHA-256 checksums, and quarantine with rotated backups.
+- Add `processed_releases` store based on release fingerprints with single-flight locking; orchestrator integrates single-flight and per-run stats persistence.
+- Add CI visual improvements across all workflows: reusable helpers, dynamic run-names, collapsible log groups, ANSI truecolor, and rich Job Summaries (no logic changes).
+
+### Changed
+- Migrate quality gate from Black to Ruff Format: remove the separate Black job, run lint + format in a single Ruff job, and update READMEs and pre-commit hooks accordingly.
+- CacheManager now uses a v2 envelope (schema_version + checksum), per-namespace stats with eviction reasons, LRU budgets with stat-only pre-checks, and lazy `clear_expired`; MD5 removed entirely from `src/` with tolerant migration from existing MD5 hashes.
+
+### Fixed
+- Repair documentation build broken on main: add missing mkdocs-minify and mkdocs-htmlproofer plugin dependencies, correct the `validate_external_urls` option name, remove the non-existent mkdocs-sitemap plugin/dependency, and restore corrupted `docs/SOURCE_SCHEMA.md` fences.
+- Harden link checker against transient GitHub errors (retry on 429/5xx) and fix the English README anchor.
+- Fix ai-docs rebase before push to avoid non-fast-forward races with Documentation Sync.
+- Skip `uv lock --check` on release-please branches using a branch-name pattern instead of commit-message matching.
+
 <!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
 
 ## [0.3.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.3.1...v0.3.2) (2026-11-18)

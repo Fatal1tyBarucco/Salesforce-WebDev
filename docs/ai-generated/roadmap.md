@@ -1,6 +1,12 @@
-<!-- gerado por IA em 2026-11-18T07:07:10+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: validar a compatibilidade de todos os consumidores de cache (summary, history, trailhead, processed_releases, orchestrator, health) após a migração para o envelope v2 e a remoção do MD5; submeter as correções de segurança do CodeQL (injeção em workflow_run, untrusted-checkout e permissões de arquivo) à revisão humana obrigatória e confirmar o fechamento completo dos alertas; monitorar a estabilidade do pipeline de documentação após os reparos de plugins mkdocs e a restauração do SOURCE_SCHEMA.md; avaliar testes de contrato ou de integração para o novo store processed_releases e para o comportamento de single-flight; considerar automação da validação das dependências de plugins de documentação (ex.: build --strict em PR) para evitar regressões; verificar no diff o escopo real da evolução para o Release Intelligence Hub (release 264), dado o commit de baixa confiança; confirmar a política final de qualidade (Ruff-only) e alinhar documentação interna e hooks; e revisar o conteúdo de atualizações automáticas de documentação geradas por bots antes de incorporá-las.
+
+---
 
 ## Nova atualização
 
