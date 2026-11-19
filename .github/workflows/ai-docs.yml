@@ -80,7 +80,7 @@ jobs:
       - name: ⚡ Install uv & deps
         run: |
           pip install uv
-          uv sync --frozen --extra dev --group dev
+          uv sync --frozen --extra dev --extra docs --group dev
 
       - name: 🔍 Resolve incremental base ref
         id: since
@@ -115,6 +115,36 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 30
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # GATES DE SAÍDA DE IA (ADR-012): a IA nunca commita conteúdo que
+      # não passe (1) contrato de documentação/manifest, (2) markdown
+      # lint, (3) link checker e (4) mkdocs build --strict. Determinismo
+      # primeiro: o contrato é verificado por script, não pelo modelo.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: ✅ Validate AI output (contract + lint + links + strict build)
+        if: steps.pipeline.outcome == 'success'
+        run: |
+          echo "::group::✅ AI Output Gates"
+          set -euo pipefail
+          python3 .github/scripts/docs_contract.py validate
+          # Lint dos outputs de IA com o config do repo, sem o ignore de
+          # docs/ai-generated (a saída de IA é justamente o alvo do gate).
+          python3 - <<'PY'
+          import json
+          cfg = json.load(open(".markdownlint.json", encoding="utf-8"))
+          cfg["ignore"] = [
+              i for i in cfg.get("ignore", []) if not i.startswith("docs/ai-generated")
+          ]
+          with open("/tmp/markdownlint-ai.json", "w", encoding="utf-8") as fh:
+              json.dump(cfg, fh)
+          PY
+          npx --yes markdownlint-cli2 "docs/ai-generated/**/*.md" \
+            --config-file /tmp/markdownlint-ai.json --ignore node_modules
+          npx --yes markdown-link-check --quiet \
+            --config .github/link-check-config.json docs/ai-generated/
+          uv run --no-sync mkdocs build --strict
+          echo "::endgroup::"
 
       - name: 📝 Commit or push review branch
         id: publish

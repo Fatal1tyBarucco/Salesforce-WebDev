@@ -5,6 +5,7 @@ run-name: "📚 Deploy Docs — ${{ github.ref_name }} — ${{ github.sha }} —
 on:
   push:
     branches: ["main"]
+    tags: ["v*"]
     paths:
       - "docs/**"
       - "mkdocs.yml"
@@ -18,7 +19,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # mike push do ledger de versões (branch gh-pages)
   pages: write
   id-token: write
 
@@ -43,15 +44,62 @@ jobs:
           python-version: "3.14"
 
       - name: 📦 Install dependencies
-        run: uv sync --frozen --extra docs
+        run: uv sync --frozen --extra docs --extra imaging
 
       - name: 📦 Install package in editable mode
         run: uv pip install -e .
 
+      # GATE DURO DE CONTRATO (ADR-012): o site só publica se manifest,
+      # nav, docs/ e a árvore real do repositório estiverem em sincronia.
+      - name: 🧾 Validar contrato de documentação (hard gate)
+        run: |
+          echo "::group::🧾 Documentation Contract (ADR-012)"
+          python3 .github/scripts/docs_contract.py validate
+          echo "::endgroup::"
+
       - name: 🏗️ Build documentation
         run: |
           echo "::group::🏗️ Building MkDocs Site"
-          uv run mkdocs build --strict
+          # --no-sync: preserva o extra imaging instalado no step anterior
+          # (social cards exigem pillow/cairosvg; uv run implícito os removeria).
+          uv run --no-sync mkdocs build --strict
+          echo "::endgroup::"
+
+      # Versionamento com mike (ADR-012): cada release/tag gera uma versão
+      # permanente do site; `latest` acompanha main. O branch gh-pages é o
+      # ledger de versões do mike; o deploy oficial continua via
+      # upload-pages-artifact + deploy-pages (o conteúdo do ledger é
+      # materializado em site/ antes do upload).
+      - name: 🏷️ Resolve documentation version
+        id: version
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            VERSION="$GITHUB_REF_NAME"
+          else
+            VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "📚 Documentation version: $VERSION"
+
+      - name: 📚 Deploy versioned docs with mike
+        env:
+          DOC_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "::group::📚 mike versioned deploy"
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          uv run --no-sync mike deploy --update-aliases "$DOC_VERSION" latest --branch gh-pages --push
+          git fetch origin gh-pages
+          # set-default apenas quando o ledger ainda não tem raiz (primeira
+          # execução) — evita commits vazios em execuções subsequentes.
+          if ! git show FETCH_HEAD:index.html > /dev/null 2>&1; then
+            uv run --no-sync mike set-default latest --branch gh-pages --push
+            git fetch origin gh-pages
+          fi
+          rm -rf site
+          mkdir -p site
+          git archive FETCH_HEAD | tar -x -C site
           echo "::endgroup::"
 
       - name: 📋 Write doc-update summary (step summary + artifact)
