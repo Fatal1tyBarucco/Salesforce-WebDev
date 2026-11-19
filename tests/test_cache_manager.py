@@ -113,6 +113,98 @@ def test_default_ttl_preserved(cache: CacheManager, clock: FakeClock) -> None:
     assert payload["ttl"] == 86400
 
 
+def test_written_envelope_schema_version_is_2(cache: CacheManager) -> None:
+    """The on-disk envelope must declare schema_version 2 (kills constant mutants)."""
+    cache.set("k", "v")
+    payload = json.loads(entry_path(cache._cache_dir, "k").read_text(encoding="utf-8"))
+    assert payload["schema_version"] == 2
+    assert payload["checksum"] == compute_checksum("v")
+    assert payload["namespace"] == ""
+    assert payload["data"] == "v"
+
+
+def test_nested_cache_dir_created(tmp_path: Path) -> None:
+    """CacheManager must create deep missing parent directories (parents=True)."""
+    deep = tmp_path / "a" / "b" / "cache"
+    cache = CacheManager(cache_dir=deep)
+    cache.set("k", "v")
+    assert cache.get("k") == "v"
+
+
+def test_fresh_stats_all_zero() -> None:
+    stats = CacheStats()
+    assert stats.hits == 0
+    assert stats.misses == 0
+    assert stats.evictions == 0
+    assert stats.sets == 0
+    assert stats.by_namespace == {}
+    assert stats.eviction_reasons == {}
+    assert stats.total == 0
+    assert stats.hit_rate == 0.0
+
+
+def test_hit_rate_single_lookup(cache: CacheManager) -> None:
+    cache.get("only-miss")
+    assert cache.stats.hit_rate == 0.0
+    assert cache.stats.by_namespace[""].hit_rate == 0.0
+    other = CacheManager(cache_dir=cache._cache_dir / "second")
+    other.set("k", "v")
+    other.get("k")
+    assert other.stats.hit_rate == 1.0
+    assert other.stats.by_namespace[""].hit_rate == 1.0
+
+
+def test_stats_multi_operation_counters(cache: CacheManager) -> None:
+    """Exact counters after multiple operations (kills +=→= / -= / +=2 mutants)."""
+    cache.set("a", 1, namespace="ns")
+    cache.set("b", 2, namespace="ns")
+    cache.set("c", 3, namespace="ns")
+    cache.get("a", namespace="ns")
+    cache.get("b", namespace="ns")
+    cache.get("c", namespace="ns")
+    cache.get("x", namespace="ns")
+    cache.get("y", namespace="ns")
+    cache.invalidate("a", namespace="ns")
+    cache.invalidate("b", namespace="ns")
+    stats = cache.stats
+    assert stats.sets == 3
+    assert stats.hits == 3
+    assert stats.misses == 2
+    assert stats.evictions == 2
+    bucket = stats.by_namespace["ns"]
+    assert bucket.sets == 3
+    assert bucket.hits == 3
+    assert bucket.misses == 2
+    assert bucket.evictions == 2
+    assert bucket.hit_rate == 3 / 5
+    assert stats.eviction_reasons == {"manual": 2}
+
+
+def test_stats_to_dict_full_structure(cache: CacheManager) -> None:
+    cache.set("k", "v", namespace="ns")
+    cache.get("k", namespace="ns")
+    cache.get("absent", namespace="ns")
+    cache.invalidate("k", namespace="ns")
+    assert cache.stats.to_dict() == {
+        "hits": 1,
+        "misses": 1,
+        "evictions": 1,
+        "sets": 1,
+        "total": 2,
+        "hit_rate": 0.5,
+        "by_namespace": {
+            "ns": {
+                "hits": 1,
+                "misses": 1,
+                "evictions": 1,
+                "sets": 1,
+                "hit_rate": 0.5,
+            }
+        },
+        "eviction_reasons": {"manual": 1},
+    }
+
+
 def test_never_expire_ttl(cache: CacheManager, clock: FakeClock) -> None:
     cache.set("state", {"a": 1}, ttl=-1)
     clock.advance(10 * 365 * 86400)
