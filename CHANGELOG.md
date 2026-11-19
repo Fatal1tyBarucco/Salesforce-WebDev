@@ -2,6 +2,20 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.4.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.0...v0.4.1) (2026-11-19)
+
+
+### Bug Fixes
+
+* **ci:** permanent stabilization — stop bot/release/hook volatility cascade ([36cc885](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/36cc885450d4ec2a71e9809cc076d44a6a78ac21))
+* **docs:** ruff format SOURCE_SCHEMA.md code block + refresh manifest ([8364428](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8364428e6d391b3c9f6dad3dd9601ce8e25c0feb))
+
+
+### Documentation
+
+* **agents:** record permanent CI stabilization conventions ([7bf31a6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7bf31a6983e57886ba91943ddf6b6edb2b5b63f1))
+* **sync:** reconcile documentation — 2026-11-19 17:47 UTC ([da223cc](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/da223cc3fdbb9d208a0fdd8757d33b2893513559))
+
 ## [Unreleased]
 
 ### Fixed
