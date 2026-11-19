@@ -5,6 +5,7 @@
       "docs/plans/auto-opencode-issue.md"
     ],
     ".github/scripts/ci-visual.sh": [
+      "CHANGELOG.md",
       "docs/ai-generated/release-notes.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
@@ -689,7 +690,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "a9abcf4fff97d80f69d0831ba429a6b25a03a735",
-    "CHANGELOG.md": "881e43f5ff3878229c0ab908493c2a4993217064",
+    "CHANGELOG.md": "485d1d8b2133d3879f8db9d9e71fd4bf2631fa90",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -709,14 +710,14 @@
     "assets/pipeline-flow.svg": "039a7a311a6bb03def0af249405b58aae365a28f",
     "commit_fixes.sh": "a2b0332530b98e02aba785db0f2b7cf3719896cf",
     "data/trailhead_categories.json": "025d5a5cf6315381f0f24cb3f5bc11af89c05b8b",
-    "docs/.last-processed-ref": "cb5185b759ef3de3d8415e65c1e5e5cf9a9250ca",
+    "docs/.last-processed-ref": "8d9c0f5d4dbbbe1f85aa7b20a603174d99408522",
     "docs/ARQUITETURA.md": "fe540703565fd9096476a65b330bf905aa5ecdc4",
     "docs/DEBITO_TECNICO.md": "d67b3487afad6f0d16f3fd72e024b4677913c7d3",
     "docs/MODERNIZACAO.md": "20b50cb2021ae4cb08d25fc127fdaa12f3ca8b2b",
     "docs/SOURCE_SCHEMA.md": "ca119ea7189e7c4861e6956907baa15540b5f54d",
-    "docs/ai-generated/leadership.md": "4484508900e65ab7139d737197d9d5adbd7dab8d",
-    "docs/ai-generated/release-notes.md": "8a8b75258391db575a540babae9a07ad25121bce",
-    "docs/ai-generated/roadmap.md": "49afaa5f46dba0cc4615efde95e377c2b3aae2d7",
+    "docs/ai-generated/leadership.md": "fe39e036bb05699dc00731f8a5e74b01baab81af",
+    "docs/ai-generated/release-notes.md": "2ae6e7c4760af867546fda64ee6d7b654b482f95",
+    "docs/ai-generated/roadmap.md": "5a80922c4130c2228094e0e97b52114004bb79e8",
     "docs/api/ai-collectors-change_collector.md": "504999cc5607d908d84a871fbad6c5ff604283be",
     "docs/api/ai-config-models.md": "c9affc51c4f784dd0965e912301370334d01f939",
     "docs/api/ai-generators-badges.md": "8147af0a1f76451c364d0fd967a561d869f87f2f",
@@ -1425,6 +1426,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "54d7973d7b04535d803ddd05d22f4603276e5119"
   },
-  "generated_at": "2026-11-19T17:35:42.707245+00:00",
-  "repository_sha": "34a9ca5f64295cc10c267c36d030cfce8fad0677"
+  "generated_at": "2026-11-19T17:47:25.488510+00:00",
+  "repository_sha": "74ab63e15f4a0b437661ba733d2388dfc7d6692a"
 }
