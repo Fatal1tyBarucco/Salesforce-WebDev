@@ -127,3 +127,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `9bb29ec` — style(docs): ruff-format Python blocks in restored SOURCE_SCHEMA.md
 - `5f506e5` — docs(agents): record mkdocs plugin deps + ruff-format-in-markdown pitfalls
 - `7bf31a6` — docs(agents): record permanent CI stabilization conventions
+- `753a2d5` — docs(agents): record post-release lock desync fix + skip-ci message pitfall
