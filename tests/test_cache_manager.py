@@ -887,6 +887,54 @@ def test_sweep_ttl_zero_and_exact_boundary(cache: CacheManager, clock: FakeClock
     clock.advance(100)  # edge: now-ts == ttl → still valid; zero: expired
     assert cache.clear_expired() == 1
     assert cache.get("edge") == "v"
+    assert cache.stats.eviction_reasons == {"ttl": 1}
+
+
+def test_refresh_preserves_ttl_and_schema(cache: CacheManager, clock: FakeClock) -> None:
+    """The last_access refresh rewrite must keep ttl and schema_version intact."""
+    cache.set("k", "v", ttl=100)
+    clock.advance(60)
+    assert cache.get("k") == "v"  # triggers the refresh rewrite
+    assert cache.get("k") == "v"  # refreshed envelope must still validate
+    clock.advance(50)  # total elapsed 110 > custom ttl 100
+    assert cache.get("k") is None  # custom ttl must survive the refresh
+
+
+def test_lru_multi_eviction_cross_instance_count(tmp_path: Path, clock: FakeClock) -> None:
+    """One enforcement scan must evict several entries when the budget shrank."""
+    shared = tmp_path / "c"
+    writer = CacheManager(cache_dir=shared, clock=clock, max_entries_per_namespace=100)
+    writer.set("a", "1", namespace="ns")
+    clock.advance(120)
+    writer.set("b", "2", namespace="ns")
+    clock.advance(120)
+    writer.set("c", "3", namespace="ns")
+    clock.advance(120)
+    enforcer = CacheManager(cache_dir=shared, clock=clock, max_entries_per_namespace=1)
+    enforcer.set("d", "4", namespace="ns")
+    assert enforcer.get("a", namespace="ns") is None
+    assert enforcer.get("b", namespace="ns") is None
+    assert enforcer.get("c", namespace="ns") is None
+    assert enforcer.get("d", namespace="ns") == "4"
+    assert enforcer.stats.eviction_reasons["lru"] == 3
+
+
+def test_lru_multi_eviction_cross_instance_bytes(tmp_path: Path, clock: FakeClock) -> None:
+    shared = tmp_path / "c"
+    writer = CacheManager(cache_dir=shared, clock=clock, max_bytes_per_namespace=100000)
+    writer.set("a", "x" * 200, namespace="ns")
+    clock.advance(120)
+    writer.set("b", "y" * 200, namespace="ns")
+    clock.advance(120)
+    writer.set("c", "z" * 200, namespace="ns")
+    clock.advance(120)
+    enforcer = CacheManager(cache_dir=shared, clock=clock, max_bytes_per_namespace=500)
+    enforcer.set("d", "w" * 200, namespace="ns")
+    assert enforcer.get("a", namespace="ns") is None
+    assert enforcer.get("b", namespace="ns") is None
+    assert enforcer.get("c", namespace="ns") is None
+    assert enforcer.get("d", namespace="ns") == "w" * 200
+    assert enforcer.stats.eviction_reasons["lru"] == 3
 
 
 def test_last_access_refresh_exact_interval(cache: CacheManager, clock: FakeClock) -> None:
