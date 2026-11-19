@@ -689,7 +689,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "69db49feb5e12501c7f8e244e2c87dffe240521b",
     "AGENTS.md": "a9abcf4fff97d80f69d0831ba429a6b25a03a735",
-    "CHANGELOG.md": "ff6d1dd38f9559bf2a3fbd0771919618f850ea84",
+    "CHANGELOG.md": "881e43f5ff3878229c0ab908493c2a4993217064",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "33fe7da25c3846579841d6ca65d767d1706ffbd8",
@@ -873,7 +873,7 @@
     "docs/runbooks/mkdocs-build-failure.md": "9977dfaa6aa602ab2b307405c5626fb17d20e462",
     "docs/runbooks/release-generation-failure.md": "c400364a9fce1ebb0a1781dc53b83188dcfc4b6d",
     "docs/runbooks/scraper-failure.md": "446e850268bbdf8fbd8a1af8aba9c18ed89d0678",
-    "drift_report.json": "ac40219782132ec20f274d34a61fd6506eb0899e",
+    "drift_report.json": "9b68d4fa6d8ee038c75fc90df5ef02d6abce29ab",
     "fix_md.py": "4912d3dea8f4da8cfc7b8e352177fe881f1086cd",
     "intelligence/intelligence_hub/.release_control_defensive.txt": "1619e5ce5ce8acd5f8b1a8f640de8cdbc97c7ed4",
     "intelligence/intelligence_hub/assets/pages/index.html": "35fd87169908dc1529494042d059113bf4a528d2",
@@ -895,8 +895,8 @@
     "prompts/classification/v1.yaml": "5c0a46b07e37daea754eccbe91535f98370e4438",
     "prompts/enrichment/v1.yaml": "585043de70a2dda77bbf30ce52f4f2a21dc3172b",
     "prompts/reporting/v1.yaml": "c8cdc61cadb134b69b230a6f4f0d2e44dcc047ae",
-    "pyproject.toml": "3f61917ac96ca2343ec19e22cfb59069c59030af",
-    "reconcile_summary.md": "617c49715b5b5cb0d76111d98c2fb499a2afd43a",
+    "pyproject.toml": "6a1c8fcb70ebea57ff602af95ca55d64ca512c78",
+    "reconcile_summary.md": "38214d31507388c6762a3b5cf5bad705f1277398",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1425,6 +1425,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "7c071a85570006229c00c36769765a5fe6806f44"
   },
-  "generated_at": "2026-11-19T17:31:27.453423+00:00",
-  "repository_sha": "fb529047df062c4434479d2e35907efb5eb4987e"
+  "generated_at": "2026-11-19T17:33:56.913722+00:00",
+  "repository_sha": "43af2c7c47c3bb93679a114b756d049a99b996d2"
 }
