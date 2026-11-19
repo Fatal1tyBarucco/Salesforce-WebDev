@@ -289,6 +289,17 @@ All third-party GitHub Actions are pinned to immutable commit SHAs. Do not reint
 ## Atualização automática (gatilho) — 2026-10-18T03:06:47-03:00
 - Gatilho executado: `auto_complete_memory_agents.sh`. Atualiza MEMORY.md (fatos duráveis, não sensíveis) e AGENTS.md (convenções, versionado) a cada finalização de tarefa. Nenhum resultado inventado; bloqueios reportados honestamente.
 
+## Estabilização de CI — pacote permanente (2026-11-19)
+
+Regras duráveis após a cascata de falhas recorrentes em PRs (bot × release-please × hooks):
+
+- **Documentation Sync**: triggers apenas `push: main` + schedule (6h) + dispatch. NÃO roda em pull_request nem em branches '*' — bot não commita em branches de PR/release (eliminava checks `action_required`, corridas de push e conflitos em release PRs). Commits do bot levam `[skip ci]` (não re-disparam workflows nem release-please). Reports (`drift_report.json`, `reconcile_summary.md`) vão para `/tmp`, nunca commitados.
+- **`drift_report.json`, `reconcile_summary.md`, `pr_body.md` são untracked** (.gitignore) e excluídos do inventário do engine (`REPORT_RELS`). Versioná-los criava self-reference: baseline stale a cada run do bot + conflitos perpétuos em release PRs. O manifest (`docs/.documentation-manifest.json`) continua tracked e é a fonte de verdade.
+- **release-please "Sync uv.lock"**: guard de commit vazio (`git diff --cached --quiet`) + `git pull --rebase` antes do push + `[skip ci]`. Lock já em sync no release PR → step não falha mais.
+- **pre-commit exclude global**: `^(tests/golden/|tests/__snapshots__/|releases/)` — conteúdo byte-exact NUNCA passa por whitespace/EOF fix (corrompia characterization tests e invalidaria fingerprints de release).
+- **Após sweep de higiene em docs, re-reconcile ANTES de commitar o manifest** — o baseline precisa refletir os blobs finais (esquecer isso deixa MANIFEST_STALE_SHA em main).
+- Hooks pre-push com stash conflict abortam o push mesmo com gates verdes; se o tree já está limpo de fixes, o push passa. `--no-verify` só com justificativa registrada.
+
 ## Cache Layer conventions (ADR-011, 2026-11-19)
 
 - **Facade única**: `src/cache_manager.py` (`CacheManager`/`CacheStats`). Primitivas transversais em `src/cache_io.py` (escrita atômica temp+fsync+os.replace, `FileLock` fcntl/msvcrt, checksum SHA-256 canônico, quarentena rotacionada). Estado incremental em `src/processed_releases.py` (`ProcessedReleasesStore`, fingerprint + single-flight).
