@@ -689,7 +689,7 @@
     ".promptfoo.yaml": "d5cf8c11c35215bb159fb49d7232cdfb70a2f431",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
-    "AGENTS.md": "a9abcf4fff97d80f69d0831ba429a6b25a03a735",
+    "AGENTS.md": "337abcb0d690f65f8ece3056952d9bc67cf64c22",
     "CHANGELOG.md": "485d1d8b2133d3879f8db9d9e71fd4bf2631fa90",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -844,7 +844,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "438572ddd0fae3e4f4f1d473fcc7e2e0fa661c65",
+    "docs/changelog.md": "ef2dca6026c45db5ac480d17aa0091b023720000",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
@@ -1423,6 +1423,6 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "54d7973d7b04535d803ddd05d22f4603276e5119"
   },
-  "generated_at": "2026-11-19T18:10:17.284774+00:00",
-  "repository_sha": "9303752bc3c8056504280e292e1a2194bc02e38b"
+  "generated_at": "2026-11-19T18:18:24.333735+00:00",
+  "repository_sha": "7bf31a6983e57886ba91943ddf6b6edb2b5b63f1"
 }
