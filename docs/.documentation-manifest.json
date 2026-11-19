@@ -886,7 +886,7 @@
     ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
     ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
-    ".github/workflows/documentation-build.yml": "e4d313d4bff5af62679e73d144bd5b8afad0b35e",
+    ".github/workflows/documentation-build.yml": "ca9c1bc4941c3f44ab13651b3838fe18e1b698cb",
     ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
     ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
@@ -1645,7 +1645,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "827df9ab78745641d3ebe56af7b910a8522c531e"
   },
-  "generated_at": "2026-11-19T21:06:21.374685+00:00",
+  "generated_at": "2026-11-19T21:10:30.010513+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1660,5 +1660,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "a7032c6f328666821e0920a1fdc8c67046a7c858"
+  "repository_sha": "7df455c486a05f76381d3aff0a567ed7f6a955b6"
 }
