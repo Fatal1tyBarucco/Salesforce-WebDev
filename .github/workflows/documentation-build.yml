@@ -51,6 +51,19 @@ jobs:
 
       # GATE DURO DE CONTRATO (ADR-012): o site só publica se manifest,
       # nav, docs/ e a árvore real do repositório estiverem em sincronia.
+      # Reconciliação determinística ANTES do gate: sync e build disparam
+      # no mesmo push; se o sync corrigiu o baseline e commitou com
+      # skip-ci (anti-cascata), o build deste mesmo push ainda enxerga o
+      # estado pré-correção. O reconcile é idempotente e LLM-free —
+      # reproduz exatamente as correções estruturais do sync, sem
+      # suavizar o gate: divergências de prose (OMITO/OBSOLETO/DIVERGENTE
+      # não auto-corrigíveis) continuam falhando o build.
+      - name: 🔄 Reconciliação determinística (pré-gate, idempotente)
+        run: |
+          echo "::group::🔄 Deterministic Reconciliation (pre-gate)"
+          python3 .github/scripts/docs_sync_engine.py reconcile
+          echo "::endgroup::"
+
       - name: 🧾 Validar contrato de documentação (hard gate)
         run: |
           echo "::group::🧾 Documentation Contract (ADR-012)"
