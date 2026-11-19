@@ -1,6 +1,55 @@
-<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
 # Notas de Release
+
+## Nova atualização
+
+## Nova atualização
+
+Esta atualização corrige o pipeline de documentação por IA e mantém a consistência dos artefatos de documentação.
+
+### Correções
+- **Workflow ai-docs**: corrigido erro de sintaxe "bad substitution" no step Generate Summary. A expressão GHA `${PUBLISH_MODE == 'pr' && ...}` dentro de bash foi substituída por condicional shell usando a variável de ambiente `HAS_CHANGES` (output do step publish) e verificação explícita de `PUBLISH_MODE`. O workflow agora executa sem erros e publica a documentação corretamente.
+
+### Documentação
+- **Manifesto e drift report reconciliados**: dois commits de sincronização (17:26 e 17:31 UTC) atualizaram `docs/.documentation-manifest.json` e `drift_report.json` com mapeamentos para novos arquivos (ex.: `.github/scripts/ci-visual.sh`), SHAs atualizados de diversos arquivos (AGENTS.md, CHANGELOG.md, docs/ai-generated/*) e correção de entradas de drift do tipo `MANIFEST_STALE_SHA`.
+- **Atualização automática via IA**: commit `docs: atualização automática via IA [skip ci]` (33ccab3) atualizou arquivos de documentação gerados por IA (provavelmente `docs/ai-generated/release-notes.md`, `leadership.md`, `roadmap.md`). **Requer revisão humana** pois o diff não está disponível nos dados fornecidos.
+- **AGENTS.md**: registrado dependências de plugins do mkdocs e armadilhas do `ruff-format-in-markdown` para orientar agentes de IA e desenvolvedores.
+
+### Riscos e pontos de atenção
+- A atualização automática de documentação por IA (33ccab3) não tem diff disponível; recomenda-se validar o conteúdo gerado antes de considerar a mudança concluída.
+- As correções no manifesto e drift report são de rastreamento interno e não afetam funcionalidade do produto.
+
+| Feature | Descrição | Impacto | Público |
+| :--- | :--- | :---: | :--- |
+| **Fix CI workflow ai-docs summary generation — 📋 bugfix** | Corrigido erro 'bad substitution' no step Generate Summary do workflow ai-docs.yml. A expressão G… | 🟡 medium | .github/workflows/ai-docs.yml · Prioridade: 💡 P1 |
+| **Reconcile documentation manifest and drift report — 📋 documentation** | Dois commits de sincronização (17:26 e 17:31 UTC) atualizaram o manifesto de documentação (docs/.… | 🟢 low | docs/.documentation-manifest.json, drift_report.json · Prioridade: 💡 P3 |
+| **Automated AI documentation update — 📋 documentation** | Commit 'docs: atualização automática via IA [skip ci]' (33ccab3) provavelmente atualizou arquivos… | 🟢 low | docs/ai-generated/release-notes.md, docs/ai-generated/leadership.md, docs/ai-generated/roadmap.md · Prioridade: 💡 P3 |
+| **Record mkdocs plugin deps and ruff-format-in-markdown pitfalls in AGENTS.md — 📋 documentation** | Atualização do arquivo AGENTS.md para registrar dependências de plugins do mkdocs e armadilhas do… | 🟢 low | AGENTS.md · Prioridade: 💡 P3 |
+
+## 📊 Distribuição de Impacto
+
+🔴 Alto: **0** (0%) 
+🟡 Médio: **1** (25%) 🟡
+🟢 Baixo: **3** (75%) 🟢🟢🟢
+
+Total: **4 features**
+
+## Mudanças por tipo nesta execução
+
+```text
+📋 bugfix             │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+📋 documentation      │██████████████████████████████│    3 →
+```
+
+Sparkline da distribuição alto/médio/baixo:  ▂█
+
+
+## Revisão Necessária
+
+- **Automated AI documentation update** — Diff não disponível; confirmar quais arquivos foram alterados e se o conteúdo está correto. (0.50)
+
+---
 
 ## Nova atualização
 

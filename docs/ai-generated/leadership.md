@@ -1,6 +1,18 @@
-<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
 # Resumo Executivo
+
+## Nova atualização
+
+## Nova atualização
+
+Impacto de negócio: esta atualização corrige uma falha crítica no pipeline de documentação por IA (workflow `ai-docs`) que impedia a geração de resumos e a publicação correta da documentação. A correção elimina o erro de sintaxe "bad substitution" e restaura a execução confiável do pipeline. Paralelamente, os artefatos de rastreamento de documentação (manifesto e drift report) foram reconciliados, mantendo a consistência entre código e documentação gerada.
+
+Riscos: a atualização automática de documentação via IA (commit 33ccab3) não possui diff disponível nos dados fornecidos; o conteúdo gerado pode conter imprecisões e requer validação humana antes de ser considerado confiável.
+
+Próximos passos: revisar manualmente os arquivos de documentação gerados por IA (`docs/ai-generated/release-notes.md`, `leadership.md`, `roadmap.md`) para confirmar correção e completude; monitorar a execução do workflow `ai-docs` nas próximas execuções para confirmar a estabilidade da correção.
+
+---
 
 ## Nova atualização
 

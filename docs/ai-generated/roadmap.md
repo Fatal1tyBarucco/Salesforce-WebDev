@@ -1,6 +1,14 @@
-<!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
+<!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
 # Sugestões de Roadmap
+
+## Nova atualização
+
+Sugestão: ## Nova atualização
+
+Sugestão: Sugestões sujeitas a revisão humana: validar o conteúdo da documentação gerada por IA no commit 33ccab3 (release-notes.md, leadership.md, roadmap.md) antes de incorporá-la à documentação oficial; considerar adicionar verificação automatizada de sintaxe bash nos workflows para capturar erros de substituição GHA em tempo de PR; avaliar a inclusão de testes de contrato para o pipeline de documentação por IA, garantindo que steps de publish e summary generation funcionem em diferentes modos (PR vs push); monitorar a estabilidade do workflow ai-docs após a correção do Generate Summary; revisar periodicamente a consistência do manifesto de documentação e do drift report para evitar acúmulo de entradas `MANIFEST_STALE_SHA`.
+
+---
 
 ## Nova atualização
 

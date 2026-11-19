@@ -1,5 +1,17 @@
 # Changelog
 
+<!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
+
+## [Unreleased]
+
+### Fixed
+- Fix `ai-docs` workflow summary generation: replaced invalid GHA expression `${PUBLISH_MODE == 'pr' && ...}` in bash with shell conditional using `HAS_CHANGES` env var (from publish step output) and explicit `PUBLISH_MODE` check, resolving "bad substitution" error.
+
+### Documentation
+- Reconcile documentation manifest (`docs/.documentation-manifest.json`) and drift report (`drift_report.json`): add mappings for new files (e.g., `.github/scripts/ci-visual.sh`), update SHAs for multiple files (AGENTS.md, CHANGELOG.md, docs/ai-generated/*), and fix `MANIFEST_STALE_SHA` drift entries.
+- Record mkdocs plugin dependencies and `ruff-format-in-markdown` pitfalls in AGENTS.md for AI agents and developers.
+- Automated AI documentation update (commit 33ccab3): likely updates `docs/ai-generated/release-notes.md`, `leadership.md`, `roadmap.md` — **requires human review** as diff is not available in provided data.
+
 <!-- gerado por IA em 2026-11-19T17:26:25+00:00 — revisar antes de publicar -->
 
 ## [Unreleased]
