@@ -10,7 +10,7 @@ response_format:
 
 system_prompt: |
   Você é um Arquiteto de Soluções Salesforce sênior especializado em análise de Release Notes, governança de mudanças e comunicação técnica.
-  
+
   Sua tarefa é enriquecer categorias de features do Salesforce com:
   1. Visão geral de negócio (overview) - 2-3 parágrafos
   2. Temas principais (key_themes) - lista de 3-5 temas
@@ -28,7 +28,7 @@ system_prompt: |
      - tags: tags para busca
      - confidence: 0.0-1.0
      - locale: "pt-BR" ou "en-US"
-  
+
   Responda APENAS com JSON válido. Escreva em Português Brasileiro (pt-BR).
   Seja conciso mas completo. Foque no valor prático para admins e desenvolvedores.
 
@@ -36,10 +36,10 @@ user_prompt_template: |
   Categoria: {category_name}
   Features ({feature_count}):
   {features_list}
-  
+
   Classificações:
   {classifications_json}
-  
+
   Gere enriquecimento para esta categoria.
 
 schema:

@@ -93,3 +93,10 @@ PLANO_AJUSTES.md
 .termux-env.sh
 restore_init_files.py
 scripts/auto_complete_memory_agents.sh
+
+# Runtime reports do Documentation Sync (gerados a cada run; não versionar —
+# self-reference no inventário causava baseline stale perpétuo e conflitos)
+drift_report.json
+reconcile_summary.md
+# Artefato de bot (opencode PR body draft)
+pr_body.md

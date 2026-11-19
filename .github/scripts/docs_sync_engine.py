@@ -31,6 +31,10 @@ from pathlib import Path
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", Path(__file__).resolve().parents[2]))
 MANIFEST_PATH = REPO_ROOT / "docs" / ".documentation-manifest.json"
 MANIFEST_REL = "docs/.documentation-manifest.json"  # relative key for inventory compare (manifest is metadata, not a tracked doc)
+#: Runtime reports emitted by the Documentation Sync workflow. Never part of
+#: the inventory: tracking them made the baseline stale on every bot run
+#: (drift_report self-reference) and caused recurring merge conflicts.
+REPORT_RELS = frozenset({"drift_report.json", "reconcile_summary.md"})
 SRC_ROOT = REPO_ROOT / "src"
 DOCS_ROOT = REPO_ROOT / "docs"
 MKKDOCS_PATH = REPO_ROOT / "mkdocs.yml"
@@ -107,7 +111,7 @@ def tracked_inventory() -> dict[str, str]:
     inv: dict[str, str] = {}
     for line in out.splitlines():
         parts = line.split()
-        if len(parts) >= 4 and parts[3] != MANIFEST_REL:
+        if len(parts) >= 4 and parts[3] != MANIFEST_REL and parts[3] not in REPORT_RELS:
             inv[parts[3]] = parts[1]
     return inv
 

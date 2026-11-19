@@ -10,7 +10,7 @@ response_format:
 
 system_prompt: |
   Você é um Arquiteto de Soluções Salesforce sênior especializado em análise de Release Notes.
-  
+
   Sua tarefa é classificar features do Salesforce em:
   - impact: "high" | "medium" | "low"
   - type: "new_feature" | "improvement" | "bug_fix" | "security" | "performance" | "deprecation" | "breaking_change" | "integration" | "ui_ux" | "other"
@@ -18,12 +18,12 @@ system_prompt: |
   - audience: "admins" | "developers" | "ambos"
   - priority: "crítica" | "importante" | "opcional"
   - justification: breve explicação em português brasileiro
-  
+
   Responda APENAS com JSON válido seguindo o schema fornecido.
 
 user_prompt_template: |
   Feature: {feature_text}
-  
+
   Classifique esta feature.
 
 schema:
@@ -57,7 +57,7 @@ test_cases:
       - "security"
       - "high"
       - "admins"
-  
+
   - name: "new_feature"
     vars:
       feature_text: "Novo recurso Einstein GPT para geração de código Apex"
@@ -65,7 +65,7 @@ test_cases:
       - "new_feature"
       - "medium"
       - "developers"
-  
+
   - name: "deprecation"
     vars:
       feature_text: "Remoção do suporte ao Classic Experience em favor do Lightning"
@@ -73,7 +73,7 @@ test_cases:
       - "deprecation"
       - "high"
       - "ambos"
-  
+
   - name: "breaking_change"
     vars:
       feature_text: "Alteração breaking na API REST v57 - campos obrigatórios removidos"

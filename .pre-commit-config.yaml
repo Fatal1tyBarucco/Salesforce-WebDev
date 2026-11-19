@@ -1,3 +1,8 @@
+# Byte-exact content: golden fixtures, syrupy snapshots and versioned release
+# artifacts must NEVER be whitespace-normalized — it corrupts characterization
+# tests and invalidates release fingerprints (2026-11-19).
+exclude: ^(tests/golden/|tests/__snapshots__/|releases/)
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
