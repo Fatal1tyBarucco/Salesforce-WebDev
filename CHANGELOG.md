@@ -2,6 +2,25 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.5.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.2...v0.5.0) (2026-11-19)
+
+
+### Features
+
+* **docs:** Sincronia Absoluta da GitHub Pages — contrato verificável + publicação moderna (ADR-012) ([#418](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/418)) ([a7032c6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a7032c6f328666821e0920a1fdc8c67046a7c858))
+
+
+### Bug Fixes
+
+* **docs:** reconcile before contract gate in build — eliminate sync/build race on stale baseline ([a6fe95f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a6fe95fad7b1346096b95612e7903f4e95480967))
+* **docs:** reconcile before contract gate in build (sync/build race) ([#420](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/420)) ([a6fe95f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/a6fe95fad7b1346096b95612e7903f4e95480967))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-19 18:48 UTC [skip ci] ([8397b61](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8397b61b9ab12e07b87f10572096163b410f97e6))
+* **sync:** reconcile documentation — 2026-11-19 21:06 UTC [skip ci] ([7df455c](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7df455c486a05f76381d3aff0a567ed7f6a955b6))
+
 ## [0.4.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.1...v0.4.2) (2026-11-19)
 
 
