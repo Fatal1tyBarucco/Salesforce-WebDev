@@ -1,0 +1,7764 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Automated pipeline for extracting and classifying Salesforce Release Notes">
+      
+      
+      
+        <link rel="canonical" href="https://fatal1tybarucco.github.io/Salesforce-WebDev/0.2.1/ai-generated/release-notes/">
+      
+      
+        <link rel="prev" href="../../runbooks/release-generation-failure/">
+      
+      
+        <link rel="next" href="../leadership/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Release Notes - Salesforce Release Intelligence</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/banner.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/enhanced_search.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#notas-de-release" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Salesforce Release Intelligence" class="md-header__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Salesforce Release Intelligence
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Release Notes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Salesforce Release Intelligence" class="md-nav__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Salesforce Release Intelligence
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/running-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executando o Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/local-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desenvolvimento Local
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitetura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ARQUITETURA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARQUITETURA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEBITO_TECNICO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DEBITO_TECNICO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../MODERNIZACAO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MODERNIZACAO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/c4_container/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrama C4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisões (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisões (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Índice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-001-parser-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-001 Parser Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-002-github-actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-002 GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-003-topic-classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-003 Topic Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-004-auto-healing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-004 Auto-Healing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-005-documentation-reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-005 Documentation Reconciliation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-006-feature-evolution-ledger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-006 Feature Evolution Ledger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-007-clean-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-007 Clean Architecture Migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-008-prompt-versioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-008 Prompt Versioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-009-scraper-resilience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-009 Scraper Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-010-llm-cache-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-010 LLM Cache Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/domain-llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/domain-scraper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Scraper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-llm_adapters-cache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Llm Adapters Cache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-llm_adapters-observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Llm Adapters Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-llm_adapters-rate_limiter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Llm Adapters Rate Limiter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-llm_adapters-unified_client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Llm Adapters Unified Client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-mcp-knowledge_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Mcp Knowledge Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-scraping-cache_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Scraping Cache Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-scraping-observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Scraping Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-scraping-playwright_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Scraping Playwright Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-scraping-rate_limiter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Scraping Rate Limiter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core-classification-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Classification Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core-enrichment-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Enrichment Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core-pipeline-orchestrator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Pipeline Orchestrator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core-pipeline-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Pipeline Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core-summarization-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Summarization Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-api-graphql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Api Graphql
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-api-routes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Api Routes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-notification_step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Notification Step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-parsing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Scraping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/infrastructure-translation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure Translation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models Api
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models-classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models-enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models-feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models Feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models-release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-config-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Config Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-schemas-generated_docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Schemas Generated Docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-collectors-change_collector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Collectors Change Collector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-llm-client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Llm Client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-orchestrator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Orchestrator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-schemas-change/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Schemas Change
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-schemas-change_classifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Schemas Change Classifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-schemas-change_reviewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Schemas Change Reviewer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-schemas-llm_input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Schemas Llm Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/impact_propagation-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Propagation Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/impact_propagation-graph_builder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Propagation Graph Builder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/impact_propagation-heuristic_fallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Propagation Heuristic Fallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/impact_propagation-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Propagation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-ledger-linker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Ledger Linker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-ledger-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Ledger Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-ledger-prompts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Ledger Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-ledger-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Ledger Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-generators-badges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Generators Badges
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-generators-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Generators Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-generators-markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Generators Markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-integrations-salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Integrations Salesforce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-integrations-trailhead/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Integrations Trailhead
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-prompts-classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Prompts Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-prompts-enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Prompts Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-prompts-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Prompts Reporting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai-prompts-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Prompts Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ai_automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/analytics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-badge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Badge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-content/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Content
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-github_ops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Github Ops
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-impact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Impact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Reporting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/automation-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/circuit_breaker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Circuit Breaker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/feature_enricher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Enricher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/health/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Health
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/heuristic_classifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heuristic Classifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/i18n/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I18N
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/impact_analyzer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Analyzer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/issue_triage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Issue Triage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/limiters-rate_limiter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Limiters Rate Limiter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/nl_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nl Search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/orchestrator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/release_docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/release_discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/documentation_service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/release_summarizer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Summarizer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Salesforce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/smart_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Smart Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/main/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Principal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../internal/AGENT_DIRECTIVE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AGENT Directive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/scraper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scraper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/llm_service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/feature_classifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/translator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cache_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Runbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/scraper-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Falha no Scraper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/github-actions-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Falha no GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/documentation-sync-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Falha no Document Sync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/mkdocs-build-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Falha no MkDocs Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/release-generation-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Falha na Geração de Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentação Gerada por IA
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentação Gerada por IA
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 16
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 17
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 18
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leadership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resumo Executivo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sugestões de Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observabilidade
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observabilidade
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/pipeline-health/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Health
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manutenção
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Manutenção
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/workflow-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operações de Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/ai-docs-audit-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auditoria AI Docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/local-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desenvolvimento Local
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/cache-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/enhanced-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enhanced Search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Roadmap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/v3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/v4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V4 (Atual)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Planos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plans/auto-opencode-issue/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comentário Automático /oc fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referências
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Referências
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SOURCE_SCHEMA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Source Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribuição
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribuição
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contribution/testing-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 6
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 9
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 12
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 10
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 16
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 11
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 17
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 14
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nova-atualizacao-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nova atualização 18
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribuicao-de-impacto-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Distribuição de Impacto 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mudancas-por-tipo-nesta-execucao-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças por tipo nesta execução 15
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revisao-necessaria-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisão Necessária 13
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- gerado por IA em 2026-11-18T04:36:38+00:00 — revisar antes de publicar -->
+
+<h1 id="notas-de-release">Notas de Release<a class="headerlink" href="#notas-de-release" title="Permanent link">&para;</a></h1>
+<h2 id="nova-atualizacao">Nova atualização<a class="headerlink" href="#nova-atualizacao" title="Permanent link">&para;</a></h2>
+<p>Esta atualização entrega o Release Intelligence Hub para o release 264, adicionando assets de deploy manual, guias de preparação de org, relatórios de prontidão e configuração de sandbox — nova capacidade operacional de alto impacto para processos de release. Em paralelo, estabiliza o pipeline de CI/CD com múltiplas correções críticas: resolve falhas 100% no Intelligence Hub adicionando dependências ausentes (requests, types-html5lib, types-webencodings), torna detect_release.py resiliente a erros de rede eliminando crashes do Scheduled Pipeline, corrige triggers de workflow que causavam execuções vazias (ghost runs) e loops de bot em todo push, e ajusta permissões GitHub Actions inválidas (pull_requests→pull-requests, repository-projects, projects V2, SHA real do claude-code-action). Substitui hooks baseados em shell por scripts Python robustos (pre-commit, pre-push, post-tool-use, session-start) com ruff, mypy e pytest integrados, atingindo 95,55% de cobertura. Refatora o AI Triage como script Python para lidar com conteúdo multilinha. Sincroniza uv.lock com versões de release 0.1.2 a 0.1.7 corrigindo dessincronização recorrente do release-please. Aplica formatação Black para conformidade do gate de qualidade. Inclui correções operacionais no workflow do Intelligence Hub (remove deploy Pages problemático, adiciona git pull --rebase, corrige nome do README) e instala Playwright no job de detecção. Riscos: consumidores de automações dependentes de triggers push podem ter comportamento alterado; migração de hooks shell→Python exige validação de fluxos locais; regeneração de uv.lock em múltiplas versões deve ser monitorada para regressões de dependência.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Implementação do Release Intelligence Hub (release=264) — 📋 feature</strong></td>
+<td style="text-align: left;">Nova funcionalidade que evolui o sistema para um Release Intelligence Hub, incluindo assets de de…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">intelligence-hub, deploy-manuals, release-readiness, sandbox-config · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de workflows CI/CD falhando - dependências e resiliência de rede — 📋 bugfix</strong></td>
+<td style="text-align: left;">Corrige falhas 100% no Intelligence Hub adicionando dependência 'requests', adiciona types-html5l…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">scheduled-pipeline, intelligence-hub, detect-release, ci-dependencies · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sistema de hooks Python para qualidade de código (pre-commit, pre-push, post-tool-use, session-start) — 📋 refactor</strong></td>
+<td style="text-align: left;">Substitui hooks baseados em shell por scripts Python que leem JSON do stdin. Adiciona: post-tool-…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">.claude/hooks, .claude/settings.json, pre-commit, pre-push, post-tool-use, session-start · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de triggers de workflow para evitar execuções vazias (ghost runs) e loops de bot — 📋 bugfix</strong></td>
+<td style="text-align: left;">Múltiplas correções iterativas: remove triggers 'push' de workflows (scheduled-pipeline, ai-triag…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">scheduled-pipeline.yml, ai-triage.yml, ci-repair.yml, ai-pr-review.yml, opencode.yml · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de permissões GitHub Actions (projects, pull-requests, repository-projects, SHA action) — 📋 bugfix</strong></td>
+<td style="text-align: left;">Corrige permissões inválidas: 'pull_requests' -&gt; 'pull-requests' (hyphen), usa 'repository-projec…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">scheduled-pipeline, ai-triage, ai-pr-review, ci-repair, claude-code-action · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Refatoração do AI Triage como script Python para lidar com conteúdo multilinha — 📋 refactor</strong></td>
+<td style="text-align: left;">Reescreve o workflow ai-triage.yml (405 linhas alteradas) convertendo lógica de shell para script…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">ai-triage.yml, workflows/ai-triage · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sincronização de uv.lock com versões de release (0.1.2 a 0.1.7) e correção de release-please desync — 📋 bugfix</strong></td>
+<td style="text-align: left;">Múltiplas correções de uv.lock dessincronizado após release-please bump pyproject.toml sem regene…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">uv.lock, pyproject.toml, release-please, docs/.documentation-manifest.json, docs/index.md, AGENTS.md · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Formatação Black aplicada para passar gate Python Quality — 📋 refactor</strong></td>
+<td style="text-align: left;">Múltiplas aplicações de formatação Black (6 arquivos reformados) para corrigir falhas no gate de …</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/, scripts/, hooks/ · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizações de documentação automatizada (reconcile documentation) — 📋 documentation</strong></td>
+<td style="text-align: left;">Múltiplos commits de sincronização automática de documentação via IA [skip ci], regenerando docum…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/, documentation-manifest.json, drift_report.json · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correções no workflow Intelligence Hub - deploy Pages, pull rebase, README filename — 📋 bugfix</strong></td>
+<td style="text-align: left;">Remove deploy problemático do GitHub Pages do workflow Intelligence Hub, adiciona 'git pull --reb…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">salesforce_release_intelligence_hub.yml, GitHub Pages deploy, README handling · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Instalação Playwright e uso 'uv run python' no job detect do Scheduled Pipeline — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adiciona instalação do Playwright no job de detecção do pipeline agendado e altera execução para …</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">scheduled-pipeline.yml, detect_release.py, Playwright · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto">📊 Distribuição de Impacto<a class="headerlink" href="#distribuicao-de-impacto" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>3</strong> (27%) 🔴🔴🔴
+🟡 Médio: <strong>5</strong> (45%) 🟡🟡🟡🟡🟡
+🟢 Baixo: <strong>3</strong> (27%) 🟢🟢🟢</p>
+<p>Total: <strong>11 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao">Mudanças por tipo nesta execução<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>📋 bugfix             │██████████████████████████████│    6 →
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>📋 documentation      │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>📋 feature            │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>📋 refactor           │███████████████░░░░░░░░░░░░░░░│    3 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▄█▄</p>
+<hr />
+<h2 id="nova-atualizacao-2">Nova atualização 2<a class="headerlink" href="#nova-atualizacao-2" title="Permanent link">&para;</a></h2>
+<p>Esta atualização concentra-se na estabilidade do pipeline de integração contínua e na modernização do servidor MCP. As correções nos workflows de documentação e de qualidade endereçam falhas que comprometiam a geração automática de documentação e a execução do gate Python, com impacto médio e prioridade alta. A migração do servidor MCP para a FastMCP API, com pinagem do pacote mcp na versão 1.30.0, é a mudança de maior impacto desta execução: ela reescreve a implementação principal do servidor e exige regeneração dos arquivos de teste ouro, podendo afetar integrações que dependem da API MCP anterior. Não há breaking change formalmente classificado, mas consumidores do servidor MCP devem ser validados.</p>
+<p>Os demais itens são de impacto baixo: correções de lint Ruff e organização de imports, formatação Black, configuração das portas de qualidade, instalação editável do pacote para o mkdocstrings, reconciliação automática da documentação com atualização de manifesto e a marcação da versão de release com sincronização do arquivo de lock.</p>
+<p>Riscos e revisão: a configuração do portão de qualidade Black aparece de forma contraditória entre os commits (adição, remoção e restauração do job), e há um commit de atualização automática de documentação via IA sem detalhes no corpo — ambos sinalizados para revisão humana antes de consolidar a política final.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Correção de falhas no GitHub Actions e sincronização de documentação — 📋 bugfix</strong></td>
+<td style="text-align: left;">Vários commits corrigem falhas no GitHub Actions, incluindo uso de 'git add -A' no documentation-…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">.github/workflows/documentation-sync.yml, .github/workflows/documentation-build.yml, .github/workflows/python-quality.yml · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Migração do servidor MCP para FastMCP API (mcp 1.30.0) — 📋 refactor</strong></td>
+<td style="text-align: left;">Reescrita de knowledge_server.py para usar FastMCP em vez da API de baixo nível Server, atualizaç…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py, pyproject.toml · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correções de lint Ruff e organização de imports — 📋 refactor</strong></td>
+<td style="text-align: left;">Correção de erros E402 (import de nível de módulo no topo do arquivo) e diversos problemas Ruff (…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/infrastructure/llm_adapters/unified_client.py, tests/infrastructure/llm_coverage.py, src/domain/llm.py, vários arquivos de teste · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reconciliação automática de documentação e atualização de manifesto — 📋 documentation</strong></td>
+<td style="text-align: left;">Commits docs(sync) reconciliam documentação, atualizam docs/.documentation-manifest.json com novo…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json, drift_report.json, .github/scripts/docs_sync_engine.py, docs/ · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Release da versão 0.1.1 — 📋 documentation</strong></td>
+<td style="text-align: left;">Commits chore(main): release 0.1.1 e atualização de uv.lock para corresponder à versão 0.1.1 no p…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">pyproject.toml, uv.lock, CHANGELOG.md · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Configuração de portas de qualidade Black e Ruff — 📋 refactor</strong></td>
+<td style="text-align: left;">Atualização de CLAUDE.md, pyproject.toml, .claude/settings.json e adição de .ruffignore para excl…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.claude/settings.json, pyproject.toml, .ruffignore, CLAUDE.md · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Instalação editável do pacote para mkdocstrings — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adição de src/domain/<strong>init</strong>.py para tornar domain um pacote adequado e atualização do documenta…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/domain/<strong>init</strong>.py, .github/workflows/documentation-build.yml · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Formatação Black e ajustes de estilo de código — 📋 refactor</strong></td>
+<td style="text-align: left;">Aplicação de formatação Black para corrigir o portão de qualidade Python, incluindo remoção e res…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/workflows/python-quality.yml, arquivos Python diversos · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-2">📊 Distribuição de Impacto 2<a class="headerlink" href="#distribuicao-de-impacto-2" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (12%) 🔴
+🟡 Médio: <strong>1</strong> (12%) 🟡
+🟢 Baixo: <strong>6</strong> (75%) 🟢🟢🟢🟢🟢🟢</p>
+<p>Total: <strong>8 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-2">Mudanças por tipo nesta execução 2<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>📋 bugfix             │███████████████░░░░░░░░░░░░░░░│    2 →
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>📋 documentation      │███████████████░░░░░░░░░░░░░░░│    2 →
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>📋 refactor           │██████████████████████████████│    4 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▁▁█</p>
+<h2 id="revisao-necessaria">Revisão Necessária<a class="headerlink" href="#revisao-necessaria" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Configuração contraditória do portão de qualidade Black</strong> — Verificar decisão final entre Black e Ruff como portão de qualidade obrigatório. (0.60)</li>
+<li><strong>Atualização automática de documentação via IA</strong> — Revisar conteúdo gerado por IA antes de incorporar à documentação oficial. (0.50)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-3">Nova atualização 3<a class="headerlink" href="#nova-atualizacao-3" title="Permanent link">&para;</a></h2>
+<p>Sincronização do manifesto de documentação com atualização de referências, hashes e metadados de geração, impactando arquivos de documentação associadas, risco baixo de alteração de comportamento funcional. Correção na inicialização de linhas do bloco de release docs, ajustando lista de inicialização de vazia para linha em branco para restaurar formatação esperada, impacto médio na formatação gerada. Adaptação de testes do servidor MCP de release notes para API atual, incluindo objetos query, retorno JSON string e registro de ferramentas via FastMCP; maior parte do impacto na suíte de testes, comportamento pode necessitar de validação adicional.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Sincronização do manifesto de documentação — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualizou o manifesto de documentação com novas referências, hashes e metadados de geração, inclu…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json, docs · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção na inicialização de linhas do bloco de release docs — 📋 bugfix</strong></td>
+<td style="text-align: left;">Ajustou a inicialização da lista de linhas do bloco de release docs, passando de lista vazia para…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/release_docs.py, src/release_summarizer.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adaptação de testes do servidor MCP de release notes — 📋 refactor</strong></td>
+<td style="text-align: left;">Reescreveu os testes do MCP knowledge server para usar a API atual, incluindo objetos query, reto…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">tests/infrastructure/mcp/test_knowledge_server.py, src/infrastructure/mcp/knowledge_server.py · Prioridade: 💡 P2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-3">📊 Distribuição de Impacto 3<a class="headerlink" href="#distribuicao-de-impacto-3" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>0</strong> (0%)
+🟡 Médio: <strong>1</strong> (33%) 🟡
+🟢 Baixo: <strong>2</strong> (66%) 🟢🟢</p>
+<p>Total: <strong>3 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-3">Mudanças por tipo nesta execução 3<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>📋 bugfix             │██████████████████████████████│    1 →
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>📋 documentation      │██████████████████████████████│    1 →
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo:  ▄█</p>
+<h2 id="revisao-necessaria-2">Revisão Necessária 2<a class="headerlink" href="#revisao-necessaria-2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Correção na inicialização de linhas do bloco de release docs</strong> — Revisar o comportamento esperado da geração do bloco antes de liberar. (0.85)</li>
+<li><strong>Adaptação de testes do servidor MCP de release notes</strong> — Confirmar que a API testada corresponde ao contrato publicado do MCP. (0.90)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-4">Nova atualização 4<a class="headerlink" href="#nova-atualizacao-4" title="Permanent link">&para;</a></h2>
+<h2 id="nova-atualizacao-5">Nova atualização 5<a class="headerlink" href="#nova-atualizacao-5" title="Permanent link">&para;</a></h2>
+<p>Esta atualização traz uma migração crítica de arquitetura do FastMCP para a API do Servidor MCP v2, que altera a assinatura de <code>create_server</code> e a forma de registro de ferramentas, gerando um impacto alto devido à quebra de compatibilidade com clientes que dependiam da API anterior. También corrige a ordem de cálculo de links em <code>release_docs.py</code> para garantir que slugs de categorias em inglês sejam aplicados corretamente, evitando links quebrados na documentação (impacto médio). Por fim, refatora os testes do MCP Server, introduzindo a função <code>_decode</code> e removendo testes de chamada direta de ferramentas (<code>call_tool</code>), o que reduz a cobertura de integração mas simplifica a manutenção (impacto médio).</p>
+<p>Riscos principais: quebra de integração com consumidores que utilizavam a API antiga do FastMCP, e a necessidade de verificar se a remoção de testes de integração não mascarou falhas de extremidade a extremidade. Próximos passos: validar a compatibilidade dos consumidores com a nova API, confirmar o registro correto de todos os handlers e avaliar a necessidade de testes de integração alternativos.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Migração do FastMCP para MCP Server API v2 — 💥 Breaking Change</strong></td>
+<td style="text-align: left;">Substitui a implementação baseada em FastMCP por uma nova arquitetura utilizando Server, CallTool…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/infrastructure/mcp/knowledge_server.py, MCP Server Client · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de ordem de link em release_docs.py — 📋 bugfix</strong></td>
+<td style="text-align: left;">A variável <code>link</code> era calculada antes de ser redefinida para idioma en_US, gerando links incorret…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/release_docs.py, Documentação Gerada · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Refatoração e simplificação de testes do MCP Server — 📋 refactor</strong></td>
+<td style="text-align: left;">Testes foram refatorados para usar uma função auxiliar <code>_decode</code> que extrai o payload JSON do úni…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-4">📊 Distribuição de Impacto 4<a class="headerlink" href="#distribuicao-de-impacto-4" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (33%) 🔴
+🟡 Médio: <strong>2</strong> (66%) 🟡🟡
+🟢 Baixo: <strong>0</strong> (0%)</p>
+<p>Total: <strong>3 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-4">Mudanças por tipo nesta execução 4<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-4" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>💥 Breaking Change    │██████████████████████████████│    1 →
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>📋 bugfix             │██████████████████████████████│    1 →
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▄█</p>
+<h2 id="revisao-necessaria-3">Revisão Necessária 3<a class="headerlink" href="#revisao-necessaria-3" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Migração do FastMCP para MCP Server API v2</strong> — Migração crítica de arquitetura. Requer validação de compatibilidade com consumidores externos e verificação de que todos os handlers estão corretamente registrados. (0.95)</li>
+<li><strong>Refatoração e simplificação de testes do MCP Server</strong> — Verificar se a remoção de testes de call_tool é intencional e se há testes de integração alternativos. A cobertura de handlers pode ter diminuído. (0.85)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-6">Nova atualização 6<a class="headerlink" href="#nova-atualizacao-6" title="Permanent link">&para;</a></h2>
+<h2 id="nova-atualizacao-7">Nova atualização 7<a class="headerlink" href="#nova-atualizacao-7" title="Permanent link">&para;</a></h2>
+<p>Esta atualização corrige a geração de links de release para a documentação em inglês, passando a usar slugs de categoria em inglês definidos para o locale en_US e montando o link antes do bloco de exibição. A correção tem impacto alto na navegação da documentação em inglês, pois evita links apontando para slugs em português inexistentes.</p>
+<p>Também foi feita a migração dos testes do servidor MCP Knowledge Server para a API de baixo nível do SDK, com registro de handlers para ListToolsRequest e CallToolRequest e uso de métodos internos como _build_tools, _search_release_notes,_get_release_summary, _list_releases e _compare_releases. Essa mudança tem impacto médio na infraestrutura de testes, sem alteração de comportamento de produção.</p>
+<p>Não há breaking change identificado nas mudanças classificadas. O risco concentra-se na compatibilidade dos testes MCP com a versão do SDK e na validade das asserções de erro, além da necessidade de validar a geração de links e a regeneração dos testes de ouro.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Corrigir slugs de categorias em inglês para links de release — 📋 bugfix</strong></td>
+<td style="text-align: left;">A correção ajusta a construção de links para arquivos de release ao localizar categorias em inglê…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/release_docs.py · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Migrar testes do MCP knowledge server para API de baixo nível — 📋 refactor</strong></td>
+<td style="text-align: left;">Os testes do MCP knowledge server foram ajustados para usar o Server de baixo nível do SDK, regis…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-5">📊 Distribuição de Impacto 5<a class="headerlink" href="#distribuicao-de-impacto-5" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (50%) 🔴
+🟡 Médio: <strong>1</strong> (50%) 🟡
+🟢 Baixo: <strong>0</strong> (0%)</p>
+<p>Total: <strong>2 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-5">Mudanças por tipo nesta execução 5<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-5" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>📋 bugfix             │██████████████████████████████│    1 →
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ██</p>
+<h2 id="revisao-necessaria-4">Revisão Necessária 4<a class="headerlink" href="#revisao-necessaria-4" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Migrar testes do MCP knowledge server para API de baixo nível</strong> — Revisar compatibilidade com a versão do SDK MCP e se as asserções de erro continuam válidas. (0.85)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-8">Nova atualização 8<a class="headerlink" href="#nova-atualizacao-8" title="Permanent link">&para;</a></h2>
+<p>Esta atualização traz a reescrita dos testes do servidor MCP Knowledge Server para a API FastMCP v2, substituindo a interface antiga por decoradores @tool, com 35 testes atualizados que cobrem search, summary, list, compare e unknown tool. A versão do projeto foi revertida de 3.1.0 para 0.1.0 no pyproject.toml, representando uma breaking change que pode impactar consumidores que dependem de versionamento semântico. Foram corrigidos problemas de qualidade (sincronização uv.lock, formatação Black, mypy), restaurados blocos README no release_docs.py, regenerados arquivos golden de testes de caracterização e incluída documentação automatizada sem alterações funcionais. Impacto: alto para migração do MCP e reversão de versão; médio para correções de badges e golden files; baixo para qualidade de código e documentação. Risco: alto a médio, concentrado na compatibilidade de consumidores do MCP e na confirmação da reversão de versão.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Correção de qualidade: sincronização uv.lock e formatação Black — 📋 bugfix</strong></td>
+<td style="text-align: left;">Corrigido versionamento no uv.lock (3.1.0 -&gt; 0.1.0) para corresponder ao pyproject.toml, restaura…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">uv.lock, src/infrastructure/mcp/knowledge_server.py, src/release_docs.py · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reescrita completa dos testes do MCP Knowledge Server para FastMCP API — 📋 refactor</strong></td>
+<td style="text-align: left;">Testes reescritos contra a API FastMCP travada em mcp==1.30.0 (35 testes incluindo dispatch call_…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Restauração do formato de bloco README no release_docs.py — 📋 bugfix</strong></td>
+<td style="text-align: left;">Restaurado comportamento pré-reconcile do _build_release_block: linhas em branco iniciais e finai…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/release_docs.py, tests/golden/summarizer/ · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Regeneração de golden files corrompidos do summarizer — 📋 bugfix</strong></td>
+<td style="text-align: left;">Três arquivos golden (readme_block_pt.md, readme_block_en.md, readme_pt_updated.md) regenerados v…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">tests/golden/summarizer/readme_block_pt.md, tests/golden/summarizer/readme_block_en.md, tests/golden/summarizer/readme_pt_updated.md · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualização automática de documentação via IA — 📋 documentation</strong></td>
+<td style="text-align: left;">Commit de documentação automatizada ([skip ci]) sem alterações funcionais; provavelmente atualiza…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/, README* · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-6">📊 Distribuição de Impacto 6<a class="headerlink" href="#distribuicao-de-impacto-6" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (20%) 🔴
+🟡 Médio: <strong>3</strong> (60%) 🟡🟡🟡
+🟢 Baixo: <strong>1</strong> (20%) 🟢</p>
+<p>Total: <strong>5 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-6">Mudanças por tipo nesta execução 6<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-6" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>📋 bugfix             │██████████████████████████████│    3 →
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▂█▂</p>
+<h2 id="revisao-necessaria-5">Revisão Necessária 5<a class="headerlink" href="#revisao-necessaria-5" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Reescrita completa dos testes do MCP Knowledge Server para FastMCP API</strong> — Reescrita ampla de testes; validar se novos casos de borda (ToolError, extra_forbid) refletem requisitos de negócio. (0.98)</li>
+<li><strong>Atualização automática de documentação via IA</strong> — Conteúdo exato não visível no diff; verificar se mudanças são desejadas. (0.70)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-9">Nova atualização 9<a class="headerlink" href="#nova-atualizacao-9" title="Permanent link">&para;</a></h2>
+<p>Esta atualização concentra-se na migração do servidor MCP para a FastMCP API v2, com reescrita do knowledge_server.py para uso de decoradores @tool no lugar da API anterior baseada em Server.on_list_tools/on_call_tool, além da atualização dos testes para a API assíncrona, correção de erros de mypy e remoção de importações não utilizadas. A dependência mcp passa a exigir a faixa &gt;=2.0.0,&lt;3.</p>
+<p>Atenção — breaking change: a mudança de API principal do servidor MCP pode afetar consumidores que ainda utilizem a interface antiga, e a versão declarada no pyproject.toml foi revertida de 3.1.0 para 0.1.0, o que pode impactar consumidores que dependam da versão semântica. Ambos os pontos estão marcados para revisão humana.</p>
+<p>Também foram corrigidas a cor padrão da label dos badges, que deixava o texto ilegível, com adição de emojis de impacto e padronização de constantes de cor; a restauração dos arquivos golden dos testes de caracterização, com o escopo da engine de documentação restrito a docs/ e DOC_ROOT_FILES para não reescrever fixtures de teste; correções de qualidade (sincronização do uv.lock, formatação Black e erros de mypy); e atualização do manifesto de documentação com correção de links quebrados.</p>
+<p>Impacto: alto para a migração do MCP e para a reversão de versão; médio para as correções de badges e de golden files; baixo para qualidade de código e documentação. Risco: alto a médio, concentrado na compatibilidade de consumidores do MCP e na confirmação da reversão de versão. Ponto de atenção: confirmar se a reversão de versão foi intencional e validar a integração dos consumidores com a nova API do servidor MCP.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Migrar servidor MCP para FastMCP API v2 — 📋 refactor</strong></td>
+<td style="text-align: left;">Rewrite do knowledge_server.py para utilizar FastMCP com decoradores @tool, substituindo a API an…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py, pyproject.toml · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Corrigir cor padrão de label dos badges e adicionar emojis de impacto — 📋 bugfix</strong></td>
+<td style="text-align: left;">Corrige texto invisível em badges HTML alterando a cor padrão da label para branco (_DEFAULT_FG =…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/ai/generators/badges.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Restaurar golden files e escopar engine de docs fora de tests/ — 📋 bugfix</strong></td>
+<td style="text-align: left;">Regenera arquivos golden de characterization tests (readme_block_en.md, readme_block_pt.md, readm…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">.github/scripts/docs_sync_engine.py, tests/golden/summarizer/readme_block_en.md, tests/golden/summarizer/readme_block_pt.md, tests/golden/summarizer/readme_pt_updated.md, docs/.documentation-manifest.json · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reverter versão para 0.1.0 e atualizar dependência mcp — 💥 Breaking Change</strong></td>
+<td style="text-align: left;">Versão do projeto é revertida de 3.1.0 para 0.1.0 no pyproject.toml, sinalizando uma mudança de c…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">pyproject.toml · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Corrigir falhas do Python Quality gate — 📋 bugfix</strong></td>
+<td style="text-align: left;">Corrige problemas de qualidade de código detectados pelo pipeline: sincronização de uv.lock (Ruff…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">uv.lock, pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar manifest e corrigir links em documentação — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualiza docs/.documentation-manifest.json com novos hashes de arquivos, adiciona referências a C…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json, .github/scripts/docs_sync_engine.py · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-7">📊 Distribuição de Impacto 7<a class="headerlink" href="#distribuicao-de-impacto-7" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>2</strong> (33%) 🔴🔴
+🟡 Médio: <strong>2</strong> (33%) 🟡🟡
+🟢 Baixo: <strong>2</strong> (33%) 🟢🟢</p>
+<p>Total: <strong>6 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-7">Mudanças por tipo nesta execução 7<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-7" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>💥 Breaking Change    │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>📋 bugfix             │██████████████████████████████│    3 →
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ███</p>
+<h2 id="revisao-necessaria-6">Revisão Necessária 6<a class="headerlink" href="#revisao-necessaria-6" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Reverter versão para 0.1.0 e atualizar dependência mcp</strong> — Reversão inesperada de versão (3.1.0 → 0.1.0) requer investigação se foi intencional ou se houve erro de versionamento. (0.85)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-10">Nova atualização 10<a class="headerlink" href="#nova-atualizacao-10" title="Permanent link">&para;</a></h2>
+<p>Esta atualização concentra-se em sincronização documental e em correções de infraestrutura de testes. Foram reconciliados o manifesto de documentação, a navegação do MkDocs e diversos documentos, alinhando inventário, links e conteúdo gerado, incluindo resolução de conflitos de merge em arquivos de documentação. Foi adicionado o script fix_md.py para correção de markdown, com ampliação das exclusões do markdownlint para diretórios de documentação gerada e ADRs, além de correções pontuais de lint. As dependências structlog e mcp foram incluídas no pyproject.toml para corrigir erros de coleta de testes, atendendo aos módulos de observabilidade da infraestrutura e ao knowledge server. Também houve resolução de conflitos de merge em src/infrastructure/mcp/knowledge_server.py e nos testes MCP.</p>
+<p>Impacto: predominantemente baixo, com itens de impacto médio associados às dependências e ao servidor MCP. Risco: baixo a médio. Não há breaking change identificado.</p>
+<p>Ponto de atenção: a resolução de conflitos em src/infrastructure/mcp/knowledge_server.py e em tests/infrastructure/mcp/test_knowledge_server.py requer revisão, pois o diff completo não está disponível e é necessário confirmar que os testes cobrem o comportamento esperado. Recomenda-se ainda revisar o pequeno ajuste em src/release_docs.py, cuja finalidade não pôde ser determinada a partir das evidências.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Reconciliação da documentação, manifesto e navegação — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualiza o manifesto de documentação, a navegação do MkDocs e diversos documentos para reconcilia…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json, mkdocs.yml, docs · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adição de script fix_md.py e ajuste de exclusões do markdownlint — 📋 refactor</strong></td>
+<td style="text-align: left;">Inclui o script fix_md.py para correção de markdown e amplia as exclusões do markdownlint para di…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.markdownlint.json, fix_md.py, docs · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adição das dependências structlog e mcp — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adiciona structlog e mcp ao pyproject.toml para corrigir erros de coleta de testes. Os commits in…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">pyproject.toml, src/infrastructure/mcp/knowledge_server.py, observabilidade · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Resolução de conflitos no knowledge_server e nos testes MCP — 📋 bugfix</strong></td>
+<td style="text-align: left;">Resolve conflitos de merge em src/infrastructure/mcp/knowledge_server.py e em tests/infrastructur…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/infrastructure/mcp/knowledge_server.py, tests/infrastructure/mcp/test_knowledge_server.py · Prioridade: 💡 P2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-8">📊 Distribuição de Impacto 8<a class="headerlink" href="#distribuicao-de-impacto-8" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>0</strong> (0%)
+🟡 Médio: <strong>2</strong> (50%) 🟡🟡
+🟢 Baixo: <strong>2</strong> (50%) 🟢🟢</p>
+<p>Total: <strong>4 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-8">Mudanças por tipo nesta execução 8<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-8" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>📋 bugfix             │██████████████████████████████│    2 →
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>📋 documentation      │███████████████░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>📋 refactor           │███████████████░░░░░░░░░░░░░░░│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo:  ██</p>
+<h2 id="revisao-necessaria-7">Revisão Necessária 7<a class="headerlink" href="#revisao-necessaria-7" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Resolução de conflitos no knowledge_server e nos testes MCP</strong> — O diff completo não está disponível; é necessário validar a resolução de conflitos e confirmar que os testes cobrem o comportamento esperado do knowledge_server. (0.65)</li>
+<li><strong>Pequeno ajuste em src/release_docs.py</strong> — Diff detalhado não fornecido; revisar a mudança para confirmar se é apenas refatoração ou se altera saída documental. (0.35)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-11">Nova atualização 11<a class="headerlink" href="#nova-atualizacao-11" title="Permanent link">&para;</a></h2>
+<h2 id="nova-atualizacao-12">Nova atualização 12<a class="headerlink" href="#nova-atualizacao-12" title="Permanent link">&para;</a></h2>
+<p>Esta atualização inclui uma correção de formatação de código com Black 26.10.0 em unified_client e nos testes relacionados, ajustando expressões ternárias e asserts multilinha para atender aos padrões de estilo e resolver uma falha no workflow de qualidade Python. A alteração é apenas de reformatação, sem mudança de lógica ou comportamento. Também há uma atualização automática de documentação via ferramenta de IA, sem impacto funcional.</p>
+<p>Impacto: baixo. Risco: baixo. Não há breaking change identificado.</p>
+<p>Ponto de atenção: a remoção das definições das variáveis de ambiente TEST_OPENROUTER_KEY e TEST_OPENCODE_KEY nos testes de infraestrutura requer revisão para confirmar que a execução dos testes permanece correta.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Style fix: Black formatting in unified_client and tests — 📋 refactor</strong></td>
+<td style="text-align: left;">Correção de formatação de código usando Black 26.10.0, ajustando expressões ternárias e assert mu…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/infrastructure/llm_adapters/unified_client.py, tests/infrastructure/llm_adapters/test_unified_client.py, tests/test_characterization.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Documentação: atualização automática via IA — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualização da documentação via ferramenta de IA, sem alterações funcionais, marcadas com [skip c…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">documentation · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-9">📊 Distribuição de Impacto 9<a class="headerlink" href="#distribuicao-de-impacto-9" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>0</strong> (0%)
+🟡 Médio: <strong>0</strong> (0%)
+🟢 Baixo: <strong>2</strong> (100%) 🟢🟢</p>
+<p>Total: <strong>2 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-9">Mudanças por tipo nesta execução 9<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-9" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>📋 documentation      │██████████████████████████████│    1 →
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo:   █</p>
+<h2 id="revisao-necessaria-8">Revisão Necessária 8<a class="headerlink" href="#revisao-necessaria-8" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Revisão de remoção de variáveis de ambiente nos testes</strong> — Verificar se a remoção das variáveis de ambiente não quebra a execução dos testes. (0.80)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-13">Nova atualização 13<a class="headerlink" href="#nova-atualizacao-13" title="Permanent link">&para;</a></h2>
+<p>Implementação da Fase 5 concluída com mutation testing, devcontainer e documentação; criação de workflows de CI/CD com IA; arquitetura de adaptadores LLM e scraping; MCP Knowledge Server; expansão de testes e fixtures golden; configuração de ambiente e qualidade. Correção de headings duplicados em documentação gerada por IA; reconciliação do manifest. Riscos: score de mutation testing abaixo do limiar; arquivo .bak pendente; secrets e permissões nos workflows com placeholder. Possíveis impactos em consumidores devido à remoção do módulo de scraping. Nenhum breaking change confirmado sem suporte.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Finalização da Fase 5 - Mutation testing, devcontainer e documentação — 📋 feature</strong></td>
+<td style="text-align: left;">Configuração completa do mutmut 2.5.1 para mutation testing com score de 66.67% (limiar de 80% do…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">testes, infraestrutura de desenvolvimento, documentação, qualidade de código · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de headings duplicados em documentação gerada por IA — 📋 bugfix</strong></td>
+<td style="text-align: left;">Reescrita da função fix_md024_duplicate_headings em .github/scripts/fix_markdown.py para lidar co…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">documentação, scripts de automação · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reconciliação do manifest de documentação — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualização do arquivo docs/.documentation-manifest.json com os mapeamentos mais recentes de docu…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">documentação · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Implementação de workflows de CI/CD com IA e automação — 📋 feature</strong></td>
+<td style="text-align: left;">Criação de cinco novos workflows GitHub Actions: AI PR Review (revisão automática de PRs via Clau…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">CI/CD, segurança, automação de desenvolvimento · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Implementação de arquitura de adaptadores LLM e scraping — 📋 refactor</strong></td>
+<td style="text-align: left;">Criação de uma camada de infraestrutura modular para integração com LLMs, incluindo unified_clien…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">infraestrutura, domínio de dados, integração com LLM · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Implementação do MCP Knowledge Server — 📋 feature</strong></td>
+<td style="text-align: left;">Criação do knowledge_server.py em src/infrastructure/mcp/, um servidor MCP (Model Context Protoco…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">infraestrutura, ferramentas de IA · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Expansão de testes e fixtures golden files — 📋 feature</strong></td>
+<td style="text-align: left;">Adição de 28 novos arquivos de teste cobrindo os componentes de infraestrutura: test_cache.py, te…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">testes, qualidade de código · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Configuração de ambiente de desenvolvimento e ferramentas de qualidade — 📋 refactor</strong></td>
+<td style="text-align: left;">Adição de .claude/settings.json com configuração de permissões e hooks para automação de qualidad…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">infraestrutura de desenvolvimento, ferramentas de qualidade, scripts · Prioridade: 💡 P1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-10">📊 Distribuição de Impacto 10<a class="headerlink" href="#distribuicao-de-impacto-10" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>4</strong> (50%) 🔴🔴🔴🔴
+🟡 Médio: <strong>3</strong> (37%) 🟡🟡🟡
+🟢 Baixo: <strong>1</strong> (12%) 🟢</p>
+<p>Total: <strong>8 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-10">Mudanças por tipo nesta execução 10<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-10" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>📋 bugfix             │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>📋 documentation      │███████░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>📋 feature            │██████████████████████████████│    4 →
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>📋 refactor           │███████████████░░░░░░░░░░░░░░░│    2 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: █▆▂</p>
+<h2 id="revisao-necessaria-9">Revisão Necessária 9<a class="headerlink" href="#revisao-necessaria-9" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Arquivo service.py.bak pendente de remoção</strong> — Verificar se o arquivo .bak é intencional ou se deve ser removido do repositório. (0.80)</li>
+<li><strong>Configuração de secrets e permissões nos workflows de IA</strong> — Substituir placeholder do SHA da ação anthropics/claude-code-action por SHA real e revisar configuração de permissões e secrets. (0.75)</li>
+<li><strong>Score de mutation testing abaixo do limiar estabelecido</strong> — Avaliar necessidade de adicionar testes para elevar o score de mutation testing acima de 80% ou ajustar o limiar. (0.85)</li>
+<li><strong>Prompts de IA em YAML para classificação, enrichment e reporting</strong> — Revisar prompts para garantir que estão protegidos contra injection e que as instruções são claras e consistentes. (0.70)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-14">Nova atualização 14<a class="headerlink" href="#nova-atualizacao-14" title="Permanent link">&para;</a></h2>
+<p>Correção de newline no final do arquivo <code>src/infrastructure/api/__init__.py</code> para atender ao gate de formatação Black. A alteração não introduz mudança de lógica ou comportamento.</p>
+<p>Impacto: baixo. Risco: baixo. Não há breaking change identificado.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Correção de newline no EOF do src/infrastructure/api/</strong>init<strong>.py — 📋 refactor</strong></td>
+<td style="text-align: left;">Adiciona nova linha ausente no final do arquivo src/infrastructure/api/<strong>init</strong>.py para atender a…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/infrastructure/api/<strong>init</strong>.py · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-11">📊 Distribuição de Impacto 11<a class="headerlink" href="#distribuicao-de-impacto-11" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>0</strong> (0%)
+🟡 Médio: <strong>0</strong> (0%)
+🟢 Baixo: <strong>1</strong> (100%) 🟢</p>
+<p>Total: <strong>1 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-11">Mudanças por tipo nesta execução 11<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-11" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo:   █</p>
+<hr />
+<h2 id="nova-atualizacao-15">Nova atualização 15<a class="headerlink" href="#nova-atualizacao-15" title="Permanent link">&para;</a></h2>
+<p>Correção de alto impacto no strawberry-graphql que resolve ModuleNotFoundError em 11 testes, restaurando a capacidade de build e elevando a cobertura para 95,35%; atualização de baixo impacto do manifesto de documentação com novos checksums; e adição do plugin syrupy ao conftest.py para corrigir erros de registro de fixture.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Corrige erro de importação do strawberry-graphql que causava falhas nos testes — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adiciona strawberry-graphql[fastapi] ao extra healing e implementa exportação lazy do graphql_rou…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/infrastructure/api/<strong>init</strong>.py, pyproject.toml, tests/test_infrastructure_api_graphql.py · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualiza o manifesto de documentação com novos checksums de arquivos — 📋 documentation</strong></td>
+<td style="text-align: left;">Reconcilia o docs/.documentation-manifest.json com checksums atualizados para pyproject.toml, src…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture — 📋 refactor</strong></td>
+<td style="text-align: left;">Adiciona pytest_plugins = ["syrupy"] ao conftest.py, garantindo que o plugin syrupy seja carregad…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">tests/conftest.py · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-12">📊 Distribuição de Impacto 12<a class="headerlink" href="#distribuicao-de-impacto-12" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (33%) 🔴
+🟡 Médio: <strong>0</strong> (0%)
+🟢 Baixo: <strong>2</strong> (66%) 🟢🟢</p>
+<p>Total: <strong>3 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-12">Mudanças por tipo nesta execução 12<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-12" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>📋 bugfix             │██████████████████████████████│    1 →
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>📋 documentation      │██████████████████████████████│    1 →
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>📋 refactor           │██████████████████████████████│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▄ █</p>
+<h2 id="revisao-necessaria-10">Revisão Necessária 10<a class="headerlink" href="#revisao-necessaria-10" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Corrige erro de importação do strawberry-graphql que causava falhas nos testes</strong> — Revisão necessária devido a alterações em dependências e exportação lazy; garantir que o GraphQL funcione corretamente. (0.95)</li>
+<li><strong>Atualiza o manifesto de documentação com novos checksums de arquivos</strong> — Revisão para garantir que os checksums estejam corretos. (0.90)</li>
+<li><strong>Adiciona plugin syrupy ao conftest.py para resolver erros de registro de fixture</strong> — Revisão para confirmar a ordem de registro do plugin. (0.80)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-16">Nova atualização 16<a class="headerlink" href="#nova-atualizacao-16" title="Permanent link">&para;</a></h2>
+<p>Esta release implementa uma refatoração para Clean Architecture em src/core e src/infrastructure, com módulos de core, infrastructure e models organizados em camadas desacopladas. Refatoração estrutural de alto impacto pode exigir atualização de imports e deve ser validada quanto a compatibilidade com consumidores existentes. A correção no fallback do LLMService visa preservar a disponibilidade do serviço em falhas de provedores. Ajustes no schema GraphQL com tipos Strawberry e ChangeType podem alterar contratos de API para consumidores externos. A ampliação da cobertura de testes, correções de quality gates, atualizações de dependências e reconciliação documental também foram incluídas. Riscos principais: possíveis imports desatualizados após a refatoração, necessidade de revisão de compatibilidade do schema GraphQL e fallback do LLM.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Implementação da Clean Architecture em src/core e src/infrastructure — 📋 refactor</strong></td>
+<td style="text-align: left;">Adição de módulos core (classification, enrichment, pipeline, summarization) e infrastructure (ap…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/core, src/infrastructure, src/models, src/orchestrator.py, src/main.py · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adição de cobertura de teste abrangente (95% meta) — 📋 feature</strong></td>
+<td style="text-align: left;">Criação de 14 novos arquivos de teste cobrindo core (classification, enrichment, pipeline, summar…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">tests/test_core_classification_service.py, tests/test_core_enrichment_service.py, tests/test_core_pipeline_orchestrator.py, tests/test_core_summarization_service.py, tests/test_infrastructure_generation.py, tests/test_infrastructure_github.py, tests/test_infrastructure_llm.py, tests/test_infrastructure_llm_coverage.py, tests/test_infrastructure_messaging.py, tests/test_infrastructure_notification_step.py, tests/test_infrastructure_parsing.py, tests/test_infrastructure_routes.py, tests/test_infrastructure_scraping.py, tests/test_infrastructure_storage.py, tests/test_infrastructure_translation.py, tests/test_main_coverage_additional.py, tests/test_models_coverage.py, tests/test_orchestrator_coverage.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção de quality gates (ruff, black, mypy, mkdocs) — 📋 bugfix</strong></td>
+<td style="text-align: left;">Correção de múltiplos problemas de linting e formatação: ISC004 (concatenação implícita de string…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/scripts/build_failure_issue.py, .github/scripts/documentation_reconcile.py, .github/scripts/documentation_sync.py, .github/scripts/fix_markdown.py, .github/scripts/update_changelog_auto.py, src/ai/llm/client.py, src/api.py, src/release_discovery.py, tests/test_ai_docs.py, tests/test_llm_service.py, stubs/openai, stubs/prometheus_client, stubs/syrupy · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção do schema GraphQL com Strawberry types — 📋 bugfix</strong></td>
+<td style="text-align: left;">Substituição de dict[str, Any] por ChangeType (Strawberry type) no schema GraphQL em src/infrastr…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/infrastructure/api/graphql.py, src/infrastructure/api/<strong>init</strong>.py, pyproject.toml · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adição da dependência strawberry-graphql — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adição do pacote strawberry-graphql às dependências core em pyproject.toml e atualização do uv.lo…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">pyproject.toml, uv.lock, src/infrastructure/api/graphql.py · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fix do chain de fallback do LLMService — 📋 bugfix</strong></td>
+<td style="text-align: left;">Correção de bug no chain de fallback do LLMService (linhas 147, 158-163 do src/infrastructure/llm…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/infrastructure/llm.py, tests/test_infrastructure_llm_coverage.py · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualização de dependência soupsieve (2.9 para 4.0) — ⚡ Performance</strong></td>
+<td style="text-align: left;">Upgrade da dependência indireta soupsieve de versão 2.9 para 4.0 no grupo uv, aplicado em 1 diret…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">uv.lock, pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualização de testes para novos limites de retry e tokens — 📋 bugfix</strong></td>
+<td style="text-align: left;">Ajuste das expectativas de teste em test_ai_docs.py e test_ai_docs_coverage.py para coincidir com…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reconciliação de documentação e atualização do manifest — 📋 documentation</strong></td>
+<td style="text-align: left;">Atualização do docs/.documentation-manifest.json com novos mapeamentos entre código e documentaçã…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json, mkdocs.yml, docs/api/core-classification-service.md, docs/api/core-enrichment-service.md, docs/api/core-pipeline-orchestrator.md, docs/api/core-pipeline-steps.md, docs/api/core-summarization-service.md, docs/architecture/decisions/adr-007-clean-architecture.md · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-13">📊 Distribuição de Impacto 13<a class="headerlink" href="#distribuicao-de-impacto-13" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>2</strong> (22%) 🔴🔴
+🟡 Médio: <strong>3</strong> (33%) 🟡🟡🟡
+🟢 Baixo: <strong>4</strong> (44%) 🟢🟢🟢🟢</p>
+<p>Total: <strong>9 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-13">Mudanças por tipo nesta execução 13<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-13" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>⚡ Performance        │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>📋 bugfix             │██████████████████████████████│    5 →
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>📋 documentation      │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>📋 feature            │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>📋 refactor           │██████░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▄▆█</p>
+<h2 id="revisao-necessaria-11">Revisão Necessária 11<a class="headerlink" href="#revisao-necessaria-11" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Verificação de backwards compatibility da arquitetura</strong> — Executar análise estática de dependências para identificar todos os imports que precisam ser atualizados (0.80)</li>
+<li><strong>Revisão do schema GraphQL para consumers externos</strong> — Verificar versão do schema GraphQL e comunicar mudanças para consumidores externos se necessário (0.75)</li>
+<li><strong>Revisão da lógica de fallback do LLMService</strong> — Revisar todos os caminhos de fallback e testes de integração com providers reais (0.85)</li>
+<li><strong>Validação dos novos documentos de API</strong> — Comparar documentação com código-fonte para verificar consistência (0.70)</li>
+</ul>
+<hr />
+<h2 id="nova-atualizacao-17">Nova atualização 17<a class="headerlink" href="#nova-atualizacao-17" title="Permanent link">&para;</a></h2>
+<p>Esta release introduz o design system no dashboard com suporte a dark mode e recursos de acessibilidade, além de corrigir o rastreamento de estado de fences no fix_markdown.py e atualizar diversas dependências de ferramentas e bibliotecas para as versões mais recentes.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Aplicar design system ao dashboard com suporte a dark mode e acessibilidade — 📋 feature</strong></td>
+<td style="text-align: left;">Extração de tokens e componentes reutilizáveis em src/design-system/, migração do dashboard_templ…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">src/dashboard_template.html, src/design-system/ · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Corrigir rastreamento de estado de fences em fix_markdown.py — 📋 bugfix</strong></td>
+<td style="text-align: left;">Script passa a rastrear in_fence para distinguir abertura e fechamento de blocos markdown, evitan…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/scripts/fix_markdown.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar actions/setup-python para v7.1.0 — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump da ação actions/setup-python de 7.0.0 para 7.1.0 em workflows de CI.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/workflows/ai-docs.yml, .github/workflows/dependabot-lock-refresh.yml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar astral-sh/setup-uv para v10.3.3 — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump da ação astral-sh/setup-uv para versão 10.3.3 em múltiplos workflows.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/workflows/copilot-setup-steps.yml, .github/workflows/dependabot-lock-refresh.yml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar pyasn1 para 0.6.5 — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump da dependência indireta pyasn1 de 0.6.4 para 0.6.5 no grupo uv.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar grupo uv com certifi, filelock, langgraph-sdk e virtualenv — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump de quatro dependências indiretas do grupo uv para versões mais recentes.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar aiohttp para 3.14.4 — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump da dependência direta aiohttp de 3.14.3 para 3.14.4.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualizar black para 26.10.1 — ⚡ Performance</strong></td>
+<td style="text-align: left;">Bump da dependência de desenvolvimento black de 26.10.0 para 26.10.1.</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">pyproject.toml · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-14">📊 Distribuição de Impacto 14<a class="headerlink" href="#distribuicao-de-impacto-14" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (12%) 🔴
+🟡 Médio: <strong>0</strong> (0%)
+🟢 Baixo: <strong>7</strong> (87%) 🟢🟢🟢🟢🟢🟢🟢</p>
+<p>Total: <strong>8 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-14">Mudanças por tipo nesta execução 14<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-14" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>⚡ Performance        │██████████████████████████████│    6 →
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>📋 bugfix             │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>📋 feature            │█████░░░░░░░░░░░░░░░░░░░░░░░░░│    1 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ▁ █</p>
+<hr />
+<h2 id="nova-atualizacao-18">Nova atualização 18<a class="headerlink" href="#nova-atualizacao-18" title="Permanent link">&para;</a></h2>
+<p>Esta release corrige a falha de deploy no GitHub Pages que impedia a publicação de artefatos de release e afetava a entrega contínua do Intelligence Hub. Ajusta cabeçalhos Markdown para conformidade com lint MD001/MD036 e melhora o upload de artefatos de logs de IA no workflow ai-docs. Introduz gestão de orçamento de tokens de saída no cliente LLM, com variáveis de ambiente e escalonamento exponencial em retentativas para reduzir completions vazias ou truncadas. Adiciona novos testes de cobertura para módulos de IA e documentação. Simplifica o tratamento de exceções no docs_sync_engine, substituindo blocos específicos por captura genérica de Exception, o que pode mascarar erros específicos e requer atenção. Atualiza o manifesto de documentação com novos artefatos gerados por IA. Um import não utilizado em orchestrator.py está sob revisão.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Descrição</th>
+<th style="text-align: center;">Impacto</th>
+<th style="text-align: left;">Público</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Simplificação de tratamento de exceções no docs_sync_engine — 📋 refactor</strong></td>
+<td style="text-align: left;">Substituição de múltiplos blocos <code>except OSError, ValueError:</code> por <code>except Exception:</code> em funções…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/scripts/docs_sync_engine.py · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Correção do deploy no GitHub Pages com etapa de upload — 📋 bugfix</strong></td>
+<td style="text-align: left;">Adição de job de build do site (index.html com links aos artefatos), upload do artefato via actio…</td>
+<td style="text-align: center;">🔴 high</td>
+<td style="text-align: left;">.github/workflows/salesforce_release_intelligence_hub.yml · Prioridade: 💡 P0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ajuste de cabeçalhos Markdown para conformidade MD001/MD036 — 📋 bugfix</strong></td>
+<td style="text-align: left;">Alteração de cabeçalhos <code>###</code> para <code>##</code> no gerador de relatórios de impacto e adição de spec `tex…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">src/ai/generators/markdown.py · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Gestão de orçamento de tokens de saída no cliente LLM — 📋 feature</strong></td>
+<td style="text-align: left;">Introdução de variáveis de ambiente AI_DOCS_MAX_OUTPUT_TOKENS e AI_DOCS_MAX_OUTPUT_TOKENS_LIMIT, …</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">src/ai/llm/client.py · Prioridade: 💡 P1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Atualização do manifesto de documentação com novos artefatos IA — 📋 documentation</strong></td>
+<td style="text-align: left;">Adição de referências a docs/ai-generated/release-notes.md, leadership.md, roadmap.md em múltipla…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">docs/.documentation-manifest.json · Prioridade: 💡 P3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Novos testes de cobertura para módulos IA e docs — 📋 feature</strong></td>
+<td style="text-align: left;">Adição de test_ai_docs.py, test_ai_docs_coverage.py, test_ai_coverage.py e atualização de test_ma…</td>
+<td style="text-align: center;">🟡 medium</td>
+<td style="text-align: left;">tests/test_ai_docs.py, tests/test_ai_docs_coverage.py, tests/test_ai_coverage.py, tests/test_main_coverage.py · Prioridade: 💡 P2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ajuste no workflow ai-docs para upload de artefatos ocultos — 📋 bugfix</strong></td>
+<td style="text-align: left;">Mudança de if-no-files-found: ignore para warn e adição de include-hidden-files: true no upload d…</td>
+<td style="text-align: center;">🟢 low</td>
+<td style="text-align: left;">.github/workflows/ai-docs.yml · Prioridade: 💡 P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="distribuicao-de-impacto-15">📊 Distribuição de Impacto 15<a class="headerlink" href="#distribuicao-de-impacto-15" title="Permanent link">&para;</a></h2>
+<p>🔴 Alto: <strong>1</strong> (14%) 🔴
+🟡 Médio: <strong>2</strong> (28%) 🟡🟡
+🟢 Baixo: <strong>4</strong> (57%) 🟢🟢🟢🟢</p>
+<p>Total: <strong>7 features</strong></p>
+<h2 id="mudancas-por-tipo-nesta-execucao-15">Mudanças por tipo nesta execução 15<a class="headerlink" href="#mudancas-por-tipo-nesta-execucao-15" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>📋 bugfix             │██████████████████████████████│    3 →
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>📋 feature            │████████████████████░░░░░░░░░░│    2 →
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>📋 refactor           │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>```yaml
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>Sparkline da distribuição alto/médio/baixo: ▂▄█
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>## Revisão Necessária 12
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>- **Importação de re no orchestrator.py sem uso aparente** — Baixa confiança ou sinalizada pelo classificador. (0.40)
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>---
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>Correções críticas no pipeline de geração de documentação via IA. Corrige falha em completions LLM vazias que impactava a funcionalidade principal. Implementa novo pipeline OpenRouter gratuito com suporte a rate-limiting. Expansão significativa do change_collector.py para coleta de mudanças Git/GitHub. Prevenção de headings duplicados no changelog automático. Correção de caminhos no sync de documentação para ambientes CI. Atualização do manifesto de documentação com novos arquivos.
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>| Feature | Descrição | Impacto | Público |
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>| :--- | :--- | :---: | :--- |
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>| **Correção de falha em completions LLM vazios — 📋 bugfix** | Corrige problema onde respostas do LLM retornavam vazias, impactando a geração automática de docu… | 🔴 high | src/ai/llm/client.py, src/ai/orchestrator.py · Prioridade: 💡 P0 |
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>| **Adição de pipeline OpenRouter gratuito para documentação — 📋 feature** | Implementa novo pipeline de documentação usando OpenRouter free tier, com suporte a rate-limiting… | 🔴 high | .github/workflows/ai-docs.yml, src/ai/orchestrator.py, src/ai/llm/client.py, src/ai/config/models.py · Prioridade: 💡 P1 |
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>| **Prevenção de headings duplicados no changelog automático — 📋 bugfix** | Modifica a lógica de atualização automática do changelog para evitar criação de múltiplas seções … | 🟡 medium | .github/scripts/update_changelog_auto.py · Prioridade: 💡 P2 |
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>| **Correção de caminhos no pipeline de sync de documentação — 📋 bugfix** | Altera uso de /tmp para caminhos relativos ao workspace, garantindo consistência em ambientes CI. | 🟡 medium | .github/workflows/documentation-sync.yml, .github/scripts/docs_sync_engine.py · Prioridade: 💡 P2 |
+<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>| **Atualização de manifesto de documentação com novos arquivos — 📋 documentation** | Adiciona novos arquivos ao manifesto de documentação incluindo README.en.md, ai-config-models.md … | 🟢 low | docs/.documentation-manifest.json, mkdocs.yml · Prioridade: 💡 P3 |
+<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>| **Expansão significativa do change collector — 📋 feature** | Reescrita completa do change_collector.py com novas funcionalidades de coleta de mudanças Git/Git… | 🔴 high | src/ai/collectors/change_collector.py, src/ai/schemas/change.py, tests/test_ai_docs.py, tests/test_ai_docs_coverage.py · Prioridade: 💡 P1 |
+<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>| **Exposição de diagnóstico de falha com testes validados — 📋 feature** | Implementa exposição de diagnóstico de falhas com cobertura de testes validada. | 🟡 medium | src/ai/orchestrator.py, tests/test_ledger/test_service.py · Prioridade: 💡 P2 |
+<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>## 📊 Distribuição de Impacto 16
+<a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>🔴 Alto: **3** (42%) 🔴🔴🔴
+<a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>🟡 Médio: **3** (42%) 🟡🟡🟡
+<a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>🟢 Baixo: **1** (14%) 🟢
+<a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>
+<a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a>Total: **7 features**
+<a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a>
+<a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>## Mudanças por tipo nesta execução 16
+<a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a>
+<a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a>```text
+<a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a>📋 bugfix             │██████████████████████████████│    3 →
+<a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a>📋 documentation      │██████████░░░░░░░░░░░░░░░░░░░░│    1 →
+<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a>📋 feature            │██████████████████████████████│    3 →
+</code></pre></div>
+<p>Sparkline da distribuição alto/médio/baixo: ██▂</p>
+<h2 id="revisao-necessaria-13">Revisão Necessária 13<a class="headerlink" href="#revisao-necessaria-13" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Revisão de alterações no change_collector.py</strong> — Baixa confiança ou sinalizada pelo classificador. (0.70)</li>
+<li><strong>Validação de novos prompts de IA</strong> — Baixa confiança ou sinalizada pelo classificador. (0.65)</li>
+<li><strong>Verificação de schemas de documentos gerados</strong> — Baixa confiança ou sinalizada pelo classificador. (0.70)</li>
+<li><strong>Auditoria de logs AI Docs</strong> — Baixa confiança ou sinalizada pelo classificador. (0.60)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/Fatal1tyBarucco/Salesforce-WebDev" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/javascripts/banner.js"></script>
+      
+        <script src="../../assets/javascripts/enhanced_search.js"></script>
+      
+    
+  </body>
+</html>
