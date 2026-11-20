@@ -156,3 +156,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `b11e3aa` — Deployed a0daa730 to 0.4.2 with MkDocs 1.6.1 and mike 2.2.0
 - `e7a623c` — Deployed 1c9d6f6e to 0.4.1 with MkDocs 1.6.1 and mike 2.2.0
 - `dd5dbba` — Deployed 74ab63e1 to 0.4.0 with MkDocs 1.6.1 and mike 2.2.0
+- `c1cd7d5` — docs(agents): record ADR-012 absolute-sync conventions (contract gates, mike ledger, parity, AI commit convention)
+- `50c169b` — Deployed 34c455c1 to v0.6.1 with ProperDocs 1.6.7 and mike 2.2.0

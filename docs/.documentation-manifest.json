@@ -928,7 +928,7 @@
     ".promptfoo.yaml": "c9e6ecd48be94e18abf85b70c4afca4184fa2035",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
-    "AGENTS.md": "66b3b9f8c72b63e450fe783fa22cde343820cba8",
+    "AGENTS.md": "6731539fcf513e0395eb1bbf94edc6a7a5abfb23",
     "CHANGELOG.md": "3d300034670fc3a14f57f28879a12667e4823689",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -1086,7 +1086,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "c71ea6e7abbf72314ce3ea4ca2986b472b950c1c",
+    "docs/changelog.md": "45c5c0c3b9d098ce382f228265c009bf6170ee07",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1108,7 +1108,7 @@
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
     "docs/plans/auto-opencode-issue.md": "c82578ff99a9d9c6a8d86e429ad801a8d1b611d6",
-    "docs/reference/repo-index.md": "36f74e4766e8a6cc4aaf898b088cf1d8a77b1858",
+    "docs/reference/repo-index.md": "6e07725ad832d3e9da21da1fb43db5db161c185e",
     "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
@@ -1673,7 +1673,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "661539ef810347113c5ed3ea8524e6b5aee334fe"
   },
-  "generated_at": "2026-11-20T02:41:16.247604+00:00",
+  "generated_at": "2026-11-20T02:42:38.674026+00:00",
   "removals": [],
-  "repository_sha": "98ae7c12d4672745defdfb3884923b57cf5bec20"
+  "repository_sha": "c1cd7d54ccb27c45d76729607bfeb20129e7a3d1"
 }
