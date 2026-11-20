@@ -929,7 +929,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "6731539fcf513e0395eb1bbf94edc6a7a5abfb23",
-    "CHANGELOG.md": "3d300034670fc3a14f57f28879a12667e4823689",
+    "CHANGELOG.md": "62eae3847f9d43c9c925c002e13264bd5471ebe8",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
@@ -1086,7 +1086,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "45c5c0c3b9d098ce382f228265c009bf6170ee07",
+    "docs/changelog.md": "588a92e7e9c45e2ceffc658053682c2c5d30d2ec",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1141,7 +1141,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "14d2279e353a3c635e9d9ed8476b9e95013c93cb",
+    "pyproject.toml": "6152acb848884e76516abc47f9a60440a26f19fe",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1671,9 +1671,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "661539ef810347113c5ed3ea8524e6b5aee334fe"
+    "uv.lock": "674d8186c748ad6c5b06ea8b7ce3b4967627998d"
   },
-  "generated_at": "2026-11-20T02:42:38.674026+00:00",
+  "generated_at": "2026-11-20T03:03:46.395334+00:00",
   "removals": [],
-  "repository_sha": "c1cd7d54ccb27c45d76729607bfeb20129e7a3d1"
+  "repository_sha": "f74d8ce9c0f0659e7c445c47454085747e6a8330"
 }
