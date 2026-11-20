@@ -17,6 +17,58 @@ cache/locks/                    # lock files (entry, namespace and per-release)
 
 All TTLs, budgets and directory names are centralized in `src/config.py` (section "Cache Layer (ADR-011)").
 
+## Envelope Schema v2
+
+Every cached payload is wrapped in an integrity envelope (version 2):
+
+```json
+{
+  "schema_version": 2,
+  "timestamp": 1700000000.0,
+  "ttl": 3600,
+  "namespace": "scraper",
+  "last_access": 1700000120.0,
+  "checksum": "a1b2c3... (SHA-256 hex)",
+  "data": { ... }
+}
+```
+
+- `schema_version` — `2` for new writes; v1 legacy payloads are read and upgraded on next write.
+- `timestamp` — Unix epoch (seconds, float) when the entry was created.
+- `ttl` — Time-to-live in seconds; `-1` = never expires, `0` = immediate expiry (legacy semantics for invalidation adapters, frozen by tests).
+- `namespace` — Logical namespace (empty string for root); used for LRU budget isolation.
+- `last_access` — Updated on each cache hit; used for LRU eviction ordering.
+- `checksum` — SHA-256 of the serialized `data` field (canonical JSON, sorted keys). On read, mismatch → quarantine + miss.
+- `data` — The actual cached value (any JSON-serializable type).
+
+**Legacy v1 support**: payloads with `schema_version: 1` (or missing the field) are accepted; they lack `namespace` and `last_access` and are migrated to v2 on the next successful write. MD5 content hashes in content caches are transparently recomputed to SHA-256 if the source file still exists; otherwise the legacy hash is preserved to avoid false invalidation.
+
+## Health Check Cache Section
+
+The `/health` endpoint (see `src/health.py`) exposes a `cache` key with the last persisted statistics:
+
+```json
+{
+  "cache": {
+    "hits": 42,
+    "misses": 8,
+    "evictions": 3,
+    "eviction_reasons": {
+      "ttl": 2,
+      "lru": 1,
+      "corruption": 0,
+      "manual": 0
+    },
+    "by_namespace": {
+      "": { "hits": 30, "misses": 5, "entries": 150 },
+      "scraper": { "hits": 12, "misses": 3, "entries": 42 }
+    }
+  }
+}
+```
+
+This allows observability tools (Prometheus, Grafana, manual curl) to monitor cache effectiveness per run without inspecting filesystem artifacts.
+
 ## Versioning Policy (ADR-011)
 
 `cache/` is **runtime data and is NOT versioned** (`.gitignore`). The auditable history lives in:
