@@ -1,0 +1,3385 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Automated pipeline for extracting and classifying Salesforce Release Notes">
+      
+      
+      
+        <link rel="canonical" href="https://fatal1tybarucco.github.io/Salesforce-WebDev/258-winter-26/improvements/">
+      
+      
+        <link rel="prev" href="../refatoracao/">
+      
+      
+        <link rel="next" href="../contribution/testing-strategy/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Melhorias Fase 1 & V1 - Salesforce Release Intelligence</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#melhorias-de-codigo-fase-1-v1-resiliencia" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Salesforce Release Intelligence" class="md-header__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Salesforce Release Intelligence
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Melhorias Fase 1 & V1
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Salesforce Release Intelligence" class="md-nav__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Salesforce Release Intelligence
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/c4_container/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C4 Container
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/decisions/adr-001-parser-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-001 Parser Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/decisions/adr-002-github-actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-002 GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/decisions/adr-003-topic-classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-003 Topic Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/decisions/adr-005-documentation-reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-005 Documentation Reconciliation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refatoração
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Refatoração
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../refatoracao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status & Auditoria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Melhorias Fase 1 & V1
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Melhorias Fase 1 & V1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fase-1-refatoracao-estrutural" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 1 — Refatoração Estrutural
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 1 — Refatoração Estrutural">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extracao-do-openapi-spec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extração do OpenAPI Spec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#divisao-do-graphql-executor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Divisão do GraphQL Executor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extracao-do-dashboard-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extração do Dashboard Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1-resiliencia-de-integracoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 — Resiliência de Integrações
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="V1 — Resiliência de Integrações">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm-service-srcllm_servicepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Service (src/llm_service.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp-srcnotificationspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMTP (src/notifications.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scraper-srcscraperpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scraper (src/scraper.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura-de-testes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de Testes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p0-integracao-da-hierarquia-de-excecoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P0 — Integração da Hierarquia de Exceções
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="P0 — Integração da Hierarquia de Exceções">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnóstico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mudancas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beneficios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefícios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fase-2-automacao-ai-avancada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 2 — Automação AI Avançada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 2 — Automação AI Avançada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enriquecimento-de-features-feature_enricherpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enriquecimento de Features (feature_enricher.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumos-executivos-release_summarizerpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumos Executivos (release_summarizer.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introducoes-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduções por Categoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-parser-recursivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphQL Parser Recursivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autenticacao-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticação API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionamento-semantico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Versionamento Semântico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limiting-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting LLM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-client-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prometheus-client Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cobertura-de-testes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de Testes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fase-3-resumos-ai-e-cache-de-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 3 — Resumos AI e Cache de Sub-Agentes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 3 — Resumos AI e Cache de Sub-Agentes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resumos-por-categoria-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumos por Categoria (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-de-resumos-com-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache de Resumos com Sub-Agentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readme-bilingue-reorganizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        README Bilingue Reorganizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#github-pages-sincronizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Pages Sincronizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribution
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribution
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contribution/testing-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintenance
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintenance
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintenance/local-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintenance/workflow-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintenance/cache-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintenance/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PLANO_DE_ACAO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plano de Ação
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/pipeline-health/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Health
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Runbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbooks/scraper-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scraper Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbooks/github-actions-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Actions Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Roadmap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/v3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/v4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V4 (Atual)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/main/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Principal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/scraper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scraper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/llm_service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/feature_classifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/translator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/cache_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Internos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Internos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../internal/AGENT_DIRECTIVE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diretiva do Agente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../internal/ANALYSIS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../internal/AUDIT_REPORT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório de Auditoria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../internal/REFATORACAO_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status da Refatoração
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fase-1-refatoracao-estrutural" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 1 — Refatoração Estrutural
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 1 — Refatoração Estrutural">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extracao-do-openapi-spec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extração do OpenAPI Spec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#divisao-do-graphql-executor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Divisão do GraphQL Executor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extracao-do-dashboard-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extração do Dashboard Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1-resiliencia-de-integracoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 — Resiliência de Integrações
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="V1 — Resiliência de Integrações">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm-service-srcllm_servicepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Service (src/llm_service.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp-srcnotificationspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMTP (src/notifications.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scraper-srcscraperpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scraper (src/scraper.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura-de-testes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de Testes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p0-integracao-da-hierarquia-de-excecoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P0 — Integração da Hierarquia de Exceções
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="P0 — Integração da Hierarquia de Exceções">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnóstico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mudancas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mudanças
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beneficios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefícios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fase-2-automacao-ai-avancada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 2 — Automação AI Avançada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 2 — Automação AI Avançada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enriquecimento-de-features-feature_enricherpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enriquecimento de Features (feature_enricher.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumos-executivos-release_summarizerpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumos Executivos (release_summarizer.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introducoes-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduções por Categoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-parser-recursivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphQL Parser Recursivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autenticacao-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticação API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionamento-semantico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Versionamento Semântico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limiting-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting LLM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-client-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prometheus-client Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cobertura-de-testes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de Testes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fase-3-resumos-ai-e-cache-de-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 3 — Resumos AI e Cache de Sub-Agentes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 3 — Resumos AI e Cache de Sub-Agentes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resumos-por-categoria-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumos por Categoria (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-de-resumos-com-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache de Resumos com Sub-Agentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readme-bilingue-reorganizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        README Bilingue Reorganizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#github-pages-sincronizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Pages Sincronizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="melhorias-de-codigo-fase-1-v1-resiliencia">Melhorias de Código — Fase 1 &amp; V1 Resiliência<a class="headerlink" href="#melhorias-de-codigo-fase-1-v1-resiliencia" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Registro das melhorias estruturais e de resiliência implementadas.</p>
+</blockquote>
+<h2 id="fase-1-refatoracao-estrutural">Fase 1 — Refatoração Estrutural<a class="headerlink" href="#fase-1-refatoracao-estrutural" title="Permanent link">&para;</a></h2>
+<h3 id="extracao-do-openapi-spec">Extração do OpenAPI Spec<a class="headerlink" href="#extracao-do-openapi-spec" title="Permanent link">&para;</a></h3>
+<p>O método <code>_generate_openapi_spec()</code> em <code>src/api.py</code> tinha <strong>209 linhas</strong> de especificação OpenAPI hardcoded como dicionário Python. Foi extraído para <code>src/openapi_spec.json</code>, reduzindo a função para <strong>3 linhas</strong> que carregam o JSON.</p>
+<p><strong>Antes:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_generate_openapi_spec</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="s2">&quot;openapi&quot;</span><span class="p">:</span> <span class="s2">&quot;3.0.3&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;paths&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>  <span class="c1"># 209 linhas</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Depois:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">_OPENAPI_SPEC_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;openapi_spec.json&quot;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">_generate_openapi_spec</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">_OPENAPI_SPEC_PATH</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+</code></pre></div></p>
+<h3 id="divisao-do-graphql-executor">Divisão do GraphQL Executor<a class="headerlink" href="#divisao-do-graphql-executor" title="Permanent link">&para;</a></h3>
+<p><code>_execute_graphql()</code> tinha <strong>125 linhas</strong> com lógica de parsing, seleção de campos e execução misturados. Foi dividido em:</p>
+<table>
+<thead>
+<tr>
+<th>Função</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_select_graphql_fields()</code></td>
+<td>Mapear campos GraphQL → internos</td>
+</tr>
+<tr>
+<td><code>_extract_requested_fields()</code></td>
+<td>Extrair campos do query string</td>
+</tr>
+<tr>
+<td><code>_graphql_handle_releases()</code></td>
+<td>Handler para <code>{ releases }</code></td>
+</tr>
+<tr>
+<td><code>_graphql_handle_release()</code></td>
+<td>Handler para <code>{ release(slug) }</code></td>
+</tr>
+<tr>
+<td><code>_graphql_handle_diff()</code></td>
+<td>Handler para <code>{ diff(current, previous) }</code></td>
+</tr>
+<tr>
+<td><code>_execute_graphql()</code></td>
+<td>Orquestrador (38 linhas)</td>
+</tr>
+</tbody>
+</table>
+<p>Constantes extraídas: <code>_GRAPHQL_FIELD_MAP</code> e <code>_GRAPHQL_KEYWORDS</code>.</p>
+<h3 id="extracao-do-dashboard-template">Extração do Dashboard Template<a class="headerlink" href="#extracao-do-dashboard-template" title="Permanent link">&para;</a></h3>
+<p><code>generate_dashboard_html()</code> em <code>src/dashboard.py</code> tinha <strong>202 linhas</strong> de HTML/CSS/JS inline. O template foi extraído para <code>src/dashboard_template.html</code>, e a função agora carrega o template e injeta os dados via placeholder <code>{DATA_JSON}</code>.</p>
+<h2 id="v1-resiliencia-de-integracoes">V1 — Resiliência de Integrações<a class="headerlink" href="#v1-resiliencia-de-integracoes" title="Permanent link">&para;</a></h2>
+<h3 id="llm-service-srcllm_servicepy">LLM Service (<code>src/llm_service.py</code>)<a class="headerlink" href="#llm-service-srcllm_servicepy" title="Permanent link">&para;</a></h3>
+<p><strong>Timeout:</strong>
+- Cliente OpenAI: <code>timeout=30.0</code> (conexão)
+- <code>asyncio.wait_for()</code>: <code>timeout=60.0</code> (operação completa)
+- Google Gemini: <code>asyncio.wait_for()</code> com <code>timeout=60.0</code></p>
+<p><strong>Retry com Backoff:</strong>
+- Decorator <code>@retry</code> do <code>tenacity</code> em <code>_call_openai_provider()</code> e <code>_call_google_provider()</code>
+- 3 tentativas, backoff exponencial (1s → 10s)
+- Retry apenas para erros transitórios: <code>APIConnectionError</code>, <code>InternalServerError</code></p>
+<p><strong>Hierarquia de Exceções:</strong>
+- <code>RateLimitError</code> → warning, circuit breaker
+- <code>AuthenticationError</code> → warning, circuit breaker
+- <code>APIConnectionError</code> / <code>InternalServerError</code> → error, retry
+- <code>TimeoutError</code> → error, circuit breaker
+- <code>Exception</code> genérico → error (último recurso)</p>
+<h3 id="smtp-srcnotificationspy">SMTP (<code>src/notifications.py</code>)<a class="headerlink" href="#smtp-srcnotificationspy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Timeout de <strong>30 segundos</strong> adicionado em <code>smtplib.SMTP(smtp_host, smtp_port, timeout=30)</code></li>
+<li>Previne bloqueio indefinido em conexões SMTP lentas</li>
+</ul>
+<h3 id="scraper-srcscraperpy">Scraper (<code>src/scraper.py</code>)<a class="headerlink" href="#scraper-srcscraperpy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Já possuía timeout adequado (Playwright timeouts configurados)</li>
+<li>Já possuía retry com backoff exponencial</li>
+</ul>
+<h2 id="cobertura-de-testes">Cobertura de Testes<a class="headerlink" href="#cobertura-de-testes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total de linhas</td>
+<td>4.209</td>
+</tr>
+<tr>
+<td>Linhas cobertas</td>
+<td>3.999</td>
+</tr>
+<tr>
+<td>Cobertura</td>
+<td><strong>95.01%</strong></td>
+</tr>
+<tr>
+<td>Novos testes (Fase 1 + V1)</td>
+<td>34</td>
+</tr>
+</tbody>
+</table>
+<p>Módulos com 100% de cobertura: <code>config</code>, <code>cache_manager</code>, <code>dashboard</code>, <code>generator</code>, <code>health</code>, <code>i18n</code>, <code>impact_analyzer</code>, <code>llm_service</code>, <code>logger</code>, <code>nl_search</code>, <code>notifications</code>, <code>parser</code>, <code>release_summarizer</code>, <code>salesforce</code>, <code>smart_notifications</code>, <code>translator</code>, <code>workflow</code>, <code>feature_classifier</code>, <code>automation/models</code>, <code>automation/notifications</code>.</p>
+<h2 id="p0-integracao-da-hierarquia-de-excecoes">P0 — Integração da Hierarquia de Exceções<a class="headerlink" href="#p0-integracao-da-hierarquia-de-excecoes" title="Permanent link">&para;</a></h2>
+<h3 id="diagnostico">Diagnóstico<a class="headerlink" href="#diagnostico" title="Permanent link">&para;</a></h3>
+<p>A hierarquia de exceções em <code>src/exceptions.py</code> (11 classes: <code>PipelineError</code>, <code>ScraperError</code>, <code>BrowserError</code>, <code>RateLimitError</code>, <code>ParserError</code>, <code>LLMError</code>, <code>LLMProviderExhausted</code>, <code>ConfigError</code>, <code>ExportError</code>, <code>NotificationError</code>, <code>GitHubError</code>) estava definida mas <strong>nunca utilizada</strong>. Todo o código usava <code>except Exception</code> genérico ou <code>raise ValueError</code>.</p>
+<h3 id="mudancas">Mudanças<a class="headerlink" href="#mudancas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Antes</th>
+<th>Depois</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scraper.py</code></td>
+<td>9× <code>except Exception</code></td>
+<td><code>except (ScraperError, BrowserError, TimeoutError, OSError)</code></td>
+</tr>
+<tr>
+<td><code>main.py</code></td>
+<td>5× <code>except Exception</code></td>
+<td><code>except (LLMError, GitHubError, NotificationError, OSError)</code></td>
+</tr>
+<tr>
+<td><code>llm_service.py</code></td>
+<td>2× <code>except Exception</code> (mantidos como último recurso)</td>
+<td>Mantidos + import de <code>LLMError</code></td>
+</tr>
+<tr>
+<td><code>salesforce.py</code></td>
+<td>7× <code>raise ValueError</code></td>
+<td>7× <code>raise ConfigError</code></td>
+</tr>
+<tr>
+<td><code>github_ops.py</code></td>
+<td>1× <code>except Exception</code></td>
+<td><code>except (GitHubError, OSError, subprocess.SubprocessError)</code></td>
+</tr>
+<tr>
+<td><code>automation/github_ops.py</code></td>
+<td><code>except Exception</code></td>
+<td><code>except (GitHubError, OSError, subprocess.SubprocessError)</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="beneficios">Benefícios<a class="headerlink" href="#beneficios" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Rastreabilidade</strong>: cada erro é identificável pelo tipo</li>
+<li><strong>Tratamento granular</strong>: consumidores podem capturar exceções específicas</li>
+<li><strong>Circuit breaker</strong>: pode diferenciar erros transitórios de fatais</li>
+<li><strong>Testes</strong>: validam a hierarquia real, não apenas mensagens de erro</li>
+</ul>
+<hr />
+<h2 id="fase-2-automacao-ai-avancada">Fase 2 — Automação AI Avançada<a class="headerlink" href="#fase-2-automacao-ai-avancada" title="Permanent link">&para;</a></h2>
+<h3 id="enriquecimento-de-features-feature_enricherpy">Enriquecimento de Features (<code>feature_enricher.py</code>)<a class="headerlink" href="#enriquecimento-de-features-feature_enricherpy" title="Permanent link">&para;</a></h3>
+<p><strong>Novo módulo</strong> que utiliza LLM para gerar descrições profissionais e classificações de impacto para cada feature das release notes.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Batch Prompting</strong></td>
+<td>1 chamada LLM por categoria (não por feature) — custo mínimo</td>
+</tr>
+<tr>
+<td><strong>Descrições AI</strong></td>
+<td>Cada feature recebe descrição com contexto de negócio</td>
+</tr>
+<tr>
+<td><strong>Impacto</strong></td>
+<td>Classificação 🔴 Alto / 🟡 Médio / 🟢 Baixo por feature</td>
+</tr>
+<tr>
+<td><strong>Audiência</strong></td>
+<td>Identificação: Usuários / Admins / Ambos</td>
+</tr>
+<tr>
+<td><strong>Fallback</strong></td>
+<td>Classificação heurística por keywords quando LLM indisponível</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Formato de saída:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>| Recurso | Descrição | Impacto |
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>| :--- | :--- | :---: |
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>| <span class="gs">**Voice Feature**</span> | Permite interação por voz com Agentforce, reduzindo ~40% do tempo em tarefas repetitivas. | 🔴 alto |
+</code></pre></div></p>
+<h3 id="resumos-executivos-release_summarizerpy">Resumos Executivos (<code>release_summarizer.py</code>)<a class="headerlink" href="#resumos-executivos-release_summarizerpy" title="Permanent link">&para;</a></h3>
+<p><strong>Refatoração completa</strong> do módulo de sumarização, produzindo relatórios executivos profissionais.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>executive_summary</code></td>
+<td>Resumo completo (até 5.000 caracteres) com escopo, inovações e direcionamento estratégico</td>
+</tr>
+<tr>
+<td><code>business_impact</code></td>
+<td>Parágrafo com valor concreto e exemplos reais</td>
+</tr>
+<tr>
+<td><code>strategic_themes</code></td>
+<td>Lista de temas (AI-First, Security, Developer Experience)</td>
+</tr>
+<tr>
+<td><code>top_categories</code></td>
+<td>Top 5 categorias com destaque e percentual</td>
+</tr>
+<tr>
+<td><code>migration_notes</code></td>
+<td>Considerações para administradores</td>
+</tr>
+<tr>
+<td><code>category_summaries</code></td>
+<td>Resumo AI por categoria (até 1.000 caracteres cada)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Método <code>to_markdown()</code></strong> renderiza como documento Markdown completo.</p>
+<h3 id="introducoes-por-categoria">Introduções por Categoria<a class="headerlink" href="#introducoes-por-categoria" title="Permanent link">&para;</a></h3>
+<p>Cada arquivo de categoria agora inclui:
+- Parágrafo introdutório AI sobre o tema e mudanças mais importantes
+- Linha de impacto: <code>🔴 5 alto | 🟡 12 médio | 🟢 3 baixo</code>
+- Tabela enriquecida com colunas <code>Recurso | Descrição | Impacto</code></p>
+<h3 id="graphql-parser-recursivo">GraphQL Parser Recursivo<a class="headerlink" href="#graphql-parser-recursivo" title="Permanent link">&para;</a></h3>
+<p>Substituição do parser regex frágil por um <strong>recursive-descent parser</strong> completo.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_gql_lex()</code></td>
+<td>Lexer que tokeniza a query em tipos (LBRACE, NAME, STRING, etc.)</td>
+</tr>
+<tr>
+<td><code>_GQLParser</code></td>
+<td>Parser recursivo com <code>_peek()</code>, <code>_advance()</code>, <code>_expect()</code></td>
+</tr>
+<tr>
+<td><code>_parse_arguments()</code></td>
+<td>Parsing de argumentos <code>(key: "value")</code></td>
+</tr>
+<tr>
+<td><code>_parse_field_set()</code></td>
+<td>Parsing de seleções de campos <code>{ field1 field2 }</code> com nesting</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Vantagens:</strong> suporta queries aninhadas, mensagens de erro claras, sem dependências externas.</p>
+<h3 id="autenticacao-api">Autenticação API<a class="headerlink" href="#autenticacao-api" title="Permanent link">&para;</a></h3>
+<p>Middleware de autenticação para a API REST + GraphQL.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Métodos</strong></td>
+<td><code>X-API-Key</code> header ou <code>Authorization: Bearer &lt;token&gt;</code></td>
+</tr>
+<tr>
+<td><strong>Configuração</strong></td>
+<td>Variável de ambiente <code>API_KEY</code> (vazio = sem auth)</td>
+</tr>
+<tr>
+<td><strong>Endpoints públicos</strong></td>
+<td><code>/health</code>, <code>/ready</code>, <code>/metrics</code>, <code>/openapi.json</code></td>
+</tr>
+<tr>
+<td><strong>Resposta</strong></td>
+<td>401 com mensagem de erro clara</td>
+</tr>
+</tbody>
+</table>
+<h3 id="versionamento-semantico">Versionamento Semântico<a class="headerlink" href="#versionamento-semantico" title="Permanent link">&para;</a></h3>
+<p>Campo <code>version</code> (major.minor.patch) adicionado ao <code>.meta.json</code> de cada release.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Lógica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>major</strong></td>
+<td>Offset do ano (2025=1, 2026=2, ...)</td>
+</tr>
+<tr>
+<td><strong>minor</strong></td>
+<td>Índice da estação (Spring=0, Summer=1, Winter=2)</td>
+</tr>
+<tr>
+<td><strong>patch</strong></td>
+<td>Contagem de re-scrapes da mesma release</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limiting-llm">Rate Limiting LLM<a class="headerlink" href="#rate-limiting-llm" title="Permanent link">&para;</a></h3>
+<p>Token-bucket rate limiter assíncrono integrado ao <code>LLMService</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Configuração</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_requests</code></td>
+<td>60</td>
+</tr>
+<tr>
+<td><code>window_seconds</code></td>
+<td>60.0</td>
+</tr>
+<tr>
+<td><strong>Thread-safety</strong></td>
+<td><code>asyncio.Lock</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="prometheus-client-integration">Prometheus-client Integration<a class="headerlink" href="#prometheus-client-integration" title="Permanent link">&para;</a></h3>
+<p>Endpoint <code>/metrics</code> com dual-mode: <code>prometheus_client</code> quando instalado, fallback text/plain caso contrário.</p>
+<p><strong>Métricas disponíveis:</strong>
+- <code>pipeline_runs_total</code> (counter, labels: status)
+- <code>features_processed_total</code> (counter)
+- <code>scraper_requests_total</code> (counter, labels: outcome)
+- <code>pipeline_run_duration_seconds</code> (histogram)
+- <code>release_feature_count</code> (gauge, labels: release_slug)
+- <code>pipeline_uptime_seconds</code> (gauge)</p>
+<h3 id="python-version">Python Version<a class="headerlink" href="#python-version" title="Permanent link">&para;</a></h3>
+<p>Downgrade de Python 3.14 (alpha) para <code>&gt;=3.12,&lt;3.14</code> (estável).</p>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Mudança</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pyproject.toml</code></td>
+<td><code>requires-python = "&gt;=3.12,&lt;3.14"</code></td>
+</tr>
+<tr>
+<td><code>Dockerfile</code></td>
+<td><code>python:3.13-slim</code></td>
+</tr>
+<tr>
+<td>CI matrix</td>
+<td><code>["3.12", "3.13"]</code> apenas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cobertura-de-testes_1">Cobertura de Testes<a class="headerlink" href="#cobertura-de-testes_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cobertura total</strong></td>
+<td><strong>95%+</strong></td>
+</tr>
+<tr>
+<td><strong>Testes E2E</strong></td>
+<td>Pipeline, API, EventBus, Cache, Auth</td>
+</tr>
+<tr>
+<td><strong>Testes AI</strong></td>
+<td>Feature enricher, release summarizer, fallback</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="fase-3-resumos-ai-e-cache-de-sub-agentes">Fase 3 — Resumos AI e Cache de Sub-Agentes<a class="headerlink" href="#fase-3-resumos-ai-e-cache-de-sub-agentes" title="Permanent link">&para;</a></h2>
+<h3 id="resumos-por-categoria-ai">Resumos por Categoria (AI)<a class="headerlink" href="#resumos-por-categoria-ai" title="Permanent link">&para;</a></h3>
+<p>Cada categoria dentro de uma release recebe resumo AI próprio, gerado por LLM.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tamanho</strong></td>
+<td>Até 1.000 caracteres por categoria</td>
+</tr>
+<tr>
+<td><strong>Conteúdo</strong></td>
+<td>Features mais impactantes, tendências, relevância para o negócio</td>
+</tr>
+<tr>
+<td><strong>Integração</strong></td>
+<td>Campo <code>category_summaries</code> no <code>ReleaseSummary</code></td>
+</tr>
+<tr>
+<td><strong>Exibição</strong></td>
+<td>Cada <code>&lt;details&gt;</code> de categoria no README inclui o resumo AI</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cache-de-resumos-com-sub-agentes">Cache de Resumos com Sub-Agentes<a class="headerlink" href="#cache-de-resumos-com-sub-agentes" title="Permanent link">&para;</a></h3>
+<p>Sistema de cache que evita re-chamadas ao LLM para resumos já gerados.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Arquivo</strong></td>
+<td><code>.summary_cache.json</code> por release</td>
+</tr>
+<tr>
+<td><strong>Conteúdo</strong></td>
+<td><code>executive_summary</code> + <code>category_summaries</code></td>
+</tr>
+<tr>
+<td><strong>Invalidação</strong></td>
+<td>Manual (exclusão do arquivo)</td>
+</tr>
+<tr>
+<td><strong>Integração</strong></td>
+<td><code>ReleaseSummarizer.summarize()</code> verifica cache antes de chamar LLM</td>
+</tr>
+<tr>
+<td><strong>Geração</strong></td>
+<td>Sub-agentes dedicados (1 por release) geram resumos em paralelo</td>
+</tr>
+</tbody>
+</table>
+<h3 id="readme-bilingue-reorganizado">README Bilingue Reorganizado<a class="headerlink" href="#readme-bilingue-reorganizado" title="Permanent link">&para;</a></h3>
+<p>Reestruturação dos READMEs pt_BR e en_US.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Posição</strong></td>
+<td>Seção de Releases movida para logo abaixo do banner</td>
+</tr>
+<tr>
+<td><strong>Resumos</strong></td>
+<td>Executivo completo (até 5.000 chars) visível imediatamente</td>
+</tr>
+<tr>
+<td><strong>Categorias</strong></td>
+<td><code>&lt;details&gt;</code> expandível com resumo AI por categoria</td>
+</tr>
+<tr>
+<td><strong>Automação</strong></td>
+<td><code>_update_single_readme()</code> preserva posição ao regenerar</td>
+</tr>
+</tbody>
+</table>
+<h3 id="github-pages-sincronizado">GitHub Pages Sincronizado<a class="headerlink" href="#github-pages-sincronizado" title="Permanent link">&para;</a></h3>
+<p>Documentação online atualizada automaticamente.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Implementação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Triggers</strong></td>
+<td><code>releases/**</code>, <code>README.md</code>, <code>README.en.md</code>, <code>mkdocs.yml</code></td>
+</tr>
+<tr>
+<td><strong>docs/index.md</strong></td>
+<td>Seção de Releases no topo com tabela e links</td>
+</tr>
+<tr>
+<td><strong>Nav</strong></td>
+<td>Seção "Internos" + "V4 (Atual)" adicionadas ao mkdocs</td>
+</tr>
+<tr>
+<td><strong>Workflow</strong></td>
+<td><code>documentation-build.yml</code> reage a mudanças relevantes</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/Fatal1tyBarucco/Salesforce-WebDev" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,3664 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Automated pipeline for extracting and classifying Salesforce Release Notes">
+      
+      
+      
+        <link rel="canonical" href="https://fatal1tybarucco.github.io/Salesforce-WebDev/258-winter-26/roadmap/v4/">
+      
+      
+        <link rel="prev" href="../v3/">
+      
+      
+        <link rel="next" href="../../changelog/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>V4 (Atual) - Salesforce Release Intelligence</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#roadmap-v4" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Salesforce Release Intelligence" class="md-header__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Salesforce Release Intelligence
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              V4 (Atual)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Salesforce Release Intelligence" class="md-nav__button md-logo" aria-label="Salesforce Release Intelligence" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Salesforce Release Intelligence
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/c4_container/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C4 Container
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-001-parser-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-001 Parser Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-002-github-actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-002 GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-003-topic-classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-003 Topic Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/adr-005-documentation-reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-005 Documentation Reconciliation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refatoração
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Refatoração
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refatoracao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status & Auditoria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Melhorias Fase 1 & V1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribution
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribution
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contribution/testing-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintenance
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintenance
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/local-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/workflow-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/cache-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintenance/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PLANO_DE_ACAO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plano de Ação
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/pipeline-health/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Health
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Runbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/scraper-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scraper Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../runbooks/github-actions-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Actions Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Roadmap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V4 (Atual)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V4 (Atual)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#visao-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features-entregues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Features Entregues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Features Entregues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enriquecimento-ai-por-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enriquecimento AI por Feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-resumos-executivos-por-release-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Resumos Executivos por Release (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-resumos-por-categoria-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Resumos por Categoria (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cache-de-resumos-com-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cache de Resumos com Sub-Agentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-readme-bilingue-reorganizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. README Bilingue Reorganizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-github-pages-sincronizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GitHub Pages Sincronizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#em-progresso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔄 Em Progresso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 Em Progresso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-contagens-consistentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Contagens Consistentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-passos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Próximos Passos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Próximos Passos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#8-dashboard-interativo-com-resumos-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dashboard Interativo com Resumos AI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Dashboard Interativo com Resumos AI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-cards-de-resumo-executivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Cards de Resumo Executivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-drill-down-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Drill-down por Categoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-busca-semantica-nos-resumos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Busca Semântica nos Resumos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-comparacao-visual-de-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Comparação Visual de Themes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-exportacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Exportação
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-comparacao-semantica-entre-releases-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Comparação Semântica entre Releases (AI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Comparação Semântica entre Releases (AI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-deteccao-de-features-novas-vs-removidas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Detecção de Features Novas vs. Removidas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-analise-de-mudanca-estrategica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Análise de Mudança Estratégica
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-tendencias-de-longo-prazo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Tendências de Longo Prazo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-alertas-de-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Alertas de Breaking Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-relatorio-de-diferencas-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Relatório de Diferenças AI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-alertas-proativos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Alertas Proativos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Alertas Proativos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-perfis-de-interesse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Perfis de Interesse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-classificacao-de-urgencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Classificação de Urgência
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-canais-de-notificacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Canais de Notificação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-digest-semanal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Digest Semanal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-controle-de-frequencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 Controle de Frequência
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-integracao-com-salesforce-metadata-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Integração com Salesforce Metadata API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Integração com Salesforce Metadata API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-conexao-com-org" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Conexão com Org
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-scan-de-features-habilitadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 Scan de Features Habilitadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-relatorio-de-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Relatório de Gap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-sugestoes-de-migracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 Sugestões de Migração
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-dashboard-de-maturidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Dashboard de Maturidade
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-webhook-para-atualizacao-automatica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Webhook para Atualização Automática
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Webhook para Atualização Automática">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-monitoramento-de-mudancas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 Monitoramento de Mudanças
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-pipeline-incremental" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Pipeline Incremental
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-atualizacao-automatica-do-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Atualização Automática do Docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-notificacoes-imediatas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 Notificações Imediatas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-limitacoes-e-workarounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 Limitações e Workarounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arquitetura-das-novas-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitetura das Novas Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status Geral
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/main/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Principal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/scraper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scraper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/llm_service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/feature_classifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/translator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cache_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Internos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Internos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../internal/AGENT_DIRECTIVE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diretiva do Agente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../internal/ANALYSIS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../internal/AUDIT_REPORT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório de Auditoria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../internal/REFATORACAO_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status da Refatoração
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#visao-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features-entregues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Features Entregues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Features Entregues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enriquecimento-ai-por-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enriquecimento AI por Feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-resumos-executivos-por-release-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Resumos Executivos por Release (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-resumos-por-categoria-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Resumos por Categoria (AI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cache-de-resumos-com-sub-agentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cache de Resumos com Sub-Agentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-readme-bilingue-reorganizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. README Bilingue Reorganizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-github-pages-sincronizado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GitHub Pages Sincronizado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#em-progresso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔄 Em Progresso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 Em Progresso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-contagens-consistentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Contagens Consistentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-passos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Próximos Passos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Próximos Passos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#8-dashboard-interativo-com-resumos-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dashboard Interativo com Resumos AI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Dashboard Interativo com Resumos AI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-cards-de-resumo-executivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Cards de Resumo Executivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-drill-down-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Drill-down por Categoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-busca-semantica-nos-resumos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Busca Semântica nos Resumos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-comparacao-visual-de-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Comparação Visual de Themes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-exportacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Exportação
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-comparacao-semantica-entre-releases-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Comparação Semântica entre Releases (AI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Comparação Semântica entre Releases (AI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-deteccao-de-features-novas-vs-removidas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Detecção de Features Novas vs. Removidas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-analise-de-mudanca-estrategica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Análise de Mudança Estratégica
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-tendencias-de-longo-prazo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Tendências de Longo Prazo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-alertas-de-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Alertas de Breaking Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-relatorio-de-diferencas-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Relatório de Diferenças AI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-alertas-proativos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Alertas Proativos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Alertas Proativos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-perfis-de-interesse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Perfis de Interesse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-classificacao-de-urgencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Classificação de Urgência
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-canais-de-notificacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Canais de Notificação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-digest-semanal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Digest Semanal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-controle-de-frequencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 Controle de Frequência
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-integracao-com-salesforce-metadata-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Integração com Salesforce Metadata API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Integração com Salesforce Metadata API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-conexao-com-org" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Conexão com Org
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-scan-de-features-habilitadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 Scan de Features Habilitadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-relatorio-de-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Relatório de Gap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-sugestoes-de-migracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 Sugestões de Migração
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-dashboard-de-maturidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Dashboard de Maturidade
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-webhook-para-atualizacao-automatica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Webhook para Atualização Automática
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Webhook para Atualização Automática">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-monitoramento-de-mudancas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 Monitoramento de Mudanças
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-pipeline-incremental" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Pipeline Incremental
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-atualizacao-automatica-do-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Atualização Automática do Docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-notificacoes-imediatas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 Notificações Imediatas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-limitacoes-e-workarounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 Limitações e Workarounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arquitetura-das-novas-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitetura das Novas Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status Geral
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="roadmap-v4">Roadmap V4<a class="headerlink" href="#roadmap-v4" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Período:</strong> Julho 2026 → Em andamento
+<strong>Foco:</strong> Inteligência Artificial, experiência do usuário e integração com o ecossistema Salesforce</p>
+</blockquote>
+<h2 id="visao-geral">Visão Geral<a class="headerlink" href="#visao-geral" title="Permanent link">&para;</a></h2>
+<p>O V4 representa a maturação do pipeline de um extrator de dados para uma <strong>plataforma de inteligência sobre releases Salesforce</strong>. A adição de AI em todas as camadas - desde o enriquecimento de cada feature até resumos executivos completos - transforma o repositório de uma fonte bruta de dados em um recurso analítico pronto para consumo por equipes de negócio e técnica.</p>
+<hr />
+<h2 id="features-entregues">✅ Features Entregues<a class="headerlink" href="#features-entregues" title="Permanent link">&para;</a></h2>
+<h3 id="1-enriquecimento-ai-por-feature">1. Enriquecimento AI por Feature<a class="headerlink" href="#1-enriquecimento-ai-por-feature" title="Permanent link">&para;</a></h3>
+<p>Cada feature das release notes recebe automaticamente, via LLM:</p>
+<ul>
+<li><strong>Descrição profissional</strong> com contexto de negócio e exemplos de uso</li>
+<li><strong>Classificação de impacto</strong>: 🔴 Alto / 🟡 Médio / 🟢 Baixo</li>
+<li><strong>Audiência identificada</strong>: Usuários / Admins / Ambos</li>
+<li><strong>Tabela enriquecida</strong> no Markdown com colunas de descrição e impacto</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - <code>feature_enricher.py</code>, <code>release_docs.py</code></p>
+<h3 id="2-resumos-executivos-por-release-ai">2. Resumos Executivos por Release (AI)<a class="headerlink" href="#2-resumos-executivos-por-release-ai" title="Permanent link">&para;</a></h3>
+<p>Cada release recebe um resumo completo gerado por LLM:</p>
+<ul>
+<li><strong>Escala e alcance</strong>: total de features, categorias, destaques</li>
+<li><strong>Impacto para o negócio</strong>: valor concreto com exemplos reais</li>
+<li><strong>Temas estratégicos</strong>: AI-First, Security, Developer Experience, etc.</li>
+<li><strong>Notas de migração</strong>: considerações para administradores</li>
+<li><strong>Até 5.000 caracteres</strong> por resumo (vs. 200 caracteres anteriormente)</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - <code>release_summarizer.py</code></p>
+<h3 id="3-resumos-por-categoria-ai">3. Resumos por Categoria (AI)<a class="headerlink" href="#3-resumos-por-categoria-ai" title="Permanent link">&para;</a></h3>
+<p>Cada categoria dentro de uma release recebe seu próprio resumo:</p>
+<ul>
+<li><strong>Features mais impactantes</strong> da categoria</li>
+<li><strong>Tendências e direcionamento</strong> estratégico</li>
+<li><strong>Relevância para o negócio</strong></li>
+<li><strong>Até 1.000 caracteres</strong> por categoria</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - <code>release_summarizer.py</code>, cache em <code>.summary_cache.json</code></p>
+<h3 id="4-cache-de-resumos-com-sub-agentes">4. Cache de Resumos com Sub-Agentes<a class="headerlink" href="#4-cache-de-resumos-com-sub-agentes" title="Permanent link">&para;</a></h3>
+<p>Sistema de cache que evita re-chamadas ao LLM:</p>
+<ul>
+<li>Resumos gerados por sub-agentes dedicados (1 por release)</li>
+<li>Cache persistido em <code>.summary_cache.json</code> por release</li>
+<li><code>ReleaseSummarizer</code> verifica cache antes de chamar API</li>
+<li>Invalidação manual por exclusão do arquivo de cache</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo</p>
+<h3 id="5-readme-bilingue-reorganizado">5. README Bilingue Reorganizado<a class="headerlink" href="#5-readme-bilingue-reorganizado" title="Permanent link">&para;</a></h3>
+<p>Reestruturação dos READMEs pt_BR e en_US:</p>
+<ul>
+<li><strong>Seção de Releases no topo</strong> (logo abaixo do banner)</li>
+<li>Resumos AI completos visíveis imediatamente</li>
+<li>Categorias com <code>&lt;details&gt;</code> expandível e resumo AI</li>
+<li>Toggle de idioma (pt_BR ↔ en_US)</li>
+<li>Automação preserva posição ao regenerar</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - <code>release_docs.py</code></p>
+<h3 id="6-github-pages-sincronizado">6. GitHub Pages Sincronizado<a class="headerlink" href="#6-github-pages-sincronizado" title="Permanent link">&para;</a></h3>
+<p>Documentação online atualizada automaticamente:</p>
+<ul>
+<li>Workflow reage a mudanças em <code>releases/**</code>, <code>README.md</code>, <code>mkdocs.yml</code></li>
+<li><code>docs/index.md</code> com seção de releases no topo</li>
+<li>Seção "Internos" adicionada ao nav (4 arquivos)</li>
+<li>Rebuild automático a cada push relevante</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - <code>documentation-build.yml</code></p>
+<hr />
+<h2 id="em-progresso">🔄 Em Progresso<a class="headerlink" href="#em-progresso" title="Permanent link">&para;</a></h2>
+<h3 id="7-contagens-consistentes">7. Contagens Consistentes<a class="headerlink" href="#7-contagens-consistentes" title="Permanent link">&para;</a></h3>
+<p>Alinhamento entre <code>.meta.json</code>, arquivos <code>.md</code> e resumos AI:</p>
+<ul>
+<li>Meta.json reflete conteúdo real das tabelas Markdown</li>
+<li>Resumos AI usam contagens do meta.json (não contam independentemente)</li>
+<li>Script de correção (<code>fix_meta.py</code>) disponível para reajuste</li>
+</ul>
+<p><strong>Status:</strong> ✅ Completo - pipeline de correção aplicado</p>
+<hr />
+<h2 id="proximos-passos">📋 Próximos Passos<a class="headerlink" href="#proximos-passos" title="Permanent link">&para;</a></h2>
+<h3 id="8-dashboard-interativo-com-resumos-ai">8. Dashboard Interativo com Resumos AI<a class="headerlink" href="#8-dashboard-interativo-com-resumos-ai" title="Permanent link">&para;</a></h3>
+<p>Estender o dashboard HTML existente (<code>dashboard.py</code>) para incluir resumos AI como conteúdo principal.</p>
+<h4 id="81-cards-de-resumo-executivo">8.1 Cards de Resumo Executivo<a class="headerlink" href="#81-cards-de-resumo-executivo" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Card principal por release com resumo executivo (até 5000 chars)</li>
+<li>Indicador de confiança do resumo (cor de fundo: verde/amarelo/vermelho)</li>
+<li>Badges de temas estratégicos (AI-First, Security, DX, etc.)</li>
+<li>Comparação rápida: release atual vs. anterior (features +/-)</li>
+</ul>
+<h4 id="82-drill-down-por-categoria">8.2 Drill-down por Categoria<a class="headerlink" href="#82-drill-down-por-categoria" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Expandir cada card para ver categorias com resumos AI</li>
+<li>Indicador de impacto por categoria (alto/médio/baixo)</li>
+<li>Tabela de features com descrições enriquecidas</li>
+<li>Filtro por impacto: mostrar apenas features de alto impacto</li>
+</ul>
+<h4 id="83-busca-semantica-nos-resumos">8.3 Busca Semântica nos Resumos<a class="headerlink" href="#83-busca-semantica-nos-resumos" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Campo de busca que pesquisa nos resumos AI (não apenas em feature names)</li>
+<li>Ex: "quais features de IA existem na Summer '26?"</li>
+<li>Usa embeddings ou busca por keywords expandidas</li>
+<li>Resultados destacam o trecho relevante do resumo</li>
+</ul>
+<h4 id="84-comparacao-visual-de-themes">8.4 Comparação Visual de Themes<a class="headerlink" href="#84-comparacao-visual-de-themes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Gráfico de radar: themes estratégicos por release</li>
+<li>Ex: AI-First (Spring: 60%, Summer: 80%)</li>
+<li>Timeline de evolução: como os themes mudam release a release</li>
+<li>Identificação de trends emergentes</li>
+</ul>
+<h4 id="85-exportacao">8.5 Exportação<a class="headerlink" href="#85-exportacao" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Exportar resumos em PDF (formato executivo)</li>
+<li>Exportar dados em CSV/JSON</li>
+<li>Gerar link compartilhável para um resumo específico</li>
+</ul>
+<p><strong>Arquitetura:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart LR
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    CACHE[&quot;.summary_cache.json&quot;] --&gt; DASH[&quot;Dashboard HTML&quot;]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    META[&quot;.meta.json&quot;] --&gt; DASH
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    MD[&quot;releases/*.md&quot;] --&gt; DASH
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    DASH --&gt; PDF[&quot;Export PDF&quot;]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    DASH --&gt; CSV[&quot;Export CSV&quot;]
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    DASH --&gt; LINK[&quot;Shareable Link&quot;]
+</code></pre></div></p>
+<p><strong>Dependências:</strong> <code>dashboard.py</code>, <code>dashboard_template.html</code>, <code>release_summarizer.py</code></p>
+<p><strong>Estimativa:</strong> 3-5 dias de desenvolvimento</p>
+<p><strong>Prioridade:</strong> Alta - alto valor para stakeholders não-técnicos</p>
+<hr />
+<h3 id="9-comparacao-semantica-entre-releases-ai">9. Comparação Semântica entre Releases (AI)<a class="headerlink" href="#9-comparacao-semantica-entre-releases-ai" title="Permanent link">&para;</a></h3>
+<p>Análise inteligente de diferenças entre releases consecutivas, indo além do diff textual.</p>
+<h4 id="91-deteccao-de-features-novas-vs-removidas">9.1 Detecção de Features Novas vs. Removidas<a class="headerlink" href="#91-deteccao-de-features-novas-vs-removidas" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Comparar tabelas de features entre releases consecutivas</li>
+<li>Identificar features que surgiram (novas) vs. desapareceram (depreciadas)</li>
+<li>Classificar cada feature nova por impacto (Alto/Médio/Baixo)</li>
+<li>Gerar relatório: "15 features novas, 3 deprecadas, 8 modificadas"</li>
+</ul>
+<h4 id="92-analise-de-mudanca-estrategica">9.2 Análise de Mudança Estratégica<a class="headerlink" href="#92-analise-de-mudanca-estrategica" title="Permanent link">&para;</a></h4>
+<ul>
+<li>LLM compara os resumos executivos de 2 releases</li>
+<li>Identifica mudanças de foco: "Spring '26 → Summer '26: shift de Data para AI"</li>
+<li>Extrai themes dominantes de cada release</li>
+<li>Gera narrativa: "A Salesforce está migrando de CRM para plataforma de agentes autônomos"</li>
+</ul>
+<h4 id="93-tendencias-de-longo-prazo">9.3 Tendências de Longo Prazo<a class="headerlink" href="#93-tendencias-de-longo-prazo" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Analisar evolução de categorias ao longo de múltiplas releases</li>
+<li>Gráfico de crescimento por categoria (features/release)</li>
+<li>Identificar categorias em ascensão vs. declínio</li>
+<li>Predição: "Agentforce cresce 40% a cada release"</li>
+</ul>
+<h4 id="94-alertas-de-breaking-changes">9.4 Alertas de Breaking Changes<a class="headerlink" href="#94-alertas-de-breaking-changes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>LLM analisa features depreciadas e mudanças de comportamento</li>
+<li>Classifica risco: Crítico / Alto / Médio / Baixo</li>
+<li>Gera checklist de ação para administradores</li>
+<li>Notifica automaticamente via Slack/Email para riscos críticos</li>
+</ul>
+<h4 id="95-relatorio-de-diferencas-ai">9.5 Relatório de Diferenças AI<a class="headerlink" href="#95-relatorio-de-diferencas-ai" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Documento Markdown gerado automaticamente</li>
+<li>Seções: Visão Geral, Features Novas, Deprecadas, Breaking Changes, Tendências</li>
+<li>Até 3000 caracteres por relatório</li>
+<li>Bilingue (pt_BR + en_US)</li>
+</ul>
+<p><strong>Arquitetura:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    R1[&quot;Release N-1&quot;] --&gt; COMP[&quot;AI Comparator&quot;]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    R2[&quot;Release N&quot;] --&gt; COMP
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    COMP --&gt; DIFF[&quot;Diff Report&quot;]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    COMP --&gt; TREND[&quot;Trend Analysis&quot;]
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    COMP --&gt; ALERT[&quot;Breaking Change Alerts&quot;]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    DIFF --&gt; SLACK[&quot;Slack/Email&quot;]
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    ALERT --&gt; SLACK
+</code></pre></div></p>
+<p><strong>Dependências:</strong> <code>release_summarizer.py</code>, <code>automation/comparison.py</code>, <code>automation/reporting.py</code></p>
+<p><strong>Estimativa:</strong> 5-7 dias de desenvolvimento</p>
+<p><strong>Prioridade:</strong> Alta - diferencial competitivo do projeto</p>
+<hr />
+<h3 id="10-alertas-proativos">10. Alertas Proativos<a class="headerlink" href="#10-alertas-proativos" title="Permanent link">&para;</a></h3>
+<p>Notificações inteligentes quando features críticas surgem, filtradas por perfil de interesse.</p>
+<h4 id="101-perfis-de-interesse">10.1 Perfis de Interesse<a class="headerlink" href="#101-perfis-de-interesse" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Definir perfis: Admin, Developer, Business User, Architect</li>
+<li>Cada perfil mapeia categorias de interesse</li>
+<li>Ex: Admin → Segurança, Automação, Personalização</li>
+<li>Ex: Developer → Desenvolvimento, API, Data 360</li>
+<li>Configuração via arquivo YAML ou interface web</li>
+</ul>
+<h4 id="102-classificacao-de-urgencia">10.2 Classificação de Urgência<a class="headerlink" href="#102-classificacao-de-urgencia" title="Permanent link">&para;</a></h4>
+<ul>
+<li>LLM classifica cada feature por urgência para cada perfil</li>
+<li>Níveis: 🔴 Crítico (ação imediata), 🟡 Importante (próximo sprint), 🟢 Informativo</li>
+<li>Considera: breaking changes, deprecations, novas capacidades, melhorias</li>
+<li>Cache de classificação por feature+perfil</li>
+</ul>
+<h4 id="103-canais-de-notificacao">10.3 Canais de Notificação<a class="headerlink" href="#103-canais-de-notificacao" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Slack</strong>: webhook com blocos formatados, botão "Ver detalhes"</li>
+<li><strong>Discord</strong>: embed com cor por urgência</li>
+<li><strong>Email</strong>: digest HTML com resumo executivo + features de alto impacto</li>
+<li><strong>Webhook genérico</strong>: POST JSON para integração com qualquer sistema</li>
+</ul>
+<h4 id="104-digest-semanal">10.4 Digest Semanal<a class="headerlink" href="#104-digest-semanal" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Resumo semanal das features mais relevantes por perfil</li>
+<li>Inclui: top 5 features, resumo executivo da release, link para docs</li>
+<li>Enviado toda segunda-feira às 9h (configurável)</li>
+<li>Supressão inteligente: não envia se nada relevante mudou</li>
+</ul>
+<h4 id="105-controle-de-frequencia">10.5 Controle de Frequência<a class="headerlink" href="#105-controle-de-frequencia" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Opções: imediato, diário, semanal, apenas alto impacto</li>
+<li>Unsubscribe por perfil (não unsubscribe global)</li>
+<li>Rate limiting: máximo 1 notificação por release por perfil</li>
+</ul>
+<p><strong>Arquitetura:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart LR
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    FEAT[&quot;Features&quot;] --&gt; CLASS[&quot;AI Classifier&quot;]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    CLASS --&gt; PERF[&quot;Profile Matcher&quot;]
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    PERF --&gt; SLACK[&quot;Slack&quot;]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    PERF --&gt; DISC[&quot;Discord&quot;]
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    PERF --&gt; EMAIL[&quot;Email Digest&quot;]
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    PERF --&gt; WH[&quot;Webhook&quot;]
+</code></pre></div></p>
+<p><strong>Dependências:</strong> <code>smart_notifications.py</code>, <code>feature_classifier.py</code>, <code>llm_service.py</code></p>
+<p><strong>Estimativa:</strong> 4-6 dias de desenvolvimento</p>
+<p><strong>Prioridade:</strong> Média - depende de base de usuários</p>
+<hr />
+<h3 id="11-integracao-com-salesforce-metadata-api">11. Integração com Salesforce Metadata API<a class="headerlink" href="#11-integracao-com-salesforce-metadata-api" title="Permanent link">&para;</a></h3>
+<p>Validação de impacto real nos orgs dos clientes, conectando o repositório a ambientes Salesforce.</p>
+<h4 id="111-conexao-com-org">11.1 Conexão com Org<a class="headerlink" href="#111-conexao-com-org" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Autenticação via OAuth 2.0 (Web Server Flow)</li>
+<li>Suporte a sandbox e produção</li>
+<li>Armazenamento seguro de tokens (keyring ou variáveis de ambiente)</li>
+<li>Múltiplos orgs simultâneos (dev, staging, prod)</li>
+</ul>
+<h4 id="112-scan-de-features-habilitadas">11.2 Scan de Features Habilitadas<a class="headerlink" href="#112-scan-de-features-habilitadas" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Consultar Metadata API para verificar configuração do org</li>
+<li>Mapear features da release → configurações do org</li>
+<li>Ex: "MFA está habilitado?", "My Domain está ativo?", "API version atual?"</li>
+<li>Gerar relatório: "15 de 22 features da Summer '26 já estão disponíveis no seu org"</li>
+</ul>
+<h4 id="113-relatorio-de-gap">11.3 Relatório de Gap<a class="headerlink" href="#113-relatorio-de-gap" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Comparar features disponíveis vs. habilitadas</li>
+<li>Priorizar por impacto: features de alto impacto não habilitadas primeiro</li>
+<li>Gerar checklist de ação para admins</li>
+<li>Estimativa de esforço: baixo/médio/alto por feature</li>
+</ul>
+<h4 id="114-sugestoes-de-migracao">11.4 Sugestões de Migração<a class="headerlink" href="#114-sugestoes-de-migracao" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Para features que requerem ação: gerar passos detalhados</li>
+<li>Incluir: link para documentação, pré-requisitos, riscos</li>
+<li>Ex: "Para habilitar Agentforce Voice: 1) Verificar licença, 2) Configurar permset, 3) Ativar no Setup"</li>
+<li>Validação pós-migração: verificar se a feature está funcionando</li>
+</ul>
+<h4 id="115-dashboard-de-maturidade">11.5 Dashboard de Maturidade<a class="headerlink" href="#115-dashboard-de-maturidade" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Score de maturidade do org (0-100)</li>
+<li>Baseado em: features habilitadas vs. disponíveis</li>
+<li>Comparação com média do setor (se disponível)</li>
+<li>Evolução ao longo das releases</li>
+</ul>
+<p><strong>Arquitetura:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>flowchart LR
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    ORG[&quot;Salesforce Org&quot;] --&gt; META[&quot;Metadata API&quot;]
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    META --&gt; SCAN[&quot;Feature Scanner&quot;]
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    REL[&quot;Release Notes&quot;] --&gt; SCAN
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    SCAN --&gt; GAP[&quot;Gap Report&quot;]
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    GAP --&gt; DASH[&quot;Dashboard&quot;]
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    GAP --&gt; MIG[&quot;Migration Steps&quot;]
+</code></pre></div></p>
+<p><strong>Dependências:</strong> <code>salesforce.py</code> (novo módulo Metadata API), credenciais de org</p>
+<p><strong>Estimativa:</strong> 7-10 dias de desenvolvimento</p>
+<p><strong>Prioridade:</strong> Média - requer credenciais de org de clientes</p>
+<hr />
+<h3 id="12-webhook-para-atualizacao-automatica">12. Webhook para Atualização Automática<a class="headerlink" href="#12-webhook-para-atualizacao-automatica" title="Permanent link">&para;</a></h3>
+<p>Pipeline reativo em vez de periódico, atualizando docs e notificando em tempo real.</p>
+<h4 id="121-monitoramento-de-mudancas">12.1 Monitoramento de Mudanças<a class="headerlink" href="#121-monitoramento-de-mudancas" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Polling inteligente do Salesforce Help (a cada 6h)</li>
+<li>Comparação de conteúdo via content-hash (já implementado)</li>
+<li>Detecção incremental: apenas seções alteradas são re-processadas</li>
+<li>Rate limiting: máximo 4 requests/dia ao Salesforce Help</li>
+</ul>
+<h4 id="122-pipeline-incremental">12.2 Pipeline Incremental<a class="headerlink" href="#122-pipeline-incremental" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Quando mudança detectada: processar apenas features novas/alteradas</li>
+<li>Atualizar .meta.json incrementalmente (não sobrescrever)</li>
+<li>Regenerar apenas categorias afetadas (não todas)</li>
+<li>Cache de resumos: invalidar apenas categorias alteradas</li>
+</ul>
+<h4 id="123-atualizacao-automatica-do-docs">12.3 Atualização Automática do Docs<a class="headerlink" href="#123-atualizacao-automatica-do-docs" title="Permanent link">&para;</a></h4>
+<ul>
+<li>GitHub Pages rebuild automático após atualização incremental</li>
+<li>Badge de "última atualização: há X horas" no README</li>
+<li>Histórico de mudanças: log de cada atualização incremental</li>
+</ul>
+<h4 id="124-notificacoes-imediatas">12.4 Notificações Imediatas<a class="headerlink" href="#124-notificacoes-imediatas" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Para features de alto impacto detectadas: notificação imediata</li>
+<li>Slack/Email com: nome da feature, impacto, link para detalhes</li>
+<li>Supressão: não notificar se a feature já foi notificada anteriormente</li>
+</ul>
+<h4 id="125-limitacoes-e-workarounds">12.5 Limitações e Workarounds<a class="headerlink" href="#125-limitacoes-e-workarounds" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Salesforce não oferece webhook nativo para release notes</li>
+<li>Workaround: polling + content-hash (já implementado)</li>
+<li>Alternativa futura: RSS feed do Salesforce Help (se disponível)</li>
+<li>Considerar: Salesforce Trailhead API para detecção de novos módulos</li>
+</ul>
+<p><strong>Arquitetura:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>flowchart LR
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    CRON[&quot;Cron 6h&quot;] --&gt; POLL[&quot;Content Poller&quot;]
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    POLL --&gt; HASH[&quot;Hash Comparator&quot;]
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    HASH --&gt;|mudança| INCR[&quot;Incremental Pipeline&quot;]
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    HASH --&gt;|sem mudança| SKIP[&quot;Skip&quot;]
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    INCR --&gt; MD[&quot;Update .md&quot;]
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    INCR --&gt; NOTIFY[&quot;Notify&quot;]
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    INCR --&gt; GH[&quot;Rebuild Pages&quot;]
+</code></pre></div></p>
+<p><strong>Dependências:</strong> <code>cache_manager.py</code>, <code>scraper.py</code>, <code>release_docs.py</code>, GitHub Actions</p>
+<p><strong>Estimativa:</strong> 3-5 dias de desenvolvimento</p>
+<p><strong>Prioridade:</strong> Baixa - Salesforce não oferece webhook nativo; polling já funciona</p>
+<hr />
+<h2 id="arquitetura-das-novas-features">Arquitetura das Novas Features<a class="headerlink" href="#arquitetura-das-novas-features" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>flowchart TB
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    subgraph ENTRADA[&quot;🌐 Entrada&quot;]
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        SF[&quot;Salesforce Help&quot;]
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        CACHE[&quot;.summary_cache.json&quot;]
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    end
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    subgraph AI[&quot;🧠 Camada AI&quot;]
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        ENRICH[&quot;Feature Enricher&lt;br/&gt;descrições + impacto&quot;]
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        SUM[&quot;Release Summarizer&lt;br/&gt;executivo 5000 chars&quot;]
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        CAT[&quot;Category Summaries&lt;br/&gt;1000 chars cada&quot;]
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    end
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    subgraph ARTEFATOS[&quot;📦 Artefatos&quot;]
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>        MD[&quot;Markdown enriquecido&quot;]
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>        README[&quot;README bilingue&quot;]
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        GH[&quot;GitHub Pages&quot;]
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        DASH[&quot;Dashboard (futuro)&quot;]
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    end
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    subgraph DISTRIBUIÇÃO[&quot;📤 Distribuição&quot;]
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>        SLACK[&quot;Slack&quot;]
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>        EMAIL[&quot;Email&quot;]
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>        DISCORD[&quot;Discord&quot;]
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>    end
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    SF --&gt; ENRICH
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>    CACHE --&gt; SUM
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    ENRICH --&gt; CAT
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>    SUM --&gt; CAT
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>    CAT --&gt; MD
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>    MD --&gt; README
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>    README --&gt; GH
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>    MD --&gt; DASH
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>    CAT --&gt; SLACK
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    CAT --&gt; EMAIL
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>    CAT --&gt; DISCORD
+</code></pre></div>
+<hr />
+<h2 id="status-geral">Status Geral<a class="headerlink" href="#status-geral" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: center;">Status</th>
+<th style="text-align: left;">Data</th>
+<th style="text-align: center;">Estimativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Enriquecimento AI por feature</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Resumos executivos (5000 chars)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Resumos por categoria (1000 chars)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cache com sub-agentes</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">README bilingue reorganizado</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">GitHub Pages sincronizado</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Contagens consistentes</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Jul 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dashboard com resumos AI</td>
+<td style="text-align: center;">📋 Planejado</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">3-5 dias</td>
+</tr>
+<tr>
+<td style="text-align: left;">Comparação semântica</td>
+<td style="text-align: center;">📋 Planejado</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">5-7 dias</td>
+</tr>
+<tr>
+<td style="text-align: left;">Alertas proativos</td>
+<td style="text-align: center;">📋 Planejado</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">4-6 dias</td>
+</tr>
+<tr>
+<td style="text-align: left;">Metadata API integration</td>
+<td style="text-align: center;">📋 Planejado</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">7-10 dias</td>
+</tr>
+<tr>
+<td style="text-align: left;">Webhook auto-update</td>
+<td style="text-align: center;">📋 Planejado</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">3-5 dias</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auto-Healing CI/CD Agent</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: left;">Ago 2026</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total planejado</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><strong>22-33 dias</strong></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/Fatal1tyBarucco/Salesforce-WebDev" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
