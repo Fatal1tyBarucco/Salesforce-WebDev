@@ -146,3 +146,13 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `331c0e6` — Deployed a6fe95f to 0.4.2 with ProperDocs 1.6.7 and mike 2.2.0
 - `da00ac8` — feat(docs): fechamento das lacunas da auditoria rigorosa (3.1/4.4/3.4/DoD5/2.4/3.6/4.2/1.4) (#423)
 - `bc4ccd5` — Deployed b8122b6 to 0.5.0 with ProperDocs 1.6.7 and mike 2.2.0
+- `ce2a7fb` — Deployed 415e473f to 0.6.0 with ProperDocs 1.6.7 and mike 2.2.0
+- `1e84265` — Deployed 03b8b4c1 to 264-winter-27 with MkDocs 1.6.1 and mike 2.2.0
+- `9e06737` — Deployed 03b8b4c1 to 262-summer-26 with MkDocs 1.6.1 and mike 2.2.0
+- `03c3477` — Deployed 03b8b4c1 to 260-spring-26 with MkDocs 1.6.1 and mike 2.2.0
+- `632c343` — Deployed 03b8b4c1 to 258-winter-26 with MkDocs 1.6.1 and mike 2.2.0
+- `6bb5898` — Deployed b5e944bf to 0.6.0 with ProperDocs 1.6.7 and mike 2.2.0
+- `feeb270` — Deployed 44cf09d7 to 0.5.0 with ProperDocs 1.6.7 and mike 2.2.0
+- `b11e3aa` — Deployed a0daa730 to 0.4.2 with MkDocs 1.6.1 and mike 2.2.0
+- `e7a623c` — Deployed 1c9d6f6e to 0.4.1 with MkDocs 1.6.1 and mike 2.2.0
+- `dd5dbba` — Deployed 74ab63e1 to 0.4.0 with MkDocs 1.6.1 and mike 2.2.0
