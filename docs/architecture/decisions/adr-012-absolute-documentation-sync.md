@@ -83,7 +83,22 @@ A tabela de releases passa a ser reconciliada nas três superfícies (`docs/inde
 
 ## Verificação
 
-- `uv run pytest tests/test_docs_contract.py` — 15 testes, incluindo simulação de drift (remoção → ÓRFÃO → sync remove com histórico; adição → OMITO → sync documenta).
+- `uv run pytest tests/test_docs_contract.py` — 18 testes, incluindo simulação de drift (remoção → ÓRFÃO → sync remove com histórico; adição → OMITO → sync documenta), paridade de artefatos bilíngues e cruzamento de automação.
 - `python3 .github/scripts/docs_contract.py validate` — exit 0 em sincronia, exit 1 em divergência.
-- `uv run mkdocs build --strict` — zero warnings.
-- `python3 .github/scripts/docs_contract.py parity` — paridade pt-BR/English.
+- `uv run mkdocs build --strict` — zero warnings; hook `docs/hooks/orphan_guard.py` faz páginas órfãs falharem o próprio strict (nativo do MkDocs é apenas INFO), respeitando `exclude_docs`.
+- `python3 .github/scripts/docs_contract.py parity` — paridade pt-BR/English em 4 camadas: READMEs, sets bilíngues `releases/*/pt_BR×en_US`, superfície English (`docs/en/index.md`) e varredura por página de referências cross-language.
+- `PROMPTFOO_PYTHON=.venv/bin/python npx promptfoo eval -c .promptfoo.yaml --filter-providers deterministic-echo` — avaliação keyless de fidelidade ao manifest (asserts inspecionam o prompt renderizado): 2/2 passed.
+
+## Fechamento de lacunas (2026-11-20, pós-auditoria rigorosa)
+
+| Requisito | Complemento |
+|-----------|-------------|
+| 3.1 | `mkdocs-material` atualizado para a latest dentro do pin (9.8.2); refresh contínuo por versão do tema via `docs-deps-refresh.yml` (semanal + dispatch: lock × PyPI → upgrade → strict + contrato → PR). |
+| 3.4 | Backfill das tags de release existentes via `docs-version-backfill.yml` (dispatch, best-effort por tag, sumário de falhas, alias `latest` preservado). |
+| 4.4 | Commits de IA (`ai-docs.yml`) preservam a convenção do sync: autor `github-actions[bot]`, mensagem `docs(sync): reconcile documentation — [data]` com marcador skip-ci. |
+| DoD5 | Paridade estendida para todas as superfícies públicas (4 camadas acima); superfície English publicada em `docs/en/index.md`; alternate aponta para URL absoluta do alias `latest` (link relativo quebraria em páginas profundas sob mike). |
+| 2.4 | Órfãs falham o próprio `mkdocs build --strict` via hook `on_nav` (WARNING), com exclusão explícita de superfícies `exclude_docs`. |
+| 4.2 | promptfoo corrigido (refs de prompts/schema quebradas no config original), loaders com bootstrap de sys.path (`scripts/promptfoo_prompts.py`), provider determinístico keyless (`scripts/promptfoo_echo.py`) e eval real executado (2/2 passed). Eval ao vivo com modelos reais disponível via providers configurados (requer chaves). |
+| 1.4 | `docs_contract.py report` cruza HEAD × último commit `docs(sync)` × `docs/.last-processed-ref` e reporta commits não processados pelo braço de IA (`automation_coverage()`). |
+
+Trade-off remanescente (documentado): a tradução prose completa das páginas técnicas pt-BR para English é trabalho do braço de IA (`ai-docs.yml`), sujeito aos mesmos gates; a superfície English atual é a landing page + artefatos de release bilíngues, com paridade verificada deterministicamente.

@@ -15,6 +15,7 @@
     ".github/scripts/docs_contract.py": [
       "docs/architecture/automation-catalog.md",
       "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
+      "docs/en/index.md",
       "docs/reference/repo-index.md"
     ],
     ".github/scripts/docs_sync_engine.py": [
@@ -98,6 +99,14 @@
       "docs/reference/repo-index.md"
     ],
     ".github/workflows/dependency-review.yml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/workflows/docs-deps-refresh.yml": [
+      "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    ".github/workflows/docs-version-backfill.yml": [
       "docs/architecture/automation-catalog.md",
       "docs/reference/repo-index.md"
     ],
@@ -195,6 +204,16 @@
     "scripts/generate_pr_body.py": [
       "docs/MODERNIZACAO.md",
       "docs/architecture/automation-catalog.md",
+      "docs/reference/repo-index.md"
+    ],
+    "scripts/promptfoo_echo.py": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
+      "docs/reference/repo-index.md"
+    ],
+    "scripts/promptfoo_prompts.py": [
+      "docs/architecture/automation-catalog.md",
+      "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
       "docs/reference/repo-index.md"
     ],
     "scripts/quality-check-local.sh": [
@@ -869,8 +888,8 @@
     ".github/pull_request_template.md": "271f4634b29fadcfaaefa1cde391f59db7020376",
     ".github/scripts/build_failure_issue.py": "0041672260b12759121d41d62fec6e764d89bfbc",
     ".github/scripts/ci-visual.sh": "e652827743916b3b14e0606eadba9fa88d6e36ef",
-    ".github/scripts/docs_contract.py": "858c660aa0b8e986f324de3cf1ed9251e78fa39b",
-    ".github/scripts/docs_sync_engine.py": "f333d25e2a1426bf5a7889690dc645048f5dd943",
+    ".github/scripts/docs_contract.py": "4a692458b3d916f1bce87fe9c7fb4ef084314faf",
+    ".github/scripts/docs_sync_engine.py": "33a597061031d373c40820af9dcc85720a961992",
     ".github/scripts/documentation_reconcile.py": "f65a8851dea5c27f0e69708eea9108ea35784813",
     ".github/scripts/documentation_sync.py": "54ca4220be6f37b99c107a084c751b9c5d6754d4",
     ".github/scripts/fix_markdown.py": "99cd8b21b685f7db3778da1eed18fe7af5aef0f5",
@@ -879,13 +898,15 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/triage-rules.yaml": "85fef0b72056e9f3c1f4e5b872e9d9639eb97401",
-    ".github/workflows/ai-docs.yml": "c9d7e45e7a4f7501ca190a5ee44a7d37b3a025ea",
+    ".github/workflows/ai-docs.yml": "03182adf4adf4ce3abffc7b525bab1a68a38cf3a",
     ".github/workflows/ai-pr-review.yml": "8b93471d61d3825945655fade91ff6a35f2367c6",
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
     ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
     ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
     ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
+    ".github/workflows/docs-deps-refresh.yml": "c91157a1e52cc3298cd0d5128f27a0fd6b578917",
+    ".github/workflows/docs-version-backfill.yml": "08327d0177961df5f6d9e6121c12c6afe819d194",
     ".github/workflows/documentation-build.yml": "e4f3f1d46f2721df3232696d7479dd53c156c787",
     ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
@@ -901,7 +922,7 @@
     ".markdownlintignore": "753970dd4c7dac0cfabacd9a6a5b8066612112ba",
     ".mcp.json": "7af655fee00a854266d691999b597ab7dd171b21",
     ".pre-commit-config.yaml": "b1b3902004b1ae7f094ca396a06817d1aac6d6d4",
-    ".promptfoo.yaml": "dff4f09ab4eaad7f534756dfcb3ed710e2f50ec9",
+    ".promptfoo.yaml": "c9e6ecd48be94e18abf85b70c4afca4184fa2035",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "66b3b9f8c72b63e450fe783fa22cde343820cba8",
@@ -1040,7 +1061,7 @@
     "docs/api/smart_notifications.md": "5c28fa9d62aadb9deb1b57d4d64565334f9d88fa",
     "docs/api/translator.md": "c994097761189c1a4881946dd75ffc5b8b3fa4bb",
     "docs/api/workflow.md": "3e446601659d78db75ba647e0437fa8be426e4ac",
-    "docs/architecture/automation-catalog.md": "4eb5148acf3b29ae676d0e546ef7608dc231f0ad",
+    "docs/architecture/automation-catalog.md": "e22c0baed20c2adc697d1d57723bbedbdbdd7bf0",
     "docs/architecture/c4_container.md": "46451f3fa0af8ef4dbd4313637c85ab77eebc4eb",
     "docs/architecture/decisions/adr-001-parser-strategy.md": "445fcc85b61a64b6ad7d706621681022bcab875e",
     "docs/architecture/decisions/adr-002-github-actions.md": "0454fde6f3319378b58755c864be778b49344d0b",
@@ -1053,7 +1074,7 @@
     "docs/architecture/decisions/adr-009-scraper-resilience.md": "b51764bf9f8859563256495b880385c949e0492c",
     "docs/architecture/decisions/adr-010-llm-cache-strategy.md": "e8dee0e22306580f4ca59c055eb1101a1ae99b6a",
     "docs/architecture/decisions/adr-011-cache-layer-hardening.md": "b68d330d0a1a2d1dbb26e9a3f729e8896e4ae738",
-    "docs/architecture/decisions/adr-012-absolute-documentation-sync.md": "7086a682675ea68dabdbb6ec17dbc3a6ef4ca259",
+    "docs/architecture/decisions/adr-012-absolute-documentation-sync.md": "5cedc67030683693a72f69bfb91a61bec18ada65",
     "docs/architecture/decisions/index.md": "a3adaac536ff16ad1175906e70741f28df29a8ee",
     "docs/architecture/overview.md": "34869944d9a162b9cfd758578f91ec2b0ab60816",
     "docs/assets/banner1.png": "d450059b65ecc1a17fb7c8bbf832384d83ce2115",
@@ -1064,11 +1085,13 @@
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
     "docs/changelog.md": "23bf04e11b544da1c5d93fa971ec500fdc965426",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
+    "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
     "docs/guides/getting-started.md": "6f79387e3451b42c54d3ea5e3b8430f190dea629",
     "docs/guides/index.md": "125595983247b7556b1afe235a30370c4cdd7343",
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
+    "docs/hooks/orphan_guard.py": "52ea824d8f4c355d24917abdeead6d0a48eaaa2b",
     "docs/index.md": "89e630d4ce5be9861c46a55a9219e30e4a2d6aeb",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
@@ -1082,7 +1105,7 @@
     "docs/observability/logging.md": "48a70d93e459bcdfe3b352515668c4c6311b44b7",
     "docs/observability/pipeline-health.md": "fce0fa851da0a379b8b929ba6008c0e5f821d69f",
     "docs/plans/auto-opencode-issue.md": "c82578ff99a9d9c6a8d86e429ad801a8d1b611d6",
-    "docs/reference/repo-index.md": "49b801f416ca728b70e626387d908cb4d59d303a",
+    "docs/reference/repo-index.md": "36f74e4766e8a6cc4aaf898b088cf1d8a77b1858",
     "docs/roadmap/index.md": "d4b45c7c815c8c90f8b48bf0df8f3679ab7524c2",
     "docs/roadmap/v1.md": "20aa59d517dcee5f944ae563e8acc3c057c3d32e",
     "docs/roadmap/v2.md": "01ba9aee2d11b0ba6798c3d3865887bbd9b1dcb2",
@@ -1109,7 +1132,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "e0eb4a3baa5d91bfc7bd93f9ea4af53924e2cc72",
+    "mkdocs.yml": "f4021305e2251394c278a49f041a1eced7471190",
     "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
     "prompts/classification/v1.yaml": "68f6eb37746235577864ab1cf1c91cc520306a7e",
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
@@ -1294,6 +1317,8 @@
     "scripts/cache_maintenance.py": "2fa25930138086e0f9f2a3b64e6722ca568d0905",
     "scripts/detect_release.py": "469e23186cea96de5a6d6744eb0c7302841164e8",
     "scripts/generate_pr_body.py": "fc29ca2bacd3ca17fe0799c830979659bc8cce7a",
+    "scripts/promptfoo_echo.py": "0df70ae1618546e2758e3ded120104c9d1b548b2",
+    "scripts/promptfoo_prompts.py": "982de4e46d03c9837df09f9f41e11565a64ad50c",
     "scripts/quality-check-local.sh": "f4939848de13928460b8caa13cd3d71098c5aaa5",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
@@ -1568,7 +1593,7 @@
     "tests/test_coverage_extra.py": "523225a4d942242de5e79a6e0913df9f8081a5a5",
     "tests/test_coverage_final.py": "ac31ee3adf2bada119ffa77f6dbb14ebd09a5a92",
     "tests/test_dashboard.py": "a2822786c531805373d9acf85b27aaac7e0d8a7f",
-    "tests/test_docs_contract.py": "1001d94a22e6c5d581060e4770ca07eee0bb928a",
+    "tests/test_docs_contract.py": "2a1737883f45e29ac6a26f10704e4c95fe526f9d",
     "tests/test_documentation_service_coverage.py": "ef9aa5c76d7a4d800f11a5a16d4e04b85ce0cee6",
     "tests/test_e2e.py": "7b18bd1ede34590b738658a12e737ebf09a74a55",
     "tests/test_events.py": "980a855960015a3231c28448a8282c478c660cb5",
@@ -1643,9 +1668,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "1f2613a8b99a6511f80d343a2196be885285393b"
+    "uv.lock": "74b4a50f18a8fd2ccd8519bc6e615075e6e459cf"
   },
-  "generated_at": "2026-11-19T21:55:52.261032+00:00",
+  "generated_at": "2026-11-20T01:24:42.747606+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1660,5 +1685,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "23ffbac4af610c191cb65362f978f6eb11295774"
+  "repository_sha": "b8122b61ddcf99fd19c2ae01d935247202fde772"
 }

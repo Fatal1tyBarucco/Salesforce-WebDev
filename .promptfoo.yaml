@@ -1,64 +1,100 @@
-# Promptfoo configuration for prompt evaluation
-# Run with: uvx promptfoo eval -c .promptfoo.yaml
+# Promptfoo configuration for prompt evaluation (ADR-012, requisito 4.2)
 #
-# ADR-012: every AI prompt used by the documentation sync has a test case
-# here, with manifest-fidelity assertions (deterministic checks on the
-# prompt contract — the LLM never replaces the deterministic engine).
+# Avaliação keyless (fidelidade do PROMPT, determinística):
+#   PROMPTFOO_PYTHON=.venv/bin/python npx --yes promptfoo eval \
+#       -c .promptfoo.yaml --filter-providers deterministic-echo
+#
+# Avaliação ao vivo com modelos reais (requer chaves no ambiente):
+#   PROMPTFOO_PYTHON=.venv/bin/python npx --yes promptfoo eval -c .promptfoo.yaml
+#
+# Os asserts de fidelidade ao manifest inspecionam o PROMPT renderizado
+# (context.prompt), não a resposta do modelo — a fidelidade do contrato é
+# uma propriedade determinística do prompt, independente do provedor.
+# Os loaders em scripts/promptfoo_prompts.py fazem o bootstrap de sys.path
+# (os módulos de produção usam imports relativos + pydantic).
 
 prompts:
-  - id: file://src/ai/prompts/classification.py:build_classification_system_prompt
+  - id: file://scripts/promptfoo_prompts.py:prompt_classification
     label: classification
-  - id: file://src/ai/prompts/enrichment.py:build_enrichment_prompt
+  - id: file://scripts/promptfoo_prompts.py:prompt_enrichment
     label: enrichment
-  - id: file://src/ai/prompts/reporting.py:build_reporting_prompt
+  - id: file://scripts/promptfoo_prompts.py:prompt_reporting
     label: reporting
-  - id: file://src/ai/prompts/validation.py:build_validation_prompt
-    label: validation
-  - id: file://.github/scripts/documentation_reconcile.py:build_reconciliation_system_prompt
+  - id: file://scripts/promptfoo_prompts.py:prompt_reconciliation
     label: reconciliation
 
 providers:
+  - id: exec:python3 scripts/promptfoo_echo.py
+    label: deterministic-echo
   - openrouter:openrouter/free
-  - opencode:gemini-3.6-flash
   - google:gemini-3.6-flash
 
 tests:
+  # Schema de saída da classificação — espelho exato de
+  # src/ai/prompts/validation.py:ClassificationOutput, validado em JS
+  # (determinístico, sem dependência de loader de schema).
   - prompts: [classification]
     vars:
       feature_text: "Nova funcionalidade de IA para automação de vendas"
     assert:
-      - type: json-schema
-        schema: src/ai/schemas/classification.py:ClassificationResult
+      - type: javascript
+        metric: classification-schema
+        value: |
+          let o;
+          try { o = JSON.parse(output); } catch (e) {
+            return { pass: false, score: 0, reason: 'output is not valid JSON' };
+          }
+          const enums = {
+            type: ['security','performance','bug_fix','new_feature','improvement',
+                   'deprecation','breaking_change','integration','ui_ux','other'],
+            impact: ['alto','médio','baixo'],
+            audience: ['usuários','admins','ambos'],
+            priority: ['crítica','importante','opcional'],
+          };
+          for (const [k, allowed] of Object.entries(enums)) {
+            if (!allowed.includes(o[k])) {
+              return { pass: false, score: 0, reason: `field ${k} invalid: ${o[k]}` };
+            }
+          }
+          if (typeof o.justification !== 'string' ||
+              o.justification.length < 5 || o.justification.length > 300) {
+            return { pass: false, score: 0, reason: 'justification length out of bounds' };
+          }
+          const extra = Object.keys(o).filter((k) => !(k in enums) && k !== 'justification');
+          if (extra.length > 0) {
+            return { pass: false, score: 0, reason: 'unexpected fields: ' + extra.join(', ') };
+          }
+          return { pass: true, score: 1, reason: 'matches ClassificationOutput schema' };
 
-  # Fidelidade ao manifest (ADR-012): o prompt de reconciliação precisa
-  # preservar as invariantes do contrato — fonte de verdade, superfície
-  # escrevível restrita, JSON estrito, proibição de invenção.
+  # Fidelidade ao manifest (ADR-012): invariantes do contrato no prompt
+  # de reconciliação — fonte de verdade, proibição de invenção, JSON
+  # estrito, superfície escrevível restrita, remoção de nav, paridade.
   - prompts: [reconciliation]
+    providers: [deterministic-echo]
     vars: {}
     assert:
-      - type: contains
-        value: "single source of truth"
-      - type: contains
-        value: "never invent functionality"
-      - type: contains
-        value: "STRICT JSON"
-      - type: contains
-        value: "README.en.md"
-      - type: contains
-        value: "mkdocs.yml"
-      - type: contains
-        value: "pt-BR docs stay pt-BR"
-      - type: not-contains
-        value: "G-XXXXXXXXXX"
       - type: javascript
+        metric: manifest-fidelity
         value: |
-          // Manifest fidelity: writable surface must stay restricted to
-          // docs/ + README.md + README.en.md + mkdocs.yml (no src/, tests/,
-          // workflows or secrets), and deletions must strip nav entries.
-          const okSurface = output.includes("Only paths under docs/");
-          const okNav = output.includes("strip their nav entries");
-          const okNoCode = !/write|modify|edit[^;]*src\//i.test(output);
-          return okSurface && okNav && okNoCode;
+          const p = String(context.prompt || '');
+          const invariants = [
+            'single source of truth',
+            'never invent functionality',
+            'STRICT JSON',
+            'README.en.md',
+            'mkdocs.yml',
+            'pt-BR docs stay pt-BR',
+            'Only paths under docs/',
+            'strip their nav entries',
+          ];
+          const missing = invariants.filter((s) => !p.includes(s));
+          if (missing.length > 0) {
+            return { pass: false, score: 0, reason: 'missing invariants: ' + missing.join(', ') };
+          }
+          if (p.includes('G-XXXXXXXXXX')) {
+            return { pass: false, score: 0, reason: 'analytics placeholder leaked into prompt' };
+          }
+          return { pass: true, score: 1, reason: 'all manifest-fidelity invariants present' };
 
 defaultTest:
   vars:
