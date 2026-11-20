@@ -77,12 +77,19 @@ jobs:
               || uv sync --extra docs > /dev/null 2>&1 \
               || uv sync --python 3.13 --extra docs > /dev/null 2>&1; then
               uv pip install -e . > /dev/null 2>&1 || true
-              if uv run --no-sync mike deploy "$VERSION" --branch gh-pages --no-push > /dev/null 2>&1; then
+              # Ferramenta de deploy + imaging injected no venv da tag:
+              # tags antigas não têm mike no extra docs delas; social cards
+              # (CI=true) exigem pillow/cairosvg mesmo quando o extra imaging
+              # não existia na época. Não altera o build de docs da tag.
+              uv pip install "mike>=2.1,<3" "pillow>=13,<14" "cairosvg>=2.7,<3" > /dev/null 2>&1 || true
+              LOG="/tmp/mike_${tag}.log"
+              if uv run --no-sync mike deploy "$VERSION" --branch gh-pages --no-push > "$LOG" 2>&1; then
                 OK_LIST="$OK_LIST $tag"
                 echo "✅ $tag → $VERSION"
               else
                 FAIL_LIST="$FAIL_LIST $tag(build)"
-                echo "❌ $tag: build/mike falhou"
+                echo "❌ $tag: build/mike falhou — últimas linhas:"
+                tail -5 "$LOG"
               fi
             else
               FAIL_LIST="$FAIL_LIST $tag(deps)"
