@@ -2,6 +2,24 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.5.0...v0.6.0) (2026-11-20)
+
+
+### Features
+
+* **docs:** fechamento das lacunas da auditoria rigorosa (3.1/4.4/3.4/DoD5/2.4/3.6/4.2/1.4) ([#423](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/423)) ([da00ac8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/da00ac85c3eb0a262cb9c1635de5b9932e9a0528))
+
+
+### Bug Fixes
+
+* **docs:** full-history checkout + ledger pre-fetch + retry for mike push (shallow checkout rejected gh-pages updates) ([b8122b6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b8122b61ddcf99fd19c2ae01d935247202fde772))
+* **docs:** mike ledger fetch — full-history checkout + retry ([#421](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/421)) ([b8122b6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b8122b61ddcf99fd19c2ae01d935247202fde772))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-19 21:42 UTC [skip ci] ([23ffbac](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/23ffbac4af610c191cb65362f978f6eb11295774))
+
 ## [0.5.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.4.2...v0.5.0) (2026-11-19)
 
 
