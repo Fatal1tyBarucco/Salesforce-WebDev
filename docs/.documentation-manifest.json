@@ -534,6 +534,7 @@
       "docs/ai-generated/release-notes.md",
       "docs/api/health.md",
       "docs/architecture/c4_container.md",
+      "docs/maintenance/cache-management.md",
       "docs/reference/repo-index.md"
     ],
     "src/heuristic_classifier.py": [
@@ -910,7 +911,7 @@
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
     ".github/workflows/docs-deps-refresh.yml": "c91157a1e52cc3298cd0d5128f27a0fd6b578917",
     ".github/workflows/docs-version-backfill.yml": "e61b91b80a0086201739f4a00e89617bea55abd9",
-    ".github/workflows/documentation-build.yml": "e4f3f1d46f2721df3232696d7479dd53c156c787",
+    ".github/workflows/documentation-build.yml": "31bdffd9edf0523d0bd04cb9dbb1a6d76d0260b4",
     ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
     ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
@@ -929,6 +930,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "6731539fcf513e0395eb1bbf94edc6a7a5abfb23",
+    "CACHE_GAP_ANALYSIS.md": "129c90e6d873870cd8d665c9894e7816fa825169",
     "CHANGELOG.md": "62eae3847f9d43c9c925c002e13264bd5471ebe8",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
@@ -1086,7 +1088,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "588a92e7e9c45e2ceffc658053682c2c5d30d2ec",
+    "docs/changelog.md": "a9bdc285973dbb43c6057f682a3fd75f29b38bc8",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1095,10 +1097,10 @@
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
     "docs/hooks/orphan_guard.py": "52ea824d8f4c355d24917abdeead6d0a48eaaa2b",
-    "docs/index.md": "89e630d4ce5be9861c46a55a9219e30e4a2d6aeb",
+    "docs/index.md": "98cabeafed3eb1bf34b31ccb3fc942fff6d55f1a",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
-    "docs/maintenance/cache-management.md": "1d908a10ecc59028d2141265b9328951d5bbf4f9",
+    "docs/maintenance/cache-management.md": "a6eafbf7503bcf38a548f474ddc1b6bf6e54035a",
     "docs/maintenance/enhanced-search.md": "1bd833e22dbfbcf3e2f60042959c223f65dcf36e",
     "docs/maintenance/index.md": "9738d83904ac022c7f1dd62b3c49ab6189268631",
     "docs/maintenance/local-development.md": "3a7f494edf4654c38f72b052ec6044d273ae559b",
@@ -1141,7 +1143,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "6152acb848884e76516abc47f9a60440a26f19fe",
+    "pyproject.toml": "78ac9e2796235e22a3a9a3860c8e8720d2ef2e1e",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1673,7 +1675,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "674d8186c748ad6c5b06ea8b7ce3b4967627998d"
   },
-  "generated_at": "2026-11-20T03:03:46.395334+00:00",
+  "generated_at": "2026-11-20T15:19:01.068219+00:00",
   "removals": [],
-  "repository_sha": "f74d8ce9c0f0659e7c445c47454085747e6a8330"
+  "repository_sha": "a8a0ba1eaa5940c7f98fcc8224ca48926b820fb7"
 }
