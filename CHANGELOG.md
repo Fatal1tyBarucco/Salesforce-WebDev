@@ -2,6 +2,19 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.0...v0.6.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* **docs:** drop invalid --no-push flag from mike backfill ([#425](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/425)) ([415e473](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/415e473f4bb21006f4ee97826d214352dd66009f))
+* **docs:** mike deploy has no --no-push flag (default is local-only); drop it ([415e473](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/415e473f4bb21006f4ee97826d214352dd66009f))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-20 01:46 UTC [skip ci] ([8bafe3c](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8bafe3cd3112e56024f4eb7154a44ecf0030b7aa))
+
 ## [0.6.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.5.0...v0.6.0) (2026-11-20)
 
 
