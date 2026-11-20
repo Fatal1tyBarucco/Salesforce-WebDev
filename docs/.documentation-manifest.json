@@ -906,7 +906,7 @@
     ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
     ".github/workflows/docs-deps-refresh.yml": "c91157a1e52cc3298cd0d5128f27a0fd6b578917",
-    ".github/workflows/docs-version-backfill.yml": "08327d0177961df5f6d9e6121c12c6afe819d194",
+    ".github/workflows/docs-version-backfill.yml": "9bd45698c4020ba0363e764c2a9bc63de37a1930",
     ".github/workflows/documentation-build.yml": "e4f3f1d46f2721df3232696d7479dd53c156c787",
     ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
@@ -1670,7 +1670,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "74b4a50f18a8fd2ccd8519bc6e615075e6e459cf"
   },
-  "generated_at": "2026-11-20T01:34:41.486174+00:00",
+  "generated_at": "2026-11-20T01:46:01.679086+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1685,5 +1685,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "da00ac85c3eb0a262cb9c1635de5b9932e9a0528"
+  "repository_sha": "eab1156e4abbd94317d8b5907731ca855865741a"
 }
