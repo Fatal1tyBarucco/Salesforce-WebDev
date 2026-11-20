@@ -568,6 +568,7 @@ Salesforce-WebDev/
   ├── .python-version
   ├── .ruffignore
   ├── AGENTS.md                  # Diretrizes para agentes de código
+  ├── CACHE_GAP_ANALYSIS.md
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CLAUDE.md
   ├── CONTRIBUTING.md            # Guia de contribuição
