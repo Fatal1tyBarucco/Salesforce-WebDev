@@ -931,7 +931,7 @@
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "6731539fcf513e0395eb1bbf94edc6a7a5abfb23",
     "CACHE_GAP_ANALYSIS.md": "129c90e6d873870cd8d665c9894e7816fa825169",
-    "CHANGELOG.md": "62eae3847f9d43c9c925c002e13264bd5471ebe8",
+    "CHANGELOG.md": "7bdbc7379816876f7fb2275878d434ff62f42500",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
@@ -1088,7 +1088,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "a9bdc285973dbb43c6057f682a3fd75f29b38bc8",
+    "docs/changelog.md": "b50b47c7a5543ab05ef29986af83a224a26314fd",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1097,7 +1097,7 @@
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
     "docs/hooks/orphan_guard.py": "52ea824d8f4c355d24917abdeead6d0a48eaaa2b",
-    "docs/index.md": "98cabeafed3eb1bf34b31ccb3fc942fff6d55f1a",
+    "docs/index.md": "9b305dfdfe7192ca4f38c6d0fd5197a5860e2829",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "a6eafbf7503bcf38a548f474ddc1b6bf6e54035a",
@@ -1143,7 +1143,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "78ac9e2796235e22a3a9a3860c8e8720d2ef2e1e",
+    "pyproject.toml": "e089e7312dfaeffb9c52b8a044b918f3dfe1c088",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1673,9 +1673,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "674d8186c748ad6c5b06ea8b7ce3b4967627998d"
+    "uv.lock": "be1f375cdce44fb15f8eaf777608b237e99f110b"
   },
-  "generated_at": "2026-11-20T15:19:01.068219+00:00",
+  "generated_at": "2026-11-20T17:14:55.293235+00:00",
   "removals": [],
-  "repository_sha": "a8a0ba1eaa5940c7f98fcc8224ca48926b820fb7"
+  "repository_sha": "041892b39bedc958c726b4c249b58f44d6ceaa95"
 }
