@@ -150,15 +150,19 @@ jobs:
         id: publish
         if: steps.pipeline.outcome == 'success'
         run: |
-          git config user.name "AI-Docs Bot"
-          git config user.email "ai-docs-bot@users.noreply.github.com"
+          # Convenção ADR-012 (requisito 4.4): commits de IA preservam a
+          # convenção do sync — autor github-actions[bot] + mensagem
+          # docs(sync): reconcile documentation — [data] [skip ci].
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md docs/ai-generated/ docs/.last-processed-ref
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No generated documentation changes; no commit created."
             exit 0
           fi
-          git commit -m "docs: atualização automática via IA [skip ci]"
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP} [skip ci]"
           if [ "$PUBLISH_MODE" = "pr" ]; then
             branch="ai-docs/${GITHUB_RUN_ID}"
             git push origin "HEAD:$branch"
@@ -224,7 +228,7 @@ jobs:
         run: |
           echo "::group::🔀 Creating Review PR"
           gh pr create \
-            --title "docs: atualização automática via IA [skip ci]" \
+            --title "docs(sync): AI reconciliation — human review" \
             --body-file docs/ai-generated/leadership.md \
             --base "${GITHUB_REF_NAME}" \
             --head "$HEAD_BRANCH"
