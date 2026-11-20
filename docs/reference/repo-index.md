@@ -9,7 +9,7 @@ Artefatos documentáveis: **158**.
 | :--- | :--- | :--- |
 | `.github/scripts/build_failure_issue.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/ci-visual.sh` | Script CI | [CHANGELOG.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/CHANGELOG.md) |
-| `.github/scripts/docs_contract.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/scripts/docs_contract.py` | Script CI | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `.github/scripts/docs_sync_engine.py` | Script CI | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `.github/scripts/documentation_reconcile.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/scripts/documentation_sync.py` | Script CI | [automation-catalog](../architecture/automation-catalog.md) |
@@ -52,12 +52,12 @@ Artefatos documentáveis: **158**.
 | `k8s/service.yaml` | Manifesto Kubernetes | [automation-catalog](../architecture/automation-catalog.md) |
 | `prompts/classification/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
 | `prompts/enrichment/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
-| `prompts/reconciliation/v1.yaml` | Prompt versionado | [adr-012-absolute-documentation-sync](../architecture/decisions/adr-012-absolute-documentation-sync.md) |
+| `prompts/reconciliation/v1.yaml` | Prompt versionado | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `prompts/reporting/v1.yaml` | Prompt versionado | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/cache_maintenance.py` | Script utilitário | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `scripts/detect_release.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `scripts/generate_pr_body.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
-| `scripts/promptfoo_echo.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
+| `scripts/promptfoo_echo.py` | Script utilitário | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `scripts/promptfoo_prompts.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/quality-check-local.sh` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/restore_releases.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |

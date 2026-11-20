@@ -13,6 +13,7 @@
       "docs/reference/repo-index.md"
     ],
     ".github/scripts/docs_contract.py": [
+      "AGENTS.md",
       "docs/architecture/automation-catalog.md",
       "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
       "docs/en/index.md",
@@ -181,6 +182,7 @@
       "docs/reference/repo-index.md"
     ],
     "prompts/reconciliation/v1.yaml": [
+      "AGENTS.md",
       "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
       "docs/reference/repo-index.md"
     ],
@@ -207,6 +209,7 @@
       "docs/reference/repo-index.md"
     ],
     "scripts/promptfoo_echo.py": [
+      "AGENTS.md",
       "docs/architecture/automation-catalog.md",
       "docs/architecture/decisions/adr-012-absolute-documentation-sync.md",
       "docs/reference/repo-index.md"
@@ -1670,7 +1673,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "661539ef810347113c5ed3ea8524e6b5aee334fe"
   },
-  "generated_at": "2026-11-20T02:32:31.424198+00:00",
+  "generated_at": "2026-11-20T02:41:16.247604+00:00",
   "removals": [],
-  "repository_sha": "34c455c1f7c2d34edb690b3ff4d04809eec79285"
+  "repository_sha": "98ae7c12d4672745defdfb3884923b57cf5bec20"
 }
