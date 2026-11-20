@@ -444,7 +444,7 @@ def dead_references(inventory: set[str]) -> list[dict]:
     for doc in docs:
         for line in _iter_doc_lines(doc):
             for m in PATH_REF_RE.findall(line):
-                if m not in inventory:
+                if m not in inventory and not (REPO_ROOT / m).is_file():
                     findings.append(
                         {
                             "type": "DEAD_CODE_REF",
@@ -1367,7 +1367,7 @@ def strip_dead_refs() -> list[str]:
                     changed = True
             # (2) shorten bare dead code-path mentions in whatever remains
             for ref in PATH_REF_RE.findall(cur):
-                if ref not in inventory:
+                if ref not in inventory and not (REPO_ROOT / ref).is_file():
                     cur = cur.replace(ref, ref.split("/")[-1])
                     changed = True
             out.append(cur)

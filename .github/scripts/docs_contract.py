@@ -262,7 +262,19 @@ def _release_rows(doc: str, header_title: str) -> list[tuple[int, int]]:
 
 
 def check_parity() -> list[Item]:
-    """Deterministic pt-BR / English parity (README.md vs README.en.md)."""
+    """Deterministic pt-BR / English parity across ALL public surfaces.
+
+    Four layers (ADR-012, DoD 5):
+      1. README.md vs README.en.md (Python claims + releases tables).
+      2. Every bilingual release artifact set: releases/*/pt_BR vs en_US
+         must both exist with equal document counts.
+      3. The English site surface (docs/en/index.md — alternate target)
+         must exist.
+      4. Per-page sweep: every public page is checked for cross-language
+         file references (README.en.md / en_US/) that point at nothing.
+    Full prose translation remains the AI arm's job (ai-docs), gated by
+    this same contract.
+    """
     items: list[Item] = []
     pt = eng.read_text("README.md")
     en = eng.read_text("README.en.md")
@@ -293,7 +305,89 @@ def check_parity() -> list[Item]:
                 f"tabelas de releases divergem: pt={pt_rows} en={en_rows}",
             )
         )
+    # (2) bilingual release artifact sets
+    rel_root = eng.REPO_ROOT / "releases"
+    if rel_root.is_dir():
+        for d in sorted(rel_root.iterdir()):
+            if not d.is_dir() or d.name.startswith("."):
+                continue
+            pt_dir, en_dir = d / "pt_BR", d / "en_US"
+            if not pt_dir.is_dir() and not en_dir.is_dir():
+                continue
+            rel = d.relative_to(eng.REPO_ROOT).as_posix()
+            if not pt_dir.is_dir() or not en_dir.is_dir():
+                items.append(
+                    Item(
+                        STATE_DIVERGENTE,
+                        "RELEASE_LOCALE_MISSING",
+                        rel,
+                        "locale pt_BR/en_US ausente no artefato de release",
+                    )
+                )
+                continue
+            n_pt = len(list(pt_dir.glob("*.md")))
+            n_en = len(list(en_dir.glob("*.md")))
+            if n_pt != n_en:
+                items.append(
+                    Item(
+                        STATE_DIVERGENTE,
+                        "RELEASE_ARTIFACT_PARITY",
+                        rel,
+                        f"contagem de documentos diverge: pt_BR={n_pt} en_US={n_en}",
+                    )
+                )
+    # (3) English site surface (alternate target)
+    if not (eng.REPO_ROOT / "docs" / "en" / "index.md").is_file():
+        items.append(
+            Item(
+                STATE_DIVERGENTE,
+                "MISSING_EN_SURFACE",
+                "docs/en/index.md",
+                "superfície English do seletor de idioma inexistente",
+            )
+        )
+    # (4) per-page cross-language reference sweep
+    inventory = set(eng.tracked_inventory())
+    for doc in public_docs(inventory):
+        text = eng.read_text(doc)
+        for m in re.finditer(r"\]\(([^)\s]*(?:README\.en\.md|en_US/)[^)\s]*)\)", text):
+            target = m.group(1).split("#")[0].split("?")[0]
+            if not target or target.startswith(("http://", "https://", "mailto:", "/")):
+                continue
+            resolved = (eng.REPO_ROOT / Path(doc).parent / target).resolve()
+            if not resolved.exists():
+                items.append(
+                    Item(
+                        STATE_DIVERGENTE,
+                        "EN_REF_BROKEN",
+                        doc,
+                        f"referência English inexistente: {m.group(1)}",
+                    )
+                )
     return items
+
+
+def automation_coverage() -> dict[str, Any]:
+    """Cross-check dos refs de automação (Fase 1.4 do prompt original).
+
+    Explica por que drift escapou: compara HEAD com o último commit
+    ``docs(sync)`` e com ``docs/.last-processed-ref`` (ref incremental do
+    braço de IA) — commits posteriores ao ref não foram processados pela IA.
+    """
+    info: dict[str, Any] = {"head": eng.head_sha()}
+    ref_path = eng.REPO_ROOT / "docs" / ".last-processed-ref"
+    ref = ref_path.read_text(encoding="utf-8").strip() if ref_path.is_file() else None
+    info["last_processed_ref"] = ref
+    if ref:
+        code, out = eng.run_git(["log", "-1", "--format=%h|%ci|%s", ref])
+        info["ref_commit"] = out if code == 0 else "unknown"
+        code, out = eng.run_git(["rev-list", "--count", f"{ref}..HEAD"])
+        info["commits_since_ref"] = out if code == 0 else "unknown"
+    code, out = eng.run_git(
+        ["log", "-1", "--format=%h|%ci|%s", "--extended-regexp", "--grep=^docs(sync)"]
+    )
+    info["last_docs_sync_commit"] = out if code == 0 else "unknown"
+    return info
 
 
 def run_checks() -> tuple[list[Item], dict[str, int]]:
@@ -351,10 +445,12 @@ def cmd_validate() -> int:
 def cmd_report() -> int:
     items, ok_counts = run_checks()
     counts = Counter(i.state for i in items)
+    coverage = automation_coverage()
     report = {
         "repository_sha": eng.head_sha(),
         "ok_counts": ok_counts,
         "state_counts": {DISPLAY[s]: counts.get(s, 0) for s in DISPLAY},
+        "automation_coverage": coverage,
         "items": [asdict(i) | {"action": i.action} for i in items],
     }
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -362,6 +458,13 @@ def cmd_report() -> int:
         json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
     _print_items(items)
+    print("\nCruzamento de automação (Fase 1.4):")
+    print(f"  HEAD: {coverage['head'][:7]}")
+    print(f"  último docs(sync): {coverage['last_docs_sync_commit']}")
+    print(f"  .last-processed-ref: {coverage['last_processed_ref']}")
+    if coverage.get("ref_commit"):
+        print(f"  commit do ref: {coverage['ref_commit']}")
+        print(f"  commits desde o ref (não processados pela IA): {coverage['commits_since_ref']}")
     print(f"\nRelatório de auditoria escrito em {REPORT_PATH}")
     return 0
 
