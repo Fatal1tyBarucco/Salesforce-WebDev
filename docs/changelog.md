@@ -144,3 +144,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c969f8e` — feat(docs): verifiable documentation contract + bidirectional reconcile with removal history (ADR-012)
 - `61cd5bc` — docs(agents): remove stale workflow-token 403 note; check-yaml --unsafe for Material !ENV tag
 - `331c0e6` — Deployed a6fe95f to 0.4.2 with ProperDocs 1.6.7 and mike 2.2.0
+- `da00ac8` — feat(docs): fechamento das lacunas da auditoria rigorosa (3.1/4.4/3.4/DoD5/2.4/3.6/4.2/1.4) (#423)
+- `bc4ccd5` — Deployed b8122b6 to 0.5.0 with ProperDocs 1.6.7 and mike 2.2.0

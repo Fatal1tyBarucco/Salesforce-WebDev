@@ -1083,7 +1083,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "23bf04e11b544da1c5d93fa971ec500fdc965426",
+    "docs/changelog.md": "00d1c86cb4f8163c40200516d750c2fc65bf9589",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1318,7 +1318,7 @@
     "scripts/detect_release.py": "469e23186cea96de5a6d6744eb0c7302841164e8",
     "scripts/generate_pr_body.py": "fc29ca2bacd3ca17fe0799c830979659bc8cce7a",
     "scripts/promptfoo_echo.py": "0df70ae1618546e2758e3ded120104c9d1b548b2",
-    "scripts/promptfoo_prompts.py": "982de4e46d03c9837df09f9f41e11565a64ad50c",
+    "scripts/promptfoo_prompts.py": "6952d37d09c0d3c5fdcdc7b0f90ddc77b275bac9",
     "scripts/quality-check-local.sh": "f4939848de13928460b8caa13cd3d71098c5aaa5",
     "scripts/restore_releases.py": "96dc4d4a354d12d938e5696f7157062bfc54f5de",
     "scripts/restore_releases.sh": "51630777da04579d818d318f71278e75d1a30379",
@@ -1670,7 +1670,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "74b4a50f18a8fd2ccd8519bc6e615075e6e459cf"
   },
-  "generated_at": "2026-11-20T01:24:42.747606+00:00",
+  "generated_at": "2026-11-20T01:34:41.486174+00:00",
   "removals": [
     {
       "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
@@ -1685,5 +1685,5 @@
       "removed_at": "2026-11-19T20:21:39.284721+00:00"
     }
   ],
-  "repository_sha": "b8122b61ddcf99fd19c2ae01d935247202fde772"
+  "repository_sha": "da00ac85c3eb0a262cb9c1635de5b9932e9a0528"
 }
