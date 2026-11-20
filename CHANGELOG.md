@@ -2,6 +2,14 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.1...v0.6.2) (2026-11-20)
+
+
+### Documentation
+
+* **agents:** record ADR-012 absolute-sync conventions (contract gates, mike ledger, parity, AI commit convention) ([c1cd7d5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/c1cd7d54ccb27c45d76729607bfeb20129e7a3d1))
+* **sync:** reconcile documentation — 2026-11-20 02:33 UTC [skip ci] ([98ae7c1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/98ae7c12d4672745defdfb3884923b57cf5bec20))
+
 ## [0.6.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.0...v0.6.1) (2026-11-20)
 
 
