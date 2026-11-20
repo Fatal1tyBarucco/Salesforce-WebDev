@@ -3,7 +3,7 @@
 Página gerada deterministicamente por `.github/scripts/docs_sync_engine.py`
 a partir da árvore real do repositório (ADR-012). Não editar manualmente.
 
-Artefatos documentáveis: **154**.
+Artefatos documentáveis: **158**.
 
 | Artefato | Categoria | Documentação |
 | :--- | :--- | :--- |
@@ -25,6 +25,8 @@ Artefatos documentáveis: **154**.
 | `.github/workflows/copilot-setup-steps.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/dependabot-lock-refresh.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/dependency-review.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/docs-deps-refresh.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
+| `.github/workflows/docs-version-backfill.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/documentation-build.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/documentation-sync.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
 | `.github/workflows/opencode.yml` | Workflow | [automation-catalog](../architecture/automation-catalog.md) |
@@ -55,6 +57,8 @@ Artefatos documentáveis: **154**.
 | `scripts/cache_maintenance.py` | Script utilitário | [AGENTS.md](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/blob/main/AGENTS.md) |
 | `scripts/detect_release.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
 | `scripts/generate_pr_body.py` | Script utilitário | [MODERNIZACAO](../MODERNIZACAO.md) |
+| `scripts/promptfoo_echo.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
+| `scripts/promptfoo_prompts.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/quality-check-local.sh` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/restore_releases.py` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |
 | `scripts/restore_releases.sh` | Script utilitário | [automation-catalog](../architecture/automation-catalog.md) |

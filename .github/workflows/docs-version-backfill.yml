@@ -1,0 +1,130 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║   📚 Docs Version Backfill — mike × tags de release (3.4)         ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# ADR-012 (requisito 3.4): publica no ledger do mike uma versão de docs
+# para CADA tag de release existente (v*), além do fluxo contínuo
+# (main → versão do pyproject; tag → nome da tag).
+#
+# Best-effort por tag: tags antigas podem não construir com o toolchain
+# atual (deps/Python da época). Falhas são registradas no sumário e não
+# abortam o backfill das demais. O alias `latest` NUNCA é tocado.
+#
+# Execução única sob demanda (workflow_dispatch). Concurrency "pages"
+# serializa com sync/build para evitar escrita paralela no gh-pages.
+
+name: Docs Version Backfill
+
+run-name: "📚 Docs Backfill — ${{ github.event_name }} — @${{ github.actor }}"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  backfill:
+    name: 📚 Backfill release tags into mike ledger
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: ⬇️ Checkout repository (full history + tags)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: ⚡ Setup uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      - name: 🐍 Pre-install Python 3.13 (fallback para tags antigas)
+        run: uv python install 3.13
+
+      - name: 📚 Backfill each release tag
+        id: backfill
+        env:
+          BASE_SHA: ${{ github.sha }}
+        run: |
+          set -uo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages || true
+          OK_LIST=""
+          FAIL_LIST=""
+          for tag in $(git tag -l 'v*' | sort -V); do
+            echo "::group::📚 $tag"
+            VERSION="${tag#v}"
+            if ! git checkout -f "$tag" > /dev/null 2>&1; then
+              FAIL_LIST="$FAIL_LIST $tag(checkout)"
+              echo "::endgroup::"
+              continue
+            fi
+            # Dependências da época da tag: frozen → resolver → py3.13.
+            if uv sync --frozen --extra docs > /dev/null 2>&1 \
+              || uv sync --extra docs > /dev/null 2>&1 \
+              || uv sync --python 3.13 --extra docs > /dev/null 2>&1; then
+              uv pip install -e . > /dev/null 2>&1 || true
+              if uv run --no-sync mike deploy "$VERSION" --branch gh-pages --no-push > /dev/null 2>&1; then
+                OK_LIST="$OK_LIST $tag"
+                echo "✅ $tag → $VERSION"
+              else
+                FAIL_LIST="$FAIL_LIST $tag(build)"
+                echo "❌ $tag: build/mike falhou"
+              fi
+            else
+              FAIL_LIST="$FAIL_LIST $tag(deps)"
+              echo "❌ $tag: dependências não instaláveis"
+            fi
+            echo "::endgroup::"
+          done
+          git checkout -f "$BASE_SHA" > /dev/null 2>&1
+          # Push único do ledger acumulado (retry para corridas com sync/build).
+          PUSHED=false
+          for attempt in 1 2 3; do
+            if git push origin gh-pages; then
+              PUSHED=true
+              break
+            fi
+            git fetch origin gh-pages
+            git branch -f gh-pages FETCH_HEAD 2>/dev/null || true
+            sleep "$((attempt * 3))"
+          done
+          echo "ok_list=$OK_LIST" >> "$GITHUB_OUTPUT"
+          echo "fail_list=$FAIL_LIST" >> "$GITHUB_OUTPUT"
+          echo "pushed=$PUSHED" >> "$GITHUB_OUTPUT"
+          if [ "$PUSHED" != "true" ]; then
+            echo "❌ Push do ledger gh-pages falhou após 3 tentativas." >&2
+            exit 1
+          fi
+
+      - name: 📋 Backfill summary
+        if: always()
+        env:
+          OK_LIST: ${{ steps.backfill.outputs.ok_list }}
+          FAIL_LIST: ${{ steps.backfill.outputs.fail_list }}
+          PUSHED: ${{ steps.backfill.outputs.pushed }}
+        run: |
+          {
+            echo "## 📚 Docs Version Backfill"
+            echo ""
+            echo "| Resultado | Tags |"
+            echo "| --- | --- |"
+            echo "| ✅ Publicadas | ${OK_LIST:-nenhuma} |"
+            echo "| ❌ Falhas (best-effort) | ${FAIL_LIST:-nenhuma} |"
+            echo "| Ledger push | ${PUSHED:-n/a} |"
+            echo ""
+            echo "> Alias latest preservado (aponta para a versão de main)."
+          } >> "$GITHUB_STEP_SUMMARY"

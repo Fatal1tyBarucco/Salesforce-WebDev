@@ -1,0 +1,127 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║   📚 Docs Deps Refresh — atualização do tema por release (3.6)    ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# ADR-012 (requisito 3.6): mantém as dependências de docs atualizadas a
+# cada versão do tema. Compara a versão lockada de mkdocs-material com a
+# mais recente publicada no PyPI dentro do pin de compatibilidade (<10);
+# se houver versão nova, atualiza o lock, valida (mkdocs strict + contrato)
+# e abre PR. Pins de compatibilidade documentados no pyproject/ADR-012.
+#
+# Nota: PRs criados pelo GITHUB_TOKEN pausam checks em action_required —
+# aprovação via API: gh api -X POST repos/<owner>/<repo>/actions/runs/<id>/approve
+
+name: Docs Deps Refresh
+
+run-name: "📚 Docs Deps Refresh — ${{ github.event_name }} — @${{ github.actor }}"
+
+on:
+  schedule:
+    - cron: "23 5 * * 1"   # semanal, segunda 05:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docs-deps-refresh
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  refresh:
+    name: 📚 Refresh mkdocs-material to latest pinned release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: ⚡ Setup uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      - name: 🔍 Compare locked vs latest mkdocs-material (pin <10)
+        id: check
+        run: |
+          python3 - <<'PY'
+          import json, os, tomllib, urllib.request
+          lock = tomllib.load(open("uv.lock", "rb"))
+          current = next(
+              p["version"] for p in lock["package"] if p["name"] == "mkdocs-material"
+          )
+          data = json.load(
+              urllib.request.urlopen("https://pypi.org/pypi/mkdocs-material/json", timeout=30)
+          )
+          def key(v: str) -> tuple[int, ...]:
+              return tuple(int(x) for x in v.split(".") if x.isdigit())
+          candidates = [
+              v for v in data["releases"]
+              if v.startswith("9.") and all(c.isdigit() or c == "." for c in v)
+          ]
+          latest = max(candidates, key=key)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write(f"current={current}\nlatest={latest}\n")
+              fh.write(f"needs_update={'true' if key(latest) > key(current) else 'false'}\n")
+          print(f"locked={current} latest={latest}")
+          PY
+
+      - name: ⬆️ Upgrade + validate (strict + contract)
+        if: steps.check.outputs.needs_update == 'true'
+        run: |
+          set -euo pipefail
+          uv lock --upgrade-package mkdocs-material
+          uv sync --frozen --extra docs --extra imaging
+          uv run --no-sync mkdocs build --strict
+          # Reconcilia + regenera o baseline antes do gate (uv.lock mudou).
+          python3 .github/scripts/docs_sync_engine.py reconcile
+          git add -A
+          python3 .github/scripts/docs_sync_engine.py manifest
+          python3 .github/scripts/docs_contract.py validate
+
+      - name: 🔀 Open refresh PR
+        if: steps.check.outputs.needs_update == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LATEST: ${{ steps.check.outputs.latest }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="docs-deps/material-${LATEST}"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "chore(docs): bump mkdocs-material to ${LATEST} (theme release refresh)"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "chore(docs): mkdocs-material ${LATEST}" \
+            --body "Atualização automática do tema (ADR-012, requisito 3.6). Gates do workflow: mkdocs build --strict + contrato de documentação verdes. Checks de PR criados por bot precisam de aprovação via API." \
+            --base main --head "$BRANCH"
+
+      - name: 📋 Summary
+        if: always()
+        env:
+          CURRENT: ${{ steps.check.outputs.current }}
+          LATEST: ${{ steps.check.outputs.latest }}
+          NEEDS: ${{ steps.check.outputs.needs_update }}
+        run: |
+          {
+            echo "## 📚 Docs Deps Refresh"
+            echo ""
+            echo "| Campo | Valor |"
+            echo "| --- | --- |"
+            echo "| mkdocs-material lockado | ${CURRENT:-n/a} |"
+            echo "| mkdocs-material latest (pin <10) | ${LATEST:-n/a} |"
+            echo "| Atualização necessária | ${NEEDS:-n/a} |"
+          } >> "$GITHUB_STEP_SUMMARY"

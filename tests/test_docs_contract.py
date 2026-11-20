@@ -77,6 +77,10 @@ def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         ),
         encoding="utf-8",
     )
+    for locale in ("pt_BR", "en_US"):
+        loc_dir = root / "releases" / "winter_27" / locale
+        loc_dir.mkdir(parents=True)
+        (loc_dir / "feature.md").write_text("# Feature\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(
         '[project]\nrequires-python = ">=3.14,<3.15"\n', encoding="utf-8"
     )
@@ -86,6 +90,9 @@ def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     (docs / "api" / "pkg-mod.md").write_text("# Mod\n\n::: src.pkg.mod\n", encoding="utf-8")
     (docs / "api" / "index.md").write_text("# API\n", encoding="utf-8")
     (docs / "index.md").write_text("# Home\n\n## Releases Disponíveis\n", encoding="utf-8")
+    (docs / "en").mkdir(parents=True)
+    (docs / "en" / "index.md").write_text("# English\n", encoding="utf-8")
+    (docs / ".last-processed-ref").write_text("0" * 40 + "\n", encoding="utf-8")
     (docs / "catalog.md").write_text(
         "# Catalogo\n\n"
         "Cobre `.github/workflows/ci.yml`, `.github/scripts/docs_sync_engine.py`, "
@@ -96,6 +103,7 @@ def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         "site_name: Test\n"
         "nav:\n"
         "  - Home: index.md\n"
+        "  - English: en/index.md\n"
         "  - Catalogo: catalog.md\n"
         "  - API Reference:\n"
         "    - Mod: api/pkg-mod.md\n"
@@ -302,6 +310,35 @@ def test_untracked_new_page_nav_survives_reconcile(repo) -> None:
     eng.reconcile()  # fresh.md intentionally NOT staged
     assert "fresh.md" in mk.read_text(encoding="utf-8")
     assert (root / "docs" / "fresh.md").is_file()
+
+
+def test_release_artifact_parity_divergence(repo) -> None:
+    """DoD5: bilingual release artifact sets must stay at parity."""
+    root, _eng, contract = repo
+    (root / "releases" / "winter_27" / "en_US" / "feature.md").unlink()
+    _stage(root)
+    items = contract.check_parity()
+    assert any(i.kind == "RELEASE_ARTIFACT_PARITY" for i in items)
+    assert contract.main(["parity"]) == 1
+
+
+def test_missing_en_surface_divergence(repo) -> None:
+    root, _eng, contract = repo
+    (root / "docs" / "en" / "index.md").unlink()
+    _stage(root)
+    items = contract.check_parity()
+    assert any(i.kind == "MISSING_EN_SURFACE" for i in items)
+
+
+def test_report_includes_automation_coverage(repo) -> None:
+    """Fase 1.4: report cruza HEAD com docs(sync) e .last-processed-ref."""
+    _root, _eng, contract = repo
+    assert contract.main(["report"]) == 0
+    report = json.loads(contract.REPORT_PATH.read_text(encoding="utf-8"))
+    coverage = report["automation_coverage"]
+    assert coverage["last_processed_ref"] == "0" * 40
+    assert "last_docs_sync_commit" in coverage
+    assert coverage["head"]
 
 
 def test_usage_error_exit_code(repo) -> None:

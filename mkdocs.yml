@@ -15,6 +15,11 @@ exclude_docs: |
   internal/
   plans/
 
+# Orphan guard (ADR-012, req 2.4): páginas fora do nav viram WARNING e
+# falham o próprio `mkdocs build --strict` (nativo do MkDocs é apenas INFO).
+hooks:
+  - docs/hooks/orphan_guard.py
+
 theme:
   name: material
   custom_dir: custom
@@ -145,12 +150,15 @@ extra:
       link: /
       lang: pt-BR
     - name: English
-      link: /en/
+      # URL absoluta: o alias `latest` é permanente no ledger do mike;
+      # link relativo quebraria em páginas profundas (ADR-012, DoD5).
+      link: https://fatal1tybarucco.github.io/Salesforce-WebDev/latest/en/
       lang: en-US
   generator: false
 
 nav:
   - Home: index.md
+  - English: en/index.md
   - Guias:
     - Visão Geral: guides/index.md
     - Quickstart: guides/getting-started.md

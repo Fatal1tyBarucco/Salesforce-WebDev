@@ -28,6 +28,8 @@ lista os mesmos artefatos com links; esta página fornece a descrição funciona
 | `.github/workflows/dependabot-lock-refresh.yml` | pull_request_target | Atualiza `uv.lock` em PRs do Dependabot e do release-please (guard de mesmo repositório), eliminando a janela de desync pós-release. |
 | `.github/workflows/dependency-review.yml` | pull_request | Revisão de dependências introduzidas por PRs (diff de licenças e vulnerabilidades). |
 | `.github/workflows/copilot-setup-steps.yml` | push/PR (paths do próprio arquivo), dispatch | Prepara o ambiente de execução do agente GitHub Copilot (setup de dependências do repositório). |
+| `.github/workflows/docs-deps-refresh.yml` | schedule (segunda 05:23 UTC), dispatch | Mantém o mkdocs-material na versão mais recente dentro do pin (<10): compara lock × PyPI, valida strict + contrato e abre PR (ADR-012, req 3.6). |
+| `.github/workflows/docs-version-backfill.yml` | dispatch | Backfill best-effort de uma versão de docs por tag de release (v*) no ledger do mike; falhas por tag registradas no sumário; alias latest preservado (ADR-012, req 3.4). |
 
 Detalhes de operação, runbooks e histórico de correções: [Operações de Workflow](../maintenance/workflow-operations.md)
 e [ARQUITETURA](../ARQUITETURA.md).
@@ -58,6 +60,8 @@ e [ARQUITETURA](../ARQUITETURA.md).
 | `scripts/quality-check-local.sh` | Wrapper local das verificações de qualidade (lint, formatação, tipos e testes). |
 | `scripts/restore_releases.py` | Restaura releases apagadas no GitHub a partir do diretório `releases/` e marca a mais recente como latest. |
 | `scripts/restore_releases.sh` | Versão shell do procedimento de restauração de releases. |
+| `scripts/promptfoo_prompts.py` | Loaders promptfoo dos prompts de produção (bootstrap de sys.path; eval keyless de fidelidade ao manifest, ADR-012). |
+| `scripts/promptfoo_echo.py` | Provider determinístico do promptfoo para avaliação de fidelidade do prompt sem chaves de API. |
 
 ## Infraestrutura Kubernetes (`k8s/`)
 
