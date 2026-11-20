@@ -906,7 +906,7 @@
     ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
     ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
     ".github/workflows/docs-deps-refresh.yml": "c91157a1e52cc3298cd0d5128f27a0fd6b578917",
-    ".github/workflows/docs-version-backfill.yml": "9bd45698c4020ba0363e764c2a9bc63de37a1930",
+    ".github/workflows/docs-version-backfill.yml": "e61b91b80a0086201739f4a00e89617bea55abd9",
     ".github/workflows/documentation-build.yml": "e4f3f1d46f2721df3232696d7479dd53c156c787",
     ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
@@ -926,7 +926,7 @@
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
     "AGENTS.md": "66b3b9f8c72b63e450fe783fa22cde343820cba8",
-    "CHANGELOG.md": "42fcf2c41e45f5cbf4400cdda2dc9ac8bd065511",
+    "CHANGELOG.md": "c6014b748cc18b5a4661eec045a04f46640e73d3",
     "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
@@ -1138,7 +1138,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "71d3e421480a918f5a0cb6e07c3f9de626b8d6ef",
+    "pyproject.toml": "f7ddf4c197e8e0097836096cb0938c3cc85b7920",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1668,22 +1668,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "74b4a50f18a8fd2ccd8519bc6e615075e6e459cf"
+    "uv.lock": "abffb6978bb0efc1357388c920a7f674882d1686"
   },
-  "generated_at": "2026-11-20T01:46:01.679086+00:00",
-  "removals": [
-    {
-      "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
-      "path": "docs/architecture/automation-catalog.md",
-      "reason": "nav target no longer exists in repository",
-      "removed_at": "2026-11-19T20:21:39.207082+00:00"
-    },
-    {
-      "commit": "8397b61b9ab12e07b87f10572096163b410f97e6",
-      "path": "docs/reference/repo-index.md",
-      "reason": "nav target no longer exists in repository",
-      "removed_at": "2026-11-19T20:21:39.284721+00:00"
-    }
-  ],
-  "repository_sha": "eab1156e4abbd94317d8b5907731ca855865741a"
+  "generated_at": "2026-11-20T01:57:38.773663+00:00",
+  "removals": [],
+  "repository_sha": "2f6d38705c406440b7fa2a469944574797defbbf"
 }
