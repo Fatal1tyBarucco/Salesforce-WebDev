@@ -1,0 +1,3 @@
+# Service
+
+::: src.automation.service
