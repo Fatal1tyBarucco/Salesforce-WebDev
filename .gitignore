@@ -54,6 +54,7 @@ docs/compose/
 
 # Coverage reports
 coverage.xml
+coverage_main.xml
 *.cover
 
 # AI Agent configurations (internal use only)
@@ -62,6 +63,9 @@ GEMINI.md
 QWEN.md
 .geminiignore
 -e
+
+# Local AI agent review scripts (personal workflow, not project code)
+.claude/scripts/
 
 # Impeccable design tool artifacts (local only)
 .impeccable/
