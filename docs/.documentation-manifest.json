@@ -916,9 +916,9 @@
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
     ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
     ".github/workflows/release-please.yml": "768d7642f6991a9b975c1a93d70ed599ca5be92d",
-    ".github/workflows/release_notes_pipeline.yml": "6ed7684f89e864395bccd3e176755ef8dd587660",
-    ".github/workflows/salesforce_release_intelligence_hub.yml": "597455339d64bc367e373ecf56dc34ead54ce35a",
-    ".github/workflows/scheduled-pipeline.yml": "5231cab82ec2d67816ec0804c14f98eb0852c5e0",
+    ".github/workflows/release_notes_pipeline.yml": "46d2ad650ab3fb390c74dcb51679b16db11a2909",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "235bb0bb42f486de395025d58131263d58c28e42",
+    ".github/workflows/scheduled-pipeline.yml": "bd993f5b869112b506a4e097e08d5377b79051f2",
     ".gitignore": "f95ec99871a793723ca2a230161c06f2b268de02",
     ".gitleaks.toml": "44d744133c71b998b3b28a5b2262838c0d2376df",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -1132,7 +1132,7 @@
     "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json": "a30d5256a55211f6b69bccc835ba383c5df5c10e",
     "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json": "4ad47e34d824826a3e2bb7cf40570be9cc6156b5",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
-    "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "33d84042ac9f2435daea845bdf077ecd4935219b",
+    "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "0276d562f1f52620bf647db19dce8e1f7047776c",
     "intelligence/intelligence_hub/scripts/scrapers/salesforce_defensive_scraper_engine.py": "efcd6bc439999225c9be5e138baccad6b72119d9",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
@@ -1675,7 +1675,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "be1f375cdce44fb15f8eaf777608b237e99f110b"
   },
-  "generated_at": "2026-11-20T17:14:55.293235+00:00",
+  "generated_at": "2026-11-23T20:16:05.824442+00:00",
   "removals": [],
-  "repository_sha": "041892b39bedc958c726b4c249b58f44d6ceaa95"
+  "repository_sha": "787e416ed41e6dbc8c404d1966ef658f84430a22"
 }
