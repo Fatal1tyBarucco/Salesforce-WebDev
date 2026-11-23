@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 
 import pytest
-from mcp.server.fastmcp import FastMCP
-from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 from src.infrastructure.mcp.knowledge_server import (
     ReleaseNotesMCPServer,
@@ -108,9 +108,9 @@ class TestReleaseNotesMCPServer:
         }
 
     @pytest.mark.asyncio
-    async def test_server_registers_fastmcp_handlers(self, server):
-        """The FastMCP server should have tools registered."""
-        assert isinstance(server.mcp, FastMCP)
+    async def test_server_registers_mcp_handlers(self, server):
+        """The MCP server should have tools registered."""
+        assert isinstance(server.mcp, MCPServer)
         tools = await server.mcp.list_tools()
         assert len(tools) == 4
 
@@ -340,8 +340,9 @@ class TestReleaseNotesMCPServer:
             },
         )
 
-        # call_tool returns (content_list, structured_result)
-        structured = result[1]
+        # call_tool returns a CallToolResult exposing structured_content
+        structured = result.structured_content
+        assert structured is not None
         data = json.loads(structured["result"])
         assert len(data) == 2
 
@@ -355,7 +356,8 @@ class TestReleaseNotesMCPServer:
             },
         )
 
-        structured = result[1]
+        structured = result.structured_content
+        assert structured is not None
         data = json.loads(structured["result"])
         assert data["release"] == "winter_27"
 
@@ -364,7 +366,8 @@ class TestReleaseNotesMCPServer:
         """Should call list tool."""
         result = await server.mcp.call_tool("list_releases", {})
 
-        structured = result[1]
+        structured = result.structured_content
+        assert structured is not None
         data = json.loads(structured["result"])
         assert len(data) == 2
 
@@ -379,7 +382,8 @@ class TestReleaseNotesMCPServer:
             },
         )
 
-        structured = result[1]
+        structured = result.structured_content
+        assert structured is not None
         data = json.loads(structured["result"])
         assert data["from_release"] == "winter_27"
 
@@ -523,7 +527,7 @@ class TestCreateServer:
         """Should create server with default releases directory."""
         server = create_server()
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
 
@@ -532,6 +536,6 @@ class TestCreateServer:
         """Should create server with custom directory."""
         server = create_server(Path("/custom/path"))
 
-        assert isinstance(server, FastMCP)
+        assert isinstance(server, MCPServer)
         tools = await server.list_tools()
         assert len(tools) == 4
