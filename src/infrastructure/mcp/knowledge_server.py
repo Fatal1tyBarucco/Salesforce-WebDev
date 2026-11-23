@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
@@ -33,11 +33,11 @@ class ReleaseNotesMCPServer:
 
     def __init__(self, releases_dir: Path = Path("releases")):
         self.releases_dir = releases_dir
-        self.mcp: FastMCP = FastMCP("salesforce-release-notes")
+        self.mcp: MCPServer = MCPServer("salesforce-release-notes")
         self._register_tools()
 
     def _register_tools(self) -> None:
-        """Register MCP tools using FastMCP decorators."""
+        """Register MCP tools using MCPServer decorators."""
 
         @self.mcp.tool()
         async def search_release_notes(
@@ -264,20 +264,11 @@ class ReleaseNotesMCPServer:
         return json.dumps(diff, ensure_ascii=False, indent=2)
 
 
-def create_server(releases_dir: Path = Path("releases")) -> FastMCP:
+def create_server(releases_dir: Path = Path("releases")) -> MCPServer:
     """Create and configure the MCP server."""
     mcp_server = ReleaseNotesMCPServer(releases_dir)
     return mcp_server.mcp
 
 
 if __name__ == "__main__":  # pragma: no cover
-    import asyncio
-
-    from mcp.server.stdio import stdio_server
-
-    async def main() -> None:
-        server = create_server()
-        async with stdio_server() as (read_stream, write_stream):
-            server.run(read_stream, write_stream)
-
-    asyncio.run(main())
+    create_server().run()
