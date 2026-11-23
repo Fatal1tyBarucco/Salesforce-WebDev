@@ -167,3 +167,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `f40f5ad` — Deployed b7adb01d to 0.6.3 with ProperDocs 1.6.7 and mike 2.2.0
 - `13ad5b0` — Deployed b5a57a40 to v0.6.4 with ProperDocs 1.6.7 and mike 2.2.0
 - `ef88d00` — Deployed b5a57a40 to 0.6.4 with ProperDocs 1.6.7 and mike 2.2.0
+- `dcd092e` — Deployed d6c77c4c to v0.6.5 with ProperDocs 1.6.7 and mike 2.2.0
+- `76a04ae` — Deployed d6c77c4c to 0.6.5 with ProperDocs 1.6.7 and mike 2.2.0
