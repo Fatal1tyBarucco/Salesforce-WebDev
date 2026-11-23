@@ -2463,7 +2463,7 @@ requires-dist = [
     { name = "google-genai", specifier = ">=1.0.0,<3" },
     { name = "httpx", marker = "extra == 'healing'", specifier = ">=0.28.0,<1" },
     { name = "langchain", marker = "extra == 'healing'", specifier = ">=1.5.0,<2" },
-    { name = "langchain-google-genai", marker = "extra == 'healing'", specifier = ">=2.0.0,<3" },
+    { name = "langchain-google-genai", marker = "extra == 'healing'", specifier = ">=2.0.0,<5" },
     { name = "lxml", extras = ["html-clean"], specifier = ">=6.1.1,<7" },
     { name = "mcp", specifier = "==1.30.0" },
     { name = "mike", marker = "extra == 'docs'", specifier = ">=2.1,<3" },
