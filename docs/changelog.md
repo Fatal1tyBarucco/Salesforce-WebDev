@@ -165,3 +165,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `7b9c7a0` — docs: sync manifest baseline — 2026-11-20 [skip ci]
 - `a8a0ba1` — docs: sync manifest baseline — 2026-11-20 [skip ci]
 - `f40f5ad` — Deployed b7adb01d to 0.6.3 with ProperDocs 1.6.7 and mike 2.2.0
+- `13ad5b0` — Deployed b5a57a40 to v0.6.4 with ProperDocs 1.6.7 and mike 2.2.0
+- `ef88d00` — Deployed b5a57a40 to 0.6.4 with ProperDocs 1.6.7 and mike 2.2.0
