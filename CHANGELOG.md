@@ -2,6 +2,13 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.4...v0.6.5) (2026-11-23)
+
+
+### Bug Fixes
+
+* **mcp:** migrate knowledge server to mcp 2.x MCPServer API ([33e85d5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33e85d5b3a7d2a8ffc1fe73d777b126febb391b1)), closes [#440](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/440)
+
 ## [0.6.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.3...v0.6.4) (2026-11-23)
 
 
