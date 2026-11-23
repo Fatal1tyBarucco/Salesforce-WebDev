@@ -26,7 +26,7 @@ healing = [
     "uvicorn[standard]>=0.52.0,<1",
     "PyGithub>=2.10.0,<3",
     "langchain>=1.5.0,<2",
-    "langchain-google-genai>=2.0.0,<3",
+    "langchain-google-genai>=2.0.0,<5",
     "httpx>=0.28.0,<1",
     "strawberry-graphql[fastapi]>=0.341.2,<1",
 ]
