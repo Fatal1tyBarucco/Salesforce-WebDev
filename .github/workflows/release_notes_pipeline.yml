@@ -71,7 +71,7 @@ jobs:
       # ADR-011 (R8): restaura o cache de runtime (processed_releases,
       # scraper TTL, stats) para processamento incremental entre execuções.
       - name: 💾 Restore pipeline runtime cache
-        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
           path: cache/
           key: ${{ runner.os }}-pipeline-cache-${{ github.run_id }}
