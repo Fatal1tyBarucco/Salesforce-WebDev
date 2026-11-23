@@ -8,7 +8,7 @@ tudo em toda sessão).
 ## Stack
 
 Python `>=3.14,<3.15` · uv · Playwright + BeautifulSoup/lxml · LLM multi-provider
-(OpenAI-compatível e Google GenAI) · Pydantic · FastAPI (extra `healing`) · MCP `mcp==1.30.0`.
+(OpenAI-compatível e Google GenAI) · Pydantic · FastAPI (extra `healing`) · MCP `mcp==2.3.0`.
 
 ## Mapa do código
 
@@ -65,8 +65,9 @@ Antes de commitar, rode `uv run ruff format .`. `uv lock --check` também é gat
   `pytest tests/test_snapshot.py --snapshot-update`. Nunca edite à mão.
 - `_build_release_block` é congelado pelos goldens do summarizer (`lines = [""]` e linhas em
   branco após `</details>` são intencionais).
-- `tests/infrastructure/mcp/test_knowledge_server.py` usa a API **FastMCP**
-  (`server.mcp.call_tool`, `server.mcp.list_tools`), não a API low-level do `Server`.
+- `tests/infrastructure/mcp/test_knowledge_server.py` usa a API **`MCPServer`** (mcp 2.x)
+  (`server.mcp.call_tool` → `CallToolResult.structured_content`, `server.mcp.list_tools`),
+  não a API low-level do `Server` nem o FastMCP antigo (`mcp<2`).
 - syrupy: **não** adicione ao `pyproject.toml` (rebaixa o pytest para 8.4.2). O CI instala com
   `uv pip install "syrupy>=4.9.0,<5"`; localmente use `uv run --no-sync` ou `python -m pytest`.
 
@@ -103,7 +104,7 @@ não bloqueia o CI. Reporte o bloqueio como ele é, sem inventar resultado.
 - Skills (`.claude/skills/`): `add-release-source`, `new-llm-provider`, `debug-ci`,
   `bump-quality`, `prompt-eval`, `knowledge-as-code-update`.
 - MCP (`.mcp.json`): `github` (remoto, usa `GITHUB_TOKEN`), `playwright` (debug do scraper) e
-  `salesforce-knowledge` (serve `releases/` via FastMCP; exige `uv sync --extra dev` antes).
+  `salesforce-knowledge` (serve `releases/` via `MCPServer`; exige `uv sync --extra dev` antes).
 - Hooks (`.claude/hooks/`, entrada por JSON no stdin; não existe `$FILE`): após Edit/Write em
   `.py` roda `ruff check --fix` + `ruff format`; antes de `git commit` roda ruff check,
   `ruff format --check`, mypy e `uv lock --check`; antes de `git push` roda `pytest -x`
