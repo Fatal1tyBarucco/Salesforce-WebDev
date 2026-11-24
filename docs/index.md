@@ -515,7 +515,6 @@ Salesforce-WebDev/
       ├── enrichment.py
       ├── feature.py
       └── release.py
-  ├── salesforce_release_notes.egg-info/
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
@@ -554,6 +553,7 @@ Salesforce-WebDev/
   ├── .claude/
   ├── .devcontainer/
   ├── .github/                   # Workflows e scripts do GitHub
+  ├── analytics_test/
   ├── custom/
   ├── docs/                      # Documentação MkDocs
   ├── intelligence/
