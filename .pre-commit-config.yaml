@@ -41,15 +41,6 @@ repos:
         language: system
         types: [python]
 
-      - id: impeccable-detect
-        name: 🎨 Impeccable Design Quality Detect
-        entry: npx --yes impeccable@latest detect
-        language: system
-        files: \.(html|css|md)$
-        pass_filenames: true
-        always_run: false
-        stages: [pre-commit]
-
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v2.4.0
     hooks:

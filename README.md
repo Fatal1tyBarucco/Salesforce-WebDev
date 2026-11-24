@@ -84,7 +84,7 @@ Execute localmente com `OPENROUTER_API_KEY` configurada: `python -m src.ai.orche
 | 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
 | ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
 
-<div style="padding:12px;margin-bottom:20px;border:1px solid var(--color-outline-variant);border-radius:var(--radius-md);background:var(--color-surface-variant);text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
+<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 ### ❄️ Winter '27
 
 > 📊 **Resumo Executivo:** A release Winter '27 apresenta um conjunto robusto de 1.123 novos recursos e aprimoramentos distribuídos por 19 categorias, representando a evolução contínua da plataforma Salesforce com foco em Agentforce, Experience Cloud e soluções setoriais. O destaque central é a consolidação do Agentforce como pilar estratégico da plataforma, com 129 recursos dedicados à criação, configuração e otimização de agentes de IA autônomos para diferentes cenários de negócio. A categoria Setores lidera em volume com 286 recursos, oferecendo soluções especializadas para indústrias específicas, desde manufatura até serviços financeiros e saúde. O Experience Cloud emerge como segunda maior categoria com 143 recursos, focando em experiências digitais modernas baseadas em LWR (Lightning Web Runtime) com novos templates, componentes e capacidades de engajamento. O Serviço (140 recursos) transforma a central de atendimento com Agentforce, introduzindo roteamento inteligente, assistentes de IA para agentes e métricas de qualidade de atendimento. O Gerenciamento de Receita (123 recursos) aprimora processos de cotação, precificação e faturamento com automação avançada. O Partner Cloud (38 recursos) expande as capacidades de ecossistema, enquanto o Field Service (37 recursos) melhora a gestão de operações de campo. A plataforma também avança em Segurança (25 recursos), Automação (72 recursos) e Data 360 (7 recursos), garantindo que as organizações possam operar com maior eficiência, segurança e inteligência artificial integrada em todos os processos.
@@ -738,7 +738,7 @@ Execute localmente com `OPENROUTER_API_KEY` configurada: `python -m src.ai.orche
 </details>
 
 
-<div style="padding:12px;margin-top:16px;border:1px solid var(--color-outline-variant);border-radius:var(--radius-md);background:var(--color-surface-variant);text-align:center;"><strong>📦 Arquivo de Releases:</strong> Mostrando 3 de 4 releases. <a href="./releases/ARCHIVE.md">Ver todas as releases →</a></div>
+<div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Arquivo de Releases:</strong> Mostrando 3 de 4 releases. <a href="./releases/ARCHIVE.md">Ver todas as releases →</a></div>
 
 
 ## 🏗️ Como Funciona
@@ -793,19 +793,12 @@ flowchart TB
         W --> AB[QUALITY_REPORT.md]
     end
 
-    classDef subDetect fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
-    classDef subScrape fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
-    classDef subParse fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
-    classDef subGenerate fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
-    classDef subAI fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
-    classDef subNotify fill:var(--color-surface-variant),stroke:var(--color-outline),color:var(--color-on-surface-variant)
-
-    class DETECT subDetect
-    class SCRAPE subScrape
-    class PARSE subParse
-    class GENERATE subGenerate
-    class AI subAI
-    class NOTIFY subNotify
+    style DETECT fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style SCRAPE fill:#E3F2FD,stroke:#2196F3,color:#000
+    style PARSE fill:#FFF3E0,stroke:#FF9800,color:#000
+    style GENERATE fill:#F3E5F5,stroke:#9C27B0,color:#000
+    style AI fill:#FCE4EC,stroke:#E91E63,color:#000
+    style NOTIFY fill:#E0F7FA,stroke:#00BCD4,color:#000
 ```
 
 ### Arquitetura em Camadas
@@ -856,15 +849,10 @@ flowchart LR
     GEN --> GH
     GEN --> DASH
 
-    classDef subEntrada fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
-    classDef subPipeline fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
-    classDef subResiliencia fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
-    classDef subSaida fill:var(--color-primary-fixed-dim),stroke:var(--color-primary),color:var(--color-on-primary-fixed)
-
-    class ENTRADA subEntrada
-    class PIPELINE subPipeline
-    class RESILIENCIA subResiliencia
-    class SAIDA subSaida
+    style ENTRADA fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style PIPELINE fill:#E3F2FD,stroke:#2196F3,color:#000
+    style RESILIENCIA fill:#FFF3E0,stroke:#FF9800,color:#000
+    style SAIDA fill:#F3E5F5,stroke:#9C27B0,color:#000
 ```
 
 ---
@@ -1241,21 +1229,13 @@ flowchart LR
     E --> F[Review]
     F --> G[Merge]
 
-    classDef nodeFork fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
-    classDef nodeBranch fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
-    classDef nodeCode fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
-    classDef nodeQuality fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
-    classDef nodePR fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
-    classDef nodeReview fill:var(--color-surface-variant),stroke:var(--color-outline),color:var(--color-on-surface-variant)
-    classDef nodeMerge fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
-
-    class A nodeFork
-    class B nodeBranch
-    class C nodeCode
-    class D nodeQuality
-    class E nodePR
-    class F nodeReview
-    class G nodeMerge
+    style A fill:#E8F5E9,stroke:#4CAF50,color:#000
+    style B fill:#E3F2FD,stroke:#2196F3,color:#000
+    style C fill:#FFF3E0,stroke:#FF9800,color:#000
+    style D fill:#FCE4EC,stroke:#E91E63,color:#000
+    style E fill:#F3E5F5,stroke:#9C27B0,color:#000
+    style F fill:#E0F7FA,stroke:#00BCD4,color:#000
+    style G fill:#E8F5E9,stroke:#4CAF50,color:#000
 ```
 
 1. **Fork** o repositório

@@ -154,7 +154,7 @@ uv run uv lock --check
 | 🌸 **Spring '26** | 1,438 | 21 | ✅ Complete |
 | ❄️ **Winter '26** | 1,348 | 19 | ✅ Complete |
 
-<div style="padding:12px;margin-bottom:20px;border:1px solid var(--color-outline-variant);border-radius:var(--radius-md);background:var(--color-surface-variant);text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
+<div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Language / Idioma:</strong> <strong>🇺🇸 English</strong> | <a href="./README.md">🇧🇷 Português</a></div>
 ### ❄️ Winter '27
 
 > 📊 **Executive Summary:** A release Winter '27 representa uma expansão significativa do ecossistema Salesforce com **1123 novos recursos** distribuídos em **19 categorias**. As áreas com maior volume de inovação são Setores, Experience Cloud e Serviço. Esta release consolida investimentos em inteligência artificial, experiência do desenvolvedor e conformidade regulatória.
@@ -814,7 +814,7 @@ uv run uv lock --check
 </details>
 
 
-<div style="padding:12px;margin-top:16px;border:1px solid var(--color-outline-variant);border-radius:var(--radius-md);background:var(--color-surface-variant);text-align:center;"><strong>📦 Release Archive:</strong> Showing 3 of 4 releases. <a href="./releases/ARCHIVE.md">View all releases →</a></div>
+<div style="padding:12px;margin-top:16px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>📦 Release Archive:</strong> Showing 3 of 4 releases. <a href="./releases/ARCHIVE.md">View all releases →</a></div>
 
 
 ## 🛠️ Tech Stack

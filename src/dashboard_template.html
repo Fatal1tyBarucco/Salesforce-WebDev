@@ -20,13 +20,6 @@
   }
 }
 
-/* Search input placeholder — ensure WCAG AA contrast (4.5:1) in both themes */
-.search-input::placeholder {
-  color: var(--color-on-surface-variant);
-  opacity: 0.7; /* Increased from 0.6 to meet 4.5:1 on dark bg (#1C1B1F) */
-  font-style: italic;
-}
-
 h1 {
   font-size: var(--font-size-title);
   font-weight: var(--font-weight-medium);
@@ -559,11 +552,9 @@ h1 {
 <div class="stats" id="stats-bar" role="region" aria-label="Estatísticas gerais"></div>
 
 <div class="tabs" role="tablist" aria-label="Abas do dashboard">
-  <!-- impeccable-disable design-system-color: false positive - token inverts correctly in dark mode via @media -->
   <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-search" id="tab-btn-search" onclick="showTab('search')">Busca</button>
   <button class="tab" role="tab" aria-selected="false" aria-controls="tab-compare" id="tab-btn-compare" onclick="showTab('compare')">Comparar</button>
   <button class="tab" role="tab" aria-selected="false" aria-controls="tab-heatmap" id="tab-btn-heatmap" onclick="showTab('heatmap')">Heatmap</button>
-  <!-- impeccable-enable design-system-color -->
 </div>
 
 <div id="tab-search" class="panel active" role="tabpanel" aria-labelledby="tab-btn-search">

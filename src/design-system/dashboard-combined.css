@@ -131,7 +131,7 @@
   --letter-spacing-mono: 0em;
 
   /* INPUT PLACEHOLDER TOKEN */
-  --input-placeholder-opacity: 0.7;
+  --input-placeholder-opacity: 0.6;
   --input-placeholder-color: var(--color-on-surface-variant);
 
   /* SHADOW TOKENS */
@@ -919,7 +919,7 @@ select:focus {
     gap: var(--space-sm);
   }
   .stat-number {
-    font-size: var(--stat-number-font-size);
+    font-size: 1.25rem;
   }
   .stat-card {
     min-width: 100px;
