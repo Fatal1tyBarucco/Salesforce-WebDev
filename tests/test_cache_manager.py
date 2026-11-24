@@ -967,3 +967,339 @@ def test_save_content_cache_nested_parents(cache: CacheManager, tmp_path: Path) 
     cache_file = tmp_path / "deep" / "nested" / "content.json"
     cache.save_content_cache(cache_file, {"a": "b"})
     assert cache.load_content_cache(cache_file) == {"a": "b"}
+
+
+# ── Additional tests for uncovered error paths (targeting ≥95% coverage) ──
+
+
+# Lines 354, 357: invalidate early returns for invalid namespace and missing file
+def test_invalidate_invalid_namespace_returns_early(cache: CacheManager) -> None:
+    """Cover lines 354, 357: early returns for invalid namespace and missing file."""
+    # Invalid namespace should return early without error
+    cache.invalidate("key", namespace="../evil")
+    # Missing file should return early
+    cache.invalidate("nonexistent", namespace="")
+
+
+# Lines 363-364: invalidate lock timeout and OSError
+def test_invalidate_lock_timeout_logs_and_returns(cache: CacheManager, caplog) -> None:
+    """Cover lines 363-364: CacheLockTimeoutError during invalidate."""
+    cache.set("k", "v", namespace="ns")
+    # Use the key lock, not namespace lock
+    key_lock = cache._key_lock_path("k", "ns")
+    with FileLock(key_lock, timeout=1.0):
+        other = CacheManager(cache_dir=cache._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("WARNING"):
+            other.invalidate("k", namespace="ns")
+    assert any("Invalidate failed" in r.message for r in caplog.records)
+
+
+def test_invalidate_oserror_logs_and_returns(cache: CacheManager, caplog) -> None:
+    """Cover lines 363-364: OSError during invalidate unlink."""
+    cache.set("k", "v")
+    cache._get_cache_path("k")
+    with patch.object(Path, "unlink", side_effect=OSError("permission denied")):
+        with caplog.at_level("WARNING"):
+            cache.invalidate("k")
+    assert any("Invalidate failed" in r.message for r in caplog.records)
+
+
+# Lines 376, 379: invalidate_namespace early returns
+def test_invalidate_namespace_invalid_namespace_returns_zero(cache: CacheManager) -> None:
+    """Cover line 376: early return for invalid namespace."""
+    assert cache.invalidate_namespace("../evil") == 0
+
+
+def test_invalidate_namespace_missing_dir_returns_zero(cache: CacheManager) -> None:
+    """Cover line 379: early return when namespace dir doesn't exist."""
+    assert cache.invalidate_namespace("nonexistent") == 0
+
+
+# Lines 388-389: unlink error during invalidate_namespace
+def test_invalidate_namespace_unlink_error_logged(cache: CacheManager, caplog) -> None:
+    """Cover lines 388-389: OSError when unlinking entries."""
+    cache.set("k1", "v1", namespace="ns")
+    cache.set("k2", "v2", namespace="ns")
+    with patch.object(Path, "unlink", side_effect=OSError("unlink failed")):
+        with caplog.at_level("WARNING"):
+            count = cache.invalidate_namespace("ns")
+    assert count == 0
+    assert any("Failed to remove" in r.message for r in caplog.records)
+
+
+# Lines 391-393: rmdir error during invalidate_namespace
+def test_invalidate_namespace_rmdir_error_logged(cache: CacheManager, caplog) -> None:
+    """Cover lines 391-393: OSError when removing namespace dir."""
+    cache.set("k", "v", namespace="ns")
+    # Make rmdir fail by having a non-empty dir
+    with patch.object(Path, "rmdir", side_effect=OSError("not empty")):
+        with caplog.at_level("DEBUG"):
+            cache.invalidate_namespace("ns")
+    assert any("not empty" in r.message for r in caplog.records)
+
+
+# Lines 394-396: lock timeout during invalidate_namespace
+def test_invalidate_namespace_lock_timeout_logs_and_returns_zero(
+    cache: CacheManager, caplog
+) -> None:
+    """Cover lines 394-396: CacheLockTimeoutError during invalidate_namespace."""
+    cache.set("k", "v", namespace="ns")
+    with FileLock(cache._ns_lock_path("ns"), timeout=1.0):
+        other = CacheManager(cache_dir=cache._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("WARNING"):
+            count = other.invalidate_namespace("ns")
+    assert count == 0
+    assert any("Lock timeout invalidating" in r.message for r in caplog.records)
+
+
+# Lines 420-425 (429-427 typo): full_scan branch in clear_expired
+def test_clear_expired_full_scan_branch(tmp_path: Path, clock: FakeClock) -> None:
+    """Cover lines 420-425: full_scan=True sweeps all namespaces."""
+    shared = tmp_path / "c"
+    writer = CacheManager(cache_dir=shared, clock=clock)
+    writer.set("old", "data", ttl=10, namespace="cold")
+    reader = CacheManager(cache_dir=shared, clock=clock)
+    clock.advance(5000)
+    # Without full_scan, cold namespace is not touched by reader
+    assert reader.clear_expired() == 0
+    # With full_scan, it reaches untouched namespaces
+    removed = reader.clear_expired(full_scan=True)
+    assert removed >= 1
+    assert writer.get("old", namespace="cold") is None
+
+
+# Lines 435-436: lock timeout during sweep in clear_expired
+def test_clear_expired_lock_timeout_sweep(cache: CacheManager, caplog) -> None:
+    """Cover lines 435-436: CacheLockTimeoutError during sweep."""
+    cache.set("k", "v", ttl=10, namespace="ns")
+    with FileLock(cache._ns_lock_path("ns"), timeout=1.0):
+        other = CacheManager(cache_dir=cache._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("WARNING"):
+            other.clear_expired(full_scan=True)
+    assert any("Lock timeout sweeping" in r.message for r in caplog.records)
+
+
+# Lines 453-454: quarantine scan error in maintenance
+def test_maintenance_quarantine_scan_error(cache: CacheManager, caplog) -> None:
+    """Cover lines 453-454: OSError during quarantine scan."""
+    cache.set("k", "v")
+    entry_path = cache._get_cache_path("k")
+    entry_path.write_text("bad", encoding="utf-8")
+    assert cache.get("k") is None  # creates quarantine
+    with patch.object(Path, "iterdir", side_effect=OSError("scan failed")):
+        with caplog.at_level("WARNING"):
+            report = cache.maintenance()
+    assert any("Quarantine scan failed" in r.message for r in caplog.records)
+    assert report["quarantine_copies"] == 0  # scan failed, returns 0
+
+
+# Lines 480-482: persist_stats OSError
+def test_persist_stats_oserror_already_covered(cache: CacheManager) -> None:
+    """Line 480-482 already covered by test_persist_stats_oserror_degrades."""
+
+
+# Lines 561-563: lock timeout in load_content_cache
+def test_load_content_cache_lock_timeout(cache: CacheManager, tmp_path: Path, caplog) -> None:
+    """Cover lines 561-563: CacheLockTimeoutError loading content cache."""
+    cache_file = tmp_path / "content.json"
+    cache_file.write_text(json.dumps({"a": "b"}), encoding="utf-8")
+    lock_path = cache_file.with_name(cache_file.name + ".lock")
+    with FileLock(lock_path, timeout=1.0):
+        other = CacheManager(cache_dir=tmp_path, lock_timeout=0.1)
+        with caplog.at_level("WARNING"):
+            result = other.load_content_cache(cache_file)
+    assert result == {}
+    assert any("Lock timeout loading" in r.message for r in caplog.records)
+
+
+# Line 580: non-string warning in save_content_cache
+def test_save_content_cache_non_string_warning(cache: CacheManager, tmp_path: Path, caplog) -> None:
+    """Cover line 580: warning for non-string key/value."""
+    cache_file = tmp_path / "content.json"
+    with caplog.at_level("WARNING"):
+        cache.save_content_cache(cache_file, {123: "bad", "key": 456})
+    assert any("Skipping non-string content-cache entry" in r.message for r in caplog.records)
+
+
+# Lines 586-587: save_content_cache lock timeout and OSError
+def test_save_content_cache_lock_timeout(cache: CacheManager, tmp_path: Path, caplog) -> None:
+    """Cover lines 586-587: CacheLockTimeoutError saving content cache."""
+    cache_file = tmp_path / "content.json"
+    lock_path = cache_file.with_name(cache_file.name + ".lock")
+    with FileLock(lock_path, timeout=1.0):
+        other = CacheManager(cache_dir=tmp_path, lock_timeout=0.1)
+        with caplog.at_level("ERROR"):
+            other.save_content_cache(cache_file, {"a": "b"})
+    assert any("Failed to save content cache" in r.message for r in caplog.records)
+
+
+def test_save_content_cache_oserror(cache: CacheManager, tmp_path: Path, caplog) -> None:
+    """Cover lines 586-587: OSError saving content cache."""
+    cache_file = tmp_path / "content.json"
+    with patch("src.cache_manager.atomic_write_json", side_effect=OSError("disk full")):
+        with caplog.at_level("ERROR"):
+            cache.save_content_cache(cache_file, {"a": "b"})
+    assert any("Failed to save content cache" in r.message for r in caplog.records)
+
+
+# Lines 659-661: v2 payload missing 'data' field
+def test_v2_payload_missing_data_quarantined(cache: CacheManager, clock: FakeClock, caplog) -> None:
+    """Cover lines 659-661: v2 envelope without 'data' field quarantined."""
+    path = cache._get_cache_path("k")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    envelope = {
+        "schema_version": 2,
+        "timestamp": clock.now,
+        "ttl": 3600,
+        "namespace": "",
+        "last_access": clock.now,
+        "checksum": "0" * 64,
+        # "data" missing
+    }
+    path.write_text(json.dumps(envelope), encoding="utf-8")
+    with caplog.at_level("WARNING"):
+        assert cache.get("k") is None
+    assert any("Quarantined corrupt payload" in r.message for r in caplog.records)
+
+
+# Lines 684-685: OSError evicting expired entry
+def test_evict_expired_unlink_oserror(cache: CacheManager, clock: FakeClock, caplog) -> None:
+    """Cover lines 684-685: OSError when unlinking expired entry."""
+    cache.set("k", "v", ttl=10)
+    clock.advance(5000)
+    cache._get_cache_path("k")
+    with patch.object(Path, "unlink", side_effect=OSError("permission denied")):
+        with caplog.at_level("WARNING"):
+            cache.get("k")
+    assert any("Failed to evict expired" in r.message for r in caplog.records)
+
+
+# Lines 702-703: OSError during last_access refresh
+def test_last_access_refresh_oserror(cache: CacheManager, clock: FakeClock, caplog) -> None:
+    """Cover lines 702-703: OSError during last_access refresh write."""
+    cache.set("k", "v")
+    clock.advance(60)  # trigger refresh
+    with patch("src.cache_manager.atomic_write_json", side_effect=OSError("write failed")):
+        with caplog.at_level("WARNING"):
+            cache.get("k")
+    assert any("last_access refresh failed" in r.message for r in caplog.records)
+
+
+# Lines 717-719: budget scan OSError in _enforce_budget
+def test_enforce_budget_scan_oserror(cache: CacheManager, caplog) -> None:
+    """Cover lines 717-719: OSError during budget scan."""
+    cache.set("k", "v", namespace="ns")
+    with patch.object(Path, "glob", side_effect=OSError("scan failed")):
+        with caplog.at_level("WARNING"):
+            # Trigger budget enforcement by setting a very small budget
+            small_cache = CacheManager(cache_dir=cache._cache_dir, max_entries_per_namespace=0)
+            small_cache.set("k2", "v2", namespace="ns")
+    assert any("Budget scan failed" in r.message for r in caplog.records)
+
+
+# Lines 724-725: stat OSError in _enforce_budget
+def test_enforce_budget_stat_oserror(cache: CacheManager, caplog) -> None:
+    """Cover lines 724-725: OSError during stat() in budget enforcement."""
+    cache.set("k", "v", namespace="ns")
+    with patch.object(Path, "stat", side_effect=OSError("stat failed")):
+        with caplog.at_level("WARNING"):
+            small_cache = CacheManager(cache_dir=cache._cache_dir, max_entries_per_namespace=0)
+            small_cache.set("k2", "v2", namespace="ns")
+    # stat error is silently caught and continues
+
+
+# Lines 734-738: read_json_safe error during budget enforcement
+def test_enforce_budget_read_json_safe_error(cache: CacheManager, caplog) -> None:
+    """Cover lines 734-738: read_json_safe returns None during budget."""
+    cache.set("k", "v", namespace="ns")
+    with patch("src.cache_manager.read_json_safe", return_value=None):
+        with caplog.at_level("WARNING"):
+            small_cache = CacheManager(cache_dir=cache._cache_dir, max_entries_per_namespace=0)
+            small_cache.set("k2", "v2", namespace="ns")
+    # The entry with corrupt payload gets quarantined during eviction attempt
+
+
+# Lines 740-747: LRU eviction OSError
+def test_lru_eviction_unlink_oserror(cache: CacheManager, caplog) -> None:
+    """Cover lines 740-747: OSError during LRU eviction unlink."""
+    cache.set("a", "1", namespace="ns")
+    cache.set("b", "2", namespace="ns")
+    with patch.object(Path, "unlink", side_effect=OSError("eviction failed")):
+        with caplog.at_level("WARNING"):
+            small_cache = CacheManager(cache_dir=cache._cache_dir, max_entries_per_namespace=1)
+            small_cache.set("c", "3", namespace="ns")
+    assert any("LRU eviction failed" in r.message for r in caplog.records)
+
+
+# Lines 758-760: sweep scan OSError in _sweep_directory
+def test_sweep_directory_scan_oserror(cache: CacheManager, caplog) -> None:
+    """Cover lines 758-760: OSError during sweep directory scan (ns_dir.glob)."""
+    # Create a namespace directory with an expired entry
+    cache.set("k", "v", ttl=10, namespace="ns")
+    ns_dir = cache._cache_dir / "ns"
+    # Directly test _sweep_directory with mocked glob
+    with patch.object(Path, "glob", side_effect=OSError("scan failed")):
+        with caplog.at_level("WARNING"):
+            removed = cache._sweep_directory(ns_dir, "ns", cache._now())
+    assert removed == 0
+    assert any("Sweep scan failed" in r.message for r in caplog.records)
+
+
+# Lines 766-767: quarantine corrupt during sweep
+def test_sweep_quarantines_corrupt(cache: CacheManager, clock: FakeClock) -> None:
+    """Cover lines 766-767: corrupt payload quarantined during sweep."""
+    path = cache._get_cache_path("k")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("not json", encoding="utf-8")
+    cache.clear_expired(full_scan=True)
+    assert not path.exists()
+    quarantine = cache._cache_dir / "quarantine"
+    assert quarantine.exists() and any(quarantine.iterdir())
+
+
+# Lines 771-772: quarantine invalid timestamp/ttl during sweep
+def test_sweep_quarantines_invalid_timestamp_ttl(cache: CacheManager, clock: FakeClock) -> None:
+    """Cover lines 771-772: invalid timestamp/ttl quarantined during sweep."""
+    path = cache._get_cache_path("k")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    envelope = {
+        "timestamp": "not-a-number",
+        "ttl": "not-a-number",
+        "namespace": "",
+        "data": "v",
+    }
+    path.write_text(json.dumps(envelope), encoding="utf-8")
+    cache.clear_expired(full_scan=True)
+    assert not path.exists()
+    quarantine = cache._cache_dir / "quarantine"
+    assert quarantine.exists() and any(quarantine.iterdir())
+
+
+# Lines 776-778: sweep eviction unlink OSError
+def test_sweep_eviction_unlink_oserror(cache: CacheManager, clock: FakeClock, caplog) -> None:
+    """Cover lines 776-778: OSError during sweep eviction unlink."""
+    cache.set("k", "v", ttl=10)
+    clock.advance(5000)
+    cache._get_cache_path("k")
+    with patch.object(Path, "unlink", side_effect=OSError("unlink failed")):
+        with caplog.at_level("WARNING"):
+            cache.clear_expired(full_scan=True)
+    assert any("Sweep eviction failed" in r.message for r in caplog.records)
+
+
+# Lines 817-818: migration write error in _load_content_locked
+def test_load_content_locked_migration_write_error(
+    cache: CacheManager, tmp_path: Path, caplog
+) -> None:
+    """Cover lines 817-818: OSError during migration write."""
+    target = tmp_path / "doc.md"
+    target.write_text("release content", encoding="utf-8")
+    legacy_md5 = hashlib.md5(b"release content").hexdigest()
+    cache_file = tmp_path / "content.json"
+    cache_file.write_text(json.dumps({str(target): legacy_md5}), encoding="utf-8")
+    with patch("src.cache_manager.atomic_write_json", side_effect=OSError("write failed")):
+        with caplog.at_level("WARNING"):
+            loaded = cache.load_content_cache(cache_file)
+    assert any("Content-cache migration write failed" in r.message for r in caplog.records)
+    # Migration should still return the recomputed hash
+    assert loaded == {str(target): hashlib.sha256(b"release content").hexdigest()}

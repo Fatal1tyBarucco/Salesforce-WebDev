@@ -10,7 +10,7 @@ import json
 import os
 import select
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -263,3 +263,120 @@ def test_atomic_write_json_fsync_called(tmp_path: Path) -> None:
     with patch("src.cache_io.os.fsync", wraps=os.fsync) as mock_fsync:
         atomic_write_json(target, {"a": 1})
     assert mock_fsync.called
+
+
+# ── Error paths for atomic_write_text temp cleanup ──────────────────
+
+
+def test_atomic_write_text_temp_cleanup_oserror_logged(tmp_path: Path, caplog) -> None:
+    """Cover lines 101-102: OSError during temp file cleanup is logged."""
+    target = tmp_path / "data.json"
+    target.write_text("original", encoding="utf-8")
+
+    # Make os.replace fail to trigger exception path, then make cleanup also fail
+    with patch("src.cache_io.os.replace", side_effect=OSError("replace failed")):
+        with patch("src.cache_io.Path.unlink", side_effect=OSError("cleanup failed")):
+            with pytest.raises(OSError):
+                atomic_write_text(target, "new content")
+
+    # Original file should be preserved
+    assert target.read_text(encoding="utf-8") == "original"
+    # Warning about failed temp cleanup should be logged
+    assert any("Failed to remove temp file" in r.message for r in caplog.records)
+
+
+# ── Quarantine rotation error paths ─────────────────────────────────
+
+
+def test_quarantine_rotation_scan_oserror_logged(tmp_path: Path, caplog) -> None:
+    """Cover lines 189-191: OSError during quarantine rotation scan."""
+    src = tmp_path / "entry.json"
+    src.write_text("v1", encoding="utf-8")
+    qdir = tmp_path / "quarantine"
+    qdir.mkdir()
+
+    with patch.object(Path, "iterdir", side_effect=OSError("scan failed")):
+        quarantine_file(src, qdir, keep=3)
+
+    assert any("Quarantine rotation scan failed" in r.message for r in caplog.records)
+
+
+def test_quarantine_rotation_unlink_oserror_logged(tmp_path: Path, caplog) -> None:
+    """Cover lines 195-196: OSError during old quarantine copy removal."""
+    src = tmp_path / "entry.json"
+    src.write_text("v1", encoding="utf-8")
+    qdir = tmp_path / "quarantine"
+    qdir.mkdir()
+
+    # Create 5 quarantine copies manually
+    for i in range(5):
+        (qdir / f"entry.json.20240101T00000{i}Z").write_text(f"v{i}")
+
+    # Make os.replace succeed but unlink fail during rotation
+    original_replace = os.replace
+
+    def failing_replace(src_path, dst_path):
+        return original_replace(src_path, dst_path)
+
+    with patch("src.cache_io.os.replace", side_effect=failing_replace):
+        with patch("src.cache_io.Path.unlink", side_effect=OSError("unlink failed")):
+            quarantine_file(src, qdir, keep=3)
+
+    assert any("Failed to rotate quarantine copy" in r.message for r in caplog.records)
+
+
+# ── FileLock edge cases ─────────────────────────────────────────────
+
+
+def test_file_lock_exit_when_fd_is_none(tmp_path: Path) -> None:
+    """Cover line 250: __exit__ returns early when _fd is None."""
+    lock_path = tmp_path / "entry.lock"
+    lock = FileLock(lock_path, timeout=1.0)
+    # Manually set _fd to None (simulates __enter__ not called or failed)
+    lock._fd = None
+    # Should not raise
+    lock.__exit__(None, None, None)
+
+
+def test_file_lock_no_fcntl_msvcrt_warning(tmp_path: Path, caplog) -> None:
+    """Cover lines 272-274: warning when neither fcntl nor msvcrt available."""
+    lock_path = tmp_path / "entry.lock"
+
+    with patch("src.cache_io.fcntl", None), patch("src.cache_io.msvcrt", None):
+        lock = FileLock(lock_path, timeout=0.1)
+        # This will log the warning and return True (degraded to no-op)
+        lock.__enter__()
+
+    assert any("No fcntl/msvcrt available" in r.message for r in caplog.records)
+    lock.__exit__(None, None, None)
+
+
+def test_file_lock_fcntl_unlock_oserror_logged(tmp_path: Path, caplog) -> None:
+    """Cover lines 283-284: OSError during fcntl flock unlock."""
+    lock_path = tmp_path / "entry.lock"
+    lock = FileLock(lock_path, timeout=1.0)
+    lock.__enter__()
+
+    with patch("src.cache_io.fcntl.flock", side_effect=OSError("unlock failed")):
+        lock.__exit__(None, None, None)
+
+    assert any("Lock release failed" in r.message for r in caplog.records)
+
+
+def test_file_lock_msvcrt_unlock_oserror_logged(tmp_path: Path, caplog) -> None:
+    """Cover lines 289-290: OSError during msvcrt locking unlock."""
+    lock_path = tmp_path / "entry.lock"
+    lock = FileLock(lock_path, timeout=1.0)
+    lock.__enter__()
+
+    # Simulate Windows branch: fcntl=None, msvcrt available but unlock fails
+    mock_msvcrt = MagicMock()
+    mock_msvcrt.locking.side_effect = OSError("unlock failed")
+    with (
+        patch("src.cache_io.fcntl", None),
+        patch("src.cache_io.msvcrt", mock_msvcrt),
+        patch("src.cache_io.os.lseek"),
+    ):
+        lock.__exit__(None, None, None)
+
+    assert any("Lock release failed" in r.message for r in caplog.records)

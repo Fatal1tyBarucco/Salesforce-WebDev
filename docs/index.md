@@ -19,7 +19,7 @@ keywords:
 # Salesforce Release Intelligence
 
 <figure class="hero-banner-wrapper">
-  <img id="random-banner" class="hero-banner" src="assets/banner1.png" alt="Salesforce Release Intelligence — Pipeline automatizado de Release Notes com IA" />
+  <img id="random-banner" class="hero-banner" src="assets/banner1.webp" alt="Salesforce Release Intelligence — Pipeline automatizado de Release Notes com IA" width="960" height="480" fetchpriority="high" />
   <figcaption class="hero-caption">Pipeline Knowledge-as-Code para extração, enriquecimento via IA e versionamento das Release Notes da Salesforce</figcaption>
 </figure>
 
@@ -515,6 +515,7 @@ Salesforce-WebDev/
       ├── enrichment.py
       ├── feature.py
       └── release.py
+  ├── salesforce_release_notes.egg-info/
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
@@ -637,7 +638,7 @@ Este projeto é mantido para fins educacionais e de referência técnica.
 ---
 
 <figure class="footer-banner">
-  <img src="assets/banner1.png" alt="Salesforce Release Intelligence - Pipeline automatizado" />
+  <img src="assets/banner1.webp" alt="Salesforce Release Intelligence - Pipeline automatizado" loading="lazy" width="960" height="540" />
 </figure>
 
 <div align="center">

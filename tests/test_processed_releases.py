@@ -389,3 +389,150 @@ def test_stats_determinism(tmp_path: Path, release_dir: Path) -> None:
         return s.stats.to_dict()
 
     assert run("a") == run("b")
+
+
+# ── Additional tests for uncovered error paths (targeting ≥95% coverage) ──
+
+
+# Lines 106-118: categories processing in compute_release_fingerprint
+def test_fingerprint_categories_processing(release_dir: Path) -> None:
+    """Cover lines 106-118: categories list processing with various types."""
+    # Test with valid categories
+    meta = {
+        "name": RELEASE.name,
+        "categories": [
+            {"name": "Cat A", "count": 5},
+            {"name": "Cat B", "count": 3},
+        ],
+    }
+    (release_dir / ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert len(fp(release_dir)) == 64
+
+    # Test with non-dict categories (should be skipped)
+    meta["categories"] = ["not-a-dict", {"name": 123, "count": "many"}, {"name": "Ok", "count": 2}]
+    (release_dir / ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert len(fp(release_dir)) == 64
+
+    # Test with empty categories
+    meta["categories"] = []
+    (release_dir / ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert len(fp(release_dir)) == 64
+
+
+# Lines 124-126: OSError during rglob in compute_release_fingerprint
+def test_fingerprint_rglob_oserror(tmp_path: Path, caplog) -> None:
+    """Cover lines 124-126: OSError during rglob scan."""
+    release_dir = tmp_path / "releases" / "test"
+    release_dir.mkdir(parents=True)
+    (release_dir / ".meta.json").write_text(json.dumps({"name": "Test"}), encoding="utf-8")
+
+    with patch.object(Path, "rglob", side_effect=OSError("scan failed")):
+        with caplog.at_level("WARNING"):
+            result = compute_release_fingerprint(release_dir, name="Test")
+    assert len(result) == 64
+    assert any("Fingerprint scan failed" in r.message for r in caplog.records)
+
+
+# Lines 131-132: OSError during compute_file_hash in compute_release_fingerprint
+def test_fingerprint_compute_file_hash_oserror(release_dir: Path, caplog) -> None:
+    """Cover lines 131-132: OSError during file hash computation."""
+    write_meta(release_dir)
+    write_md(release_dir)
+
+    with patch(
+        "src.processed_releases.CacheManager.compute_file_hash", side_effect=OSError("hash failed")
+    ):
+        result = compute_release_fingerprint(
+            release_dir, name=RELEASE.name, release_id=RELEASE.release_id, slug=RELEASE.slug
+        )
+    assert result == compute_checksum(
+        {
+            "meta": {
+                "name": RELEASE.name,
+                "release_id": RELEASE.release_id,
+                "slug": RELEASE.slug,
+                "total_features": 10,
+                "categories": [{"name": "Automação", "count": 10}],
+            },
+            "content": {"pt_BR/automacao.md": "unreadable"},
+            "parser_version": "1",
+        }
+    )
+
+
+# Lines 216-217: lock timeout in mark_processed
+def test_mark_processed_lock_timeout(
+    store: ProcessedReleasesStore, release_dir: Path, caplog
+) -> None:
+    """Cover lines 216-217: CacheLockTimeoutError in mark_processed."""
+    write_meta(release_dir)
+    fingerprint = fp(release_dir)
+    state_lock = store._state_lock_path()
+    with FileLock(state_lock, timeout=1.0):
+        other = ProcessedReleasesStore(cache_dir=store._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("ERROR"):
+            other.mark_processed(RELEASE.slug, fingerprint, release=RELEASE)
+    assert any("Lock timeout marking" in r.message for r in caplog.records)
+
+
+# Lines 228-233: lock timeout in invalidate
+def test_invalidate_lock_timeout(store: ProcessedReleasesStore, release_dir: Path, caplog) -> None:
+    """Cover lines 228-233: CacheLockTimeoutError in invalidate."""
+    write_meta(release_dir)
+    fingerprint = fp(release_dir)
+    store.mark_processed(RELEASE.slug, fingerprint, release=RELEASE)
+    state_lock = store._state_lock_path()
+    with FileLock(state_lock, timeout=1.0):
+        other = ProcessedReleasesStore(cache_dir=store._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("ERROR"):
+            other.invalidate(RELEASE.slug)
+    assert any("Lock timeout invalidating" in r.message for r in caplog.records)
+
+
+# Lines 371-373: lock timeout in _load_state
+def test_load_state_lock_timeout(store: ProcessedReleasesStore, caplog) -> None:
+    """Cover lines 371-373: CacheLockTimeoutError in _load_state."""
+    state_lock = store._state_lock_path()
+    with FileLock(state_lock, timeout=1.0):
+        other = ProcessedReleasesStore(cache_dir=store._cache_dir, lock_timeout=0.1)
+        with caplog.at_level("WARNING"):
+            result = other.is_processed("any", "fingerprint")
+    assert result is False
+    assert any("Lock timeout reading processed-releases" in r.message for r in caplog.records)
+
+
+# Lines 404-413: release attribute handling in _mark_in_state
+def test_mark_in_state_release_attribute_fallbacks(
+    store: ProcessedReleasesStore, release_dir: Path
+) -> None:
+    """Cover lines 404-413: release attribute handling with various types."""
+    write_meta(release_dir)
+    fingerprint = fp(release_dir)
+
+    # Test with None release (should use defaults)
+    store.mark_processed(RELEASE.slug, fingerprint, release=None)
+    data = json.loads((store._cache_dir / "processed_releases.json").read_text(encoding="utf-8"))
+    assert data["releases"][RELEASE.slug]["release_id"] == 0
+    assert data["releases"][RELEASE.slug]["name"] == RELEASE.slug
+
+    # Test with release object having non-int release_id and non-str name
+    class BadRelease:
+        release_id = "not-an-int"
+        name = 123
+
+    store2 = ProcessedReleasesStore(cache_dir=store._cache_dir / "other")
+    store2.mark_processed(RELEASE.slug, fingerprint, release=BadRelease())
+    data2 = json.loads((store2._cache_dir / "processed_releases.json").read_text(encoding="utf-8"))
+    assert data2["releases"][RELEASE.slug]["release_id"] == 0
+    assert data2["releases"][RELEASE.slug]["name"] == RELEASE.slug
+
+    # Test with release object having valid attributes
+    class GoodRelease:
+        release_id = 999
+        name = "Custom Name"
+
+    store3 = ProcessedReleasesStore(cache_dir=store._cache_dir / "other2")
+    store3.mark_processed(RELEASE.slug, fingerprint, release=GoodRelease())
+    data3 = json.loads((store3._cache_dir / "processed_releases.json").read_text(encoding="utf-8"))
+    assert data3["releases"][RELEASE.slug]["release_id"] == 999
+    assert data3["releases"][RELEASE.slug]["name"] == "Custom Name"
