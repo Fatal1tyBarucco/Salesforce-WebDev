@@ -172,3 +172,6 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `972ab2b` — Deployed 08a439e7 to 0.6.5 with ProperDocs 1.6.7 and mike 2.2.0
 - `7643a0c` — Deployed fb14d9e4 to 0.6.6 with ProperDocs 1.6.7 and mike 2.2.0
 - `69d1227` — feat(impeccable): normalize design quality across web surfaces (Phase 2/4)
+- `c480471` — test(main): patch generate_toggle_html on src.release_docs, not src.main
+- `3261205` — Revert "feat(impeccable): normalize design quality across web surfaces (Phase 2/4)"
+- `2e135e9` — test(main): patch generate_toggle_html in src.release_docs where it resolves
