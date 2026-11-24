@@ -176,3 +176,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `3261205` — Revert "feat(impeccable): normalize design quality across web surfaces (Phase 2/4)"
 - `2e135e9` — test(main): patch generate_toggle_html in src.release_docs where it resolves
 - `9375705` — ci(workflows): python-quality dedupe de issues + scheduled-pipeline hardening
+- `c2c1563` — ci(docs): diagnóstico do mkdocs build (annotations + artefato de log)
+- `70e4174` — ci(docs): diagnóstico do mkdocs build (warnings como annotations, log como artefato)
