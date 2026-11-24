@@ -419,15 +419,31 @@ jobs:
             for attempt in 1 2 3; do
               if ! git fetch origin "$TARGET_BRANCH"; then
                 echo "⚠️ Fetch falhou (tentativa $attempt/3)."
-              elif ! git rebase FETCH_HEAD; then
-                git rebase --abort || true
-                echo "❌ Rebase encontrou conflito; push cancelado sem sobrescrever o remoto." >&2
-                exit 1
               elif git push origin "HEAD:refs/heads/${TARGET_BRANCH}"; then
                 echo "✅ Push concluído na tentativa $attempt/3."
                 exit 0
+              elif [ "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)" ]; then
+                echo "⚠️ Push rejeitado sem avanço do remoto (tentativa $attempt/3)."
               else
-                echo "⚠️ Push falhou (tentativa $attempt/3)."
+                echo "⚠️ Push rejeitado (tentativa $attempt/3): o branch avançou no remoto (corrida com outros bots)." >&2
+                # Regeneração determinística: a reconciliação é idempotente,
+                # então voltar ao estado remoto e reconciliar de novo resolve
+                # conflitos de conteúdo (CHANGELOG, manifest) sem sobrescrever
+                # o trabalho remoto. Rebase de conteúdo nunca resolve sozinho.
+                git rebase --abort 2>/dev/null || true
+                git reset --hard FETCH_HEAD
+                set +e
+                python3 .github/scripts/docs_sync_engine.py reconcile || RECONCILE_RC=$?
+                if [ "${RECONCILE_RC:-0}" != "0" ]; then
+                  echo "❌ Regeneração falhou (reconcile rc=$RECONCILE_RC); sem sobrescrever o remoto." >&2
+                  exit 1
+                fi
+                set -e
+                python3 .github/scripts/docs_sync_engine.py manifest
+                git add -A
+                if ! git diff --cached --quiet; then
+                  git commit -m "docs(sync): reconcile documentation — ${TIMESTAMP} [skip ci]"
+                fi
               fi
 
               if [ "$attempt" -lt 3 ]; then
