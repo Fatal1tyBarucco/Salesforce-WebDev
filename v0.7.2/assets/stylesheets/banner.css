@@ -1,0 +1,23 @@
+/* Hero banner - supports both <img> (legacy) and <picture> (optimized) */
+.hero-banner,
+.hero-banner-wrapper picture {
+  display: block;
+  width: 100%;
+  max-width: 960px;
+  margin: 1.5rem auto 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.4s ease-in-out;
+}
+
+.hero-banner-wrapper picture > img {
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+  display: block;
+}
+
+.hero-banner-wrapper img[loading="lazy"] {
+  /* Ensure lazy-loaded images don't cause layout shift */
+  aspect-ratio: 16 / 9;
+}
