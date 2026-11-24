@@ -544,6 +544,7 @@
       "docs/reference/repo-index.md"
     ],
     "src/i18n.py": [
+      "AGENTS.md",
       "docs/api/i18n.md",
       "docs/reference/repo-index.md"
     ],
@@ -797,6 +798,7 @@
       "docs/reference/repo-index.md"
     ],
     "src/release_docs.py": [
+      "AGENTS.md",
       "docs/ARQUITETURA.md",
       "docs/DEBITO_TECNICO.md",
       "docs/ai-generated/leadership.md",
@@ -929,7 +931,7 @@
     ".promptfoo.yaml": "c9e6ecd48be94e18abf85b70c4afca4184fa2035",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
-    "AGENTS.md": "a3671e99619ab34b13803c37890ca10c2b335c84",
+    "AGENTS.md": "77be7cd045fe79b09132e88cc37bd89393ae59fe",
     "CACHE_DIAGNOSTIC_REPORT.md": "829aa4bc1b3b46303a870df59eee469e4e45d858",
     "CACHE_GAP_ANALYSIS.md": "129c90e6d873870cd8d665c9894e7816fa825169",
     "CHANGELOG.md": "8e2fd6882d69d1b0dcfaefffe67b5e18137b7c61",
@@ -1656,7 +1658,7 @@
     "tests/test_logger.py": "d08c6373ae8e7d4a6c121a0654abb123cc2950d7",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
-    "tests/test_main_coverage.py": "96d309ac9adf7f551d99179b10d50894cfb44d6d",
+    "tests/test_main_coverage.py": "574232ccb83c416427de4db7aafb0a8e6f85ee9c",
     "tests/test_main_coverage_additional.py": "6a759ae42284868c1052f5bf111d9c0fc2f7c4ec",
     "tests/test_main_coverage_push.py": "550f878e64e6d0e1357bf2e3e291d62b1c8cd0e9",
     "tests/test_main_extra.py": "35c93e0b061430073a65890735026da48d5b9913",
@@ -1691,7 +1693,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "10472becee71e0e22c6491a0d7e8b46001586157"
   },
-  "generated_at": "2026-11-24T20:23:24.427755+00:00",
+  "generated_at": "2026-11-24T20:37:10.383195+00:00",
   "removals": [],
-  "repository_sha": "0342ae605915bedaea93d551466a3be332362a85"
+  "repository_sha": "8977ad734a18cdf7a55c133df2c542c0753da634"
 }
