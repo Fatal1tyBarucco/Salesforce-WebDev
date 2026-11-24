@@ -82,9 +82,19 @@ Antes de commitar, rode `uv run ruff format .`. `uv lock --check` também é gat
 
 ## CI e GitHub
 
-- Nenhum token disponível edita `.github/workflows/*` (HTTP 403). Se uma correção exigir isso,
-  entregue o diff e avise um humano. **Nunca diga que fez push que não aconteceu.**
-- `settings.json` nega `Read(.github/workflows/*)`; peça o conteúdo ao humano se precisar.
+**Fim de tarefa = CI verde.** Push não encerra o trabalho. Após cada push:
+`gh run list --branch <ref> --limit 12`; para qualquer run em failure/cancelled
+do commit da tarefa, `gh run view <run-id> --log-failed`, corrigir a causa raiz
+e re-push (máx. 3 ciclos; esgotado, abrir issue com diagnóstico e encerrar como
+pendente). Nunca declare trabalho concluído com workflow vermelho. Nunca diga que
+fez push que não aconteceu.
+
+- Labels usados pela automação (pipeline, release-notes, knowledge-as-code,
+  failure, needs-investigation) precisam existir no repo. `--label` com label
+  inexistente derruba `gh pr create`/`gh issue create` no último passo; os
+  workflows já fazem bootstrap idempotente (`gh label create ... || true`).
+- Issues de falha de CI são deduplicadas: comentar na issue aberta, não criar
+  uma nova por SHA de commit.
 - Ações de terceiros ficam fixadas por SHA; não volte para tags mutáveis (`@v5`).
 - `actions/upload-artifact` ≥ v4.4 ignora arquivos ocultos: use `include-hidden-files: true`.
 - Ao trabalhar numa issue, mantenha o GitHub Project #5 em dia (In Progress → In Review →
