@@ -12,8 +12,8 @@
   content: "★ " attr(data-fuzzy-score);
   position: absolute;
   top: 4px;
-  right: 8px;
-  font-size: 10px;
+  inset-inline-end: 8px;
+  font-size: var(--font-size-heatmap);
   color: var(--md-accent-fg-color);
   opacity: 0.6;
   font-weight: 600;
@@ -23,7 +23,7 @@
   background: var(--md-accent-fg-color);
   color: white;
   padding: 0 2px;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   font-weight: 600;
 }
 

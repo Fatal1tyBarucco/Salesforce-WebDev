@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Salesforce Release Notes — Dashboard Interativo</title>
-<link rel="stylesheet" href="design-system/index.css">
+<link rel="stylesheet" href="design-system/dashboard-combined.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="design-system/dashboard-combined.css"></noscript>
 <style>
 /* Dashboard-specific overrides (minimal, all tokens) */
 .container {
@@ -70,12 +71,329 @@ h1 {
   margin-bottom: var(--space-sm);
 }
 
-/* Empty state */
+/* Empty state — base */
 .empty-state {
   text-align: center;
   color: var(--color-on-surface-variant);
   padding: var(--space-xl);
   font-size: var(--font-size-body);
+}
+
+/* Enhanced empty state with onboarding pattern (5 parts) */
+.empty-state--onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xxl) var(--space-lg);
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-outline-variant);
+}
+
+.empty-state--onboarding__icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-container);
+  border-radius: var(--radius-full);
+  color: var(--color-on-primary-container);
+  font-size: 1.5rem;
+}
+
+.empty-state--onboarding__title {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.empty-state--onboarding__description {
+  font-size: var(--font-size-body);
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  line-height: var(--line-height-body);
+  margin: 0;
+}
+
+.empty-state--onboarding__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.empty-state--onboarding__help {
+  font-size: var(--font-size-label);
+  color: var(--color-on-surface-variant);
+}
+
+.empty-state--onboarding__help a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.empty-state--onboarding__help a:hover {
+  text-decoration: underline;
+}
+
+/* First-run banner */
+.first-run-banner {
+  background: var(--color-primary-container);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  animation: slideDown 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .first-run-banner { animation: none; }
+}
+
+.first-run-banner__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.first-run-banner__content {
+  flex: 1;
+}
+
+.first-run-banner__title {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-primary-container);
+  margin: 0 0 var(--space-xs);
+}
+
+.first-run-banner__text {
+  font-size: var(--font-size-body);
+  color: var(--color-on-primary-container);
+  opacity: 0.9;
+  margin: 0 0 var(--space-sm);
+}
+
+.first-run-banner__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.first-run-banner__dismiss {
+  background: transparent;
+  border: none;
+  color: var(--color-on-primary-container);
+  font-size: var(--font-size-label);
+  cursor: pointer;
+  padding: var(--space-xs);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.first-run-banner__dismiss:hover { opacity: 1; }
+
+/* Contextual tooltip */
+.tooltip-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+}
+
+.tooltip-trigger::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-on-surface);
+  color: var(--color-surface);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  margin-bottom: var(--space-xs);
+  box-shadow: var(--shadow-dropdown);
+  pointer-events: none;
+}
+
+.tooltip-trigger:hover::after,
+.tooltip-trigger:focus::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.tooltip-trigger::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-on-surface);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-bottom: var(--space-xs);
+  pointer-events: none;
+}
+
+.tooltip-trigger:hover::before,
+.tooltip-trigger:focus::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Feature discovery badge */
+.discovery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery-badge { animation: none; }
+}
+
+/* Progressive disclosure - collapsed content */
+.disclosure {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.disclosure__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-variant);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  transition: background 0.2s;
+}
+
+.disclosure__trigger:hover {
+  background: var(--color-surface-container-high);
+}
+
+.disclosure__trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.disclosure__icon {
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  color: var(--color-on-surface-variant);
+}
+
+.disclosure[open] .disclosure__icon {
+  transform: rotate(180deg);
+}
+
+.disclosure__content {
+  padding: var(--space-md);
+  background: var(--color-surface);
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Empty states for specific tabs */
+.tab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-xxl) var(--space-lg);
+  text-align: center;
+}
+
+.tab-empty__icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  font-size: var(--space-xl); /* 32px = 2rem for empty state icon */
+  opacity: 0.5;
+}
+
+.tab-empty__title {
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.tab-empty__description {
+  font-size: var(--font-size-body);
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  margin: 0;
+  line-height: var(--line-height-body);
+}
+
+.tab-empty__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Loading state */
@@ -122,12 +440,24 @@ h1 {
   border: 1px solid var(--color-outline-variant);
 }
 
-/* Explicit heatmap legend colors (HSL interpolation from token config) */
-.heatmap-legend__swatch:nth-child(1) { background: hsl(0, 70%, 45%); }
-.heatmap-legend__swatch:nth-child(2) { background: hsl(30, 70%, 45%); }
-.heatmap-legend__swatch:nth-child(3) { background: hsl(60, 70%, 45%); }
-.heatmap-legend__swatch:nth-child(4) { background: hsl(90, 70%, 45%); }
-.heatmap-legend__swatch:nth-child(5) { background: hsl(120, 70%, 45%); }
+/* Heatmap legend colors via CSS custom property interpolation
+   Hue range: var(--color-heatmap-hue-min) to var(--color-heatmap-hue-max) (0 to 120)
+   5 steps: 0, 30, 60, 90, 120 */
+.heatmap-legend__swatch:nth-child(1) {
+  background: hsl(var(--color-heatmap-hue-min), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(2) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.25), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(3) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.5), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(4) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.75), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(5) {
+  background: hsl(var(--color-heatmap-hue-max), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
 
 /* Text truncation for long feature names */
 .feature-name {
@@ -151,7 +481,7 @@ h1 {
 
 /* Keyboard hint */
 .kbd-hint {
-  font-size: 0.75rem;
+  font-size: var(--font-size-caption);
   color: var(--color-on-surface-variant);
   font-family: var(--font-family-mono);
   margin-top: var(--space-xs);
@@ -170,7 +500,7 @@ h1 {
     padding: var(--space-md);
   }
   .tab {
-    padding: 6px 12px;
+    padding: 8px 16px; /* 44px minimum touch target (14px font + 16px padding + line-height) */
     font-size: var(--font-size-label); /* Keep 14px minimum */
   }
   .filters {
@@ -201,6 +531,24 @@ h1 {
 <h1>Salesforce Release Notes — Dashboard</h1>
 <p class="subtitle">Exploração interativa de releases</p>
 
+<!-- First-run onboarding banner -->
+<div id="first-run-banner" class="first-run-banner" role="region" aria-label="Boas-vindas ao dashboard" style="display: none;">
+  <div class="first-run-banner__icon" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"/><polyline points="10 17 14 13 10 9"/></svg>
+  </div>
+  <div class="first-run-banner__content">
+    <h2 class="first-run-banner__title">Bem-vindo ao Dashboard Interativo</h2>
+    <p class="first-run-banner__text">Explore releases da Salesforce, compare versões, busque features e visualize a confiança da classificação por IA.</p>
+    <div class="first-run-banner__actions">
+      <button class="btn btn-primary btn-sm" onclick="startGuidedTour()" aria-label="Iniciar tour guiado">Iniciar Tour</button>
+      <button class="btn btn-outlined btn-sm" onclick="dismissFirstRun()" aria-label="Dispensar">Agora não</button>
+    </div>
+  </div>
+  <button class="first-run-banner__dismiss" onclick="dismissFirstRun()" aria-label="Fechar boas-vindas" title="Fechar">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
 <div class="stats" id="stats-bar" role="region" aria-label="Estatísticas gerais"></div>
 
 <div class="tabs" role="tablist" aria-label="Abas do dashboard">
@@ -212,17 +560,23 @@ h1 {
 <div id="tab-search" class="panel active" role="tabpanel" aria-labelledby="tab-btn-search">
   <div class="form-field" style="margin-bottom: var(--space-sm);">
     <label for="search-input" class="visually-hidden">Buscar features</label>
-    <input type="text" class="input search-input" id="search-input" placeholder="Buscar feature..." oninput="filterFeatures()" aria-label="Buscar features" aria-describedby="search-hint">
+    <div class="tooltip-trigger" data-tooltip="Busque por nome da feature, ex: 'Flow Builder' ou 'Agentforce'" style="width: 100%;">
+      <input type="text" class="input search-input" id="search-input" placeholder="Buscar feature..." oninput="debouncedFilterFeatures()" aria-label="Buscar features" aria-describedby="search-hint" style="width: 100%;">
+    </div>
     <small id="search-hint" style="color: var(--color-on-surface-variant); font-size: var(--font-size-label);">Digite para filtrar por nome da feature</small>
   </div>
   <div class="field-group" role="group" aria-label="Filtros">
     <div class="form-field" style="flex: 1; min-width: 180px;">
       <label for="filter-release" class="visually-hidden">Filtrar por release</label>
-      <select id="filter-release" onchange="filterFeatures()" aria-label="Filtrar por release"><option value="">Todas as releases</option></select>
+      <div class="tooltip-trigger" data-tooltip="Filtre resultados por uma release específica (Spring '26, Summer '26, etc.)" style="width: 100%;">
+        <select id="filter-release" onchange="filterFeatures()" aria-label="Filtrar por release" style="width: 100%;"><option value="">Todas as releases</option></select>
+      </div>
     </div>
     <div class="form-field" style="flex: 1; min-width: 180px;">
       <label for="filter-category" class="visually-hidden">Filtrar por categoria</label>
-      <select id="filter-category" onchange="filterFeatures()" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
+      <div class="tooltip-trigger" data-tooltip="Filtre por categoria da Salesforce (Agentforce, Flow, Apex, etc.)" style="width: 100%;">
+        <select id="filter-category" onchange="filterFeatures()" aria-label="Filtrar por categoria" style="width: 100%;"><option value="">Todas as categorias</option></select>
+      </div>
     </div>
   </div>
   <div id="results-count" aria-live="polite"></div>
@@ -251,15 +605,30 @@ h1 {
     <div class="field-group" role="group" aria-label="Seleção de releases para comparação">
       <div class="form-field" style="flex: 1; min-width: 180px;">
         <label for="compare-a" class="visually-hidden">Release A</label>
-        <select id="compare-a" onchange="compareReleases()" aria-label="Selecionar release A para comparação"><option value="">Release A</option></select>
+        <div class="tooltip-trigger" data-tooltip="Selecione a primeira release para comparação" style="width: 100%;">
+          <select id="compare-a" onchange="compareReleases()" aria-label="Selecionar release A para comparação" style="width: 100%;"><option value="">Release A</option></select>
+        </div>
       </div>
       <div class="form-field" style="flex: 1; min-width: 180px;">
         <label for="compare-b" class="visually-hidden">Release B</label>
-        <select id="compare-b" onchange="compareReleases()" aria-label="Selecionar release B para comparação"><option value="">Release B</option></select>
+        <div class="tooltip-trigger" data-tooltip="Selecione a segunda release para comparar com a primeira" style="width: 100%;">
+          <select id="compare-b" onchange="compareReleases()" aria-label="Selecionar release B para comparação" style="width: 100%;"><option value="">Release B</option></select>
+        </div>
       </div>
     </div>
   </fieldset>
-  <div class="card card-table-wrapper">
+  <div id="compare-empty" class="tab-empty" style="display: none;">
+    <div class="tab-empty__icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/><path d="M15 15h3v3h-3z"/></svg>
+    </div>
+    <h2 class="tab-empty__title">Selecione duas releases para comparar</h2>
+    <p class="tab-empty__description">A comparação mostra a diferença no número de features por categoria entre duas releases. Verde indica aumento, vermelho redução.</p>
+    <div class="tab-empty__actions">
+      <button class="btn btn-primary" onclick="document.getElementById('compare-a').focus()" aria-label="Selecionar primeira release">Escolher Release A</button>
+      <button class="btn btn-outlined" onclick="document.getElementById('compare-b').focus()" aria-label="Selecionar segunda release">Escolher Release B</button>
+    </div>
+  </div>
+  <div id="compare-table" class="card card-table-wrapper" style="display: none;">
     <table class="table">
       <thead>
         <tr>
@@ -277,7 +646,9 @@ h1 {
 <div id="tab-heatmap" class="panel" role="tabpanel" aria-labelledby="tab-btn-heatmap">
   <div class="form-field" style="max-width: 300px; margin-bottom: var(--space-md);">
     <label for="heatmap-release" class="visually-hidden">Selecionar release para heatmap</label>
-    <select id="heatmap-release" onchange="renderHeatmap()" aria-label="Selecionar release para heatmap"><option value="">Selecione uma release</option></select>
+    <div class="tooltip-trigger" data-tooltip="Escolha uma release para ver a confiança média da classificação IA por categoria" style="width: 100%; max-width: 300px;">
+      <select id="heatmap-release" onchange="renderHeatmap()" aria-label="Selecionar release para heatmap" style="width: 100%;"><option value="">Selecione uma release</option></select>
+    </div>
   </div>
 
   <!-- Heatmap Legend for Accessibility -->
@@ -293,22 +664,91 @@ h1 {
     <span style="font-size: var(--font-size-label); color: var(--color-on-surface-variant);">Baixa → Alta</span>
   </div>
 
-  <div class="heatmap" id="heatmap-grid" role="img" aria-label="Heatmap de confiança média por categoria"></div>
+  <div id="heatmap-empty" class="tab-empty" style="display: flex;">
+    <div class="tab-empty__icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <h2 class="tab-empty__title">Selecione uma release para o heatmap</h2>
+    <p class="tab-empty__description">O heatmap mostra a confiança média da classificação por IA para cada categoria. Verde = alta confiança, vermelho = baixa confiança. Passe o mouse sobre cada célula para ver detalhes.</p>
+    <div class="tab-empty__actions">
+      <button class="btn btn-primary" onclick="document.getElementById('heatmap-release').focus()" aria-label="Selecionar release">Escolher Release</button>
+    </div>
+  </div>
+  <div id="heatmap-grid" class="heatmap" role="img" aria-label="Heatmap de confiança média por categoria" style="display: none;"></div>
 </div>
 
 <!-- Global error toast container -->
-<div id="error-toast" class="error-state" style="display: none; position: fixed; top: var(--space-md); right: var(--space-md); left: var(--space-md); max-width: 480px; margin: 0 auto; z-index: 1000; box-shadow: var(--shadow-dropdown);"></div>
+<div id="error-toast" class="error-state" role="alert" aria-live="assertive" aria-atomic="true" style="display: none; position: fixed; top: calc(var(--space-md) + env(safe-area-inset-top)); right: calc(var(--space-md) + env(safe-area-inset-right)); left: calc(var(--space-md) + env(safe-area-inset-left)); max-width: 480px; margin: 0 auto; z-index: 1000; box-shadow: var(--shadow-dropdown);"></div>
 
 </div>
 <script>
-const DATA = {DATA_JSON};
+// Minimal inlined data: only releases metadata for immediate dropdown population
+window.__DASHBOARD_META__ = {DATA_JSON};
+
+let DATA = null;
 let filteredFeatures = [];
 let isDataLoaded = false;
+let featuresPromise = null;
 
-function init() {
+// Debounce utility for search input
+function debounce(fn, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// Load features lazily from separate JSON file
+async function loadFeatures() {
+  if (featuresPromise) return featuresPromise;
+
+  featuresPromise = (async () => {
+    try {
+      const response = await fetch('dashboard-data.json', { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const fullData = await response.json();
+      return fullData.features || [];
+    } catch (error) {
+      console.warn('Failed to load features lazily:', error);
+      return [];
+    }
+  })();
+
+  return featuresPromise;
+}
+
+async function loadDashboardData() {
+  const loadingEl = document.querySelector('.loading');
+  if (loadingEl) loadingEl.style.display = 'flex';
+
+  // Start loading features in background while rendering initial UI
+  const featuresTask = loadFeatures();
+
+  try {
+    // Use inlined metadata for immediate UI (releases for dropdowns)
+    if (typeof window.__DASHBOARD_META__ !== 'undefined') {
+      DATA = window.__DASHBOARD_META__;
+    } else {
+      throw new Error('No metadata available');
+    }
+  } catch (error) {
+    showError('Falha ao carregar metadados do dashboard: ' + error.message);
+    if (loadingEl) loadingEl.style.display = 'none';
+    return false;
+  }
+
+  if (loadingEl) loadingEl.style.display = 'none';
+  return true;
+}
+
+async function init() {
+  const loaded = await loadDashboardData();
+  if (!loaded) return;
+
   // Validate DATA exists and has required structure
-  if (!DATA || !DATA.releases || !DATA.features) {
-    showError('Dados do dashboard não carregados. Verifique se o JSON foi injetado corretamente.');
+  if (!DATA || !DATA.releases) {
+    showError('Dados do dashboard inválidos ou incompletos.');
     return;
   }
 
@@ -316,7 +756,11 @@ function init() {
   renderStats();
   populateSelects();
   populateCategories();
-  filteredFeatures = DATA.features;
+
+  // Load features asynchronously, then render
+  const features = await loadFeatures();
+  DATA.features = features;
+  filteredFeatures = features;
   renderFeatures();
   updateExportButtons();
 }
@@ -370,15 +814,23 @@ function filterFeatures() {
   const rel = document.getElementById('filter-release').value;
   const cat = document.getElementById('filter-category').value;
 
-  filteredFeatures = DATA.features.filter(f => {
-    if (q && !f.name.toLowerCase().includes(q)) return false;
-    if (rel && f.release !== rel) return false;
-    if (cat && f.category !== cat) return false;
-    return true;
-  });
+  // If no filters active, show all features without filtering
+  if (!q && !rel && !cat) {
+    filteredFeatures = DATA.features;
+  } else {
+    filteredFeatures = DATA.features.filter(f => {
+      if (q && !f.name.toLowerCase().includes(q)) return false;
+      if (rel && f.release !== rel) return false;
+      if (cat && f.category !== cat) return false;
+      return true;
+    });
+  }
   renderFeatures();
   updateExportButtons();
 }
+
+// Debounced version for search input (150ms delay)
+const debouncedFilterFeatures = debounce(filterFeatures, 150);
 
 function renderFeatures() {
   const tbody = document.getElementById('features-body');
@@ -386,18 +838,41 @@ function renderFeatures() {
   document.getElementById('results-count').textContent = count + ' resultado' + (count !== 1 ? 's' : '');
 
   if (count === 0) {
-    tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">Nenhum resultado encontrado para os filtros atuais</div></td></tr>';
+    const hasActiveFilters = document.getElementById('search-input').value.trim() ||
+                             document.getElementById('filter-release').value ||
+                             document.getElementById('filter-category').value;
+    if (hasActiveFilters) {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state empty-state--onboarding" role="status" aria-live="polite"><div class="empty-state--onboarding__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h3 class="empty-state--onboarding__title">Nenhum resultado encontrado</h3><p class="empty-state--onboarding__description">Tente ajustar os filtros ou busque por outro termo.</p><div class="empty-state--onboarding__actions"><button class="btn btn-outlined btn-sm" onclick="clearFilters()">Limpar filtros</button></div><p class="empty-state--onboarding__help">Precisa de ajuda? <a href="https://github.com/Fatal1tyBarucco/Salesforce-WebDev/wiki" target="_blank" rel="noopener">Consulte a documentação</a></p></div></td></tr>';
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state empty-state--onboarding" role="status" aria-live="polite"><div class="empty-state--onboarding__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><h3 class="empty-state--onboarding__title">Nenhuma feature disponível</h3><p class="empty-state--onboarding__description">O dashboard não encontrou features para exibir. Verifique se os dados foram carregados corretamente.</p><div class="empty-state--onboarding__actions"><button class="btn btn-primary btn-sm" onclick="location.reload()">Recarregar</button></div></div></td></tr>';
+    }
     return;
   }
 
-  const rows = filteredFeatures.slice(0, 500).map(f =>
-    '<tr><td class="feature-name">'+escapeHtml(f.name)+'</td><td>'+escapeHtml(f.category)+'</td><td>'+escapeHtml(f.release)+'</td><td>'+escapeHtml(f.availability)+'</td></tr>'
-  ).join('');
+  // Use document fragment to batch DOM writes (avoids layout thrashing)
+  const fragment = document.createDocumentFragment();
+  const displayFeatures = filteredFeatures.slice(0, 500);
+
+  displayFeatures.forEach(f => {
+    const tr = document.createElement('tr');
+    // content-visibility: auto allows browser to skip rendering off-screen rows
+    tr.style.contentVisibility = 'auto';
+    tr.style.containIntrinsicSize = 'auto 40px';
+    tr.innerHTML =
+      '<td class="feature-name">'+escapeHtml(f.name)+'</td>' +
+      '<td>'+escapeHtml(f.category)+'</td>' +
+      '<td>'+escapeHtml(f.release)+'</td>' +
+      '<td>'+escapeHtml(f.availability)+'</td>';
+    fragment.appendChild(tr);
+  });
+
+  tbody.innerHTML = '';
+  tbody.appendChild(fragment);
 
   if (count > 500) {
-    tbody.innerHTML = rows + '<tr><td colspan="4"><div class="empty-state">Mostrando 500 de ' + count.toLocaleString('pt-BR') + ' resultados. Refine a busca para ver mais.</div></td></tr>';
-  } else {
-    tbody.innerHTML = rows;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="4"><div class="empty-state" role="status" aria-live="polite">Mostrando 500 de ' + count.toLocaleString('pt-BR') + ' resultados. Refine a busca para ver mais.</div></td>';
+    tbody.appendChild(tr);
   }
 }
 
@@ -467,7 +942,7 @@ function renderHeatmap() {
 
   const r = DATA.releases.find(x => x.slug === slug);
   if (!r) {
-    grid.innerHTML = '<div class="error-state">Release não encontrada</div>';
+    grid.innerHTML = '<div class="error-state" role="alert" aria-live="assertive">Release não encontrada</div>';
     return;
   }
 
@@ -483,14 +958,18 @@ function renderHeatmap() {
 
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
-  const d = document.createElement('div');
-  d.textContent = String(s);
-  return d.innerHTML;
+  const str = String(s);
+  return str
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, ''');
 }
 
 function showError(message) {
   const container = document.querySelector('.container');
-  container.innerHTML = '<div class="error-state"><strong>Erro ao carregar dashboard</strong><p>'+escapeHtml(message)+'</p></div>';
+  container.innerHTML = '<div class="error-state" role="alert" aria-live="assertive"><strong>Erro ao carregar dashboard</strong><p>'+escapeHtml(message)+'</p></div>';
 }
 
 function showToast(message, type) {

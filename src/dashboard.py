@@ -152,12 +152,35 @@ def _sanitize_value(value: Any) -> Any:
 
 
 def generate_dashboard_html(data: dict[str, Any]) -> str:
-    """Generate interactive HTML dashboard with XSS-safe data."""
+    """Generate interactive HTML dashboard with XSS-safe data.
+
+    Only inlines minimal metadata (releases for selects), features loaded lazily
+    from dashboard-data.json to avoid bloating HTML with ~20KB+ of feature data.
+    """
     sanitized = _sanitize_value(data)
-    data_json = json.dumps(sanitized, ensure_ascii=True)
+    # Only inline releases metadata (needed immediately for dropdowns)
+    releases_data = {
+        "releases": sanitized.get("releases", []),
+        "total_releases": sanitized.get("total_releases", 0),
+        "total_features": sanitized.get("total_features", 0),
+    }
+    releases_json = json.dumps(releases_data, ensure_ascii=True)
     template_path = Path(__file__).parent / "dashboard_template.html"
     template = template_path.read_text(encoding="utf-8")
-    return template.replace("{DATA_JSON}", data_json)
+    return template.replace("{DATA_JSON}", releases_json)
+
+
+def generate_dashboard_data_json(
+    data: dict[str, Any], output_dir: str = DASHBOARD_DIR
+) -> str | None:
+    """Generate separate JSON data file for lazy loading."""
+    sanitized = _sanitize_value(data)
+    data_json = json.dumps(sanitized, ensure_ascii=True)
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+    output_file = out_path / "dashboard-data.json"
+    output_file.write_text(data_json, encoding="utf-8")
+    return str(output_file)
 
 
 def generate_dashboard(output_dir: str = DASHBOARD_DIR) -> str | None:
@@ -165,9 +188,22 @@ def generate_dashboard(output_dir: str = DASHBOARD_DIR) -> str | None:
     data = _build_dashboard_data()
     if not data["releases"]:
         return None
+
+    # Generate separate JSON data file for lazy loading
+    generate_dashboard_data_json(data, output_dir)
+
     html_content = generate_dashboard_html(data)
     out_path = Path(output_dir)
     out_path.mkdir(parents=True, exist_ok=True)
+
+    # Copy combined CSS to output directory for self-contained dashboard
+    css_src = Path(__file__).parent / "design-system" / "dashboard-combined.css"
+    css_dst_dir = out_path / "design-system"
+    css_dst_dir.mkdir(parents=True, exist_ok=True)
+    css_dst = css_dst_dir / "dashboard-combined.css"
+    if css_src.exists():
+        css_dst.write_text(css_src.read_text(encoding="utf-8"), encoding="utf-8")
+
     output_file = out_path / "dashboard.html"
     output_file.write_text(html_content, encoding="utf-8")
     return str(output_file)

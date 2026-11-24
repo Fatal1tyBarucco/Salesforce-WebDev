@@ -120,3 +120,158 @@ Pelo menos um provider LLM: `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_
 
 `docs/ARQUITETURA.md` · `docs/DEBITO_TECNICO.md` · `docs/MODERNIZACAO.md` ·
 `docs/architecture/decisions/` (ADRs) · `docs/SOURCE_SCHEMA.md` · `PLANO_DE_MODERNIZACAO.md`
+
+
+---
+
+### 1. Complete application from scratch
+
+Think like a senior full-stack engineer developing a complete, production-ready application. First, design the system architecture and then develop the minimal but scalable version.
+
+The result should include:
+- Architecture
+- File structure
+- Database schema
+- API endpoints
+- UI architecture
+- Complete code
+
+Design it like a real startup MVP and make it scalable.
+
+---
+
+### 2. Codebase understanding and refactoring
+
+Think like a senior engineer who just joined a large, unfamiliar codebase.  
+First, understand the architecture and data flow.  
+Then identify:
+- Structural problems
+- Duplicated code
+- Performance bottlenecks
+- Maintainability risks
+
+**Result:**
+- Architecture summary
+- Problem areas
+- Refactoring strategies
+- Improved code
+
+Functionality remains unchanged — quality is enhanced.
+
+---
+
+### 3. Senior Debugging Engineer
+
+Think like a senior debugging engineer investigating bugs in a production environment.
+- Carefully analyze the code
+- Think step by step
+- Find the root cause
+- Propose robust solutions
+
+**Result:**
+- Code functionality
+- What the problem is
+- Why it fails
+- Edge cases
+- Fixed production-ready code
+
+---
+
+### 4. System Design + Implementation
+
+Think like a senior systems architect. Design a scalable system for the product and then develop the minimal production version.
+
+Includes:
+- Architecture
+- Component structure
+- Data flow
+- API design
+- Database schema
+- Caching strategy
+- Implementation code
+
+---
+
+### 5. Performance Optimization Tips
+
+Think like a performance engineer optimizing code. Goals:
+- Speed
+- Memory usage
+- Scalability
+
+Find:
+- Bottlenecks
+- Inefficient logic
+- Unnecessary rendering
+
+**Result:**
+- Performance issues
+- Optimization strategies
+- Improved code
+
+---
+
+### 6. Clean Architecture Rebuild
+
+Think like a senior engineer converting code to clean architecture.
+- Separate concerns
+- Increase modularity
+- Reduce coupling
+
+Behavior remains unchanged — structure is improved.
+
+**Result:**
+- New folder structure
+- Architecture description
+- Refactored code
+
+---
+
+### 7. Claude Multi-Agent Workflow
+
+You are 4 collaborating agents:
+- Architect
+- Engineer
+- Reviewer
+- Optimizer
+
+**Roles:**
+- Architect → Design system
+- Engineer → Develop
+- Reviewer → Quality control
+- Optimizer → Performance improvement
+
+**Result:**
+- Architecture
+- Implementation
+- Review feedback
+- Final optimized version
+
+---
+
+### 8. Production-level UI component builder
+
+Think like a senior frontend engineer and build:
+- Reusable UI components
+- Accessible
+- Production-ready
+
+Consider:
+- Loading states
+- Edge cases
+- Responsive design
+- Accessibility
+
+**Result:**
+- Component architecture
+- Props design
+- Implementation
+- Usage examples
+
+---
+
+# IDIOMA E FORMATAÇÃO
+- Responda SEMPRE em Português do Brasil (pt_BR), salvo pedido em contrário.
+- Utilize formatação rica em Markdown.
+- Sempre apresente os comandos exatos que devem ser executados em tarefas de terminal ou sistema.
+- Utilize tabelas de decisão, matrizes e diagramas (Mermaid ou Draw.io) para documentar e explicar arquiteturas complexas..

@@ -87,7 +87,20 @@ typography:
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "0em"
+  caption:
+    fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "0.01em"
+  stat:
+    fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "0em"
 rounded:
+  xs: "2px"
   sm: "4px"
   md: "8px"
   lg: "12px"
@@ -322,7 +335,7 @@ Material 3 tonal palette with deep purple primary (`#6750A4`) and amber accent �
 
 ### Stat Cards
 - **Shape:** 12px radius, 16px padding, centered content
-- **Number:** 24px, 700 weight, primary color (`#2563EB` in dashboard — note: this is a hardcoded blue, not the design token primary)
+- **Number:** 24px, 700 weight, `primary` color (`var(--color-primary)` / `var(--stat-number-color)`)
 - **Label:** 11px, `on-surface-variant`, uppercase
 - **Gap:** 16px between cards
 
@@ -340,9 +353,9 @@ Material 3 tonal palette with deep purple primary (`#6750A4`) and amber accent �
 
 ### Tables
 - **Header:** `surface-variant` background, `on-surface-variant` text, 600 weight, sticky top
-- **Rows:** 8px×10px padding, `outline` bottom border, hover: `background: #F8FAFC` (hardcoded near-white)
+- **Rows:** 8px×10px padding, `outline` bottom border, hover: `background: var(--table-row-hover-bg)` (uses `surface-container-low` light / `surface-container-high` dark)
 - **Typography:** Body 13px (slightly smaller than default 16px for density)
-- **Delta Column (Compare):** Green (`#16A34A`) for positive, Red (`#DC2626`) for negative, Gray (`#64748B`) for zero — 600 weight
+- **Delta Column (Compare):** Green (`var(--color-delta-positive)`) for positive, Red (`var(--color-delta-negative)`) for negative, Gray (`var(--color-delta-neutral)`) for zero — 600 weight
 
 ## Do's and Don'ts
 
@@ -363,7 +376,7 @@ Material 3 tonal palette with deep purple primary (`#6750A4`) and amber accent �
 - **Don't** use primary purple for decorative accents, backgrounds, or large areas.
 - **Don't** add shadows to static cards — elevation is state-responsive only.
 - **Don't** use pill-shaped (full) radius — max 12px on major containers.
-- **Don't** hardcode colors in components that should use tokens (exception: dashboard's hardcoded `#2563EB` stat blue and `#F8FAFC` hover — these should be migrated to tokens).
+- **Don't** hardcode colors in components that should use tokens.
 - **Don't** break the 8px spacing rhythm with magic numbers.
 - **Don't** use the UI palette (purple/amber) for data visualization — heatmap uses semantic HSL.
 - **Don't** add motion beyond the banner's 0.4s fade-in and button 0.2s transitions.

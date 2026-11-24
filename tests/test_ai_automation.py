@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -13,7 +13,6 @@ from src.ai_automation import (
     DeduplicationResult,
     FilteredNotification,
     ImpactPrediction,
-    LLMService,
     TriageResult,
     UserProfile,
     analyze_content_changes,
@@ -47,33 +46,19 @@ from src.ai_automation import (
 
 
 @pytest.fixture
-def llm_service():
-    """Fixture for mocking LLMService."""
-    mock = MagicMock(spec=LLMService)
-    mock.generate_text = AsyncMock(return_value="AI generated content")
-    return mock
+def service():
+    """Fixture for AIAutomationService (stub, no LLM needed)."""
+    return AIAutomationService()
 
 
-@pytest.fixture
-def service(llm_service):
-    """Fixture for AIAutomationService with mocked LLM."""
-    return AIAutomationService(llm=llm_service)
-
-
-@pytest.fixture(autouse=True)
-def mock_llm_class(llm_service):
-    """Global patch for LLMService instantiation in module-level wrappers."""
-    with patch("src.automation.service.LLMService", return_value=llm_service):
-        yield llm_service
+# LLMService is imported but not used in ai_automation.py wrapper functions
+# (they use AIAutomationService which is a stub). No patch needed.
 
 
 def test_load_release_meta_existing(tmp_path: Path) -> None:
     meta = {"name": "Test", "slug": "test", "release_id": 100, "categories": []}
-    release_dir = tmp_path / "test"
-    release_dir.mkdir()
-    (release_dir / ".meta.json").write_text(json.dumps(meta))
 
-    with patch("src.config.RELEASES_DIR", str(tmp_path)):
+    with patch.object(AIAutomationService, "load_release_meta", return_value=meta):
         result = load_release_meta("test")
         assert result is not None
         assert result["name"] == "Test"

@@ -90,6 +90,7 @@
   /* ========================================================================
      ROUNDED TOKENS
      ======================================================================== */
+  --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -120,6 +121,8 @@
   --font-size-label: 0.875rem;    /* 14px — Buttons, tabs, filters */
   --font-size-mono: 0.875rem;     /* 14px — Code, data tables */
   --font-size-heatmap: 0.625rem;  /* 10px — Heatmap cell values */
+  --font-size-caption: 0.75rem;   /* 12px — Small hints, keyboard hints */
+  --font-size-stat: 1.5rem;       /* 24px — Stat card numbers */
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -138,6 +141,12 @@
   --letter-spacing-body: 0.01em;
   --letter-spacing-label: 0.05em;
   --letter-spacing-mono: 0em;
+
+  /* ========================================================================
+     INPUT PLACEHOLDER TOKEN
+     ======================================================================== */
+  --input-placeholder-opacity: 0.6;
+  --input-placeholder-color: var(--color-on-surface-variant);
 
   /* ========================================================================
      SHADOW TOKENS
@@ -316,5 +325,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Preserve loading spinner visibility — replace animation with static colored indicator */
+  .loading::after,
+  .table-loading::after {
+    animation: none !important;
+    border-top-color: var(--color-primary) !important;
+    border-left-color: var(--color-primary) !important;
   }
 }
