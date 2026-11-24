@@ -467,6 +467,18 @@ Salesforce-WebDev/
       ├── prompts/
       ├── schemas/
       └── orchestrator.py
+  ├── automation/
+      ├── ledger/
+      ├── badge.py
+      ├── comparison.py
+      ├── content.py
+      ├── export.py
+      ├── github_ops.py
+      ├── impact.py
+      ├── models.py
+      ├── notifications.py
+      ├── reporting.py
+      └── service.py
   ├── core/
       ├── classification/
       ├── enrichment/
@@ -563,6 +575,7 @@ Salesforce-WebDev/
   ├── DESIGN.md
   ├── Dockerfile                 # Imagem Docker de runtime
   ├── FASE5_COMPLETION_REPORT.md
+  ├── GAP_ANALYSIS_REPORT.md
   ├── IA_AUDIT_REPORT.md
   ├── MUTATION_TESTING_REPORT.md
   ├── PLANO_DE_MODERNIZACAO.md

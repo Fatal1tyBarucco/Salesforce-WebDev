@@ -343,57 +343,71 @@
     ],
     "src/automation/badge.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-badge.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/comparison.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-comparison.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/content.py": [
       "docs/ai-generated/release-notes.md",
+      "docs/api/automation-content.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/export.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-export.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/github_ops.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-github_ops.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/impact.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-impact.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/__init__.py": [
       "docs/DEBITO_TECNICO.md"
     ],
     "src/automation/ledger/linker.py": [
+      "docs/api/automation-ledger-linker.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/models.py": [
+      "docs/api/automation-ledger-models.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/prompts.py": [
+      "docs/api/automation-ledger-prompts.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/service.py": [
       "docs/ai-generated/release-notes.md",
+      "docs/api/automation-ledger-service.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/models.py": [
+      "docs/api/automation-models.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/notifications.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-notifications.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/reporting.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-reporting.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/service.py": [
       "docs/DEBITO_TECNICO.md",
+      "docs/api/automation-service.md",
       "docs/reference/repo-index.md"
     ],
     "src/cache_io.py": [
@@ -905,7 +919,7 @@
     ".github/workflows/release_notes_pipeline.yml": "2c6610118e2dcdeb274180eca4a8a841b73e3bcd",
     ".github/workflows/salesforce_release_intelligence_hub.yml": "60ea267ab202e101226682a3b07adba03363a8e8",
     ".github/workflows/scheduled-pipeline.yml": "39a42e9d2bbc9d172938ac5bf9740de6d14aa830",
-    ".gitignore": "f95ec99871a793723ca2a230161c06f2b268de02",
+    ".gitignore": "3ed73b20ad47127f75434baa8b765441a93b099d",
     ".gitleaks.toml": "44d744133c71b998b3b28a5b2262838c0d2376df",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
     ".markdownlint.json": "5b68b9cf7553059137c85100b0e19152a6f0424a",
@@ -923,6 +937,7 @@
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
     "FASE5_COMPLETION_REPORT.md": "0b0923f3b341bea9419ae855f4ead7cc0bb1d6ef",
+    "GAP_ANALYSIS_REPORT.md": "2d40750a57d6d205300e83bcb7b192d7fd7b5ef2",
     "IA_AUDIT_REPORT.md": "027b3e0d2eb3b541e90c2d8ae7801177ea33c77b",
     "MUTATION_TESTING_REPORT.md": "8abef2b0c300d69353222853e4e0cc9f1bd78493",
     "PLANO_DE_MODERNIZACAO.md": "78dc7c4ba62b95bc19fef42d938634df9e085eb0",
@@ -1074,7 +1089,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "95280791fa3278c551cc440c8eb966c4b225178d",
+    "docs/changelog.md": "ceb8fe443dfd0d9688fdf7281b2fc42d92fc26b8",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1083,7 +1098,7 @@
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
     "docs/hooks/orphan_guard.py": "52ea824d8f4c355d24917abdeead6d0a48eaaa2b",
-    "docs/index.md": "9b305dfdfe7192ca4f38c6d0fd5197a5860e2829",
+    "docs/index.md": "265d6afe3a9aceb8ae8754ad0aca974c93773fbb",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "a6eafbf7503bcf38a548f474ddc1b6bf6e54035a",
@@ -1123,7 +1138,7 @@
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
     "k8s/service.yaml": "1653e5c60858b2ef5e02f34f55c7918bb07a8a8c",
-    "mkdocs.yml": "f4021305e2251394c278a49f041a1eced7471190",
+    "mkdocs.yml": "4e0a2d0dbba4511e3a8707e61bee3de1ca6936e9",
     "mutmut_config.toml": "ec671b7742af2ae5b9d69c505b96d95404dfeca7",
     "prompts/classification/v1.yaml": "68f6eb37746235577864ab1cf1c91cc520306a7e",
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
@@ -1346,25 +1361,25 @@
     "src/ai/schemas/change_reviewer.py": "8037a63b09459b41b3a45a93484544abc383ca71",
     "src/ai/schemas/generated_docs.py": "71e5e6a63a7fb7e54bff39edf1939c3b8370aef8",
     "src/ai/schemas/llm_input.py": "90a111921122cad6725f74cc61dc2885ce77c77f",
-    "src/ai_automation.py": "9f856255a79d1ae93e770d64027863f9a3e2e352",
+    "src/ai_automation.py": "e640979e4c8dbca62111c4e67882cd30b4dde9b6",
     "src/analytics.py": "fd5680922ff010a474df2c460dd5dad54e728e7d",
     "src/api.py": "4c04494a6ad5af9760d29c1255cb0b0180cbc790",
-    "src/automation/__init__.py": "6390407e3962f7ad29f58f211431c62c465f2420",
-    "src/automation/badge.py": "ca640ccd7a93449e5c565c6452b376b701b453cf",
-    "src/automation/comparison.py": "abc794ff6c872078ce2b0731f0845b4d6f4c518e",
-    "src/automation/content.py": "330d985d204582e8803b50853d9f027285ac3e2e",
-    "src/automation/export.py": "ce1bf22a0bc754a8b849f3525750a54f7fa1138b",
-    "src/automation/github_ops.py": "44bf0a7b71d545e8906859ce63620d64df2c9142",
-    "src/automation/impact.py": "50957df9c5de603d86d39881e808ea548a825c2a",
-    "src/automation/ledger/__init__.py": "92bbc0df7a0da82819b74f28a38a50ff2c294f38",
-    "src/automation/ledger/linker.py": "579640ec6f1e98fc0010307f8818538b6a9fc706",
-    "src/automation/ledger/models.py": "e5e442dda6ce90c48124d88afd13585fa809dc59",
-    "src/automation/ledger/prompts.py": "2d10e88898a25aea09f77f1bb22ba0450e2593f8",
-    "src/automation/ledger/service.py": "af7ac6e3b94ac4458c307bf5097f9673ca061fa5",
-    "src/automation/models.py": "6f7174ba6a7eff8d0b8e29d595382150751ed9e0",
-    "src/automation/notifications.py": "6ff1503c666cb3bfefa4465140ce5ff6b1113573",
-    "src/automation/reporting.py": "4b8334a72114fc2d2f183b2d7227d8dfbf144dc3",
-    "src/automation/service.py": "da38e0ca0d42a21267069ca2b54492d74a6bc335",
+    "src/automation/__init__.py": "c323f8728b9d4f4bba1edd9abf1902a004d41c7e",
+    "src/automation/badge.py": "9d25c19db063f01b059c654af3d141a5e9ee5249",
+    "src/automation/comparison.py": "d0833369827312b5f20a61b796095d74edd153b7",
+    "src/automation/content.py": "c35660aa4306dd35fc2167b79811ed1a29e2ccf5",
+    "src/automation/export.py": "e9413e7958a71e37a12c561881345ee0ac4183e9",
+    "src/automation/github_ops.py": "5d63d5f02d80ee36e45a2e3b4163faa24902d291",
+    "src/automation/impact.py": "74f48c2234ae03530f0b2b5ef315aba7de4079a7",
+    "src/automation/ledger/__init__.py": "da9c18a5a5ece788ed247f84c0baf79ba68e4b64",
+    "src/automation/ledger/linker.py": "1ce5c7031c95eecb47f74f813cbe48a177ec7e48",
+    "src/automation/ledger/models.py": "a38ccb1c4f8c0899f284768b5f709f328582adb1",
+    "src/automation/ledger/prompts.py": "cb56546c5b35225e946ef83162bf3eada5d19d5b",
+    "src/automation/ledger/service.py": "3a59f169aa0388a7165cd83494dc576289db2911",
+    "src/automation/models.py": "0bfaa60ee99818b47999461e5b23d8182b7b6853",
+    "src/automation/notifications.py": "41688767156d1ae12f17697e829741abfe5eec67",
+    "src/automation/reporting.py": "a2352b5b2c9603f36e8d5a762e46eb8d65af5c84",
+    "src/automation/service.py": "46b3aaa163d2de99dfed91d1d1c6885fb8a2c383",
     "src/cache_io.py": "6c79e261f216f532a1a75ebd92936274eac5731d",
     "src/cache_manager.py": "37d50f1f382cf528252e1f7fc6e330ba4e0a4de9",
     "src/circuit_breaker.py": "8c660deb950478c8749f23334c819b5fa5416967",
@@ -1661,7 +1676,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "49c64aaa1252b3cb48b493bdf560a0d53a3e9e3c"
   },
-  "generated_at": "2026-11-23T23:57:03.992243+00:00",
+  "generated_at": "2026-11-24T04:09:19.661960+00:00",
   "removals": [],
-  "repository_sha": "d6c77c4c472885c048fbad921460ae2ee34e91c7"
+  "repository_sha": "08a439e7b154df1a0643fabf86a8ec54ea3a985b"
 }
