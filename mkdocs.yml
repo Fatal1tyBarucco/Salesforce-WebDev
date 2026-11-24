@@ -186,6 +186,20 @@ nav:
       - ADR-010 LLM Cache Strategy: architecture/decisions/adr-010-llm-cache-strategy.md
       - ADR-011 Cache Layer Hardening: architecture/decisions/adr-011-cache-layer-hardening.md
   - API Reference:
+    - Automation Badge: api/automation-badge.md
+    - Automation Comparison: api/automation-comparison.md
+    - Automation Content: api/automation-content.md
+    - Automation Export: api/automation-export.md
+    - Automation Github Ops: api/automation-github_ops.md
+    - Automation Impact: api/automation-impact.md
+    - Automation Ledger Linker: api/automation-ledger-linker.md
+    - Automation Ledger Models: api/automation-ledger-models.md
+    - Automation Ledger Prompts: api/automation-ledger-prompts.md
+    - Automation Ledger Service: api/automation-ledger-service.md
+    - Automation Models: api/automation-models.md
+    - Automation Notifications: api/automation-notifications.md
+    - Automation Reporting: api/automation-reporting.md
+    - Automation Service: api/automation-service.md
     - Domain Llm: api/domain-llm.md
     - Domain Scraper: api/domain-scraper.md
     - Infrastructure Llm Adapters Cache: api/infrastructure-llm_adapters-cache.md
