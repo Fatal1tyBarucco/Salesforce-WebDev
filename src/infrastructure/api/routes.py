@@ -6,7 +6,7 @@ Creates the REST API endpoints for the Salesforce WebDev service.
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
@@ -113,7 +113,8 @@ def create_rest_router() -> APIRouter:
                         avg_confidence=metadata.avg_confidence,
                         generated_at=metadata.generated_at,
                         categories=[
-                            FeatureCategory(name=c.name, count=c.count) for c in metadata.categories
+                            FeatureCategory(name=c.name, count=c.count)
+                            for c in metadata.categories
                         ],
                     )
                 )
@@ -174,7 +175,9 @@ def create_rest_router() -> APIRouter:
             total_features=metadata.total_features,
             avg_confidence=metadata.avg_confidence,
             generated_at=metadata.generated_at,
-            categories=[FeatureCategory(name=c.name, count=c.count) for c in metadata.categories],
+            categories=[
+                FeatureCategory(name=c.name, count=c.count) for c in metadata.categories
+            ],
         )
 
     @router.get("/releases/{slug}/enrichment", response_model=EnrichmentResponse)  # type: ignore
@@ -212,13 +215,18 @@ def create_rest_router() -> APIRouter:
                 detail=f"Markdown for '{category}' in '{locale}' not found",
             )
 
-        return {"slug": slug, "category": category, "locale": locale, "content": content}
+        return {
+            "slug": slug,
+            "category": category,
+            "locale": locale,
+            "content": content,
+        }
 
     # Classification endpoint
     @router.post("/classify", response_model=FeatureClassificationResponse)  # type: ignore
     async def classify_feature(
         request: FeatureClassificationRequest,
-        service: ClassificationService = Depends(get_classification_service),  # noqa: B008
+        service: Annotated[ClassificationService, Depends(get_classification_service)],
     ) -> FeatureClassificationResponse:
         """Classify a single feature text."""
         result = await service.classify_single(request.text)
@@ -232,9 +240,9 @@ def create_rest_router() -> APIRouter:
     # Summarization endpoint
     @router.post("/summarize")  # type: ignore
     async def summarize_release(
+        storage: Annotated[StorageAdapter, Depends(get_storage)],
+        service: Annotated[SummarizationService, Depends(get_summarization_service)],
         release_slug: str = Query(..., description="Release slug to summarize"),
-        storage: StorageAdapter = Depends(get_storage),  # noqa: B008
-        service: SummarizationService = Depends(get_summarization_service),  # noqa: B008
     ) -> dict[str, str]:
         """Generate release notes summary."""
         metadata = await storage.load_release_metadata(release_slug)

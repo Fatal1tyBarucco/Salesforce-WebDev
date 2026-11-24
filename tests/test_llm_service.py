@@ -15,7 +15,9 @@ from src.llm_service import LLMService
 class TestLLMProviderInit:
     """LLMService.__init__: auto-detect, explicit provider, no-key fallback."""
 
-    def test_explicit_provider_openrouter(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_explicit_provider_openrouter(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="k", provider="openrouter")
         assert svc.provider == "openrouter"
@@ -41,7 +43,9 @@ class TestLLMProviderInit:
         svc = LLMService(api_key="k", provider="banana")
         assert svc.provider in ("gemini", "opencode", "openrouter")
 
-    def test_no_key_available_returns_mock(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_no_key_available_returns_mock(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
@@ -98,7 +102,9 @@ class TestLLMMockMode:
 class TestLLMFallbackChain:
     """_switch_to_next_provider / _next_fallback_provider: blacklist and rotate."""
 
-    def test_switch_to_next_provider_success(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_switch_to_next_provider_success(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Lines 169-178: switch logs, updates provider/model/key."""
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
@@ -121,7 +127,9 @@ class TestLLMFallbackChain:
         result = svc._switch_to_next_provider()
         assert result is False
 
-    def test_next_fallback_provider_skips_tried(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_next_fallback_provider_skips_tried(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
@@ -158,12 +166,16 @@ class TestLLMFallbackChain:
         assert out == "fallback-success"
         assert svc._tried_providers == set()
 
-    def test_generate_completion_all_providers_fail(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_generate_completion_all_providers_fail(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
         svc = LLMService(api_key="oc-key", provider="opencode")
-        with patch.object(svc, "_dispatch_to_provider", side_effect=RuntimeError("fail")):
+        with patch.object(
+            svc, "_dispatch_to_provider", side_effect=RuntimeError("fail")
+        ):
             with pytest.raises(RuntimeError, match="fail"):
                 svc.generate_completion("hi")
 
@@ -285,7 +297,9 @@ class TestLLMOpenAICompatible:
 
         fake_client.chat.completions.create.side_effect = side_effect
         with patch("openai.OpenAI", return_value=fake_client):
-            svc = LLMService(api_key="k", provider="openrouter", model_name="unsupported:free")
+            svc = LLMService(
+                api_key="k", provider="openrouter", model_name="unsupported:free"
+            )
             out = svc._generate_openai_compatible("hi", None, 0.7, 100)
         assert out == "ok-after-401"
         assert call_count["n"] == 2
@@ -310,7 +324,9 @@ class TestLLMOpenAICompatible:
             patch("openai.OpenAI", return_value=fake_client),
             patch("src.llm_service.time.sleep") as mock_sleep,
         ):
-            svc = LLMService(api_key="k", provider="openrouter", model_name="rate-limited:free")
+            svc = LLMService(
+                api_key="k", provider="openrouter", model_name="rate-limited:free"
+            )
             out = svc._generate_openai_compatible("hi", None, 0.7, 100)
         assert out == "after-backoff"
         assert mock_sleep.called
@@ -344,7 +360,7 @@ class TestLLMOpenAICompatible:
         def side_effect(*args, **kwargs):  # type: ignore[no-untyped-def]
             call_count["n"] += 1
             if call_count["n"] == 1:
-                raise Exception("RESOURCE_EXHAUSTED - quota exceeded for metric")  # noqa: TRY002
+                raise RuntimeError("RESOURCE_EXHAUSTED - quota exceeded for metric")
             return fake_resp
 
         fake_client.chat.completions.create.side_effect = side_effect
@@ -352,7 +368,9 @@ class TestLLMOpenAICompatible:
             patch("openai.OpenAI", return_value=fake_client),
             patch("src.llm_service.time.sleep") as mock_sleep,
         ):
-            svc = LLMService(api_key="k", provider="openrouter", model_name="quota-model:free")
+            svc = LLMService(
+                api_key="k", provider="openrouter", model_name="quota-model:free"
+            )
             out = svc._generate_openai_compatible("hi", None, 0.7, 100)
         assert out == "after-quota"
         assert mock_sleep.called
@@ -420,7 +438,9 @@ class TestLLMGemini:
         out = svc._generate_gemini("hi", None, 0.7, 100)
         assert out == ""
 
-    def test_gemini_timeout_raises_runtime_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_gemini_timeout_raises_runtime_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Lines 305-307: ThreadPoolExecutor TimeoutError → RuntimeError."""
         import concurrent.futures
 
@@ -436,7 +456,9 @@ class TestLLMGemini:
         fake_genai.Client.return_value = fake_client
         monkeypatch.setattr(ls, "genai", fake_genai)
         monkeypatch.setattr(ls, "LLM_CALL_TIMEOUT_S", 1)
-        svc = LLMService(api_key="goog-key", provider="gemini", model_name="gemini-3.6-flash")
+        svc = LLMService(
+            api_key="goog-key", provider="gemini", model_name="gemini-3.6-flash"
+        )
         with pytest.raises(RuntimeError, match="Gemini call timed out"):
             svc._generate_gemini("hi", None, 0.7, 100)
 
@@ -560,11 +582,15 @@ class TestLLMDispatch:
         assert out == "gem-out"
         mock_g.assert_called_once()
 
-    def test_dispatch_to_openai_compatible(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_dispatch_to_openai_compatible(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Line 270: provider in (opencode, openrouter) → _generate_openai_compatible."""
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="or-key", provider="openrouter")
-        with patch.object(svc, "_generate_openai_compatible", return_value="oai-out") as mock_o:
+        with patch.object(
+            svc, "_generate_openai_compatible", return_value="oai-out"
+        ) as mock_o:
             out = svc._dispatch_to_provider("hi", None, 0.7, 100)
         assert out == "oai-out"
         mock_o.assert_called_once()
@@ -588,7 +614,9 @@ class TestLLMEnvSelection:
     run and exports the healthiest free model through these env vars.
     """
 
-    def test_openrouter_model_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_openrouter_model_env_override(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("OPENROUTER_MODEL", "z-ai/glm-5.2:free")
         svc = LLMService(api_key="or-key", provider="openrouter")
@@ -614,13 +642,19 @@ class TestLLMEnvSelection:
         svc = LLMService(api_key="or-key", provider="openrouter")
         assert svc.model_name == "openrouter/free"
 
-    def test_explicit_model_name_beats_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_explicit_model_name_beats_env_override(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("OPENROUTER_MODEL", "z-ai/glm-5.2:free")
-        svc = LLMService(api_key="or-key", provider="openrouter", model_name="explicit-model")
+        svc = LLMService(
+            api_key="or-key", provider="openrouter", model_name="explicit-model"
+        )
         assert svc.model_name == "explicit-model"
 
-    def test_llm_provider_env_pins_provider(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_llm_provider_env_pins_provider(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("GOOGLE_API_KEY", "goog-key")
@@ -649,7 +683,9 @@ class TestLLMEnvSelection:
         svc = LLMService()
         assert svc.provider == "openrouter"
 
-    def test_switch_to_next_provider_uses_env_model(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_switch_to_next_provider_uses_env_model(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("OPENCODE_API_KEY", "oc-key")
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         monkeypatch.setenv("OPENROUTER_MODEL", "qwen/qwen-3-coder:free")
@@ -677,7 +713,9 @@ class TestLLMMissingCoverage:
         monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
         svc = LLMService(api_key="or-key", provider="openrouter")
         # Mock _dispatch_to_provider to always fail
-        with patch.object(svc, "_dispatch_to_provider", side_effect=RuntimeError("provider down")):
+        with patch.object(
+            svc, "_dispatch_to_provider", side_effect=RuntimeError("provider down")
+        ):
             with patch.object(svc, "_switch_to_next_provider", return_value=False):
                 with pytest.raises(RuntimeError, match="provider down"):
                     svc.generate_completion("test prompt")
