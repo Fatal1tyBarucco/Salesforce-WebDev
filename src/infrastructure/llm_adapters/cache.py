@@ -23,7 +23,9 @@ class LLMCacheAdapter:
     """Exact-match cache for LLM responses using CacheManager."""
 
     def __init__(
-        self, cache_manager: CacheManager | None = None, cache_dir: Path = Path("cache/llm")
+        self,
+        cache_manager: CacheManager | None = None,
+        cache_dir: Path = Path("cache/llm"),
     ):
         self._cache = cache_manager or CacheManager(cache_dir=cache_dir)
         self._ttl_default = CACHE_LLM_TTL_SECONDS  # 7 days (ADR-010/ADR-011)

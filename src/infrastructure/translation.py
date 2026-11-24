@@ -9,7 +9,11 @@ import logging
 from typing import Any
 
 from src.core.pipeline.steps import TranslationStep
-from src.models.enrichment import CategoryEnrichment, FeatureEnrichment, ReleaseEnrichment
+from src.models.enrichment import (
+    CategoryEnrichment,
+    FeatureEnrichment,
+    ReleaseEnrichment,
+)
 
 logger = logging.getLogger(__name__)
 

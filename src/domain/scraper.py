@@ -135,7 +135,11 @@ DEFAULT_SELECTOR_CONTRACTS: tuple[SelectorContract, ...] = (
     ),
     SelectorContract(
         name="pdf_button",
-        selectors=("button[title='Open PDF']", "button:has-text('PDF')", "[aria-label*='PDF']"),
+        selectors=(
+            "button[title='Open PDF']",
+            "button:has-text('PDF')",
+            "[aria-label*='PDF']",
+        ),
         required=False,
         description="PDF download button",
     ),

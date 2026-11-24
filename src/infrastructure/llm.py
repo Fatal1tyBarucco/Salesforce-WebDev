@@ -815,14 +815,24 @@ class HeuristicClassificationAdapter(ClassificationAdapter):
 
     # Keyword rules: (pattern, impact, type, confidence)
     _RULES: ClassVar[list[tuple[str, str, str, float]]] = [
-        (r"(?i)\b(security|vulnerability|cve|auth|xss|injection|mfa)\b", "high", "security", 0.8),
+        (
+            r"(?i)\b(security|vulnerability|cve|auth|xss|injection|mfa)\b",
+            "high",
+            "security",
+            0.8,
+        ),
         (
             r"(?i)\b(performance|latency|speed|optimization|cache|throughput)\b",
             "high",
             "performance",
             0.7,
         ),
-        (r"(?i)\b(deprecated|end.of.life|sunset|removal)\b", "high", "deprecation", 0.8),
+        (
+            r"(?i)\b(deprecated|end.of.life|sunset|removal)\b",
+            "high",
+            "deprecation",
+            0.8,
+        ),
         (
             r"(?i)\b(breaking|incompatible|migration|upgrade.required)\b",
             "high",

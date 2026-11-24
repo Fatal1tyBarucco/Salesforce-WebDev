@@ -7,7 +7,11 @@ from datetime import datetime
 import pytest
 
 from src.core.summarization.service import SummarizationConfig, SummarizationService
-from src.models.enrichment import CategoryEnrichment, FeatureEnrichment, ReleaseEnrichment
+from src.models.enrichment import (
+    CategoryEnrichment,
+    FeatureEnrichment,
+    ReleaseEnrichment,
+)
 from src.models.release import ReleaseCategory, ReleaseMetadata
 
 
@@ -255,7 +259,10 @@ class TestSummarizationService:
         assert "sem detalhes disponíveis" in summary
 
     def test_generate_release_notes_markdown_basic(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should generate complete release notes markdown."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -269,7 +276,10 @@ class TestSummarizationService:
         assert "Resumo executivo completo do release" in markdown
 
     def test_generate_release_notes_markdown_strategic_themes(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include strategic themes when configured."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -290,7 +300,10 @@ class TestSummarizationService:
         assert "## Temas Estratégicos" not in markdown
 
     def test_generate_release_notes_markdown_categories(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include category details."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -302,7 +315,10 @@ class TestSummarizationService:
         assert "Visão geral da categoria Apex" in markdown
 
     def test_generate_release_notes_markdown_business_impact(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include business impact when configured."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -322,7 +338,10 @@ class TestSummarizationService:
         assert "**Impacto de Negócio:**" not in markdown
 
     def test_generate_release_notes_markdown_adoption_guidance(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include adoption guidance when present."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -331,7 +350,10 @@ class TestSummarizationService:
         assert "Adotar imediatamente" in markdown
 
     def test_generate_release_notes_markdown_risk_assessment(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include risk assessment when present."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -340,7 +362,10 @@ class TestSummarizationService:
         assert "Baixo risco" in markdown
 
     def test_generate_release_notes_markdown_features(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include feature enrichments."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -352,7 +377,10 @@ class TestSummarizationService:
         assert "Apex Feature 1" in markdown
 
     def test_generate_release_notes_markdown_migration_notes(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include migration notes when present."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -361,7 +389,10 @@ class TestSummarizationService:
         assert "*Migração:* Notas de migração Apex" in markdown
 
     def test_generate_release_notes_markdown_migration_checklist(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include migration checklist when configured."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -383,7 +414,10 @@ class TestSummarizationService:
         assert "## Checklist de Migração" not in markdown
 
     def test_generate_release_notes_markdown_footer(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should include footer with generation timestamp."""
         markdown = service.generate_release_notes_markdown(release, enrichment)
@@ -393,7 +427,10 @@ class TestSummarizationService:
         assert "pt_BR" in markdown
 
     def test_generate_changelog_entry(
-        self, service: SummarizationService, release: ReleaseMetadata, enrichment: ReleaseEnrichment
+        self,
+        service: SummarizationService,
+        release: ReleaseMetadata,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should generate changelog entry."""
         changelog = service.generate_changelog_entry(release, enrichment)

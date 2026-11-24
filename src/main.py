@@ -34,7 +34,6 @@ from .documentation_service import DocumentationService
 from .events import EventBus, get_event_bus
 from .exceptions import GitHubError, LLMError, NotificationError
 from .generator import MarkdownGenerator
-from .i18n import generate_toggle_html  # noqa: F401  (re-export p/ compatibilidade de testes)
 from .llm_service import LLMService
 from .logger import setup_logging
 from .parser import (

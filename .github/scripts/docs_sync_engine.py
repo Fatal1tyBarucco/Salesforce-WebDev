@@ -560,13 +560,25 @@ def release_inventory() -> list[dict]:
     return out
 
 
-SEASON_ICON = {"spring": "🌸", "summer": "☀️", "winter": "❄️", "fall": "🍂", "autumn": "🍂"}
+SEASON_ICON = {
+    "spring": "🌸",
+    "summer": "☀️",
+    "winter": "❄️",
+    "fall": "🍂",
+    "autumn": "🍂",
+}
 
 
 def release_table_header(locale: str = "pt") -> list[str]:
     if locale == "en":
-        return ["| Release | Features | Categories | Status |", "| :--- | :---: | :---: | :---: |"]
-    return ["| Release | Features | Categorias | Status |", "| :--- | :---: | :---: | :---: |"]
+        return [
+            "| Release | Features | Categories | Status |",
+            "| :--- | :---: | :---: | :---: |",
+        ]
+    return [
+        "| Release | Features | Categorias | Status |",
+        "| :--- | :---: | :---: | :---: |",
+    ]
 
 
 def release_table_rows(locale: str = "pt") -> list[str]:
@@ -660,7 +672,12 @@ def obsolete_content(inventory: dict[str, str]) -> list[dict]:
         if not (
             path.startswith(("docs/", ".github/"))
             or path
-            in ("README.md", "README.en.md", ".gitignore", ".github/ISSUE_TEMPLATE/bug_report.md")
+            in (
+                "README.md",
+                "README.en.md",
+                ".gitignore",
+                ".github/ISSUE_TEMPLATE/bug_report.md",
+            )
         ):
             continue
         if path.endswith("docs_sync_engine.py"):
@@ -804,7 +821,10 @@ def write_manifest(new_removals: list[dict] | None = None) -> dict[str, str]:
         and existing.get("documentation_map") == doc_map
         and not new_removals
     ):
-        return {"manifest": "baseline unchanged (idempotent, no drift)", "changed": False}
+        return {
+            "manifest": "baseline unchanged (idempotent, no drift)",
+            "changed": False,
+        }
     manifest = {
         "repository_sha": head_sha(),
         "generated_at": datetime.now(UTC).isoformat(),

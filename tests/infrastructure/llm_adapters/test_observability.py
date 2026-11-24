@@ -5,7 +5,10 @@ from __future__ import annotations
 import pytest
 
 from src.domain.llm import LLMError, LLMPrompt, LLMProvider, LLMResponse, LLMUsage
-from src.infrastructure.llm_adapters.observability import LLMCallMetrics, LLMObservabilityAdapter
+from src.infrastructure.llm_adapters.observability import (
+    LLMCallMetrics,
+    LLMObservabilityAdapter,
+)
 
 
 class TestLLMCallMetrics:
@@ -197,14 +200,18 @@ class TestConfigureLLMStructlog:
 
     def test_configure_with_json_output(self):
         """Should configure structlog with JSON output."""
-        from src.infrastructure.llm_adapters.observability import configure_llm_structlog
+        from src.infrastructure.llm_adapters.observability import (
+            configure_llm_structlog,
+        )
 
         # Should not raise
         configure_llm_structlog(json_output=True)
 
     def test_configure_with_console_output(self):
         """Should configure structlog with console output."""
-        from src.infrastructure.llm_adapters.observability import configure_llm_structlog
+        from src.infrastructure.llm_adapters.observability import (
+            configure_llm_structlog,
+        )
 
         # Should not raise
         configure_llm_structlog(json_output=False)

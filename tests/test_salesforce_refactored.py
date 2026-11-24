@@ -20,7 +20,10 @@ from src.salesforce import (
 def valid_json(tmp_path: Path) -> Path:
     data = {
         "Automação": [
-            {"title": "Flow Builder Basics", "url": "/content/learn/modules/flow-basics"},
+            {
+                "title": "Flow Builder Basics",
+                "url": "/content/learn/modules/flow-basics",
+            },
         ],
         "Vendas": [
             {

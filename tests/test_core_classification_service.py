@@ -63,7 +63,8 @@ def _make_feature_category() -> FeatureCategory:
         locale="pt_BR",
         features=[
             MagicMock(
-                name="Lightning Feature 1", raw_text="New Lightning component for dashboards"
+                name="Lightning Feature 1",
+                raw_text="New Lightning component for dashboards",
             ),
             MagicMock(name="Lightning Feature 2", raw_text="Improved Lightning performance"),
         ],
@@ -367,7 +368,8 @@ class TestClassificationService:
 
         # Test internal method via classify_single with mock heuristic
         mock_heuristic = MockClassificationAdapter(
-            "heuristic", results=[{"impact": "alto", "type": "new_feature", "confidence": 0.8}]
+            "heuristic",
+            results=[{"impact": "alto", "type": "new_feature", "confidence": 0.8}],
         )
         service._heuristic_adapter = mock_heuristic
 
@@ -465,13 +467,19 @@ class TestClassificationService:
 
         cats = [
             FeatureCategory(
-                name="Cat1", locale="pt_BR", features=[MagicMock(name="F1", raw_text="T1")]
+                name="Cat1",
+                locale="pt_BR",
+                features=[MagicMock(name="F1", raw_text="T1")],
             ),
             FeatureCategory(
-                name="Cat2", locale="pt_BR", features=[MagicMock(name="F2", raw_text="T2")]
+                name="Cat2",
+                locale="pt_BR",
+                features=[MagicMock(name="F2", raw_text="T2")],
             ),
             FeatureCategory(
-                name="Cat3", locale="pt_BR", features=[MagicMock(name="F3", raw_text="T3")]
+                name="Cat3",
+                locale="pt_BR",
+                features=[MagicMock(name="F3", raw_text="T3")],
             ),
         ]
 

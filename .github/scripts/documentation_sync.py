@@ -38,7 +38,13 @@ SKIP_DIRS = {
 }
 
 DOC_AREAS = ("docs/", "README.md", "README.en.md", "mkdocs.yml")
-CODE_AREAS = ("src/", ".github/workflows/", ".github/scripts/", "pyproject.toml", "Dockerfile")
+CODE_AREAS = (
+    "src/",
+    ".github/workflows/",
+    ".github/scripts/",
+    "pyproject.toml",
+    "Dockerfile",
+)
 
 MAX_REPORT_FILES_PER_LIST = 400
 

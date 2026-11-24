@@ -190,7 +190,10 @@ class TestLLMTranslationAdapter:
         assert result.release_slug == "summer_26"
         assert result.executive_summary == "Executive summary of test."
         assert list(result.strategic_themes) == ["Theme 1", "Theme 2"]
-        assert list(result.migration_checklist) == ["Check deploy", "Test functionality"]
+        assert list(result.migration_checklist) == [
+            "Check deploy",
+            "Test functionality",
+        ]
         assert len(result.category_enrichments) == 1
 
         cat = result.category_enrichments[0]

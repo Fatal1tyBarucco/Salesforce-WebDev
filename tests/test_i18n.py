@@ -8,7 +8,12 @@ from unittest.mock import MagicMock, patch
 if TYPE_CHECKING:
     import pytest
 
-from src.i18n import LOCALIZATION_MAP, detect_locale, generate_toggle_html, get_user_locale
+from src.i18n import (
+    LOCALIZATION_MAP,
+    detect_locale,
+    generate_toggle_html,
+    get_user_locale,
+)
 
 
 def test_detect_locale_pt_br() -> None:

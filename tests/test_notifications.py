@@ -323,7 +323,10 @@ class TestSendNotifications:
         profile = make_profile()
         with (
             patch("src.notifications.build_digest", return_value=digest),
-            patch("src.notifications._load_unsubscribed", return_value={"test@example.com"}),
+            patch(
+                "src.notifications._load_unsubscribed",
+                return_value={"test@example.com"},
+            ),
         ):
             assert send_notifications("s", profiles=[profile]) == []
 
@@ -333,10 +336,17 @@ class TestSendNotifications:
         with (
             patch("src.notifications.build_digest", return_value=digest),
             patch("src.notifications._load_unsubscribed", return_value=set()),
-            patch("src.notifications.send_email", return_value=NotificationResult("email", True)),
-            patch("src.notifications.send_slack", return_value=NotificationResult("slack", True)),
             patch(
-                "src.notifications.send_discord", return_value=NotificationResult("discord", True)
+                "src.notifications.send_email",
+                return_value=NotificationResult("email", True),
+            ),
+            patch(
+                "src.notifications.send_slack",
+                return_value=NotificationResult("slack", True),
+            ),
+            patch(
+                "src.notifications.send_discord",
+                return_value=NotificationResult("discord", True),
             ),
         ):
             results = send_notifications("s", profiles=[profile])

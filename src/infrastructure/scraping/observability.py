@@ -95,7 +95,11 @@ def configure_structlog(json_output: bool = True) -> None:
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
-        structlog.dev.ConsoleRenderer() if not json_output else structlog.processors.JSONRenderer(),
+        (
+            structlog.dev.ConsoleRenderer()
+            if not json_output
+            else structlog.processors.JSONRenderer()
+        ),
     ]
 
     structlog.configure(

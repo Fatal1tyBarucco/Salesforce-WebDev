@@ -302,7 +302,9 @@ async def generate_ai_summary_report(
     trend_val = summary.overall_trend if summary.overall_trend in valid_trends else "estável"
     report = ReportOutput(
         headline=summary.headline,
-        highlights=summary.highlights if summary.highlights else ["Nenhum destaque significativo"],
+        highlights=(
+            summary.highlights if summary.highlights else ["Nenhum destaque significativo"]
+        ),
         risk_areas=(
             summary.risk_areas if summary.risk_areas else ["Nenhuma área de risco identificada"]
         ),

@@ -24,7 +24,10 @@ from src import release_docs
 from src.generator import MarkdownGenerator
 from src.parser import FeatureImpactCategory, FeatureImpactParser
 from tests.factories import make_feature_impact_text, make_release
-from tests.test_characterization_golden import FROZEN_TIMESTAMP, assert_matches_golden_json
+from tests.test_characterization_golden import (
+    FROZEN_TIMESTAMP,
+    assert_matches_golden_json,
+)
 
 CATEGORIA_NAMES: list[str] = [
     "Análise de dados",

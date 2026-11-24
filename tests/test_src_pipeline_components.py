@@ -67,7 +67,11 @@ def test_markdown_generator_nested_topics(tmp_path: Path) -> None:
                     url="",
                     children=[],
                     articles=[
-                        {"title": "Apex Feature", "url": "http://a.com", "summary": "Test"},
+                        {
+                            "title": "Apex Feature",
+                            "url": "http://a.com",
+                            "summary": "Test",
+                        },
                     ],
                 ),
             ],
@@ -529,7 +533,11 @@ def test_build_topic_lines_with_articles(tmp_path: Path) -> None:
         url="",
         children=[],
         articles=[
-            {"title": "Feature A", "url": "https://example.com/a", "summary": "Summary A"},
+            {
+                "title": "Feature A",
+                "url": "https://example.com/a",
+                "summary": "Summary A",
+            },
             {"title": "Feature B", "url": "", "summary": ""},
         ],
     )

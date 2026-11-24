@@ -448,7 +448,13 @@ class ReleaseSummarizer:
     def _extract_themes(content: str) -> list[str]:
         """Extract key themes from content using keyword analysis."""
         theme_keywords = {
-            "AI & Agentforce": ["ai", "agentforce", "einstein", "machine learning", "ml"],
+            "AI & Agentforce": [
+                "ai",
+                "agentforce",
+                "einstein",
+                "machine learning",
+                "ml",
+            ],
             "Segurança & Compliance": [
                 "security",
                 "compliance",
@@ -458,9 +464,22 @@ class ReleaseSummarizer:
                 "lgpd",
                 "gdpr",
             ],
-            "Developer Experience": ["api", "apex", "lwc", "developer", "vs code", "cli"],
+            "Developer Experience": [
+                "api",
+                "apex",
+                "lwc",
+                "developer",
+                "vs code",
+                "cli",
+            ],
             "Data & Analytics": ["data", "analytics", "tableau", "dashboard", "report"],
-            "Automação & Workflow": ["automation", "flow", "workflow", "process", "orchestrator"],
+            "Automação & Workflow": [
+                "automation",
+                "flow",
+                "workflow",
+                "process",
+                "orchestrator",
+            ],
             "Experiência do Usuário": ["ui", "ux", "mobile", "lightning", "experience"],
             "Integração": ["integration", "connector", "muleoft", "api", "rest"],
         }

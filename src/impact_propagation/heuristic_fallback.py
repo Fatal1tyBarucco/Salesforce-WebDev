@@ -114,5 +114,15 @@ class DependencyHeuristicFallback:
         if not feature_name:
             return False
         name_lower = feature_name.lower()
-        indicators = ["api", "endpoint", "rest", "http", "https", "get", "post", "put", "delete"]
+        indicators = [
+            "api",
+            "endpoint",
+            "rest",
+            "http",
+            "https",
+            "get",
+            "post",
+            "put",
+            "delete",
+        ]
         return any(indicator in name_lower for indicator in indicators)

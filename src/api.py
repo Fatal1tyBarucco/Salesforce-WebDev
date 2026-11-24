@@ -374,7 +374,11 @@ def _execute_graphql(query: str) -> dict[str, Any]:
                         continue
         if not releases:
             releases = [
-                {"name": m.get("name"), "slug": "summer_26", "releaseId": m.get("release_id")}
+                {
+                    "name": m.get("name"),
+                    "slug": "summer_26",
+                    "releaseId": m.get("release_id"),
+                }
                 for m in metas
             ]
         return {"data": {"releases": releases}}

@@ -249,7 +249,8 @@ async def test_graph_builder_skips_blank_categories(tmp_path: Path, releases_roo
     release_dir = Path(releases_root) / "mixed_release"
     release_dir.mkdir()
     release_dir.joinpath(".meta.json").write_text(
-        json.dumps({"categories": [{"name": ""}, {"name": "API Features"}]}), encoding="utf-8"
+        json.dumps({"categories": [{"name": ""}, {"name": "API Features"}]}),
+        encoding="utf-8",
     )
     result = await make_engine(tmp_path, MockLLM()).build_graph_for_release("mixed_release")
     assert result.source == "llm"

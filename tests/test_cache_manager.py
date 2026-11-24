@@ -702,7 +702,8 @@ def test_load_content_cache_corrupt_quarantined(cache: CacheManager, tmp_path: P
 def test_load_content_cache_old_format(cache: CacheManager, tmp_path: Path) -> None:
     f = tmp_path / "old.json"
     f.write_text(
-        json.dumps({"file.md": {"content_hash": "abc123", "extra": "data"}}), encoding="utf-8"
+        json.dumps({"file.md": {"content_hash": "abc123", "extra": "data"}}),
+        encoding="utf-8",
     )
     assert cache.load_content_cache(f) == {"file.md": "abc123"}
 
@@ -744,7 +745,8 @@ def test_load_content_cache_non_dict_json(cache: CacheManager, tmp_path: Path) -
 def test_load_content_cache_skips_bad_value_types(cache: CacheManager, tmp_path: Path) -> None:
     f = tmp_path / "mixed.json"
     f.write_text(
-        json.dumps({"a": 123, "b": {"content_hash": "keepme"}, "c": None}), encoding="utf-8"
+        json.dumps({"a": 123, "b": {"content_hash": "keepme"}, "c": None}),
+        encoding="utf-8",
     )
     assert cache.load_content_cache(f) == {"b": "keepme"}
 
@@ -1005,7 +1007,9 @@ def test_invalidate_oserror_logs_and_returns(cache: CacheManager, caplog) -> Non
 
 
 # Lines 376, 379: invalidate_namespace early returns
-def test_invalidate_namespace_invalid_namespace_returns_zero(cache: CacheManager) -> None:
+def test_invalidate_namespace_invalid_namespace_returns_zero(
+    cache: CacheManager,
+) -> None:
     """Cover line 376: early return for invalid namespace."""
     assert cache.invalidate_namespace("../evil") == 0
 

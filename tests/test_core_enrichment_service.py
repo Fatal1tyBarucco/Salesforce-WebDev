@@ -15,7 +15,11 @@ from src.core.enrichment.service import (
     EnrichmentStrategy,
 )
 from src.models.classification import FeatureType, ImpactLevel
-from src.models.enrichment import CategoryEnrichment, FeatureEnrichment, ReleaseEnrichment
+from src.models.enrichment import (
+    CategoryEnrichment,
+    FeatureEnrichment,
+    ReleaseEnrichment,
+)
 from src.models.feature import FeatureCategory
 
 
@@ -346,7 +350,9 @@ class TestEnrichmentService:
 
     @pytest.mark.asyncio
     async def test_enrich_release_no_categories(
-        self, mock_llm: MockEnrichmentAdapter, classification_result: ClassificationResult
+        self,
+        mock_llm: MockEnrichmentAdapter,
+        classification_result: ClassificationResult,
     ) -> None:
         """Should handle empty categories list."""
         config = EnrichmentConfig(strategy=EnrichmentStrategy.LLM)
@@ -409,7 +415,9 @@ class TestEnrichmentService:
 
     @pytest.mark.asyncio
     async def test_enrich_release_skips_empty_categories(
-        self, mock_llm: MockEnrichmentAdapter, classification_result: ClassificationResult
+        self,
+        mock_llm: MockEnrichmentAdapter,
+        classification_result: ClassificationResult,
     ) -> None:
         """Should skip categories with no features."""
         cat = FeatureCategory(name="Empty", locale="pt_BR", features=[])

@@ -347,7 +347,12 @@ class TestExecuteGraphqlExtended:
         d.mkdir()
         (d / ".meta.json").write_text(
             json.dumps(
-                {"name": "Summer '26", "release_id": 262, "total_features": 10, "categories": []}
+                {
+                    "name": "Summer '26",
+                    "release_id": 262,
+                    "total_features": 10,
+                    "categories": [],
+                }
             )
         )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):
@@ -367,7 +372,12 @@ class TestExecuteGraphqlExtended:
             d.mkdir()
             (d / ".meta.json").write_text(
                 json.dumps(
-                    {"name": slug, "release_id": rid, "total_features": 10, "categories": []}
+                    {
+                        "name": slug,
+                        "release_id": rid,
+                        "total_features": 10,
+                        "categories": [],
+                    }
                 )
             )
         with patch("src.api.RELEASES_DIR", str(tmp_path)):

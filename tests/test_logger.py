@@ -24,7 +24,11 @@ class TestSetupSentry:
         from src.logger import _setup_sentry
 
         with (
-            patch.dict("os.environ", {"SENTRY_DSN": "https://example@sentry.io/123"}, clear=False),
+            patch.dict(
+                "os.environ",
+                {"SENTRY_DSN": "https://example@sentry.io/123"},
+                clear=False,
+            ),
             patch.dict(sys.modules, {"sentry_sdk": None}),
         ):
             _setup_sentry()  # Should handle ImportError gracefully

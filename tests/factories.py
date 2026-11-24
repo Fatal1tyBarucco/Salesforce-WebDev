@@ -258,8 +258,10 @@ def make_feature_impact_html(
 
     for cat_idx, cat in enumerate(categories):
         cat_id = f"cat_{cat_idx}"
-        sections.append(f"""<section class="feature-category" data-category="{cat}" id="{cat_id}">
-  <h2>{cat}</h2>""")
+        sections.append(
+            f"""<section class="feature-category" data-category="{cat}" id="{cat_id}">
+  <h2>{cat}</h2>"""
+        )
         for i in range(1, features_per_category + 1):
             sections.append(
                 f"""  <div class="feature-item" data-feature-id="W26-{cat_idx:02d}{i:02d}">

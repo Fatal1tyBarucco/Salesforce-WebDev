@@ -173,7 +173,8 @@ class AIDocOrchestrator:
                 self._write_failure_audit(run_prompts, raw_log, exc, classification, generated)
             except Exception as audit_error:
                 logger.error(
-                    "Could not persist AI-doc failure audit: %s", type(audit_error).__name__
+                    "Could not persist AI-doc failure audit: %s",
+                    type(audit_error).__name__,
                 )
             _warn_prompt_overrun(getattr(self.llm, "usage", None))
             return PipelineResult(changes=[], documents=[], errors=[str(exc)], status="failed")
@@ -620,7 +621,10 @@ def _simple_diff(old: str, new: str) -> str:
 
     return "".join(
         difflib.unified_diff(
-            old.splitlines(True), new.splitlines(True), fromfile="before", tofile="after"
+            old.splitlines(True),
+            new.splitlines(True),
+            fromfile="before",
+            tofile="after",
         )
     )
 
@@ -654,7 +658,11 @@ def _atomic_write_many(files: dict[Path, str]) -> None:
 
 def _git_head() -> str:
     result = subprocess.run(
-        ["git", "rev-parse", "HEAD"], check=True, capture_output=True, text=True, timeout=10
+        ["git", "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
     )
     return result.stdout.strip()
 

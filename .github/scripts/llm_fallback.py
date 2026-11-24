@@ -155,7 +155,8 @@ def gather_errors():
                         and f"def {name}" not in src
                         and f"{name} =" not in src
                         and not re.search(
-                            rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src
+                            rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)",
+                            src,
                         )
                     )
                 ):
@@ -176,7 +177,8 @@ def gather_errors():
                 and f"def {name}" not in src
                 and f"{name} =" not in src
                 and not re.search(
-                    rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)", src
+                    rf"(?:from\s+\S+\s+import\s+.*\b{name}\b|import\s+.*\b{name}\b)",
+                    src,
                 )
             ):
                 pytest_import_errors.setdefault(filepath, set()).add(name)
@@ -187,7 +189,12 @@ def gather_errors():
         "black": black_failing,
         "pytest_imports": pytest_import_errors,
         "pytest_failing": pytest_failing,
-        "raw": {"mypy": mypy_out, "ruff": ruff_out, "black": black_out, "pytest": pytest_out},
+        "raw": {
+            "mypy": mypy_out,
+            "ruff": ruff_out,
+            "black": black_out,
+            "pytest": pytest_out,
+        },
     }
 
 

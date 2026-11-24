@@ -135,7 +135,7 @@ class ReleaseNotesMCPServer:
                             "release": release_dir.name,
                             "feature": feature_name_extracted,
                             "category": self._extract_category(content),
-                            "excerpt": content[:500] + "..." if len(content) > 500 else content,
+                            "excerpt": (content[:500] + "..." if len(content) > 500 else content),
                             "file": str(md_file.relative_to(self.releases_dir)),
                         }
                     )

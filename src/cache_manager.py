@@ -748,7 +748,11 @@ class CacheManager:
             count -= 1
             total_bytes -= size
             self._stats.record_eviction(namespace, "lru")
-            logger.info("[CACHE] LRU evicted %s (namespace=%s)", path.name, namespace or "<root>")
+            logger.info(
+                "[CACHE] LRU evicted %s (namespace=%s)",
+                path.name,
+                namespace or "<root>",
+            )
 
     def _sweep_directory(self, ns_dir: Path, namespace: str, now: float) -> int:
         """Remove expired entries in one directory; quarantine corrupt ones."""

@@ -121,8 +121,16 @@ class TestComputeStats:
     def test_with_generated_at(self) -> None:
         """Days between releases is computed from generated_at."""
         metas = [
-            {"total_features": 10, "generated_at": "2025-01-01T00:00:00+00:00", "categories": []},
-            {"total_features": 20, "generated_at": "2025-01-31T00:00:00+00:00", "categories": []},
+            {
+                "total_features": 10,
+                "generated_at": "2025-01-01T00:00:00+00:00",
+                "categories": [],
+            },
+            {
+                "total_features": 20,
+                "generated_at": "2025-01-31T00:00:00+00:00",
+                "categories": [],
+            },
         ]
         stats = compute_stats(metas)
         assert len(stats.days_between) == 1

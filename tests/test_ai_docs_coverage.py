@@ -30,7 +30,11 @@ from src.ai.orchestrator import (
     main,
 )
 from src.ai.schemas.change import ChangeClassification
-from src.ai.schemas.change_reviewer import SelfReviewResponse, _json_extract, review_classification
+from src.ai.schemas.change_reviewer import (
+    SelfReviewResponse,
+    _json_extract,
+    review_classification,
+)
 from src.ai.schemas.generated_docs import GeneratedDocuments
 
 
@@ -79,7 +83,9 @@ def _client(*responses: MagicMock) -> ExistingLLMClient:
     return client
 
 
-def test_free_model_config_defaults_to_openrouter_free(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_free_model_config_defaults_to_openrouter_free(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     from src.ai.config.models import get_openrouter_free_model
 
     monkeypatch.delenv("AI_DOCS_MODEL", raising=False)
@@ -124,7 +130,9 @@ def test_client_empty_response_retries_then_fails() -> None:
     assert "error=ValueError" in str(excinfo.value)
 
 
-def test_retry_delay_handles_epoch_and_bad_headers(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_retry_delay_handles_epoch_and_bad_headers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 100)
     assert _retry_delay(None, "110", 1) == 110
     assert _retry_delay("not-a-number", None, 1) == 2
@@ -159,7 +167,9 @@ def test_retry_delay_converts_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> No
     assert _retry_delay(None, "1700000012", 1) == 12
 
 
-def test_retry_delay_converts_millisecond_epoch_reset(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_retry_delay_converts_millisecond_epoch_reset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr("src.ai.llm.client.time.time", lambda: 1_700_000_000)
     assert _retry_delay(None, "1700000012000", 1) == 12
 
@@ -257,7 +267,9 @@ def test_collector_pr_metadata_is_bounded(monkeypatch: pytest.MonkeyPatch) -> No
     assert len(prs[0]["body"]) == change_collector.MAX_PR_BODY_CHARS
 
 
-def test_collector_invalid_ref_and_empty_command(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_collector_invalid_ref_and_empty_command(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     with pytest.raises(ValueError):
         change_collector.collect_changes("")
     monkeypatch.setattr(
@@ -275,7 +287,9 @@ def test_payload_parser_handles_none_invalid_and_json() -> None:
     assert AIDocOrchestrator._payload_from('{"x":1}') == {"x": 1}
 
 
-def test_changelog_delta_requires_heading_and_preserves_old_history(tmp_path: Path) -> None:
+def test_changelog_delta_requires_heading_and_preserves_old_history(
+    tmp_path: Path,
+) -> None:
     path = tmp_path / "CHANGELOG.md"
     path.write_text("# Changelog\n\n## [1.0]\nold\n", encoding="utf-8")
     updated = _prepend_changelog(path, "<!-- marker -->", "## [Unreleased]\nnew")
@@ -425,7 +439,9 @@ def test_self_review_marks_changes_without_dropping_them(tmp_path: Path, monkeyp
     )
     result = asyncio.run(
         AIDocOrchestrator(
-            since_ref="HEAD~1", llm=SelfReviewLLM(), output_dir=tmp_path / "docs" / "generated"
+            since_ref="HEAD~1",
+            llm=SelfReviewLLM(),
+            output_dir=tmp_path / "docs" / "generated",
         ).run()  # type: ignore[arg-type]
     )
     assert result.status == "completed"
@@ -513,7 +529,9 @@ def test_context_truncates_diffs_before_pr_bodies() -> None:
     assert len(pr_bounded["merged_prs"][0]["body"]) < len("pr body " * 80)
 
 
-def test_context_truncates_to_configured_token_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_context_truncates_to_configured_token_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("AI_DOCS_MAX_CONTEXT_TOKENS", "35")
     raw = {
         "conventional_commits": ["feat(api): preserve this high-priority change"],
@@ -583,7 +601,9 @@ def test_merged_prs_filter_to_commit_range(monkeypatch: pytest.MonkeyPatch) -> N
     assert [item["number"] for item in prs] == [1]
 
 
-def test_collector_subprocess_failures_return_empty(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_collector_subprocess_failures_return_empty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         change_collector.subprocess,
         "run",
@@ -629,7 +649,9 @@ def test_collector_rejects_unresolvable_ref_and_handles_empty_diff(
     assert result["merged_prs"] == []
 
 
-def test_collector_parses_breaking_change_footer(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_collector_parses_breaking_change_footer(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     body = chr(10) + "BREAKING CHANGE: removes the old field"
 
     def fake_run(cmd: list[str]) -> str:
@@ -649,7 +671,9 @@ def test_collector_parses_breaking_change_footer(monkeypatch: pytest.MonkeyPatch
     assert result["commit_details"][0]["body"].startswith("BREAKING CHANGE:")
 
 
-def test_merged_prs_handles_bad_and_non_list_json(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_merged_prs_handles_bad_and_non_list_json(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: "not-json")
     assert change_collector._collect_merged_prs() == []
     monkeypatch.setattr(change_collector, "run_cmd", lambda cmd: json.dumps({"number": 1}))
@@ -742,7 +766,10 @@ def test_pipeline_noop_after_empty_classification(tmp_path: Path, monkeypatch) -
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(
         "src.ai.orchestrator.collect_changes",
-        lambda since_ref: {"commits": ["chore: no actionable change"], "merged_prs": []},
+        lambda since_ref: {
+            "commits": ["chore: no actionable change"],
+            "merged_prs": [],
+        },
     )
 
     class EmptyLLM:
@@ -770,7 +797,12 @@ def test_pipeline_self_review_valid_keeps_changes(tmp_path: Path, monkeypatch) -
             self.usage = [{"total_tokens": 25}]
             self.results = [
                 {"changes": [_entry()], "review_needed": []},
-                {"valid": True, "inconsistencies": [], "corrected_fields": {}, "note": "ok"},
+                {
+                    "valid": True,
+                    "inconsistencies": [],
+                    "corrected_fields": {},
+                    "note": "ok",
+                },
                 {
                     "release_notes": "Release",
                     "changelog_entry": (

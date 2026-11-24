@@ -133,7 +133,11 @@ def test_fingerprint_non_dict_meta_degrades(release_dir: Path) -> None:
 def test_fingerprint_bad_category_types_degrade(release_dir: Path) -> None:
     meta: dict[str, Any] = {
         "name": RELEASE.name,
-        "categories": ["not-a-dict", {"name": 123, "count": "many"}, {"name": "Ok", "count": 2}],
+        "categories": [
+            "not-a-dict",
+            {"name": 123, "count": "many"},
+            {"name": "Ok", "count": 2},
+        ],
     }
     (release_dir / ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
     assert len(fp(release_dir)) == 64
@@ -409,7 +413,11 @@ def test_fingerprint_categories_processing(release_dir: Path) -> None:
     assert len(fp(release_dir)) == 64
 
     # Test with non-dict categories (should be skipped)
-    meta["categories"] = ["not-a-dict", {"name": 123, "count": "many"}, {"name": "Ok", "count": 2}]
+    meta["categories"] = [
+        "not-a-dict",
+        {"name": 123, "count": "many"},
+        {"name": "Ok", "count": 2},
+    ]
     (release_dir / ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
     assert len(fp(release_dir)) == 64
 
@@ -440,10 +448,14 @@ def test_fingerprint_compute_file_hash_oserror(release_dir: Path, caplog) -> Non
     write_md(release_dir)
 
     with patch(
-        "src.processed_releases.CacheManager.compute_file_hash", side_effect=OSError("hash failed")
+        "src.processed_releases.CacheManager.compute_file_hash",
+        side_effect=OSError("hash failed"),
     ):
         result = compute_release_fingerprint(
-            release_dir, name=RELEASE.name, release_id=RELEASE.release_id, slug=RELEASE.slug
+            release_dir,
+            name=RELEASE.name,
+            release_id=RELEASE.release_id,
+            slug=RELEASE.slug,
         )
     assert result == compute_checksum(
         {

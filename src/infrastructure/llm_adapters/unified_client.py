@@ -334,7 +334,7 @@ class UnifiedLLMClient(LLMPort):
                 )
 
                 return LLMResponse(
-                    content=response.content if hasattr(response, "content") else str(response),
+                    content=(response.content if hasattr(response, "content") else str(response)),
                     usage=usage,
                     provider=provider,
                     model=(
@@ -374,7 +374,9 @@ class UnifiedLLMClient(LLMPort):
             return await self._call_gemini(client, prompt)
         else:
             raise LLMError(
-                f"Unsupported provider: {provider}", provider=provider.value, retryable=False
+                f"Unsupported provider: {provider}",
+                provider=provider.value,
+                retryable=False,
             )
 
     async def _call_openai_compatible(self, client: Any, prompt: LLMPrompt) -> Any:
@@ -525,6 +527,9 @@ class LLMService:
 
         return asyncio.run(
             self._client.generate(
-                LLMPrompt(user=f"Summarize in {max_length} words:\n{text}", max_tokens=max_length)
+                LLMPrompt(
+                    user=f"Summarize in {max_length} words:\n{text}",
+                    max_tokens=max_length,
+                )
             )
         ).content

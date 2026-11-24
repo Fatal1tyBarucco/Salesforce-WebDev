@@ -72,8 +72,14 @@ def test_load_release_meta_missing() -> None:
 
 @pytest.mark.asyncio
 async def test_compare_releases(service) -> None:
-    prev = {"name": "Prev", "categories": [{"name": "A", "count": 10}, {"name": "B", "count": 5}]}
-    curr = {"name": "Curr", "categories": [{"name": "A", "count": 15}, {"name": "C", "count": 3}]}
+    prev = {
+        "name": "Prev",
+        "categories": [{"name": "A", "count": 10}, {"name": "B", "count": 5}],
+    }
+    curr = {
+        "name": "Curr",
+        "categories": [{"name": "A", "count": 15}, {"name": "C", "count": 3}],
+    }
 
     def mock_load(slug: str) -> Any:
         return prev if slug == "prev" else curr
@@ -89,8 +95,14 @@ async def test_compare_releases(service) -> None:
 
 @pytest.mark.asyncio
 async def test_detect_regressions(service) -> None:
-    prev = {"name": "Prev", "categories": [{"name": "A", "count": 20}, {"name": "B", "count": 10}]}
-    curr = {"name": "Curr", "categories": [{"name": "A", "count": 15}, {"name": "B", "count": 12}]}
+    prev = {
+        "name": "Prev",
+        "categories": [{"name": "A", "count": 20}, {"name": "B", "count": 10}],
+    }
+    curr = {
+        "name": "Curr",
+        "categories": [{"name": "A", "count": 15}, {"name": "B", "count": 12}],
+    }
 
     def mock_load(slug: str) -> Any:
         return prev if slug == "prev" else curr
@@ -127,29 +139,41 @@ async def test_calculate_quality_metrics(service) -> None:
 async def test_generate_changelog_ai(service, llm_service, tmp_path: Path) -> None:
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    meta = {"name": "Summer '26", "release_id": 262, "categories": [{"name": "A", "count": 10}]}
+    meta = {
+        "name": "Summer '26",
+        "release_id": 262,
+        "categories": [{"name": "A", "count": 10}],
+    }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
+    llm_service.generate_text.return_value = "AI generated content"
+
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
-        result = await generate_changelog()
-        assert result == "AI generated content"
-        llm_service.generate_text.assert_called_once()
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_changelog()
+            assert result == "AI generated content"
+            llm_service.generate_text.assert_called_once()
 
 
 @pytest.mark.asyncio
-async def test_generate_changelog_fallback(service, tmp_path: Path) -> None:
+async def test_generate_changelog_fallback(service, llm_service, tmp_path: Path) -> None:
     # Override llm_service to return None for fallback
-    service._llm.generate_text = AsyncMock(return_value=None)
+    llm_service.generate_text.return_value = None
 
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
-    meta = {"name": "Summer '26", "release_id": 262, "categories": [{"name": "A", "count": 10}]}
+    meta = {
+        "name": "Summer '26",
+        "release_id": 262,
+        "categories": [{"name": "A", "count": 10}],
+    }
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
-        result = await generate_changelog()
-        assert "Summer '26" in result
-        assert "10 recursos" in result
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_changelog()
+            assert "Summer '26" in result
+            assert "10 recursos" in result
 
 
 @pytest.mark.asyncio
@@ -160,10 +184,13 @@ async def test_generate_regression_report_ai(service, llm_service) -> None:
     def mock_load(slug: str) -> Any:
         return prev if slug == "prev" else curr
 
+    llm_service.generate_text.return_value = "AI generated content"
+
     with patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load):
-        result = await generate_regression_report("curr", "prev")
-        assert result == "AI generated content"
-        llm_service.generate_text.assert_called_once()
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_regression_report("curr", "prev")
+            assert result == "AI generated content"
+            llm_service.generate_text.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -174,10 +201,13 @@ async def test_generate_diff_report_ai(service, llm_service) -> None:
     def mock_load(slug: str) -> Any:
         return prev if slug == "prev" else curr
 
+    llm_service.generate_text.return_value = "AI generated content"
+
     with patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load):
-        result = await generate_diff_report("curr", "prev")
-        assert result == "AI generated content"
-        llm_service.generate_text.assert_called_once()
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_diff_report("curr", "prev")
+            assert result == "AI generated content"
+            llm_service.generate_text.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -187,10 +217,13 @@ async def test_generate_quality_report_ai(service, llm_service, tmp_path: Path) 
     meta = {"name": "Summer '26", "categories": [{"name": "A", "count": 10}]}
     (release_dir / ".meta.json").write_text(json.dumps(meta))
 
+    llm_service.generate_text.return_value = "AI generated content"
+
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
-        result = await generate_quality_report()
-        assert result == "AI generated content"
-        llm_service.generate_text.assert_called_once()
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_quality_report()
+            assert result == "AI generated content"
+            llm_service.generate_text.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -222,10 +255,11 @@ async def test_generate_ai_summary_growth(service, llm_service) -> None:
     llm_service.generate_text.return_value = summary_json
 
     with patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load):
-        result = await generate_ai_summary("curr", "prev")
-        assert isinstance(result, AISummary)
-        assert "Curr" in result.headline
-        assert result.overall_trend == "crescimento"
+        with patch("src.automation.service.LLMService", return_value=llm_service):
+            result = await generate_ai_summary("curr", "prev")
+            assert isinstance(result, AISummary)
+            assert "Curr" in result.headline
+            assert result.overall_trend == "crescimento"
 
 
 @pytest.mark.asyncio
@@ -307,7 +341,12 @@ async def test_predict_next_release_impact(service, tmp_path: Path) -> None:
     with patch("src.config.RELEASES_DIR", str(tmp_path)):
         prediction = await predict_next_release_impact()
         assert isinstance(prediction, ImpactPrediction)
-        assert prediction.overall_risk_level in ["alto", "moderado", "baixo", "indeterminado"]
+        assert prediction.overall_risk_level in [
+            "alto",
+            "moderado",
+            "baixo",
+            "indeterminado",
+        ]
 
 
 @pytest.mark.asyncio
@@ -343,7 +382,9 @@ async def test_triage_release_low_risk(service) -> None:
     with (
         patch.object(AIAutomationService, "load_release_meta", side_effect=mock_load),
         patch.object(
-            AIAutomationService, "calculate_quality_metrics", AsyncMock(return_value=None)
+            AIAutomationService,
+            "calculate_quality_metrics",
+            AsyncMock(return_value=None),
         ),
         patch.object(
             AIAutomationService,
@@ -438,7 +479,10 @@ async def test_filter_features_for_profile_admin(service) -> None:
 async def test_generate_filtered_notification(service) -> None:
     meta = {
         "name": "Test",
-        "categories": [{"name": "Security", "count": 10}, {"name": "Sales", "count": 5}],
+        "categories": [
+            {"name": "Security", "count": 10},
+            {"name": "Sales", "count": 5},
+        ],
     }
 
     with patch.object(AIAutomationService, "load_release_meta", return_value=meta):
@@ -562,7 +606,11 @@ async def test_module_generate_filtered_notification():
             relevance_score=0.0,
         )
         notif = FilteredNotification(
-            profile=up, total_features=0, relevant_count=0, priority_count=0, summary="text"
+            profile=up,
+            total_features=0,
+            relevant_count=0,
+            priority_count=0,
+            summary="text",
         )
         MockSvc.return_value.generate_filtered_notification = AsyncMock(return_value=notif)
         from src.ai_automation import generate_filtered_notification

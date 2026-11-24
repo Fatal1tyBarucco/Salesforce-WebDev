@@ -53,7 +53,12 @@ class TestImpactCoverage:
         mock_llm.generate_text = AsyncMock(return_value=None)
 
         result = await predict_next_release_impact(load_meta, llm=mock_llm)
-        assert result.overall_risk_level in ("alto", "moderado", "baixo", "indeterminado")
+        assert result.overall_risk_level in (
+            "alto",
+            "moderado",
+            "baixo",
+            "indeterminado",
+        )
 
     @pytest.mark.asyncio
     async def test_predict_impact_llm_raises(self, tmp_path: Path) -> None:
@@ -93,7 +98,12 @@ class TestImpactCoverage:
         mock_llm.generate_text = AsyncMock(side_effect=ValueError("LLM error"))
 
         result = await predict_next_release_impact(load_meta, llm=mock_llm)
-        assert result.overall_risk_level in ("alto", "moderado", "baixo", "indeterminado")
+        assert result.overall_risk_level in (
+            "alto",
+            "moderado",
+            "baixo",
+            "indeterminado",
+        )
 
     @pytest.mark.asyncio
     async def test_triage_release_high_risk(self, tmp_path: Path) -> None:
@@ -121,7 +131,13 @@ class TestImpactCoverage:
             return json.loads(p.read_text()) if p.exists() else {}
 
         result = await triage_release(load_meta, "rel_2")
-        assert result.risk_level in ("mínimo", "baixo", "moderado", "alto", "desconhecido")
+        assert result.risk_level in (
+            "mínimo",
+            "baixo",
+            "moderado",
+            "alto",
+            "desconhecido",
+        )
         assert 0 <= result.risk_score <= 100
 
     @pytest.mark.asyncio

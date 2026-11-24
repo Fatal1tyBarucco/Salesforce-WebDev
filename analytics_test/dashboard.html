@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce Release Notes — Dashboard Interativo</title>
+<link rel="stylesheet" href="design-system/dashboard-combined.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="design-system/dashboard-combined.css"></noscript>
+<style>
+/* Dashboard-specific overrides (minimal, all tokens) */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}
+
+@media (min-width: 900px) {
+  .container {
+    padding: var(--space-lg) var(--space-lg);
+  }
+}
+
+h1 {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-title);
+  letter-spacing: var(--letter-spacing-title);
+  margin-bottom: var(--space-xs);
+}
+
+.subtitle {
+  color: var(--color-on-surface-variant);
+  font-size: var(--font-size-label);
+  line-height: var(--line-height-label);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  margin-bottom: var(--space-md);
+}
+
+/* Stats bar uses stat-card component styles */
+.stats {
+  display: flex;
+  gap: var(--stat-gap);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat .num {
+  font-size: var(--stat-number-font-size);
+  font-weight: var(--stat-number-font-weight);
+  color: var(--stat-number-color);
+  line-height: 1.2;
+}
+
+.stat .lbl {
+  font-size: var(--stat-label-font-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--stat-label-color);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+}
+
+/* Results count */
+#results-count {
+  font-size: var(--font-size-label);
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-sm);
+}
+
+/* Empty state — base */
+.empty-state {
+  text-align: center;
+  color: var(--color-on-surface-variant);
+  padding: var(--space-xl);
+  font-size: var(--font-size-body);
+}
+
+/* Enhanced empty state with onboarding pattern (5 parts) */
+.empty-state--onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xxl) var(--space-lg);
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-outline-variant);
+}
+
+.empty-state--onboarding__icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-container);
+  border-radius: var(--radius-full);
+  color: var(--color-on-primary-container);
+  font-size: 1.5rem;
+}
+
+.empty-state--onboarding__title {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.empty-state--onboarding__description {
+  font-size: var(--font-size-body);
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  line-height: var(--line-height-body);
+  margin: 0;
+}
+
+.empty-state--onboarding__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.empty-state--onboarding__help {
+  font-size: var(--font-size-label);
+  color: var(--color-on-surface-variant);
+}
+
+.empty-state--onboarding__help a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.empty-state--onboarding__help a:hover {
+  text-decoration: underline;
+}
+
+/* First-run banner */
+.first-run-banner {
+  background: var(--color-primary-container);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  animation: slideDown 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .first-run-banner { animation: none; }
+}
+
+.first-run-banner__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.first-run-banner__content {
+  flex: 1;
+}
+
+.first-run-banner__title {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-primary-container);
+  margin: 0 0 var(--space-xs);
+}
+
+.first-run-banner__text {
+  font-size: var(--font-size-body);
+  color: var(--color-on-primary-container);
+  opacity: 0.9;
+  margin: 0 0 var(--space-sm);
+}
+
+.first-run-banner__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.first-run-banner__dismiss {
+  background: transparent;
+  border: none;
+  color: var(--color-on-primary-container);
+  font-size: var(--font-size-label);
+  cursor: pointer;
+  padding: var(--space-xs);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.first-run-banner__dismiss:hover { opacity: 1; }
+
+/* Contextual tooltip */
+.tooltip-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+}
+
+.tooltip-trigger::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-on-surface);
+  color: var(--color-surface);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  margin-bottom: var(--space-xs);
+  box-shadow: var(--shadow-dropdown);
+  pointer-events: none;
+}
+
+.tooltip-trigger:hover::after,
+.tooltip-trigger:focus::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.tooltip-trigger::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-on-surface);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-bottom: var(--space-xs);
+  pointer-events: none;
+}
+
+.tooltip-trigger:hover::before,
+.tooltip-trigger:focus::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Feature discovery badge */
+.discovery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery-badge { animation: none; }
+}
+
+/* Progressive disclosure - collapsed content */
+.disclosure {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.disclosure__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-variant);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  transition: background 0.2s;
+}
+
+.disclosure__trigger:hover {
+  background: var(--color-surface-container-high);
+}
+
+.disclosure__trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.disclosure__icon {
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  color: var(--color-on-surface-variant);
+}
+
+.disclosure[open] .disclosure__icon {
+  transform: rotate(180deg);
+}
+
+.disclosure__content {
+  padding: var(--space-md);
+  background: var(--color-surface);
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Empty states for specific tabs */
+.tab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-xxl) var(--space-lg);
+  text-align: center;
+}
+
+.tab-empty__icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  font-size: var(--space-xl); /* 32px = 2rem for empty state icon */
+  opacity: 0.5;
+}
+
+.tab-empty__title {
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.tab-empty__description {
+  font-size: var(--font-size-body);
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  margin: 0;
+  line-height: var(--line-height-body);
+}
+
+.tab-empty__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  color: var(--color-on-surface-variant);
+}
+
+.loading::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  margin-left: var(--space-sm);
+  border: 2px solid var(--color-outline-variant);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading::after {
+    animation: none;
+    border-top-color: var(--color-primary);
+  }
+}
+
+/* Compare table delta colors (semantic, from tokens) */
+.delta-positive { color: var(--color-delta-positive); font-weight: var(--font-weight-bold); }
+.delta-negative { color: var(--color-delta-negative); font-weight: var(--font-weight-bold); }
+.delta-neutral { color: var(--color-delta-neutral); font-weight: var(--font-weight-bold); }
+
+/* Heatmap legend swatches use HSL from token values */
+.heatmap-legend__swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-outline-variant);
+}
+
+/* Heatmap legend colors via CSS custom property interpolation
+   Hue range: var(--color-heatmap-hue-min) to var(--color-heatmap-hue-max) (0 to 120)
+   5 steps: 0, 30, 60, 90, 120 */
+.heatmap-legend__swatch:nth-child(1) {
+  background: hsl(var(--color-heatmap-hue-min), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(2) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.25), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(3) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.5), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(4) {
+  background: hsl(calc(var(--color-heatmap-hue-min) + (var(--color-heatmap-hue-max) - var(--color-heatmap-hue-min)) * 0.75), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+.heatmap-legend__swatch:nth-child(5) {
+  background: hsl(var(--color-heatmap-hue-max), var(--color-heatmap-saturation), var(--color-heatmap-lightness));
+}
+
+/* Text truncation for long feature names */
+.feature-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Error state */
+.error-state {
+  text-align: center;
+  color: var(--color-error);
+  padding: var(--space-xl);
+  font-size: var(--font-size-body);
+}
+
+.error-state .btn {
+  margin-top: var(--space-sm);
+}
+
+/* Keyboard hint */
+.kbd-hint {
+  font-size: var(--font-size-caption);
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-family-mono);
+  margin-top: var(--space-xs);
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .kbd-hint {
+    display: block;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding: var(--space-md);
+  }
+  .tab {
+    padding: 8px 16px; /* 44px minimum touch target (14px font + 16px padding + line-height) */
+    font-size: var(--font-size-label); /* Keep 14px minimum */
+  }
+  .filters {
+    flex-direction: column;
+  }
+  select, .search-box, .input {
+    width: 100%;
+  }
+  table {
+    font-size: var(--font-size-body);
+  }
+  th, td {
+    padding: 6px 8px;
+  }
+  .field-group .form-field {
+    min-width: 100%;
+  }
+  .heatmap-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Salesforce Release Notes — Dashboard</h1>
+<p class="subtitle">Exploração interativa de releases</p>
+
+<!-- First-run onboarding banner -->
+<div id="first-run-banner" class="first-run-banner" role="region" aria-label="Boas-vindas ao dashboard" style="display: none;">
+  <div class="first-run-banner__icon" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"/><polyline points="10 17 14 13 10 9"/></svg>
+  </div>
+  <div class="first-run-banner__content">
+    <h2 class="first-run-banner__title">Bem-vindo ao Dashboard Interativo</h2>
+    <p class="first-run-banner__text">Explore releases da Salesforce, compare versões, busque features e visualize a confiança da classificação por IA.</p>
+    <div class="first-run-banner__actions">
+      <button class="btn btn-primary btn-sm" onclick="startGuidedTour()" aria-label="Iniciar tour guiado">Iniciar Tour</button>
+      <button class="btn btn-outlined btn-sm" onclick="dismissFirstRun()" aria-label="Dispensar">Agora não</button>
+    </div>
+  </div>
+  <button class="first-run-banner__dismiss" onclick="dismissFirstRun()" aria-label="Fechar boas-vindas" title="Fechar">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div class="stats" id="stats-bar" role="region" aria-label="Estatísticas gerais"></div>
+
+<div class="tabs" role="tablist" aria-label="Abas do dashboard">
+  <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-search" id="tab-btn-search" onclick="showTab('search')">Busca</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="tab-compare" id="tab-btn-compare" onclick="showTab('compare')">Comparar</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="tab-heatmap" id="tab-btn-heatmap" onclick="showTab('heatmap')">Heatmap</button>
+</div>
+
+<div id="tab-search" class="panel active" role="tabpanel" aria-labelledby="tab-btn-search">
+  <div class="form-field" style="margin-bottom: var(--space-sm);">
+    <label for="search-input" class="visually-hidden">Buscar features</label>
+    <div class="tooltip-trigger" data-tooltip="Busque por nome da feature, ex: 'Flow Builder' ou 'Agentforce'" style="width: 100%;">
+      <input type="text" class="input search-input" id="search-input" placeholder="Buscar feature..." oninput="debouncedFilterFeatures()" aria-label="Buscar features" aria-describedby="search-hint" style="width: 100%;">
+    </div>
+    <small id="search-hint" style="color: var(--color-on-surface-variant); font-size: var(--font-size-label);">Digite para filtrar por nome da feature</small>
+  </div>
+  <div class="field-group" role="group" aria-label="Filtros">
+    <div class="form-field" style="flex: 1; min-width: 180px;">
+      <label for="filter-release" class="visually-hidden">Filtrar por release</label>
+      <div class="tooltip-trigger" data-tooltip="Filtre resultados por uma release específica (Spring '26, Summer '26, etc.)" style="width: 100%;">
+        <select id="filter-release" onchange="filterFeatures()" aria-label="Filtrar por release" style="width: 100%;"><option value="">Todas as releases</option></select>
+      </div>
+    </div>
+    <div class="form-field" style="flex: 1; min-width: 180px;">
+      <label for="filter-category" class="visually-hidden">Filtrar por categoria</label>
+      <div class="tooltip-trigger" data-tooltip="Filtre por categoria da Salesforce (Agentforce, Flow, Apex, etc.)" style="width: 100%;">
+        <select id="filter-category" onchange="filterFeatures()" aria-label="Filtrar por categoria" style="width: 100%;"><option value="">Todas as categorias</option></select>
+      </div>
+    </div>
+  </div>
+  <div id="results-count" aria-live="polite"></div>
+  <div class="card card-table-wrapper" style="max-height:500px;overflow-y:auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Feature</th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Release</th>
+          <th scope="col">Disponibilidade</th>
+        </tr>
+      </thead>
+      <tbody id="features-body"></tbody>
+    </table>
+  </div>
+  <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-sm); flex-wrap: wrap;">
+    <button class="btn btn-primary" onclick="exportCSV()" aria-label="Exportar resultados filtrados como CSV" disabled>Exportar CSV</button>
+    <button class="btn btn-primary" onclick="exportJSON()" aria-label="Exportar resultados filtrados como JSON" disabled>Exportar JSON</button>
+  </div>
+</div>
+
+<div id="tab-compare" class="panel" role="tabpanel" aria-labelledby="tab-btn-compare">
+  <fieldset>
+    <legend class="visually-hidden">Comparar releases</legend>
+    <div class="field-group" role="group" aria-label="Seleção de releases para comparação">
+      <div class="form-field" style="flex: 1; min-width: 180px;">
+        <label for="compare-a" class="visually-hidden">Release A</label>
+        <div class="tooltip-trigger" data-tooltip="Selecione a primeira release para comparação" style="width: 100%;">
+          <select id="compare-a" onchange="compareReleases()" aria-label="Selecionar release A para comparação" style="width: 100%;"><option value="">Release A</option></select>
+        </div>
+      </div>
+      <div class="form-field" style="flex: 1; min-width: 180px;">
+        <label for="compare-b" class="visually-hidden">Release B</label>
+        <div class="tooltip-trigger" data-tooltip="Selecione a segunda release para comparar com a primeira" style="width: 100%;">
+          <select id="compare-b" onchange="compareReleases()" aria-label="Selecionar release B para comparação" style="width: 100%;"><option value="">Release B</option></select>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <div id="compare-empty" class="tab-empty" style="display: none;">
+    <div class="tab-empty__icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/><path d="M15 15h3v3h-3z"/></svg>
+    </div>
+    <h2 class="tab-empty__title">Selecione duas releases para comparar</h2>
+    <p class="tab-empty__description">A comparação mostra a diferença no número de features por categoria entre duas releases. Verde indica aumento, vermelho redução.</p>
+    <div class="tab-empty__actions">
+      <button class="btn btn-primary" onclick="document.getElementById('compare-a').focus()" aria-label="Selecionar primeira release">Escolher Release A</button>
+      <button class="btn btn-outlined" onclick="document.getElementById('compare-b').focus()" aria-label="Selecionar segunda release">Escolher Release B</button>
+    </div>
+  </div>
+  <div id="compare-table" class="card card-table-wrapper" style="display: none;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Categoria</th>
+          <th id="col-a" scope="col">—</th>
+          <th id="col-b" scope="col">—</th>
+          <th scope="col">Delta</th>
+        </tr>
+      </thead>
+      <tbody id="compare-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tab-heatmap" class="panel" role="tabpanel" aria-labelledby="tab-btn-heatmap">
+  <div class="form-field" style="max-width: 300px; margin-bottom: var(--space-md);">
+    <label for="heatmap-release" class="visually-hidden">Selecionar release para heatmap</label>
+    <div class="tooltip-trigger" data-tooltip="Escolha uma release para ver a confiança média da classificação IA por categoria" style="width: 100%; max-width: 300px;">
+      <select id="heatmap-release" onchange="renderHeatmap()" aria-label="Selecionar release para heatmap" style="width: 100%;"><option value="">Selecione uma release</option></select>
+    </div>
+  </div>
+
+  <!-- Heatmap Legend for Accessibility -->
+  <div class="heatmap-legend" aria-label="Legenda do heatmap de confiança">
+    <span class="heatmap-legend__label">Confiança:</span>
+    <div class="heatmap-legend__swatches">
+      <div class="heatmap-legend__swatch" aria-label="Baixa (0-20%)"></div>
+      <div class="heatmap-legend__swatch" aria-label="Baixa-Média (20-40%)"></div>
+      <div class="heatmap-legend__swatch" aria-label="Média (40-60%)"></div>
+      <div class="heatmap-legend__swatch" aria-label="Média-Alta (60-80%)"></div>
+      <div class="heatmap-legend__swatch" aria-label="Alta (80-100%)"></div>
+    </div>
+    <span style="font-size: var(--font-size-label); color: var(--color-on-surface-variant);">Baixa → Alta</span>
+  </div>
+
+  <div id="heatmap-empty" class="tab-empty" style="display: flex;">
+    <div class="tab-empty__icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <h2 class="tab-empty__title">Selecione uma release para o heatmap</h2>
+    <p class="tab-empty__description">O heatmap mostra a confiança média da classificação por IA para cada categoria. Verde = alta confiança, vermelho = baixa confiança. Passe o mouse sobre cada célula para ver detalhes.</p>
+    <div class="tab-empty__actions">
+      <button class="btn btn-primary" onclick="document.getElementById('heatmap-release').focus()" aria-label="Selecionar release">Escolher Release</button>
+    </div>
+  </div>
+  <div id="heatmap-grid" class="heatmap" role="img" aria-label="Heatmap de confiança média por categoria" style="display: none;"></div>
+</div>
+
+<!-- Global error toast container -->
+<div id="error-toast" class="error-state" role="alert" aria-live="assertive" aria-atomic="true" style="display: none; position: fixed; top: calc(var(--space-md) + env(safe-area-inset-top)); right: calc(var(--space-md) + env(safe-area-inset-right)); left: calc(var(--space-md) + env(safe-area-inset-left)); max-width: 480px; margin: 0 auto; z-index: 1000; box-shadow: var(--shadow-dropdown);"></div>
+
+</div>
+<script>
+// Minimal inlined data: only releases metadata for immediate dropdown population
+window.__DASHBOARD_META__ = {"releases": [{"name": "Winter '26", "slug": "winter_26", "release_id": 258, "total_features": 1348, "avg_confidence": 0.648, "categories": [{"name": "Documenta\u00e7\u00e3o legal", "count": 11}, {"name": "Salesforce geral", "count": 32}, {"name": "An\u00e1lise de dados", "count": 91}, {"name": "Personaliza\u00e7\u00e3o", "count": 65}, {"name": "Desenvolvimento", "count": 101}, {"name": "Agentforce", "count": 39}, {"name": "Experience Cloud", "count": 8}, {"name": "Field Service", "count": 24}, {"name": "Hyperforce", "count": 5}, {"name": "Setores", "count": 459}, {"name": "Marketing", "count": 87}, {"name": "MuleSoft", "count": 4}, {"name": "Aplicativo m\u00f3vel", "count": 7}, {"name": "OmniStudio", "count": 8}, {"name": "Partner Cloud", "count": 156}, {"name": "Vendas", "count": 154}, {"name": "Integra\u00e7\u00f5es do Salesforce para Slack", "count": 1}, {"name": "Seguran\u00e7a, identidade e privacidade", "count": 55}, {"name": "Servi\u00e7o", "count": 41}]}, {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "total_features": 1438, "avg_confidence": 0.648, "categories": [{"name": "Documenta\u00e7\u00e3o legal", "count": 6}, {"name": "Salesforce geral", "count": 38}, {"name": "Agentforce", "count": 35}, {"name": "An\u00e1lise de dados", "count": 54}, {"name": "Automa\u00e7\u00e3o", "count": 151}, {"name": "Personaliza\u00e7\u00e3o", "count": 18}, {"name": "Data 360", "count": 53}, {"name": "Desenvolvimento", "count": 97}, {"name": "Experience Cloud", "count": 21}, {"name": "Field Service", "count": 41}, {"name": "Hyperforce", "count": 5}, {"name": "Setores", "count": 194}, {"name": "Aplicativo m\u00f3vel", "count": 187}, {"name": "Marketing", "count": 72}, {"name": "MuleSoft", "count": 8}, {"name": "OmniStudio", "count": 10}, {"name": "Partner Cloud", "count": 4}, {"name": "Gerenciamento de receita", "count": 131}, {"name": "Vendas", "count": 85}, {"name": "Seguran\u00e7a, identidade e privacidade", "count": 61}, {"name": "Servi\u00e7o", "count": 167}]}, {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "total_features": 1373, "avg_confidence": 0.65, "categories": [{"name": "Documenta\u00e7\u00e3o legal", "count": 6}, {"name": "Salesforce geral", "count": 36}, {"name": "Agentforce", "count": 37}, {"name": "An\u00e1lise de dados", "count": 58}, {"name": "Automa\u00e7\u00e3o", "count": 118}, {"name": "OmniStudio", "count": 9}, {"name": "Personaliza\u00e7\u00e3o", "count": 33}, {"name": "Data 360", "count": 72}, {"name": "Desenvolvimento", "count": 127}, {"name": "Experience Cloud", "count": 14}, {"name": "Field Service", "count": 48}, {"name": "Hyperforce", "count": 3}, {"name": "Setores", "count": 309}, {"name": "Marketing", "count": 64}, {"name": "MuleSoft", "count": 8}, {"name": "Aplicativo m\u00f3vel", "count": 17}, {"name": "Partner Cloud", "count": 1}, {"name": "Gerenciamento de receita", "count": 97}, {"name": "Vendas", "count": 58}, {"name": "Integra\u00e7\u00f5es do Salesforce para Slack", "count": 2}, {"name": "Seguran\u00e7a, identidade e privacidade", "count": 58}, {"name": "Servi\u00e7o", "count": 198}]}, {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "total_features": 1123, "avg_confidence": 0.648, "categories": [{"name": "Salesforce geral", "count": 28}, {"name": "An\u00e1lise de dados", "count": 26}, {"name": "Automa\u00e7\u00e3o", "count": 72}, {"name": "Data 360", "count": 7}, {"name": "Experience Cloud", "count": 143}, {"name": "Field Service", "count": 37}, {"name": "Hyperforce", "count": 5}, {"name": "Setores", "count": 286}, {"name": "Marketing", "count": 1}, {"name": "MuleSoft", "count": 1}, {"name": "Partner Cloud", "count": 38}, {"name": "Gerenciamento de receita", "count": 123}, {"name": "Vendas", "count": 44}, {"name": "Integra\u00e7\u00f5es do Salesforce para Slack", "count": 7}, {"name": "Seguran\u00e7a, identidade e privacidade", "count": 25}, {"name": "Servi\u00e7o", "count": 140}, {"name": "Documenta\u00e7\u00e3o legal", "count": 8}, {"name": "OmniStudio", "count": 3}, {"name": "Agentforce", "count": 129}]}], "total_releases": 4, "total_features": 0};
+
+let DATA = null;
+let filteredFeatures = [];
+let isDataLoaded = false;
+let featuresPromise = null;
+
+// Debounce utility for search input
+function debounce(fn, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// Load features lazily from separate JSON file
+async function loadFeatures() {
+  if (featuresPromise) return featuresPromise;
+
+  featuresPromise = (async () => {
+    try {
+      const response = await fetch('dashboard-data.json', { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const fullData = await response.json();
+      return fullData.features || [];
+    } catch (error) {
+      console.warn('Failed to load features lazily:', error);
+      return [];
+    }
+  })();
+
+  return featuresPromise;
+}
+
+async function loadDashboardData() {
+  const loadingEl = document.querySelector('.loading');
+  if (loadingEl) loadingEl.style.display = 'flex';
+
+  // Start loading features in background while rendering initial UI
+  const featuresTask = loadFeatures();
+
+  try {
+    // Use inlined metadata for immediate UI (releases for dropdowns)
+    if (typeof window.__DASHBOARD_META__ !== 'undefined') {
+      DATA = window.__DASHBOARD_META__;
+    } else {
+      throw new Error('No metadata available');
+    }
+  } catch (error) {
+    showError('Falha ao carregar metadados do dashboard: ' + error.message);
+    if (loadingEl) loadingEl.style.display = 'none';
+    return false;
+  }
+
+  if (loadingEl) loadingEl.style.display = 'none';
+  return true;
+}
+
+async function init() {
+  const loaded = await loadDashboardData();
+  if (!loaded) return;
+
+  // Validate DATA exists and has required structure
+  if (!DATA || !DATA.releases) {
+    showError('Dados do dashboard inválidos ou incompletos.');
+    return;
+  }
+
+  isDataLoaded = true;
+  renderStats();
+  populateSelects();
+  populateCategories();
+
+  // Load features asynchronously, then render
+  const features = await loadFeatures();
+  DATA.features = features;
+  filteredFeatures = features;
+  renderFeatures();
+  updateExportButtons();
+}
+
+function renderStats() {
+  document.getElementById('stats-bar').innerHTML =
+    '<div class="stat"><div class="num">' + DATA.total_releases + '</div><div class="lbl">Releases</div></div>' +
+    '<div class="stat"><div class="num">' + DATA.total_features.toLocaleString('pt-BR') + '</div><div class="lbl">Features</div></div>';
+}
+
+function populateSelects() {
+  const relSel = document.getElementById('filter-release');
+  const cmpA = document.getElementById('compare-a');
+  const cmpB = document.getElementById('compare-b');
+  const hmSel = document.getElementById('heatmap-release');
+
+  DATA.releases.forEach(r => {
+    const opt = '<option value="'+escapeHtml(r.slug)+'">'+escapeHtml(r.name)+'</option>';
+    relSel.innerHTML += opt;
+    cmpA.innerHTML += opt;
+    cmpB.innerHTML += opt;
+    hmSel.innerHTML += opt;
+  });
+}
+
+function populateCategories() {
+  const cats = [...new Set(DATA.features.map(f => f.category).filter(Boolean))].sort();
+  const catSel = document.getElementById('filter-category');
+  cats.forEach(c => { catSel.innerHTML += '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>'; });
+}
+
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('tab-'+name);
+  if (panel) panel.classList.add('active');
+  const tabs = ['search','compare','heatmap'];
+  const idx = tabs.indexOf(name);
+  if (idx >= 0) {
+    const tabBtn = document.querySelectorAll('.tab')[idx];
+    if (tabBtn) tabBtn.classList.add('active');
+    // Update ARIA
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+    });
+  }
+}
+
+function filterFeatures() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const rel = document.getElementById('filter-release').value;
+  const cat = document.getElementById('filter-category').value;
+
+  // If no filters active, show all features without filtering
+  if (!q && !rel && !cat) {
+    filteredFeatures = DATA.features;
+  } else {
+    filteredFeatures = DATA.features.filter(f => {
+      if (q && !f.name.toLowerCase().includes(q)) return false;
+      if (rel && f.release !== rel) return false;
+      if (cat && f.category !== cat) return false;
+      return true;
+    });
+  }
+  renderFeatures();
+  updateExportButtons();
+}
+
+// Debounced version for search input (150ms delay)
+const debouncedFilterFeatures = debounce(filterFeatures, 150);
+
+function renderFeatures() {
+  const tbody = document.getElementById('features-body');
+  const count = filteredFeatures.length;
+  document.getElementById('results-count').textContent = count + ' resultado' + (count !== 1 ? 's' : '');
+
+  if (count === 0) {
+    const hasActiveFilters = document.getElementById('search-input').value.trim() ||
+                             document.getElementById('filter-release').value ||
+                             document.getElementById('filter-category').value;
+    if (hasActiveFilters) {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state empty-state--onboarding" role="status" aria-live="polite"><div class="empty-state--onboarding__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h3 class="empty-state--onboarding__title">Nenhum resultado encontrado</h3><p class="empty-state--onboarding__description">Tente ajustar os filtros ou busque por outro termo.</p><div class="empty-state--onboarding__actions"><button class="btn btn-outlined btn-sm" onclick="clearFilters()">Limpar filtros</button></div><p class="empty-state--onboarding__help">Precisa de ajuda? <a href="https://github.com/Fatal1tyBarucco/Salesforce-WebDev/wiki" target="_blank" rel="noopener">Consulte a documentação</a></p></div></td></tr>';
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state empty-state--onboarding" role="status" aria-live="polite"><div class="empty-state--onboarding__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><h3 class="empty-state--onboarding__title">Nenhuma feature disponível</h3><p class="empty-state--onboarding__description">O dashboard não encontrou features para exibir. Verifique se os dados foram carregados corretamente.</p><div class="empty-state--onboarding__actions"><button class="btn btn-primary btn-sm" onclick="location.reload()">Recarregar</button></div></div></td></tr>';
+    }
+    return;
+  }
+
+  // Use document fragment to batch DOM writes (avoids layout thrashing)
+  const fragment = document.createDocumentFragment();
+  const displayFeatures = filteredFeatures.slice(0, 500);
+
+  displayFeatures.forEach(f => {
+    const tr = document.createElement('tr');
+    // content-visibility: auto allows browser to skip rendering off-screen rows
+    tr.style.contentVisibility = 'auto';
+    tr.style.containIntrinsicSize = 'auto 40px';
+    tr.innerHTML =
+      '<td class="feature-name">'+escapeHtml(f.name)+'</td>' +
+      '<td>'+escapeHtml(f.category)+'</td>' +
+      '<td>'+escapeHtml(f.release)+'</td>' +
+      '<td>'+escapeHtml(f.availability)+'</td>';
+    fragment.appendChild(tr);
+  });
+
+  tbody.innerHTML = '';
+  tbody.appendChild(fragment);
+
+  if (count > 500) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="4"><div class="empty-state" role="status" aria-live="polite">Mostrando 500 de ' + count.toLocaleString('pt-BR') + ' resultados. Refine a busca para ver mais.</div></td>';
+    tbody.appendChild(tr);
+  }
+}
+
+function updateExportButtons() {
+  const hasResults = filteredFeatures.length > 0;
+  document.querySelectorAll('#tab-search .btn-primary').forEach(btn => {
+    btn.disabled = !hasResults;
+  });
+}
+
+function compareReleases() {
+  const a = document.getElementById('compare-a').value;
+  const b = document.getElementById('compare-b').value;
+
+  if (!a || !b) {
+    clearCompareTable();
+    return;
+  }
+
+  if (a === b) {
+    showToast('Selecione duas releases diferentes para comparar.', 'warning');
+    document.getElementById('compare-b').value = '';
+    return;
+  }
+
+  const rA = DATA.releases.find(r => r.slug === a);
+  const rB = DATA.releases.find(r => r.slug === b);
+
+  if (!rA || !rB) {
+    showToast('Release não encontrada.', 'error');
+    return;
+  }
+
+  document.getElementById('col-a').textContent = rA.name;
+  document.getElementById('col-b').textContent = rB.name;
+
+  const catsA = Object.fromEntries(rA.categories.map(c => [c.name, c.count]));
+  const catsB = Object.fromEntries(rB.categories.map(c => [c.name, c.count]));
+  const allCats = [...new Set([...Object.keys(catsA), ...Object.keys(catsB)])].sort();
+
+  const tbody = document.getElementById('compare-body');
+  tbody.innerHTML = allCats.map(name => {
+    const vA = catsA[name] || 0;
+    const vB = catsB[name] || 0;
+    const delta = vB - vA;
+    let deltaClass = 'delta-neutral';
+    if (delta > 0) deltaClass = 'delta-positive';
+    else if (delta < 0) deltaClass = 'delta-negative';
+    return '<tr><td>'+escapeHtml(name)+'</td><td>'+vA.toLocaleString('pt-BR')+'</td><td>'+vB.toLocaleString('pt-BR')+'</td><td class="'+deltaClass+'">'+(delta>=0?'+':'')+delta+'</td></tr>';
+  }).join('');
+}
+
+function clearCompareTable() {
+  document.getElementById('col-a').textContent = '—';
+  document.getElementById('col-b').textContent = '—';
+  document.getElementById('compare-body').innerHTML = '';
+}
+
+function renderHeatmap() {
+  const slug = document.getElementById('heatmap-release').value;
+  const grid = document.getElementById('heatmap-grid');
+
+  if (!slug) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  const r = DATA.releases.find(x => x.slug === slug);
+  if (!r) {
+    grid.innerHTML = '<div class="error-state" role="alert" aria-live="assertive">Release não encontrada</div>';
+    return;
+  }
+
+  grid.innerHTML = r.categories.map(c => {
+    const catConf = c.avg_confidence || r.avg_confidence || 0.85;
+    const heat = Math.round(catConf * 100);
+    // hue = 0° (red) at 0% confidence → 120° (green) at 100% confidence
+    const hue = heat * 1.2;
+    const bg = 'hsl('+hue+',70%,45%)';
+    return '<div class="heat-cell" style="background:'+bg+'" data-tip="'+escapeHtml(c.name)+': '+c.count+' features ('+heat+'% conf)" data-confidence="'+heat+'" role="img" aria-label="'+escapeHtml(c.name)+': '+c.count+' features, confiança '+heat+'%" tabindex="0">'+c.count+'</div>';
+  }).join('');
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  const str = String(s);
+  return str
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, ''');
+}
+
+function showError(message) {
+  const container = document.querySelector('.container');
+  container.innerHTML = '<div class="error-state" role="alert" aria-live="assertive"><strong>Erro ao carregar dashboard</strong><p>'+escapeHtml(message)+'</p></div>';
+}
+
+function showToast(message, type) {
+  const toast = document.getElementById('error-toast');
+  toast.textContent = message;
+  toast.style.background = type === 'error' ? 'var(--color-error-container)' : 'var(--color-tertiary-container)';
+  toast.style.color = type === 'error' ? 'var(--color-on-error-container)' : 'var(--color-on-tertiary-container)';
+  toast.style.display = 'block';
+
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 5000);
+}
+
+function exportCSV() {
+  if (filteredFeatures.length === 0) {
+    showToast('Nenhum dado para exportar.', 'warning');
+    return;
+  }
+
+  try {
+    const header = 'Feature,Categoria,Release,Disponibilidade\n';
+    const rows = filteredFeatures.map(f =>
+      '"'+String(f.name).replace(/"/g,'""')+'","'+String(f.category).replace(/"/g,'""')+'","'+String(f.release).replace(/"/g,'""')+'","'+String(f.availability).replace(/"/g,'""')+'"'
+    ).join('\n');
+    download('features.csv', header + rows, 'text/csv;charset=utf-8');
+    showToast('CSV exportado com sucesso.');
+  } catch (e) {
+    showToast('Erro ao exportar CSV: '+e.message, 'error');
+  }
+}
+
+function exportJSON() {
+  if (filteredFeatures.length === 0) {
+    showToast('Nenhum dado para exportar.', 'warning');
+    return;
+  }
+
+  try {
+    download('features.json', JSON.stringify(filteredFeatures, null, 2), 'application/json;charset=utf-8');
+    showToast('JSON exportado com sucesso.');
+  } catch (e) {
+    showToast('Erro ao exportar JSON: '+e.message, 'error');
+  }
+}
+
+function download(name, content, type) {
+  try {
+    const blob = new Blob([content], {type});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch (e) {
+    // Fallback for browsers that don't support Blob/download
+    const win = window.open('', '_blank');
+    win.document.write('<pre>'+escapeHtml(content)+'</pre>');
+  }
+}
+
+// Keyboard navigation hint
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab' && !document.querySelector('.kbd-hint')) {
+    const hint = document.createElement('div');
+    hint.className = 'kbd-hint';
+    hint.textContent = 'Tab: navegar | Enter/Espaço: ativar | Setas: em selects/heatmap';
+    document.body.appendChild(hint);
+    setTimeout(() => hint.remove(), 5000);
+  }
+});
+
+// Initialize when DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>

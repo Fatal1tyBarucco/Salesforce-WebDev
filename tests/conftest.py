@@ -81,3 +81,9 @@ def mock_llm_service():
     mock.generate_text = AsyncMock(return_value="mocked LLM response")
     mock.classify_text = AsyncMock(return_value={"Security": {"applies": True, "confidence": 0.9}})
     return mock
+
+
+@pytest.fixture
+def llm_service(mock_llm_service):
+    """Alias for mock_llm_service (backward compatibility with tests using llm_service)."""
+    return mock_llm_service

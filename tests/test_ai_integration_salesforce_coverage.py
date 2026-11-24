@@ -4,7 +4,11 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from src.ai.integrations.salesforce import AdoptionSuggestion, OrgMetadata, SalesforceAnalyzer
+from src.ai.integrations.salesforce import (
+    AdoptionSuggestion,
+    OrgMetadata,
+    SalesforceAnalyzer,
+)
 
 
 @pytest.mark.asyncio
@@ -21,7 +25,10 @@ def test_salesforce_analyzer_low_priority_suggestions() -> None:
     # Directly exercise lines 188-191 via the report formatting
     suggestions = [
         AdoptionSuggestion(
-            feature_name="F", suggestion="S", priority="baixa", affected_components=["C"]
+            feature_name="F",
+            suggestion="S",
+            priority="baixa",
+            affected_components=["C"],
         ),
     ]
     # Lines 188-191 are inside generate_impact_report formatting

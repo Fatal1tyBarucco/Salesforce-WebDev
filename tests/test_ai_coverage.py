@@ -30,9 +30,24 @@ class TestMarkdownGenerator:
         from src.ai.generators.markdown import MarkdownGenerator
 
         features = [
-            {"name": "Feature A", "description": "Desc A", "impact": "alto", "audience": "Admins"},
-            {"name": "Feature B", "description": "Desc B", "impact": "médio", "audience": "Devs"},
-            {"name": "Feature C", "description": "Desc C", "impact": "baixo", "audience": "Users"},
+            {
+                "name": "Feature A",
+                "description": "Desc A",
+                "impact": "alto",
+                "audience": "Admins",
+            },
+            {
+                "name": "Feature B",
+                "description": "Desc B",
+                "impact": "médio",
+                "audience": "Devs",
+            },
+            {
+                "name": "Feature C",
+                "description": "Desc C",
+                "impact": "baixo",
+                "audience": "Users",
+            },
         ]
         result = MarkdownGenerator.impact_table(features)
         assert "Feature A" in result
@@ -281,7 +296,10 @@ class TestMarkdownGenerator:
         from src.ai.prompts.validation import ImpactPredictionOutput
 
         prediction = ImpactPredictionOutput(
-            risk_level="baixo", categories=["Cat"], predictions=["Pred"], preparation_suggestions=[]
+            risk_level="baixo",
+            categories=["Cat"],
+            predictions=["Pred"],
+            preparation_suggestions=[],
         )
         result = MarkdownGenerator.prediction_section(prediction)
         assert "Sugestões" not in result
@@ -586,7 +604,11 @@ class TestSalesforceAnalyzer:
         cache = {"custom_objects": ["Account"], "apex_classes": ["MyClass"]}
         analyzer = SalesforceAnalyzer(metadata_cache=cache)
         features = [
-            {"name": "New Feature", "description": "Does something", "category": "Security"},
+            {
+                "name": "New Feature",
+                "description": "Does something",
+                "category": "Security",
+            },
         ]
         suggestions = await analyzer.suggest_adoption(features)
         assert isinstance(suggestions, list)
@@ -851,7 +873,10 @@ class TestSalesforceAnalyzerExtended:
     async def test_suggest_adoption_with_matching_objects(self) -> None:
         from src.ai.integrations.salesforce import SalesforceAnalyzer
 
-        cache = {"custom_objects": ["Account"], "triggers": ["AccountTrigger (Account)"]}
+        cache = {
+            "custom_objects": ["Account"],
+            "triggers": ["AccountTrigger (Account)"],
+        }
         analyzer = SalesforceAnalyzer(metadata_cache=cache)
         features = [
             {

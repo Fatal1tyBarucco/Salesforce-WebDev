@@ -80,7 +80,11 @@ class TestUnifiedLLMClientCoverage:
         """Lines 197-204: auto-detect finds first provider with key."""
         with patch.dict(
             "os.environ",
-            {"OPENROUTER_API_KEY": "or", "OPENCODE_API_KEY": "oc", "GOOGLE_API_KEY": "goog"},
+            {
+                "OPENROUTER_API_KEY": "or",
+                "OPENCODE_API_KEY": "oc",
+                "GOOGLE_API_KEY": "goog",
+            },
         ):
             client = UnifiedLLMClient()
             assert client.provider == "openrouter"

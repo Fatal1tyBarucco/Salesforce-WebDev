@@ -25,7 +25,15 @@ SKIP_AUTHOR_MSG = ["github-actions[bot]", "docs(sync)", "chore(", "fix(", "updat
 
 def get_impact_commits():
     result = subprocess.run(
-        ["git", "log", "--pretty=format:%h|%s", "--no-merges", "-i", "--all", f"-{MAX_COMMITS}"],
+        [
+            "git",
+            "log",
+            "--pretty=format:%h|%s",
+            "--no-merges",
+            "-i",
+            "--all",
+            f"-{MAX_COMMITS}",
+        ],
         capture_output=True,
         text=True,
     )

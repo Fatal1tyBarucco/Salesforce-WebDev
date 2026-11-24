@@ -23,7 +23,11 @@ from playwright.async_api import Browser, Page, Playwright, async_playwright
 
 from .cache_manager import CacheManager
 from .circuit_breaker import CircuitBreaker
-from .config import MAX_RETRY_ATTEMPTS, REQUEST_TIMEOUT_SECONDS, RETRY_BASE_DELAY_SECONDS
+from .config import (
+    MAX_RETRY_ATTEMPTS,
+    REQUEST_TIMEOUT_SECONDS,
+    RETRY_BASE_DELAY_SECONDS,
+)
 from .exceptions import BrowserError, ScraperError
 from .limiters.rate_limiter import RateLimiter
 
@@ -149,7 +153,13 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(html_content or ""),
                 )
-            except (ScraperError, BrowserError, OSError, TimeoutError, PlaywrightTimeout) as e:
+            except (
+                ScraperError,
+                BrowserError,
+                OSError,
+                TimeoutError,
+                PlaywrightTimeout,
+            ) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
 
@@ -203,7 +213,12 @@ class SalesforceReleaseScraper:
                 await page.close()
 
     async def _exec_fetch(
-        self, url: str, page: Page, *, expand_toc: bool = True, return_text: bool = False
+        self,
+        url: str,
+        page: Page,
+        *,
+        expand_toc: bool = True,
+        return_text: bool = False,
     ) -> str:
         """Internal execution of fetch logic on a provided page object."""
         await self._rate_limiter.acquire()
@@ -291,7 +306,13 @@ class SalesforceReleaseScraper:
 
             assert page is not None
             return await self._extract_toc_from_page(url, page)
-        except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
+        except (
+            ScraperError,
+            BrowserError,
+            TimeoutError,
+            PlaywrightTimeout,
+            OSError,
+        ) as e:
             logger.error("ToC extraction failed: %s", e)
             return None
         finally:
@@ -369,7 +390,13 @@ class SalesforceReleaseScraper:
                     attempt,
                     len(text or ""),
                 )
-            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
+            except (
+                ScraperError,
+                BrowserError,
+                TimeoutError,
+                PlaywrightTimeout,
+                OSError,
+            ) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -423,7 +450,13 @@ class SalesforceReleaseScraper:
 
                 logger.warning("Attempt %d: no features found in HTML", attempt)
 
-            except (ScraperError, BrowserError, TimeoutError, PlaywrightTimeout, OSError) as e:
+            except (
+                ScraperError,
+                BrowserError,
+                TimeoutError,
+                PlaywrightTimeout,
+                OSError,
+            ) as e:
                 logger.error("Attempt %d failed: %s", attempt, e)
                 self._circuit_breaker.record_failure()
                 self._browser = None
@@ -629,7 +662,11 @@ class SalesforceReleaseScraper:
                 await browser_to_close.stop()
 
             if dest.exists() and dest.stat().st_size > MIN_VALID_CONTENT_SIZE:
-                logger.info("PDF downloaded via button: %s (%d bytes)", dest, dest.stat().st_size)
+                logger.info(
+                    "PDF downloaded via button: %s (%d bytes)",
+                    dest,
+                    dest.stat().st_size,
+                )
                 return True
             logger.warning("PDF too small: %d bytes", dest.stat().st_size)
             return False

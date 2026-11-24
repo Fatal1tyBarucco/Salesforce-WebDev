@@ -68,7 +68,9 @@ def ledger_service_with_mock_bus(
 # ── _extract_features ───────────────────────────────────────────────────
 
 
-def test_extract_features_returns_list(ledger_service: FeatureEvolutionLedgerService) -> None:
+def test_extract_features_returns_list(
+    ledger_service: FeatureEvolutionLedgerService,
+) -> None:
     features = ledger_service._extract_features("spring_26")
     assert isinstance(features, list)
     assert len(features) > 0
@@ -84,7 +86,9 @@ def test_extract_features_names(ledger_service: FeatureEvolutionLedgerService) -
     assert "apex debug" in names
 
 
-def test_extract_features_normalizes_case(ledger_service: FeatureEvolutionLedgerService) -> None:
+def test_extract_features_normalizes_case(
+    ledger_service: FeatureEvolutionLedgerService,
+) -> None:
     features = ledger_service._extract_features("spring_26")
     names_lower = {f["name"] for f in features}
     # Todos os nomes devem estar em minúsculas após normalização
@@ -99,7 +103,9 @@ def test_extract_features_returns_empty_for_nonexistent_release(
     assert features == []
 
 
-def test_extract_features_skips_dot_files(ledger_service: FeatureEvolutionLedgerService) -> None:
+def test_extract_features_skips_dot_files(
+    ledger_service: FeatureEvolutionLedgerService,
+) -> None:
     features = ledger_service._extract_features("spring_26")
     # Não deve haver feature chamada ".meta" ou similar
     names = {f["name"] for f in features}
@@ -235,7 +241,9 @@ async def test_generate_ledger_stats_match_diff(
 
 
 @pytest.mark.asyncio
-async def test_generate_ledger_cache_write(ledger_service: FeatureEvolutionLedgerService) -> None:
+async def test_generate_ledger_cache_write(
+    ledger_service: FeatureEvolutionLedgerService,
+) -> None:
     """Após generate_ledger, o cache deve conter o diff."""
     await ledger_service.generate_ledger("summer_26", "spring_26")
     cached = ledger_service.get_cached_ledger("summer_26", "spring_26")

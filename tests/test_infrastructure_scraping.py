@@ -256,7 +256,9 @@ class TestCachedScrapingAdapter:
 
     @pytest.mark.asyncio
     async def test_execute_caches_result(
-        self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
+        self,
+        cached_adapter: CachedScrapingAdapter,
+        mock_base_adapter: MockScrapingAdapter,
     ) -> None:
         """Should cache result on first call."""
         import tempfile
@@ -276,7 +278,9 @@ class TestCachedScrapingAdapter:
 
     @pytest.mark.asyncio
     async def test_execute_different_urls_different_cache(
-        self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
+        self,
+        cached_adapter: CachedScrapingAdapter,
+        mock_base_adapter: MockScrapingAdapter,
     ) -> None:
         """Different URLs should have different cache entries."""
         import tempfile
@@ -293,7 +297,9 @@ class TestCachedScrapingAdapter:
 
     @pytest.mark.asyncio
     async def test_execute_expired_cache_refetches(
-        self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
+        self,
+        cached_adapter: CachedScrapingAdapter,
+        mock_base_adapter: MockScrapingAdapter,
     ) -> None:
         """Should refetch when cache is expired."""
         import asyncio
@@ -316,7 +322,9 @@ class TestCachedScrapingAdapter:
 
     @pytest.mark.asyncio
     async def test_execute_creates_cache_directory(
-        self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
+        self,
+        cached_adapter: CachedScrapingAdapter,
+        mock_base_adapter: MockScrapingAdapter,
     ) -> None:
         """Should create cache directory if it doesn't exist."""
         import tempfile
@@ -333,7 +341,9 @@ class TestCachedScrapingAdapter:
 
     @pytest.mark.asyncio
     async def test_execute_cache_key_is_deterministic(
-        self, cached_adapter: CachedScrapingAdapter, mock_base_adapter: MockScrapingAdapter
+        self,
+        cached_adapter: CachedScrapingAdapter,
+        mock_base_adapter: MockScrapingAdapter,
     ) -> None:
         """Cache key should be deterministic for same URL."""
         import hashlib

@@ -178,7 +178,13 @@ class PipelineOrchestrator:
             async def _process() -> bool:
                 return bool(
                     await process_single_release(
-                        release, scraper, impact_parser, generator, translator, False, llm
+                        release,
+                        scraper,
+                        impact_parser,
+                        generator,
+                        translator,
+                        False,
+                        llm,
                     )
                 )
 

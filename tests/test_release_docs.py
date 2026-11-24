@@ -284,9 +284,24 @@ class TestBuildReleaseBlockDeterministic:
         from src.release_docs import _build_release_block
 
         metas = [
-            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
-            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "categories": [],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            },
+            {
+                "name": "Spring '26",
+                "slug": "spring_26",
+                "release_id": 260,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -305,8 +320,18 @@ class TestBuildReleaseBlockDeterministic:
         from src.release_docs import _build_release_block
 
         metas = [
-            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "categories": [],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -374,7 +399,12 @@ class TestUpdateSingleReadmeIdempotent:
         readme.write_text(readme_text, encoding="utf-8")
 
         metas = [
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            },
             {
                 "name": "Winter '26",
                 "slug": "winter_26",
@@ -402,7 +432,14 @@ class TestUpdateSingleReadmeIdempotent:
         readme = tmp_path / "README.md"
         readme.write_text("# Title\n\nNo releases section here.\n", encoding="utf-8")
 
-        metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            }
+        ]
 
         class _StubSummarizer:
             async def summarize(self, slug: str, lang: str = "pt_BR"):
@@ -423,7 +460,14 @@ class TestUpdateSingleReadmeIdempotent:
             encoding="utf-8",
         )
 
-        metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            }
+        ]
 
         class _StubSummarizer:
             async def summarize(self, slug: str, lang: str = "pt_BR"):
@@ -479,7 +523,10 @@ class TestUpdateBadge:
 
         with (
             patch("src.release_docs.RELEASES_DIR", str(tmp_path / "releases")),
-            patch("src.ai_automation.generate_dynamic_badge", return_value="![new-badge](x)"),
+            patch(
+                "src.ai_automation.generate_dynamic_badge",
+                return_value="![new-badge](x)",
+            ),
         ):
             release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
             _update_badge([release])
@@ -506,7 +553,10 @@ class TestUpdateBadge:
 
         with (
             patch("src.release_docs.RELEASES_DIR", str(tmp_path / "releases")),
-            patch("src.ai_automation.generate_dynamic_badge", return_value="![inserted](y)"),
+            patch(
+                "src.ai_automation.generate_dynamic_badge",
+                return_value="![inserted](y)",
+            ),
         ):
             release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
             _update_badge([release])
@@ -1001,7 +1051,12 @@ class TestGenerateReleaseFiles:
         ):
             paths = asyncio.run(
                 _generate_release_files(
-                    release, [cat], gen, translator, locale="pt_BR", enrichments={"x": enrichment}
+                    release,
+                    [cat],
+                    gen,
+                    translator,
+                    locale="pt_BR",
+                    enrichments={"x": enrichment},
                 )
             )
 
@@ -1102,10 +1157,30 @@ class TestUpdateSingleReadmeLimitAndArchive:
         )
 
         metas = [
-            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
-            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
-            {"name": "Winter '26", "slug": "winter_26", "release_id": 258, "categories": []},
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "categories": [],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            },
+            {
+                "name": "Spring '26",
+                "slug": "spring_26",
+                "release_id": 260,
+                "categories": [],
+            },
+            {
+                "name": "Winter '26",
+                "slug": "winter_26",
+                "release_id": 258,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -1141,9 +1216,24 @@ class TestUpdateSingleReadmeLimitAndArchive:
         )
 
         metas = [
-            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
-            {"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []},
-            {"name": "Spring '26", "slug": "spring_26", "release_id": 260, "categories": []},
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "categories": [],
+            },
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            },
+            {
+                "name": "Spring '26",
+                "slug": "spring_26",
+                "release_id": 260,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -1175,7 +1265,12 @@ class TestUpdateSingleReadmeLimitAndArchive:
         )
 
         metas = [
-            {"name": "Winter '27", "slug": "winter_27", "release_id": 264, "categories": []},
+            {
+                "name": "Winter '27",
+                "slug": "winter_27",
+                "release_id": 264,
+                "categories": [],
+            },
         ]
 
         class _StubSummarizer:
@@ -1336,7 +1431,14 @@ class TestBuildReleaseBlockLanguages:
 
         from src.release_docs import _build_release_block
 
-        metas = [{"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []}]
+        metas = [
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            }
+        ]
 
         summary = MagicMock()
         summary.executive_summary = "EN summary"

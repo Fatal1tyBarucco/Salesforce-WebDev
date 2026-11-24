@@ -408,7 +408,9 @@ class ExistingLLMClient:
                             MAX_ATTEMPTS,
                         )
                 delay, delay_source = _retry_delay_with_source(
-                    headers.get("retry-after"), headers.get("x-ratelimit-reset"), attempt
+                    headers.get("retry-after"),
+                    headers.get("x-ratelimit-reset"),
+                    attempt,
                 )
                 logger.warning(
                     "OpenRouter request failed (attempt %s/%s); retrying after %.1fs [%s; delay_source=%s]",
@@ -449,7 +451,12 @@ class ExistingLLMClient:
                     validated = schema.model_validate(payload)
                     return validated.model_dump(mode="json")
                 return payload
-            except (json.JSONDecodeError, ValidationError, ValueError, TypeError) as exc:
+            except (
+                json.JSONDecodeError,
+                ValidationError,
+                ValueError,
+                TypeError,
+            ) as exc:
                 last_error = exc
                 issue, guidance = _classify_output_failure(exc, completion)
                 diagnosis = (
@@ -525,7 +532,10 @@ def _retry_delay_with_source(
     retry_after: str | None, rate_reset: str | None, attempt: int
 ) -> tuple[float, str]:
     """Honor parseable server retry hints; otherwise use bounded exponential backoff."""
-    for header, value in (("retry-after", retry_after), ("x-ratelimit-reset", rate_reset)):
+    for header, value in (
+        ("retry-after", retry_after),
+        ("x-ratelimit-reset", rate_reset),
+    ):
         seconds = _parse_retry_seconds(value)
         if seconds is not None:
             return float(max(0.0, min(seconds, 120.0))), header

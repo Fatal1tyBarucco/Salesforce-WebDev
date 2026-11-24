@@ -256,7 +256,11 @@ async def triage_release(
             summary="Release não encontrada para análise.",
         )
 
-    from .comparison import calculate_quality_metrics, compare_releases, detect_regressions
+    from .comparison import (
+        calculate_quality_metrics,
+        compare_releases,
+        detect_regressions,
+    )
 
     metrics = await calculate_quality_metrics(load_meta_fn, slug)
     predictions = await predict_next_release_impact(load_meta_fn)

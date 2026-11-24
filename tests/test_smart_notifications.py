@@ -46,14 +46,29 @@ def test_filter_notifications_by_priority():
     """smart_notifications: filters by minimum priority."""
     engine = SmartNotificationEngine(base_dir="/tmp/nonexistent")
     user = UserPreferences(
-        user_id="test", interests=[], categories=[], min_priority=NotificationPriority.HIGH
+        user_id="test",
+        interests=[],
+        categories=[],
+        min_priority=NotificationPriority.HIGH,
     )
     notifications = [
         Notification(
-            "Urgent", "Body", NotificationPriority.URGENT, "a", "r1", 0.9, [DeliveryChannel.CONSOLE]
+            "Urgent",
+            "Body",
+            NotificationPriority.URGENT,
+            "a",
+            "r1",
+            0.9,
+            [DeliveryChannel.CONSOLE],
         ),
         Notification(
-            "Low", "Body", NotificationPriority.LOW, "b", "r1", 0.3, [DeliveryChannel.CONSOLE]
+            "Low",
+            "Body",
+            NotificationPriority.LOW,
+            "b",
+            "r1",
+            0.3,
+            [DeliveryChannel.CONSOLE],
         ),
     ]
     filtered = engine.filter_notifications(notifications, user)
@@ -165,14 +180,29 @@ def test_notification_priority_comparison():
     """smart_notifications: priority comparison works."""
     engine = SmartNotificationEngine(base_dir="/tmp/nonexistent")
     user = UserPreferences(
-        user_id="test", interests=[], categories=[], min_priority=NotificationPriority.NORMAL
+        user_id="test",
+        interests=[],
+        categories=[],
+        min_priority=NotificationPriority.NORMAL,
     )
     notifications = [
         Notification(
-            "A", "Body", NotificationPriority.URGENT, "a", "r1", 0.9, [DeliveryChannel.CONSOLE]
+            "A",
+            "Body",
+            NotificationPriority.URGENT,
+            "a",
+            "r1",
+            0.9,
+            [DeliveryChannel.CONSOLE],
         ),
         Notification(
-            "B", "Body", NotificationPriority.LOW, "b", "r1", 0.3, [DeliveryChannel.CONSOLE]
+            "B",
+            "Body",
+            NotificationPriority.LOW,
+            "b",
+            "r1",
+            0.3,
+            [DeliveryChannel.CONSOLE],
         ),
     ]
     filtered = engine.filter_notifications(notifications, user)
@@ -185,10 +215,22 @@ def test_empty_interests_matches_all():
     user = UserPreferences(user_id="test", interests=[], categories=[])
     notifications = [
         Notification(
-            "A", "Body", NotificationPriority.NORMAL, "a", "r1", 0.5, [DeliveryChannel.CONSOLE]
+            "A",
+            "Body",
+            NotificationPriority.NORMAL,
+            "a",
+            "r1",
+            0.5,
+            [DeliveryChannel.CONSOLE],
         ),
         Notification(
-            "B", "Body", NotificationPriority.NORMAL, "b", "r1", 0.5, [DeliveryChannel.CONSOLE]
+            "B",
+            "Body",
+            NotificationPriority.NORMAL,
+            "b",
+            "r1",
+            0.5,
+            [DeliveryChannel.CONSOLE],
         ),
     ]
     filtered = engine.filter_notifications(notifications, user)

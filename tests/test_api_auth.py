@@ -86,7 +86,10 @@ class TestAuthEnabled:
         with patch("src.api._API_KEY", "secret-key"):
             handler = _make_handler(
                 "/releases",
-                headers={"Authorization": "Bearer   secret-key  ", "Content-Length": "0"},
+                headers={
+                    "Authorization": "Bearer   secret-key  ",
+                    "Content-Length": "0",
+                },
             )
             assert handler._check_auth() is True
 
@@ -128,7 +131,10 @@ class TestAuthEnabled:
         d = tmp_path / "summer_26"
         d.mkdir()
         (d / ".meta.json").write_text(json.dumps({"name": "S", "release_id": 262}))
-        with patch("src.api._API_KEY", "secret-key"), patch("src.api.RELEASES_DIR", str(tmp_path)):
+        with (
+            patch("src.api._API_KEY", "secret-key"),
+            patch("src.api.RELEASES_DIR", str(tmp_path)),
+        ):
             handler = _make_handler(
                 "/releases",
                 headers={"X-API-Key": "secret-key", "Content-Length": "0"},

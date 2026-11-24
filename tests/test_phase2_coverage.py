@@ -238,7 +238,8 @@ class TestReportingEdgeCases:
         from src.automation.reporting import generate_changelog
 
         with patch(
-            "src.automation.reporting._get_releases_dir", return_value=tmp_path / "nonexistent"
+            "src.automation.reporting._get_releases_dir",
+            return_value=tmp_path / "nonexistent",
         ):
             report = await generate_changelog(llm=None, load_meta_fn=lambda slug: None)
         assert "No releases found" in report

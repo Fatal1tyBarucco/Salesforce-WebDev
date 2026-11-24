@@ -12,7 +12,11 @@ import pytest
 
 from src.config import ReleaseInfo
 from src.events import EventBus
-from src.release_discovery import DiscoveryResult, DiscoveryStrategy, ReleaseDiscoveryService
+from src.release_discovery import (
+    DiscoveryResult,
+    DiscoveryStrategy,
+    ReleaseDiscoveryService,
+)
 
 
 def _make_release(release_id: int, slug: str = "", name: str = "") -> ReleaseInfo:

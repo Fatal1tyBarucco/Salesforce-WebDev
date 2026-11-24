@@ -105,7 +105,12 @@ def test_full_ai_pipeline_integration(tmp_path: Path) -> None:
         assert len(scores) > 0
 
         prediction = asyncio.run(predict_next_release_impact())
-        assert prediction.overall_risk_level in ["alto", "moderado", "baixo", "indeterminado"]
+        assert prediction.overall_risk_level in [
+            "alto",
+            "moderado",
+            "baixo",
+            "indeterminado",
+        ]
 
         prediction_report = asyncio.run(generate_impact_prediction_report())
         assert "Previsão de Impacto" in prediction_report

@@ -30,7 +30,11 @@ import pytest
 from freezegun import freeze_time
 
 import src.main as main_module
-from src.release_docs import _build_release_block, _slugify_category, _update_single_readme
+from src.release_docs import (
+    _build_release_block,
+    _slugify_category,
+    _update_single_readme,
+)
 from src.release_summarizer import ReleaseSummarizer
 from tests.factories import make_release, make_release_metadata
 from tests.test_characterization_golden import (

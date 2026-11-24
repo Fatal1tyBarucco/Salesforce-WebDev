@@ -401,7 +401,10 @@ async def test_enrich_meta_with_classification_success(tmp_path: Path) -> None:
     release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")
 
     mock_classification = MagicMock()
-    mock_classification.features = [MagicMock(confidence=0.9), MagicMock(confidence=0.8)]
+    mock_classification.features = [
+        MagicMock(confidence=0.9),
+        MagicMock(confidence=0.8),
+    ]
     mock_classification.total_features = 2
     mock_classification.by_impact = {"high": 1, "medium": 1}
     mock_classification.by_type = {"new": 2}
@@ -493,7 +496,10 @@ async def test_generate_summary_cache_ai_success(tmp_path: Path) -> None:
                 "slug": "summer_26",
                 "release_id": 262,
                 "total_features": 10,
-                "categories": [{"name": "Lightning", "count": 5}, {"name": "Apex", "count": 5}],
+                "categories": [
+                    {"name": "Lightning", "count": 5},
+                    {"name": "Apex", "count": 5},
+                ],
             }
         )
     )
@@ -598,7 +604,8 @@ async def test_generate_summary_cache_ai_exception_falls_back(tmp_path: Path) ->
 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
         with patch(
-            "src.release_summarizer.ReleaseSummarizer", side_effect=ImportError("not available")
+            "src.release_summarizer.ReleaseSummarizer",
+            side_effect=ImportError("not available"),
         ):
             with patch("src.main._validate_summary_cache", return_value=True):
                 await generate_summary_cache(release, categories, mock_llm)
@@ -624,7 +631,10 @@ async def test_generate_summary_cache_fallback_with_categories(tmp_path: Path) -
                 "slug": "summer_26",
                 "release_id": 262,
                 "total_features": 10,
-                "categories": [{"name": "Lightning", "count": 5}, {"name": "Apex", "count": 5}],
+                "categories": [
+                    {"name": "Lightning", "count": 5},
+                    {"name": "Apex", "count": 5},
+                ],
             }
         )
     )
@@ -645,7 +655,9 @@ async def test_generate_summary_cache_fallback_with_categories(tmp_path: Path) -
 
 
 @pytest.mark.asyncio
-async def test_generate_summary_cache_fallback_with_memory_categories(tmp_path: Path) -> None:
+async def test_generate_summary_cache_fallback_with_memory_categories(
+    tmp_path: Path,
+) -> None:
     """Test fallback generation with categories from memory when meta empty."""
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
@@ -853,14 +865,17 @@ async def test_generate_ai_reports_async_triage_failure(tmp_path: Path) -> None:
         patch("src.main.KNOWN_RELEASES", KNOWN_RELEASES),
         patch("src.documentation_service._update_badge"),
         patch.dict(
-            "sys.modules", _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed"))
+            "sys.modules",
+            _ai_modules(mock_ai, triage_side_effect=LLMError("triage failed")),
         ),
     ):
         await generate_ai_reports_async([release])
 
 
 @pytest.mark.asyncio
-async def test_generate_ai_reports_async_impact_and_notification(tmp_path: Path) -> None:
+async def test_generate_ai_reports_async_impact_and_notification(
+    tmp_path: Path,
+) -> None:
     """Test impact analysis and notification generation."""
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
@@ -1348,7 +1363,10 @@ async def test_generate_summary_cache_fallback_exception(tmp_path: Path) -> None
     categories = [MagicMock()]
 
     with patch("src.main.RELEASES_DIR", str(releases_dir)):
-        with patch("src.main._validate_summary_cache", side_effect=ValueError("validation error")):
+        with patch(
+            "src.main._validate_summary_cache",
+            side_effect=ValueError("validation error"),
+        ):
             with patch("src.main.logger") as mock_logger:
                 await generate_summary_cache(release, categories, None)
                 mock_logger.error.assert_called()
@@ -1456,7 +1474,14 @@ async def test_process_release_analytics_notification_error(tmp_path: Path) -> N
     release_dir = releases_dir / "summer_26"
     release_dir.mkdir()
     (release_dir / ".meta.json").write_text(
-        json.dumps({"name": "Summer '26", "slug": "summer_26", "release_id": 262, "categories": []})
+        json.dumps(
+            {
+                "name": "Summer '26",
+                "slug": "summer_26",
+                "release_id": 262,
+                "categories": [],
+            }
+        )
     )
 
     release = ReleaseInfo(name="Summer '26", release_id=262, slug="summer_26")

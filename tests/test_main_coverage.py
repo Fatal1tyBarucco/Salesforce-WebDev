@@ -436,7 +436,8 @@ async def test_feature_classification_enriches_meta(tmp_path: Path) -> None:
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
-            "sys.modules", {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)}
+            "sys.modules",
+            {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)},
         ),
     ):
         from src.main import run_pipeline
@@ -488,7 +489,8 @@ async def test_feature_classification_no_meta_path(tmp_path: Path) -> None:
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
-            "sys.modules", {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)}
+            "sys.modules",
+            {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)},
         ),
     ):
         from src.main import run_pipeline
@@ -536,7 +538,8 @@ async def test_feature_classification_exception(tmp_path: Path) -> None:
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
-            "sys.modules", {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)}
+            "sys.modules",
+            {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)},
         ),
     ):
         from src.main import run_pipeline
@@ -586,7 +589,8 @@ async def test_feature_classification_empty_features(tmp_path: Path) -> None:
         patch("src.health.set_pipeline_status"),
         patch("src.main.logger"),
         patch.dict(
-            "sys.modules", {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)}
+            "sys.modules",
+            {"src.feature_classifier": MagicMock(FeatureClassifier=mock_cls)},
         ),
     ):
         from src.main import run_pipeline
@@ -631,7 +635,10 @@ async def test_subcategory_entry_translation_en_us(tmp_path: Path) -> None:
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
-        patch("src.salesforce.generate_category_trailhead_section", return_value="Trailhead"),
+        patch(
+            "src.salesforce.generate_category_trailhead_section",
+            return_value="Trailhead",
+        ),
     ):
         await _generate_release_files(release, [cat], MagicMock(), mock_translator, locale="en_US")
 
@@ -661,7 +668,10 @@ async def test_no_translation_for_pt_br(tmp_path: Path) -> None:
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
         patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
-        patch("src.salesforce.generate_category_trailhead_section", return_value="Trailhead"),
+        patch(
+            "src.salesforce.generate_category_trailhead_section",
+            return_value="Trailhead",
+        ),
     ):
         await _generate_release_files(release, [cat], MagicMock(), mock_translator, locale="pt_BR")
 
@@ -701,7 +711,8 @@ async def testupdate_readme_all_english_with_heading(tmp_path: Path) -> None:
             encoding="utf-8",
         )
         (tmp_path / "README.en.md").write_text(
-            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nOld EN.\n\n## Next\n", encoding="utf-8"
+            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nOld EN.\n\n## Next\n",
+            encoding="utf-8",
         )
         os.chdir(tmp_path)
         with (
@@ -743,7 +754,8 @@ async def testupdate_readme_all_english_no_heading_creates_file(tmp_path: Path) 
     original_dir = Path.cwd()
     try:
         (tmp_path / "README.md").write_text(
-            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n", encoding="utf-8"
+            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n",
+            encoding="utf-8",
         )
         (tmp_path / "README.en.md").write_text(
             "# Title\n\nSome old content without heading.\n", encoding="utf-8"
@@ -785,7 +797,8 @@ async def testupdate_readme_all_english_no_existing_file(tmp_path: Path) -> None
     original_dir = Path.cwd()
     try:
         (tmp_path / "README.md").write_text(
-            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n", encoding="utf-8"
+            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n",
+            encoding="utf-8",
         )
         en_file = tmp_path / "README.en.md"
         if en_file.exists():
@@ -808,7 +821,10 @@ async def testupdate_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
     releases_dir = tmp_path / "releases"
     releases_dir.mkdir()
 
-    for slug, name, rid in [("summer_26", "Summer '26", 262), ("spring_26", "Spring '26", 260)]:
+    for slug, name, rid in [
+        ("summer_26", "Summer '26", 262),
+        ("spring_26", "Spring '26", 260),
+    ]:
         rd = releases_dir / slug
         rd.mkdir()
         (rd / ".meta.json").write_text(
@@ -830,7 +846,8 @@ async def testupdate_readme_all_old_releases_collapsed(tmp_path: Path) -> None:
     original_dir = Path.cwd()
     try:
         (tmp_path / "README.md").write_text(
-            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n", encoding="utf-8"
+            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n",
+            encoding="utf-8",
         )
         en_file = tmp_path / "README.en.md"
         if en_file.exists():
@@ -913,7 +930,8 @@ async def testupdate_readme_all_no_summary(tmp_path: Path) -> None:
     original_dir = Path.cwd()
     try:
         (tmp_path / "README.md").write_text(
-            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n", encoding="utf-8"
+            "# Title\n\n" + RELEASE_SECTION_HEADING + "\n\nContent.\n\n## Next\n",
+            encoding="utf-8",
         )
         en_file = tmp_path / "README.en.md"
         if en_file.exists():

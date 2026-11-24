@@ -5,7 +5,10 @@ from __future__ import annotations
 from typing import Any
 
 from src.core.pipeline.steps import NotificationStep
-from src.infrastructure.messaging import CompositeNotificationAdapter, NotificationAdapter
+from src.infrastructure.messaging import (
+    CompositeNotificationAdapter,
+    NotificationAdapter,
+)
 from src.models.enrichment import ReleaseEnrichment
 
 
@@ -35,7 +38,10 @@ def create_notification_step(
     adapters: list[NotificationAdapter] = []
 
     if github_repo:
-        from src.infrastructure.messaging import GitHubNotificationAdapter, GitHubNotificationConfig
+        from src.infrastructure.messaging import (
+            GitHubNotificationAdapter,
+            GitHubNotificationConfig,
+        )
 
         adapters.append(
             GitHubNotificationAdapter(
@@ -44,14 +50,20 @@ def create_notification_step(
         )
 
     if slack_webhook:
-        from src.infrastructure.messaging import SlackNotificationAdapter, SlackNotificationConfig
+        from src.infrastructure.messaging import (
+            SlackNotificationAdapter,
+            SlackNotificationConfig,
+        )
 
         adapters.append(
             SlackNotificationAdapter(SlackNotificationConfig(webhook_url=slack_webhook))
         )
 
     if email_config:
-        from src.infrastructure.messaging import EmailNotificationAdapter, EmailNotificationConfig
+        from src.infrastructure.messaging import (
+            EmailNotificationAdapter,
+            EmailNotificationConfig,
+        )
 
         adapters.append(EmailNotificationAdapter(EmailNotificationConfig(**email_config)))
 

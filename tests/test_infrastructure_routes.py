@@ -203,7 +203,10 @@ class TestCreateRestRouter:
         assert data["service"] == "salesforce-webdev"
 
     def test_list_releases(
-        self, client: TestClient, mock_storage: AsyncMock, sample_release_metadata: ReleaseMetadata
+        self,
+        client: TestClient,
+        mock_storage: AsyncMock,
+        sample_release_metadata: ReleaseMetadata,
     ) -> None:
         """GET /releases should return list of releases."""
         mock_storage.list_releases.return_value = ["summer_26"]
@@ -226,7 +229,10 @@ class TestCreateRestRouter:
         assert data["releases"] == []
 
     def test_get_release_found(
-        self, client: TestClient, mock_storage: AsyncMock, sample_release_metadata: ReleaseMetadata
+        self,
+        client: TestClient,
+        mock_storage: AsyncMock,
+        sample_release_metadata: ReleaseMetadata,
     ) -> None:
         """GET /releases/{slug} should return release when found."""
         mock_storage.load_release_metadata.return_value = sample_release_metadata
@@ -247,7 +253,10 @@ class TestCreateRestRouter:
         assert "not found" in response.json()["detail"].lower()
 
     def test_get_enrichment_found(
-        self, client: TestClient, mock_storage: AsyncMock, sample_enrichment: ReleaseEnrichment
+        self,
+        client: TestClient,
+        mock_storage: AsyncMock,
+        sample_enrichment: ReleaseEnrichment,
     ) -> None:
         """GET /releases/{slug}/enrichment should return enrichment when found."""
         mock_storage.load_enrichment.return_value = sample_enrichment
@@ -298,7 +307,10 @@ class TestCreateRestRouter:
         assert "not found" in response.json()["detail"].lower()
 
     def test_get_diff_success(
-        self, client: TestClient, mock_storage: AsyncMock, sample_release_metadata: ReleaseMetadata
+        self,
+        client: TestClient,
+        mock_storage: AsyncMock,
+        sample_release_metadata: ReleaseMetadata,
     ) -> None:
         """GET /releases/diff should return diff between releases."""
         prev_meta = ReleaseMetadata(
@@ -315,7 +327,10 @@ class TestCreateRestRouter:
                 FeatureCategory(name="Apex", count=5),
             ],
         )
-        mock_storage.load_release_metadata.side_effect = [sample_release_metadata, prev_meta]
+        mock_storage.load_release_metadata.side_effect = [
+            sample_release_metadata,
+            prev_meta,
+        ]
 
         response = client.get("/api/v1/releases/diff?current=summer_26&previous=spring_26")
         assert response.status_code == 200
@@ -399,7 +414,10 @@ class TestCreateRestRouter:
         assert "not found" in response.json()["detail"].lower()
 
     def test_summarize_enrichment_not_found(
-        self, client: TestClient, mock_storage: AsyncMock, sample_release_metadata: ReleaseMetadata
+        self,
+        client: TestClient,
+        mock_storage: AsyncMock,
+        sample_release_metadata: ReleaseMetadata,
     ) -> None:
         """POST /summarize should return 404 when enrichment not found."""
         mock_storage.load_release_metadata.return_value = sample_release_metadata

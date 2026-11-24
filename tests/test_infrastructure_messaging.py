@@ -274,7 +274,14 @@ class TestSlackNotificationAdapter:
             release_slug="summer_26",
             locale="pt_BR",
             executive_summary="Resumo executivo de teste.",
-            strategic_themes=("Tema 1", "Tema 2", "Tema 3", "Tema 4", "Tema 5", "Tema 6"),
+            strategic_themes=(
+                "Tema 1",
+                "Tema 2",
+                "Tema 3",
+                "Tema 4",
+                "Tema 5",
+                "Tema 6",
+            ),
             category_enrichments=(
                 CategoryEnrichment(
                     category_name="Lightning",
@@ -288,7 +295,11 @@ class TestSlackNotificationAdapter:
                     generated_at="2026-05-01T10:00:00",
                 ),
             ),
-            migration_checklist=("Verificar deploy", "Testar funcionalidade", "Comunicar equipes"),
+            migration_checklist=(
+                "Verificar deploy",
+                "Testar funcionalidade",
+                "Comunicar equipes",
+            ),
             generated_at="2026-05-01T10:00:00",
         )
 
@@ -702,7 +713,9 @@ class TestCompositeNotificationAdapter:
         )
 
     def test_init_sets_properties(
-        self, composite_adapter: CompositeNotificationAdapter, mock_adapters: list[MagicMock]
+        self,
+        composite_adapter: CompositeNotificationAdapter,
+        mock_adapters: list[MagicMock],
     ) -> None:
         """Should initialize with correct properties."""
         assert composite_adapter.adapters == mock_adapters
@@ -742,7 +755,9 @@ class TestCompositeNotificationAdapter:
 
     @pytest.mark.asyncio
     async def test_send_calls_all_adapters(
-        self, composite_adapter: CompositeNotificationAdapter, mock_adapters: list[MagicMock]
+        self,
+        composite_adapter: CompositeNotificationAdapter,
+        mock_adapters: list[MagicMock],
     ) -> None:
         """send should call all adapters."""
         result = await composite_adapter.send("Test message")
@@ -753,7 +768,9 @@ class TestCompositeNotificationAdapter:
 
     @pytest.mark.asyncio
     async def test_send_returns_false_when_all_fail(
-        self, composite_adapter: CompositeNotificationAdapter, mock_adapters: list[MagicMock]
+        self,
+        composite_adapter: CompositeNotificationAdapter,
+        mock_adapters: list[MagicMock],
     ) -> None:
         """send should return False when all adapters return False."""
         mock_adapters[0].send = AsyncMock(return_value=False)
@@ -765,7 +782,9 @@ class TestCompositeNotificationAdapter:
 
     @pytest.mark.asyncio
     async def test_send_handles_adapter_errors(
-        self, composite_adapter: CompositeNotificationAdapter, mock_adapters: list[MagicMock]
+        self,
+        composite_adapter: CompositeNotificationAdapter,
+        mock_adapters: list[MagicMock],
     ) -> None:
         """send should handle adapter errors gracefully."""
         mock_adapters[0].send = AsyncMock(side_effect=Exception("Adapter 1 failed"))

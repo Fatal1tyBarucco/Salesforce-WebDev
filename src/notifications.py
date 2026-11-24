@@ -129,7 +129,10 @@ def _format_slack_blocks(digest: ReleaseDigest, profile: NotificationProfile) ->
         "blocks": [
             {
                 "type": "header",
-                "text": {"type": "plain_text", "text": f"🚀 {digest.release_name} — Release Notes"},
+                "text": {
+                    "type": "plain_text",
+                    "text": f"🚀 {digest.release_name} — Release Notes",
+                },
             },
             {
                 "type": "section",

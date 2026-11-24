@@ -154,7 +154,10 @@ class PlaywrightScraperAdapter(ScraperPort):
             else self.config.min_valid_content_size
         ):
             logger.debug(
-                "Extracted %s with selector '%s' (%d bytes)", contract.name, selector, len(html)
+                "Extracted %s with selector '%s' (%d bytes)",
+                contract.name,
+                selector,
+                len(html),
             )
             return str(html)
 
@@ -304,7 +307,9 @@ class PlaywrightScraperAdapter(ScraperPort):
 
                 if not self._browser:
                     raise ScraperError(
-                        "Browser not available", code=ScraperErrorCode.BROWSER_CRASH, url=url
+                        "Browser not available",
+                        code=ScraperErrorCode.BROWSER_CRASH,
+                        url=url,
                     )
 
                 context = await self._browser.new_context(accept_downloads=True)
@@ -375,7 +380,9 @@ class PlaywrightScraperAdapter(ScraperPort):
 
             if attempt < self.config.max_retry_attempts:
                 delay = calculate_jittered_delay(
-                    RETRY_BASE_DELAY_SECONDS, attempt, self.config.max_retry_delay_seconds
+                    RETRY_BASE_DELAY_SECONDS,
+                    attempt,
+                    self.config.max_retry_delay_seconds,
                 )
                 logger.info("[%s] Retrying in %.1fs...", correlation_id, delay)
                 await asyncio.sleep(delay)
@@ -453,7 +460,9 @@ class PlaywrightScraperAdapter(ScraperPort):
                 page = await context.new_page()
                 try:
                     await page.goto(
-                        url, wait_until="domcontentloaded", timeout=REQUEST_TIMEOUT_SECONDS * 1000
+                        url,
+                        wait_until="domcontentloaded",
+                        timeout=REQUEST_TIMEOUT_SECONDS * 1000,
                     )
                     await page.wait_for_timeout(5000)
                     await self._expand_toc(page, correlation_id)
@@ -462,7 +471,12 @@ class PlaywrightScraperAdapter(ScraperPort):
                         page,
                         SelectorContract(
                             name="toc",
-                            selectors=(".toc-container", "ul.tree", '[role="tree"]', "nav.toc"),
+                            selectors=(
+                                ".toc-container",
+                                "ul.tree",
+                                '[role="tree"]',
+                                "nav.toc",
+                            ),
                             required=True,
                         ),
                     )
@@ -472,7 +486,8 @@ class PlaywrightScraperAdapter(ScraperPort):
 
                     # Fallback: return full page
                     logger.warning(
-                        "[%s] No TOC container found, returning full page", correlation_id
+                        "[%s] No TOC container found, returning full page",
+                        correlation_id,
                     )
                     return str(await page.content())
 
@@ -636,7 +651,9 @@ class PlaywrightScraperAdapter(ScraperPort):
                 return False
             page = await self._browser.new_page()
             await page.goto(
-                "https://help.salesforce.com", wait_until="domcontentloaded", timeout=10000
+                "https://help.salesforce.com",
+                wait_until="domcontentloaded",
+                timeout=10000,
             )
             await page.close()
             return True
@@ -706,7 +723,7 @@ class PlaywrightScrapingAdapter:
             try:
                 response = await page.goto(
                     url,
-                    wait_until="networkidle" if self.wait_for_selector else "domcontentloaded",
+                    wait_until=("networkidle" if self.wait_for_selector else "domcontentloaded"),
                     timeout=self.timeout_ms,
                 )
                 if response and response.status >= 400:

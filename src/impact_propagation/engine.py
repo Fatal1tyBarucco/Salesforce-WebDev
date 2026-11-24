@@ -45,7 +45,8 @@ class ImpactPropagationEngine:
     ) -> None:
         self._llm = llm or LLMService()
         self._cache = cache or CacheManager(
-            cache_dir=Path(CACHE_DIR) / "impact_propagation", ttl_seconds=DEFAULT_CACHE_TTL
+            cache_dir=Path(CACHE_DIR) / "impact_propagation",
+            ttl_seconds=DEFAULT_CACHE_TTL,
         )
         self._max_depth = max_depth
         self._breaker = CircuitBreaker(threshold=3, cooldown=120.0)

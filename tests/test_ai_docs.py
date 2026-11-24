@@ -514,7 +514,9 @@ def test_diagnostic_helpers_bound_and_describe_odd_failures(
     assert _provider_error(quoted_body) == "quota hit"
 
 
-def test_collector_ignores_markdown_and_returns_real_diff(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_collector_ignores_markdown_and_returns_real_diff(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     def fake_run(cmd: list[str]) -> str:
         if "--verify" in cmd:
             return "abc123\n"

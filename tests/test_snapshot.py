@@ -168,7 +168,9 @@ class TestParserSnapshot:
         assert quality == snapshot
 
     @staticmethod
-    def _serialize_categories(categories: list[FeatureImpactCategory]) -> dict[str, object]:
+    def _serialize_categories(
+        categories: list[FeatureImpactCategory],
+    ) -> dict[str, object]:
         """Serialize categories for snapshot comparison."""
         return {
             "count": len(categories),

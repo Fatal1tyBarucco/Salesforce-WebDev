@@ -470,7 +470,11 @@ class FeatureImpactParser:
         categories: list[FeatureImpactCategory] = []
         current_cat: FeatureImpactCategory | None = None
         current_sub: str = ""
-        self._last_stats: dict[str, int] = {"total_lines": len(lines), "parsed": 0, "skipped": 0}
+        self._last_stats: dict[str, int] = {
+            "total_lines": len(lines),
+            "parsed": 0,
+            "skipped": 0,
+        }
         i = 0
 
         while i < len(lines):

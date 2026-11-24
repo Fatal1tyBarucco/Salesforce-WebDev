@@ -18,7 +18,14 @@ USER_PROFILES: dict[str, dict[str, Any]] = {
             "User Management",
             "Authentication",
         ],
-        "keywords": ["admin", "security", "compliance", "governance", "permission", "auth"],
+        "keywords": [
+            "admin",
+            "security",
+            "compliance",
+            "governance",
+            "permission",
+            "auth",
+        ],
         "priority_boost": ["Security", "Compliance"],
     },
     "developer": {
@@ -33,7 +40,15 @@ USER_PROFILES: dict[str, dict[str, Any]] = {
             "Flow",
             "Lightning Platform",
         ],
-        "keywords": ["api", "code", "development", "integration", "apex", "lwc", "flow"],
+        "keywords": [
+            "api",
+            "code",
+            "development",
+            "integration",
+            "apex",
+            "lwc",
+            "flow",
+        ],
         "priority_boost": ["Development", "API", "Integration"],
     },
     "architect": {
@@ -47,7 +62,13 @@ USER_PROFILES: dict[str, dict[str, Any]] = {
             "Data Architecture",
             "Integration Architecture",
         ],
-        "keywords": ["architecture", "platform", "performance", "scalability", "design"],
+        "keywords": [
+            "architecture",
+            "platform",
+            "performance",
+            "scalability",
+            "design",
+        ],
         "priority_boost": ["Architecture", "Platform", "Performance"],
     },
     "business": {
@@ -61,7 +82,14 @@ USER_PROFILES: dict[str, dict[str, Any]] = {
             "Reports",
             "Dashboards",
         ],
-        "keywords": ["sales", "marketing", "service", "commerce", "analytics", "report"],
+        "keywords": [
+            "sales",
+            "marketing",
+            "service",
+            "commerce",
+            "analytics",
+            "report",
+        ],
         "priority_boost": ["Sales", "Marketing", "Service"],
     },
 }

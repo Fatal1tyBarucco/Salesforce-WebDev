@@ -272,7 +272,8 @@ class TestTrailheadCache:
     def test_save_os_error(self, tmp_path: Path) -> None:
         with (
             patch(
-                "src.salesforce.TRAILHEAD_CACHE_FILE", str(tmp_path / "nonexistent" / "cache.json")
+                "src.salesforce.TRAILHEAD_CACHE_FILE",
+                str(tmp_path / "nonexistent" / "cache.json"),
             ),
             patch("pathlib.Path.mkdir", side_effect=OSError("perm")),
         ):

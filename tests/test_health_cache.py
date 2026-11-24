@@ -19,7 +19,10 @@ def isolated_cwd(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 def test_health_includes_cache_stats(isolated_cwd: Path) -> None:
     cache_dir = isolated_cwd / "cache"
     cache_dir.mkdir()
-    payload = {"schema_version": 1, "stats": {"hits": 5, "misses": 2, "hit_rate": 5 / 7}}
+    payload = {
+        "schema_version": 1,
+        "stats": {"hits": 5, "misses": 2, "hit_rate": 5 / 7},
+    }
     (cache_dir / "stats.json").write_text(json.dumps(payload), encoding="utf-8")
     data = _get_health_data()
     cache = data["cache"]

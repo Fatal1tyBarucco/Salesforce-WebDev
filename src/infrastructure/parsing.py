@@ -38,7 +38,13 @@ class BeautifulSoupParsingAdapter(ParsingAdapter):
     # CSS selectors for Salesforce Release Notes structure
     CATEGORY_SELECTOR = "section.slds-card, div.category, article.category"
     FEATURE_SELECTOR = "li.feature, div.feature-row, tr.feature-row"
-    TITLE_SELECTORS: ClassVar[list[str]] = ["h2", "h3", "h4", ".category-title", ".section-title"]
+    TITLE_SELECTORS: ClassVar[list[str]] = [
+        "h2",
+        "h3",
+        "h4",
+        ".category-title",
+        ".section-title",
+    ]
 
     def __init__(self, locale: str = "pt_BR") -> None:
         self.locale = locale

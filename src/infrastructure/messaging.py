@@ -235,7 +235,10 @@ class SlackNotificationAdapter(NotificationAdapter):
             {
                 "type": "context",
                 "elements": [
-                    {"type": "mrkdwn", "text": "Gerado automaticamente pelo Salesforce WebDev"}
+                    {
+                        "type": "mrkdwn",
+                        "text": "Gerado automaticamente pelo Salesforce WebDev",
+                    }
                 ],
             }
         )

@@ -118,8 +118,14 @@ class TestPipelineE2E:
         scraper.download_pdf_from_button = AsyncMock()
 
         categories = [
-            {"name": "Segurança", "features": [{"name": "Feature A", "availability": "GA"}]},
-            {"name": "Análise", "features": [{"name": "Feature B", "availability": "Beta"}]},
+            {
+                "name": "Segurança",
+                "features": [{"name": "Feature A", "availability": "GA"}],
+            },
+            {
+                "name": "Análise",
+                "features": [{"name": "Feature B", "availability": "Beta"}],
+            },
         ]
         impact_parser = MagicMock()
         impact_parser.parse_text.return_value = categories

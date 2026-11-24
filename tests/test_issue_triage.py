@@ -178,7 +178,11 @@ def test_triage_github_issue_with_mock():
     mock_proc.communicate = AsyncMock(return_value=(stdout_bytes, b""))
 
     with (
-        patch("asyncio.create_subprocess_exec", new_callable=AsyncMock, return_value=mock_proc),
+        patch(
+            "asyncio.create_subprocess_exec",
+            new_callable=AsyncMock,
+            return_value=mock_proc,
+        ),
         patch.object(triager, "triage_issue", new_callable=AsyncMock) as mock_triage,
     ):
         mock_triage.return_value = TriageResult(
@@ -222,7 +226,8 @@ def test_triage_github_issue_returns_none_on_timeout():
     triager = IssueTriager(repo="owner/repo")
 
     with patch(
-        "src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)
+        "src.issue_triage.subprocess.run",
+        side_effect=sp.TimeoutExpired(cmd="gh", timeout=10),
     ):
         assert asyncio.run(triager.triage_github_issue(123)) is None
 
@@ -309,7 +314,8 @@ def test_apply_triage_handles_timeout():
     )
 
     with patch(
-        "src.issue_triage.subprocess.run", side_effect=sp.TimeoutExpired(cmd="gh", timeout=10)
+        "src.issue_triage.subprocess.run",
+        side_effect=sp.TimeoutExpired(cmd="gh", timeout=10),
     ):
         assert triager.apply_triage(result) is False
 

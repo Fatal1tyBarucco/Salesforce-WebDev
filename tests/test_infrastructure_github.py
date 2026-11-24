@@ -117,7 +117,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_issue(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_issue should create and return issue details."""
         mock_issue = MagicMock()
@@ -149,7 +152,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_issue_without_optional_params(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_issue should work without optional params."""
         mock_issue = MagicMock()
@@ -172,7 +178,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_update_issue(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """update_issue should update existing issue."""
         mock_issue = MagicMock()
@@ -184,12 +193,18 @@ class TestGitHubOperationsAdapter:
         with patch.object(adapter, "_get_client", return_value=mock_github_client):
             result = await adapter.update_issue(123, title="Updated Title", body="Updated Body")
 
-        assert result == {"number": 123, "url": "https://github.com/owner/repo/issues/123"}
+        assert result == {
+            "number": 123,
+            "url": "https://github.com/owner/repo/issues/123",
+        }
         mock_issue.edit.assert_called_once_with(title="Updated Title", body="Updated Body")
 
     @pytest.mark.asyncio
     async def test_close_issue(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """close_issue should close issue with optional comment."""
         mock_issue = MagicMock()
@@ -204,7 +219,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_close_issue_without_comment(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """close_issue should work without comment."""
         mock_issue = MagicMock()
@@ -219,7 +237,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_get_issue(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """get_issue should return issue details."""
         mock_label1 = MagicMock()
@@ -251,7 +272,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_get_issue_returns_none_on_error(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """get_issue should return None on error."""
         mock_repo.get_issue.side_effect = Exception("Not found")
@@ -264,7 +288,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_pr(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_pr should create pull request."""
         mock_pr = MagicMock()
@@ -298,7 +325,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_merge_pr_mergeable(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """merge_pr should merge when mergeable."""
         mock_pr = MagicMock()
@@ -314,7 +344,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_merge_pr_not_mergeable(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """merge_pr should return False when not mergeable."""
         mock_pr = MagicMock()
@@ -330,7 +363,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_release(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_release should create GitHub release."""
         mock_release = MagicMock()
@@ -376,7 +412,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_trigger_workflow(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """trigger_workflow should trigger GitHub Actions workflow."""
         mock_workflow = MagicMock()
@@ -404,7 +443,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_or_update_file_existing(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_or_update_file should update existing file."""
         mock_contents = MagicMock()
@@ -442,7 +484,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_create_or_update_file_new(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """create_or_update_file should create new file when not exists."""
         mock_repo.get_contents.side_effect = Exception("Not found")
@@ -475,7 +520,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_get_file(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """get_file should return file content."""
         mock_contents = MagicMock()
@@ -491,7 +539,10 @@ class TestGitHubOperationsAdapter:
 
     @pytest.mark.asyncio
     async def test_get_file_returns_none_on_error(
-        self, adapter: GitHubOperationsAdapter, mock_github_client: MagicMock, mock_repo: MagicMock
+        self,
+        adapter: GitHubOperationsAdapter,
+        mock_github_client: MagicMock,
+        mock_repo: MagicMock,
     ) -> None:
         """get_file should return None on error."""
         mock_repo.get_contents.side_effect = Exception("Not found")

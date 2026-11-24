@@ -52,7 +52,8 @@ class retry_if_exception_type(retry_base):
     """Retry only if the exception is an instance of the given type(s)."""
 
     def __init__(
-        self, exception_types: type[BaseException] | tuple[type[BaseException], ...] = ...
+        self,
+        exception_types: type[BaseException] | tuple[type[BaseException], ...] = ...,
     ) -> None: ...
 
 class stop_after_attempt(stop_base):

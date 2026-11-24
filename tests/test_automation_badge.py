@@ -11,7 +11,10 @@ class TestLatestReleaseBadge:
     def test_returns_na_when_dir_missing(self, tmp_path: Path) -> None:
         from src.automation.badge import get_latest_release_badge
 
-        with patch("src.automation.badge._get_releases_dir", return_value=tmp_path / "nonexistent"):
+        with patch(
+            "src.automation.badge._get_releases_dir",
+            return_value=tmp_path / "nonexistent",
+        ):
             assert get_latest_release_badge() == "N/A"
 
     def test_returns_na_when_dir_empty(self, tmp_path: Path) -> None:
@@ -44,7 +47,10 @@ class TestLatestReleaseBadge:
     def test_picks_release_with_highest_id(self, tmp_path: Path) -> None:
         from src.automation.badge import get_latest_release_badge
 
-        for slug, rid, name in [("summer_25", 1, "Summer '25"), ("summer_26", 5, "Summer '26")]:
+        for slug, rid, name in [
+            ("summer_25", 1, "Summer '25"),
+            ("summer_26", 5, "Summer '26"),
+        ]:
             d = tmp_path / slug
             d.mkdir()
             (d / ".meta.json").write_text(json.dumps({"name": name, "release_id": rid}))

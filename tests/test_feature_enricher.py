@@ -32,7 +32,12 @@ class TestEnrichRelease:
             {
                 "introduction": "Test intro.",
                 "features": [
-                    {"name": "F1", "description": "Desc", "impact": "alto", "audience": "ambos"}
+                    {
+                        "name": "F1",
+                        "description": "Desc",
+                        "impact": "alto",
+                        "audience": "ambos",
+                    }
                 ],
             }
         )

@@ -97,7 +97,9 @@ class AdaptiveRateLimiter(LLMRateLimiterPort):
                 state.current_rps = min(state.current_rps * 1.1, state.max_rps)
                 state.consecutive_successes = 0
                 logger.debug(
-                    "Rate limit increased to %.1f RPS for %s", state.current_rps, provider_key
+                    "Rate limit increased to %.1f RPS for %s",
+                    state.current_rps,
+                    provider_key,
                 )
 
     async def record_failure(self, provider: LLMProvider, error: Exception) -> None:
@@ -116,7 +118,9 @@ class AdaptiveRateLimiter(LLMRateLimiterPort):
                 state.current_rps = max(state.current_rps * 0.5, state.min_rps)
                 state.consecutive_failures = 0
                 logger.warning(
-                    "Rate limit decreased to %.1f RPS for %s", state.current_rps, provider_key
+                    "Rate limit decreased to %.1f RPS for %s",
+                    state.current_rps,
+                    provider_key,
                 )
 
     def get_current_limit(self, provider: LLMProvider) -> float:

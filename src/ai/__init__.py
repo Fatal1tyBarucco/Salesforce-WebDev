@@ -17,7 +17,11 @@ from .generators.badges import (
 )
 from .generators.markdown import MarkdownGenerator
 from .integrations.salesforce import AdoptionSuggestion, OrgMetadata, SalesforceAnalyzer
-from .integrations.trailhead import TrailheadIntegration, TrailheadModule, TrailheadSuggestion
+from .integrations.trailhead import (
+    TrailheadIntegration,
+    TrailheadModule,
+    TrailheadSuggestion,
+)
 from .prompts.classification import (
     build_classification_system_prompt,
     build_classification_user_prompt,

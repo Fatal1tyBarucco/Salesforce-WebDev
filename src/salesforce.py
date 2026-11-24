@@ -547,7 +547,12 @@ def _save_trailhead_cache(cache: dict[str, list[str]]) -> None:
     import time
     from pathlib import Path
 
-    from .cache_io import CacheLockTimeoutError, FileLock, atomic_write_json, compute_checksum
+    from .cache_io import (
+        CacheLockTimeoutError,
+        FileLock,
+        atomic_write_json,
+        compute_checksum,
+    )
     from .config import CACHE_LOCK_TIMEOUT_SECONDS, CACHE_TRAILHEAD_TTL_SECONDS
 
     cache_path = Path(TRAILHEAD_CACHE_FILE)

@@ -19,7 +19,10 @@ from freezegun import freeze_time
 from src.config import TopicNode
 from src.generator import MarkdownGenerator
 from tests.factories import make_release, make_topic_node, make_topic_tree
-from tests.test_characterization_golden import FROZEN_TIMESTAMP, assert_matches_golden_json
+from tests.test_characterization_golden import (
+    FROZEN_TIMESTAMP,
+    assert_matches_golden_json,
+)
 
 SOURCE_URL: str = (
     "https://help.salesforce.com/s/articleView?"

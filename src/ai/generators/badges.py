@@ -185,7 +185,11 @@ def api_version_badge(version: str) -> Badge:
         Badge instance.
     """
     return Badge(
-        label="API", message=version, color="#1E88E5", label_color="#FFFFFF", logo="salesforce"
+        label="API",
+        message=version,
+        color="#1E88E5",
+        label_color="#FFFFFF",
+        logo="salesforce",
     )
 
 
@@ -250,7 +254,10 @@ def release_meta_badges(
         release_badge(release_name),
         feature_count_badge(total_features),
         Badge(
-            label="Categorias", message=str(category_count), color="#7B1FA2", label_color="#FFFFFF"
+            label="Categorias",
+            message=str(category_count),
+            color="#7B1FA2",
+            label_color="#FFFFFF",
         ),
     ]
     if api_version:

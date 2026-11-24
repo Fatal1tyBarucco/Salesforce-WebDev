@@ -605,7 +605,8 @@ def test_fastapi_endpoints() -> None:
     )
     assert bug.category == "bug" and bug.priority == "high"
     feat = triage_issue(
-        TriageRequest(title="New feature request", description="x"), api_key="default-dev-key"
+        TriageRequest(title="New feature request", description="x"),
+        api_key="default-dev-key",
     )
     assert feat.category == "feature"
     gen = triage_issue(TriageRequest(title="Something", description="x"), api_key="default-dev-key")

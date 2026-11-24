@@ -103,16 +103,31 @@ def check_manifest(inventory: dict[str, str], manifest: dict[str, Any]) -> list[
             continue
         if path not in old:
             items.append(
-                Item(STATE_OMITO, "MANIFEST_NEW_FILE", path, "novo arquivo fora do baseline")
+                Item(
+                    STATE_OMITO,
+                    "MANIFEST_NEW_FILE",
+                    path,
+                    "novo arquivo fora do baseline",
+                )
             )
         elif old[path] != sha:
             items.append(
-                Item(STATE_OBSOLETO, "MANIFEST_STALE_SHA", path, "blob SHA diverge do baseline")
+                Item(
+                    STATE_OBSOLETO,
+                    "MANIFEST_STALE_SHA",
+                    path,
+                    "blob SHA diverge do baseline",
+                )
             )
     for path in sorted(old):
         if path not in inventory:
             items.append(
-                Item(STATE_ORFAO, "MANIFEST_STALE_FILE", path, "no manifest, ausente do repo")
+                Item(
+                    STATE_ORFAO,
+                    "MANIFEST_STALE_FILE",
+                    path,
+                    "no manifest, ausente do repo",
+                )
             )
     return items
 
@@ -126,7 +141,12 @@ def check_nav(inventory: set[str]) -> list[Item]:
         if (eng.REPO_ROOT / missing).is_file():
             continue  # created in this reconcile, not yet committed
         items.append(
-            Item(STATE_ORFAO, "NAV_MISSING_FILE", missing, "nav aponta para arquivo inexistente")
+            Item(
+                STATE_ORFAO,
+                "NAV_MISSING_FILE",
+                missing,
+                "nav aponta para arquivo inexistente",
+            )
         )
     for doc in public_docs(inventory):
         if doc.startswith("docs/") and doc not in nav_set:
@@ -138,11 +158,21 @@ def check_api_surface(inventory: set[str]) -> list[Item]:
     items: list[Item] = []
     for ev in eng.orphan_api_evokers():
         items.append(
-            Item(STATE_ORFAO, "ORPHAN_API_DOC", ev, "evocador sem módulo/pacote de origem")
+            Item(
+                STATE_ORFAO,
+                "ORPHAN_API_DOC",
+                ev,
+                "evocador sem módulo/pacote de origem",
+            )
         )
     for mod in eng.missing_api_evokers():
         items.append(
-            Item(STATE_OMITO, "MISSING_API_DOC", mod["file"], f"sem evocador em {mod['evoker']}")
+            Item(
+                STATE_OMITO,
+                "MISSING_API_DOC",
+                mod["file"],
+                f"sem evocador em {mod['evoker']}",
+            )
         )
     return items
 
@@ -167,7 +197,12 @@ def check_coverage(inventory: dict[str, str]) -> list[Item]:
         if any(art in text for text in texts.values()):
             continue
         items.append(
-            Item(STATE_OMITO, "UNDOCUMENTED_ARTIFACT", art, "artefato sem cobertura documental")
+            Item(
+                STATE_OMITO,
+                "UNDOCUMENTED_ARTIFACT",
+                art,
+                "artefato sem cobertura documental",
+            )
         )
     for directory in ("tests/", "releases/", "k8s/", "prompts/"):
         if not any(directory in text for text in texts.values()):
@@ -280,7 +315,12 @@ def check_parity() -> list[Item]:
     en = eng.read_text("README.en.md")
     if not pt or not en:
         items.append(
-            Item(STATE_DIVERGENTE, "MISSING_LOCALE", "README.md/README.en.md", "locale ausente")
+            Item(
+                STATE_DIVERGENTE,
+                "MISSING_LOCALE",
+                "README.md/README.en.md",
+                "locale ausente",
+            )
         )
         return items
     pt_ver = PYTHON_CLAIM_RE.search(pt)

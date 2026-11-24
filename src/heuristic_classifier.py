@@ -21,14 +21,34 @@ from dataclasses import dataclass
 # Keyword → (impact, type) mapping
 _KEYWORD_RULES: list[tuple[str, str, str, float]] = [
     # (pattern, impact, type, confidence)
-    (r"(?i)\b(security|vulnerability|cve|auth|xss|injection)\b", "high", "security", 0.8),
-    (r"(?i)\b(performance|latency|speed|optimization|cache)\b", "high", "performance", 0.7),
+    (
+        r"(?i)\b(security|vulnerability|cve|auth|xss|injection)\b",
+        "high",
+        "security",
+        0.8,
+    ),
+    (
+        r"(?i)\b(performance|latency|speed|optimization|cache)\b",
+        "high",
+        "performance",
+        0.7,
+    ),
     (r"(?i)\b(deprecated|end.of.life|sunset|removal)\b", "high", "deprecation", 0.8),
-    (r"(?i)\b(breaking|incompatible|migration|upgrade.required)\b", "high", "breaking_change", 0.8),
+    (
+        r"(?i)\b(breaking|incompatible|migration|upgrade.required)\b",
+        "high",
+        "breaking_change",
+        0.8,
+    ),
     (r"(?i)\b(bug|fix|patch|hotfix|issue)\b", "medium", "bug_fix", 0.6),
     (r"(?i)\b(new|add|introduce|launch|feature)\b", "medium", "new_feature", 0.6),
     (r"(?i)\b(improve|enhance|update|extend)\b", "medium", "improvement", 0.5),
-    (r"(?i)\b(api|integration|webhook|endpoint|rest|graphql)\b", "medium", "integration", 0.6),
+    (
+        r"(?i)\b(api|integration|webhook|endpoint|rest|graphql)\b",
+        "medium",
+        "integration",
+        0.6,
+    ),
     (r"(?i)\b(ui|ux|interface|design|lightning|experience)\b", "low", "ui_ux", 0.5),
     (r"(?i)\b(agentforce|einstein|ai|llm|model)\b", "high", "new_feature", 0.7),
 ]

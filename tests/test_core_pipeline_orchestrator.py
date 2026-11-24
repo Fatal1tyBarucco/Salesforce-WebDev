@@ -8,7 +8,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.core.pipeline.orchestrator import PipelineConfig, PipelineOrchestrator, PipelineResult
+from src.core.pipeline.orchestrator import (
+    PipelineConfig,
+    PipelineOrchestrator,
+    PipelineResult,
+)
 from src.core.pipeline.steps import (
     PipelineContext,
     PipelineStep,
@@ -190,7 +194,10 @@ class TestPipelineOrchestrator:
 
     @pytest.mark.asyncio
     async def test_execute_single_step(
-        self, release: ReleaseMetadata, config: PipelineConfig, enrichment: ReleaseEnrichment
+        self,
+        release: ReleaseMetadata,
+        config: PipelineConfig,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should execute a single step and capture result."""
         step = MockStep("test_step", return_value=enrichment)
@@ -205,7 +212,10 @@ class TestPipelineOrchestrator:
 
     @pytest.mark.asyncio
     async def test_execute_multiple_steps(
-        self, release: ReleaseMetadata, config: PipelineConfig, enrichment: ReleaseEnrichment
+        self,
+        release: ReleaseMetadata,
+        config: PipelineConfig,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should execute multiple steps in order."""
         step1 = MockStep("step1", return_value="intermediate")
@@ -309,7 +319,10 @@ class TestPipelineOrchestrator:
 
     @pytest.mark.asyncio
     async def test_execute_add_step_dynamically(
-        self, release: ReleaseMetadata, config: PipelineConfig, enrichment: ReleaseEnrichment
+        self,
+        release: ReleaseMetadata,
+        config: PipelineConfig,
+        enrichment: ReleaseEnrichment,
     ) -> None:
         """Should allow adding steps dynamically."""
         orchestrator = PipelineOrchestrator(config=config)
@@ -364,7 +377,10 @@ class TestPipelineOrchestrator:
 
     @pytest.mark.asyncio
     async def test_execute_logs_step_names(
-        self, release: ReleaseMetadata, config: PipelineConfig, caplog: pytest.LogCaptureFixture
+        self,
+        release: ReleaseMetadata,
+        config: PipelineConfig,
+        caplog: pytest.LogCaptureFixture,
     ) -> None:
         """Should log step names during execution."""
         import logging
@@ -381,7 +397,10 @@ class TestPipelineOrchestrator:
 
     @pytest.mark.asyncio
     async def test_execute_logs_errors(
-        self, release: ReleaseMetadata, config: PipelineConfig, caplog: pytest.LogCaptureFixture
+        self,
+        release: ReleaseMetadata,
+        config: PipelineConfig,
+        caplog: pytest.LogCaptureFixture,
     ) -> None:
         """Should log errors when step fails."""
         import logging

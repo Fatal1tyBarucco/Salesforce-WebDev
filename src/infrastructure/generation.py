@@ -83,7 +83,9 @@ class MarkdownGenerationAdapter(GenerationAdapter):
                 generated_files.append(filepath)
 
         logger.info(
-            "Generated %d markdown files for %s", len(generated_files), enrichment.release_slug
+            "Generated %d markdown files for %s",
+            len(generated_files),
+            enrichment.release_slug,
         )
         return generated_files
 

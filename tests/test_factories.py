@@ -69,7 +69,10 @@ class TestTopicNodeFactory:
     def test_node_with_articles(self):
         node = make_topic_node(
             slug="topic",
-            articles=[{"title": "Art 1", "url": "/a1"}, {"title": "Art 2", "url": "/a2"}],
+            articles=[
+                {"title": "Art 1", "url": "/a1"},
+                {"title": "Art 2", "url": "/a2"},
+            ],
         )
         assert len(node.all_articles()) == 2
 

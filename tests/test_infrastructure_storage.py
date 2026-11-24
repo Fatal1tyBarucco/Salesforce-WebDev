@@ -181,7 +181,10 @@ class TestFileSystemStorageAdapter:
         assert loaded.strategic_themes == ("Tema 1", "Tema 2")
         assert len(loaded.category_enrichments) == 1
         assert loaded.category_enrichments[0].category_name == "Lightning"
-        assert loaded.migration_checklist == ("Verificar deploy", "Testar funcionalidade")
+        assert loaded.migration_checklist == (
+            "Verificar deploy",
+            "Testar funcionalidade",
+        )
 
     @pytest.mark.asyncio
     async def test_load_nonexistent_enrichment(self, adapter: FileSystemStorageAdapter) -> None:

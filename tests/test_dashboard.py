@@ -199,7 +199,12 @@ class TestGenerateDashboardHtml:
                 }
             ],
             "features": [
-                {"name": "F1", "category": "A", "release": "summer_26", "availability": ""}
+                {
+                    "name": "F1",
+                    "category": "A",
+                    "release": "summer_26",
+                    "availability": "",
+                }
             ],
             "total_releases": 1,
             "total_features": 1,

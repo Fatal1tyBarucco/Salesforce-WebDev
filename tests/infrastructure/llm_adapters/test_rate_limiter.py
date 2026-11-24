@@ -8,7 +8,10 @@ from unittest.mock import patch
 import pytest
 
 from src.domain.llm import LLMProvider
-from src.infrastructure.llm_adapters.rate_limiter import AdaptiveRateLimiter, ProviderRateLimitState
+from src.infrastructure.llm_adapters.rate_limiter import (
+    AdaptiveRateLimiter,
+    ProviderRateLimitState,
+)
 
 
 class TestProviderRateLimitState:

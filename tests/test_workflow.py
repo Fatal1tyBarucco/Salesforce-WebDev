@@ -88,7 +88,8 @@ class TestCreateBranch:
 
     def test_failure(self) -> None:
         with patch(
-            "src.workflow.subprocess.run", side_effect=subprocess.CalledProcessError(1, "git")
+            "src.workflow.subprocess.run",
+            side_effect=subprocess.CalledProcessError(1, "git"),
         ):
             assert create_branch("bad-branch") is False
 
@@ -114,10 +115,16 @@ class TestAnalyzeChanges:
 
     def test_with_new_release(self) -> None:
         diff_mock = subprocess.CompletedProcess(
-            args=[], returncode=0, stdout=" releases/summer_26/.meta.json | 10 +\n", stderr=""
+            args=[],
+            returncode=0,
+            stdout=" releases/summer_26/.meta.json | 10 +\n",
+            stderr="",
         )
         status_mock = subprocess.CompletedProcess(
-            args=[], returncode=0, stdout="A  releases/summer_26/.meta.json\n", stderr=""
+            args=[],
+            returncode=0,
+            stdout="A  releases/summer_26/.meta.json\n",
+            stderr="",
         )
         with patch("src.workflow.subprocess.run", side_effect=[diff_mock, status_mock]):
             result = analyze_changes()
@@ -174,7 +181,10 @@ class TestCreatePr:
 
     def test_success(self) -> None:
         mock = subprocess.CompletedProcess(
-            args=[], returncode=0, stdout="https://github.com/org/repo/pull/42\n", stderr=""
+            args=[],
+            returncode=0,
+            stdout="https://github.com/org/repo/pull/42\n",
+            stderr="",
         )
         with patch("src.workflow._run_gh", return_value=mock):
             result = create_pr("title", "body", "branch")
@@ -210,7 +220,10 @@ class TestCreatePr:
     def test_pr_number_parse_failure(self) -> None:
         """Handles invalid PR number in URL with /pull/ but non-numeric."""
         mock = subprocess.CompletedProcess(
-            args=[], returncode=0, stdout="https://github.com/org/repo/pull/notanumber\n", stderr=""
+            args=[],
+            returncode=0,
+            stdout="https://github.com/org/repo/pull/notanumber\n",
+            stderr="",
         )
         with patch("src.workflow._run_gh", return_value=mock):
             result = create_pr("t", "b", "br")
@@ -258,7 +271,10 @@ class TestSubmitChanges:
 
         with (
             patch("src.workflow.create_branch", return_value=True),
-            patch("src.workflow.analyze_changes", return_value=ChangeAnalysis([], [], [], 0, 0)),
+            patch(
+                "src.workflow.analyze_changes",
+                return_value=ChangeAnalysis([], [], [], 0, 0),
+            ),
             patch("src.workflow.generate_diff_preview", return_value="preview"),
             patch("src.workflow.commit_and_push", return_value=True),
             patch("src.workflow.create_pr", return_value=pr_mock),
@@ -276,7 +292,10 @@ class TestSubmitChanges:
     def test_commit_failure(self) -> None:
         with (
             patch("src.workflow.create_branch", return_value=True),
-            patch("src.workflow.analyze_changes", return_value=ChangeAnalysis([], [], [], 0, 0)),
+            patch(
+                "src.workflow.analyze_changes",
+                return_value=ChangeAnalysis([], [], [], 0, 0),
+            ),
             patch("src.workflow.generate_diff_preview", return_value="preview"),
             patch("src.workflow.commit_and_push", return_value=False),
         ):

@@ -70,7 +70,13 @@ def collect_changes(since_ref: str = "HEAD~10") -> dict[str, Any]:
     if not run_cmd(["git", "rev-parse", "--verify", f"{since_ref}^{{commit}}"]):
         raise ValueError(f"since_ref does not resolve to a Git commit: {since_ref}")
     commits_output = run_cmd(
-        ["git", "log", f"{since_ref}..HEAD", "--format=%H%x09%s%x09%b%x1e", "--no-decorate"]
+        [
+            "git",
+            "log",
+            f"{since_ref}..HEAD",
+            "--format=%H%x09%s%x09%b%x1e",
+            "--no-decorate",
+        ]
     )
     changed_paths_output = run_cmd(["git", "diff", "--name-only", "-z", f"{since_ref}..HEAD"])
     patterns = _ignore_patterns()
