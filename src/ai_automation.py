@@ -80,122 +80,122 @@ __all__ = [
 
 
 def load_release_meta(slug: str) -> dict[str, Any] | None:
-    return AIAutomationService().load_release_meta(slug)  # type: ignore[no-any-return]
+    return AIAutomationService().load_release_meta(slug)
 
 
 async def compare_releases(current_slug: str, previous_slug: str) -> ReleaseComparison:
-    return await AIAutomationService().compare_releases(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().compare_releases(current_slug, previous_slug)
 
 
 async def detect_regressions(current_slug: str, previous_slug: str) -> list[Regression]:
-    return await AIAutomationService().detect_regressions(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().detect_regressions(current_slug, previous_slug)
 
 
 async def calculate_quality_metrics(slug: str) -> QualityMetrics | None:
-    return await AIAutomationService().calculate_quality_metrics(slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().calculate_quality_metrics(slug)
 
 
 async def generate_changelog() -> str:
-    return await AIAutomationService().generate_changelog()  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_changelog()
 
 
 async def generate_regression_report(current_slug: str, previous_slug: str) -> str:
-    return await AIAutomationService().generate_regression_report(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_regression_report(current_slug, previous_slug)
 
 
 async def generate_diff_report(current_slug: str, previous_slug: str) -> str:
-    return await AIAutomationService().generate_diff_report(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_diff_report(current_slug, previous_slug)
 
 
 async def generate_quality_report() -> str:
-    return await AIAutomationService().generate_quality_report()  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_quality_report()
 
 
 async def generate_ai_summary(current_slug: str, previous_slug: str) -> AISummary:
-    return await AIAutomationService().generate_ai_summary(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_ai_summary(current_slug, previous_slug)
 
 
 async def generate_ai_summary_report(current_slug: str, previous_slug: str) -> str:
-    return await AIAutomationService().generate_ai_summary_report(current_slug, previous_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_ai_summary_report(current_slug, previous_slug)
 
 
 async def calculate_category_impact_scores() -> list[CategoryImpactScore]:
-    return await AIAutomationService().calculate_category_impact_scores()  # type: ignore[no-any-return]
+    return await AIAutomationService().calculate_category_impact_scores()
 
 
 async def predict_next_release_impact() -> ImpactPrediction:
-    return await AIAutomationService().predict_next_release_impact()  # type: ignore[no-any-return]
+    return await AIAutomationService().predict_next_release_impact()
 
 
 async def generate_impact_prediction_report() -> str:
-    return await AIAutomationService().generate_impact_prediction_report()  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_impact_prediction_report()
 
 
 async def triage_release(slug: str) -> TriageResult:
-    return await AIAutomationService().triage_release(slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().triage_release(slug)
 
 
 async def generate_triage_report(slug: str) -> str:
-    return await AIAutomationService().generate_triage_report(slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_triage_report(slug)
 
 
 async def analyze_content_changes(release_slug: str) -> DeduplicationResult:
-    return await AIAutomationService().analyze_content_changes(release_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().analyze_content_changes(release_slug)
 
 
 async def get_content_hash(file_path: str) -> str | None:
-    return await AIAutomationService().get_content_hash(file_path)  # type: ignore[no-any-return]
+    return await AIAutomationService().get_content_hash(file_path)
 
 
 async def is_content_unchanged(file_path: str, expected_hash: str) -> bool:
-    return await AIAutomationService().is_content_unchanged(file_path, expected_hash)  # type: ignore[no-any-return]
+    return await AIAutomationService().is_content_unchanged(file_path, expected_hash)
 
 
 async def create_github_issue(
     release_name: str, total_features: int, categories: int
 ) -> str | None:
-    return await AIAutomationService().create_github_issue(release_name, total_features, categories)  # type: ignore[no-any-return]
+    return await AIAutomationService().create_github_issue(release_name, total_features, categories)
 
 
 async def create_release_issue(
     release_name: str, total_features: int, categories: int
 ) -> str | None:
-    return await create_github_issue(release_name, total_features, categories)  # type: ignore[no-any-return]
+    return await create_github_issue(release_name, total_features, categories)
 
 
 async def _load_all_release_metas() -> list[dict[str, Any]]:
-    return await AIAutomationService()._load_all_release_metas()  # type: ignore[no-any-return]
+    return await AIAutomationService()._load_all_release_metas()
 
 
 def _load_content_cache(cache_path: Path) -> dict[str, ContentHash]:
-    return AIAutomationService()._load_content_cache(cache_path)  # type: ignore[no-any-return]
+    return AIAutomationService()._load_content_cache(cache_path)
 
 
 async def generate_deduplication_report(release_slug: str) -> str:
-    return await AIAutomationService().generate_deduplication_report(release_slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_deduplication_report(release_slug)
 
 
 async def filter_features_for_profile(
     profile_type: str, categories: list[dict[str, Any]]
 ) -> UserProfile:
-    return await AIAutomationService().filter_features_for_profile(profile_type, categories)  # type: ignore[no-any-return]
+    return await AIAutomationService().filter_features_for_profile(profile_type, categories)
 
 
 async def generate_filtered_notification(slug: str, profile_type: str) -> FilteredNotification:
-    return await AIAutomationService().generate_filtered_notification(slug, profile_type)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_filtered_notification(slug, profile_type)
 
 
 async def generate_filtered_notification_report(slug: str, profile_type: str) -> str:
-    return await AIAutomationService().generate_filtered_notification_report(slug, profile_type)  # type: ignore[no-any-return]
+    return await AIAutomationService().generate_filtered_notification_report(slug, profile_type)
 
 
 async def export_release_json(slug: str) -> str:
-    return await AIAutomationService().export_release_json(slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().export_release_json(slug)
 
 
 async def export_release_csv(slug: str) -> str:
-    return await AIAutomationService().export_release_csv(slug)  # type: ignore[no-any-return]
+    return await AIAutomationService().export_release_csv(slug)
 
 
 async def export_all_releases(output_dir: str = "exports") -> dict[str, list[str]]:
-    return await AIAutomationService().export_all_releases(output_dir)  # type: ignore[no-any-return]
+    return await AIAutomationService().export_all_releases(output_dir)
