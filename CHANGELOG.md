@@ -2,6 +2,18 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.5...v0.6.6) (2026-11-24)
+
+
+### Bug Fixes
+
+* add type ignores to ai_automation.py wrapper functions ([1c4ef5e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/1c4ef5e5e6c95d7b2e927cc871e4cf90b0dfb5a9))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-23 23:57 UTC [skip ci] ([750727e](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/750727e3217c43b0e52152aac545603c66e93b3f))
+
 ## [0.6.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.4...v0.6.5) (2026-11-23)
 
 
