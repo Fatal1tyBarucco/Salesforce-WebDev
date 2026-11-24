@@ -1103,7 +1103,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "2db68ccd685ee0b45fa5b5a32f3741a62ee23219",
     "docs/assets/stylesheets/enhanced_search.css": "3e8745c68e3823745d4e7ba4d7787608310c0904",
-    "docs/changelog.md": "87177b8c8a7954e4f2c0aa0e26b967e069b6b922",
+    "docs/changelog.md": "2d7b0fa145a7cb753e33969ec8b924baf4140fe6",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1656,7 +1656,7 @@
     "tests/test_logger.py": "d08c6373ae8e7d4a6c121a0654abb123cc2950d7",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
-    "tests/test_main_coverage.py": "96d309ac9adf7f551d99179b10d50894cfb44d6d",
+    "tests/test_main_coverage.py": "574232ccb83c416427de4db7aafb0a8e6f85ee9c",
     "tests/test_main_coverage_additional.py": "6a759ae42284868c1052f5bf111d9c0fc2f7c4ec",
     "tests/test_main_coverage_push.py": "550f878e64e6d0e1357bf2e3e291d62b1c8cd0e9",
     "tests/test_main_extra.py": "35c93e0b061430073a65890735026da48d5b9913",
@@ -1691,7 +1691,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "10472becee71e0e22c6491a0d7e8b46001586157"
   },
-  "generated_at": "2026-11-24T21:22:55.491620+00:00",
+  "generated_at": "2026-11-24T22:05:44.555352+00:00",
   "removals": [],
-  "repository_sha": "3261205a97d9938a564b64148b2b28fc7fd80016"
+  "repository_sha": "688b2f51f79cba7d4808506d74a69038f64ccd9d"
 }
