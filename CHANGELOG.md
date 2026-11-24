@@ -2,6 +2,41 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.6.5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.4...v0.6.5) (2026-11-23)
+
+
+### Bug Fixes
+
+* **mcp:** migrate knowledge server to mcp 2.x MCPServer API ([33e85d5](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/33e85d5b3a7d2a8ffc1fe73d777b126febb391b1)), closes [#440](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/440)
+
+## [0.6.4](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.3...v0.6.4) (2026-11-23)
+
+
+### Bug Fixes
+
+* **mcp:** migrate knowledge server to mcp 2.x MCPServer API ([86bcdcd](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/86bcdcdb4d1d457ffdf98e18962cf82079aef2b4)), closes [#440](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/440)
+* **mcp:** migrate knowledge server to mcp 2.x MCPServer API ([b7adb01](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b7adb01d399027ee8be98986c43c9f793357b01b)), closes [#440](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/440)
+
+
+### Dependencies
+
+* **deps-dev:** update langchain-google-genai requirement from &lt;3,&gt;=2.0.0 to &gt;=2.0.0,&lt;5 in the dev-dependencies group ([#434](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/434)) ([0fdcae1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/0fdcae1d10b18f42c9a4934d43e4f943e3e7e46d))
+* **deps:** bump the production-dependencies group with 5 updates ([#435](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/435)) ([2889ff9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/2889ff9d4ffe2341c7b6f1143892e143ca4cdb66))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-20 17:14 UTC [skip ci] ([34560d9](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/34560d993aa9fa39b702b4fbbcbabf9c2367d430))
+* **sync:** reconcile documentation — 2026-11-23 20:16 UTC [skip ci] ([b830da1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/b830da1401d24900cf76485cfaaa24c2e340504e))
+* **sync:** reconcile documentation — 2026-11-23 20:18 UTC [skip ci] ([4ceaa73](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/4ceaa7399950815529cd3d7c43961f929a6e011c))
+
+## [0.6.3](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.2...v0.6.3) (2026-11-20)
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-20 03:03 UTC [skip ci] ([f7878d8](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/f7878d8ce081653e9da2460a2a6fa3fba9c4f4c7))
+
 ## [0.6.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.1...v0.6.2) (2026-11-20)
 
 

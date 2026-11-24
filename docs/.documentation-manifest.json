@@ -888,23 +888,23 @@
     ".github/scripts/select_free_model.py": "f92b0af9b269080e4c926fdb9a37fe647cc30bfa",
     ".github/scripts/update_changelog_auto.py": "f2112be061eb6b7eee0def552da01731f0de7987",
     ".github/triage-rules.yaml": "85fef0b72056e9f3c1f4e5b872e9d9639eb97401",
-    ".github/workflows/ai-docs.yml": "03182adf4adf4ce3abffc7b525bab1a68a38cf3a",
-    ".github/workflows/ai-pr-review.yml": "8b93471d61d3825945655fade91ff6a35f2367c6",
+    ".github/workflows/ai-docs.yml": "c09cdea51247506044a63b64e45a70538bdbd3ac",
+    ".github/workflows/ai-pr-review.yml": "3ee34585e318a19f4f8fbdf612bd8c2e4d3e054d",
     ".github/workflows/ai-triage.yml": "9c9cc506afefd9beec92363fa7af0f00c88f4bbc",
-    ".github/workflows/ci-repair.yml": "960b68c5a1a363ca54eb71c8b32daa7f2201efd6",
-    ".github/workflows/copilot-setup-steps.yml": "94e4d17731a2672a465d9768e7ea0829a4161c7d",
-    ".github/workflows/dependabot-lock-refresh.yml": "c3e48a11a380ee05f71a82afa0db6e39eb4a80c9",
-    ".github/workflows/dependency-review.yml": "f042c575acb7ca54cc9f3bf4712ba864cd691592",
-    ".github/workflows/docs-deps-refresh.yml": "c91157a1e52cc3298cd0d5128f27a0fd6b578917",
-    ".github/workflows/docs-version-backfill.yml": "e61b91b80a0086201739f4a00e89617bea55abd9",
-    ".github/workflows/documentation-build.yml": "31bdffd9edf0523d0bd04cb9dbb1a6d76d0260b4",
-    ".github/workflows/documentation-sync.yml": "acfcf55ed112e2c40ba29686bc157a104845dc86",
+    ".github/workflows/ci-repair.yml": "2e6cf6c994f5c7635a0d32dec5fe774db0377892",
+    ".github/workflows/copilot-setup-steps.yml": "f04baaf6d66d6087c50f4d84dc69c1cb559db663",
+    ".github/workflows/dependabot-lock-refresh.yml": "1dc685df8269a2e2b504cf678817e528785dcc24",
+    ".github/workflows/dependency-review.yml": "c4e88578e2b8a6930a97b859c7d451412675fe8f",
+    ".github/workflows/docs-deps-refresh.yml": "9abc7b34bb71bfdd317020aae8b3a1cb24866add",
+    ".github/workflows/docs-version-backfill.yml": "102c874b506535058b75361d1c9c96b70708276a",
+    ".github/workflows/documentation-build.yml": "1752a8fa7f3d9f3a50f67534ce25daf178bd720e",
+    ".github/workflows/documentation-sync.yml": "1b96844d2a98ba380c4a4a1ff7d424d742a06ac0",
     ".github/workflows/opencode.yml": "6a24bf78c7923c0e45ee5345de1cac086bb0001d",
-    ".github/workflows/python-quality.yml": "3b54e7f07e3568f3fddf3315b1548ace7a41075d",
-    ".github/workflows/release-please.yml": "768d7642f6991a9b975c1a93d70ed599ca5be92d",
-    ".github/workflows/release_notes_pipeline.yml": "6ed7684f89e864395bccd3e176755ef8dd587660",
-    ".github/workflows/salesforce_release_intelligence_hub.yml": "597455339d64bc367e373ecf56dc34ead54ce35a",
-    ".github/workflows/scheduled-pipeline.yml": "5231cab82ec2d67816ec0804c14f98eb0852c5e0",
+    ".github/workflows/python-quality.yml": "c0b70be1438d8e66fa93dd624a598f0da8e15776",
+    ".github/workflows/release-please.yml": "2b00e00828dbb6265315b51bd9bbaffb5dca09a6",
+    ".github/workflows/release_notes_pipeline.yml": "2c6610118e2dcdeb274180eca4a8a841b73e3bcd",
+    ".github/workflows/salesforce_release_intelligence_hub.yml": "60ea267ab202e101226682a3b07adba03363a8e8",
+    ".github/workflows/scheduled-pipeline.yml": "39a42e9d2bbc9d172938ac5bf9740de6d14aa830",
     ".gitignore": "f95ec99871a793723ca2a230161c06f2b268de02",
     ".gitleaks.toml": "44d744133c71b998b3b28a5b2262838c0d2376df",
     ".hooks/pytest-pre-push.sh": "80978df8789d064ed886e57328d3a4cd7713bb1e",
@@ -915,10 +915,10 @@
     ".promptfoo.yaml": "c9e6ecd48be94e18abf85b70c4afca4184fa2035",
     ".python-version": "3f0a10fda703c327eb329f869a19cc5cc05af521",
     ".ruffignore": "c0229b2e50b0ed25d25d6253eb89723eccef1e45",
-    "AGENTS.md": "6731539fcf513e0395eb1bbf94edc6a7a5abfb23",
+    "AGENTS.md": "a3671e99619ab34b13803c37890ca10c2b335c84",
     "CACHE_GAP_ANALYSIS.md": "129c90e6d873870cd8d665c9894e7816fa825169",
-    "CHANGELOG.md": "62eae3847f9d43c9c925c002e13264bd5471ebe8",
-    "CLAUDE.md": "8a5ee69b3bf3a3159393c8c60361dbb0fdc17fb3",
+    "CHANGELOG.md": "3e650c3ab09ce17e498cd3f78fde0a937facb1fd",
+    "CLAUDE.md": "738fba5a9bcd8ac5d624abcf9b3ecceba2046205",
     "CONTRIBUTING.md": "a2ec65eb1c8c607ffb790949cb2e4b78b83c1af5",
     "DESIGN.md": "8747e002a0d0531705d6ae3d8ebf85046d346eee",
     "Dockerfile": "5b4729c55dc8851f64a5174086333b8ad6489648",
@@ -1074,7 +1074,7 @@
     "docs/assets/javascripts/enhanced_search.js": "c6784dc8830ef1c02a544e9d11cb9467af4f9972",
     "docs/assets/stylesheets/banner.css": "b222113cd03222678591bdf3c434e4cfbb5b3c76",
     "docs/assets/stylesheets/enhanced_search.css": "995091a9245ab2c92fa28bdb476005161453dbb2",
-    "docs/changelog.md": "a9bdc285973dbb43c6057f682a3fd75f29b38bc8",
+    "docs/changelog.md": "95280791fa3278c551cc440c8eb966c4b225178d",
     "docs/contribution/testing-strategy.md": "8a185ef9d52b2a1ba7f2265f0a39813ced8715d5",
     "docs/en/index.md": "b134db60a32eb39dcedb57c20f2b2dff805f156a",
     "docs/gen_ref_pages.py": "b11a68f5d05611e05728c70f3dc30ed15f8e58c0",
@@ -1083,7 +1083,7 @@
     "docs/guides/local-development.md": "cfd5c028aa85ad2c11aaaa8bc9fdb6f33cdd77ba",
     "docs/guides/running-pipeline.md": "0545e48ef265dcbe619cc47fa232c24a22c6b7d1",
     "docs/hooks/orphan_guard.py": "52ea824d8f4c355d24917abdeead6d0a48eaaa2b",
-    "docs/index.md": "98cabeafed3eb1bf34b31ccb3fc942fff6d55f1a",
+    "docs/index.md": "9b305dfdfe7192ca4f38c6d0fd5197a5860e2829",
     "docs/internal/AGENT_DIRECTIVE.md": "b46e09079b76d563d44f237e5cd25561a4a48b78",
     "docs/maintenance/ai-docs-audit-logs.md": "78afa4e1c629348d4181b83ac31b432fd1a1f3f3",
     "docs/maintenance/cache-management.md": "a6eafbf7503bcf38a548f474ddc1b6bf6e54035a",
@@ -1118,7 +1118,7 @@
     "intelligence/intelligence_hub/release_readiness/Release_264_Readiness.json": "a30d5256a55211f6b69bccc835ba383c5df5c10e",
     "intelligence/intelligence_hub/sandbox_preview_schedules/Release_264_Sandbox.json": "4ad47e34d824826a3e2bb7cf40570be9cc6156b5",
     "intelligence/intelligence_hub/scripts/builders/salesforce_release_defensive_builder.py": "d125e7a36ef9b4d50c8e2de895a12e0e9471de58",
-    "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "33d84042ac9f2435daea845bdf077ecd4935219b",
+    "intelligence/intelligence_hub/scripts/readme_injectors/readme_defensive_injector_engine.py": "0276d562f1f52620bf647db19dce8e1f7047776c",
     "intelligence/intelligence_hub/scripts/scrapers/salesforce_defensive_scraper_engine.py": "efcd6bc439999225c9be5e138baccad6b72119d9",
     "k8s/cronjob.yaml": "95590964015174351e2e26eff22632802460f178",
     "k8s/deployment.yaml": "85e2f049cc5341e312a6201673b5c645cdb99818",
@@ -1129,7 +1129,7 @@
     "prompts/enrichment/v1.yaml": "127128ce9d3ed709d898840d218fb13232b3aff2",
     "prompts/reconciliation/v1.yaml": "6408dfc9f0723b083d67cf7a7cc4ff4c00c0f408",
     "prompts/reporting/v1.yaml": "ca6904f32b2a72ea1fa716830aa6be669b433cc8",
-    "pyproject.toml": "78ac9e2796235e22a3a9a3860c8e8720d2ef2e1e",
+    "pyproject.toml": "31858919ef932b7a7e638276c2a8baa625346c9a",
     "releases/ARCHIVE.md": "729b5468fd71d96c41e2c7f784a2822098bc8065",
     "releases/spring_26/.meta.json": "8ee6e46c7b719af7547affd332be41b8358bdc82",
     "releases/spring_26/.summary_cache.json": "9449a5920f7ca1fce7821881bee6fcbfc6ab7dcd",
@@ -1422,7 +1422,7 @@
     "src/infrastructure/llm_adapters/rate_limiter.py": "b5c8824fc42ce4a927bd077226302927bf7831d3",
     "src/infrastructure/llm_adapters/unified_client.py": "5140b1e9f2d22ef3ef47ff8919e831704db15d0d",
     "src/infrastructure/mcp/__init__.py": "178b1d0da0234841a1e1f808b1c26787d69ecfe0",
-    "src/infrastructure/mcp/knowledge_server.py": "a47ac9d4f44026ce67edcf9e69046d3d89f09a18",
+    "src/infrastructure/mcp/knowledge_server.py": "62d61af439cd12a0e12bc8ae5ae0f28b338631f0",
     "src/infrastructure/messaging.py": "679db6f3a9f4e222f8181acf89efdb05e590f246",
     "src/infrastructure/notification_step.py": "e72f731d3868c2f76ff8ecc23e9135da0881e514",
     "src/infrastructure/parsing.py": "5e9587ee84633a1ed99f1e901397237553629f5f",
@@ -1543,7 +1543,7 @@
     "tests/infrastructure/llm_adapters/test_observability.py": "b4ee82c4dc61d101f0bbdbd19506d2da3d7de324",
     "tests/infrastructure/llm_adapters/test_rate_limiter.py": "0f0f1b7d68ff6ba798ff354921dc05a3c99612db",
     "tests/infrastructure/llm_adapters/test_unified_client.py": "01ec5c015387623d167cfd4c372d792a842bb176",
-    "tests/infrastructure/mcp/test_knowledge_server.py": "eea4aba9f8a547a2df6a55f368dc727b78d0b3f2",
+    "tests/infrastructure/mcp/test_knowledge_server.py": "27b01d14b815e4245d142bea38d15d64b9978800",
     "tests/infrastructure/scraping/test_cache_adapter.py": "bc9138631e22982273d96c79c8460c82b7e9be6d",
     "tests/infrastructure/scraping/test_playwright_scraper_adapter.py": "014aab3bf69163d69d891c46b830b794a6c30fa7",
     "tests/infrastructure/scraping/test_scraping_observability.py": "a8b0d268c717e1e732b4e33100d1c088f5c7e1a1",
@@ -1659,94 +1659,9 @@
     "tests/test_translator.py": "51459901eed977d55c4f214001235e318dd9fb31",
     "tests/test_workflow.py": "f4b1ad0a9f8e74628f03c28a8193d128d40028e9",
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-    "uv.lock": "674d8186c748ad6c5b06ea8b7ce3b4967627998d"
+    "uv.lock": "49c64aaa1252b3cb48b493bdf560a0d53a3e9e3c"
   },
-  "generated_at": "2026-11-20T15:55:50.626070+00:00",
-  "removals": [
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-badge.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.090278+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-comparison.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.243249+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-content.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.362681+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-export.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.435366+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-github_ops.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.506352+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-impact.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.567960+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-ledger-linker.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.622020+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-ledger-models.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.680832+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-ledger-prompts.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.739782+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-ledger-service.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.806104+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-models.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.903449+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-notifications.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:43.952730+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-reporting.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:44.059273+00:00"
-    },
-    {
-      "commit": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04",
-      "path": "docs/api/automation-service.md",
-      "reason": "source module/package removed from repository",
-      "removed_at": "2026-11-20T15:55:44.187387+00:00"
-    }
-  ],
-  "repository_sha": "7b9c7a0ebe7875893f9a1279d2334da8167f3f04"
+  "generated_at": "2026-11-23T23:57:03.992243+00:00",
+  "removals": [],
+  "repository_sha": "d6c77c4c472885c048fbad921460ae2ee34e91c7"
 }

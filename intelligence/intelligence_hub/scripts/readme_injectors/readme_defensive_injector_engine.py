@@ -12,7 +12,7 @@ class ReadmeDefensiveLinkInjectorEngine:
     def __init__(
         self,
         readme_portuguese_path_string: str = "README.md",
-        readme_english_path_string: str = "README-us.md",
+        readme_english_path_string: str = "README.en.md",
         github_pages_base_url_string: str = (
             "https://fatal1tybarucco.github.io/Salesforce-WebDev/"
         ),

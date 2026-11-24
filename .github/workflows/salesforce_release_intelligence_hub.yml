@@ -42,7 +42,7 @@ jobs:
       # ADR-011 (R8): cache de dependências via setup-uv pinado com chave
       # derivada de uv.lock (substitui pip install uv sem cache).
       - name: ⚡ Setup uv (defensive)
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -178,9 +178,16 @@ jobs:
           echo "[PAGES] index.html gerado em ${PAGES_DIR}"
           echo "::endgroup::"
 
+      - name: 📦 Upload GitHub Pages artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: github-pages
+          path: intelligence/intelligence_hub/assets/pages/
+          retention-days: 30
+
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
 
       - name: 📤 Commit defensively updated READMEs and artifacts
         if: success()

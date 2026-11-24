@@ -120,12 +120,17 @@ When an open issue reports "Python Quality falhou": fix with `uv run ruff check 
     must have `uv.lock` in sync with `pyproject.toml` (release 0.3.1 PR #405 did — `uv lock --check`
     green on its head). Manual fallback after any release merge: run `uv lock` on `main`; never
     hand-edit `uv.lock`.
-- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the FastMCP API** of
-  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==1.30.0`: the low-level `Server`
-  variants used in reverted merge commits (`on_list_tools=` kwarg, `ServerRequestContext`,
-  `get_request_handler`, `server._build_tools`) do not exist in that version. Tool results come
-  from `await server.mcp.call_tool(...)` (returns `(content, structured)`) and
-  `await server.mcp.list_tools()`; unknown tools raise `mcp.server.fastmcp.exceptions.ToolError`.
+- **`tests/infrastructure/mcp/test_knowledge_server.py` must target the `MCPServer` API** of
+  `src/infrastructure/mcp/knowledge_server.py` as locked by `mcp==2.3.0` (bumped from 1.30.0 by
+  the production-dependencies group in #435, 2026-11-23 — that bump is what broke mypy/tests):
+  in 2.x `mcp.server.fastmcp` is only a shim that raises `ModuleNotFoundError` and points to
+  `mcp.server.mcpserver.MCPServer`; the low-level `Server` kwargs used in reverted merge commits
+  (`on_list_tools=`, `ServerRequestContext`, `get_request_handler`, `server._build_tools`) do not
+  exist either. Tool results come from `await server.mcp.call_tool(...)` (returns a
+  `CallToolResult` model — read `result.structured_content["result"]`, never tuple-index it) and
+  `await server.mcp.list_tools()` (returns `list[Tool]`); unknown tools raise
+  `mcp.server.mcpserver.exceptions.ToolError`. Do **not** "fix" a future breakage by re-pinning
+  `mcp<2` — dependabot's dependency group bumps it back; migrate the code instead.
 - **`_build_release_block` output is frozen by `tests/golden/summarizer/readme_block_{pt,en}.md`
   and `readme_pt_updated.md`.** The leading `lines = [""]` and the blank separators after each
   `</details>` are intentional (they match the committed `README.md`/`README.en.md`) — the

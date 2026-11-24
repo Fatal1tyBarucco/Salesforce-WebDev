@@ -63,7 +63,7 @@ jobs:
           fetch-depth: 0
 
       - name: ⚡ Setup uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -71,7 +71,7 @@ jobs:
       # ADR-011 (R8): restaura o cache de runtime (processed_releases,
       # scraper TTL, stats) para processamento incremental entre execuções.
       - name: 💾 Restore pipeline runtime cache
-        uses: actions/cache@0057852bf40ecb6d4c3f25d4ed6d3c3c6d0d896d
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
           path: cache/
           key: ${{ runner.os }}-pipeline-cache-${{ github.run_id }}
@@ -457,7 +457,7 @@ jobs:
 
       - name: 📦 Upload dos logs de execução
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: extract-logs
           path: /tmp/pipeline_logs/
@@ -467,7 +467,7 @@ jobs:
       # ADR-011 (R8): histórico auditável do cache de runtime como artefato.
       - name: 📦 Upload runtime cache artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: pipeline-cache
           path: cache/
