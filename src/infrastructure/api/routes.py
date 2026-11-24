@@ -113,8 +113,7 @@ def create_rest_router() -> APIRouter:
                         avg_confidence=metadata.avg_confidence,
                         generated_at=metadata.generated_at,
                         categories=[
-                            FeatureCategory(name=c.name, count=c.count)
-                            for c in metadata.categories
+                            FeatureCategory(name=c.name, count=c.count) for c in metadata.categories
                         ],
                     )
                 )
@@ -175,9 +174,7 @@ def create_rest_router() -> APIRouter:
             total_features=metadata.total_features,
             avg_confidence=metadata.avg_confidence,
             generated_at=metadata.generated_at,
-            categories=[
-                FeatureCategory(name=c.name, count=c.count) for c in metadata.categories
-            ],
+            categories=[FeatureCategory(name=c.name, count=c.count) for c in metadata.categories],
         )
 
     @router.get("/releases/{slug}/enrichment", response_model=EnrichmentResponse)  # type: ignore
