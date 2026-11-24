@@ -592,6 +592,7 @@ Salesforce-WebDev/
   ├── MUTATION_TESTING_REPORT.md
   ├── PLANO_DE_MODERNIZACAO.md
   ├── PRODUCT.md
+  ├── PROPOSTA_CI_IMPECCABLE.md
   ├── PROPOSTA_FEATURE_RIPE.md
   ├── README.en.md               # Readme em inglês
   ├── README.md                  # Readme em português
