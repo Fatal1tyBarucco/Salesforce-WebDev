@@ -515,7 +515,6 @@ Salesforce-WebDev/
       ├── enrichment.py
       ├── feature.py
       └── release.py
-  ├── salesforce_release_notes.egg-info/
   ├── ai_automation.py
   ├── analytics.py
   ├── api.py
@@ -569,6 +568,7 @@ Salesforce-WebDev/
   ├── .python-version
   ├── .ruffignore
   ├── AGENTS.md                  # Diretrizes para agentes de código
+  ├── CACHE_DIAGNOSTIC_REPORT.md
   ├── CACHE_GAP_ANALYSIS.md
   ├── CHANGELOG.md               # Changelog do projeto
   ├── CLAUDE.md
