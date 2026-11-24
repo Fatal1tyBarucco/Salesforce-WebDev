@@ -2,6 +2,29 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.7.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.6...v0.7.0) (2026-11-24)
+
+
+### Features
+
+* **impeccable:** normalize design quality across web surfaces (Phase 2/4) ([69d1227](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/69d12275b534c00b20877a8c6ef1fa4c283bfd4e))
+
+
+### Bug Fixes
+
+* **api:** resolve B008 in routes.py and TRY002 in test_llm_service.py ([9e220d1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/9e220d153492d579524f71a6322edcc577a4c383))
+* **ledger:** restore valid syntax in ledger models/service (merge conflict artifacts) ([347b57b](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/347b57be573a4f63b92eee10a258a5db8f733e61))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-24 09:58 UTC [skip ci] ([7396f92](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7396f923c91e11b885267c8959d1fd77b1f031e7))
+* **sync:** reconcile documentation — 2026-11-24 12:46 UTC [skip ci] ([8ba7918](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8ba79186f0a16c66c27b00844295ff6b47d059e2))
+* **sync:** reconcile documentation — 2026-11-24 12:53 UTC [skip ci] ([cd8fc4f](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/cd8fc4fe0a55e865b873175666291fc4a22422d0))
+* **sync:** reconcile documentation — 2026-11-24 19:57 UTC [skip ci] ([7a8d19b](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/7a8d19bf2d585e93110fb242c21a13da6f30369b))
+* **sync:** reconcile documentation — 2026-11-24 20:23 UTC [skip ci] ([8977ad7](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/8977ad734a18cdf7a55c133df2c542c0753da634))
+* **sync:** reconcile documentation — 2026-11-24 21:14 UTC [skip ci] ([d06b279](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/d06b2793f1e588f53a29d0ac2ddaf590c8c79bac))
+
 ## [0.6.6](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.5...v0.6.6) (2026-11-24)
 
 
