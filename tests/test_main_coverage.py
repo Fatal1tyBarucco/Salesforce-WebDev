@@ -634,7 +634,7 @@ async def test_subcategory_entry_translation_en_us(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
+        patch("src.release_docs.generate_toggle_html", return_value="<div>toggle</div>"),
         patch(
             "src.salesforce.generate_category_trailhead_section",
             return_value="Trailhead",
@@ -667,7 +667,7 @@ async def test_no_translation_for_pt_br(tmp_path: Path) -> None:
     with (
         patch("src.main.RELEASES_DIR", str(releases_dir)),
         patch("src.release_docs.RELEASES_DIR", str(releases_dir)),
-        patch("src.main.generate_toggle_html", return_value="<div>toggle</div>"),
+        patch("src.release_docs.generate_toggle_html", return_value="<div>toggle</div>"),
         patch(
             "src.salesforce.generate_category_trailhead_section",
             return_value="Trailhead",
