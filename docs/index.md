@@ -60,10 +60,15 @@ graph TB
     G --> DASH[📊 Dashboard<br/>HTML interativo]
     G --> LEDGER[📊 SFEL<br/>Rastreamento cross-release<br/>de features individuais]
 
-    style S fill:#E3F2FD,stroke:#2196F3
-    style L fill:#FCE4EC,stroke:#E91E63
-    style G fill:#F3E5F5,stroke:#9C27B0
-    style LEDGER fill:#E8F5E9,stroke:#4CAF50
+    classDef nodePrimary fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
+    classDef nodeLLM fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
+    classDef nodeGenerator fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
+    classDef nodeLedger fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
+
+    class S,P,API,NOTIF,GH,DASH nodePrimary
+    class L nodeLLM
+    class G,REL nodeGenerator
+    class LEDGER nodeLedger
 ```
 
 O pipeline inclui uma camada de automação AI com **12 módulos**, sendo um deles o **Salesforce Feature Evolution Ledger (SFEL)** — submódulo `src/automation/ledger/` que rastreia features individuais entre releases consecutivas e mantém histórico consultável.
@@ -162,10 +167,15 @@ flowchart LR
     GEN --> GH
     GEN --> DASH
 
-    style ENTRADA fill:#E8F5E9,stroke:#4CAF50,color:#000
-    style PIPELINE fill:#E3F2FD,stroke:#2196F3,color:#000
-    style RESILIENCIA fill:#FFF3E0,stroke:#FF9800,color:#000
-    style SAIDA fill:#F3E5F5,stroke:#9C27B0,color:#000
+    classDef subEntrada fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
+    classDef subPipeline fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
+    classDef subResiliencia fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
+    classDef subSaida fill:var(--color-primary-fixed-dim),stroke:var(--color-primary),color:var(--color-on-primary-fixed)
+
+    class ENTRADA subEntrada
+    class PIPELINE subPipeline
+    class RESILIENCIA subResiliencia
+    class SAIDA subSaida
 ```
 
 ---
@@ -608,13 +618,21 @@ flowchart LR
     E --> F[Review]
     F --> G[Merge]
 
-    style A fill:#E8F5E9,stroke:#4CAF50,color:#000
-    style B fill:#E3F2FD,stroke:#2196F3,color:#000
-    style C fill:#FFF3E0,stroke:#FF9800,color:#000
-    style D fill:#FCE4EC,stroke:#E91E63,color:#000
-    style E fill:#F3E5F5,stroke:#9C27B0,color:#000
-    style F fill:#E0F7FA,stroke:#00BCD4,color:#000
-    style G fill:#E8F5E9,stroke:#4CAF50,color:#000
+    classDef nodeFork fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
+    classDef nodeBranch fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
+    classDef nodeCode fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
+    classDef nodeQuality fill:var(--color-tertiary-container),stroke:var(--color-tertiary),color:var(--color-on-tertiary-container)
+    classDef nodePR fill:var(--color-primary-container),stroke:var(--color-primary),color:var(--color-on-primary-container)
+    classDef nodeReview fill:var(--color-surface-variant),stroke:var(--color-outline),color:var(--color-on-surface-variant)
+    classDef nodeMerge fill:var(--color-surface-container-low),stroke:var(--color-delta-positive),color:var(--color-on-surface)
+
+    class A nodeFork
+    class B nodeBranch
+    class C nodeCode
+    class D nodeQuality
+    class E nodePR
+    class F nodeReview
+    class G nodeMerge
 ```
 
 1. **Fork** o repositório

@@ -77,6 +77,7 @@ extra_javascript:
 extra_css:
   - assets/stylesheets/banner.css
   - assets/stylesheets/enhanced_search.css
+  - assets/stylesheets/mermaid.css
 
 plugins:
   - search:
