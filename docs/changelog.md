@@ -178,3 +178,4 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `9375705` — ci(workflows): python-quality dedupe de issues + scheduled-pipeline hardening
 - `c2c1563` — ci(docs): diagnóstico do mkdocs build (annotations + artefato de log)
 - `70e4174` — ci(docs): diagnóstico do mkdocs build (warnings como annotations, log como artefato)
+- `30d322a` — Deployed 0d1b9876 to 0.7.1 with ProperDocs 1.6.7 and mike 2.2.0
