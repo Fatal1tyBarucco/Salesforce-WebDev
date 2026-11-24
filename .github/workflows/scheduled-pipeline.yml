@@ -90,6 +90,9 @@ jobs:
     if: (needs.detect.outputs.has-new-release == 'true') && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      has-changes: ${{ steps.pipeline.outputs.has-changes }}
+      pr-url: ${{ steps.create-pr.outputs.pr-url }}
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -126,6 +129,19 @@ jobs:
 
       - name: 📦 Install dependencies
         run: uv sync --frozen --extra dev --extra healing --group dev
+
+      - name: 🏷️ Ensure automation labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "::group::🏷️ Ensure labels"
+          # Labels ausentes fazem gh pr create --label e gh issue create
+          # --label falharem no FINAL da execução (sintoma recorrente de
+          # CI vermelho ao término de cada job). Criação idempotente.
+          for label in pipeline release-notes knowledge-as-code failure needs-investigation; do
+            gh label create "$label" --color "0E8A16" --description "Automação Knowledge-as-Code" 2>/dev/null || true
+          done
+          echo "::endgroup::"
 
       - name: 🚀 Run pipeline
         id: pipeline
@@ -189,10 +205,19 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add -A
+          if git diff --cached --quiet; then
+            echo "Nada a commitar (estado mudou após a checagem inicial)."
+            echo "pr-url=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "feat(pipeline): $RELEASE_SLUG release notes"
 
           BRANCH="pipeline/$RELEASE_SLUG-$(date +%Y%m%d-%H%M)"
-          git push origin HEAD:$BRANCH --force-with-lease
+          if ! git push origin HEAD:$BRANCH --force-with-lease; then
+            echo "Push rejeitado; refazendo com novo timestamp."
+            BRANCH="pipeline/$RELEASE_SLUG-$(date +%Y%m%d-%H%M)-r"
+            git push origin HEAD:$BRANCH
+          fi
 
           PR_URL=$(gh pr create \
             --title "feat(pipeline): $RELEASE_SLUG release notes" \

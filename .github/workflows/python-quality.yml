@@ -314,9 +314,16 @@ jobs:
           set -e
           TITLE="🐍 Python Quality falhou — ${{ github.sha }}"
           BODY_FILE="${{ steps.collect.outputs.body_file }}"
-          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length' 2>/dev/null || echo 0)
-          if [ "${EXISTING:-0}" != "0" ]; then
-            echo "Issue já existe para este commit — skipping."
+          # Dedupe por workflow, não por SHA: o título contém o SHA do
+          # commit, então a busca anterior nunca casava e cada push criava
+          # uma issue nova (flood). Comenta na issue aberta mais recente em
+          # vez de criar um novo registro para o mesmo gate.
+          EXISTING=$(gh issue list --state open --search "Python Quality falhou in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          if [ -n "$EXISTING" ]; then
+            echo "Issue #$EXISTING já aberta para Python Quality — comentando em vez de duplicar."
+            gh issue comment "$EXISTING" --body "Nova falha detectada — commit \`${{ github.sha }}\`, run [#${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})." || true
+            echo "$EXISTING" > /tmp/issue_number.txt
+            echo "issue_number=$EXISTING" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           ISSUE_FILE="/tmp/issue_url.txt"
