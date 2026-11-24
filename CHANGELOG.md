@@ -2,6 +2,19 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.7.2](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.7.1...v0.7.2) (2026-11-24)
+
+
+### Bug Fixes
+
+* **docs:** banner estático aponta para assets/banner1.png + silencia aviso ProperDocs no build ([#484](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/issues/484)) ([0d1b987](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/0d1b98765bd72708a95fd0ebc885cea5c71a9194))
+* **docs:** referências estáticas do banner apontam para assets/banner1.png ([0d1b987](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/0d1b98765bd72708a95fd0ebc885cea5c71a9194))
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-24 22:27 UTC [skip ci] ([fbf41c1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/fbf41c1d741b46067a36c77dfa981bdb4741da4d))
+
 ## [0.7.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.7.0...v0.7.1) (2026-11-24)
 
 
