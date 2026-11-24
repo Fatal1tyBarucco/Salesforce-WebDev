@@ -1428,7 +1428,7 @@
     "src/infrastructure/__init__.py": "b3b626a867e38cf78394b3b02ec7f3d6f5fad2fc",
     "src/infrastructure/api/__init__.py": "122979c2744c09d04fb3ca71e05a6cd114cb99a7",
     "src/infrastructure/api/graphql.py": "eab134c514fad74876295a4941905daa9341499d",
-    "src/infrastructure/api/routes.py": "1ad1715f0a43197efbcd90c83e47dc61e02ee10b",
+    "src/infrastructure/api/routes.py": "d81701ed7a1a2a14fd42bdcf9022d82d66194b2e",
     "src/infrastructure/generation.py": "b16b259d0a85a835cecfa0328873a028a048a556",
     "src/infrastructure/github.py": "7d003c5a7e7d795fd93ea343f1e551cb1143b1ac",
     "src/infrastructure/llm.py": "eb21a0a63953ad1e5c571a0a7a864fde913ba817",
@@ -1638,7 +1638,7 @@
     "tests/test_ledger/test_service.py": "17197e57bbf037c02d0453474d6aeb1bd465a004",
     "tests/test_ledger/test_service_branch_coverage.py": "60a0842f16cda7d31e5c1c486f023b758c1e3f7d",
     "tests/test_ledger/test_service_coverage.py": "06d9ae99b02def6cebc8febce4d8e17e015303f5",
-    "tests/test_llm_service.py": "354259f43dfa924663905e943f06a5e2984cdacf",
+    "tests/test_llm_service.py": "eeeb422ab6ff9f3aba39158604799172dbac8f92",
     "tests/test_logger.py": "53c816194c85191ae299a7d5f97a4190a1f1d552",
     "tests/test_logger_coverage_push.py": "4250323ab837903538812917885ea7c3cc7315cd",
     "tests/test_main.py": "75142f18a4861f194c27f828880e5c78a7a2c377",
@@ -1677,7 +1677,7 @@
     "update": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
     "uv.lock": "10472becee71e0e22c6491a0d7e8b46001586157"
   },
-  "generated_at": "2026-11-24T12:52:57.874835+00:00",
+  "generated_at": "2026-11-24T19:57:24.297123+00:00",
   "removals": [],
-  "repository_sha": "347b57be573a4f63b92eee10a258a5db8f733e61"
+  "repository_sha": "9e220d153492d579524f71a6322edcc577a4c383"
 }
