@@ -2,6 +2,13 @@
 
 <!-- gerado por IA em 2026-11-19T17:40:05+00:00 — revisar antes de publicar -->
 
+## [0.7.1](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.7.0...v0.7.1) (2026-11-24)
+
+
+### Documentation
+
+* **sync:** reconcile documentation — 2026-11-24 22:05 UTC [skip ci] ([1a2c0cf](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/commit/1a2c0cfcb4fd9fe05cb64bd7a17177c3ad9353bb))
+
 ## [0.7.0](https://github.com/Fatal1tyBarucco/Salesforce-WebDev/compare/v0.6.6...v0.7.0) (2026-11-24)
 
 
