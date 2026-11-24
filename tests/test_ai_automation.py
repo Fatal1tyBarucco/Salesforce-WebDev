@@ -51,6 +51,20 @@ def service():
     return AIAutomationService()
 
 
+@pytest.fixture
+def llm_service():
+    """Mock LLM injected into every AIAutomationService built during the test.
+
+    Module-level wrappers construct ``AIAutomationService()`` internally, so
+    the mock must be provided by patching the ``LLMService`` constructor used
+    in ``src.automation.service``.
+    """
+    mock = AsyncMock()
+    mock.generate_text = AsyncMock(return_value="AI generated content")
+    with patch("src.automation.service.LLMService", return_value=mock):
+        yield mock
+
+
 # LLMService is imported but not used in ai_automation.py wrapper functions
 # (they use AIAutomationService which is a stub). No patch needed.
 
@@ -137,9 +151,10 @@ async def test_generate_changelog_ai(service, llm_service, tmp_path: Path) -> No
 
 
 @pytest.mark.asyncio
-async def test_generate_changelog_fallback(service, tmp_path: Path) -> None:
-    # Override llm_service to return None for fallback
-    service._llm.generate_text = AsyncMock(return_value=None)
+async def test_generate_changelog_fallback(llm_service, tmp_path: Path) -> None:
+    # Module-level generate_changelog() builds a fresh service; force the mock
+    # LLM to return None so the deterministic fallback path is exercised.
+    llm_service.generate_text.return_value = None
 
     release_dir = tmp_path / "summer_26"
     release_dir.mkdir()
