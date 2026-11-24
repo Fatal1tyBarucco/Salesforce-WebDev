@@ -75,13 +75,53 @@ jobs:
           python3 .github/scripts/docs_contract.py validate
           echo "::endgroup::"
 
-      - name: 🏗️ Build documentation
+      - name: 🏗️ Build documentation (diagnóstico + gate)
         run: |
-          echo "::group::🏗️ Building MkDocs Site"
+          echo "::group::🏗️ Building MkDocs Site (diagnóstico: build plano)"
           # --no-sync: preserva o extra imaging instalado no step anterior
           # (social cards exigem pillow/cairosvg; uv run implícito os removeria).
-          uv run --no-sync mkdocs build --strict
+          # Build PLANO primeiro: coleta TODOS os warnings sem abortar no
+          # primeiro, para o diagnóstico não depender de re-execuções.
+          set +e
+          uv run --no-sync mkdocs build 2>&1 | tee /tmp/mkdocs-build.log
+          PLAIN_RC=${PIPESTATUS[0]}
+          set -e
+          if [ "$PLAIN_RC" != "0" ]; then
+            echo "AVISO: build plano falhou (config/ambiente) — o gate strict falhará na mesma causa." >&2
+          fi
+          # Warnings viram annotations no UI do Actions (uma por linha, dedupe).
+          grep -E 'WARNING|ERROR' /tmp/mkdocs-build.log | sort | uniq | cut -c1-400 | while IFS= read -r line; do
+            echo "::warning title=mkdocs build::${line}"
+          done
           echo "::endgroup::"
+
+          echo "::group::🏗️ Gate: mkdocs build --strict"
+          set -o pipefail
+          set +e
+          uv run --no-sync mkdocs build --strict 2>&1 | tee -a /tmp/mkdocs-build.log
+          RC=${PIPESTATUS[0]}
+          set -e
+          if [ "$RC" != "0" ]; then
+            {
+              echo "## mkdocs build --strict falhou (resumo de warnings)"
+              echo ""
+              echo '```text'
+              grep -E 'WARNING|ERROR' /tmp/mkdocs-build.log | sort | uniq | head -n 60
+              echo '```'
+              echo ""
+              echo "Log completo no artefato mkdocs-build-log deste run."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "::endgroup::"
+          exit "$RC"
+
+      - name: 📦 Upload mkdocs build log
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: mkdocs-build-log
+          path: /tmp/mkdocs-build.log
+          retention-days: 14
 
       # Versionamento com mike (ADR-012): cada release/tag gera uma versão
       # permanente do site; `latest` acompanha main. O branch gh-pages é o
