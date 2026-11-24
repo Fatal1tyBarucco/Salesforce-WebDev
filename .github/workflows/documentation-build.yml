@@ -76,6 +76,11 @@ jobs:
           echo "::endgroup::"
 
       - name: 🏗️ Build documentation (diagnóstico + gate)
+        env:
+          # Silencia o aviso de migração exclusivo do log (campanha do fork
+          # ProperDocs, emitida por um plugin da pilha de docs). Não muda
+          # comportamento de build nem gates.
+          DISABLE_MKDOCS_2_WARNING: "true"
         run: |
           echo "::group::🏗️ Building MkDocs Site (diagnóstico: build plano)"
           # --no-sync: preserva o extra imaging instalado no step anterior
