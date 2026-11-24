@@ -343,71 +343,57 @@
     ],
     "src/automation/badge.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-badge.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/comparison.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-comparison.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/content.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/automation-content.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/export.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-export.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/github_ops.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-github_ops.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/impact.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-impact.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/__init__.py": [
       "docs/DEBITO_TECNICO.md"
     ],
     "src/automation/ledger/linker.py": [
-      "docs/api/automation-ledger-linker.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/models.py": [
-      "docs/api/automation-ledger-models.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/prompts.py": [
-      "docs/api/automation-ledger-prompts.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/ledger/service.py": [
       "docs/ai-generated/release-notes.md",
-      "docs/api/automation-ledger-service.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/models.py": [
-      "docs/api/automation-models.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/notifications.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-notifications.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/reporting.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-reporting.md",
       "docs/reference/repo-index.md"
     ],
     "src/automation/service.py": [
       "docs/DEBITO_TECNICO.md",
-      "docs/api/automation-service.md",
       "docs/reference/repo-index.md"
     ],
     "src/cache_io.py": [
