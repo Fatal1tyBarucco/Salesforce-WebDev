@@ -77,6 +77,13 @@ Execute localmente com `OPENROUTER_API_KEY` configurada: `python -m src.ai.orche
 
 ## 📋 Releases Disponíveis
 
+| Release | Features | Categorias | Status |
+| :--- | :---: | :---: | :---: |
+| ❄️ **Winter '27** | 1,123 | 19 | ✅ Atual |
+| ☀️ **Summer '26** | 1,373 | 22 | ✅ Completo |
+| 🌸 **Spring '26** | 1,438 | 21 | ✅ Completo |
+| ❄️ **Winter '26** | 1,348 | 19 | ✅ Completo |
+
 <div style="padding:12px;margin-bottom:20px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;text-align:center;"><strong>🌐 Idioma / Language:</strong> <strong>🇧🇷 Português</strong> | <a href="./README.en.md">🇺🇸 English</a></div>
 ### ❄️ Winter '27
 

@@ -179,3 +179,5 @@ Atualizado automaticamente pelo bot `update_changelog_auto.py` quando novos comm
 - `c2c1563` — ci(docs): diagnóstico do mkdocs build (annotations + artefato de log)
 - `70e4174` — ci(docs): diagnóstico do mkdocs build (warnings como annotations, log como artefato)
 - `30d322a` — Deployed 0d1b9876 to 0.7.1 with ProperDocs 1.6.7 and mike 2.2.0
+- `78ffd5c` — Deployed d64e0ef9 to v0.7.2 with ProperDocs 1.6.7 and mike 2.2.0
+- `95084b5` — Deployed d64e0ef9 to 0.7.2 with ProperDocs 1.6.7 and mike 2.2.0
